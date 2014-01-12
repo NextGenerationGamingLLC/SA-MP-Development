@@ -73,7 +73,6 @@
 			/*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-
 #define SERVER_GM_TEXT "NG:RP v2.4.166"
 
 #include <a_samp>
