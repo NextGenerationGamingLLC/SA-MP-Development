@@ -256,7 +256,6 @@ NationSel_HandleNationSelection(playerid)
 
 OnPlayerChangeWeapon(playerid, newweapon)
 {
-	new arenaid = GetPVarInt(playerid, "IsInArena");
 	if(IsPlayerInDynamicArea(playerid, NGGShop)) SetPlayerArmedWeapon(playerid, 0);
 	if(pTazer{playerid} == 1) SetPlayerArmedWeapon(playerid,23);
 	if(GetPVarInt(playerid, "WeaponsHolstered") == 1)
@@ -293,7 +292,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		{
 			ExecuteHackerAction( playerid, newweapon );
 		}
-		else if( PlayerInfo[playerid][pGuns][1] != 4 || PaintBallArena[arenaid][pbWeapons][0] != 4 || PaintBallArena[arenaid][pbWeapons][1] != 4 || PaintBallArena[arenaid][pbWeapons][2] != 4 && GetPlayerWeapon( playerid ) == 4)
+		else if( PlayerInfo[playerid][pGuns][1] != 4 && GetPlayerWeapon( playerid ) == 4)
 		{
 		    if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pMember] != 8)
 		    {
