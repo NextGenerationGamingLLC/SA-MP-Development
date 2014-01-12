@@ -76,7 +76,6 @@
 
 #define SERVER_GM_TEXT "NG:RP v2.4.165"
 
-
 #include <a_samp>
 #include <a_mysql>	
 #include <streamer>
