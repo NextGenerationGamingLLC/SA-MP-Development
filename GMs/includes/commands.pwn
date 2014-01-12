@@ -52976,7 +52976,7 @@ CMD:fc(playerid, params[]) {
 			}
 			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pFamed] > 0)
 			{
-				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
 			}
 			SendFamedMessage(COLOR_FAMED, szMessage);
 		}
