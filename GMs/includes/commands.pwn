@@ -11745,7 +11745,7 @@ CMD:accept(playerid, params[])
 CMD:join(playerid, params[])
 {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while being inside a vehicle.");
-	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && PlayerInfo[playerid][pDonateRank] >= 2) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
+	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && PlayerInfo[playerid][pDonateRank] > 0) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
 		if(IsPlayerInRangeOfPoint(playerid,3.0,251.99, 117.36, 1003.22) || IsPlayerInRangeOfPoint(playerid,3.0,301.042633, 178.700408, 1007.171875) || IsPlayerInRangeOfPoint(playerid,3.0,-1385.6786,2625.6636,55.5572)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
@@ -26758,6 +26758,7 @@ CMD:v(playerid, params[]) {
 			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pDonateRank] > 0)
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
+				SetPVarInt(playerid, "timeVIP", gettime()+5);
 			}
 			
 			SendVIPMessage(COLOR_VIP, szMessage);

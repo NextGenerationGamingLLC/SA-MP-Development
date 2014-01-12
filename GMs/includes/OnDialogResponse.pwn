@@ -18058,12 +18058,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			// Do not comment this out! This is needed to re-format the ad with the proper format - Nathan
 			format(advert, sizeof(advert), "Advertisement: %s - contact: %s (%d)", advert, GetPlayerNameEx(reportid), PlayerInfo[reportid][pPnumber]);
 			SendClientMessageEx(reportid, -1, "Your Priority Advertisement has been approved & published.");
-			if(GetPVarInt(playerid, "AdvertVoucher") > 0)
+			if(GetPVarInt(reportid, "AdvertVoucher") > 0)
 			{
 			}
-			else if(PlayerInfo[playerid][pFreeAdsLeft] > 0 && PlayerInfo[playerid][pDonateRank] >= 4)
+			else if(PlayerInfo[reportid][pFreeAdsLeft] > 0 && PlayerInfo[reportid][pDonateRank] >= 4)
 			{
-				PlayerInfo[playerid][pFreeAdsLeft]--;
+				PlayerInfo[reportid][pFreeAdsLeft]--;
 				format(szString, sizeof(szString), "Platinum VIP: You have used a free advertisement, you have %d left for today.", PlayerInfo[reportid][pFreeAdsLeft]);
 				SendClientMessageEx(reportid, COLOR_YELLOW, szString);				
 			}
