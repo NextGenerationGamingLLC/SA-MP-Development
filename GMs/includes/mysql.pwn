@@ -1668,34 +1668,56 @@ stock MySQLBan(userid,ip[],reason[],status,admin[])
 
 stock AddCrime(cop, suspect, crime[])
 {
-	new query[256];
-	format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`) VALUES ('%d',NOW(),'%s','%s')", GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(GetPlayerNameEx(cop), MainPipeline), g_mysql_ReturnEscaped(crime, MainPipeline));
+	new query[256], iAllegiance;
+	if((0 <= PlayerInfo[cop][pMember] < MAX_GROUPS))
+	{
+		iAllegiance = arrGroupData[PlayerInfo[cop][pMember]][g_iAllegiance];
+	}
+	else iAllegiance = 1;
+	format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(GetPlayerNameEx(cop), MainPipeline), g_mysql_ReturnEscaped(crime, MainPipeline), iAllegiance);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	format(query, sizeof(query), "MDC: %s added crime %s to %s.", GetPlayerNameEx(cop), crime, GetPlayerNameEx(suspect));
 	Log("logs/crime.log", query);
 	return 1;
 }
 
-stock ClearCrimes(playerid)
+stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 {
-	new query[80];
-	format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+	new query[80], iAllegiance;
+	if((0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS) || clearerid != INVALID_PLAYER_ID)
+	{
+		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
+	}
+	else {
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+	}	
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
 stock DisplayCrimes(playerid, suspectid)
 {
-    new query[128];
-    format(query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE id=%d ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid));
+    new query[128], iAllegiance;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS))
+	{
+		iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
+	}
+	else iAllegiance = 1;
+    format(query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE id=%d AND origin=%d ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
     mysql_function_query(MainPipeline, query, true, "MDCQueryFinish", "ii", playerid, suspectid);
 	return 1;
 }
 
 stock DisplayReports(playerid, suspectid)
 {
-    new query[812];
-    format(query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.suspectid=%d ORDER BY arrestreports.datetime DESC LIMIT 12", GetPlayerSQLId(suspectid));
+    new query[812], iAllegiance;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS))
+	{
+		iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
+	}
+	else iAllegiance = 1;
+    format(query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.suspectid=%d AND arrestreports.origin=%d ORDER BY arrestreports.datetime DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
     mysql_function_query(MainPipeline, query, true, "MDCReportsQueryFinish", "ii", playerid, suspectid);
 	return 1;
 }
@@ -3587,6 +3609,7 @@ public MDCReportsQueryFinish(playerid, suspectid)
 	    cache_get_field_content(i, "datetime", datetime, MainPipeline, 64);
 	    format(resultline, sizeof(resultline),"%s{FF6347}Report (%d) {FF7D7D}Arrested by: %s on %s\n",resultline, reportsid, copname,datetime);
 	}
+	if(!resultline[0]) format(resultline, sizeof(resultline),"No Arrest Reports on record.",resultline, reportsid, copname,datetime);
 	ShowPlayerDialog(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "SA-MDC - Criminal History", resultline, "Back", "");
 	return 1;
 }

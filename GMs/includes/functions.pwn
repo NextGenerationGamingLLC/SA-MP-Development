@@ -5744,7 +5744,7 @@ public SetPlayerFree(playerid,declare,reason[])
 {
 	if(IsPlayerConnected(playerid))
 	{
-		ClearCrimes(playerid);
+		ClearCrimes(playerid, declare);
 		new string[128];
 		//foreach(new i: Player)
 		for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -11091,8 +11091,7 @@ stock IsARacer(playerid)
 
 stock IsMDCPermitted(playerid)
 {
-    new member = PlayerInfo[playerid][pMember];
-	if(IsACop(playerid) && arrGroupData[member][g_iAllegiance] == 1)
+	if(IsACop(playerid))
 	{
 		return 1;
 	}

@@ -73,7 +73,9 @@
 			/*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v2.4.167"
+
+#define SERVER_GM_TEXT "NG:RP v3.0.011"
+
 
 #include <a_samp>
 #include <a_mysql>	

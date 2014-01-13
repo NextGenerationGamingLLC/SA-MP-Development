@@ -497,7 +497,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						PlayerInfo[giveplayerid][pWantedLevel] = 0;
 						SetPlayerToTeamColor(giveplayerid);
 					    SetPlayerWantedLevel(giveplayerid, 0);
-	    				ClearCrimes(giveplayerid);
+	    				ClearCrimes(giveplayerid, playerid);
 					}
 					else
 					{
@@ -8919,7 +8919,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	            new groups[1024], item;
 				for (new i; i < MAX_GROUPS; i++)
 				{
-					if (arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_iGroupType] == 1 && arrGroupData[i][g_iAllegiance] == 1)
+					if (arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_iGroupType] == 1 && arrGroupData[i][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 					{
 						format(groups, sizeof(groups), "%s*%s\n", groups, arrGroupData[i][g_szGroupName]);
 						ListItemTrackId[playerid][item++] = i;
