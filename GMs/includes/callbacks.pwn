@@ -6110,12 +6110,15 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 	  		if(PlayerInfo[playerid][pFlyLic] != 1)
 	  		{
-		  		RemovePlayerFromVehicle(playerid);
-		  		new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz);
-		  		defer NOPCheck(playerid);
-			 	SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
+				if(GetPVarInt(playerid, "SprunkGuardLic") == 0)
+				{
+					RemovePlayerFromVehicle(playerid);
+					new Float:slx, Float:sly, Float:slz;
+					GetPlayerPos(playerid, slx, sly, slz);
+					SetPlayerPos(playerid, slx, sly, slz);
+					defer NOPCheck(playerid);
+					SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
+				}
 	  		}
 		}
 		else if(IsAHelicopter(vehicleid))

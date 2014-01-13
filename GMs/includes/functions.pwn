@@ -14196,16 +14196,15 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			if(GetPlayerVehicleCount(playerid) != 0)
 			{
 				SetPVarInt(playerid, "lockmenu", 1);
-                for(new i=0; i<MAX_PLAYERVEHICLES; i++)
-                {
-				     if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
-				     {
-	                     format(string, sizeof(string), "Vehicle %d| Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-	                     SendClientMessageEx(playerid, COLOR_WHITE, string);
-				     }
-			    }
-			    ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
-
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d| Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
@@ -14214,15 +14213,15 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			if(GetPlayerVehicleCount(playerid) != 0)
 			{
 				SetPVarInt(playerid, "lockmenu", 2);
-			    for(new i=0; i<MAX_PLAYERVEHICLES; i++)
-                {
-				     if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
-				     {
-	                     format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-	                     SendClientMessageEx(playerid, COLOR_WHITE, string);
-				     }
-			    }
-			    ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
@@ -14231,15 +14230,15 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			if(GetPlayerVehicleCount(playerid) != 0)
 			{
 				SetPVarInt(playerid, "lockmenu", 3);
-			    for(new i=0; i<MAX_PLAYERVEHICLES; i++)
-                {
-				     if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
-				     {
-	                     format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
-	                     SendClientMessageEx(playerid, COLOR_WHITE, string);
-				     }
-			    }
-			    ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}

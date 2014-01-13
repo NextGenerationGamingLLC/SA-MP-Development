@@ -10658,7 +10658,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pVehVoucher] += amount;
 						PlayerInfo[sellerid][pVehVoucher] -= amount;
@@ -10679,7 +10679,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPVoucher] -= amount;
@@ -10700,7 +10700,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPVoucher] -= amount;
@@ -10721,7 +10721,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Platinum VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Platinum VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Platinum VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pPVIPVoucher] += amount;
 						PlayerInfo[sellerid][pPVIPVoucher] -= amount;
@@ -10742,7 +10742,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Restricted Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Restricted Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Restricted Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pCarVoucher] += amount;
 						PlayerInfo[sellerid][pCarVoucher] -= amount;
@@ -10763,7 +10763,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Priority Advertisement Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Priority Advertisement Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Priority Advertisement Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pAdvertVoucher] += amount;
 						PlayerInfo[sellerid][pAdvertVoucher] -= amount;
@@ -10784,7 +10784,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Day Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Day Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPExVoucher] -= amount;
@@ -10805,7 +10805,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Days Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Days Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPExVoucher] -= amount;
@@ -21691,7 +21691,7 @@ CMD:entrancefee(playerid, params[])
 		else {
 			new string[128];
 			Businesses[PlayerInfo[playerid][pBusiness]][bGymEntryFee] = amount;
-			format(string, sizeof(string), "You have set the gym entry fee to $%i.", number_format(amount));
+			format(string, sizeof(string), "You have set the gym entry fee to $%s.", number_format(amount));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			RefreshBusinessPickup(PlayerInfo[playerid][pBusiness]);
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -49430,7 +49430,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d Sprunk Can(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Sprunk Can(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					format(string, sizeof(string), "You have given %s %d Sprunk Can(s).", GetPlayerNameEx(giveplayerid), amount);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -49450,7 +49450,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d Paintball Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Paintball Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					format(string, sizeof(string), "You have given %s %d Paintball Token(s).", GetPlayerNameEx(giveplayerid), amount);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -49470,7 +49470,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d Gold Box Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Gold Box Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -49503,7 +49503,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -49536,7 +49536,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d opium seed(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s opium seed(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -49568,7 +49568,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d syringe(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s syringe(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -49601,7 +49601,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d milligram(s) of heroin.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s milligram(s) of heroin.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -49633,7 +49633,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %d milligram(s) of raw opium.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s milligram(s) of raw opium.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
@@ -52669,7 +52669,7 @@ CMD:employeepayset(playerid, params[])
     new string[128];
     format(string, sizeof(string), "You have set paycheck amount for rank %d (%s) to $%s", rank, GetBusinessRankName(rank), number_format(amount));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string,sizeof(string),"%s has changed paycheck of rank %d to $%d for business %d", GetPlayerNameEx(playerid), rank, number_format(amount), PlayerInfo[playerid][pBusiness]);
+	format(string,sizeof(string),"%s has changed paycheck of rank %d to $%s for business %d", GetPlayerNameEx(playerid), rank, number_format(amount), PlayerInfo[playerid][pBusiness]);
 	Log("logs/business.log", string);
 
 	return 1;
