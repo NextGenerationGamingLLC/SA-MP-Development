@@ -19241,7 +19241,7 @@ CMD:viewbudget(playerid, params[])
 {
 	new i = PlayerInfo[playerid][pMember];
 	new string[128];
-	if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7)
+	if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7 || arrGroupData[i][g_iGroupType] == 4)
 	{
 	    SendClientMessage(playerid, 0x008EFC00, "            BALANCE SHEET            ");
 		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -19367,7 +19367,7 @@ CMD:gdonate(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS))
 	{
-		if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+		if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7 || arrGroupData[iGroupID][g_iGroupType] == 4)
 		{
 			new string[128], moneys;
 			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gdonate [amount]");
