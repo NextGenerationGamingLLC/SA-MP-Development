@@ -6739,6 +6739,9 @@ public OnPlayerText(playerid, text[])
 		case 26: accent = "(French accent) ";
 		case 27: accent = "(Korean accent) ";
 		case 28: accent = "(Thai accent) ";
+		case 29: accent = "(Swedish accent) ";
+		case 30: accent = "(Danish accent) ";
+		case 31: accent = "(Norwegian accent) ";
 	}
 
 	if(WatchingTV[playerid] != 1) {

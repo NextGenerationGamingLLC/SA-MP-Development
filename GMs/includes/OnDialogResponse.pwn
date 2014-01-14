@@ -12409,9 +12409,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response == 1)
 		{
-		    if(isnull(inputtext)) {
-		        ShowPlayerDialog(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
-		    }
+			if(isnull(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
 
 			new
 			    Message[128],

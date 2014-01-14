@@ -27572,10 +27572,10 @@ CMD:accent(playerid, params[])
 	if(sscanf(params, "d", accent))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accent [accent ID]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accnets: Normal [1], British [2], Asian [4], Scottish [6], Irish [7], Russian [8]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Normal [1], British [2], Asian [4], Scottish [6], Irish [7], Russian [8]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: American [9], Spanish [10], Southern [11], Italian [13], Gangsta [14], Australian [15], Arabic [16]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Balkan [17], Canadian [18], Jamaican [19], Israeli [20], Dutch [21], Brazilian [22], German [23], Turkish [24]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Kiwi [25], French [26], Korean [27], Thai [28]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Kiwi [25], French [26], Korean [27], Thai [28], Swedish [29], Danish [30], Norwegian [31]");
 		return 1;
 	}
 
@@ -27721,6 +27721,21 @@ CMD:accent(playerid, params[])
 	        PlayerInfo[playerid][pAccent] = 28;
 			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Thai accent, use /accent to change it." );
 	    }
+		case 29:
+		{
+			PlayerInfo[playerid][pAccent] = 29;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Swedish accent, use /accent to change it." );
+		}
+		case 30:
+		{
+			PlayerInfo[playerid][pAccent] = 30;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Danish accent, use /accent to change it." );
+		}
+		case 31:
+		{
+			PlayerInfo[playerid][pAccent] = 31;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Norwegian  accent, use /accent to change it." );
+		}
 	}
 	return 1;
 }
