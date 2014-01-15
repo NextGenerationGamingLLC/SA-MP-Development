@@ -6833,6 +6833,15 @@ CMD:help(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /travel /viplocker /tokenhelp /buddyinvite /phoneprivacy /setautoreply");
 	}
+	if(PlayerInfo[playerid][pDonateRank] >= 2)
+	{
+		format(string, sizeof(string), "*** VIP *** /spawnatvip (%s credits)", number_format(ShopItems[30][sItemPrice]));
+		SendClientMessageEx(playerid, COLOR_PURPLE, string);
+	}
+	if(PlayerInfo[playerid][pDonateRank] >= 4)
+	{
+		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /freeadsleft");
+	}
 	if(PlayerInfo[playerid][pDonateRank] == 5)
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP Moderator *** /vipparty /vto /vtoreset /vmute /vsuspend");
