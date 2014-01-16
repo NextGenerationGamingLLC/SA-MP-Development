@@ -3760,7 +3760,7 @@ CMD:mdc(playerid, params[])
 	{
         if(IsPlayerInAnyVehicle(playerid))
 		{
-            ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "SA-MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+            ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
             ConnectedToPC[playerid] = 1337;
         }
         else SendClientMessageEx(playerid, COLOR_GREY, "You are not in a vehicle.");
@@ -47524,7 +47524,7 @@ CMD:find(playerid, params[]) {
  
 CMD:hfind(playerid, params[])
 {
-	if (IsAHitman(playerid) || (arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess] != 1 || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess])
+	if (IsAHitman(playerid) || PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess])
 	{
 	    if(GetPVarType(playerid, "hFind")) {
 	   		SendClientMessageEx(playerid, COLOR_GRAD2, "Stopped Updating");

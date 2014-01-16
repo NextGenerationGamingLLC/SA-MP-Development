@@ -8908,11 +8908,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	    {
 	    	case 0:
 	        {
-	            ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
+	            ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
 	        }
 	        case 1:
 	        {
-	            ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
+	            ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 	        }
 	        case 2:
 	        {
@@ -8924,11 +8924,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(groups, sizeof(groups), "%s*%s\n", groups, arrGroupData[i][g_szGroupName]);
 						ListItemTrackId[playerid][item++] = i;
 					}
-         			ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Agency List", groups, "OK", "Cancel");
+         			ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "MDC - Logged in | Agency List", groups, "OK", "Cancel");
          		}
 	        }
-	        case 3: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
-		    case 4: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
+	        case 3: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
+		    case 4: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
 		}
 	}
 	if(dialogid == MDC_FIND && response)
@@ -8937,7 +8937,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		if(sscanf(inputtext, "u", giveplayerid))
 		{
-			ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
+			ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 			return 1;
 		}
 
@@ -8947,11 +8947,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(giveplayerid == playerid)
 				{
-				    ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: You cannot find yourself.\nEnter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
+				    ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: You cannot find yourself.\nEnter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 
 					return 1;
 				}
-				if(IsACop(giveplayerid))
+				if(IsACop(giveplayerid) && arrGroupData[PlayerInfo[giveplayerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 				{
 	    			SetPlayerMarkerForPlayer(playerid,giveplayerid,FIND_COLOR);
                     FindingPlayer[playerid] = giveplayerid;
@@ -8960,7 +8960,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		    	}
 		    	else
 		    	{
-			    	SendClientMessageEx(playerid, COLOR_GRAD2, " You can only find other cops!");
+			    	SendClientMessageEx(playerid, COLOR_GRAD2, " You can only track other cops!");
 		    	}
 			}
 		}
@@ -9015,11 +9015,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		switch(listitem)
 		{
-		    case 0: ShowPlayerDialog(playerid, MDC_CHECK, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Records Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
-			case 1: ShowPlayerDialog(playerid, MDC_REPORTS, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Reports Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
-		    case 2: ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
-			case 3: ShowPlayerDialog(playerid, MDC_WARRANTS, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Warrant List", WarrantString, "Enter", "Cancel");
-			case 4: ShowPlayerDialog(playerid, MDC_ISSUE_SLOT, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
+		    case 0: ShowPlayerDialog(playerid, MDC_CHECK, DIALOG_STYLE_INPUT, "MDC - Logged in | Records Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+			case 1: ShowPlayerDialog(playerid, MDC_REPORTS, DIALOG_STYLE_INPUT, "MDC - Logged in | Reports Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+		    case 2: ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+			case 3: ShowPlayerDialog(playerid, MDC_WARRANTS, DIALOG_STYLE_LIST, "MDC - Logged in | Warrant List", WarrantString, "Enter", "Cancel");
+			case 4: ShowPlayerDialog(playerid, MDC_ISSUE_SLOT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
 		    case 5:
 		    {
 				new BOLOString[512];
@@ -9067,15 +9067,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 				    strcat(BOLOString, "No BOLOs at this time.", sizeof(BOLOString));
 				}
-				ShowPlayerDialog(playerid, MDC_BOLOLIST, DIALOG_STYLE_LIST, "SA-MDC - Logged In | BOLO List", BOLOString, "OK", "Cancel");
+				ShowPlayerDialog(playerid, MDC_BOLOLIST, DIALOG_STYLE_LIST, "MDC - Logged In | BOLO List", BOLOString, "OK", "Cancel");
 		    }
 		    case 6:
 		    {
-		    	ShowPlayerDialog(playerid, MDC_BOLO_SLOT, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
+		    	ShowPlayerDialog(playerid, MDC_BOLO_SLOT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
 		    }
 		    case 7:
 	        {
-	        	ShowPlayerDialog(playerid, MDC_DELETE, DIALOG_STYLE_LIST, "SA-MDC - Logged In | Delete", "*BOLO\n*Warrant", "OK", "Cancel");
+	        	ShowPlayerDialog(playerid, MDC_DELETE, DIALOG_STYLE_LIST, "MDC - Logged In | Delete", "*BOLO\n*Warrant", "OK", "Cancel");
 	        }
 		}
 
@@ -9104,18 +9104,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 		    strcat(MemberString, "No Members online at this time.", sizeof(MemberString));
 		}
-		format(string, sizeof(string), "SA-MDC - Logged in | %s Members", arrGroupData[group][g_szGroupName]);
+		format(string, sizeof(string), "MDC - Logged in | %s Members", arrGroupData[group][g_szGroupName]);
 		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, string, MemberString, "Select", "Cancel");
 	}
 	if(dialogid == MDC_WARRANTS && response)
 	{
 	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Warrants", inputtext, "OK", "Back");
+	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Warrants", inputtext, "OK", "Back");
 	}
 	if(dialogid == MDC_BOLOLIST && response)
 	{
 	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | BOLO Hot Sheet", inputtext, "OK", "Back");
+	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | BOLO Hot Sheet", inputtext, "OK", "Back");
 	}
 /*	if(dialogid == MDC_CHECK && response)
 	{
@@ -9149,7 +9149,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					strcat(HistoryString, string, sizeof(HistoryString));
 		    	}
 	    	}
-	    	ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Criminal History", HistoryString, "OK", "Cancel");
+	    	ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", HistoryString, "OK", "Cancel");
 			format(string, sizeof(string), "** DISPATCH: %s has run a check for warrants on %s **", GetPlayerNameEx(playerid), giveplayer);
 			SendRadioMessage(1, COLOR_DBLUE, string);
 			SendRadioMessage(2, COLOR_DBLUE, string);
@@ -9158,7 +9158,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
 			return 1;
 		}
 	}*/
@@ -9175,7 +9175,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
 			return 1;
 		}
 	}
@@ -9436,7 +9436,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Player_StreamPrep(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
 				}
 			}
-			format(query, sizeof(query), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`) VALUES ('%d', '%d', '%s')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline));
+			new iAllegiance;
+			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS))
+			{
+				iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
+			}
+			else iAllegiance = 1;
+			format(query, sizeof(query), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%s', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline), iAllegiance);
 			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			DeletePVar(playerid, "Arrest_Price");
 			DeletePVar(playerid, "Arrest_Time");
@@ -9458,7 +9464,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "There is no record of that person.", "OK", "Cancel");
 			return 1;
 		}
 	}
@@ -9468,7 +9474,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new giveplayerid;
 		if(sscanf(inputtext, "u", giveplayerid))
 		{
-			ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+			ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
 			return 1;
 		}
 		if(IsPlayerConnected(giveplayerid))
@@ -9499,14 +9505,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				strcat(LicenseString, string, sizeof(LicenseString));
 				format(string, sizeof(string), "-Weapon License: %s.\n", text3);
 				strcat(LicenseString, string, sizeof(LicenseString));
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
 				format(string, sizeof(string), "** DISPATCH: %s has ran a license check on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				SendGroupMessage(1, COLOR_DBLUE, string);
 				return 1;
 			}
-			else return ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
+			else return ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
 		}
-		else return ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
+		else return ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
 	}
 	if(dialogid == MDC_MESSAGE && response)
 	{
@@ -9514,68 +9520,68 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new giveplayerid;
 		if(sscanf(inputtext, "u", giveplayerid))
 		{
-			return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
+			return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 		}
 		if (IsPlayerConnected(giveplayerid))
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
 			    format(string, sizeof(string), " Enter your message to %s ", GetPlayerNameEx(giveplayerid));
-            	ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | MDC Message", string, "OK", "Cancel");
+            	ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", string, "OK", "Cancel");
             	SetPVarInt(playerid, "MDCMessageRecipient", giveplayerid);
 			}
-			else  return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
+			else  return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 		}
-		else return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
+		else return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 	}
 	if(dialogid == MDC_SMS && response)
 	{
 		if(isnull(inputtext) || strval(inputtext) == 0)
 		{
-			return ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: Invalid Phone Number\nEnter Recipient's Phone Number", "OK", "Cancel");
+			return ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Phone Number\nEnter Recipient's Phone Number", "OK", "Cancel");
 		}
 		new phonenumb = strval(inputtext);
 		format(string, sizeof(string), " Enter your message to %d ", phonenumb);
-        ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | SMS Message", string, "OK", "Cancel");
+        ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS Message", string, "OK", "Cancel");
         SetPVarInt(playerid, "SMSMessageRecipient", phonenumb);
 	}
 	if(dialogid == MDC_MESSAGE_2 && response)
 	{
 		new giveplayerid = GetPVarInt(playerid, "MDCMessageRecipient");
-	    if(giveplayerid == INVALID_PLAYER_ID) return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
+	    if(giveplayerid == INVALID_PLAYER_ID) return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 		if(giveplayerid == playerid)
 		{
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "You cannot send messages to yourself!", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "You cannot send messages to yourself!", "OK", "Cancel");
 			return 1;
 		}
 		if(ConnectedToPC[giveplayerid] == 1337 || IsPlayerInAnyVehicle(giveplayerid))
 		{
 	 		if(!IsMDCPermitted(giveplayerid))
 			{
-				return ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "That person is not logged into the MDC.", "OK", "Cancel");
+				return ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "That person is not logged into the MDC.", "OK", "Cancel");
 			}
 			if(!strlen(inputtext))
 			{
-				return ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: You must type a message!\nEnter Recipient's Name or ID No.", "OK", "Cancel");
+				return ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: You must type a message!\nEnter Recipient's Name or ID No.", "OK", "Cancel");
 			}
 			format(string, sizeof(string), "MDC Message sent to %s:\n%s", GetPlayerNameEx(giveplayerid), inputtext);
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
 			if(ConnectedToPC[giveplayerid] == 1337)
 			{
 				format(string, sizeof(string), "MDC Message from %s:\n%s", GetPlayerNameEx(playerid), inputtext);
-				ShowPlayerDialog(giveplayerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | New Message!", string, "OK", "Cancel");
+				ShowPlayerDialog(giveplayerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | New Message!", string, "OK", "Cancel");
 				format(string, sizeof(string), "MDC Message from %s: %s", GetPlayerNameEx(playerid), inputtext);
 				SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
 			}
 			else
 			{
 				format(string, sizeof(string), "MDC Message from %s:\n%s", GetPlayerNameEx(playerid), inputtext);
-				ShowPlayerDialog(giveplayerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | New Message! ", string, "OK", "Cancel");
+				ShowPlayerDialog(giveplayerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | New Message! ", string, "OK", "Cancel");
 			}
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | ERROR ", "That officer is not logged into the MDC.", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "That officer is not logged into the MDC.", "OK", "Cancel");
 			return 1;
 		}
 		return 1;
@@ -9585,7 +9591,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new phonenumb = GetPVarInt(playerid, "SMSMessageRecipient");
 		if(!strlen(inputtext))
 		{
-			return ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "SA-MDC - Logged In | Error!", "ERROR: You must type a message!\nEnter Recipient's Phone Number", "OK", "Cancel");
+			return ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: You must type a message!\nEnter Recipient's Phone Number", "OK", "Cancel");
 		}
 		if(phonenumb == 555)
 		{
@@ -9621,7 +9627,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "SMS: %s, Sender: %s (Ph:%d)", inputtext,GetPlayerNameEx(playerid),PlayerInfo[playerid][pPnumber]);
 					GetPlayerName(i, sendername, sizeof(sendername));
 					RingTone[i] =20;
-					ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
+					ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
 					SendClientMessageEx(i, COLOR_YELLOW, string);
 					//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					//SendAudioToPlayer(playerid, 47, 100);
@@ -9630,7 +9636,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}	
 		}
-		ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Message Delivery Failed! ", "Message Delivery Failed. Try Again", "OK", "Cancel");
+		ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Delivery Failed! ", "Message Delivery Failed. Try Again", "OK", "Cancel");
 	}
 	if(dialogid == MDC_BOLO && response)
 	{
@@ -9640,17 +9646,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken14] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd14], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact14], string, 0, strlen(string), 255);
 				News[hTaken14] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 1 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 1 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9659,17 +9665,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken15] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd15], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact15], string, 0, strlen(string), 255);
 				News[hTaken15] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 2 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 2 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9678,17 +9684,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken16] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd16], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact16], string, 0, strlen(string), 255);
 				News[hTaken16] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 3 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 3 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9697,17 +9703,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken17] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd17], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact17], string, 0, strlen(string), 255);
 				News[hTaken17] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 4 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 4 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9716,17 +9722,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken18] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd18], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact18], string, 0, strlen(string), 255);
 				News[hTaken18] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 5 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 5 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9735,17 +9741,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken19] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd19], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact19], string, 0, strlen(string), 255);
 				News[hTaken19] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 6 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 6 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9754,17 +9760,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken20] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd20], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact20], string, 0, strlen(string), 255);
 				News[hTaken20] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 7 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 7 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9773,17 +9779,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken21] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter BOLO Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd21], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact21], string, 0, strlen(string), 255);
 				News[hTaken21] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 8 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 8 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9791,16 +9797,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == MDC_BOLO_SLOT && response)
 	{
 	    SetPVarInt(playerid, "BOLOISSUESLOT", listitem + 1);
-	    ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Issue Warrant", "Enter BOLO Details", "Enter", "Cancel");
+	    ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter BOLO Details", "Enter", "Cancel");
 	}
 	if(dialogid == MDC_ISSUE_SLOT && response)
 	{
 	    SetPVarInt(playerid, "ISSUESLOT", listitem + 1);
-	    ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | Issue Warrant", "Enter Arrest Warrant Details", "Enter", "Cancel");
+	    ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter Arrest Warrant Details", "Enter", "Cancel");
 	}
 	if(dialogid == MDC_END_ID && response)
 	{
-		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "SA-MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 	}
 	if(dialogid == MDC_ISSUE && response)
 	{
@@ -9810,17 +9816,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken6] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd6], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact6], string, 0, strlen(string), 255);
 				News[hTaken6] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 1 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 1 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9829,17 +9835,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken7] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd7], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact7], string, 0, strlen(string), 255);
 				News[hTaken7] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 2 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 2 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9848,17 +9854,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken8] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd8], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact8], string, 0, strlen(string), 255);
 				News[hTaken8] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 3 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 3 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9867,17 +9873,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken9] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd9], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact9], string, 0, strlen(string), 255);
 				News[hTaken9] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 4 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 4 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9886,17 +9892,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken10] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd10], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact10], string, 0, strlen(string), 255);
 				News[hTaken10] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 5 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 5 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9905,17 +9911,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken11] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd11], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact11], string, 0, strlen(string), 255);
 				News[hTaken11] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 6 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 6 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9924,17 +9930,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken12] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd12], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact12], string, 0, strlen(string), 255);
 				News[hTaken12] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 7 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 7 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9943,17 +9949,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(News[hTaken13] == 0)
 			{
 				GetPlayerName(playerid, sendername, sizeof(sendername));
-				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "SA-MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
+				if(strlen(inputtext) < 9) { ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: Must Be 9+ characters\nEnter Arrest Warrant Details", "Enter", "Cancel"); return 1; }
 				format(string, sizeof(string), "%s",inputtext); strmid(News[hAdd13], string, 0, strlen(string), 255);
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact13], string, 0, strlen(string), 255);
 				News[hTaken13] = 1;
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
 				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "SA-MDC - Logged in | Error! ", "Spot 8 is already Taken!", "OK", "Back");
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Error! ", "Spot 8 is already Taken!", "OK", "Back");
 				return 1;
 			}
 		}
@@ -9962,11 +9968,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 	    if(listitem == 0)
 	    {
-	    	ShowPlayerDialog(playerid, MDC_DEL_BOLO, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which BOLO Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
+	    	ShowPlayerDialog(playerid, MDC_DEL_BOLO, DIALOG_STYLE_LIST, "MDC - Logged in | Which BOLO Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
 	    }
 		if(listitem == 1)
 		{
-			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
+			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
 		}
 	}
 	if(dialogid == MDC_DEL_BOLO && response)
@@ -9974,7 +9980,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new string1[MAX_PLAYER_NAME];
 		if(isnull(inputtext))
 		{
-			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
+			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
 			return 1;
 		}
 		if(strcmp(inputtext, "1") == 0)
@@ -10076,7 +10082,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	    new string1[MAX_PLAYER_NAME];
 		if(isnull(inputtext))
 		{
-			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
+			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
 			return 1;
 		}
 		if(strcmp(inputtext,"1",true) == 0)
@@ -10188,7 +10194,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	    }
 	    else
 		{
-			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "SA-MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 		}
 	}
 	if((dialogid == SELLVIP))
@@ -11354,7 +11360,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 	    if(response)
 	    {
-	        ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "SA-MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
+	        ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
 	    }
 	}
 	else if(dialogid == FLAG_LIST)
@@ -11690,7 +11696,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(IsPlayerConnected(i))
 				{
-					if(IsACop(i)) {
+					if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
 						format(szMessage, sizeof(szMessage), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
 						SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
 						format(szMessage, sizeof(szMessage), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));

@@ -3591,7 +3591,7 @@ public MDCQueryFinish(playerid, suspectid)
 			format(resultline, sizeof(resultline),"%s{FF6347}Crime: {BFC0C2}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
 		}
 	}
-	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "SA-MDC - Criminal History", resultline, "Back", "");
+	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Criminal History", resultline, "Back", "");
 	return 1;
 }
 
@@ -3610,7 +3610,7 @@ public MDCReportsQueryFinish(playerid, suspectid)
 	    format(resultline, sizeof(resultline),"%s{FF6347}Report (%d) {FF7D7D}Arrested by: %s on %s\n",resultline, reportsid, copname,datetime);
 	}
 	if(!resultline[0]) format(resultline, sizeof(resultline),"No Arrest Reports on record.",resultline, reportsid, copname,datetime);
-	ShowPlayerDialog(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "SA-MDC - Criminal History", resultline, "Back", "");
+	ShowPlayerDialog(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "MDC - Criminal History", resultline, "Back", "");
 	return 1;
 }
 
@@ -3628,7 +3628,7 @@ public MDCReportQueryFinish(playerid, reportid)
 	    cache_get_field_content(i, "shortreport", shortreport, MainPipeline, 200);
 	    format(resultline, sizeof(resultline),"{FF6347}Report #%d\n{FF7D7D}Arrested by: %s on %s\n{FF6347}Report:{BFC0C2} %s\n",reportid, copname,datetime, shortreport);
 	}
-	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "SA-MDC - Arrest Report", resultline, "Back", "");
+	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Arrest Report", resultline, "Back", "");
 	return 1;
 }
 
