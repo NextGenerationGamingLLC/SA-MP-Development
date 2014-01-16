@@ -41746,7 +41746,7 @@ CMD:dmr(playerid, params[])
 
 CMD:nao(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new string[128], reportid;
 		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /nao [reportid]");
