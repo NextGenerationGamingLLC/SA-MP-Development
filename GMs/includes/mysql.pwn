@@ -1402,10 +1402,17 @@ stock g_mysql_RemoveDumpFile(sqlid)
 	return 0;
 }
 
-GivePlayerCredits(Player, Amount, Shop)
+GivePlayerCredits(Player, Amount, Shop, option = 0)
 {
 	new szQuery[128];
-	PlayerInfo[Player][pCredits] += Amount;
+	if(option == 0)
+	{
+		PlayerInfo[Player][pCredits] += Amount;
+	}
+	else if(option == 1)
+	{
+		PlayerInfo[Player][pCredits] -= Amount;
+	}
 
 	format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
 	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
@@ -7766,11 +7773,13 @@ public ExecuteShopQueue(playerid, id)
 						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d Platinum VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[6]);
 						Log("logs/shoplog.log", string);
 					}
-					PlayerInfo[playerid][pCredits] -= tmp[7];
-					format(query, sizeof(query), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[playerid][pCredits], GetPlayerSQLId(playerid));
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+					GivePlayerCredits(playerid, tmp[7], 1, 1);
+					format(string, sizeof(string), "%s | Credits: %d - 1", GetPlayerNameEx(playerid), tmp[7]);
+					Log("logs/shopdebug.log", string);
 					format(query, sizeof(query), "UPDATE `shop_orders` SET `status` = 1 WHERE `id` = %d", tmp[0]);
 					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					format(string, sizeof(string), "%s | Status set to 1 - 1", GetPlayerNameEx(playerid));
+					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
 					return SendClientMessageEx(playerid, COLOR_CYAN, "* Use /myvouchers to check and use your vouchers at any time!");
 				}
@@ -7786,15 +7795,17 @@ public ExecuteShopQueue(playerid, id)
 					cache_get_field_content(index, "order_id", result, ShopPipeline); tmp[0] = strval(result);
 					cache_get_field_content(index, "credit_amount", result, ShopPipeline); tmp[1] = strval(result);
 					
-					PlayerInfo[playerid][pCredits] += tmp[1];
-					format(query, sizeof(query), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[playerid][pCredits], GetPlayerSQLId(playerid));
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+					GivePlayerCredits(playerid, tmp[1], 1);
+					format(string, sizeof(string), "%s | Credits: %d - 2", GetPlayerNameEx(playerid), tmp[1]);
+					Log("logs/shopdebug.log", string);
 					format(string, sizeof(string), "You have been automatically issued %s credit(s).", number_format(tmp[1]));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					format(string, sizeof(string), "[ID: %d] %s was automatically issued %s credit(s)", tmp[0], GetPlayerNameEx(playerid), number_format(tmp[1]));
 					Log("logs/shoplog.log", string);
 					format(query, sizeof(query), "UPDATE `order_delivery_status` SET `status` = 1 WHERE `order_id` = %d", tmp[0]);
 					mysql_function_query(ShopPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					format(string, sizeof(string), "%s | Status set to 1 - 2", GetPlayerNameEx(playerid));
+					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
 					return 1;
 				}
