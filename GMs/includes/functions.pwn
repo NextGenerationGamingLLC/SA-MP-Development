@@ -15340,7 +15340,7 @@ stock ShutdownTurfWarsZone(zone)
 	TurfWars[zone][twActive] = 1;
 	TurfWars[zone][twTimeLeft] = 600;
 	TurfWars[zone][twVulnerable] = 0;
-	TurfWars[zone][twAttemptId] = -1;
+	TurfWars[zone][twAttemptId] = -2;
 	TurfWars[zone][twFlash] = 1;
 	TurfWars[zone][twFlashColor] = 0;
 
@@ -15383,22 +15383,36 @@ stock CaptureTurfWarsZone(familyid, zone)
 	{
 		if(IsPlayerConnected(i))
 		{
+		    if(turfWarsMiniMap[i] == 1)
+			{
+				turfWarsMiniMap[i] = 0;
+				SetPlayerToTeamColor(i);
+			}
 			if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-				format(string,sizeof(string),"%s has successfully claimed this turf for their own!",FamilyInfo[familyid][FamilyName]);
-				SendClientMessageEx(i,COLOR_RED,string);
-				//SendAudioToPlayer(i, 62, 100);
+			    if(familyid != -2) {
+					format(string,sizeof(string),"%s has successfully claimed this turf for their own!",FamilyInfo[familyid][FamilyName]);
+					SendClientMessageEx(i,COLOR_RED,string);
+					//SendAudioToPlayer(i, 62, 100);
+				}
+				else {
+					format(string,sizeof(string),"Law Enforcement has successfully shut down this turf!",FamilyInfo[familyid][FamilyName]);
+					SendClientMessageEx(i,COLOR_RED,string);
+				}
 			}
 			if(PlayerInfo[i][pGangModerator] >= 1) {
-				format(string,sizeof(string),"%s has successfully claimed turf %d",FamilyInfo[familyid][FamilyName], zone);
-				SendClientMessageEx(i,COLOR_RED,string);
+			    if(familyid != -2) {
+					format(string,sizeof(string),"%s has successfully claimed turf %d",FamilyInfo[familyid][FamilyName], zone);
+					SendClientMessageEx(i,COLOR_RED,string);
+				}
+				else {
+					format(string,sizeof(string),"Law Enforcement has successfully shut down turf %d",FamilyInfo[familyid][FamilyName], zone);
+					SendClientMessageEx(i,COLOR_RED,string);
+				}
 			}
 		}	
 	}
-	TurfWars[zone][twOwnerId] = familyid;
-	TurfWars[zone][twVulnerable] = 12;
-
-	ResetTurfWarsZone(1, zone);
-
+	if(familyid != -2) TurfWars[zone][twOwnerId] = familyid;
+	else TurfWars[zone][twOwnerId] = -1;
 	SaveTurfWars();
 }
 

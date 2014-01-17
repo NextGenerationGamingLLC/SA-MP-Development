@@ -10227,6 +10227,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	        	PlayerInfo[playerid][pVIPExpire] = PlayerInfo[iTargetID][pVIPExpire];
                 PlayerInfo[playerid][pTempVIP] = 0;
 				PlayerInfo[playerid][pBuddyInvited] = 0;
+				PlayerInfo[playerid][pVIPSellable] = 0;
 				
 				LoadPlayerDisabledVehicles(iTargetID);
 
@@ -16193,6 +16194,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerInfo[playerid][pDonateRank] = GetPVarInt(playerid, "VIPType");
 			PlayerInfo[playerid][pTempVIP] = 0;
 			PlayerInfo[playerid][pBuddyInvited] = 0;
+			PlayerInfo[playerid][pVIPSellable] = 0;
 
 			if(PlayerInfo[playerid][pVIPM] == 0)
 			{
@@ -17508,6 +17510,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pDonateRank] = 2;
 				PlayerInfo[playerid][pTempVIP] = 0;
 				PlayerInfo[playerid][pBuddyInvited] = 0;
+				PlayerInfo[playerid][pVIPSellable] = 0;
 				PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
 				if(PlayerInfo[playerid][pVIPM] == 0)
 				{
@@ -17539,6 +17542,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pDonateRank] = 3;
 				PlayerInfo[playerid][pTempVIP] = 0;
 				PlayerInfo[playerid][pBuddyInvited] = 0;
+				PlayerInfo[playerid][pVIPSellable] = 0;
 				PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
 				if(PlayerInfo[playerid][pVIPM] == 0)
 				{
@@ -17635,7 +17639,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ABroadCast(COLOR_LIGHTRED, string, 4);
 				format(string, sizeof(string), "You have successfully used one of your 7 Days Gold VIP voucher(s), you have %d 7 Days Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPExVoucher]);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Silver VIP will expire in 7 days.");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Gold VIP will expire in 7 days.");
 
 				format(string, sizeof(string), "AdmCmd: Server (Voucher System) has set %s's (IP:%s) VIP level to Gold (7 Days)(3) (Voucher Left: %d)", GetPlayerNameEx(playerid), playerip, PlayerInfo[playerid][pGVIPExVoucher]);
 				Log("logs/vouchers.log", string);

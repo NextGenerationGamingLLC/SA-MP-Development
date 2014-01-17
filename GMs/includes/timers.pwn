@@ -734,19 +734,8 @@ task TurfWarsUpdate[1000]()
 	            {
 					CaptureTurfWarsZone(TurfWars[i][twAttemptId],i);
 	            }
-				TurfWars[i][twActive] = 0;
-				//foreach(new x: Player)
-				for(new x = 0; x < MAX_PLAYERS; ++x)
-				{
-					if(IsPlayerConnected(x))
-					{
-						if(turfWarsMiniMap[x] == 1)
-						{
-							turfWarsMiniMap[x] = 0;
-							SetPlayerToTeamColor(x);
-						}
-					}	
-				}
+	            TurfWars[i][twVulnerable] = 12;
+				ResetTurfWarsZone(1, i);
 	        }
 	    }
 	}

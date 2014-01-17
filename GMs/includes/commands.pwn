@@ -2182,7 +2182,7 @@ CMD:turfinfo(playerid, params[])
         if(TurfWars[tw][twActive] != 0) {
             format(string,sizeof(string),"Time Left: %d Secs.",TurfWars[tw][twTimeLeft]);
             SendClientMessageEx(playerid, COLOR_WHITE, string);
-            if(TurfWars[tw][twAttemptId] == -1) {
+            if(TurfWars[tw][twAttemptId] == -2) {
                 format(string,sizeof(string),"Takeover Faction: Law Enforcement.");
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
             }
@@ -14661,7 +14661,7 @@ CMD:shutdown(playerid, params[])
                 }
                 else {
                     new count = 0;
-                    if(TurfWars[tw][twAttemptId] == -1) {
+                    if(TurfWars[tw][twAttemptId] == -2) {
                         SendClientMessageEx(playerid, COLOR_GRAD2, "The LEO Factions are already attempting to shutdown the turf war!");
                         return 1;
                     }
@@ -14777,7 +14777,7 @@ CMD:claim(playerid, params[])
 								count++;
 							}
 						}
-						if(TurfWars[tw][twAttemptId] == -1) {
+						if(TurfWars[tw][twAttemptId] == -2) {
 							if(IsACop(i)) {
 								if(GetPlayerTurfWarsZone(i) == tw) {
 									leocount++;

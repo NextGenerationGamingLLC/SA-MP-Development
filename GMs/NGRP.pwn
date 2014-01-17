@@ -24,7 +24,8 @@
 									 Brendan
 									 John Milete
 									 Neo (Dwayne Burrows)
-									 Miguel (s0nic)				
+									 Miguel (s0nic)
+									 Donuts
 
 
 				Past Developers:
@@ -43,7 +44,6 @@
 									Beren
 									Kareemtastic
 									Sew Sumi
-									Donuts
 									Mo Cena
 									Razbit
 
@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.020"
+#define SERVER_GM_TEXT "NG:RP v3.0.021"
 
 
 
@@ -84,6 +84,7 @@
 #include <yom_buttons>		
 #include <ZCMD>
 #include <sscanf2>
+#include <crashdetect>
 //#include <foreach> - Bugs players with an ID over 500
 #include <YSI\y_timers>
 #include <YSI\y_utils>
