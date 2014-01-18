@@ -1060,7 +1060,8 @@ task ServerHeartbeat[1000]() {
 					GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 					ClearCrimes(i);
 					strcpy(PlayerInfo[i][pPrisonReason], "None", 128);
-					SetPlayerToTeamColor(i);
+					//SetPlayerToTeamColor(i); For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
+					SetPlayerColor(i, TEAM_HIT_COLOR);
 				}
 			}
 
