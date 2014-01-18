@@ -25636,7 +25636,6 @@ CMD:dropgun(playerid, params[])
 	return 1;
 }
 
-/* - Disabled for now (Some how broken?) - Nathan
 CMD:buddyinvite(playerid, params[])
 {
 	if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be Silver VIP+ to use this function!");
@@ -25689,7 +25688,6 @@ CMD:buddyinvite(playerid, params[])
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);	
 	return 1;
 }
-*/
 
 CMD:travel(playerid, params[])
 {
