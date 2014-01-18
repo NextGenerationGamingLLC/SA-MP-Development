@@ -9280,8 +9280,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GivePlayerCash(suspect, -moneys);
 					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
 					arrGroupData[iGroupID][g_iBudget] += money;
-					new str[128], file[32];
-					format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money, arrGroupData[iGroupID][g_szGroupName]);
+					new str[164], file[32];
+					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
 					new month, day, year;
 					getdate(year,month,day);
 					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
@@ -9318,9 +9318,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					ResetPlayerWeaponsEx(suspect);
-					for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
-						PlayerVehicleInfo[suspect][x][pvTicket] = 0;
-					}
 					SetPlayerInterior(suspect, 10);
 					new rand = random(sizeof(LSPDJailSpawns));
 					SetPlayerFacingAngle(suspect, LSPDJailSpawns[rand][3]);
@@ -9360,8 +9357,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GivePlayerCash(suspect, -moneys);
 					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
 					arrGroupData[iGroupID][g_iBudget] += money;
-					new str[128], file[32];
-					format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money, arrGroupData[iGroupID][g_szGroupName]);
+					new str[164], file[32];
+					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
 					new month, day, year;
 					getdate(year,month,day);
 					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
@@ -9398,9 +9395,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					ResetPlayerWeaponsEx(suspect);
-					for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
-						PlayerVehicleInfo[suspect][x][pvTicket] = 0;
-					}
 					SetPlayerInterior(suspect, 10);
 					new rand = random(sizeof(DocPrison));
 					SetPlayerFacingAngle(suspect, 0);

@@ -722,7 +722,7 @@ public LoadStreamerDynamicObjects()
 	}
 	
 	//FDSA Static object ground
-	CreateDynamicObject(8531, 1289.93, -2552.11, 13.34,   0.00, 0.00, 186.04, .worldid = 0, .streamdistance = 200);
+	CreateObject(8531, 1289.93, -2552.11, 13.34,   0.00, 0.00, 186.04);
 	 
 	//FDSA Static object roof
 	CreateDynamicObject(19377, 1296.63, -2584.18, 16.73,   0.00, 90.00, 6.00, .worldid = 0, .streamdistance = 200);
