@@ -17663,7 +17663,11 @@ CMD:hijackcargo(playerid, params[])
 				} 
 				else 
 				{
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You are now attempting to hijack the boat, please wait....");
+					if(PlayerInfo[playerid][pTruckSkill] >= 200)
+					{
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You are now attempting to hijack the boat, please wait....");
+					}
+					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
 				}
 
 				TogglePlayerControllable(playerid, 0);
@@ -17718,9 +17722,13 @@ CMD:loadshipment(playerid, params[])
 				}
 				else
 				{
-		            SetPlayerCheckpoint(playerid,2098.6543,-104.3568,-0.4820, 4);
-		            GameTextForPlayer(playerid, "~w~Waypoint set ~r~Palamino Docks", 5000, 1);
-		            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Pick up some goods to transport with your Boat at Palamino Docks (see checkpoint on radar).");
+					if(PlayerInfo[playerid][pTruckSkill] >= 200)
+					{
+						SetPlayerCheckpoint(playerid,2098.6543,-104.3568,-0.4820, 4);
+						GameTextForPlayer(playerid, "~w~Waypoint set ~r~Palamino Docks", 5000, 1);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Pick up some goods to transport with your Boat at Palamino Docks (see checkpoint on radar).");
+					}
+					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
 				}
 	        }
 	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
