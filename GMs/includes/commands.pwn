@@ -32784,7 +32784,7 @@ CMD:hname(playerid, params[])
 
 CMD:hedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pShopTech] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;

@@ -6030,8 +6030,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(strlen(numb) == 2) return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The phone number can only be between 2 and 10 digits long. Please input a new number below", "Submit", "Cancel");
 			if(strlen(numb) == 3)
 			{
-				return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The 3 Digit VIP Numbers are currently disabled!", "Submit", "Cancel");
-				/*
 				checkmon = checkmon * 30/100;
 				if(GetPlayerCash(playerid) >= 1000000)
 				{
@@ -6056,10 +6054,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid,COLOR_GREY," You do not have enough money to purchase a negative 2 digit number, try again.");
 					return 1;
 				}
-				*/
 			}
 			else if(strlen(numb) == 4)
 			{
+				return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The 3 Digit VIP Numbers are currently disabled!", "Submit", "Cancel");
+				/*
 				checkmon = checkmon * 20/100;
 				if(GetPlayerCash(playerid) >= 1000000)
 				{
@@ -6084,6 +6083,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid,COLOR_GREY," You do not have enough money to purchase a negative 3 digit number, try again.");
 					return 1;
 				}
+				*/
 			}
 			else if(strlen(numb) >= 5 && strlen(numb) <= 11)
 			{
