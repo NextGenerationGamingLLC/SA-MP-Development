@@ -18325,6 +18325,8 @@ CMD:afk(playerid, params[]) {
 
 CMD:vipnum(playerid, params[])
 {
+	SendClientMessageEx(playerid, -1, "This command has been temporarily disabled.");
+	/*
     if(!(IsPlayerInRangeOfPoint(playerid, 3.0, 2549.548095, 1404.047729, 7699.584472 ) || IsPlayerInRangeOfPoint(playerid, 3.0, 1832.6000, 1375.1700, 1464.4600)) )
     {
     	SendClientMessageEx(playerid, COLOR_GREY, "You are not at the VIP phone number changing station!");
@@ -18335,7 +18337,7 @@ CMD:vipnum(playerid, params[])
     	SendClientMessageEx(playerid, COLOR_GRAD1, "You must be a Silver VIP or higher to use this function.");
      	return 1;
 	}
-	ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel");
+	ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel"); */
 	return 1;
 }
 
@@ -49839,6 +49841,7 @@ CMD:sell(playerid, params[])
 	if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 	if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 	if(price < 50000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
+	if(price > 500000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
 	if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Amount cannot be below 1.");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell to yourself!");
