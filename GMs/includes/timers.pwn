@@ -1055,13 +1055,12 @@ task ServerHeartbeat[1000]() {
 					}
 					SetPlayerHealth(i, 100);
 					PlayerInfo[i][pJailTime] = 0;
+					strcpy(PlayerInfo[i][pPrisonReason], "None");
 					PhoneOnline[i] = 0;
 					SendClientMessageEx(i, COLOR_GRAD1,"   You have paid your debt to society.");
 					GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
+					SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 					ClearCrimes(i);
-					strcpy(PlayerInfo[i][pPrisonReason], "None", 128);
-					//SetPlayerToTeamColor(i); For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
-					SetPlayerColor(i, TEAM_HIT_COLOR);
 				}
 			}
 

@@ -18710,14 +18710,6 @@ stock SetPlayerToTeamColor(playerid)
 		if(PlayerInfo[playerid][pWantedLevel] > 0) {
 			SetPlayerWantedLevel(playerid, PlayerInfo[playerid][pWantedLevel]);
 		}
-	    if(GetPVarInt(playerid, "IsInArena") >= 0)
-	    {
-	        new arenaid = GetPVarInt(playerid, "IsInArena");
-	        if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3 || PaintBallArena[arenaid][pbGameType] == 5) switch(PlayerInfo[playerid][pPaintTeam]) {
-				case 1: SetPlayerColor(playerid, PAINTBALL_TEAM_RED);
-				case 2: SetPlayerColor(playerid, PAINTBALL_TEAM_BLUE);
-	        }
-	    }
 	    #if defined zombiemode
    		if(GetPVarType(playerid, "pZombieBit"))
     	{
@@ -18735,7 +18727,15 @@ stock SetPlayerToTeamColor(playerid)
 			return 1;
 		}
 		#endif
-	    if(PlayerInfo[playerid][pJailTime] > 0) {
+		if(GetPVarInt(playerid, "IsInArena") >= 0)
+	    {
+	        new arenaid = GetPVarInt(playerid, "IsInArena");
+	        if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3 || PaintBallArena[arenaid][pbGameType] == 5) switch(PlayerInfo[playerid][pPaintTeam]) {
+				case 1: SetPlayerColor(playerid, PAINTBALL_TEAM_RED);
+				case 2: SetPlayerColor(playerid, PAINTBALL_TEAM_BLUE);
+	        }
+	    }
+	    else if(PlayerInfo[playerid][pJailTime] > 0) {
             if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1 || strfind(PlayerInfo[playerid][pPrisonReason], "[ISOLATE]", true) != -1) {
 				SetPlayerColor(playerid,TEAM_ORANGE_COLOR);
 			}
@@ -18751,7 +18751,7 @@ stock SetPlayerToTeamColor(playerid)
 			SetPlayerColor(playerid,TEAM_TAXI_COLOR);
 		}
 	    else if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && PlayerInfo[playerid][pDuty]) {
-			return SetPlayerColor(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256);
+			SetPlayerColor(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256);
 		}
 		else if(GetPVarType(playerid, "HitmanBadgeColour") && IsAHitman(playerid))
 		{

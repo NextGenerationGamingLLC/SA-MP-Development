@@ -1691,7 +1691,7 @@ stock AddCrime(cop, suspect, crime[])
 stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 {
 	new query[80], iAllegiance;
-	if((0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS) || clearerid != INVALID_PLAYER_ID)
+	if(clearerid != INVALID_PLAYER_ID && (0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS))
 	{
 		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
 		format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);

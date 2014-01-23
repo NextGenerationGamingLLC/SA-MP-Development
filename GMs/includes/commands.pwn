@@ -3799,7 +3799,7 @@ CMD:dice(playerid, params[])
 
 CMD:buy(playerid, params[])
 {
-   	if (!IsAt247(playerid)) {
+   	if (IsAt247(playerid) != INVALID_BUSINESS_ID) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a 24/7!");
         return 1;
     }
@@ -5566,17 +5566,21 @@ CMD:togphone(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use your phone in jail/prison.");
 		return 1;
 	}
-	if (!PhoneOnline[playerid])
+	if(Mobile[playerid] == INVALID_PLAYER_ID)
 	{
-		PhoneOnline[playerid] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched off.");
+		if (!PhoneOnline[playerid])
+		{
+			PhoneOnline[playerid] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched off.");
+		}
+		else
+		{
+			PhoneOnline[playerid] = 0;
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched on.");
+		}
+		return 1;
 	}
-	else
-	{
-		PhoneOnline[playerid] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched on.");
-	}
-	return 1;
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "First use /hangup.");
 }
 
 CMD:togstaff(playerid, params[])
@@ -6840,7 +6844,7 @@ CMD:help(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
 	{
-		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /freeadsleft");
+		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /freeads /pvipjob /vipplate");
 	}
 	if(PlayerInfo[playerid][pDonateRank] == 5)
 	{
@@ -11754,9 +11758,9 @@ CMD:accept(playerid, params[])
 CMD:join(playerid, params[])
 {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while being inside a vehicle.");
-	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && PlayerInfo[playerid][pDonateRank] > 0) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
+	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && (PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
 		if(IsPlayerInRangeOfPoint(playerid,3.0,251.99, 117.36, 1003.22) || IsPlayerInRangeOfPoint(playerid,3.0,301.042633, 178.700408, 1007.171875) || IsPlayerInRangeOfPoint(playerid,3.0,-1385.6786,2625.6636,55.5572)) {
-			if(PlayerInfo[playerid][pJob] == 0){
+			if(PlayerInfo[playerid][pJob] == 0) {
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
 				GettingJob[playerid] = 1;
 				return 1;
@@ -12045,7 +12049,7 @@ CMD:join(playerid, params[])
 		}
 	}
 	else {
-		if(PlayerInfo[playerid][pDonateRank] == 0){
+		if(PlayerInfo[playerid][pDonateRank] == 0) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You already have a Job, use /quitjob first!");
             SendClientMessageEx(playerid, COLOR_YELLOW, "Only VIP/Famed can get two jobs, Gold VIP+ can get three jobs!");
 		}
@@ -33997,6 +34001,15 @@ CMD:togspec(playerid, params[])
 	return 1;
 }
 
+CMD:resetmycolor(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] == 99999)
+	{
+	    SetPlayerToTeamColor(playerid);
+	}
+	return 1;
+}
+
 CMD:togtp(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] == 99999)
@@ -51900,7 +51913,7 @@ CMD:goinbiz(playerid, params[])
 		SetPlayerInterior(playerid,Businesses[id][bInt]);
 		SetPlayerPos(playerid,Businesses[id][bIntPos][0],Businesses[id][bIntPos][1],Businesses[id][bIntPos][2]);
 		SetPlayerFacingAngle(playerid,Businesses[id][bIntPos][3]);
-
+		SetPVarInt(playerid, "BusinessesID", id);
 		if(Businesses[id][bVW] == 0) SetPlayerVirtualWorld(playerid, BUSINESS_BASE_VW + id), PlayerInfo[playerid][pVW] = BUSINESS_BASE_VW + id;
 		else SetPlayerVirtualWorld(playerid, Businesses[id][bVW]), PlayerInfo[playerid][pVW] = Businesses[id][bVW];
 	}
