@@ -3799,7 +3799,7 @@ CMD:dice(playerid, params[])
 
 CMD:buy(playerid, params[])
 {
-   	if (IsAt247(playerid) != INVALID_BUSINESS_ID) {
+   	if (!IsAt247(playerid)) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a 24/7!");
         return 1;
     }
@@ -33997,15 +33997,6 @@ CMD:togspec(playerid, params[])
 	        SendClientMessage(playerid, COLOR_WHITE, "You can now be spectated again");
 	        SetPVarInt(playerid, "EASpecable", 1);
 	    }
-	}
-	return 1;
-}
-
-CMD:resetmycolor(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] == 99999)
-	{
-	    SetPlayerToTeamColor(playerid);
 	}
 	return 1;
 }
