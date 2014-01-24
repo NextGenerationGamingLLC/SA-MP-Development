@@ -21236,7 +21236,7 @@ CMD:trackcar(playerid, params[])
 	}
 	else
 	{
-		new vstring[1024], icount = GetPlayerVehicleSlots(playerid);
+		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
 		for(new i, iModelID; i < icount; i++) {
 			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
@@ -27757,7 +27757,7 @@ CMD:accent(playerid, params[])
 		case 31:
 		{
 			PlayerInfo[playerid][pAccent] = 31;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Norwegian  accent, use /accent to change it." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Norwegian accent, use /accent to change it." );
 		}
 	}
 	return 1;
@@ -32819,6 +32819,7 @@ CMD:hedit(playerid, params[])
 		DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
 		if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
 		// Do not reset the SQL ID as the house still exists but is not owned by any player and it isn't spawned
+		HouseInfo[houseid][hOwnerID] = -1;
 		HouseInfo[houseid][hOwned] = 0;
 		HouseInfo[houseid][hLevel] = 0;
 		HouseInfo[houseid][hExteriorX] = 0.0;
@@ -41935,10 +41936,11 @@ CMD:miscshop(playerid, params[])
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
-  			new szDialog[512];
-    		format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
+			new szDialog[512];
+			format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 			number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
-		 	number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
+			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
+			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})", szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]));
 			ShowPlayerDialog(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 		}
 		else
@@ -49545,7 +49547,6 @@ CMD:give(playerid, params[])
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
-
 						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
@@ -49990,7 +49991,7 @@ CMD:sell(playerid, params[])
 
 		format(string, sizeof(string), "* You offered %s to buy %d rim kits for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* %s wants to sell you %d rim its for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
+		format(string, sizeof(string), "* %s wants to sell you %d rim kits for $%s, (type /accept rimkit) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 	 	SetPVarInt(giveplayerid, "RimOffer", playerid);
 	 	SetPVarInt(giveplayerid, "RimPrice", price);
@@ -57016,7 +57017,7 @@ CMD:hmove(playerid, params[])
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			Log("logs/admin.log", string);
 			
@@ -57024,7 +57025,7 @@ CMD:hmove(playerid, params[])
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			Log("logs/admin.log", string);	
 		}		

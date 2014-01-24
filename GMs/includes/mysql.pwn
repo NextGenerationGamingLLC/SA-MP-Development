@@ -1565,8 +1565,8 @@ g_mysql_SavePrices()
 	`Price11` = '%d', `Price12` = '%d', `Price13` = '%d', `Price14` = '%d', `Price15` = '%d', `Price16` = '%d', `Price17` = '%d',", ShopItems[0][sItemPrice], ShopItems[1][sItemPrice], ShopItems[2][sItemPrice], ShopItems[3][sItemPrice], ShopItems[4][sItemPrice],
 	 ShopItems[5][sItemPrice], ShopItems[6][sItemPrice], ShopItems[7][sItemPrice], ShopItems[8][sItemPrice], ShopItems[9][sItemPrice], ShopItems[10][sItemPrice], ShopItems[11][sItemPrice], ShopItems[12][sItemPrice], ShopItems[13][sItemPrice], ShopItems[14][sItemPrice], ShopItems[15][sItemPrice],
   	ShopItems[16][sItemPrice], ShopItems[17][sItemPrice]);
-	format(query, sizeof(query), "%s `Price18` = '%d', `Price19` = '%d', `Price20` = '%d', `Price21` = '%d', `Price22` = '%d', `Price23` = '%d', `Price24` = '%d', `Price25` = '%d', `Price26` = '%d', `Price27` = '%d', `Price28` = '%d', `Price29` = '%d', `Price30` = '%d'", query, ShopItems[18][sItemPrice], ShopItems[19][sItemPrice], ShopItems[20][sItemPrice], ShopItems[21][sItemPrice],
-	ShopItems[22][sItemPrice], ShopItems[23][sItemPrice], ShopItems[24][sItemPrice], ShopItems[25][sItemPrice], ShopItems[26][sItemPrice], ShopItems[27][sItemPrice], ShopItems[28][sItemPrice], ShopItems[29][sItemPrice], ShopItems[30][sItemPrice]);
+	format(query, sizeof(query), "%s `Price18` = '%d', `Price19` = '%d', `Price20` = '%d', `Price21` = '%d', `Price22` = '%d', `Price23` = '%d', `Price24` = '%d', `Price25` = '%d', `Price26` = '%d', `Price27` = '%d', `Price28` = '%d', `Price29` = '%d', `Price30` = '%d', `Price31` = '%d', `Price32` = '%d', `Price33` = '%d', `Price34` = '%d'", query, ShopItems[18][sItemPrice], ShopItems[19][sItemPrice], ShopItems[20][sItemPrice], ShopItems[21][sItemPrice],
+	ShopItems[22][sItemPrice], ShopItems[23][sItemPrice], ShopItems[24][sItemPrice], ShopItems[25][sItemPrice], ShopItems[26][sItemPrice], ShopItems[27][sItemPrice], ShopItems[28][sItemPrice], ShopItems[29][sItemPrice], ShopItems[30][sItemPrice], ShopItems[31][sItemPrice], ShopItems[32][sItemPrice], ShopItems[33][sItemPrice], ShopItems[34][sItemPrice]);
     mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
@@ -4068,11 +4068,14 @@ public CheckSales2(index)
 			format(szDialog, sizeof(szDialog), "%sAdditional Toy Slot Sold: %d | Total Credits: %s\n\
 			Hunger Voucher: %d | Total Credits: %s\n\
 			Spawn at Gold VIP+: %d | Total Credits: %s\n\
-			Credits Transactions: %d | Total Credits %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[21], number_format(Amount[21]));
-			
-            format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, 
-			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]
-			+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]));
+			Restricted Last Name: %d | Total Credits: %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[31], number_format(Amount[31]));
+
+			format(szDialog, sizeof(szDialog), "%sCustom User Title (NEW): %d | Total Credits: %s\n\
+			Custom User Title (CHANGE): %d | Total Credits: %s\n\
+			Teamspeak User Channel: %d | Total Credits: %s\n\
+			Credits Transactions: %d | Total Credits %s\n", szDialog, Solds[32], number_format(Amount[32]), Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[21], number_format(Amount[21]));
+			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, 
+			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]));
 		 	ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
 		}
 		else
@@ -6431,10 +6434,10 @@ public OnPinCheck2(index)
 	    				case 1:
 						{
 							new szDialog[512];
-						 	format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})" \
-							"\nHunger Games Voucher(Credits: {FFD700}%s{A9C4E4})",
+							format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 							number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
-							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]), number_format(ShopItems[29][sItemPrice]));
+							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
+							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})", szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]));
 							ShowPlayerDialog(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 						}
 						case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");

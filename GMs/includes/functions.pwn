@@ -294,8 +294,9 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		}
 		else if( PlayerInfo[playerid][pGuns][1] != 4 && GetPlayerWeapon( playerid ) == 4)
 		{
-		    if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pMember] != 8)
-		    {
+			if(GetPVarInt(playerid, "IsInArena") >= 0) return 1;
+			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pMember] != 8)
+			{
 			    new WeaponName[32];
 				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
 				new String[128];
@@ -2648,7 +2649,7 @@ PayDay(i) {
 					if(PlayerInfo[i][pReceivedPrize] == 0)
 					{
 						PlayerInfo[i][pGVIPExVoucher] += 1;
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have receieved a 7 day Gold VIP voucher for playing 5 hours.");
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have received a 7 day Gold VIP voucher for playing 5 hours.");
 						PlayerInfo[i][pReceivedPrize] = 1;
 					}
 					PlayerInfo[i][pFallIntoFun] = 0;
@@ -2799,7 +2800,7 @@ PayDay(i) {
 				PlayerInfo[i][pRewardHours]++;
 				if(floatround(PlayerInfo[i][pRewardHours]) % 16 == 0) {
 					PlayerInfo[i][pGoldBoxTokens]++;
-					SendClientMessage(i, COLOR_LIGHTBLUE, "You have recieved 1 Gold Giftbox token!  #FallIntoFun");
+					SendClientMessage(i, COLOR_LIGHTBLUE, "You have received 1 Gold Giftbox token!  #FallIntoFun");
 				}
 				format(string, sizeof(string), "You currently have %d Reward Hours, please check /rewards for more information.", floatround(PlayerInfo[i][pRewardHours]));
 				SendClientMessageEx(i, COLOR_YELLOW, string);

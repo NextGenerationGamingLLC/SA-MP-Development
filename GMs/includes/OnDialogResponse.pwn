@@ -12299,6 +12299,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
+				SetPVarInt(playerid, "_rAutoM", 5);
+				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) General Exploits", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for General Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
@@ -12351,6 +12353,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
+				SetPVarInt(playerid, "_rAutoM", 5);
+				SetPVarInt(playerid, "_rRepID", Player);
 				format(Message, sizeof(Message), "%s(%i) Running/Swimming Man Exploit", GetPlayerNameEx(Player), Player);
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Running/Swimming Man Exploit. It has been sent to all available admins.", GetPlayerNameEx(Player));
@@ -14344,7 +14348,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 		    if(listitem == 0)
 		    {
-		        new szDialog[1000];
+		        new szDialog[1300];
        			format(szDialog, sizeof(szDialog),
 				"Gold VIP (Credits: %s)\n\
 				Gold VIP Renewal (Credits: %s)\n\
@@ -14386,6 +14390,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Hunger Voucher (Credits: %s)\n\
 				Spawn at Gold VIP+ room (Credits: %s)", szDialog, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
 				number_format(ShopItems[27][sItemPrice]), number_format(ShopItems[28][sItemPrice]), number_format(ShopItems[29][sItemPrice]), number_format(ShopItems[30][sItemPrice]));
+				format(szDialog, sizeof(szDialog),
+				"%s\n\
+				Restricted Last Name (Credits: %s)\n\
+				Custom User Title (NEW) (Credits: %s)\n\
+				Custom User Title (CHANGE) (Credits: %s)\n\
+				Teamspeak User Channel (Credits: %s)", 
+				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 		    }
 		    else
@@ -14431,7 +14442,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 27: item = "Garage - Extra Large";
 				case 28: item = "Additional Toy Slot";
 				case 29: item = "Hunger Voucher";
-				case 30: item = "Spawn at Gold VIP+ room";				
+				case 30: item = "Spawn at Gold VIP+ room";
+				case 31: item = "Restricted Last Name";
+				case 32: item = "Custom User Title (NEW)";
+				case 33: item = "Custom User Title (CHANGE)";
+				case 34: item = "Teamspeak User Channel";
 			}
 	    	format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
 	    	ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
@@ -14477,7 +14492,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 27: item = "Garage - Extra Large";
 				case 28: item = "Additional Toy Slot";
 				case 29: item = "Hunger Voucher";
-				case 30: item = "Spawn at Gold VIP+ room";				
+				case 30: item = "Spawn at Gold VIP+ room";
+				case 31: item = "Restricted Last Name";
+				case 32: item = "Custom User Title (NEW)";
+				case 33: item = "Custom User Title (CHANGE)";
+				case 34: item = "Teamspeak User Channel";
 			}
 
 			if(isnull(inputtext) || Prices <= 0) {
@@ -14490,7 +14509,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			ShowPlayerDialog(playerid, DIALOG_EDITSHOP3, DIALOG_STYLE_MSGBOX, "Confirmation", string, "Confirm", "Cancel");
 			return 1;
 		}
-		new szDialog[1000];
+		new szDialog[1300];
 	    format(szDialog, sizeof(szDialog),
 		"Gold VIP (Credits: %s)\n\
 		Gold VIP Renewal (Credits: %s)\n\
@@ -14532,6 +14551,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Hunger Voucher (Credits: %s)\n\
 		Spawn at Gold VIP+ room (Credits: %s)", szDialog, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
 		number_format(ShopItems[27][sItemPrice]), number_format(ShopItems[28][sItemPrice]), number_format(ShopItems[29][sItemPrice]), number_format(ShopItems[30][sItemPrice]));
+		format(szDialog, sizeof(szDialog),
+		"%s\n\
+		Restricted Last Name (Credits: %s)\n\
+		Custom User Title (NEW) (Credits: %s)\n\
+		Custom User Title (CHANGE) (Credits: %s)\n\
+		Teamspeak User Channel (Credits: %s)", szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]));
 	    ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
@@ -14571,7 +14596,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 27: item = "Garage - Extra Large";
 				case 28: item = "Additional Toy Slot";
 				case 29: item = "Hunger Voucher";
-				case 30: item = "Spawn at Gold VIP+ room";				
+				case 30: item = "Spawn at Gold VIP+ room";
+				case 31: item = "Restricted Last Name";
+				case 32: item = "Custom User Title (NEW)";
+				case 33: item = "Custom User Title (CHANGE)";
+				case 34: item = "Teamspeak User Channel";
 			}
 			if(GetPVarInt(playerid, "EditingPriceValue") == 0)
 			    SetPVarInt(playerid, "EditingPriceValue", 999999);
@@ -14709,6 +14738,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 			    format(string, sizeof(string), "Item: Custom License Plate\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[22][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[22][sItemPrice]));
         	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+			}
+			case 6:
+			{
+				SetPVarInt(playerid, "MiscShop", 10);
+				format(string, sizeof(string), "Item: Restricted Last Name\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[31][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[31][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+			}
+			case 7:
+			{
+				SetPVarInt(playerid, "MiscShop", 11);
+				format(string, sizeof(string), "Item: Custom User Title (NEW)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[32][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[32][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+			}
+			case 8:
+			{
+				SetPVarInt(playerid, "MiscShop", 12);
+				format(string, sizeof(string), "Item: Custom User Title (CHANGE)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[33][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[33][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+			}
+			case 9:
+			{
+				SetPVarInt(playerid, "MiscShop", 13);
+				format(string, sizeof(string), "Item: Teamspeak User Channel\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[34][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[34][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 		}
 	}
@@ -14877,7 +14930,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[23][sItemPrice], 1);
-			printf("Price223: %d", ShopItems[23][sItemPrice]);		
+			printf("Price23: %d", ShopItems[23][sItemPrice]);		
 				
             AmountSold[23]++;
 			AmountMade[23] += ShopItems[23][sItemPrice];
@@ -14901,7 +14954,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[28][sItemPrice], 1);
-			printf("Price223: %d", ShopItems[28][sItemPrice]);		
+			printf("Price28: %d", ShopItems[28][sItemPrice]);		
 				
             AmountSold[28]++;
 			AmountMade[28] += ShopItems[28][sItemPrice];
@@ -14925,7 +14978,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[30][sItemPrice], 1);
-			printf("Price29: %d", ShopItems[30][sItemPrice]);		
+			printf("Price30: %d", ShopItems[30][sItemPrice]);		
 				
             AmountSold[30]++;
 			AmountMade[30] += ShopItems[30][sItemPrice];
@@ -14943,7 +14996,99 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[Spawn at Gold VIP+ room] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[30][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-		}		
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 10) // Restricted Last Name
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[31][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			GivePlayerCredits(playerid, -ShopItems[31][sItemPrice], 1);
+			printf("Price31: %d", ShopItems[31][sItemPrice]);
+
+			AmountSold[31]++;
+			AmountMade[31] += ShopItems[31][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold31` = '%d', `AmountMade31` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[31], AmountMade[31]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Restricted Last Name (Credits)");
+			format(string, sizeof(string), "You have purchased a Restricted Last Name for %s credits.", number_format(ShopItems[31][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Restricted Last Name issued.");
+
+			format(string, sizeof(string), "[Restricted Last Name] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[31][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 11) // Custom User Title (NEW)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[32][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			GivePlayerCredits(playerid, -ShopItems[32][sItemPrice], 1);
+			printf("Price32: %d", ShopItems[32][sItemPrice]);
+
+			AmountSold[32]++;
+			AmountMade[32] += ShopItems[32][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold32` = '%d', `AmountMade32` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[32], AmountMade[32]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (NEW) (Credits)");
+			format(string, sizeof(string), "You have purchased a Custom User Title (NEW) for %s credits.", number_format(ShopItems[32][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Custom User Title (NEW) issued.");
+
+			format(string, sizeof(string), "[Custom User Title (NEW)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[32][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 12) // Custom User Title (CHANGE)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[33][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			GivePlayerCredits(playerid, -ShopItems[33][sItemPrice], 1);
+			printf("Price33: %d", ShopItems[33][sItemPrice]);
+
+			AmountSold[33]++;
+			AmountMade[33] += ShopItems[33][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold33` = '%d', `AmountMade33` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[33], AmountMade[33]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (CHANGE) (Credits)");
+			format(string, sizeof(string), "You have purchased a Restricted Custom User Title (CHANGE) for %s credits.", number_format(ShopItems[33][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Custom User Title (CHANGE) issued.");
+
+			format(string, sizeof(string), "[Custom User Title (CHANGE)] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[33][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 13) // Teamspeak User Channel
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[34][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			GivePlayerCredits(playerid, -ShopItems[34][sItemPrice], 1);
+			printf("Price34: %d", ShopItems[34][sItemPrice]);
+
+			AmountSold[34]++;
+			AmountMade[34] += ShopItems[34][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold34` = '%d', `AmountMade34` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[34], AmountMade[34]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Teamspeak User Channel (Credits)");
+			format(string, sizeof(string), "You have purchased a Teamspeak User Channel for %s credits.", number_format(ShopItems[34][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Contact a member of Customer Relations to have the Teamspeak User Channel issued.");
+
+			format(string, sizeof(string), "[Teamspeak User Channel] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[34][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
 	    DeletePVar(playerid, "MiscShop");
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU)
