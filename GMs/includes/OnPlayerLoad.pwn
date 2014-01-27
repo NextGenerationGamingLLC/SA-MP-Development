@@ -322,6 +322,10 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pGVIPExVoucher] = 0;
 		PlayerInfo[playerid][pVIPSellable] = 0;
 		PlayerInfo[playerid][pReceivedPrize] = 0;
+		PlayerInfo[playerid][pNonRPMeter] = 0;
+		PlayerInfo[playerid][pAccountRestricted] = 0;
+		PlayerInfo[playerid][pWatchlist] = 0;
+		PlayerInfo[playerid][pWatchlistTime] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 	}
 

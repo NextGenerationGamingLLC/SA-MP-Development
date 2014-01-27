@@ -412,6 +412,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
+				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
 			    new iGunID = arrGroupData[iGroupID][g_iLockerGuns][listitem];
 				if(arrGroupData[iGroupID][g_iLockerCostType] == 0)
 				{
@@ -7581,6 +7582,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if(listitem == 2)
 		{
+			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
 		    ShowPlayerDialog(playerid, 3498, DIALOG_STYLE_LIST, "Famed Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)\nCounty Rifle (Free)\nSilenced Pistol (Free)\nJapanese Katana (Free)\nPurple Dildo (Free)\nWhite Dildo (Free)\nBig Vibrator (Free)\nSilver Vibrator (Free)\n", "Take", "Cancel");
 		}
 		if(listitem == 3)
@@ -7677,6 +7679,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(listitem == 2)
 			{
+				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
 				if(PlayerInfo[playerid][pDonateRank] >= 1)
 				{
 					switch(PlayerInfo[playerid][pDonateRank])
@@ -18203,7 +18206,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			new advert[128], reportid = GetPVarInt(playerid, "ReporterID");
-			new szString[128];
+			new szString[128], shared;
 			GetPVarString(reportid, "PriorityAdText", advert, 128);
 			// Do not comment this out! This is needed to re-format the ad with the proper format - Nathan
 			format(advert, sizeof(advert), "Advertisement: %s - contact: %s (%d)", advert, GetPlayerNameEx(reportid), PlayerInfo[reportid][pPnumber]);
@@ -18220,23 +18223,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else if(PlayerInfo[reportid][pDonateRank] == 2)
 			{
 				GivePlayerCash(reportid, -125000);
+				shared = 125000 / 3;
 				SendClientMessageEx(reportid, COLOR_YELLOW, "VIP Discount: You have paid $125,000 for being Silver VIP.");
 			}
 			else if(PlayerInfo[reportid][pDonateRank] == 3)
 			{
 				GivePlayerCash(reportid, -100000);
+				shared = 100000 / 3;
 				SendClientMessageEx(reportid, COLOR_YELLOW, "VIP Discount: You have paid $100,000 for being Gold VIP.");
 			}
 			else if(PlayerInfo[reportid][pDonateRank] >= 4)
 			{
 				GivePlayerCash(reportid, -50000);
+				shared = 50000 / 3;
 				SendClientMessageEx(reportid, COLOR_YELLOW, "VIP Discount: You have paid $50,000 for being Platinum VIP.");
 			}
 			else
 			{
 				GivePlayerCash(reportid, -150000);
+				shared = 150000 / 3;
 			}	
 			iAdverTimer = gettime()+30;
+			
+			if(shared > 0)
+			{
+				for(new x; x < MAX_GROUPS; x++)
+				{
+					if(arrGroupData[x][g_iGroupType] == 3)
+					{
+						arrGroupData[x][g_iBudget] += shared;
+					}
+				}
+			}
 			
 			//foreach(new i: Player)
 			for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -18569,6 +18587,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SetPVarInt(playerid, "VIPSpawn", 4);
 			SendClientMessageEx(playerid, COLOR_GREY, "You have not used your free spawn at Gold VIP+ room this time.");
 			SetPlayerSpawn(playerid);
+		}
+	}
+	if(dialogid == DIALOG_NONRPACTION)
+	{
+		if(response)
+		{
+			PlayerInfo[GetPVarInt(playerid, "ActionOn")][pAccountRestricted] = 1;
+			SendClientMessageEx(playerid, COLOR_RED, "You have restricted this player account.");
+			return DeletePVar(playerid, "ActionOn");
+		}
+		else
+		{
+			DeletePVar(playerid, "ActionOn");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You have decided to not restrict this player account.");
 		}
 	}
 	if(dialogid == DIALOG_VIPJOB)

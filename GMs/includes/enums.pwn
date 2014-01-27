@@ -1059,7 +1059,11 @@ enum pInfo
 	pBuddyInvites,
 	pReceivedBGift,
 	pLastBirthday,
-	pVIPJob
+	pVIPJob,
+	pNonRPMeter,
+	pAccountRestricted,
+	pWatchlist,
+	pWatchlistTime
 };
 
 enum pvInfo

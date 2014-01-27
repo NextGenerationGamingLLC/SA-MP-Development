@@ -1614,9 +1614,11 @@ CMD:givegun(playerid, params[])
         format(sstring, sizeof(sstring), "You have given %s gun ID %d!",GetPlayerNameEx(playa),gun);
         if(gun < 1||gun > 47)
             { SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid weapon ID!"); return 1; }
-        if(IsPlayerConnected(playa)) {
+        if(IsPlayerConnected(playa)) 
+		{	
             if((PlayerInfo[playa][pConnectHours] < 2 || PlayerInfo[playa][pWRestricted] > 0) && gun != 46 && gun != 43) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is currently restricted from carrying weapons");
-            if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
+			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
+		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
                 PlayerInfo[playa][pAGuns][GetWeaponSlot(gun)] = gun;
                 GivePlayerValidWeapon(playa, gun, 60000);
                 SendClientMessageEx(playerid, COLOR_GRAD1, sstring);
@@ -1637,7 +1639,7 @@ CMD:givegun(playerid, params[])
 CMD:jetpack(playerid, params[])
 {
 	new string[128], plo;
-	if(PlayerInfo[playerid][pAdmin] >= 2 && sscanf(params, "u", plo)) {
+	if((PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) && sscanf(params, "u", plo)) {
         JetPack[playerid] = 1;
         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USEJETPACK);
         return 1;
@@ -2812,7 +2814,7 @@ CMD:loadcfgs(playerid, params[])
 
 CMD:admins(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2) {
+    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
         SendClientMessageEx(playerid, COLOR_GRAD1, "Admins Online:");
         //foreach(new i: Player)
 		for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -2862,6 +2864,7 @@ CMD:admins(playerid, params[])
 					if(PlayerInfo[i][pPR] == 2) strcat(string, " [DOPR]");
 					if(PlayerInfo[i][pHR] >= 1) strcat(string, " [HR]");
 					if(PlayerInfo[i][pAP] >= 1) strcat(string, " [AP]");
+					if(PlayerInfo[i][pWatchdog] == 4) strcat(string, " [DoRPI]");
 					if(PlayerInfo[i][pSecurity] >= 1) strcat(string, " [Sec]");
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
 				}
@@ -5608,7 +5611,7 @@ CMD:togstaff(playerid, params[])
 
 CMD:vehname(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 
 		SendClientMessageEx(playerid, COLOR_YELLOW, "--------------------------------------------------------------------------------------------------------------------------------");
 		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle Search:");
@@ -5972,7 +5975,7 @@ CMD:netstats(playerid, params[]) {
 
 CMD:anetstats(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] < 2) {
+	if (PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 		return 1;
 	}
@@ -6785,7 +6788,7 @@ CMD:help(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** (/r)adio /dept /warrant /warrantwd /judgefine /judgejail /judgeprison /probation /wants /subpoena");
 				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /invite /uninvite /giverank /trial /adjourn /sentence /reward /checkjudgements /reversejudgement");
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /present /freezebank /freezeassets /probation /gdonate");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /present /freezebank /freezeassets /probation /gdonate /viewassets");
 			}
 			case 7:
 			{
@@ -7179,7 +7182,7 @@ CMD:wepreset(playerid, params[])
 
 CMD:watch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
 		return 1;
@@ -7546,7 +7549,7 @@ CMD:watch(playerid, params[])
 
 CMD:goto(playerid, params[])
 {
-    if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 2)
+    if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		if(isnull(params))
 		{
@@ -8347,7 +8350,7 @@ CMD:goto(playerid, params[])
 
 CMD:sendto(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], location[32], giveplayerid;
 		if(sscanf(params, "s[32]u", location, giveplayerid))
@@ -12175,6 +12178,7 @@ CMD:sellgun(playerid, params[])
 	if(!IsPlayerConnected(giveplayerid)) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	}
+	if(PlayerInfo[giveplayerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 	if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive weapons at the moment.");
     if(strcmp(x_weapon,"dildo",true) == 0) {
         if(PlayerInfo[playerid][pArmsSkill] < 400) return SendClientMessageEx(playerid, COLOR_GREY, " You are not the required level to create that!");
@@ -12835,7 +12839,8 @@ CMD:enter(playerid, params[])
     for(new i = 0; i < sizeof(HouseInfo); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3,HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW]) {
             if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || PlayerInfo[playerid][pPhousekey3] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
-                SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
+                if(PlayerInfo[playerid][pFreezeHouse] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while having your assets frozen!");
+				SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
                 PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
                 PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
                 SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
@@ -13636,7 +13641,7 @@ CMD:showmehq3(playerid, params[])
 
 CMD:bigears(playerid, params[])
 {
-    if( PlayerInfo[playerid][pAdmin] >= 2) {
+    if( PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
         ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
     }
     return 1;
@@ -13779,7 +13784,7 @@ CMD:setcolor(playerid, params[])
 
 CMD:mark(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 2) {
+    if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 
 		new
 			Float: f_PlayerPos[3];
@@ -13800,7 +13805,7 @@ CMD:mark(playerid, params[])
 
 CMD:mark2(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 2) {
+    if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 
 		new
 			Float: f_PlayerPos[3];
@@ -14021,7 +14026,7 @@ CMD:eventreset(playerid, params[])
 
 CMD:requestevent(playerid, params[])
 {
-    if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 ) {
+    if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pWatchdog] >= 2 ) {
         new string[128];
         if( EventKernel[ EventStatus ] == 0 ) {
             if(EventKernel[EventRequest] != INVALID_PLAYER_ID || EventKernel[EventCreator] != INVALID_PLAYER_ID) {
@@ -14187,7 +14192,7 @@ CMD:approveevent(playerid, params[])
 
 CMD:god(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new Float:health, Float:armor;
 	    if(GetPVarType(playerid, "pGodMode"))
@@ -14218,7 +14223,7 @@ CMD:god(playerid, params[])
 
 CMD:damagecheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 	if(GetPVarType(playerid, "_dCheck")) {
 		DeletePVar(playerid, "_dCheck");
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped damagecheck.");
@@ -14237,7 +14242,7 @@ CMD:damagecheck(playerid, params[])
 
 CMD:lastshot(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 	new pID;
 	if(sscanf(params, "u", pID)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /lastshot [playerid]");
 	if(!IsPlayerConnected(pID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -14972,7 +14977,30 @@ CMD:kos(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/kos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
-
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - KoS", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
+			
+			AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "KoS", playerid);
+			PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 3 Non RP Points");
+			// Add Log Feature here later
+			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			{
+				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			}
 		}
 		else
 		{
@@ -15091,7 +15119,30 @@ CMD:skos(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/skos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
-
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), ip);
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - KoS", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
+			
+			AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "KoS", playerid);
+			PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 3 Non RP Points");
+			// Add Log Feature here later
+			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			{
+				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			}
 		}
 		else
 		{
@@ -15188,6 +15239,21 @@ CMD:pg(playerid, params[])
 			if(time == 15) format(string, sizeof(string), "You have been prisoned for Powergaming - you will be prisoned for 15 minutes.");
 			else format(string, sizeof(string), "You have been prisoned for Powergaming - you will be prisoned for 1 hour.");
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);	
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - PG", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
 		}
 		else
 		{
@@ -15284,6 +15350,21 @@ CMD:spg(playerid, params[])
 			if(time == 15) format(string, sizeof(string), "You have been prisoned for Powergaming - you will be prisoned for 15 minutes.");
 			else format(string, sizeof(string), "You have been prisoned for Powergaming - you will be prisoned for 1 hour.");
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);	
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), ip);
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - PG", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
 		}
 		else
 		{
@@ -15363,6 +15444,21 @@ CMD:mg(playerid, params[])
 			if(time == 15) format(string, sizeof(string), "You have been prisoned for Metagaming - you will be prisoned for 15 minutes.");
 			else format(string, sizeof(string), "You have been prisoned for Metagaming - you will be prisoned for 1 hour.");
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);	
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - MG", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
 		}
 		else
 		{
@@ -15442,6 +15538,21 @@ CMD:smg(playerid, params[])
 			if(time == 15) format(string, sizeof(string), "You have been prisoned for Metagaming - you will be prisoned for 15 minutes.");
 			else format(string, sizeof(string), "You have been prisoned for Metagaming - you will be prisoned for 1 hour.");
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);	
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), ip);
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted - MG", 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
 		}
 		else
 		{
@@ -15761,6 +15872,7 @@ CMD:dm(playerid, params[])
 			}	
 
 			//foreach(new i: Player)
+			
 			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
 				if(IsPlayerConnected(i))
@@ -15838,6 +15950,14 @@ CMD:dm(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
+			
+			PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 5 Non RP Points");
+			// Add Log Feature here later
+			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			{
+				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			}
 		}
 		else
 		{
@@ -15939,6 +16059,14 @@ CMD:sdm(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
+			
+			PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 5 Non RP Points");
+			// Add Log Feature here later
+			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			{
+				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			}
 		}
 		else
 		{
@@ -16665,7 +16793,7 @@ CMD:do(playerid, params[])
 	return 1;
 }
 
-CMD:o(playerid, params[])
+CMD:ooc(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
 	{
@@ -16711,6 +16839,12 @@ CMD:o(playerid, params[])
 		return 1;
 	}
 	return 1;
+}
+
+CMD:o(playerid, params[]) 
+{
+	return SendClientMessageEx(playerid, COLOR_GRAD1, "/o has been renamed to /ooc to prevent typos.");
+	return true;
 }
 
 CMD:shout(playerid, params[]) {
@@ -18241,7 +18375,7 @@ CMD:pickplant(playerid, params[])
 }
 
 CMD:levelones(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new szNoobs[156], zone[MAX_ZONE_NAME];
    		SendClientMessageEx(playerid,COLOR_WHITE,"Listing all level ones...");
@@ -21553,7 +21687,7 @@ CMD:admin(playerid, params[])  {
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "* Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pSMod] == 1) format(szMessage, sizeof(szMessage), "* Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "* Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 			else format(szMessage, sizeof(szMessage), "* Undefined Admin (%i) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
 
 			//foreach(new i: Player)
@@ -21561,7 +21695,7 @@ CMD:admin(playerid, params[])  {
 			{
 				if(IsPlayerConnected(i))
 				{
-					if(PlayerInfo[i][pAdmin] >= 2)
+					if(PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 2)
 					{
 						SendClientMessage(i, COLOR_YELLOW, szMessage);
 					}
@@ -21630,6 +21764,9 @@ CMD:staff(playerid, params[]) {
 			}
 			else if(PlayerInfo[playerid][pDonateRank] == 5) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMessage, sizeof(szMessage), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMessage, sizeof(szMessage), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMessage, sizeof(szMessage), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
 			else format(szMessage, sizeof(szMessage), "** Undefined Admin (%d) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
 
 			SendAdvisorMessage(COLOR_COMBINEDCHAT, szMessage);
@@ -22805,11 +22942,11 @@ CMD:deliverpt(playerid, params[])
                         }
                         GivePlayerCash(giveplayerid, -1000);
                         Tax += 1000;
-                        GivePlayerCash(playerid,2500);
+                        GivePlayerCash(playerid,5000);
                         KillEMSQueue(giveplayerid);
                         SetPVarInt(giveplayerid, "MedicBill", 0);
                         SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        format(string,sizeof(string),"You received $2500 for successfully delivering the patient!");
+                        format(string,sizeof(string),"You received $5000 for successfully delivering the patient!");
                         SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
                         SetPlayerPos(giveplayerid, 1169.7588,-1351.5490,2423.0461);
                         Streamer_UpdateEx(giveplayerid, 1169.7588,-1351.5490,2423.0461);
@@ -23058,6 +23195,7 @@ CMD:dmvmenu(playerid, params[])
 {
 	new vstring[1024], icount, icountz = GetPlayerVehicleSlots(playerid);
 	if(!IsPlayerInRangeOfPoint(playerid, 3.0, 833.60, 3.23, 1004.17)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at the DMV release point in Dillimore (inside the DMV).");
+	if(PlayerInfo[playerid][pFreezeCar] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while having your assets frozen!");
 	if(PlayerInfo[playerid][pCarLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "A valid driver's license is required to release your vehicle from the impound, or pay any tickets.");
 	
 	for(new i; i < icountz; i++) {
@@ -23466,7 +23604,7 @@ CMD:sellmyhouse(playerid, params[])
 }
 
 CMD:gotopveh(playerid, params[]) {
-    if(PlayerInfo[playerid][pAdmin] >= 2) {
+    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 
         new iTargetID;
 
@@ -23910,7 +24048,7 @@ CMD:banaccount(playerid, params[])
 
 CMD:ip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ip [ip]");
 
@@ -24433,7 +24571,7 @@ CMD:hosp(playerid, params[]) {
 
 CMD:hospital(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
@@ -24471,7 +24609,7 @@ CMD:hospital(playerid, params[])
 
 CMD:revive(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /revive [player]");
@@ -26225,7 +26363,7 @@ CMD:oipcheck(playerid, params[])
 
 CMD:ipcheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ipcheck [player]");
@@ -26368,7 +26506,7 @@ CMD:sfine(playerid, params[])
 
 CMD:listguns(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listguns [player]");
@@ -27765,7 +27903,7 @@ CMD:accent(playerid, params[])
 
 CMD:check(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /check [player]");
@@ -27778,7 +27916,7 @@ CMD:check(playerid, params[])
 
 CMD:checkinv(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkinv [player]");
@@ -34022,7 +34160,7 @@ CMD:togtp(playerid, params[])
 
 CMD:spec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 3 && !GetPVarType(playerid, "pWatchdogWatching"))
+	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 3 && (!GetPVarType(playerid, "pWatchdogWatching") && PlayerInfo[playerid][pWatchdog] < 2))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 		return 1;
@@ -34392,14 +34530,15 @@ CMD:rcabuse(playerid, params[]) {
 
 CMD:prison(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		new string[128], giveplayerid, minutes, reason[64];
-		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
+		new string[128], giveplayerid, minutes, reason[64], points = 0; // Set the points default to 0
+		if(sscanf(params, "uds[64]I", giveplayerid, minutes, reason, points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason] [points (optional)");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			if(points < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid point value!");
 			SetPlayerArmedWeapon(giveplayerid, 0);
 			if(GetPVarInt(giveplayerid, "Injured") == 1)
 			{
@@ -34429,6 +34568,53 @@ CMD:prison(playerid, params[])
 			SetPlayerSkin(giveplayerid, 50);
 			SetPlayerColor(giveplayerid, TEAM_APRISON_COLOR);
 			Player_StreamPrep(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, reason, 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
+			
+			// Did the admin specify the points manually?
+			if(points > 0)
+			{
+				AddNonRPPoint(giveplayerid, points, gettime()+2592000, reason, playerid);
+				PlayerInfo[giveplayerid][pNonRPMeter] += points;
+				format(string, sizeof(string), "You have received %i Non RP Points", points);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+				// Add Log Feature here later
+				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				{
+					SetPVarInt(playerid, "ActionOn", giveplayerid);
+					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				}
+			}
+			// If they haven't, let's check to see if the admin is taking action from a DM Alert Report
+			else if(GetPVarInt(playerid, "PendingAction") == 1)
+			{
+				format(string, sizeof(string), "You have taken action on %s after processing a DM Alert and haven't issued any Non RP Points, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_CYAN, string);
+				
+				AddNonRPPoint(giveplayerid, 5, gettime()+2592000, reason, playerid);
+				PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+				
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 points due to you being DM Alerted.");
+				
+				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				{
+					SetPVarInt(playerid, "ActionOn", giveplayerid);
+					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				}
+			}
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -34708,8 +34894,8 @@ CMD:sprison(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
-		new string[128], giveplayerid, minutes, reason[64];
-		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sprison [player] [minutes] [reason]");
+		new string[128], giveplayerid, minutes, reason[64], points = 0; // Set the points default to 0
+		if(sscanf(params, "uds[64]I", giveplayerid, minutes, reason, points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sprison [player] [minutes] [reason] [points (optional)");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -34744,6 +34930,51 @@ CMD:sprison(playerid, params[])
 			SetPlayerSkin(giveplayerid, 50);
 			SetPlayerColor(giveplayerid, TEAM_APRISON_COLOR);
 			Player_StreamPrep(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
+			
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1)
+			{
+				new ip[32];
+				GetPlayerIp(giveplayerid,ip,sizeof(ip));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
+				Log("logs/ban.log", string);
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PlayerInfo[giveplayerid][pBanned] = 1;
+				AddBan(playerid, giveplayerid, "Punished while account restricted");
+				MySQLBan(GetPlayerSQLId(giveplayerid), ip, reason, 1, GetPlayerNameEx(playerid));
+				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				return true;
+			}
+			
+			// Did the admin specify the points manually?
+			if(points > 0)
+			{
+				AddNonRPPoint(giveplayerid, points, gettime()+2592000, reason, playerid);
+				PlayerInfo[giveplayerid][pNonRPMeter] += points;
+				format(string, sizeof(string), "You have received %i Non RP Points", points);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+				// Add Log Feature here later
+				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				{
+					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				}
+			}
+			// If they haven't, let's check to see if the admin is taking action from a DM Alert Report
+			else if(GetPVarInt(playerid, "PendingAction") == 1)
+			{
+				format(string, sizeof(string), "You have taken action on %s after processing a DM Alert and haven't issued any Non RP Points, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_CYAN, string);
+				
+				AddNonRPPoint(giveplayerid, 5, gettime()+2592000, reason, playerid);
+				PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+				
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 points due to you being DM Alerted.");
+				
+				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				{
+					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				}
+			}
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -35375,7 +35606,7 @@ CMD:setmystat(playerid, params[])
 
 CMD:setvw(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new giveplayerid, vw;
 	if(sscanf(params, "ud", giveplayerid, vw)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvw [player] [virtual world]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -35396,7 +35627,7 @@ CMD:setvw(playerid, params[])
 
 CMD:setint(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if (PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new giveplayerid, int;
 	if(sscanf(params, "ud", giveplayerid, int)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setint [player] [interiorid]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -35492,7 +35723,7 @@ CMD:entercar(playerid, params[])
 
 CMD:gotocar(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new carid;
 		if(sscanf(params, "d", carid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotocar [carid]");
@@ -36391,7 +36622,7 @@ CMD:gotoid(playerid, params[])
 	new Float:plocx,Float:plocy,Float:plocz;
 	if (IsPlayerConnected(giveplayerid))
 	{
-		if (PlayerInfo[playerid][pAdmin] >= 2)
+		if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 		{
 			if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 			{
@@ -36514,7 +36745,7 @@ CMD:gethere(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			return 1;
 		}
-		if (PlayerInfo[playerid][pAdmin] >= 2)
+		if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 		{
 			if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 			{
@@ -36564,7 +36795,7 @@ CMD:gethere(playerid, params[])
 
 CMD:getcar(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 3)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new carid;
 		if(sscanf(params, "d", carid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getcar [carid]");
@@ -37599,7 +37830,7 @@ CMD:next(playerid, params[])
 
 CMD:slap(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 	    new szString[128], giveplayerid, Float:posx, Float:posy, Float:posz, Float:shealth;
 	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /slap [player]");
@@ -37894,6 +38125,7 @@ CMD:dmtokens(playerid, params[])
 	return 1;
 }
 
+/*
 CMD:dmwatchlist(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 3)
@@ -37907,6 +38139,8 @@ CMD:dmwatchlist(playerid, params[])
 	}
 	return 1;
 }
+*/
+
 
 CMD:dmwatch(playerid, params[])
 {
@@ -38246,7 +38480,7 @@ CMD:vtoreset(playerid, params[])
 
 CMD:kick(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /kick [player] [reason]");
@@ -38343,7 +38577,7 @@ CMD:kickres(playerid, params[])
 
 CMD:warn(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warn [player] [reason]");
@@ -38455,7 +38689,7 @@ CMD:owarn(playerid, params[])
 
 CMD:skick(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /skick [player] [reason]");
@@ -38490,7 +38724,7 @@ CMD:skick(playerid, params[])
 
 CMD:ban(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [player] [reason]");
@@ -38533,7 +38767,7 @@ CMD:ban(playerid, params[])
 
 CMD:freeze(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freeze [player]");
@@ -38561,7 +38795,7 @@ CMD:freeze(playerid, params[])
 
 CMD:unfreeze(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unfreeze [player]");
@@ -38893,7 +39127,7 @@ CMD:hlkick(playerid, params[])
 
 CMD:nunmute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /nunmute [player]");
@@ -38920,7 +39154,7 @@ CMD:nunmute(playerid, params[])
 
 CMD:nmute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSMod] == 1)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /nmute [player]");
@@ -38997,7 +39231,7 @@ CMD:nmute(playerid, params[])
 
 CMD:adunmute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adunmute [player]");
@@ -39030,7 +39264,7 @@ CMD:adunmute(playerid, params[])
 
 CMD:admute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSMod] == 1)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /admute [player]");
@@ -39375,7 +39609,22 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist");
+	}
+	if (PlayerInfo[playerid][pWatchdog] == 2)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /kick /ban /prison /freeze /unfreeze /slap /warn /admins /admin /spec /levelones");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /requestevent /watch /dmwatchlist /mark(2) /n(un)mute /ad(un)mute /checkinv /lastshot");
+	}
+	if (PlayerInfo[playerid][pWatchdog] == 3)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** RP SPECIALIST *** /watchdogs /restrictaccount /unrestrictaccount");
+	}
+	if (PlayerInfo[playerid][pWatchdog] == 4)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
@@ -41248,6 +41497,7 @@ CMD:dmreport(playerid, params[])
 	return 1;
 }
 
+
 CMD:dmalert(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338)
@@ -41255,6 +41505,7 @@ CMD:dmalert(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 		return 1;
 	}
+	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	if(!GetPVarType(playerid, "pWatchdogWatching")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
 	if(PlayerInfo[playerid][pRMuted] != 0)
 	{
@@ -41269,6 +41520,8 @@ CMD:dmalert(playerid, params[])
 	new string[128];
 	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
+	SetPVarInt(giveplayerid, "BeenDMAlert", 1);
+	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins.");
 	return 1;
 }
@@ -41469,6 +41722,11 @@ CMD:sta(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+		}
 		if(Advisors < 1)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "There are no Community Advisors On Duty at the moment, try again later!");
@@ -41531,6 +41789,13 @@ CMD:ar(playerid, params[])
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
+		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			SetPVarInt(playerid, "PendingAction", 1);
+			SetPVarInt(playerid, "PendingAction2", GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"));
+			SetPVarInt(playerid, "PendingAction3", Reports[reportid][ReportFrom]);
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
@@ -41700,6 +41965,11 @@ CMD:tr(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+		}
 		format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
 		ABroadCast(COLOR_ORANGE, string, 2);
 		format(string, sizeof(string), "%s has marked your report invalid. It will not be reviewed. Please check /reporttips", GetPlayerNameEx(playerid));
@@ -41738,6 +42008,10 @@ CMD:dmr(playerid, params[])
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
+		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot forward a DM Alert to the Watch Dogs Team.");
 		}
 		format(string, sizeof(string), "AdmCmd: %s has forwarded the report from %s (RID: %d) to the DM Report system", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
@@ -41783,6 +42057,11 @@ CMD:nao(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to not having admin of sufficient authority online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		format(string, sizeof(string), "%s has reviewed your report, however there is not an Admin presently online with sufficient authority to handle your request.", GetPlayerNameEx(playerid));
@@ -41823,6 +42102,11 @@ CMD:post(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on the forums", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		format(string, sizeof(string), "%s has reviewed your report and determined this report should be handled on the forums (i.e. complaint or request.)", GetPlayerNameEx(playerid));
@@ -41862,6 +42146,11 @@ CMD:st(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled via /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		format(string, sizeof(string), "%s has reviewed your report and determined it needs to be handled by a Shop Tech.", GetPlayerNameEx(playerid));
@@ -41894,10 +42183,8 @@ CMD:clothes(playerid, params[])
 		fSkin[7] = FamilyInfo[PlayerInfo[playerid][pFMember]][FamilySkins][7];
 		ShowModelSelectionMenuEx(playerid, fSkin, 8, "Change your family clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
 	}
-	else {
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
-	}	
-	return 1;
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
+	return true;
 }	
 
 CMD:buyclothes(playerid, params[])
@@ -41963,35 +42250,6 @@ CMD:credits(playerid, params[])
 		new szString[128];
 		format(szString, sizeof(szString), "Credits: {FFD700}%s", number_format(PlayerInfo[playerid][pCredits]));
 		SendClientMessageEx(playerid, COLOR_CYAN, szString);
-		if(PlayerInfo[playerid][pTotalCredits] < ShopItems[21][sItemPrice])
-		{
-			format(szString, sizeof(szString), "Credits needed for Platinum VIP: {FFD700}%s", number_format(ShopItems[21][sItemPrice]-PlayerInfo[playerid][pTotalCredits]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szString);
-		}
-		else if(PlayerInfo[playerid][pTotalCredits] >= ShopItems[21][sItemPrice] && PlayerInfo[playerid][pDonateRank] != 4)
-		{
-			if(PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_CYAN, "You already have Platinum VIP+");
-		    PlayerInfo[playerid][pDonateRank] = 4;
-			PlayerInfo[playerid][pTempVIP] = 0;
-			PlayerInfo[playerid][pBuddyInvited] = 0;
-
-			if(PlayerInfo[playerid][pVIPM] == 0)
-			{
-				PlayerInfo[playerid][pVIPM] = VIPM;
-				VIPM++;
-			}
-			new string[128];
-			format(string, sizeof(string), "AdmCmd: %s's VIP level to Platinum (4) by the server.", GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_LIGHTRED, string, 2), Log("logs/setvip.log", string);
-
-			format(string, sizeof(string), "You have spent over %d credits and have been issued Platinum VIP!", ShopItems[21][sItemPrice]);
-			SendClientMessageEx(playerid, COLOR_CYAN, string);
-			PlayerInfo[playerid][pArmsSkill] = 401;
-		}
-		else
-		{
-		    SendClientMessageEx(playerid, COLOR_CYAN, "You already have Platinum VIP+.");
-		}
 	}
 	else
 	{
@@ -42003,12 +42261,6 @@ CMD:credits(playerid, params[])
         new szString[128];
 		format(szString, sizeof(szString), "%s - Credits: {FFD700}%s",GetPlayerNameEx(Player), number_format(PlayerInfo[Player][pCredits]));
 		SendClientMessageEx(playerid, COLOR_CYAN, szString);
-		if(PlayerInfo[Player][pTotalCredits] < ShopItems[21][sItemPrice])
-		{
-			format(szString, sizeof(szString), "Credits needed for Platinum VIP: {FFD700}%s", number_format(ShopItems[21][sItemPrice]-PlayerInfo[Player][pTotalCredits]));
-			SendClientMessageEx(playerid, COLOR_CYAN, szString);
-		}
-		else return SendClientMessageEx(playerid, COLOR_CYAN, "That player has Platinum VIP.");
 	}
 	return 1;
 }
@@ -42829,7 +43081,7 @@ CMD:dat(playerid, params[])
 
 CMD:nrn(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /nrn [player]");
@@ -45651,6 +45903,7 @@ CMD:evictall(playerid, params[])
 
 CMD:lockhouse(playerid, params[])
 {
+	if(PlayerInfo[playerid][pFreezeHouse] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while having your assets frozen!");
 	if(Homes[playerid] > 0)
 	{
 		for(new i; i < MAX_HOUSES; i++)
@@ -46988,6 +47241,7 @@ CMD:tackle(playerid, params[])
 CMD:tazer(playerid, params[])
 {
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
     #if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
 	#endif
@@ -48192,7 +48446,7 @@ CMD:news(playerid, params[])
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /news [text]");
 
 		new newcar = GetPlayerVehicleID(playerid);
-		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid,7.0,639.7627,-11.1346,1107.9656))
+		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid,15.0,639.7627,-11.1346,1107.9656))
 		{
 			if(PlayerInfo[playerid][pRank] < 1)
 			{
@@ -48475,7 +48729,7 @@ CMD:broadcast(playerid, params[])
 	if (IsAReporter(playerid))
 	{
 	    if(shutdown == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "The news system is currently shut down." );
-		if(IsPlayerInRangeOfPoint(playerid,10.0,631.8096,-10.9424,1107.9729))
+		if(IsPlayerInRangeOfPoint(playerid,15.0,631.8096,-10.9424,1107.9729))
 		{
 			new string[128];
 			if(broadcasting == 0)
@@ -57230,5 +57484,234 @@ CMD:undercover(playerid, params[])
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:watchlist(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
+	{
+		new string[4096];
+		for(new x = 0; x < MAX_PLAYERS; x++)
+		{
+			if(IsPlayerConnected(x))
+			{
+				if(PlayerInfo[x][pNonRPMeter] != 0 && PlayerInfo[x][pWatchlist] == 1) // Does the player have any non rp points & is on the watchlist?
+				{
+					format(string, sizeof(string), "%s %s (ID: %d )| Points: %d\n", string, GetPlayerNameEx(x), x, PlayerInfo[x][pNonRPMeter]);
+				}
+			}
+		}
+		ShowPlayerDialog(playerid, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", string, "Exit", "");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:watchlistadd(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		new points = 0, days, giveplayerid, string[128];
+		if(sscanf(params, "ddI", giveplayerid, days, points)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistadd [playerid] [days] [points (optional)]");
+		
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
+			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify a amount of days (1 to 365 Days).");
+			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Points Specified!");
+			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already on the watchlist!");
+			
+			PlayerInfo[giveplayerid][pWatchlist] = 1;
+			PlayerInfo[giveplayerid][pNonRPMeter] += points;
+			PlayerInfo[giveplayerid][pWatchlistTime] = gettime() + 86400 / days;
+			
+			format(string, sizeof(string), "You have added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			
+			// Add Logging stuff here later
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:watchlistremove(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		new giveplayerid, string[128];
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistremove [playerid");
+		
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
+			if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
+			
+			PlayerInfo[giveplayerid][pWatchlist] = 0;
+			PlayerInfo[giveplayerid][pWatchlistTime] = 0;
+			
+			format(string, sizeof(string), "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			
+			// Add Logging stuff here later
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:restrictaccount(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	{
+		new giveplayerid, string[128];
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /restrictaccount [playerid]");
+		
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(PlayerInfo[playerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
+			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
+			
+			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
+			
+			format(string, sizeof(string), "You have restricted %s account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			format(string, sizeof(string), "Your account has been restricted by %s. You will not be able to drive a vehicle, give/take any damage or own any weapons", GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+			SendClientMessageEx(giveplayerid, COLOR_RED, "Note: To lift this restriction, please contact a member of the RP Improvement Team.");
+			
+			// Add Logging stuff here later
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:unrestrictaccount(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	{
+		new giveplayerid, string[128];
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /unrestrictaccount [playerid]");
+		
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(PlayerInfo[playerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
+			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
+			
+			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
+			
+			format(string, sizeof(string), "You have unrestricted %s account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			format(string, sizeof(string), "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+			
+			// Add Logging stuff here later
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:watchdogs(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 3)
+	{
+		new string[1024];
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pWatchdog] == 1) format(string, sizeof(string), "%s\nWatchdog %s (ID %i)", string, GetPlayerNameEx(i), i);
+				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "%s\nSenior Watchdog %s (ID %i)", string, GetPlayerNameEx(i), i);
+				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "%s\nRP Specialist %s (ID %i)", string, GetPlayerNameEx(i), i);
+				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "%s\nDirector of RP Improvement %s (ID %i)", string, GetPlayerNameEx(i), i);
+			}	
+		}
+		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Watchdogs that are currently online", string, "Close", "");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:wd(playerid, params[])  {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
+	{
+		if(!isnull(params)) 
+		{
+			new szMessage[128];
+
+			if(PlayerInfo[playerid][pAdmin] == 2) format(szMessage, sizeof(szMessage), "* Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMessage, sizeof(szMessage), "* General Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMessage, sizeof(szMessage), "* Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "* Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMessage, sizeof(szMessage), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMessage, sizeof(szMessage), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMessage, sizeof(szMessage), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
+			else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
+
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					if(PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1)
+					{
+						SendClientMessage(i, COLOR_YELLOW, szMessage);
+					}
+				}	
+			}
+		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wd [watchdog chat]");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:refer(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
+		return 1;
+	}
+	new reason[128];
+	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
+	if(!GetPVarType(playerid, "pWatchdogWatching")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
+	if(sscanf(params, "s{64}", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+ 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
+	JustReported[playerid] = 25;
+	new giveplayerid = GetPVarInt(playerid, "pWatchdogWatching");
+	new string[128];
+	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
+	SendReportToQue(playerid, string, 2, 1);
+	SetPVarInt(giveplayerid, "BeenDMAlert", 1);
+	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins.");
+	return true;
+}
+
+CMD:viewassets(playerid, params[])
+{
+  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
+	new giveplayerid, string[128];
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewassets [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	
+	format(string, sizeof(string), "%s's assets | Vehicle: %d - House: %d - Bank: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	return true;
 }

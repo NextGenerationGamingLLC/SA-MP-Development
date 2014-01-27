@@ -860,6 +860,9 @@ native gpci(playerid, serial[], maxlen);
 
 #define			DIALOG_VIPJOB				(5080)
 
+#define 		DIALOG_NONRPACTION			(5081)
+#define			DIALOG_WATCHLIST			(5082)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 
@@ -1038,6 +1041,7 @@ native gpci(playerid, serial[], maxlen);
 #define			LOADPTOYS_THREAD				21
 #define			ADMINWHITELIST_THREAD			22
 #define			LOADGIFTBOX_THREAD				23
+#define			LOADPNONRPOINTS_THREAD			24
 #define 		Flag_Query_Display  			1
 #define 		Flag_Query_Offline  			2
 #define 		Flag_Query_Count    			3

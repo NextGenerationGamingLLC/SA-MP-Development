@@ -1557,7 +1557,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			        new 
 						string[128],
 						iBusiness = InBusiness(playerid);
-
+					
+					if(iBusiness == INVALID_BUSINESS_ID || Businesses[iBusiness][bType] != BUSINESS_TYPE_CLOTHING) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not inside of a clothing shop!");
 			        if(GetPlayerCash(playerid) < GetPVarInt(playerid, "SkinChangeCost")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't afford these clothes!");
 					GameTextForPlayer(playerid, "~g~Clothes purchased!", 2000, 1);
 					PlayerInfo[playerid][pModel] = modelid;
@@ -1591,6 +1592,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		SetPVarInt(playerid, "commitSuicide", 0);
 	}
+	if(PlayerInfo[playerid][pAccountRestricted] == 1) return false; // If the account is restricted, cancel the damage
 	if(issuerid != INVALID_PLAYER_ID)
 	{
 	    ShotPlayer[issuerid][playerid] = gettime();
@@ -1811,6 +1813,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
+	
+	if(PlayerInfo[playerid][pAccountRestricted] == 1) return false; // If the account is restricted, cancel the damage
 
     if(pTazer{playerid} == 1)
 	{
@@ -2070,6 +2074,15 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	if(!ispassenger)
 	{
 	    SetPlayerArmedWeapon(playerid, 0);
+		if(PlayerInfo[playerid][pAccountRestricted] == 1)
+		{
+			new Float:slx, Float:sly, Float:slz;
+			GetPlayerPos(playerid, slx, sly, slz);
+			SetPlayerPos(playerid, slx, sly, slz+1.3);
+			RemovePlayerFromVehicle(playerid);
+			defer NOPCheck(playerid);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot drive any vehicles while your account is restricted!");
+		}
 		if(IsVIPcar(vehicleid))
 		{
 		    if(PlayerInfo[playerid][pDonateRank] == 0)

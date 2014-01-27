@@ -22,10 +22,10 @@
 								
 								**   Development Staff: 								
 									 Brendan
-									 John Milete
-									 Neo (Dwayne Burrows)
+									 Neo
 									 Miguel (s0nic)
 									 Donuts
+									 AlexR
 
 
 				Past Developers:
@@ -36,18 +36,18 @@
 									Scott
 									GhoulSlayer
 									Zhao
+									Donuts
+									Mo Cena
 									Calgon
 	  
 								** 	Developers:
-									AlexR
 									ThomasJWhite
 									Beren
 									Kareemtastic
 									Sew Sumi
-									Mo Cena
 									Razbit
 
-				Credits to alternate sources (Y_LESS for foreach, gf, etc)
+				Credits to alternate sources (Y_Less for foreach, gf, etc)
  *
  * Copyright (c) 2014, Next Generation Gaming, LLC
  *
@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.032"
+#define SERVER_GM_TEXT "NG:RP v3.0.033"
 
 
 

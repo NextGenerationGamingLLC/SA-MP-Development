@@ -643,6 +643,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "ReceivedBGift", szResult, MainPipeline); PlayerInfo[extraid][pReceivedBGift] = strval(szResult);
 					cache_get_field_content(row,  "pVIPJob", szResult, MainPipeline); PlayerInfo[extraid][pVIPJob] = strval(szResult);	
 					cache_get_field_content(row,  "LastBirthday", szResult, MainPipeline); PlayerInfo[extraid][pLastBirthday] = strval(szResult);
+					cache_get_field_content(row,  "AccountRestricted", szResult, MainPipeline); PlayerInfo[extraid][pAccountRestricted] = strval(szResult);
+					cache_get_field_content(row,  "Watchlist", szResult, MainPipeline); PlayerInfo[extraid][pWatchlist] = strval(szResult);
+					cache_get_field_content(row,  "WatchlistTime", szResult, MainPipeline); PlayerInfo[extraid][pWatchlistTime] = strval(szResult);
 					
 					GetPartnerName(extraid);
 					IsEmailPending(extraid, PlayerInfo[extraid][pId], PlayerInfo[extraid][pEmail]);
@@ -655,6 +658,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 
 					g_mysql_LoadPVehicles(extraid);
+					LoadPlayerNonRPPoints(extraid);
 					g_mysql_LoadPlayerToys(extraid);
 				
 					SetPVarInt(extraid, "pSQLID", PlayerInfo[extraid][pId]);
@@ -1258,6 +1262,36 @@ public OnQueryFinish(resultid, extraid, handleid)
 				break;
 			}
 			print("[Dynamic Giftbox] Successfully loaded the dynamic giftbox.");
+		}
+		case LOADPNONRPOINTS_THREAD: // I have no idea if this will work lulz (it's 9:30am)
+		{
+			// Is the player still connected by the time the thread is called?
+			if(IsPlayerConnected(extraid))
+			{
+				new i = 0, count = 0;
+				
+				// Loop through all the rows that were called within that query
+				while(i < rows)
+				{
+					new szResult[32];
+					
+					cache_get_field_content(i, "active", szResult, MainPipeline);
+					
+					// Is the row active?
+					if(strval(szResult) == 1)
+					{					
+						cache_get_field_content(i, "points", szResult, MainPipeline);
+						
+						// Add all together the points gathered
+						count += strval(szResult);
+					}
+					i++;
+				}
+				// We're done with our loop, let's get our count and store it to a player variable
+				PlayerInfo[extraid][pNonRPMeter] = count;
+				
+				printf("Loaded %s Non RP Points", GetPlayerNameEx(extraid));
+			}
 		}
 	}
 	return 1;
@@ -3103,6 +3137,9 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReceivedBGift", PlayerInfo[playerid][pReceivedBGift]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPJob", PlayerInfo[playerid][pVIPJob]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LastBirthday", PlayerInfo[playerid][pLastBirthday]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "AccountRestricted", PlayerInfo[playerid][pAccountRestricted]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Watchlist", PlayerInfo[playerid][pWatchlist]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WatchlistTime", PlayerInfo[playerid][pWatchlistTime]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -8121,4 +8158,27 @@ stock SavePaintballArenas()
 	{
 		SavePaintballArena(i);
 	}
+}
+
+stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid)
+{
+	new szQuery[128], escapedstring[128];
+	mysql_real_escape_string(reason, escapedstring);
+	
+	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active) VALUES ('%d', '%d', '%d', '%s', '%s', '1')",
+	GetPlayerSQLId(playerid),
+	point,
+	expiration,
+	escapedstring,
+	GetPlayerNameEx(issuerid));
+	
+	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock LoadPlayerNonRPPoints(playerid)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
+	return true;
 }
