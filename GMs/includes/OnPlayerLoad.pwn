@@ -929,5 +929,10 @@ public OnPlayerLoad(playerid)
 			}
 		}
 	}
+	
+	if(PlayerInfo[playerid][pWatchdog] >= 1)
+	{
+		SetPVarInt(playerid, "WatchdogChat", 1);
+	}
 	return 1;
 }

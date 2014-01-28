@@ -1268,29 +1268,27 @@ public OnQueryFinish(resultid, extraid, handleid)
 			// Is the player still connected by the time the thread is called?
 			if(IsPlayerConnected(extraid))
 			{
-				new i = 0, count = 0;
+				new count = 0;
 				
 				// Loop through all the rows that were called within that query
-				while(i < rows)
+				for(new i = 0; i < rows; i++)
 				{
-					new szResult[32];
+					new szResult[32], active;
 					
 					cache_get_field_content(i, "active", szResult, MainPipeline);
+					active = strval(szResult);
 					
 					// Is the row active?
 					if(strval(szResult) == 1)
-					{					
-						cache_get_field_content(i, "points", szResult, MainPipeline);
-						
-						// Add all together the points gathered
-						count += strval(szResult);
+					{			
+						cache_get_field_content(i, "point", szResult, MainPipeline);
+
+						// Add up all the points
+						count = count += strval(szResult);
 					}
-					i++;
 				}
 				// We're done with our loop, let's get our count and store it to a player variable
 				PlayerInfo[extraid][pNonRPMeter] = count;
-				
-				printf("Loaded %s Non RP Points", GetPlayerNameEx(extraid));
 			}
 		}
 	}
@@ -8162,7 +8160,7 @@ stock SavePaintballArenas()
 
 stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid)
 {
-	new szQuery[128], escapedstring[128];
+	new szQuery[512], escapedstring[128];
 	mysql_real_escape_string(reason, escapedstring);
 	
 	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active) VALUES ('%d', '%d', '%d', '%s', '%s', '1')",
@@ -8178,7 +8176,7 @@ stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid)
 stock LoadPlayerNonRPPoints(playerid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
+	format(string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", PlayerInfo[playerid][pId]);
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
 	return true;
 }

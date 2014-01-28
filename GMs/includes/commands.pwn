@@ -16844,7 +16844,6 @@ CMD:ooc(playerid, params[])
 CMD:o(playerid, params[]) 
 {
 	return SendClientMessageEx(playerid, COLOR_GRAD1, "/o has been renamed to /ooc to prevent typos.");
-	return true;
 }
 
 CMD:shout(playerid, params[]) {
@@ -34203,6 +34202,10 @@ CMD:spec(playerid, params[])
 		{
 		    SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate the person you are DM Watching.");
 			return 1;
+		}
+		if((PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 1) && PlayerInfo[giveplayerid][pWatchlist] == 0)
+		{
+			return SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate players that are on the watchlist!");
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
@@ -57500,8 +57503,11 @@ CMD:watchlist(playerid, params[])
 				{
 					format(string, sizeof(string), "%s %s (ID: %d )| Points: %d\n", string, GetPlayerNameEx(x), x, PlayerInfo[x][pNonRPMeter]);
 				}
+				else string = "NULL";
 			}
 		}
+		
+		if(strcmp(string, "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no online players that is on the watchlist!");
 		ShowPlayerDialog(playerid, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", string, "Exit", "");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -57517,12 +57523,13 @@ CMD:watchlistadd(playerid, params[])
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
+			//if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
+			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
 			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify a amount of days (1 to 365 Days).");
 			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Points Specified!");
 			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already on the watchlist!");
 			
+			if(points > 0) AddNonRPPoint(giveplayerid, points, gettime()+2592000, "Manually Added", GetPlayerSQLId(playerid));
 			PlayerInfo[giveplayerid][pWatchlist] = 1;
 			PlayerInfo[giveplayerid][pNonRPMeter] += points;
 			PlayerInfo[giveplayerid][pWatchlistTime] = gettime() + 86400 / days;
@@ -57543,12 +57550,12 @@ CMD:watchlistremove(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid, string[128];
-		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistremove [playerid");
+		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistremove [playerid]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
+			//if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
+			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
 			if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
 			
 			PlayerInfo[giveplayerid][pWatchlist] = 0;
@@ -57575,8 +57582,8 @@ CMD:restrictaccount(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
-			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
+			//if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
+			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
 			
@@ -57604,8 +57611,8 @@ CMD:unrestrictaccount(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
-			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
+			//if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
+			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
 			
@@ -57635,21 +57642,38 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "%s\nSenior Watchdog %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "%s\nRP Specialist %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "%s\nDirector of RP Improvement %s (ID %i)", string, GetPlayerNameEx(i), i);
+				else string = "NULL";
 			}	
 		}
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Watchdogs that are currently online", string, "Close", "");
+		
+		if(strcmp(string, "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no watchdogs online!");
+		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, "Watchdogs that are currently online", string, "Close", "");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	return true;
 }
 
-CMD:wd(playerid, params[])  {
+CMD:togwd(playerid, params[])
+{
+	if(GetPVarInt(playerid, "WatchdogChat") == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
+		return SetPVarInt(playerid, "WatchdogChat", 0);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled the watchdog chat.");
+		return SetPVarInt(playerid, "WatchdogChat", 1);
+	}
+}
+		
+CMD:wd(playerid, params[]) 
+{
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
 		if(!isnull(params)) 
 		{
 			new szMessage[128];
-
 			if(PlayerInfo[playerid][pAdmin] == 2) format(szMessage, sizeof(szMessage), "* Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMessage, sizeof(szMessage), "* General Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMessage, sizeof(szMessage), "* Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
@@ -57666,9 +57690,9 @@ CMD:wd(playerid, params[])  {
 			{
 				if(IsPlayerConnected(i))
 				{
-					if(PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1)
+					if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(playerid, "WatchdogChat") == 1)
 					{
-						SendClientMessage(i, COLOR_YELLOW, szMessage);
+						SendClientMessageEx(i, 0x2267F0FF, szMessage);
 					}
 				}	
 			}
@@ -57713,5 +57737,11 @@ CMD:viewassets(playerid, params[])
 	
 	format(string, sizeof(string), "%s's assets | Vehicle: %d - House: %d - Bank: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	return true;
+}
+
+CMD:test(playerid, params[])
+{
+	printf("watchlist %d | points %d", PlayerInfo[playerid][pWatchlist], PlayerInfo[playerid][pNonRPMeter]);
 	return true;
 }
