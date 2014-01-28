@@ -6820,7 +6820,7 @@ public SprunkGuardCheck(playerid, giveplayerid)
   		return 1;
 	}
     new Float:health, string[128];
-    GetVehicleHealth(SGcheckPlane, health);	
+    GetVehicleHealth(SGcheckPlane, health);
 	if(!IsPlayerInVehicle(giveplayerid, SGcheckPlane) || health < 200)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person was probably desynced/lagging or not in the plane.");
@@ -6842,7 +6842,34 @@ public SprunkGuardCheck(playerid, giveplayerid)
 		SGcheckVW[giveplayerid] = 0;
 		SGcheckInt[giveplayerid] = 0;
 
-		SGcheckUsed = 0;		
+		SGcheckUsed = 0;
+		return 1;
+	}
+	new Float:phealth;
+	GetPlayerHealth(giveplayerid, phealth);	
+	if(phealth < 1)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person is dead.");
+		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		if(SGcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, SGcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, SGcheckInt[giveplayerid]);
+		DestroyVehicle(SGcheckPlane);
+		SGcheckPlane = INVALID_VEHICLE_ID;
+  		for(new i = 0; i < 6; i++)
+		{
+			SGcheckFloats[giveplayerid][i] = 0;
+		}
+		SGcheckVW[giveplayerid] = 0;
+		SGcheckInt[giveplayerid] = 0;
+
+		SGcheckUsed = 0;
+		return 1;	
 	}
     if(health < 1000)
 	{
