@@ -6819,7 +6819,9 @@ public SprunkGuardCheck(playerid, giveplayerid)
 		SGcheckUsed = 0;
   		return 1;
 	}
-	if(!IsPlayerInVehicle(giveplayerid, SGcheckPlane))
+    new Float:health, string[128];
+    GetVehicleHealth(SGcheckPlane, health);	
+	if(!IsPlayerInVehicle(giveplayerid, SGcheckPlane) || health < 200)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person was probably desynced/lagging or not in the plane.");
 		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
@@ -6842,8 +6844,6 @@ public SprunkGuardCheck(playerid, giveplayerid)
 
 		SGcheckUsed = 0;		
 	}
-    new Float:health, string[128];
-    GetVehicleHealth(SGcheckPlane, health);
     if(health < 1000)
 	{
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SPRUNK GUARD CHECK RESULT_______________");
