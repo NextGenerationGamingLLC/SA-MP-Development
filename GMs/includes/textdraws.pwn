@@ -2380,5 +2380,37 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetProportional(playerid, _crTickets[playerid], 1);
 	
 	_vhudVisible[playerid] = 0;
+
 	return 1;
+}
+
+stock CreateAccountRestTextdraw(playerid)
+{
+	if(PlayerInfo[playerid][pAccountRestricted] == 1)
+	{
+		AccountRestriction[playerid] = CreatePlayerTextDraw(playerid,650.000000, 456.000000, ".");
+		PlayerTextDrawAlignment(playerid,AccountRestriction[playerid], 3);
+		PlayerTextDrawBackgroundColor(playerid,AccountRestriction[playerid], 255);
+		PlayerTextDrawFont(playerid,AccountRestriction[playerid], 1);
+		PlayerTextDrawLetterSize(playerid,AccountRestriction[playerid], 0.500000, -3.300000);
+		PlayerTextDrawColor(playerid,AccountRestriction[playerid], -1);
+		PlayerTextDrawSetOutline(playerid,AccountRestriction[playerid], 0);
+		PlayerTextDrawSetProportional(playerid,AccountRestriction[playerid], 1);
+		PlayerTextDrawSetShadow(playerid,AccountRestriction[playerid], 1);
+		PlayerTextDrawUseBox(playerid,AccountRestriction[playerid], 1);
+		PlayerTextDrawBoxColor(playerid,AccountRestriction[playerid], 255);
+		PlayerTextDrawTextSize(playerid,AccountRestriction[playerid], 0.000000, 0.000000);
+		PlayerTextDrawSetSelectable(playerid,AccountRestriction[playerid], 0);
+
+		AccountRestrictionEx[playerid] = CreatePlayerTextDraw(playerid,39.000000, 428.000000, "Your account is restricted, please contact a member of the RP Improvement Team.");
+		PlayerTextDrawBackgroundColor(playerid,AccountRestrictionEx[playerid], 255);
+		PlayerTextDrawFont(playerid,AccountRestrictionEx[playerid], 2);
+		PlayerTextDrawLetterSize(playerid,AccountRestrictionEx[playerid], 0.300000, 2.000000);
+		PlayerTextDrawColor(playerid,AccountRestrictionEx[playerid], -16776961);
+		PlayerTextDrawSetOutline(playerid,AccountRestrictionEx[playerid], 0);
+		PlayerTextDrawSetProportional(playerid,AccountRestrictionEx[playerid], 1);
+		PlayerTextDrawSetShadow(playerid,AccountRestrictionEx[playerid], 1);
+		PlayerTextDrawSetSelectable(playerid,AccountRestrictionEx[playerid], 0);
+	}
+	return true;
 }

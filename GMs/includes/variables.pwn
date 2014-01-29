@@ -918,6 +918,11 @@ new CellGates[12];
 new BlastDoors[18];
 new BackEntrance, Purification[2];
 new logincheck[MAX_PLAYERS];
+new AlertTime[MAX_PLAYERS];
+new PublicSQLString[4096]; // cuz the mysql plugin is stupid a/f
+new FetchingWatchlist;
+new PlayerText:AccountRestriction[MAX_PLAYERS];
+new PlayerText:AccountRestrictionEx[MAX_PLAYERS];
 
 new CIV[] = {7,19,20,23,73,101,122};
 new STD1[] = {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3};

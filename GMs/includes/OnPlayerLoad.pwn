@@ -934,5 +934,7 @@ public OnPlayerLoad(playerid)
 	{
 		SetPVarInt(playerid, "WatchdogChat", 1);
 	}
+	
+	CreateAccountRestTextdraw(playerid);
 	return 1;
 }

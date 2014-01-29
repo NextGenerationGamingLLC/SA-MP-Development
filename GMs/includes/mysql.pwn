@@ -1144,11 +1144,12 @@ public OnQueryFinish(resultid, extraid, handleid)
 			new string[128];
 			for(new i;i < rows;i++)
 			{
-				new secureip[16], szResult[32], alevel;
+				new secureip[16], szResult[32], alevel, wdlevel;
 				cache_get_field_content(i, "AdminLevel", szResult, MainPipeline); alevel = strval(szResult);
+				cache_get_field_content(i, "Watchdog", szResult, MainPipeline); wdlevel = strval(szResult);
 				cache_get_field_content(i, "SecureIP", secureip, MainPipeline, 16);
 				
-				if(alevel > 1  && !fexist("NoWhitelist.h"))  // Beta server check ( beta server does not require whitelisting)
+				if((alevel > 1 || wdlevel > 2)  && !fexist("NoWhitelist.h"))  // Beta server check ( beta server does not require whitelisting)
 				{
 					if(isnull(secureip) || strcmp(GetPlayerIpEx(extraid), secureip, false, strlen(secureip)) != 0)
 					{
@@ -1159,7 +1160,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 							{
 								if(IsPlayerConnected(x))
 								{
-									if(PlayerInfo[x][pAdmin] < 1337 && PlayerInfo[x][pAdmin] >= 2)
+									if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
 									{			
 										format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
 										SendClientMessageEx(x, COLOR_YELLOW, string);
@@ -1273,10 +1274,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 				// Loop through all the rows that were called within that query
 				for(new i = 0; i < rows; i++)
 				{
-					new szResult[32], active;
+					new szResult[32];
 					
 					cache_get_field_content(i, "active", szResult, MainPipeline);
-					active = strval(szResult);
 					
 					// Is the row active?
 					if(strval(szResult) == 1)
@@ -7856,7 +7856,7 @@ public ExecuteShopQueue(playerid, id)
 stock CheckAdminWhitelist(playerid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT `AdminLevel`, `SecureIP` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	format(string, sizeof(string), "SELECT `AdminLevel`, `SecureIP`, `Watchdog` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", ADMINWHITELIST_THREAD, playerid, g_arrQueryHandle{playerid});
 	return true;
 }
@@ -8158,16 +8158,18 @@ stock SavePaintballArenas()
 	}
 }
 
-stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid)
+stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
 {
 	new szQuery[512], escapedstring[128];
 	mysql_real_escape_string(reason, escapedstring);
 	
-	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active) VALUES ('%d', '%d', '%d', '%s', '%s', '1')",
+	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active, manual) VALUES ('%d', '%d', '%d', '%s', '%s', '1', '%d')",
 	GetPlayerSQLId(playerid),
 	point,
 	expiration,
 	escapedstring,
+	issuerid,
+	manual,
 	GetPlayerNameEx(issuerid));
 	
 	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -8178,5 +8180,81 @@ stock LoadPlayerNonRPPoints(playerid)
 	new string[128];
 	format(string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", PlayerInfo[playerid][pId]);
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
+	return true;
+}
+
+forward OnWDWhitelist(index);
+public OnWDWhitelist(index)
+{
+	new string[128], name[24];
+	GetPVarString(index, "OnWDWhitelist", name, 24);
+
+	if(mysql_affected_rows(MainPipeline)) {
+		format(string, sizeof(string), "You have successfully whitelisted %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
+		Log("logs/wdwhitelist.log", string);
+	}
+	else {
+		format(string, sizeof(string), "There was a issue with whitelisting %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+	}
+	DeletePVar(index, "OnWDWhitelist");
+
+	return 1;
+}
+
+forward FetchWatchlist(index);
+public FetchWatchlist(index)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	#pragma unused fields
+	for(new i = 0; i < rows; i++)
+	{
+		new szResult[32], points, sqlid;
+		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
+		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
+		
+		// Is the player connected?
+		for(new x = 0; x < MAX_PLAYERS; x++)
+		{
+			if(PlayerInfo[x][pId] == sqlid)
+			{
+				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Manually Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
+				break;
+			}
+		}
+	}
+	
+	mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '0' ORDER BY `point` DESC LIMIT 15", false, "FetchWatchlist2", "i", index);
+	return true;
+}
+
+forward FetchWatchlist2(index, input[]);
+public FetchWatchlist2(index, input[])
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	#pragma unused fields
+	for(new i = 0; i < rows; i++)
+	{
+		new szResult[32], points, sqlid;
+		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
+		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
+		
+		// Is the player connected?
+		for(new x = 0; x < MAX_PLAYERS; x++)
+		{
+			if(PlayerInfo[x][pId] == sqlid)
+			{
+				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Automatically Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
+				break;
+			}
+		}
+	}
+	
+	ShowPlayerDialog(index, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", PublicSQLString, "Exit", "");
+	FetchingWatchlist = 0;
 	return true;
 }

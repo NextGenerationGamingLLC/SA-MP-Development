@@ -2340,3 +2340,19 @@ task ShopItemQueue[30000]()
 		}
 	}
 }
+
+// Timer Name: alertTimer()
+// TickRate: 1 Second
+task alertTimer[1000]()
+{
+	for(new i; i < MAX_PLAYERS; i++)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(AlertTime[i] != 0)
+			{
+				AlertTime[i]--;
+			}
+		}
+	}
+}

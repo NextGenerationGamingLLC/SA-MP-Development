@@ -1639,7 +1639,7 @@ CMD:givegun(playerid, params[])
 CMD:jetpack(playerid, params[])
 {
 	new string[128], plo;
-	if((PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) && sscanf(params, "u", plo)) {
+	if((PlayerInfo[playerid][pAdmin] >= 2) && sscanf(params, "u", plo)) {
         JetPack[playerid] = 1;
         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USEJETPACK);
         return 1;
@@ -2814,7 +2814,7 @@ CMD:loadcfgs(playerid, params[])
 
 CMD:admins(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+    if(PlayerInfo[playerid][pAdmin] >= 2) {
         SendClientMessageEx(playerid, COLOR_GRAD1, "Admins Online:");
         //foreach(new i: Player)
 		for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -5611,7 +5611,7 @@ CMD:togstaff(playerid, params[])
 
 CMD:vehname(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2) {
 
 		SendClientMessageEx(playerid, COLOR_YELLOW, "--------------------------------------------------------------------------------------------------------------------------------");
 		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle Search:");
@@ -5975,7 +5975,7 @@ CMD:netstats(playerid, params[]) {
 
 CMD:anetstats(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) {
+	if (PlayerInfo[playerid][pAdmin] < 2) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 		return 1;
 	}
@@ -7182,7 +7182,7 @@ CMD:wepreset(playerid, params[])
 
 CMD:watch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
 		return 1;
@@ -7549,7 +7549,7 @@ CMD:watch(playerid, params[])
 
 CMD:goto(playerid, params[])
 {
-    if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+    if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		if(isnull(params))
 		{
@@ -8350,7 +8350,7 @@ CMD:goto(playerid, params[])
 
 CMD:sendto(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], location[32], giveplayerid;
 		if(sscanf(params, "s[32]u", location, giveplayerid))
@@ -13641,7 +13641,7 @@ CMD:showmehq3(playerid, params[])
 
 CMD:bigears(playerid, params[])
 {
-    if( PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+    if( PlayerInfo[playerid][pAdmin] >= 2) {
         ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
     }
     return 1;
@@ -13784,7 +13784,7 @@ CMD:setcolor(playerid, params[])
 
 CMD:mark(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+    if (PlayerInfo[playerid][pAdmin] >= 2) {
 
 		new
 			Float: f_PlayerPos[3];
@@ -13805,7 +13805,7 @@ CMD:mark(playerid, params[])
 
 CMD:mark2(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+    if (PlayerInfo[playerid][pAdmin] >= 2) {
 
 		new
 			Float: f_PlayerPos[3];
@@ -14026,7 +14026,7 @@ CMD:eventreset(playerid, params[])
 
 CMD:requestevent(playerid, params[])
 {
-    if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pWatchdog] >= 2 ) {
+    if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4) {
         new string[128];
         if( EventKernel[ EventStatus ] == 0 ) {
             if(EventKernel[EventRequest] != INVALID_PLAYER_ID || EventKernel[EventCreator] != INVALID_PLAYER_ID) {
@@ -14192,7 +14192,7 @@ CMD:approveevent(playerid, params[])
 
 CMD:god(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new Float:health, Float:armor;
 	    if(GetPVarType(playerid, "pGodMode"))
@@ -14223,7 +14223,7 @@ CMD:god(playerid, params[])
 
 CMD:damagecheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 	if(GetPVarType(playerid, "_dCheck")) {
 		DeletePVar(playerid, "_dCheck");
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped damagecheck.");
@@ -14242,7 +14242,7 @@ CMD:damagecheck(playerid, params[])
 
 CMD:lastshot(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 	new pID;
 	if(sscanf(params, "u", pID)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /lastshot [playerid]");
 	if(!IsPlayerConnected(pID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -14993,14 +14993,38 @@ CMD:kos(playerid, params[])
 				return true;
 			}
 			
-			AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "KoS", playerid);
-			PlayerInfo[giveplayerid][pNonRPMeter] += 3;
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 3 Non RP Points");
-			// Add Log Feature here later
-			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0)
+				{
+					if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Killing on Sight", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					
+					if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+					{
+						format(string, sizeof(string), "%s(%i) Account Restriction", GetPlayerNameEx(giveplayerid), giveplayerid);
+						SendReportToQue(playerid, string, 4, GetPlayerPriority(playerid));
+						SetPVarInt(playerid, "AccountRestrictionReport", 1);
+						SetPVarInt(playerid, "AccountRestID", giveplayerid);
+					}
+				}
 			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 		else
 		{
@@ -15135,14 +15159,38 @@ CMD:skos(playerid, params[])
 				return true;
 			}
 			
-			AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "KoS", playerid);
-			PlayerInfo[giveplayerid][pNonRPMeter] += 3;
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 3 Non RP Points");
-			// Add Log Feature here later
-			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0)
+				{
+					if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Killing on Sight", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					
+					if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+					{
+						format(string, sizeof(string), "%s(%i) Account Restriction", GetPlayerNameEx(giveplayerid), giveplayerid);
+						SendReportToQue(playerid, string, 4, GetPlayerPriority(playerid));
+						SetPVarInt(playerid, "AccountRestrictionReport", 1);
+						SetPVarInt(playerid, "AccountRestID", giveplayerid);
+					}
+				}
 			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 		else
 		{
@@ -15951,13 +15999,30 @@ CMD:dm(playerid, params[])
 				Log("logs/admin.log", string);
 			}	
 			
-			PlayerInfo[giveplayerid][pNonRPMeter] += 5;
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 5 Non RP Points");
-			// Add Log Feature here later
-			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0)
+				{
+					if(GetPVarInt(playerid, "PendingAction") == 1) // DM
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 5, gettime()+2592000, "Deathmatching", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
+						
+						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+				}
 			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 		else
 		{
@@ -16060,13 +16125,30 @@ CMD:sdm(playerid, params[])
 				Log("logs/admin.log", string);
 			}	
 			
-			PlayerInfo[giveplayerid][pNonRPMeter] += 5;
-			SendClientMessageEx(giveplayerid, COLOR_CYAN, "You have received 5 Non RP Points");
-			// Add Log Feature here later
-			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0)
+				{
+					if(GetPVarInt(playerid, "PendingAction") == 1) // DM
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 5, gettime()+2592000, "Deathmatching", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
+						
+						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+				}
 			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 		else
 		{
@@ -18374,7 +18456,7 @@ CMD:pickplant(playerid, params[])
 }
 
 CMD:levelones(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new szNoobs[156], zone[MAX_ZONE_NAME];
    		SendClientMessageEx(playerid,COLOR_WHITE,"Listing all level ones...");
@@ -21686,7 +21768,6 @@ CMD:admin(playerid, params[])  {
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "* Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "* Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 			else format(szMessage, sizeof(szMessage), "* Undefined Admin (%i) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
 
 			//foreach(new i: Player)
@@ -21694,7 +21775,7 @@ CMD:admin(playerid, params[])  {
 			{
 				if(IsPlayerConnected(i))
 				{
-					if(PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 2)
+					if(PlayerInfo[i][pAdmin] >= 2)
 					{
 						SendClientMessage(i, COLOR_YELLOW, szMessage);
 					}
@@ -23603,7 +23684,7 @@ CMD:sellmyhouse(playerid, params[])
 }
 
 CMD:gotopveh(playerid, params[]) {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+    if(PlayerInfo[playerid][pAdmin] >= 2) {
 
         new iTargetID;
 
@@ -24047,7 +24128,7 @@ CMD:banaccount(playerid, params[])
 
 CMD:ip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ip [ip]");
 
@@ -24488,34 +24569,6 @@ CMD:reporttips(playerid, params[])
 	return 1;
 }
 
-CMD:changes(playerid, params[])
-{
-	new rev[16], string[64];
-	format(rev, sizeof(rev), "%s", str_replace("NG:RP ", "", SERVER_GM_TEXT));
-	format(string, sizeof(string), "%s/~nmphosti/dev/server.php?revision=%s", WEB_SERVER, rev);
-	HTTP(playerid, HTTP_GET, string, "", "RevisionListHTTP");
-	return 1;
-}
-
-/* Disabled until we start using it
-CMD:adminchanges(playerid, params[])
-{
-	new string[128];
-
-	if(PlayerInfo[playerid][pAdmin] >= 2)
-	{
-		SendClientMessageEx(playerid, COLOR_YELLOW, "______________________________________________");
-		format(string, sizeof(string), "Version: %s", SERVER_GM_TEXT);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		SendClientMessageEx(playerid, COLOR_WHITE, " Armor Hacking warnings added ");
-		SendClientMessageEx(playerid, COLOR_WHITE, " Re-made /dvrespawn & added /dvrespawnall for HA+");
-		//SendClientMessageEx(playerid, COLOR_WHITE, " /goto dillimore has been added");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "______________________________________________");
-	}
-	return 1;
-}
-*/
-
 CMD:ipwhitelist(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 4)
@@ -24570,7 +24623,7 @@ CMD:hosp(playerid, params[]) {
 
 CMD:hospital(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
@@ -24608,7 +24661,7 @@ CMD:hospital(playerid, params[])
 
 CMD:revive(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /revive [player]");
@@ -26362,7 +26415,7 @@ CMD:oipcheck(playerid, params[])
 
 CMD:ipcheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ipcheck [player]");
@@ -26505,7 +26558,7 @@ CMD:sfine(playerid, params[])
 
 CMD:listguns(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listguns [player]");
@@ -27902,7 +27955,7 @@ CMD:accent(playerid, params[])
 
 CMD:check(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /check [player]");
@@ -27915,7 +27968,7 @@ CMD:check(playerid, params[])
 
 CMD:checkinv(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkinv [player]");
@@ -34535,13 +34588,12 @@ CMD:prison(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		new string[128], giveplayerid, minutes, reason[64], points = 0; // Set the points default to 0
-		if(sscanf(params, "uds[64]I", giveplayerid, minutes, reason, points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason] [points (optional)");
+		new string[128], giveplayerid, minutes, reason[64];
+		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			if(points < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid point value!");
 			SetPlayerArmedWeapon(giveplayerid, 0);
 			if(GetPVarInt(giveplayerid, "Injured") == 1)
 			{
@@ -34587,37 +34639,169 @@ CMD:prison(playerid, params[])
 				return true;
 			}
 			
-			// Did the admin specify the points manually?
-			if(points > 0)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				AddNonRPPoint(giveplayerid, points, gettime()+2592000, reason, playerid);
-				PlayerInfo[giveplayerid][pNonRPMeter] += points;
-				format(string, sizeof(string), "You have received %i Non RP Points", points);
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				// Add Log Feature here later
-				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != INVALID_PLAYER_ID)
 				{
-					SetPVarInt(playerid, "ActionOn", giveplayerid);
-					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+					if(GetPVarInt(playerid, "PendingAction") == 1) // DM
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 5, gettime()+2592000, "Deathmatching", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
+						
+						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 2) // RK
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Revenge Killing Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Revenge Killing", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Revenge Killing.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Killing on Sight", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 4) // Car Ramming
+					{
+						print("5");
+						format(string, sizeof(string), "You have taken action on %s after processing a Car Ramming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Car Ramming", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Car Ramming.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 5) // OOC Hit
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a OOC Contract Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "OOC Contract", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for OOC Contract.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 6) // Spamming
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Spamming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Spamming", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Spamming.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 7) // Gun Discharge Exploit
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Gun Discharge Exploit Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Gun Discharge Exploit", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Gun Discharge Exploit.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 8) // Non-RP Name
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Non-RP Name Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non-RP Name", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non-RP Name.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 9) // Logging to avoid
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Logging to avoid Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Logging to avoid", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Logging to avoid.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 10) // Car Surfing
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Car Surfing Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Car Surfing", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Car Surfing.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 11) // Non RP Behavior
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Non RP Behavior Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non RP Behavior", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non RP Behavior.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					
+					if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+					{
+						format(string, sizeof(string), "%s(%i) Account Restriction", GetPlayerNameEx(giveplayerid), giveplayerid);
+						SendReportToQue(playerid, string, 4, GetPlayerPriority(playerid));
+						SetPVarInt(playerid, "AccountRestrictionReport", 1);
+						SetPVarInt(playerid, "AccountRestID", giveplayerid);
+					}
 				}
 			}
-			// If they haven't, let's check to see if the admin is taking action from a DM Alert Report
-			else if(GetPVarInt(playerid, "PendingAction") == 1)
-			{
-				format(string, sizeof(string), "You have taken action on %s after processing a DM Alert and haven't issued any Non RP Points, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
-				AddNonRPPoint(giveplayerid, 5, gettime()+2592000, reason, playerid);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 5;
-				
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 points due to you being DM Alerted.");
-				
-				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
-				{
-					SetPVarInt(playerid, "ActionOn", giveplayerid);
-					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
-				}
-			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -34897,8 +35081,8 @@ CMD:sprison(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
-		new string[128], giveplayerid, minutes, reason[64], points = 0; // Set the points default to 0
-		if(sscanf(params, "uds[64]I", giveplayerid, minutes, reason, points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sprison [player] [minutes] [reason] [points (optional)");
+		new string[128], giveplayerid, minutes, reason[64];
+		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sprison [player] [minutes] [reason]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
@@ -34949,35 +35133,168 @@ CMD:sprison(playerid, params[])
 				return true;
 			}
 			
-			// Did the admin specify the points manually?
-			if(points > 0)
+			if(giveplayerid == GetPVarInt(playerid, "PendingAction2"))
 			{
-				AddNonRPPoint(giveplayerid, points, gettime()+2592000, reason, playerid);
-				PlayerInfo[giveplayerid][pNonRPMeter] += points;
-				format(string, sizeof(string), "You have received %i Non RP Points", points);
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				// Add Log Feature here later
-				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+				if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0)
 				{
-					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+					if(GetPVarInt(playerid, "PendingAction") == 1) // DM
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 5, gettime()+2592000, "Deathmatching", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
+						
+						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 2) // RK
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Revenge Killing Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Revenge Killing", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Revenge Killing.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Killing on Sight", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
+						
+						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 4) // Car Ramming
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Car Ramming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Car Ramming", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Car Ramming.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 5) // OOC Hit
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a OOC Contract Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "OOC Contract", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for OOC Contract.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 6) // Spamming
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Spamming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Spamming", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Spamming.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 7) // Gun Discharge Exploit
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Gun Discharge Exploit Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Gun Discharge Exploit", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Gun Discharge Exploit.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 8) // Non-RP Name
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Non-RP Name Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non-RP Name", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non-RP Name.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 9) // Logging to avoid
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Logging to avoid Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Logging to avoid", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Logging to avoid.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 10) // Car Surfing
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Car Surfing Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Car Surfing", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Car Surfing.");
+						
+						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					else if(GetPVarInt(playerid, "PendingAction") == 11) // Non RP Behavior
+					{
+						format(string, sizeof(string), "You have taken action on %s after processing a Non RP Behavior Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_CYAN, string);
+						
+						AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non RP Behavior", playerid, 0);
+						PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+
+						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non RP Behavior.");
+						
+						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid));
+						Log("logs/nonrppoints.log", string);
+					}
+					
+					if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
+					{
+						format(string, sizeof(string), "%s(%i) Account Restriction", GetPlayerNameEx(giveplayerid), giveplayerid);
+						SendReportToQue(playerid, string, 4, GetPlayerPriority(playerid));
+						SetPVarInt(playerid, "AccountRestrictionReport", 1);
+						SetPVarInt(playerid, "AccountRestID", giveplayerid);
+					}
 				}
 			}
-			// If they haven't, let's check to see if the admin is taking action from a DM Alert Report
-			else if(GetPVarInt(playerid, "PendingAction") == 1)
-			{
-				format(string, sizeof(string), "You have taken action on %s after processing a DM Alert and haven't issued any Non RP Points, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
-				AddNonRPPoint(giveplayerid, 5, gettime()+2592000, reason, playerid);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 5;
-				
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 points due to you being DM Alerted.");
-				
-				if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15)
-				{
-					ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Please confirm your action", "This player currently have 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
-				}
-			}
+			
+			DeletePVar(playerid, "PendingAction");
+			DeletePVar(playerid, "PendingAction2");
+			if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;
+			DeletePVar(playerid, "PendingAction3");
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -35609,7 +35926,7 @@ CMD:setmystat(playerid, params[])
 
 CMD:setvw(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new giveplayerid, vw;
 	if(sscanf(params, "ud", giveplayerid, vw)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvw [player] [virtual world]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -35630,7 +35947,7 @@ CMD:setvw(playerid, params[])
 
 CMD:setint(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if (PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new giveplayerid, int;
 	if(sscanf(params, "ud", giveplayerid, int)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setint [player] [interiorid]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -35726,7 +36043,7 @@ CMD:entercar(playerid, params[])
 
 CMD:gotocar(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new carid;
 		if(sscanf(params, "d", carid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotocar [carid]");
@@ -36625,7 +36942,7 @@ CMD:gotoid(playerid, params[])
 	new Float:plocx,Float:plocy,Float:plocz;
 	if (IsPlayerConnected(giveplayerid))
 	{
-		if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+		if (PlayerInfo[playerid][pAdmin] >= 2)
 		{
 			if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 			{
@@ -36748,7 +37065,7 @@ CMD:gethere(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			return 1;
 		}
-		if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+		if (PlayerInfo[playerid][pAdmin] >= 2)
 		{
 			if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 			{
@@ -37833,7 +38150,7 @@ CMD:next(playerid, params[])
 
 CMD:slap(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 	    new szString[128], giveplayerid, Float:posx, Float:posy, Float:posz, Float:shealth;
 	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /slap [player]");
@@ -37863,7 +38180,7 @@ CMD:slap(playerid, params[])
 
 CMD:kills(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new string[256], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /kills [player]");
@@ -38128,10 +38445,10 @@ CMD:dmtokens(playerid, params[])
 	return 1;
 }
 
-/*
+
 CMD:dmwatchlist(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 3)
+    if (PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 	    new string[256];
 	    SendClientMessage(playerid, COLOR_WHITE, "Fetching watchlist..");
@@ -38142,8 +38459,6 @@ CMD:dmwatchlist(playerid, params[])
 	}
 	return 1;
 }
-*/
-
 
 CMD:dmwatch(playerid, params[])
 {
@@ -38727,7 +39042,7 @@ CMD:skick(playerid, params[])
 
 CMD:ban(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [player] [reason]");
@@ -38770,7 +39085,7 @@ CMD:ban(playerid, params[])
 
 CMD:freeze(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freeze [player]");
@@ -38798,7 +39113,7 @@ CMD:freeze(playerid, params[])
 
 CMD:unfreeze(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unfreeze [player]");
@@ -38812,34 +39127,6 @@ CMD:unfreeze(playerid, params[])
 			PlayerTied[giveplayerid] = 0;
 			TogglePlayerControllable(giveplayerid, 1);
 			format(string, sizeof(string), "AdmCmd: %s was unfrozen by %s.",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_LIGHTRED,string,2);
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Invalid player specified.");
-		}
-
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	}
-	return 1;
-}
-
-CMD:poke(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 4)
-	{
-		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /poke [player]");
-
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			DeletePVar(giveplayerid, "IsFrozen");
-			TogglePlayerControllable(giveplayerid, 1);
-			format(string, sizeof(string), "AdmCmd: %s was poked by %s.",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED,string,2);
 		}
 		else
@@ -39409,37 +39696,6 @@ CMD:makeadvisor(playerid, params[])
 	return 1;
 }
 
-CMD:makewatchdog(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 1337)
-	{
-		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makewatchdog [player]");
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= 2)
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to current admins!");
-				return 1;
-			}
-			PlayerInfo[giveplayerid][pWatchdog] = 1;
-
-			format(string, sizeof(string), "You have been made a watchdog by %s", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "You have made %s a watchdog.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "%s has been made a watchdog by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	}
-	return 1;
-}
-
 CMD:makemoderator(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
@@ -39616,10 +39872,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] == 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /kick /ban /prison /freeze /unfreeze /slap /warn /admins /admin /spec /levelones");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /requestevent /watch /dmwatchlist /mark(2) /n(un)mute /ad(un)mute /checkinv /lastshot");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /kick /ban /prison /n(un)mute /ad(un)mute /dmwatchlist /warn /spec /kills");
 	}
 	if (PlayerInfo[playerid][pWatchdog] == 3)
 	{
@@ -39627,7 +39880,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] == 4)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove /wdwhitelist");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
@@ -41523,8 +41776,9 @@ CMD:dmalert(playerid, params[])
 	new string[128];
 	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
-	SetPVarInt(giveplayerid, "BeenDMAlert", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
+	SetPVarInt(playerid, "AlertType", 1);
+	AlertTime[playerid] = 300;
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins.");
 	return 1;
 }
@@ -41578,6 +41832,12 @@ CMD:cancelreport(playerid, params[])
 	{
 	    if(Reports[i][ReportFrom] == playerid)
 	    {
+			if(GetPVarInt(Reports[i][ReportFrom], "AlertedThisPlayer"))
+			{
+				DeletePVar(Reports[i][ReportFrom], "AlertedThisPlayer");
+				DeletePVar(Reports[i][ReportFrom], "AlertType");
+				if(AlertTime[Reports[i][ReportFrom]] != 0) AlertTime[Reports[i][ReportFrom]] = 0;
+			}
 	        Reports[i][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[i][BeingUsed] = 0;
 			Reports[i][TimeToExpire] = 0;
@@ -41600,39 +41860,6 @@ CMD:cancelreport(playerid, params[])
 CMD:reports(playerid, params[])
 {
 	return cmd_reportsold(playerid, params);
- 	/*if(PlayerInfo[playerid][pAdmin] >= 2)
-	{
-		new reportdialog[2048], itemid = 0;
-		for(new i = 0; i < MAX_REPORTS; i++)
-		{
-			if(Reports[i][BeingUsed] == 1 && itemid < 40)
-			{
-				ListItemReportId[playerid][itemid] = i;
-				itemid++;
-				if(strlen((Reports[i][Report])) > 32)
-				{
-					new firstline[128], secondline[128];
-					strmid(firstline, Reports[i][Report], 0, 88);
-					strmid(secondline, Reports[i][Report], 88, 128);
-					if(strlen(secondline) > 6)
-					{
-						format(reportdialog, sizeof(reportdialog), "%s%s(ID:%i) | Report: %s", reportdialog, GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, firstline);
-						format(reportdialog, sizeof(reportdialog), "%s%s", reportdialog, secondline);
-						ListItemReportId[playerid][itemid] = i;
-						itemid++;
-					}
-					else format(reportdialog, sizeof(reportdialog), "%s%s(ID:%i) | Report: %s", reportdialog, GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]));
-				}
-				else format(reportdialog, sizeof(reportdialog), "%s%s(ID:%i) | Report: %s", reportdialog, GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]));
-
-				format(reportdialog, sizeof(reportdialog), "%s\n", reportdialog);
-			}
-		}
-		CancelReport[playerid] = itemid;
-		format(reportdialog, sizeof(reportdialog), "%s\n", reportdialog);
-		format(reportdialog, sizeof(reportdialog), "%sCancel Reports", reportdialog);
-		ShowPlayerDialog(playerid, REPORTSMENU, DIALOG_STYLE_LIST, "Reports", reportdialog, "Accept", "Trash");
-	}*/
 }
 
 CMD:reportsold(playerid, params[])
@@ -41727,8 +41954,9 @@ CMD:sta(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
 		if(Advisors < 1)
 		{
@@ -41793,12 +42021,23 @@ CMD:ar(playerid, params[])
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AccountRestrictionReport") == 1)
 		{
-			SetPVarInt(playerid, "PendingAction", 1);
-			SetPVarInt(playerid, "PendingAction2", GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"));
-			SetPVarInt(playerid, "PendingAction3", Reports[reportid][ReportFrom]);
-			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot accept this report!");
+			SetPVarInt(playerid, "PendingAction4", GetPVarInt(Reports[reportid][ReportFrom], "AccountRestID"));
+			DeletePVar(Reports[reportid][ReportFrom], "AccountRestrictionReport");
+			DeletePVar(Reports[reportid][ReportFrom], "AccountRestID");
+			ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Account Restriction", "This player has 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer") != INVALID_PLAYER_ID)
+		{
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0)
+			{
+				SetPVarInt(playerid, "PendingAction", GetPVarInt(Reports[reportid][ReportFrom], "AlertType"));
+				SetPVarInt(playerid, "PendingAction2", GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"));
+				SetPVarInt(playerid, "PendingAction3", Reports[reportid][ReportFrom]);
+				DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			}
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
 		{
@@ -41970,8 +42209,9 @@ CMD:tr(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
 		format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]));
 		ABroadCast(COLOR_ORANGE, string, 2);
@@ -42062,8 +42302,9 @@ CMD:nao(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to not having admin of sufficient authority online.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
@@ -42107,8 +42348,9 @@ CMD:post(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on the forums", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
@@ -42151,8 +42393,9 @@ CMD:st(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
-			DeletePVar(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"), "BeenDMAlert");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
 		}
 		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled via /shoporder", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
@@ -57493,54 +57736,31 @@ CMD:undercover(playerid, params[])
 	return true;
 }
 
-CMD:watchlist(playerid, params[])
-{
-	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
-	{
-		new string[4096];
-		for(new x = 0; x < MAX_PLAYERS; x++)
-		{
-			if(IsPlayerConnected(x))
-			{
-				if(PlayerInfo[x][pNonRPMeter] != 0 && PlayerInfo[x][pWatchlist] == 1) // Does the player have any non rp points & is on the watchlist?
-				{
-					format(string, sizeof(string), "%s %s (ID: %d )| Points: %d\n", string, GetPlayerNameEx(x), x, PlayerInfo[x][pNonRPMeter]);
-				}
-				else string = "NULL";
-			}
-		}
-		
-		if(strcmp(string, "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no online players that is on the watchlist!");
-		ShowPlayerDialog(playerid, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", string, "Exit", "");
-	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	return true;
-}
-
 CMD:watchlistadd(playerid, params[])
 {
 	if(PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new points = 0, days, giveplayerid, string[128];
-		if(sscanf(params, "ddI", giveplayerid, days, points)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistadd [playerid] [days] [points (optional)]");
+		if(sscanf(params, "ddI(0)", giveplayerid, days, points)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchlistadd [playerid] [days] [points (optional)]");
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			//if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
-			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
 			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify a amount of days (1 to 365 Days).");
 			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Points Specified!");
 			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already on the watchlist!");
 			
-			if(points > 0) AddNonRPPoint(giveplayerid, points, gettime()+2592000, "Manually Added", GetPlayerSQLId(playerid));
+			if(points > 0) AddNonRPPoint(giveplayerid, points, gettime()+2592000, "Manually Added", GetPlayerSQLId(playerid), 1);
 			PlayerInfo[giveplayerid][pWatchlist] = 1;
 			PlayerInfo[giveplayerid][pNonRPMeter] += points;
 			PlayerInfo[giveplayerid][pWatchlistTime] = gettime() + 86400 / days;
 			
-			format(string, sizeof(string), "You have added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
+			format(string, sizeof(string), "You have manually added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
-			// Add Logging stuff here later
+			format(string, sizeof(string), "%s has added %s to the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			Log("logs/watchlist.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
 	}
@@ -57557,8 +57777,8 @@ CMD:watchlistremove(playerid, params[])
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			//if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
-			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on an administrator!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on yourself!");
 			if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
 			
 			PlayerInfo[giveplayerid][pWatchlist] = 0;
@@ -57567,7 +57787,8 @@ CMD:watchlistremove(playerid, params[])
 			format(string, sizeof(string), "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
-			// Add Logging stuff here later
+			format(string, sizeof(string), "%s has removed %s from the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			Log("logs/watchlist.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
 	}
@@ -57585,8 +57806,8 @@ CMD:restrictaccount(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
-			//if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
-			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
+			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
 			
@@ -57596,7 +57817,11 @@ CMD:restrictaccount(playerid, params[])
 			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 			SendClientMessageEx(giveplayerid, COLOR_RED, "Note: To lift this restriction, please contact a member of the RP Improvement Team.");
 			
-			// Add Logging stuff here later
+			PlayerTextDrawShow(giveplayerid, AccountRestriction[giveplayerid]);
+			PlayerTextDrawShow(giveplayerid, AccountRestrictionEx[giveplayerid]);
+			
+			format(string, sizeof(string), "%s has restricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			Log("logs/restrictaccount.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -57614,8 +57839,8 @@ CMD:unrestrictaccount(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
-			//if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
-			//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
+			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
 			
@@ -57624,7 +57849,11 @@ CMD:unrestrictaccount(playerid, params[])
 			format(string, sizeof(string), "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 			
-			// Add Logging stuff here later
+			PlayerTextDrawHide(giveplayerid, AccountRestriction[giveplayerid]);
+			PlayerTextDrawHide(giveplayerid, AccountRestrictionEx[giveplayerid]);
+			
+			format(string, sizeof(string), "%s has unrestricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			Log("logs/restrictaccount.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -57658,6 +57887,7 @@ CMD:watchdogs(playerid, params[])
 
 CMD:togwd(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "WatchdogChat") == 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
@@ -57724,7 +57954,7 @@ CMD:refer(playerid, params[])
 	new string[128];
 	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 	SendReportToQue(playerid, string, 2, 1);
-	SetPVarInt(giveplayerid, "BeenDMAlert", 1);
+	SetPVarInt(giveplayerid, "BeenAlerted", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins.");
 	return true;
@@ -57743,8 +57973,103 @@ CMD:viewassets(playerid, params[])
 	return true;
 }
 
-CMD:test(playerid, params[])
+CMD:wdwhitelist(playerid, params[])
 {
-	printf("watchlist %d | points %d", PlayerInfo[playerid][pWatchlist], PlayerInfo[playerid][pNonRPMeter]);
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pWatchdog] >= 4)
+	{
+		new string[128], query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
+		if(sscanf(params, "s[24]s[16]", giveplayer, ip))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wdwhitelist [watchdog name] [IP]");
+			return 1;
+		}
+
+		new tmpName[24], tmpIP[16];
+		mysql_escape_string(giveplayer, tmpName, MainPipeline);
+		mysql_escape_string(ip, tmpIP, MainPipeline);
+		SetPVarString(playerid, "OnWDWhitelist", tmpName);
+
+		format(query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `Watchdog` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pWatchdog]);
+		mysql_function_query(MainPipeline, query, false, "OnWDWhitelist", "i", playerid);
+
+		format(string, sizeof(string), "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	return true;
+}
+
+CMD:watchlist(playerid, params[])
+{
+	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
+	{
+		if(FetchingWatchlist == 1) return SendClientMessageEx(playerid, COLOR_RED, "Please try again later, someone is already fetching the watchlist.");
+		PublicSQLString = "";
+		mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '1' ORDER BY `point` DESC", false, "FetchWatchlist", "i", playerid);
+		
+		SendClientMessageEx(playerid, COLOR_CYAN, "Fetching the watchlist...");
+		FetchingWatchlist = 1;
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	return true;
+}
+
+CMD:makewatchdog(playerid, params[])  {
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pWatchdog] >= 4) {
+
+		new
+			ivalue,
+			iTargetID;
+
+		if(sscanf(params, "ui", iTargetID, ivalue)) {
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makewatchdog [player] [level]");
+		}
+		else if(IsPlayerConnected(iTargetID)) {
+			if(PlayerInfo[iTargetID][pHelper] >= 1) {
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make community advisors admins!");
+			}
+			if(PlayerInfo[iTargetID][pWatchdog] == ivalue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this watchdog level.");
+			else {
+
+				new
+					szMessage[47 + (MAX_PLAYER_NAME * 2)];	
+				new szRank[128];
+				switch(ivalue) {
+					case 0: format(szRank, sizeof(szRank), "AdmCmd: %s has removed %s's watchdog rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					case 1: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					case 2: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Senior Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					case 3: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a RP Specialist.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+				}	
+				
+				PlayerInfo[iTargetID][pWatchdog] = ivalue;
+				ABroadCast(COLOR_LIGHTRED, szRank, 2);
+				Log("logs/makewatchdog.log", szMessage);
+				
+				switch(ivalue) {
+					case 0: format(szRank, sizeof(szRank), "Your watchdog rank has been removed by %s.", GetPlayerNameEx(playerid));
+					case 1: format(szRank, sizeof(szRank), "You have been made a Watchdog by %s.", GetPlayerNameEx(playerid));
+					case 2: format(szRank, sizeof(szRank), "You have been made a Senior Watchdog by %s.", GetPlayerNameEx(playerid));
+					case 3: format(szRank, sizeof(szRank), "You have been made a RP Specialist by %s.", GetPlayerNameEx(playerid));
+					case 4: format(szRank, sizeof(szRank), "You have been made a Director of RP Improvement by %s.", GetPlayerNameEx(playerid));
+					default: format(szRank, sizeof(szRank), "You have been made an undefined level watchdog by %s.", GetPlayerNameEx(playerid));
+				}
+				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szRank);
+				
+				switch(ivalue) {
+					case 0: format(szRank, sizeof(szRank), "You have removed %s's watchdog rank.", GetPlayerNameEx(iTargetID));
+					case 1: format(szRank, sizeof(szRank), "You have made %s a Watchdog.", GetPlayerNameEx(iTargetID));
+					case 2: format(szRank, sizeof(szRank), "You have made %s a Senior Watchdog.", GetPlayerNameEx(iTargetID));
+					case 3: format(szRank, sizeof(szRank), "You have made %s a RP Specialist.", GetPlayerNameEx(iTargetID));
+					case 4: format(szRank, sizeof(szRank), "You have made %s a Director of RP Improvement.", GetPlayerNameEx(iTargetID));
+					default: format(szRank, sizeof(szRank), "You have made %s an undefined level watchdog.", GetPlayerNameEx(iTargetID));
+				}
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szRank);
+			}
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	return 1;
 }

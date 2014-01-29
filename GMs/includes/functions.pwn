@@ -19327,6 +19327,12 @@ stock ClearReports()
 	    if(Reports[i][BeingUsed] == 1) {
 			DeletePVar(Reports[i][ReportFrom], "HasReport");
 		}
+		if(GetPVarInt(Reports[i][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(Reports[i][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[i][ReportFrom], "AlertType");
+			if(AlertTime[Reports[i][ReportFrom]] != 0) AlertTime[Reports[i][ReportFrom]] = 0;
+		}
 		strmid(Reports[i][Report], "None", 0, 4, 4);
 		Reports[i][CheckingReport] = INVALID_PLAYER_ID;
         Reports[i][ReportFrom] = INVALID_PLAYER_ID;

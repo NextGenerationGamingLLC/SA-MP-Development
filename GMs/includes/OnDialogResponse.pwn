@@ -11215,6 +11215,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendReportToQue(playerid, string, 2, 1);
 
 			ShotPlayer[giveplayerid][playerid] = 0;
+			
+			SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
+			SetPVarInt(playerid, "AlertType", 1);
+			AlertTime[playerid] = 300;
 	    }
 	    else
 		{
@@ -11976,6 +11980,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid, Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Revenge Killing. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 2);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12032,6 +12039,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Car Ramming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 4);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12116,6 +12126,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Spamming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 6);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12144,6 +12157,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Gun Discharge Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 7);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12254,6 +12270,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Name. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 8);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12390,6 +12409,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendReportToQue(playerid,Message, 2, GetPlayerPriority(playerid));
 				format(Message, sizeof(Message), "You have submitted a report on %s for Car Surfing. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
+				SetPVarInt(playerid, "AlertedThisPlayer", Player);
+				SetPVarInt(playerid, "AlertType", 10);
+				AlertTime[playerid] = 300;
 			}
 	    }
 	}
@@ -12434,6 +12456,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
    		    format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Behavior. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			SendClientMessageEx(playerid, COLOR_WHITE, Message);
    		    DeletePVar(playerid, "NRPB");
+			SetPVarInt(playerid, "AlertedThisPlayer", Player);
+			SetPVarInt(playerid, "AlertType", 11);
+			AlertTime[playerid] = 300;
 		}
 		else {
 		    DeletePVar(playerid, "NRPB");
@@ -18593,13 +18618,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			PlayerInfo[GetPVarInt(playerid, "ActionOn")][pAccountRestricted] = 1;
+			PlayerInfo[GetPVarInt(playerid, "PendingAction4")][pAccountRestricted] = 1;
 			SendClientMessageEx(playerid, COLOR_RED, "You have restricted this player account.");
-			return DeletePVar(playerid, "ActionOn");
+			PlayerTextDrawShow(GetPVarInt(playerid, "PendingAction4"), AccountRestriction[GetPVarInt(playerid, "PendingAction4")]);
+			PlayerTextDrawShow(GetPVarInt(playerid, "PendingAction4"), AccountRestrictionEx[GetPVarInt(playerid, "PendingAction4")]);
+			format(string, sizeof(string), "%s has restricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "PendingAction4")));
+			Log("logs/restrictaccount.log", string);
+			return DeletePVar(playerid, "PendingAction4");
 		}
 		else
 		{
-			DeletePVar(playerid, "ActionOn");
+			DeletePVar(playerid, "PendingAction4");
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You have decided to not restrict this player account.");
 		}
 	}
