@@ -1262,7 +1262,7 @@ CMD:areloadpb(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
 		LoadPaintballArenas();
-		SendClientMessageEx(playerid, COLOR_RED, " Paintball Arenas Loaded from file. ");
+		SendClientMessageEx(playerid, COLOR_RED, " Paintball Arenas Loaded from the database. ");
     }
 }
 
@@ -37795,69 +37795,6 @@ CMD:shoptable(playerid, params[])
 	return 1;
 }
 
-/*CMD:shopbag(playerid, params[])
-{
-	if (PlayerInfo[playerid][pShopTech] < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
-		return 1;
-	}
-
-	new string[128], giveplayerid, invoice[32];
-	if(sscanf(params, "us[32]", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopbag [player] [invoice #]");
-
-	StorageInfo[playerid][0][sStorage] = 1;
-
-	format(string, sizeof(string), "You have received a Bag from Shop Tech %s. ", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s a Bag - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice, GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	Log("logs/shoplog.log", string);
-	return 1;
-}
-
-CMD:shopbackpack(playerid, params[])
-{
-	if (PlayerInfo[playerid][pShopTech] < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
-		return 1;
-	}
-
-	new string[128], giveplayerid, invoice[32];
-	if(sscanf(params, "us[32]", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopbackpack [player] [invoice #]");
-
-	StorageInfo[playerid][1][sStorage] = 1;
-
-	format(string, sizeof(string), "You have received a Backpack from Shop Tech %s. ", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s a Backpack - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice, GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	Log("logs/shoplog.log", string);
-	return 1;
-}
-
-CMD:shopbriefcase(playerid, params[])
-{
-	if (PlayerInfo[playerid][pShopTech] < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
-		return 1;
-	}
-
-	new string[128], giveplayerid, invoice[32];
-	if(sscanf(params, "us[32]", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shopbriefcase [player] [invoice #]");
-
-	StorageInfo[playerid][2][sStorage] = 1;
-
-	format(string, sizeof(string), "You have received a Briefcase from Shop Tech %s. ", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s a Briefcase - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice, GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	Log("logs/shoplog.log", string);
-	return 1;
-}*/
-
 CMD:shopfirework(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1)
@@ -39866,19 +39803,19 @@ CMD:ah(playerid, params[])
 		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} *** /jail /kick /staff /togstaff /changename /dmwatch /dmalert");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SERVER MODERATOR{B4B5B7} *** /mjail /kick /staff /togstaff /dmwatch /dmalert");
 	}
-	if (PlayerInfo[playerid][pWatchdog] == 1)
+	if (PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist");
 	}
-	if (PlayerInfo[playerid][pWatchdog] == 2)
+	if (PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /kick /ban /prison /n(un)mute /ad(un)mute /dmwatchlist /warn /spec /kills");
 	}
-	if (PlayerInfo[playerid][pWatchdog] == 3)
+	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** RP SPECIALIST *** /watchdogs /restrictaccount /unrestrictaccount");
 	}
-	if (PlayerInfo[playerid][pWatchdog] == 4)
+	if (PlayerInfo[playerid][pWatchdog] >= 4)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove /wdwhitelist");
 	}
@@ -40743,43 +40680,7 @@ CMD:safedeposit(playerid, params[]) // TransferStorage(playerid, storageid, from
 		SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Heroin");
 		return 1;
 	}
-	/*if(sscanf(params, "ddd", itemid, storageid, amount))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /safedeposit [itemid] [storageid] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-	}
-	if(itemid < 1 || itemid > 4) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /safedeposit [itemid] [storageid] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-	}
-
-	if(storageid < 0 || storageid > 1) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /safedeposit [itemid] [storageid] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials");
-		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
-		return 1;
-	}*/
-
 	if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't deposit less than 1.");
-
-	// Find the storageid of the storagedevice.
-	/*if(storageid == 1) {
-		new bool:itemEquipped = false;
-		for(new i = 0; i < 3; i++)
-		{
-			if(StorageInfo[playerid][i][sAttached] == 1) {
-				storageid = i+1;
-				itemEquipped = true;
-			}
-		}
-		if(itemEquipped == false) return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a storage device equipped!");
-	}
-
-	if(amount < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't deposit less than 1.");*/
 	if(IsPlayerInRangeOfPoint(playerid, 3.0, FamilyInfo[family][FamilySafe][0], FamilyInfo[family][FamilySafe][1], FamilyInfo[family][FamilySafe][2]) && GetPlayerVirtualWorld(playerid) == FamilyInfo[family][FamilySafeVW] && GetPlayerInterior(playerid) == FamilyInfo[family][FamilySafeInt])
 	{
 		new file[32], month, day, year;
@@ -41800,32 +41701,6 @@ CMD:report(playerid, params[])
 	return 1;
 }
 
-/*CMD:report(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pRMuted] != 0)
-	{
-  		ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
-		return 1;
-	}
- 	if(JustReported[playerid] > 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Wait 25 seconds before sending another report!");
-		return 1;
-	}
-
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /report [text]");
-
-	JustReported[playerid]=25;
-	SendReportToQue(playerid, params);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Your report message was sent to the Admins.");
-	return 1;
-}*/
-
 CMD:cancelreport(playerid, params[])
 {
     for(new i = 0; i < MAX_REPORTS; i++)
@@ -42036,7 +41911,7 @@ CMD:ar(playerid, params[])
 				SetPVarInt(playerid, "PendingAction", GetPVarInt(Reports[reportid][ReportFrom], "AlertType"));
 				SetPVarInt(playerid, "PendingAction2", GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"));
 				SetPVarInt(playerid, "PendingAction3", Reports[reportid][ReportFrom]);
-				DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+				SetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer", INVALID_PLAYER_ID);
 			}
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
@@ -53855,13 +53730,6 @@ CMD:selltoy(playerid, params[])
 }	
 
 // Relay For Life
-
-/*CMD:temprfl(playerid, params[])
-{
-	LoadRelayForLifeTeams();
-	return 1;
-}*/
-
 CMD:setlapcount(playerid, params[]) 
 {
     if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
@@ -58039,7 +57907,7 @@ CMD:makewatchdog(playerid, params[])  {
 					case 1: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 2: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Senior Watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 3: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a RP Specialist.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-					case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+					case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s the Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				}	
 				
@@ -58052,7 +57920,7 @@ CMD:makewatchdog(playerid, params[])  {
 					case 1: format(szRank, sizeof(szRank), "You have been made a Watchdog by %s.", GetPlayerNameEx(playerid));
 					case 2: format(szRank, sizeof(szRank), "You have been made a Senior Watchdog by %s.", GetPlayerNameEx(playerid));
 					case 3: format(szRank, sizeof(szRank), "You have been made a RP Specialist by %s.", GetPlayerNameEx(playerid));
-					case 4: format(szRank, sizeof(szRank), "You have been made a Director of RP Improvement by %s.", GetPlayerNameEx(playerid));
+					case 4: format(szRank, sizeof(szRank), "You have been made the Director of RP Improvement by %s.", GetPlayerNameEx(playerid));
 					default: format(szRank, sizeof(szRank), "You have been made an undefined level watchdog by %s.", GetPlayerNameEx(playerid));
 				}
 				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szRank);
@@ -58062,7 +57930,7 @@ CMD:makewatchdog(playerid, params[])  {
 					case 1: format(szRank, sizeof(szRank), "You have made %s a Watchdog.", GetPlayerNameEx(iTargetID));
 					case 2: format(szRank, sizeof(szRank), "You have made %s a Senior Watchdog.", GetPlayerNameEx(iTargetID));
 					case 3: format(szRank, sizeof(szRank), "You have made %s a RP Specialist.", GetPlayerNameEx(iTargetID));
-					case 4: format(szRank, sizeof(szRank), "You have made %s a Director of RP Improvement.", GetPlayerNameEx(iTargetID));
+					case 4: format(szRank, sizeof(szRank), "You have made %s the Director of RP Improvement.", GetPlayerNameEx(iTargetID));
 					default: format(szRank, sizeof(szRank), "You have made %s an undefined level watchdog.", GetPlayerNameEx(iTargetID));
 				}
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szRank);

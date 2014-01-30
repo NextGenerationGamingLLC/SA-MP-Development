@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.036"
+#define SERVER_GM_TEXT "NG:RP v3.0.038"
 
 
 
@@ -85,7 +85,6 @@
 #include <ZCMD>
 #include <sscanf2>
 #include <crashdetect>
-//#include <foreach> - Bugs players with an ID over 500
 #include <YSI\y_timers>
 #include <YSI\y_utils>
 #if defined SOCKET_ENABLED

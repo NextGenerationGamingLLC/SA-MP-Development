@@ -355,10 +355,6 @@ public OnPlayerLoad(playerid)
 	    PlayerInfo[playerid][pVIPSellable] = 0;
 	    format(string, sizeof(string), "[DEBUG] %s (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
 	    Log("logs/vipremove.log", string);
-	    //format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: Please check person %s as their VIP may have expired.", GetPlayerNameEx(playerid));
-		//ABroadCast(COLOR_YELLOW, string, 4);
-	    //PlayerInfo[playerid][pDonateRank] = 0;
-	    //SendClientMessageEx(playerid, COLOR_YELLOW, "Your VIP has been removed as it has expired");
 	}
 
 	if(PlayerInfo[playerid][pPendingRefReward] >= 1)
@@ -619,8 +615,6 @@ public OnPlayerLoad(playerid)
 	
 	// Create the player necessary textdraws
 	CreatePlayerTextDraws(playerid);
-
-
 	printf("%s has logged in.", GetPlayerNameEx(playerid));
 	format(string, sizeof(string), "SERVER: Welcome, %s.", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -671,7 +665,6 @@ public OnPlayerLoad(playerid)
 	}
 
 	TogglePlayerSpectating(playerid, 0);
-	//SpawnPlayer(playerid);
 	format(string, sizeof(string), "~w~Welcome,~n~~y~%s!", GetPlayerNameEx(playerid));
 	GameTextForPlayer(playerid, string, 5000, 1);
 	SendClientMessageEx(playerid, COLOR_YELLOW, GlobalMOTD);
@@ -936,5 +929,10 @@ public OnPlayerLoad(playerid)
 	}
 	
 	CreateAccountRestTextdraw(playerid);
+	if(PlayerInfo[playerid][pAccountRestricted] == 1)
+	{
+		PlayerTextDrawShow(playerid, AccountRestriction[playerid]);
+		PlayerTextDrawShow(playerid, AccountRestrictionEx[playerid]);
+	}
 	return 1;
 }

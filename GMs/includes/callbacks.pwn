@@ -2324,6 +2324,7 @@ public OnPlayerConnect(playerid)
 	DeletePVar(playerid, "PlayerCuffed");
 	DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST");
 	SetPVarInt(playerid, "Undercover", 0);
+	SetPVarInt(playerid, "AlertedThisPlayer", INVALID_PLAYER_ID);
 	
 	HackingMods[playerid] = 0;
 	pSpeed[playerid] = 0.0;
