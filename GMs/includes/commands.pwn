@@ -57742,11 +57742,11 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "%s\nSenior Watchdog %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "%s\nRP Specialist %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "%s\nDirector of RP Improvement %s (ID %i)", string, GetPlayerNameEx(i), i);
-				else string = "NULL";
+				else string = "";
 			}	
 		}
 		
-		if(strcmp(string, "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no watchdogs online!");
+		if(strcmp(string, "", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no watchdogs online!");
 		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, "Watchdogs that are currently online", string, "Close", "");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
