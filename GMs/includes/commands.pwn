@@ -57941,3 +57941,108 @@ CMD:makewatchdog(playerid, params[])  {
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
 }
+
+CMD:valgifts(playerid, params[])
+{
+    if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pPR] == 2)
+    {
+     	if(ValGifts == 0)
+     	{
+           	ValGifts = 1;
+           	new sString[41 + MAX_PLAYER_NAME];
+			format( sString, sizeof( sString ), "AdmCmd: %s has enabled the /kissvalentine command.", GetPlayerNameEx(playerid));
+			ABroadCast( COLOR_LIGHTRED, sString, 1337 );
+			vgtext = CreateDynamic3DTextLabel("/kissvalentine", COLOR_RED, -1984.5751, 1117.9972, 53.1250, 10.0);
+		}
+		else
+		{
+		    ValGifts = 0;
+		    new sString[41 + MAX_PLAYER_NAME];
+	   		format( sString, sizeof( sString ), "AdmCmd: %s has disabled the /kissvalentine command.", GetPlayerNameEx(playerid));
+			ABroadCast( COLOR_LIGHTRED, sString, 1337 );
+			DestroyDynamic3DTextLabel(vgtext);
+		}
+	}
+	return 1;
+}
+
+CMD:kissvalentine(playerid, params[])
+{
+	new string[128], year, month, day;
+	getdate(year, month, day);
+	if(ValGifts == 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "This command has been disabled!");
+		return 1;
+	}
+	if(IsPlayerInRangeOfPoint(playerid, 10.0,-1984.5751,1117.9972,53.1250))
+	{
+		new giveplayerid, style;
+		if(sscanf(params, "ud", giveplayerid, style)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /kissvalentine [player] [style (1-6)]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+		//if(playerid == giveplayerid) return 1;
+		if(!(1 < style < 7)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /kissvalentine [player] [style (1-6)]");
+		new Float: ppFloats[3];
+
+		GetPlayerPos(giveplayerid, ppFloats[0], ppFloats[1], ppFloats[2]);
+
+		if(!IsPlayerInRangeOfPoint(playerid, 3, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[giveplayerid] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You're too far away. You can't kiss right now.");
+			return 1;
+		}
+		if(PlayerInfo[playerid][pGiftTime] > 0)
+		{
+			format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
+			ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
+			return 1;
+		}
+		else if(PlayerInfo[giveplayerid][pGiftTime] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "That player has already received a gift in the last 5 hours!");
+			return 1;
+		}
+		ClearAnimations(playerid);
+		ClearAnimations(giveplayerid);
+		PlayerFacePlayer( playerid, giveplayerid );
+		switch(style) {
+			case 1:
+			{
+				ApplyAnimation( playerid, "KISSING", "Playa_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Playa_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+			case 2:
+			{
+				ApplyAnimation( playerid, "KISSING", "Playa_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Playa_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+			case 3:
+			{
+				ApplyAnimation( playerid, "KISSING", "Playa_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Playa_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+			case 4:
+			{
+				ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Grlfrd_Kiss_01", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+			case 5:
+			{
+				ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Grlfrd_Kiss_02", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+			case 6:
+			{
+				ApplyAnimation( playerid, "KISSING", "Grlfrd_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation( giveplayerid, "KISSING", "Grlfrd_Kiss_03", 4.1, 0, 0, 0, 0, 0, 1);
+			}
+		}
+		format(string, sizeof(string), "* %s has given %s a kiss.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		GiftPlayer(MAX_PLAYERS, playerid);
+		GiftPlayer(MAX_PLAYERS, giveplayerid);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You need to be near the San Fierro Church in order to use this command.");
+	return 1;
+}

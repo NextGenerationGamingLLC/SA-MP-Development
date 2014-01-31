@@ -601,7 +601,7 @@ new Float:BroadcastFloats[MAX_PLAYERS][6];
 new BroadcastLastVW[MAX_PLAYERS];
 new BroadcastLastInt[MAX_PLAYERS];
 new EventLastInt[MAX_PLAYERS]; new EventLastVW[MAX_PLAYERS];
-new Gifts, VIPGifts = 0, VIPGiftsTimeLeft, VIPGiftsName[MAX_PLAYER_NAME];
+new Gifts, VIPGifts = 0, VIPGiftsTimeLeft, VIPGiftsName[MAX_PLAYER_NAME], ValGifts, Text3D: vgtext;
 new GiftCode[32], GiftCodeBypass, SecurityCode[32], ShopClosed, SellClosed, RimMod, CarVoucher, PVIPVoucher;
 new XMASGifts = 0;
 new GiftAllowed;
