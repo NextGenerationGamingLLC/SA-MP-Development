@@ -34253,8 +34253,7 @@ CMD:spec(playerid, params[])
 		}
 		if(GetPVarType(playerid, "pWatchdogWatching") && (GetPVarInt(playerid, "pWatchdogWatching") != giveplayerid))
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate the person you are DM Watching.");
-			return 1;
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can only spectate people on the Watchlist!");
 		}
 		if((PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 1) && PlayerInfo[giveplayerid][pWatchlist] == 0)
 		{
@@ -57673,8 +57672,8 @@ CMD:restrictaccount(playerid, params[])
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[playerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
-			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is already restricted!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict an administrator account!");
 			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot restrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 1;
@@ -57687,6 +57686,9 @@ CMD:restrictaccount(playerid, params[])
 			
 			PlayerTextDrawShow(giveplayerid, AccountRestriction[giveplayerid]);
 			PlayerTextDrawShow(giveplayerid, AccountRestrictionEx[giveplayerid]);
+			
+			format(string, sizeof(string), "AdmCmd: %s has restricted %s account.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			ABroadCast(COLOR_LIGHTRED, string, 2);
 			
 			format(string, sizeof(string), "%s has restricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			Log("logs/restrictaccount.log", string);
@@ -57706,8 +57708,8 @@ CMD:unrestrictaccount(playerid, params[])
 		
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[playerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
-			if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
+			if(PlayerInfo[giveplayerid][pAccountRestricted] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player account is not restricted!");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict an administrator account!");
 			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
@@ -57716,6 +57718,9 @@ CMD:unrestrictaccount(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			format(string, sizeof(string), "Your account has been unrestricted by %s.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
+			
+			format(string, sizeof(string), "AdmCmd: %s has unrestricted %s account.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			ABroadCast(COLOR_LIGHTRED, string, 2);
 			
 			PlayerTextDrawHide(giveplayerid, AccountRestriction[giveplayerid]);
 			PlayerTextDrawHide(giveplayerid, AccountRestrictionEx[giveplayerid]);
@@ -57742,11 +57747,9 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "%s\nSenior Watchdog %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "%s\nRP Specialist %s (ID %i)", string, GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "%s\nDirector of RP Improvement %s (ID %i)", string, GetPlayerNameEx(i), i);
-				else string = "";
 			}	
 		}
 		
-		if(strcmp(string, "", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is currently no watchdogs online!");
 		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, "Watchdogs that are currently online", string, "Close", "");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");

@@ -1592,7 +1592,15 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		SetPVarInt(playerid, "commitSuicide", 0);
 	}
-	if(PlayerInfo[playerid][pAccountRestricted] == 1) return false; // If the account is restricted, cancel the damage
+	if(PlayerInfo[issuerid][pAccountRestricted] == 1)
+	{
+		new Float: fHealth, Float: fArmour;
+		GetPlayerHealth(playerid, fHealth);
+		GetPlayerArmour(playerid, fArmour);
+		SetPlayerHealth(playerid, fHealth);
+		SetPlayerArmour(playerid, fArmour);
+		return true;
+	}
 	if(issuerid != INVALID_PLAYER_ID)
 	{
 	    ShotPlayer[issuerid][playerid] = gettime();
@@ -1813,8 +1821,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
-	
-	if(PlayerInfo[playerid][pAccountRestricted] == 1) return false; // If the account is restricted, cancel the damage
 
     if(pTazer{playerid} == 1)
 	{
@@ -6787,8 +6793,12 @@ public OnPlayerText(playerid, text[])
 						}
 						SendBugMessage(PlayerInfo[i][pBugged], str);
 					}
-
-					if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+					if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
+					{
+						format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
+						SendClientMessageEx(i, COLOR_FADE5, string);
+					}
+					else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 						SendClientMessageEx(i, COLOR_FADE1, string);
 					}
