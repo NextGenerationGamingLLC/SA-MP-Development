@@ -3498,7 +3498,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
 
-				    new fine = 10*totalwealth/100;
+				    new fine = 10 * totalwealth / 100;
+					if(GetPlayerCash(playerid) < fine)
+					{
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has declined the Newbie Unmute (Insufficient Funds).", GetPlayerNameEx(playerid));
+						ABroadCast(COLOR_YELLOW, string, 2);
+						return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford an unmute!");
+					}
+					
 	                format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Newbie Chat Unmute.",GetPlayerNameEx(playerid),fine);
 	                GivePlayerCash(playerid,-fine);
 					ABroadCast(COLOR_YELLOW,string,2);
@@ -3573,8 +3580,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
 					
+					new fine = 10 * totalwealth / 100;
+					if(GetPlayerCash(playerid) < fine)
+					{
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has declined the Advertisement Unmute (Insufficient Funds).", GetPlayerNameEx(playerid));
+						ABroadCast(COLOR_YELLOW, string, 2);
+						return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford an unmute!");
+					}
+					
                     PlayerInfo[playerid][pADMute] = 0;
-				    new fine = 10*totalwealth/100;
 	                format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Advertisement Unmute.",GetPlayerNameEx(playerid),fine);
 	                GivePlayerCash(playerid,-fine);
 					ABroadCast(COLOR_YELLOW,string,2);

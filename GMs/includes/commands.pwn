@@ -3779,7 +3779,7 @@ CMD:flipcoin(playerid, params[]) {
     switch(random(200)) {
         case 0 .. 98: format(szMessage, sizeof(szMessage), "* %s flips a coin that lands on heads.", GetPlayerNameEx(playerid));
 		case 100 .. 198: format(szMessage, sizeof(szMessage), "* %s flips a coin that lands on tails.", GetPlayerNameEx(playerid));
-		default: format(szMessage, sizeof(szMessage), "* %s flips a coin - a wild Smo appears, screams \"MY PRECIOUS!\", quickly snatches it and runs away.", GetPlayerNameEx(playerid));
+		default: cmd_flipcoin(playerid, params);
     }
     return ProxDetector(5.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 }
@@ -3789,7 +3789,7 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid),(random(6)+1));
+        new rand = Random(1, 6); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else
