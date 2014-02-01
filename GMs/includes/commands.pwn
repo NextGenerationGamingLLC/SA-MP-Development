@@ -11762,7 +11762,7 @@ CMD:join(playerid, params[])
 {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while being inside a vehicle.");
 	if(GetPlayerState(playerid) == 1 && PlayerInfo[playerid][pJob] == 0 || (PlayerInfo[playerid][pJob2] == 0 && (PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)) || (PlayerInfo[playerid][pJob3] == 0 && PlayerInfo[playerid][pDonateRank] >= 3)) {
-		if(IsPlayerInRangeOfPoint(playerid,3.0,251.99, 117.36, 1003.22) || IsPlayerInRangeOfPoint(playerid,3.0,301.042633, 178.700408, 1007.171875) || IsPlayerInRangeOfPoint(playerid,3.0,-1385.6786,2625.6636,55.5572)) {
+		if(IsPlayerInRangeOfPoint(playerid,3.0,251.99, 117.36, 1003.22) || IsPlayerInRangeOfPoint(playerid,3.0, 1478.9515, -1755.7147, 3285.2859) || IsPlayerInRangeOfPoint(playerid,3.0,301.042633, 178.700408, 1007.171875) || IsPlayerInRangeOfPoint(playerid,3.0,-1385.6786,2625.6636,55.5572)) {
 			if(PlayerInfo[playerid][pJob] == 0) {
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Detective, type /accept job.");
 				GettingJob[playerid] = 1;
@@ -30099,7 +30099,7 @@ CMD:lockgate(playerid, params[])
     for(new i = 0; i < sizeof(GateInfo); i++)
 	{
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z))
+		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
 		{
 			if(GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
 			{
@@ -42343,11 +42343,12 @@ CMD:miscshop(playerid, params[])
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
-			new szDialog[512];
+			new szDialog[1024];
 			format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 			number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
 			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})", szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]));
+			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})", 
+			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
 			ShowPlayerDialog(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 		}
 		else
@@ -58047,5 +58048,28 @@ CMD:kissvalentine(playerid, params[])
 		GiftPlayer(MAX_PLAYERS, giveplayerid);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You need to be near the San Fierro Church in order to use this command.");
+	return 1;
+}
+
+CMD:listgates(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new hid, string[128];
+	if(sscanf(params, "d", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listgates [houseid]");
+	if(hid <= 0 || hid >= MAX_HOUSES)
+	{
+		format(string, sizeof(string), "House ID must be between 1 and %d.", MAX_HOUSES - 1);
+		return SendClientMessageEx(playerid, COLOR_GREY, string);
+	}
+	format(string, sizeof(string), "Listing gates linked to house id: %d", hid);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	for(new i = 0; i < MAX_GATES; i++)
+	{
+		if(GateInfo[i][gHID] == hid)
+		{
+			format(string, sizeof(string), "- %d", i);
+			SendClientMessageEx(playerid, COLOR_GREY, string);
+		}
+	}
 	return 1;
 }

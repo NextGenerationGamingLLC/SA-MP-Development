@@ -2878,15 +2878,15 @@ IsAtTruckDeliveryPoint(playerid)
 
 CancelTruckDelivery(playerid)
 {
-    new vehicleid = GetPlayerVehicleID(playerid);
+	new vehicleid = GetPlayerVehicleID(playerid);
 	if(TruckDeliveringTo[TruckUsed[playerid]] != INVALID_BUSINESS_ID)
 	{
-	    if(TruckDeliveringTo[TruckUsed[playerid]] == BUSINESS_TYPE_GASSTATION)
-	    {
-	        DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
-	        DeletePVar(playerid, "Gas_TrailerID");
-	    }
-	    Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bOrderState] = 1;
+		if(Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bType] == BUSINESS_TYPE_GASSTATION)
+		{
+			DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
+			DeletePVar(playerid, "Gas_TrailerID");
+		}
+		Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bOrderState] = 1;
 		SaveBusiness(TruckDeliveringTo[TruckUsed[playerid]]);
 	}
 	if(1 <= TruckUsed[playerid] <= MAX_VEHICLES){

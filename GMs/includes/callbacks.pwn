@@ -6325,6 +6325,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		new string[128];
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, cmdtext);
 		ABroadCast(COLOR_YELLOW, string, 2);
+		format(string,sizeof(string),"%s (ID: %d) may be server advertising: '%s'.", GetPlayerNameEx(playerid), playerid, cmdtext);
 		Log("logs/hack.log", string);
 		return 0;
 	}
@@ -6414,6 +6415,7 @@ public OnPlayerText(playerid, text[])
 	{
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, text);
 		ABroadCast(COLOR_YELLOW, string, 2);
+		format(string,sizeof(string),"%s (ID: %d) may be server advertising: '%s'.", GetPlayerNameEx(playerid), playerid, text);
 		Log("logs/hack.log", string);
 		return 0;
 	}

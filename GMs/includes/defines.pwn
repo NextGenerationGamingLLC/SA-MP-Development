@@ -112,7 +112,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		INVALID_CALL_ID 			-1
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
-#define 		MAX_ITEMS 					(35)
+#define 		MAX_ITEMS 					(36)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001

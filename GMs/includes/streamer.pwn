@@ -299,6 +299,7 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
     CreateDynamicPickup(1239, 23, -1720.962646, 1364.456176, 7.187500); //Pizza job registration
 	CreateDynamicPickup(1239, 23, 251.99, 117.36, 1003.22); //Detective Registration
+	CreateDynamicPickup(1239, 23, 1478.9515, -1755.7147, 3285.2859); //Detective Registration
 	CreateDynamicPickup(1239, 23, 1469.5247,-1755.7039,3285.2859); //Lawyer Registration
 	CreateDynamicPickup(1239, 23, 1215.1304,-11.8431,1000.9219); //Whore Registration
 	CreateDynamicPickup(1239, 23, 2166.3772,-1675.3829,15.0859); //DrugDealer Registration
@@ -428,6 +429,7 @@ public LoadStreamerDynamic3DTextLabels()
 
 	/* Job's 3D Text */
 	CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,251.99, 117.36, 1003.22+0.5,4.0);// Detective Job (LS)
+	CreateDynamic3DTextLabel("Detective Job \nType /join to become one", COLOR_RED, 1478.9515, -1755.7147, 3285.2859+0.5, 4.0);// Detective Job (LS)
     CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,301.042633, 178.700408, 1007.171875+0.5,4.0);// Detective Job (SF)
 	CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,-1385.6786, 2625.6636, 55.5572+0.5,4.0);// Detective Job (TR)
 	CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,1366.4325,-1275.2096,13.5469+0.5,4.0);// Gun Job
