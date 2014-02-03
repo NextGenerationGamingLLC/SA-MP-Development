@@ -9208,7 +9208,7 @@ CMD:sendto(playerid, params[])
 
 CMD:accept(playerid, params[])
 {
-	new szMessage[128];
+	new szMessage[256];
 	new string[128];
 	new sendername[MAX_PLAYER_NAME];
 	new giveplayer[MAX_PLAYER_NAME];
@@ -10573,12 +10573,18 @@ CMD:accept(playerid, params[])
 	                    format(szMessage, sizeof(szMessage), "* You bought %d syringes for $%d from %s.",GetPVarInt(playerid, "SyringesCount"),GetPVarInt(playerid, "SyringesPrice"),giveplayer);
 	                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 	                    GetPlayerName(playerid, sendername, sizeof(sendername));
-	                    format(szMessage, sizeof(szMessage), "* %s has bought your %d fireworks, $%d was added to your money.",sendername,GetPVarInt(playerid, "SyringesCount"),GetPVarInt(playerid, "SyringesPrice"));
+	                    format(szMessage, sizeof(szMessage), "* %s has bought your %d syringes, $%d was added to your money.",sendername,GetPVarInt(playerid, "SyringesCount"),GetPVarInt(playerid, "SyringesPrice"));
 	                    SendClientMessageEx(GetPVarInt(playerid, "SyringesOffer"), COLOR_LIGHTBLUE, szMessage);
 	                    ExtortionTurfsWarsZone(GetPVarInt(playerid, "SyringesOffer"), 5, GetPVarInt(playerid, "SyringesPrice"));
 	                    PlayerInfo[GetPVarInt(playerid, "SyringesOffer")][pSyringes] -= GetPVarInt(playerid, "SyringesCount");
 	                    PlayerInfo[playerid][pSyringes] += GetPVarInt(playerid, "SyringesCount");
 
+						new ip[32], ipex[32];
+						GetPlayerIp(playerid, ip, sizeof(ip));
+						GetPlayerIp(GetPVarInt(playerid, "SyringesOffer"), ipex, sizeof(ipex));
+						format(szMessage, sizeof(szMessage), "[SYRINGES (%d)] %s (SQL ID: %d) (IP:%s) has paid $%d to %s (SQL ID: %d) (IP:%s)", GetPVarInt(playerid, "SyringesCount"), GetPlayerNameEx(playerid),GetPlayerSQLId(playerid), ip, GetPVarInt(playerid, "SyringesPrice"), GetPlayerNameEx(GetPVarInt(playerid, "SyringesOffer")),GetPlayerSQLId(GetPVarInt(playerid, "SyringesOffer")), ipex);
+						Log("logs/sell.log", szMessage);
+						
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(GetPVarInt(playerid, "SyringesOffer"));
 
@@ -10957,6 +10963,12 @@ CMD:accept(playerid, params[])
 	                    PlayerInfo[GetPVarInt(playerid, "FireworkOffer")][pFirework] -= GetPVarInt(playerid, "FireworkCount");
 	                    PlayerInfo[playerid][pFirework] += GetPVarInt(playerid, "FireworkCount");
 
+						new ip[32], ipex[32];
+						GetPlayerIp(playerid, ip, sizeof(ip));
+						GetPlayerIp(GetPVarInt(playerid, "FireworkOffer"), ipex, sizeof(ipex));
+						format(szMessage, sizeof(szMessage), "[FIREWORKS (%d)] %s (SQL ID: %d) (IP:%s) has paid $%d to %s (SQL ID: %d) (IP:%s)", GetPVarInt(playerid, "FireworkCount"), GetPlayerNameEx(playerid),GetPlayerSQLId(playerid), ip, GetPVarInt(playerid, "FireworkPrice"), GetPlayerNameEx(GetPVarInt(playerid, "FireworkOffer")),GetPlayerSQLId(GetPVarInt(playerid, "FireworkOffer")), ipex);
+						Log("logs/sell.log", szMessage);
+							
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(GetPVarInt(playerid, "FireworkOffer"));
 
@@ -10995,8 +11007,8 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(PotOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "[POT (%d GRAMS)] %s (IP:%s) has paid $%d to %s (IP:%s)", PotGram[playerid], GetPlayerNameEx(playerid), ip, PotPrice[playerid], GetPlayerNameEx(PotOffer[playerid]), ipex);
-                            //Log("logs/pay.log", szMessage);*/
+                            format(szMessage, sizeof(szMessage), "[POT (%d GRAMS)] %s (SQL ID: %d) (IP:%s) has paid $%d to %s (SQL ID: %d) (IP:%s)", PotGram[playerid], GetPlayerNameEx(playerid),GetPlayerSQLId(playerid), ip, PotPrice[playerid], GetPlayerNameEx(PotOffer[playerid]),GetPlayerSQLId(PotOffer[playerid]), ipex);
+                            Log("logs/sell.log", szMessage);
 
 
                             GetPlayerName(PotOffer[playerid], giveplayer, sizeof(giveplayer));
@@ -11074,8 +11086,8 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(CrackOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "[CRACK DEAL (%d GRAMS)] %s (IP:%s) has paid $%d to %s (IP:%s)", CrackGram[playerid], GetPlayerNameEx(playerid), ip, CrackPrice[playerid], GetPlayerNameEx(CrackOffer[playerid]), ipex);
-                            // Log("logs/pay.log", szMessage);
+                            format(szMessage, sizeof(szMessage), "[CRACK DEAL (%d GRAMS)] %s (SQL ID: %d) (IP:%s) has paid $%d to %s (SQL ID: %d) (IP:%s)", CrackGram[playerid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, CrackPrice[playerid], GetPlayerNameEx(CrackOffer[playerid]),GetPlayerSQLId(CrackOffer[playerid]), ipex);
+                            Log("logs/sell.log", szMessage);
 
                             GivePlayerCash(playerid, -CrackPrice[playerid]);
                             GivePlayerCash(CrackOffer[playerid], CrackPrice[playerid]);
@@ -11165,11 +11177,11 @@ CMD:accept(playerid, params[])
                         ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                         ExtortionTurfsWarsZone(GunOffer[playerid], 3, 1000);
                         GivePlayerValidWeapon(playerid,GunId[playerid],50000);
-                        //new ip[32], ipex[32];
-                        //GetPlayerIp(playerid, ip, sizeof(ip));
-                        //GetPlayerIp(GunOffer[playerid], ipex, sizeof(ipex));
-                        //format(szMessage, sizeof(szMessage), "[WEAPON DEAL] %s(IP:%s) has bought a %s from %s(IP:%s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(GunOffer[playerid]), ipex);
-                        //Log("logs/pay.log", szMessage);
+                        new ip[32], ipex[32];
+                        GetPlayerIp(playerid, ip, sizeof(ip));
+                        GetPlayerIp(GunOffer[playerid], ipex, sizeof(ipex));
+                        format(szMessage, sizeof(szMessage), "[WEAPON DEAL] %s(IP:%s) has bought a %s from %s(IP:%s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(GunOffer[playerid]), ipex);
+                        Log("logs/sell.log", szMessage);
                         PlayerInfo[GunOffer[playerid]][pMats] -= GunMats[playerid];
 
                     	OnPlayerStatsUpdate(playerid);
@@ -11386,11 +11398,11 @@ CMD:accept(playerid, params[])
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
                         format(szMessage, sizeof(szMessage), "* %s created something from Materials, and hands it to %s.", GetPlayerNameEx(CraftOffer[playerid]), GetPlayerNameEx(playerid));
                         ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                        //new ip[32], ipex[32];
-                        //GetPlayerIp(playerid, ip, sizeof(ip));
-                        //GetPlayerIp(CraftOffer[playerid], ipex, sizeof(ipex));
-                        //format(szMessage, sizeof(szMessage), "[CRAFTSMAN DEAL] %s (IP: %s) has bought a %s from %s (IP: %s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(CraftOffer[playerid]), ipex);
-                        //Log("logs/pay.log", szMessage);
+                        new ip[32], ipex[32];
+                        GetPlayerIp(playerid, ip, sizeof(ip));
+                        GetPlayerIp(CraftOffer[playerid], ipex, sizeof(ipex));
+                        format(szMessage, sizeof(szMessage), "[CRAFTSMAN DEAL] %s (IP: %s) has bought a %s from %s (IP: %s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(CraftOffer[playerid]), ipex);
+                        Log("logs/sell.log", szMessage);
                         PlayerInfo[CraftOffer[playerid]][pMats] -= CraftMats[playerid];
                         PlayerInfo[CraftOffer[playerid]][pArmsSkill]++;
                         CraftOffer[playerid] = INVALID_PLAYER_ID;
@@ -11455,12 +11467,12 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(SexOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "[SEX] %s (IP:%s) had sex with %s (IP:%s) for %d.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, SexPrice[playerid]);
-                            //Log("logs/pay.log", szMessage);
+                            format(szMessage, sizeof(szMessage), "[SEX] %s (IP:%s) had sex with %s (IP:%s) for %d.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, SexPrice[playerid]);
+                            Log("logs/sell.log", szMessage);
 
                             if(SexPrice[playerid] >= 25000 && (PlayerInfo[SexOffer[playerid]][pLevel] <= 3 || PlayerInfo[playerid][pLevel] <= 3)) {
                                 format(szMessage, sizeof(szMessage), "%s (IP:%s) had sex with %s (IP:%s) for $%s in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, number_format(SexPrice[playerid]));
-                                Log("logs/pay.log", szMessage);
+                                Log("logs/sell.log", szMessage);
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -11627,8 +11639,8 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(RepairOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "%s(IP:%s) has repaired the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
-                            //Log("logs/pay.log", szMessage);
+                            format(szMessage, sizeof(szMessage), "%s(IP:%s) has repaired the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+                            Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has repaired %s's vehicle.", GetPlayerNameEx(RepairOffer[playerid]), GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             format(szMessage, sizeof(szMessage), "* You repaired your car for $%d by Car Mechanic %s.",RepairPrice[playerid],GetPlayerNameEx(RepairOffer[playerid]));
@@ -11636,7 +11648,7 @@ CMD:accept(playerid, params[])
 
                             if(RepairPrice[playerid] >= 25000 && (PlayerInfo[RepairOffer[playerid]][pLevel] <= 3 || PlayerInfo[RepairOffer[playerid]][pLevel] <= 3)) {
                                 format(szMessage, sizeof(szMessage), "%s (IP:%s) has repaired %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
-                                //Log("logs/pay.log", szMessage);
+                                Log("logs/sell.log", szMessage);
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -11709,8 +11721,8 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(RefillOffer[playerid], ipex, sizeof(ipex));
-                            //format(szMessage, sizeof(szMessage), "%s(IP:%s) has refilled the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
-                            //Log("logs/pay.log", szMessage);
+                            format(szMessage, sizeof(szMessage), "%s(IP:%s) has refilled the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+							Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", giveplayer, GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             format(szMessage, sizeof(szMessage), "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],giveplayer);
@@ -11731,7 +11743,7 @@ CMD:accept(playerid, params[])
 
                             if(RefillPrice[playerid] >= 30000 && (PlayerInfo[playerid][pLevel] <= 3 || PlayerInfo[RefillOffer[playerid]][pLevel] <= 3)) {
                                 format(szMessage, sizeof(szMessage), "%s (IP:%s) has refueled %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
-                                //Log("logs/pay.log", szMessage);
+                                Log("logs/sell.log", szMessage);
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -50221,7 +50233,7 @@ CMD:sell(playerid, params[])
 	if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 	if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 	if(price < 50000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
-	if(price > 500000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
+	if(price > 100000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price can't be lower than $50,000. Use /give for deals below the scam limit.");
 	if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "Amount cannot be below 1.");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell to yourself!");
