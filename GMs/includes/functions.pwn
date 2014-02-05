@@ -8304,6 +8304,7 @@ public FinishMaintenance()
 		ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving RFL Teams...", 1);
 		SaveRelayForLifeTeams();
 	}
+	g_mysql_SavePrices();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
 	DestroyAllDynamicObjects();
 	DestroyAllDynamic3DTextLabels();
@@ -11730,6 +11731,33 @@ stock SetPlayerSpawn(playerid)
 {
     if(IsPlayerConnected(playerid))
 	{
+		if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBEquipped])
+		{
+			switch(PlayerInfo[playerid][pBackpack])
+			{
+				case 1:
+				{
+					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+					//PlayerInfo[playerid][pBEquipped] = 1;
+				}
+				case 2: // Med
+				{
+					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+					//PlayerInfo[playerid][pBEquipped] = 1;
+				}
+				case 3: // Large
+				{
+					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
+					//PlayerInfo[playerid][pBEquipped] = 1;
+				}
+			}
+		}
 	    SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 		if(HungerPlayerInfo[playerid][hgInEvent] == 1)
 		{
@@ -12085,6 +12113,7 @@ stock SetPlayerSpawn(playerid)
 		}
 		if(GetPVarInt(playerid, "MedicBill") == 1 && PlayerInfo[playerid][pJailTime] == 0)
 		{
+			
 		    #if defined zombiemode
 	    	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 			{
@@ -12092,6 +12121,8 @@ stock SetPlayerSpawn(playerid)
   				return 1;
 			}
 			#endif
+			
+			
 			SendClientMessageEx( playerid, TEAM_CYAN_COLOR, "Before you are discharged, hospital staff will confiscate your weapons." );
 			PlayerInfo[playerid][pDuty] = 0;
 			PlayerInfo[playerid][pVW] = 0;
@@ -13986,7 +14017,7 @@ stock ShowEditMenu(playerid)
 			if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
 			{
 				PlayerHoldingObject[playerid][i] = 0;
-				RemovePlayerAttachedObject(playerid, toys-1);
+				if(!PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, toys-1);
 			}
 			break;
 		}
@@ -13998,6 +14029,7 @@ stock ShowEditMenu(playerid)
 	}
 	new toycount = GetFreeToySlot(playerid);
 	if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
+	if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
 	PlayerHoldingObject[playerid][toycount] = iIndex+1;
 	SetPlayerAttachedObject(playerid, toycount-1, PlayerToyInfo[playerid][iIndex][ptModelID],
 	PlayerToyInfo[playerid][iIndex][ptBone], PlayerToyInfo[playerid][iIndex][ptPosX],
@@ -25673,4 +25705,94 @@ stock GetFamedRankName(i)
 		}
 	}
 	return string;
+}
+
+stock GetBackpackNarcoticsGrams(playerid) {
+	new grams;
+	grams = PlayerInfo[playerid][pBItems][1];
+	grams += PlayerInfo[playerid][pBItems][2];
+	grams += PlayerInfo[playerid][pBItems][3];
+	grams += PlayerInfo[playerid][pBItems][4];
+	return grams;
+}
+
+stock CountBackpackGuns(playerid) {
+	new count;
+	if(PlayerInfo[playerid][pBItems][6] > 0)
+	{
+		count++;
+	}
+	if(PlayerInfo[playerid][pBItems][7] > 0)
+	{
+		count++;
+	}
+	if(PlayerInfo[playerid][pBItems][8] > 0)
+	{
+		count++;
+	}
+	if(PlayerInfo[playerid][pBItems][9] > 0)
+	{
+		count++;
+	}
+	return count;
+}
+
+stock IsWeaponHandgun(weaponid) {
+	switch(weaponid) {
+		case 2..8: return true;
+		case 10..24: return true;
+		default: return false;
+	}
+	return false;
+}
+
+stock IsWeaponPrimary(weaponid) {
+	switch(weaponid) {
+		case 25..34: return true;
+		default: return false;
+	}
+	return false;
+}
+
+stock GetBackpackFreeSlotGun(playerid) {
+	new slot;
+	/* switch(PlayerInfo[playerid][pBackpack]) {
+		case 1: {
+			for(new g = 6; g < 10; g++) {
+				
+				if(PlayerInfo[playerid][pBItems][g] == 0 && CountBackpackGuns(playerid) < 1) {
+					slot = g;
+					break;
+				}
+			}
+		}
+		case 2: {
+			for(new g = 6; g < 10; g++) {
+				
+				if(PlayerInfo[playerid][pBItems][g] == 0 && CountBackpackGuns(playerid) < 2) {
+					slot = g;
+					break;
+				}
+			}
+		}
+		case 3: {
+			for(new g = 6; g < 10; g++) {
+				
+				if(PlayerInfo[playerid][pBItems][g] == 0 && CountBackpackGuns(playerid) < 4) {
+					slot = g;
+					break;
+				}
+			}
+		}
+	} */
+	for(new g = 6; g < 10; g++)
+	{
+		
+		if(PlayerInfo[playerid][pBItems][g] == 0)
+		{
+			slot = g;
+			break;
+		}
+	}
+	return slot;
 }

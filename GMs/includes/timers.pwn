@@ -38,27 +38,30 @@ timer SkinDelay[1000](playerid)
 	SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 
 	// Attach Storage Objects
-	for(new i = 0; i < 3; i++)
+	if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBEquipped])
 	{
-		if(StorageInfo[playerid][i][sAttached] == 1)
+		switch(PlayerInfo[playerid][pBackpack])
 		{
-			switch(i)
+			case 1: // Small
 			{
-				case 0: // Bag
-				{
-					if(IsPlayerAttachedObjectSlotUsed(playerid, 9)) RemovePlayerAttachedObject(playerid, 9);
-					SetPlayerAttachedObject(playerid, 9, 2919, 5, 0.25, 0, 0, 0, 270, 0, 0.2, 0.2, 0.2);
-				}
-				case 1: // Backpack
-				{
-					if(IsPlayerAttachedObjectSlotUsed(playerid, 9)) RemovePlayerAttachedObject(playerid, 9);
-					SetPlayerAttachedObject(playerid, 9, 371, 1, 0.1, -0.1, 0, 0, 90, 0, 1, 1, 1);
-				}
-				case 2: // Briefcase
-				{
-					if(IsPlayerAttachedObjectSlotUsed(playerid, 9)) RemovePlayerAttachedObject(playerid, 9);
-					SetPlayerAttachedObject(playerid, 9, 1210, 5, 0.3, 0.0, 0.0, 0.0, 270.0, 180.0, 1, 1, 1);
-				}
+				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+				//PlayerInfo[playerid][pBEquipped] = 1;
+			}
+			case 2: // Med
+			{
+				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+				//PlayerInfo[playerid][pBEquipped] = 1;
+			}
+			case 3: // Large
+			{
+				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
+				//PlayerInfo[playerid][pBEquipped] = 1;
 			}
 		}
 	}
@@ -1930,6 +1933,10 @@ task ServerHeartbeat[1000]() {
 				SetPlayerWeapons(i);
 				SetPlayerPos(i, 2914.0706, -2263.0193, 7.2367);
 			}
+			if(GetPVarInt(i, "BackpackDisabled") > 0)
+				SetPVarInt(i, "BackpackDisabled", GetPVarInt(i, "BackpackDisabled"));
+			else
+				DeletePVar(i, "BackpackDisabled");
 		}	
 	}
 
@@ -2355,4 +2362,22 @@ task alertTimer[1000]()
 			}
 		}
 	}
+}
+
+timer FinishMedKit[5000](playerid)
+{
+	if(GetPVarInt(playerid, "BackpackProt") == 1) 
+	{
+		SetPlayerHealth(playerid, 100);
+		SetPlayerArmor(playerid, 100);
+		PlayerInfo[playerid][pBItems][5]--;
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Med Kit.");
+		SetPVarInt(playerid, "BackpackDisabled", 30);
+	}
+	DeletePVar(playerid, "BackpackProt");
+	return 1;
 }

@@ -1063,7 +1063,12 @@ enum pInfo
 	pNonRPMeter,
 	pAccountRestricted,
 	pWatchlist,
-	pWatchlistTime
+	pWatchlistTime,
+	pBackpack, // 0 = no bckpk 1 = small 2 = med 3 = large
+	pBEquipped,
+	pBItems[10], // 0 = food 1 = pot 2 = crack 3 = heroin 4 = opium 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4
+	pBStoredH,
+	pBStoredV
 };
 
 enum pvInfo

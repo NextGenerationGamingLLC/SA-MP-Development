@@ -646,6 +646,16 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "AccountRestricted", szResult, MainPipeline); PlayerInfo[extraid][pAccountRestricted] = strval(szResult);
 					cache_get_field_content(row,  "Watchlist", szResult, MainPipeline); PlayerInfo[extraid][pWatchlist] = strval(szResult);
 					cache_get_field_content(row,  "WatchlistTime", szResult, MainPipeline); PlayerInfo[extraid][pWatchlistTime] = strval(szResult);
+					cache_get_field_content(row,  "Backpack", szResult, MainPipeline); PlayerInfo[extraid][pBackpack] = strval(szResult);
+					cache_get_field_content(row,  "BEquipped", szResult, MainPipeline); PlayerInfo[extraid][pBEquipped] = strval(szResult);
+					cache_get_field_content(row,  "BStoredH", szResult, MainPipeline); PlayerInfo[extraid][pBStoredH] = strval(szResult);
+					cache_get_field_content(row,  "BStoredV", szResult, MainPipeline); PlayerInfo[extraid][pBStoredV] = strval(szResult);
+					for(new i = 0; i < 10; i++)
+					{
+						format(szField, sizeof(szField), "BItem%d", i);
+						cache_get_field_content(row,  szField, szResult, MainPipeline);
+						PlayerInfo[extraid][pBItems][i] = strval(szResult);
+					}
 					
 					GetPartnerName(extraid);
 					IsEmailPending(extraid, PlayerInfo[extraid][pId], PlayerInfo[extraid][pEmail]);
@@ -1590,15 +1600,15 @@ stock g_mysql_LoadPrices()
     mysql_function_query(MainPipeline, "SELECT * FROM `shopprices`", true, "OnQueryFinish", "iii", LOADSHOPDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
-g_mysql_SavePrices()
+stock g_mysql_SavePrices()
 {
 	new query[2000];
-	format(query, sizeof(query), "UPDATE `shopprices` SET `Price0` = '%d', `Price1` = '%d', `Price2` = '%d', `Price3` = '%d', `Price4` = '%d', `Price5` = '%d', `Price6` = '%d', `Price7` = '%d', `Price8` = '%d', `Price9` = '%d', `Price10` = '%d', \
-	`Price11` = '%d', `Price12` = '%d', `Price13` = '%d', `Price14` = '%d', `Price15` = '%d', `Price16` = '%d', `Price17` = '%d',", ShopItems[0][sItemPrice], ShopItems[1][sItemPrice], ShopItems[2][sItemPrice], ShopItems[3][sItemPrice], ShopItems[4][sItemPrice],
-	 ShopItems[5][sItemPrice], ShopItems[6][sItemPrice], ShopItems[7][sItemPrice], ShopItems[8][sItemPrice], ShopItems[9][sItemPrice], ShopItems[10][sItemPrice], ShopItems[11][sItemPrice], ShopItems[12][sItemPrice], ShopItems[13][sItemPrice], ShopItems[14][sItemPrice], ShopItems[15][sItemPrice],
-  	ShopItems[16][sItemPrice], ShopItems[17][sItemPrice]);
-	format(query, sizeof(query), "%s `Price18` = '%d', `Price19` = '%d', `Price20` = '%d', `Price21` = '%d', `Price22` = '%d', `Price23` = '%d', `Price24` = '%d', `Price25` = '%d', `Price26` = '%d', `Price27` = '%d', `Price28` = '%d', `Price29` = '%d', `Price30` = '%d', `Price31` = '%d', `Price32` = '%d', `Price33` = '%d', `Price34` = '%d', `Price35` = '%d'", query, ShopItems[18][sItemPrice], ShopItems[19][sItemPrice], ShopItems[20][sItemPrice], ShopItems[21][sItemPrice],
-	ShopItems[22][sItemPrice], ShopItems[23][sItemPrice], ShopItems[24][sItemPrice], ShopItems[25][sItemPrice], ShopItems[26][sItemPrice], ShopItems[27][sItemPrice], ShopItems[28][sItemPrice], ShopItems[29][sItemPrice], ShopItems[30][sItemPrice], ShopItems[31][sItemPrice], ShopItems[32][sItemPrice], ShopItems[33][sItemPrice], ShopItems[34][sItemPrice], ShopItems[35][sItemPrice]);
+	strins(query, "UPDATE `shopprices` SET ", 0);
+	for(new p = 0; p < MAX_ITEMS; p++)
+	{
+		format(query, sizeof(query), "%s`Price%d` = '%d', ", query, p, ShopItems[p][sItemPrice]);
+	}
+	strdel(query, strlen(query)-2, strlen(query));
     mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
@@ -3139,6 +3149,21 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Watchlist", PlayerInfo[playerid][pWatchlist]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WatchlistTime", PlayerInfo[playerid][pWatchlistTime]);
 	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Backpack", PlayerInfo[playerid][pBackpack]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BEquipped", PlayerInfo[playerid][pBEquipped]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredH", PlayerInfo[playerid][pBStoredH]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem0", PlayerInfo[playerid][pBItems][0]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem1", PlayerInfo[playerid][pBItems][1]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem2", PlayerInfo[playerid][pBItems][2]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem3", PlayerInfo[playerid][pBItems][3]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem4", PlayerInfo[playerid][pBItems][4]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem5", PlayerInfo[playerid][pBItems][5]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem6", PlayerInfo[playerid][pBItems][6]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem7", PlayerInfo[playerid][pBItems][7]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem8", PlayerInfo[playerid][pBItems][8]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem9", PlayerInfo[playerid][pBItems][9]);
+	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
 }
@@ -4048,7 +4073,7 @@ public CheckSales2(index)
 {
 	if(IsPlayerConnected(index))
 	{
-        new rows, fields, szDialog[2500];
+        new rows, fields, szDialog[3000];
 		cache_get_data(rows, fields, MainPipeline);
 	    if(rows)
 		{
@@ -4103,16 +4128,20 @@ public CheckSales2(index)
 			format(szDialog, sizeof(szDialog), "%sAdditional Toy Slot Sold: %d | Total Credits: %s\n\
 			Hunger Voucher: %d | Total Credits: %s\n\
 			Spawn at Gold VIP+: %d | Total Credits: %s\n\
-			Restricted Last Name (NEW): %d | Total Credits: %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[31], number_format(Amount[31]));
-
-			format(szDialog, sizeof(szDialog), "%sRestricted Last Name (CHANGE): %d | Total Credits: %s\n\
-			Custom User Title (NEW): %d | Total Credits: %s\n\
+			Restricted Last Name (NEW): %d | Total Credits: %s\n\
+			Restricted Last Name (CHANGE): %d | Total Credits: %s\n", szDialog, Solds[28], number_format(Amount[28]), Solds[29], number_format(Amount[29]), Solds[30], number_format(Amount[30]), Solds[31], number_format(Amount[31]), Solds[32], number_format(Amount[32]));
+			
+			format(szDialog, sizeof(szDialog), "%sCustom User Title (NEW): %d | Total Credits: %s\n\
 			Custom User Title (CHANGE): %d | Total Credits: %s\n\
 			Teamspeak User Channel: %d | Total Credits: %s\n\
-			Credits Transactions: %d | Total Credits %s\n", szDialog, Solds[32], number_format(Amount[32]), Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[21], number_format(Amount[21]));
-			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, 
-			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]+Amount[35]));
-		 	ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
+			Small Backpack: %d | Total Credits: %s\n\
+			Medium Backpack: %d | Total Credits: %s\n\
+			Large Backpack: %d | Total Credits: %s\n", 
+			Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]));
+			
+			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s\nTotal Amount of Credits spent: %s", szDialog, Solds[21], number_format(Amount[21]),
+			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]+Amount[35]+Amount[36]+Amount[37]+Amount[38]));
+		 	ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
 		}
 		else
 		{
@@ -6242,7 +6271,7 @@ public OnPinCheck2(index)
 							format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 							number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
 							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})", 
+							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks", 
 							szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
 							ShowPlayerDialog(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 						}

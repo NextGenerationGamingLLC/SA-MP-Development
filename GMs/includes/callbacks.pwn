@@ -1601,6 +1601,17 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		SetPlayerArmour(playerid, fArmour);
 		return true;
 	}
+	if(GetPVarInt(playerid, "BackpackProt") == 1)
+	{
+		DeletePVar(playerid, "BackpackProt");
+		if(GetPVarInt(playerid, "BackpackOpen") == 1)
+		{
+			SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 30 seconds.");
+			ShowPlayerDialog(playerid, -1, 0, "", "", "", "");
+			SetPVarInt(playerid, "BackpackDisabled", 30);
+			DeletePVar(playerid, "BackpackOpen");
+		}
+	}
 	if(issuerid != INVALID_PLAYER_ID)
 	{
 	    ShotPlayer[issuerid][playerid] = gettime();
@@ -2724,6 +2735,7 @@ public OnPlayerDisconnect(playerid, reason)
 				DeletePVar(i, "_dCheck");
 				SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
 			}
+			if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
 		}	
 	}		
 	// Why save on people who haven't logged in!

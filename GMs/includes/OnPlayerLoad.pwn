@@ -326,7 +326,15 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pAccountRestricted] = 0;
 		PlayerInfo[playerid][pWatchlist] = 0;
 		PlayerInfo[playerid][pWatchlistTime] = 0;
+		PlayerInfo[playerid][pBackpack] = 0;
+		PlayerInfo[playerid][pBEquipped] = 0;
+		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 		PlayerInfo[playerid][pReg] = 1;
+		for(new i = 0; i < 10; i++)
+		{
+			PlayerInfo[playerid][pBItems][i] = 0;
+		}
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)

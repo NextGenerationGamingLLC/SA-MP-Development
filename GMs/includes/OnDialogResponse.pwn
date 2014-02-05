@@ -1,5 +1,5 @@
 /*
-    	 		 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
+				 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
 				| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
 				| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
 				| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
@@ -38,20 +38,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	new string[128];
 
 	// Crash Bug Fix
- 	if(strfind(inputtext, "%", true) != -1)
-  	{
-  	    SendClientMessageEx(playerid, COLOR_GREY, "Invalid Character, please try again.");
+	if(strfind(inputtext, "%", true) != -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "Invalid Character, please try again.");
 		return 1;
 	}
 
 	if(RegistrationStep[playerid] != 0)
 	{
-	    if(dialogid == REGISTERSEX)
-	    {
-		    if(response)
-		    {
-			    if(listitem == 0)
-			    {
+		if(dialogid == REGISTERSEX)
+		{
+			if(response)
+			{
+				if(listitem == 0)
+				{
 					PlayerInfo[playerid][pSex] = 1;
 					SendClientMessageEx(playerid, COLOR_YELLOW2, "Alright, so you're a male.");
 					ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
@@ -71,7 +71,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(RegistrationStep[playerid] != 0 || strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0)
 	{
 		if(dialogid == REGISTERMONTH)
-	    {
+		{
 			if(response)
 			{
 				new month = listitem+1;
@@ -90,7 +90,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
 		}
 		else if(dialogid == REGISTERDAY)
-	    {
+		{
 			if(response)
 			{
 				new setday = listitem+1;
@@ -108,7 +108,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
 		}
 		else if(dialogid == REGISTERYEAR)
-	    {
+		{
 			new month, day, year, stringdiag[600];
 			getdate(year,month,day);
 			new startyear = year-100;
@@ -135,51 +135,51 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(dialogid == REGISTERREF)
 		{
-		    if(response)
-		    {
-		        if(IsNumeric(inputtext))
-		        {
-		            ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
-		            return 1;
+			if(response)
+			{
+				if(IsNumeric(inputtext))
+				{
+					ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+					return 1;
 				}
 				if(strfind(inputtext, "_", true) == -1)
 				{
-				    ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
-		            return 1;
-		        }
-		        if(strlen(inputtext) > 20)
-		        {
-		            ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That name is too long\nPlease shorten the name.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
-		            return 1;
-		        }
-		        if(strcmp(inputtext, GetPlayerNameExt(playerid), true) == 0)
-		        {
-		            ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error", "You can't add yourself as a referrer.\nPlease enter the referrer name or press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
-		            return 1;
-		        }
+					ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+					return 1;
+				}
+				if(strlen(inputtext) > 20)
+				{
+					ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That name is too long\nPlease shorten the name.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+					return 1;
+				}
+				if(strcmp(inputtext, GetPlayerNameExt(playerid), true) == 0)
+				{
+					ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error", "You can't add yourself as a referrer.\nPlease enter the referrer name or press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+					return 1;
+				}
 				for(new sz = 0; sz < strlen(inputtext); sz++)
 				{
-				    if(inputtext[sz] == ' ')
-				    {
-					    ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
-			            return 1;
-			        }
-			    }
+					if(inputtext[sz] == ' ')
+					{
+						ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+						return 1;
+					}
+				}
 
-			    new
-			        szQuery[128], szEscape[MAX_PLAYER_NAME];
+				new
+					szQuery[128], szEscape[MAX_PLAYER_NAME];
 
-			    mysql_escape_string(inputtext, szEscape);
+				mysql_escape_string(inputtext, szEscape);
 
-                format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szEscape);
+				format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szEscape);
 
-                format(szQuery, sizeof(szQuery), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", szEscape);
-         		mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+				format(szQuery, sizeof(szQuery), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", szEscape);
+				mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 			}
 			else {
-			    format(string, sizeof(string), "Nobody");
+				format(string, sizeof(string), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], string, 0, strlen(string), MAX_PLAYER_NAME);
-  				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Thanks for filling in all the information, now you can proceed to the tutorial!");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Thanks for filling in all the information, now you can proceed to the tutorial!");
 				RegistrationStep[playerid] = 3;
 				SetPlayerVirtualWorld(playerid, 0);
 				ClearChatbox(playerid);
@@ -199,12 +199,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		// BEGIN DYNAMIC GROUP CODE
 		case G_LOCKER_MAIN: if(response)
 		{
-		    new iGroupID = PlayerInfo[playerid][pMember];
+			new iGroupID = PlayerInfo[playerid][pMember];
 			switch(listitem)
 			{
-			    case 0:
-			    {
-				    if(PlayerInfo[playerid][pDuty]==0)
+				case 0:
+				{
+					if(PlayerInfo[playerid][pDuty]==0)
 					{
 						if (IsAReporter(playerid) || IsATaxiDriver(playerid))
 							format(string, sizeof(string), "* %s %s takes a badge from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
@@ -222,20 +222,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							SetPlayerArmor(playerid, 100);
 							arrGroupData[iGroupID][g_iLockerStock] -= 1;
 							new str[128], file[32];
-			                format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
+							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
 						}
 						else if(arrGroupData[iGroupID][g_iLockerCostType] != 0)
 						{
-						    SetPlayerArmor(playerid, 100.0);
+							SetPlayerArmor(playerid, 100.0);
 						}
 						else
 						{
-						    SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
-						    SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+							SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
+							SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 						}
 						PlayerInfo[playerid][pDuty] = 1;
 						SetPlayerToTeamColor(playerid);
@@ -255,9 +255,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerToTeamColor(playerid);
 					}
 				}
-			    case 1:
-			    {
-           			new
+				case 1:
+				{
+					new
 						szDialog[(32 + 8) * (MAX_GROUP_WEAPONS+1)];
 
 					for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
@@ -268,133 +268,133 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else strcat(szDialog, "\n(empty)");
 					}
 					strcat(szDialog, "\nAccessories");
-			        format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
-			    	ShowPlayerDialog(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
+					format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
 
-			    }
-			    case 2:
-			    {
-			        ShowPlayerDialog(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Uniform","Choose a skin (by ID).", "Select", "Cancel");
-			    }
-			    case 3:
-			    {
-			        ShowPlayerDialog(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Who would you like to clear?","Clear","Return");
-			    }
-			    case 4: // LEOs - HP + Armour
-			    {
-			        if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
+				}
+				case 2:
+				{
+					ShowPlayerDialog(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Uniform","Choose a skin (by ID).", "Select", "Cancel");
+				}
+				case 3:
+				{
+					ShowPlayerDialog(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Who would you like to clear?","Clear","Return");
+				}
+				case 4: // LEOs - HP + Armour
+				{
+					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 					{
 						SetPlayerArmor(playerid, 100);
 						SetPlayerHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
 						new str[128], file[32];
-		                format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-		                new month, day, year;
+						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 						Log(file, str);
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] == 1)
 					{
-					    if(arrGroupData[iGroupID][g_iBudget] > 2500)
-					    {
+						if(arrGroupData[iGroupID][g_iBudget] > 2500)
+						{
 							SetPlayerArmor(playerid, 100);
 							SetPlayerHealth(playerid, 100.0);
 							arrGroupData[iGroupID][g_iBudget] -= 2500;
 							new str[128], file[32];
-			                format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
+							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
-					    }
-					    else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($2,500)");
+						}
+						else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($2,500)");
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] == 2)
 					{
-					    if(GetPlayerCash(playerid) > 2500)
-					    {
+						if(GetPlayerCash(playerid) > 2500)
+						{
 							SetPlayerArmor(playerid, 100);
 							SetPlayerHealth(playerid, 100.0);
 							GivePlayerCash(playerid, -2500);
 							new str[128], file[32];
-			                format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
+							format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
-					    }
-					    else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($2,500)");
+						}
+						else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($2,500)");
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 					}
-			    }
-			    case 5: // LEOs - HP + Armour Car Kit
-			    {
-			        if(GetPVarInt(playerid, "CarVestKit") == 1) {
-			            return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a car kit.");
-			        }
-			        if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
+				}
+				case 5: // LEOs - HP + Armour Car/Backpack Kit
+				{
+					if(GetPVarInt(playerid, "MedVestKit") == 1) {
+						return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
+					}
+					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 					{
-					    SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a car kit.  Open the trunk of a vehicle and /loadkit to store it.");
-						SetPVarInt(playerid, "CarVestKit", 1);
+						SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+						SetPVarInt(playerid, "MedVestKit", 1);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
 						new str[128], file[32];
-		                format(str, sizeof(str), "%s took a vest for their car out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-		                new month, day, year;
+						format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 						Log(file, str);
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] == 1)
 					{
-					    if(arrGroupData[iGroupID][g_iBudget] > 3000)
-					    {
-						    SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a car kit.  Open the trunk of a vehicle and /loadkit to store it.");
-							SetPVarInt(playerid, "CarVestKit", 1);
+						if(arrGroupData[iGroupID][g_iBudget] > 3000)
+						{
+							SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+							SetPVarInt(playerid, "MedVestKit", 1);
 							arrGroupData[iGroupID][g_iBudget] -= 3000;
 							new str[128], file[32];
-			                format(str, sizeof(str), "%s took a vest for their car out of the %s locker at a cost of $3,000 to the budget fund.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
+							format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of $3,000 to the budget fund.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
-					    }
-					    else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($3,000)");
+						}
+						else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($3,000)");
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] == 2)
 					{
-					    if(GetPlayerCash(playerid) > 3000)
-					    {
-						    SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a car kit.  Open the trunk of a vehicle and /loadkit to store it.");
-							SetPVarInt(playerid, "CarVestKit", 1);
+						if(GetPlayerCash(playerid) > 3000)
+						{
+							SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+							SetPVarInt(playerid, "MedVestKit", 1);
 							GivePlayerCash(playerid, -3000);
 							new str[128], file[32];
-			                format(str, sizeof(str), "%s took a vest for their car out of the %s locker at a personal cost of $3,000.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
+							format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a personal cost of $3,000.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
-					    }
-					    else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($3,000)");
+						}
+						else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($3,000)");
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your trunk kit.");
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your trunk kit.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 					}
 				}
 				case 6: //Tazer
 				{
-				    if(PlayerInfo[playerid][pHasTazer] == 0)
-				    {
-				        new szMessage[128];
-				        format(szMessage, sizeof(szMessage), "%s reaches towards their locker, taking a tazer and cuffs out.", GetPlayerNameEx(playerid));
-				        ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                        SendClientMessageEx(playerid, COLOR_WHITE, "You're now carrying a tazer and cuffs on you.");
+					if(PlayerInfo[playerid][pHasTazer] == 0)
+					{
+						new szMessage[128];
+						format(szMessage, sizeof(szMessage), "%s reaches towards their locker, taking a tazer and cuffs out.", GetPlayerNameEx(playerid));
+						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						SendClientMessageEx(playerid, COLOR_WHITE, "You're now carrying a tazer and cuffs on you.");
 						PlayerInfo[playerid][pHasTazer] = 1;
 						PlayerInfo[playerid][pHasCuff] = 1;
 					}
@@ -407,30 +407,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new	iGroupID = PlayerInfo[playerid][pMember];
 
 			if (listitem == 16)
-   			{
+			{
 				ShowPlayerDialog(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Accessories", "Welcome to the law enforcement accessory locker!\n\n(As with regular toys, VIP unlocks more slots.)","Continue", "Cancel");
 			}
 			else
 			{
 				if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-			    new iGunID = arrGroupData[iGroupID][g_iLockerGuns][listitem];
+				new iGunID = arrGroupData[iGroupID][g_iLockerGuns][listitem];
 				if(arrGroupData[iGroupID][g_iLockerCostType] == 0)
 				{
 					if(arrGroupData[iGroupID][g_iLockerStock] >= arrGroupData[iGroupID][g_iLockerCost][listitem])
 					{
 						arrGroupData[iGroupID][g_iLockerStock] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
 						new str[128], file[32];
-		                format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %d HG Materials.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
-		                new month, day, year;
+						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %d HG Materials.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
+						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 						Log(file, str);
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for that weapon.");
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
-					    return 1;
+						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for that weapon.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						return 1;
 					}
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1)
@@ -442,10 +442,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else
 					{
-					    arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
+						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
 						new str[128], file[32];
-		                format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %$d.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
-		                new month, day, year;
+						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %$d.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
+						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 						Log(file, str);
@@ -460,14 +460,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else
 					{
-					    GivePlayerCash(playerid, -arrGroupData[iGroupID][g_iLockerCost][listitem]);
+						GivePlayerCash(playerid, -arrGroupData[iGroupID][g_iLockerCost][listitem]);
 					}
 				}
 				GivePlayerValidWeapon(playerid, iGunID, 99999);
 			}
 		}
 		case G_LOCKER_UNIFORM: if(response)	{
-            new skin = strval(inputtext), iGroupID = PlayerInfo[playerid][pMember];
+			new skin = strval(inputtext), iGroupID = PlayerInfo[playerid][pMember];
 			if(IsInvalidSkin(skin)) {
 				return ShowPlayerDialog(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName],"Invalid skin specified. Choose another.", "Select", "Cancel");
 			}
@@ -476,11 +476,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case G_LOCKER_CLEARSUSPECT: if(response)
 		{
-		    if(IsMDCPermitted(playerid))
+			if(IsMDCPermitted(playerid))
 			{
-	            new giveplayerid;
-	            new giveplayer[MAX_PLAYER_NAME];
-	            new iGroupID = PlayerInfo[playerid][pMember];
+				new giveplayerid;
+				new giveplayer[MAX_PLAYER_NAME];
+				new iGroupID = PlayerInfo[playerid][pMember];
 				giveplayerid = ReturnUser(inputtext);
 				if(IsPlayerConnected(giveplayerid))
 				{
@@ -493,12 +493,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string, sizeof(string), "* %s %s has cleared your records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 						format(string, sizeof(string), "* %s %s has cleared %s's records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-					    SendGroupMessage(1, RADIO, string);
+						SendGroupMessage(1, RADIO, string);
 
 						PlayerInfo[giveplayerid][pWantedLevel] = 0;
 						SetPlayerToTeamColor(giveplayerid);
-					    SetPlayerWantedLevel(giveplayerid, 0);
-	    				ClearCrimes(giveplayerid, playerid);
+						SetPlayerWantedLevel(giveplayerid, 0);
+						ClearCrimes(giveplayerid, playerid);
 					}
 					else
 					{
@@ -514,7 +514,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return Group_DisplayDialog(playerid, listitem);
 		}
 		case DIALOG_EDITGROUP: {
-   			if (PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return 1;
+			if (PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return 1;
 			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID"),
 				szTitle[64 + GROUP_MAX_NAME_LEN];
@@ -1235,7 +1235,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				iRankID = GetPVarInt(playerid, "Group_EditRank");
 
 			if(response) {
-			    new szTitle[128];
+				new szTitle[128];
 				arrGroupData[iGroupID][g_iPaycheck][iRankID] = strval(inputtext);
 				new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
@@ -1348,16 +1348,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new
 					iGroupID = GetPVarInt(playerid, "Group_EditID");
 
-			    for (new i; i < MAX_GROUP_LOCKERS; i++)
-			    {
-    				arrGroupLockers[iGroupID][i][g_fLockerPos][0] = 0;
-    				arrGroupLockers[iGroupID][i][g_fLockerPos][1] = 0;
-    				arrGroupLockers[iGroupID][i][g_fLockerPos][2] = 0;
-    				DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][i][g_tLocker3DLabel]);
-			    }
+				for (new i; i < MAX_GROUP_LOCKERS; i++)
+				{
+					arrGroupLockers[iGroupID][i][g_fLockerPos][0] = 0;
+					arrGroupLockers[iGroupID][i][g_fLockerPos][1] = 0;
+					arrGroupLockers[iGroupID][i][g_fLockerPos][2] = 0;
+					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][i][g_tLocker3DLabel]);
+				}
 
-			    SendClientMessage(playerid, COLOR_WHITE, "You have deleted all lockers of this group.");
-			    format(string, sizeof(string), "%s has deleted all lockers of %s", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+				SendClientMessage(playerid, COLOR_WHITE, "You have deleted all lockers of this group.");
+				format(string, sizeof(string), "%s has deleted all lockers of %s", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 				Log("logs/editgroup.log", string);
 
 			}
@@ -1365,7 +1365,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_GROUP_JURISDICTION_ADD: {
 			SetPVarInt(playerid, "Group_EditID", listitem);
-  			new iGroupID = GetPVarInt(playerid, "Group_EditID");
+			new iGroupID = GetPVarInt(playerid, "Group_EditID");
 			if(response)
 			{
 				if(arrGroupData[iGroupID][g_iJCount] >= MAX_GROUP_JURISDICTIONS) return SendClientMessage(playerid, COLOR_GRAD2, "Error: Cannot add anymore jurisdictions.");
@@ -1391,7 +1391,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 				format(string, sizeof(string), "You have successfully assigned %s to %s.", AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
-			    format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
+				format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
 				Log("logs/editgroup.log", string);
 			}
 			else return Group_DisplayDialog(playerid, iGroupID);
@@ -1410,27 +1410,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}	
 		// END DYNAMIC GROUP CODE
 
-	    case BIGEARS3: if(response) {
-	        SetPVarInt(playerid, "BigEar", 5);
-	        SetPVarInt(playerid, "BigEarFamily", listitem+1);
-   			SendClientMessageEx(playerid, COLOR_WHITE, "You will now hear all messages from this family's chat.");
-	    }
-	    else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
-	    case BIGEARS: if(response) switch(listitem) {
+		case BIGEARS3: if(response) {
+			SetPVarInt(playerid, "BigEar", 5);
+			SetPVarInt(playerid, "BigEarFamily", listitem+1);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now hear all messages from this family's chat.");
+		}
+		else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+		case BIGEARS: if(response) switch(listitem) {
 			case 0: {
-			    SetPVarInt(playerid, "BigEar", 1);
-			    SendClientMessage(playerid, COLOR_WHITE, "You have selected the Global Chat, you can now see all the messages server-wide.");
+				SetPVarInt(playerid, "BigEar", 1);
+				SendClientMessage(playerid, COLOR_WHITE, "You have selected the Global Chat, you can now see all the messages server-wide.");
 			}
 			case 1: {
-			    SetPVarInt(playerid, "BigEar", 2);
-			    SendClientMessage(playerid, COLOR_WHITE, "You have selected the OOC Chat, you can now see all the OOC(/b) messages server-wide.");
+				SetPVarInt(playerid, "BigEar", 2);
+				SendClientMessage(playerid, COLOR_WHITE, "You have selected the OOC Chat, you can now see all the OOC(/b) messages server-wide.");
 			}
 			case 2: {
-			    SetPVarInt(playerid, "BigEar", 3);
-			    SendClientMessage(playerid, COLOR_WHITE, "You have selected the IC Chat, you can now see all the IC(Includes /me's & /do's) messages server-wide.");
+				SetPVarInt(playerid, "BigEar", 3);
+				SendClientMessage(playerid, COLOR_WHITE, "You have selected the IC Chat, you can now see all the IC(Includes /me's & /do's) messages server-wide.");
 			}
 			case 3: {
-         		Group_ListGroups(playerid, BIGEARS2);
+				Group_ListGroups(playerid, BIGEARS2);
 			}
 			case 4: {
 				new bigstring[512];
@@ -1438,34 +1438,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(bigstring, sizeof(bigstring), "%s%s\n",bigstring,FamilyInfo[i][FamilyName]);
 				}
-			    ShowPlayerDialog(playerid, BIGEARS3, DIALOG_STYLE_LIST, "{3399FF}Please choose an item to proceed", bigstring, "Select", "Back");
+				ShowPlayerDialog(playerid, BIGEARS3, DIALOG_STYLE_LIST, "{3399FF}Please choose an item to proceed", bigstring, "Select", "Back");
 			}
 			case 5: {
-			    ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
+				ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 			}
 			case 6: {
 				ShowPlayerDialog(playerid, BIGEARS5, DIALOG_STYLE_INPUT, "{3399FF}Big Ears | Private Messages", "Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 			}	
 			case 7: {
-			    DeletePVar(playerid, "BigEar");
-			    DeletePVar(playerid, "BigEarGroup");
-			    DeletePVar(playerid, "BigEarPlayer");
-			    DeletePVar(playerid, "BigEarFamily");
+				DeletePVar(playerid, "BigEar");
+				DeletePVar(playerid, "BigEarGroup");
+				DeletePVar(playerid, "BigEarPlayer");
+				DeletePVar(playerid, "BigEarFamily");
 				DeletePVar(playerid, "BigEarPM");
 				DeletePVar(playerid, "BigEarPlayerPM");
 				rBigEarT[playerid] = 0;
-			    SendClientMessage(playerid, COLOR_WHITE, "You have disabled the bigears feature, you no longer see anything on your screen.");
+				SendClientMessage(playerid, COLOR_WHITE, "You have disabled the bigears feature, you no longer see anything on your screen.");
 			}
 		}
 		case BIGEARS4: {
 			if(response) {
-			    new giveplayerid;
-			    if(sscanf(inputtext, "u", giveplayerid)) {
-			        ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
+				new giveplayerid;
+				if(sscanf(inputtext, "u", giveplayerid)) {
+					ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 					return 1;
 				}
-			    SetPVarInt(playerid, "BigEar", 6);
-  				SetPVarInt(playerid, "BigEarPlayer", giveplayerid);
+				SetPVarInt(playerid, "BigEar", 6);
+				SetPVarInt(playerid, "BigEarPlayer", giveplayerid);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You can now see all the messages from this player.");
 			}
 			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
@@ -1474,7 +1474,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) {
 				new giveplayerid, szString[128];
 				if(sscanf(inputtext, "u", giveplayerid)) {
-			        ShowPlayerDialog(playerid, BIGEARS5, DIALOG_STYLE_INPUT, "{3399FF}Big Ears | Private Messages", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
+					ShowPlayerDialog(playerid, BIGEARS5, DIALOG_STYLE_INPUT, "{3399FF}Big Ears | Private Messages", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 					return 1;
 				} 
 				SetPVarInt(playerid, "BigEarPM", 1);
@@ -1492,8 +1492,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessage(playerid, COLOR_WHITE, "Only Senior Admins+ are allowed to use this feature.");
 					return 1;
 				}
-		    	SetPVarInt(playerid, "BigEar", 4);
-	        	SetPVarInt(playerid, "BigEarGroup", group);
+				SetPVarInt(playerid, "BigEar", 4);
+				SetPVarInt(playerid, "BigEarGroup", group);
 			}
 			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}
@@ -2015,54 +2015,731 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
 		}
+		case DIALOG_OBACKPACK: {
+			if(response) {
+				switch(listitem) {
+					case 0: { // Food
+						if(PlayerInfo[playerid][pBItems][0] > 0) {
+							ShowPlayerDialog(playerid, DIALOG_BFOOD, DIALOG_STYLE_MSGBOX, "Confirm meal", "Are you sure you want to use this meal now?", "Confirm", "Cancel");
+						}
+						else {
+							format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+							switch(PlayerInfo[playerid][pBackpack])
+							{
+								case 1: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items - You don't have meals", string, "Select", "Cancel");
+								}
+								case 2: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items - You don't have meals", string, "Select", "Cancel");
+								}
+								case 3: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items - You don't have meals", string, "Select", "Cancel");
+								}
+							}
+						}
+					}
+					case 1: { // Narcotics
+						new szDialog[130];
+						format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
+						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+					}
+					case 2: { // Guns
+						new szDialog[130], weapname[20], itemcount;
+						for(new i = 6; i < 10; i++)
+						{
+							if(PlayerInfo[playerid][pBItems][i] > 0)
+							{
+								GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+								format(string, sizeof(string), "ListItem%dSId", itemcount);
+								SetPVarInt(playerid, string, i);
+								itemcount++;
+							}
+						}
+						SetPVarInt(playerid, "DepositGunId", itemcount);
+						strcat(szDialog, "Deposit a weapon");
+						ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+					}
+				}
+			}
+			else {
+				DeletePVar(playerid, "BackpackProt");
+				DeletePVar(playerid, "BackpackOpen");
+			}
+		}
+		case DIALOG_BFOOD: {
+			if(response) {
+				PlayerInfo[playerid][pHunger] += 83;
+
+				if (PlayerInfo[playerid][pFitness] >= 5)
+					PlayerInfo[playerid][pFitness] -= 5;
+				else
+					PlayerInfo[playerid][pFitness] = 0;
+				PlayerInfo[playerid][pHungerTimer] = 0;
+				PlayerInfo[playerid][pHungerDeathTimer] = 0;
+
+				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
+				
+				PlayerInfo[playerid][pBItems][0]--;
+				format(string,sizeof(string),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
+				SendClientMessage(playerid, COLOR_GRAD2, string);
+				SetPlayerHealth(playerid, 100.0);
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+			else {
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+		}
+		case DIALOG_BNARCOTICS: {
+			if(response) {
+				switch(listitem) {
+					case 0: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
+					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
+					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
+					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
+				}
+				SetPVarInt(playerid, "pbitemindex", listitem+1);
+				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, string, "Withdraw\nDeposit", "Select", "Cancel");
+			}
+			else {
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+		}
+		case DIALOG_BNARCOTICS2: {
+			if(response) {
+				new pbi = GetPVarInt(playerid, "pbitemindex");
+				switch(pbi) {
+					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+					case 4: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				}
+				if(listitem) {
+					SetPVarInt(playerid, "bnwd", 1);
+					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "Enter the amount to deposit           ", "Select", "Cancel");
+				}
+				else {
+					SetPVarInt(playerid, "bnwd", 0);
+					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "Enter the amount to withdraw          ", "Select", "Cancel");
+				}
+			}
+			else {
+				new szDialog[130];
+				format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
+				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+			}
+		}
+		case DIALOG_BNARCOTICS3: {
+			if(response) {
+				new TypeName[8];
+				
+				new pbi = GetPVarInt(playerid, "pbitemindex");	
+				switch(pbi) {
+					case 1: {
+						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+						TypeName = "Pot";
+					}
+					case 2: {
+						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+						TypeName = "Crack";
+					}
+					case 3: {
+						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+						TypeName = "Heroin";
+					}
+					case 4: {
+						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+						TypeName = "Opium";
+					}
+				}
+				if(GetPVarInt(playerid, "bnwd")) {
+					new namount, maxgrams, dInfo[135];
+					if(sscanf(inputtext, "d", namount)) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nEnter the amount to deposit", "Select", "Cancel");
+					if(namount < 1) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1\nEnter the amount to deposit", "Select", "Cancel");
+					switch(PlayerInfo[playerid][pBackpack]) {
+						case 1: maxgrams = 30;
+						case 2: maxgrams = 50;
+						case 3: maxgrams = 80;
+					}
+					if(namount > (maxgrams-GetBackpackNarcoticsGrams(playerid))) 
+					{
+						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you can only store %d grams{A9C4E4}\nGrams available to store left {FFF600}%d{A9C4E4}\nEnter the amount to deposit", maxgrams, maxgrams-GetBackpackNarcoticsGrams(playerid));
+						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, dInfo, "Select", "Cancel");
+						return 1;
+					}
+					switch(pbi) {
+						case 1: { 
+							if(PlayerInfo[playerid][pPot] >= namount) PlayerInfo[playerid][pPot] -= namount;
+							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+						}	
+						case 2: { 
+							if(PlayerInfo[playerid][pCrack] >= namount) PlayerInfo[playerid][pCrack] -= namount;
+							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+						}
+						case 3: { 
+							if(PlayerInfo[playerid][pHeroin] >= namount) PlayerInfo[playerid][pHeroin] -= namount;
+							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+						}
+						case 4: { 
+							if(PlayerInfo[playerid][pRawOpium] >= namount) PlayerInfo[playerid][pRawOpium] -= namount;
+							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+						}
+					}
+					PlayerInfo[playerid][pBItems][pbi] += namount;
+					format(string, sizeof(string), "You have deposited %d grams of %s in your backpack.", namount, TypeName);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					new szDialog[130];
+					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
+					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+				}
+				else {
+					new namount, dInfo[135];
+					if(sscanf(inputtext, "d", namount)) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nEnter the amount to deposit", "Select", "Cancel");
+					if(namount < 1) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1\nEnter the amount to deposit", "Select", "Cancel");
+					if(namount > PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")]) 
+					{
+						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], TypeName, namount);
+						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, dInfo, "Select", "Cancel");
+						return 1;
+					}
+					PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")] -= namount;
+					switch(pbi) {
+						case 1: PlayerInfo[playerid][pPot] += namount;
+						case 2: PlayerInfo[playerid][pCrack] += namount;
+						case 3: PlayerInfo[playerid][pHeroin] += namount;
+						case 4: PlayerInfo[playerid][pRawOpium] += namount;
+					}
+					format(string, sizeof(string), "You have withdrawn %d grams of %s in your backpack.", namount, TypeName);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					new szDialog[130];
+					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
+					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+				}
+			}
+			else {
+				switch(GetPVarInt(playerid, "pbitemindex")) {
+					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
+					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
+					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
+					case 4: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
+				}
+				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, string, "Withdraw\nDeposit", "Select", "Cancel");
+			}
+		}
+		case DIALOG_BGUNS: {
+			if(response) {
+				new szDialog[130], weapname[20];
+				if(listitem == GetPVarInt(playerid, "DepositGunId")) {
+					switch(PlayerInfo[playerid][pBackpack]) {
+						case 1: {
+							new myweapons[2], itemcount;
+							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 10, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
+							else {
+								itemcount = 0;
+								strdel(szDialog, 0, strlen(szDialog));
+								for(new i = 6; i < 10; i++)
+								{
+									if(PlayerInfo[playerid][pBItems][i] > 0)
+									{
+										GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+										format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+										format(string, sizeof(string), "ListItem%dSId", itemcount);
+										SetPVarInt(playerid, string, i);
+										itemcount++;
+									}
+								}
+								SetPVarInt(playerid, "DepositGunId", itemcount);
+								strcat(szDialog, "Deposit a weapon");
+								ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - NO GUNS TO STORE", szDialog, "Select", "Cancel");
+							}
+						}
+						case 2, 3: {
+							new myweapons[2], itemcount;
+							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 10, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 3, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][3] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 4, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][4] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 5, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][5] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							GetPlayerWeaponData(playerid, 6, myweapons[0], myweapons[1]);
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][6] == myweapons[0])
+							{
+								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
+								format(string, sizeof(string), "ListItem%dWId", itemcount);
+								SetPVarInt(playerid, string, myweapons[0]);
+								itemcount++;
+							}
+							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
+							else {
+								itemcount = 0;
+								strdel(szDialog, 0, strlen(szDialog));
+								for(new i = 6; i < 10; i++)
+								{
+									if(PlayerInfo[playerid][pBItems][i] > 0)
+									{
+										GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+										format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+										format(string, sizeof(string), "ListItem%dSId", itemcount);
+										SetPVarInt(playerid, string, i);
+										itemcount++;
+									}
+								}
+								SetPVarInt(playerid, "DepositGunId", itemcount);
+								strcat(szDialog, "Deposit a weapon");
+								ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - NO GUNS TO STORE", szDialog, "Select", "Cancel");
+							}
+						}
+					}	
+				}
+				else {
+					format(string, sizeof(string), "ListItem%dSId", listitem);
+					new slot = GetPVarInt(playerid, string);
+					if(PlayerInfo[playerid][pBItems][slot] > 0) {
+						GetWeaponName(PlayerInfo[playerid][pBItems][slot], weapname, sizeof(weapname));
+						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot], 60000);
+						PlayerInfo[playerid][pBItems][slot] = 0;
+						DeletePVar(playerid, string);
+
+						format(string, sizeof(string), "You have withdrawn a %s from your backpack.", weapname);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+						format(string, sizeof(string), "* %s has withdrawn a %s from their backpack.", GetPlayerNameEx(playerid), weapname);
+						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						new itemcount = 0;
+						for(new i = 6; i < 10; i++)
+						{
+							if(PlayerInfo[playerid][pBItems][i] > 0)
+							{
+								GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+								format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+								format(string, sizeof(string), "ListItem%dSId", itemcount);
+								SetPVarInt(playerid, string, i);
+								itemcount++;
+							}
+						}
+						SetPVarInt(playerid, "DepositGunId", itemcount);
+						strcat(szDialog, "Deposit a weapon");
+						ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+						return 1;
+					}
+				}
+			}
+			else {
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+		}
+		case DIALOG_BGUNS2: {
+			if(response) {
+				new szDialog[130], handguns, primguns, wbid, weapname[20], slot, itemcount;
+				for(new i = 6; i < 10; i++) {
+					if(PlayerInfo[playerid][pBItems][i] > 0)
+					{
+						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;
+						else if(IsWeaponPrimary(PlayerInfo[playerid][pBItems][i])) primguns++;
+						GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+						format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+						format(string, sizeof(string), "ListItem%dSId", itemcount);
+						SetPVarInt(playerid, string, i);
+						itemcount++;
+					}
+				}
+				switch(PlayerInfo[playerid][pBackpack]) {
+					case 1: {
+						format(string, sizeof(string), "ListItem%dWId", listitem);
+						wbid = GetPVarInt(playerid, string);
+						if(handguns > 0 || primguns > 0 || IsWeaponPrimary(wbid)) {
+								
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 1 handgun", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						slot = GetBackpackFreeSlotGun(playerid);
+						if(slot != 0) {
+							RemovePlayerWeapon(playerid, wbid);
+							PlayerInfo[playerid][pBItems][slot] = wbid;
+							GetWeaponName(wbid, weapname, sizeof(weapname));
+							format(string, sizeof(string), "You have deposited a %s inside your backpack.", weapname);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
+							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						else {
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+						}
+					}
+					case 2: {
+						format(string, sizeof(string), "ListItem%dWId", listitem);
+						wbid = GetPVarInt(playerid, string);
+						if((handguns >= 2) || (IsWeaponPrimary(wbid) && primguns >= 1) || (handguns >= 1 && primguns >= 1)) {
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 2 handguns or 1 handgun and 1 primary", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						slot = GetBackpackFreeSlotGun(playerid);
+						if(slot != 0) {
+							RemovePlayerWeapon(playerid, wbid);
+							PlayerInfo[playerid][pBItems][slot] = wbid;
+							GetWeaponName(wbid, weapname, sizeof(weapname));
+							format(string, sizeof(string), "You have deposited a %s inside your backpack.", weapname);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
+							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						else {
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+						}
+					}
+					case 3: {
+						format(string, sizeof(string), "ListItem%dWId", listitem);
+						wbid = GetPVarInt(playerid, string);
+						if((handguns >= 2 && primguns >= 2) || (primguns >= 2 && IsWeaponPrimary(wbid)) || (handguns >= 2 && IsWeaponHandgun(wbid))) {
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 2 handguns and 2 primary", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						slot = GetBackpackFreeSlotGun(playerid);
+						if(slot != 0) {
+							RemovePlayerWeapon(playerid, wbid);
+							PlayerInfo[playerid][pBItems][slot] = wbid;
+							GetWeaponName(wbid, weapname, sizeof(weapname));
+							format(string, sizeof(string), "You have deposited a %s inside your backpack.", weapname);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
+							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							return 1;
+						}
+						else {
+							itemcount = 0;
+							strdel(szDialog, 0, strlen(szDialog));
+							for(new i = 6; i < 10; i++)
+							{
+								if(PlayerInfo[playerid][pBItems][i] > 0)
+								{
+									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+									format(string, sizeof(string), "ListItem%dSId", itemcount);
+									SetPVarInt(playerid, string, i);
+									itemcount++;
+								}
+							}
+							SetPVarInt(playerid, "DepositGunId", itemcount);
+							strcat(szDialog, "Deposit a weapon");
+							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+						}
+					}
+				}
+			}
+			else {
+				new itemcount, szDialog[130], weapname[20];
+				strdel(szDialog, 0, strlen(szDialog));
+				for(new i = 6; i < 10; i++)
+				{
+					if(PlayerInfo[playerid][pBItems][i] > 0)
+					{
+						GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+						format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
+						format(string, sizeof(string), "ListItem%dSId", itemcount);
+						SetPVarInt(playerid, string, i);
+						itemcount++;
+					}
+				}
+				SetPVarInt(playerid, "DepositGunId", itemcount);
+				strcat(szDialog, "Deposit a weapon");
+				ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+			}
+		}
+		case DIALOG_BMEALSTORE: {
+			if(response) {
+				PlayerInfo[playerid][pBItems][0]++;
+				format(string,sizeof(string),"* You have stored a Full Meal in your backpack(%d meals).",PlayerInfo[playerid][pBItems][0]);
+				SendClientMessage(playerid, COLOR_GRAD2, string);
+			}
+			else {
+				SetPlayerHealth(playerid, 100.0);
+				PlayerInfo[playerid][pHunger] += 83;
+				if (PlayerInfo[playerid][pFitness] >= 5)
+					PlayerInfo[playerid][pFitness] -= 5;
+				else
+					PlayerInfo[playerid][pFitness] = 0;
+				// reset hunger timers because player has just eaten
+				PlayerInfo[playerid][pHungerTimer] = 0;
+				PlayerInfo[playerid][pHungerDeathTimer] = 0;
+				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
+			}
+		}
 	}
-    if(dialogid == RCPINTRO)
-    {
-        if (response)
-	    {
-	        new msgstring[218];
+	if(dialogid == RCPINTRO)
+	{
+		if (response)
+		{
+			new msgstring[218];
 			format(msgstring,sizeof(msgstring),"\tThere are stages you follow in order to make a checkpoint;\n1.- Adjusting the position of the checkpoint.\n2.- Confirm the position of the checkpoint.\n3.- Set the checkpoint size.\n4.- Set the checkpoint type.");
 			ShowPlayerDialog(playerid,RCPINTRO2,DIALOG_STYLE_MSGBOX,"Race Checkpoints Introduction",msgstring,"Start","Cancel");
-	    }
-	    else
-	    {
+		}
+		else
+		{
 			format(string,sizeof(string),"Create a checkpoint...\nEdit an existing checkpoint\nRemove checkpoint preview");
-			ShowPlayerDialog(playerid,RCPCHOOSE,DIALOG_STYLE_LIST,"Race Checkpoints Configuration",string,"Okay","I'm done!");
-            ConfigEventCPId[playerid] = 0;
-			ConfigEventCPs[playerid][1] = 0;
-	    }
-    }
-    if(dialogid == RCPINTRO2)
-    {
-        if (response)
-	    {
-	        format(string,sizeof(string),"Create a checkpoint...\nEdit an existing checkpoint\nRemove checkpoint preview");
 			ShowPlayerDialog(playerid,RCPCHOOSE,DIALOG_STYLE_LIST,"Race Checkpoints Configuration",string,"Okay","I'm done!");
 			ConfigEventCPId[playerid] = 0;
 			ConfigEventCPs[playerid][1] = 0;
-	    }
-    }
-    if(dialogid == RCPCHOOSE)
-    {
-        if (response && ConfigEventCPs[playerid][0] == 1)
-	    {
-	        if(listitem == 0) // Create a checkpoint
-	        {
-	            if(ConfigEventCPs[playerid][1] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot create a new checkpoint since you are editing an existing one.");
-	            if(ConfigEventCPId[playerid] >= 20) {
-	                ConfigEventCPs[playerid][0] = 0;
-	                ConfigEventCPs[playerid][1] = 0;
+		}
+	}
+	if(dialogid == RCPINTRO2)
+	{
+		if (response)
+		{
+			format(string,sizeof(string),"Create a checkpoint...\nEdit an existing checkpoint\nRemove checkpoint preview");
+			ShowPlayerDialog(playerid,RCPCHOOSE,DIALOG_STYLE_LIST,"Race Checkpoints Configuration",string,"Okay","I'm done!");
+			ConfigEventCPId[playerid] = 0;
+			ConfigEventCPs[playerid][1] = 0;
+		}
+	}
+	if(dialogid == RCPCHOOSE)
+	{
+		if (response && ConfigEventCPs[playerid][0] == 1)
+		{
+			if(listitem == 0) // Create a checkpoint
+			{
+				if(ConfigEventCPs[playerid][1] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot create a new checkpoint since you are editing an existing one.");
+				if(ConfigEventCPId[playerid] >= 20) {
+					ConfigEventCPs[playerid][0] = 0;
+					ConfigEventCPs[playerid][1] = 0;
 					ConfigEventCPId[playerid] = 0;
 					return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot create a new checkpoint since you have reached the checkpoint limit(20).");
 				}
 				new i;
 				for(i = 0; i < 20; i++)
 				{
-				    if(EventRCPU[i] == 0) break;
+					if(EventRCPU[i] == 0) break;
 				}
 				if(i >= 20) {
-	                ConfigEventCPs[playerid][0] = 0;
-	                ConfigEventCPs[playerid][1] = 0;
+					ConfigEventCPs[playerid][0] = 0;
+					ConfigEventCPs[playerid][1] = 0;
 					ConfigEventCPId[playerid] = 0;
 					return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot create a new checkpoint since you have reached the checkpoint limit(20).");
 				}
@@ -2075,35 +2752,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 1) // Edit an existing checkpoint IN PROCESS
 			{
-			    if(ConfigEventCPs[playerid][1] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot edit a checkpoint since you are editing an existing one.");
-			    new bigstring[798], totalrcps;
-			    for(new i = 0; i < 20; i++)
+				if(ConfigEventCPs[playerid][1] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You cannot edit a checkpoint since you are editing an existing one.");
+				new bigstring[798], totalrcps;
+				for(new i = 0; i < 20; i++)
 				{
 					if(EventRCPU[i] > 0) {
-					    switch(EventRCPT[i]) {
+						switch(EventRCPT[i]) {
 							case 1:
 							{
-					    		format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Start Checkpoint", bigstring, i+1);
+								format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Start Checkpoint", bigstring, i+1);
 								format(bigstring, sizeof(bigstring), "%s\n", bigstring);
 							}
 							case 2:
 							{
-					    		format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Normal Checkpoint", bigstring, i+1);
+								format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Normal Checkpoint", bigstring, i+1);
 								format(bigstring, sizeof(bigstring), "%s\n", bigstring);
 							}
 							case 3:
 							{
-					    		format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Watering Station Checkpoint", bigstring, i+1);
+								format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Watering Station Checkpoint", bigstring, i+1);
 								format(bigstring, sizeof(bigstring), "%s\n", bigstring);
 							}
 							case 4:
 							{
-					    		format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Finish Checkpoint", bigstring, i+1);
+								format(bigstring, sizeof(bigstring), "%s(RCPID:%i) Finish Checkpoint", bigstring, i+1);
 								format(bigstring, sizeof(bigstring), "%s\n", bigstring);
 							}
 							default:
 							{
-							    format(bigstring, sizeof(bigstring), "%s(RCPID:%i) No Checkpoint type", bigstring, i+1);
+								format(bigstring, sizeof(bigstring), "%s(RCPID:%i) No Checkpoint type", bigstring, i+1);
 								format(bigstring, sizeof(bigstring), "%s\n", bigstring);
 							}
 						}
@@ -2116,126 +2793,126 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 2) // Remove view of checkpoint
 			{
-			    DisablePlayerCheckpoint(playerid);
-			    SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled your race checkpoints.");
+				DisablePlayerCheckpoint(playerid);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled your race checkpoints.");
 			}
-	    }
-    }
-    if(dialogid == RCPEDITMENU)
-    {
-        ConfigEventCPs[playerid][2] = 0;
-        ConfigEventCPId[playerid] = ListItemRCPId[playerid][listitem];
-        ConfigEventCPs[playerid][1] = 0;
-        DisablePlayerCheckpoint(playerid);
-	    if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
+		}
+	}
+	if(dialogid == RCPEDITMENU)
+	{
+		ConfigEventCPs[playerid][2] = 0;
+		ConfigEventCPId[playerid] = ListItemRCPId[playerid][listitem];
+		ConfigEventCPs[playerid][1] = 0;
+		DisablePlayerCheckpoint(playerid);
+		if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
 			SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 		}
 		else if(EventRCPT[ConfigEventCPId[playerid]] == 4) {
-		    SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+			SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 		}
 		else {
-		    SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+			SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 		}
-        format(string,sizeof(string),"Checkpoint Edit(ID:%d)", ConfigEventCPId[playerid]);
+		format(string,sizeof(string),"Checkpoint Edit(ID:%d)", ConfigEventCPId[playerid]);
 		ShowPlayerDialog(playerid,RCPEDITMENU2,DIALOG_STYLE_LIST,string,"Edit position\nEdit size\nEdit type\nView checkpoint","Okay","I'm done!");
-    }
-    if(dialogid == RCPEDITMENU2)
-    {
-        if (response)
-	    {
-	        if(listitem == 0) // Edit position
-	        {
+	}
+	if(dialogid == RCPEDITMENU2)
+	{
+		if (response)
+		{
+			if(listitem == 0) // Edit position
+			{
 				ConfigEventCPs[playerid][1] = 1;
 				SendClientMessageEx(playerid, COLOR_WHITE, "You are now creating editing this checkpoint's position, you need to choose the position where the checkpoint will be at.");
 				SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: Press the FIRE button to save the position. You can cancel this action by pressing the AIM button.");
-         	}
+			}
 			else if(listitem == 1) // edit size
 			{
-			    ConfigEventCPs[playerid][1] = 3;
-                format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
+				ConfigEventCPs[playerid][1] = 3;
+				format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
 				ShowPlayerDialog(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"Please choose the size of the checkpoint.\nRecommended size: 5.0","Ok","Cancel");
 			}
 			else if(listitem == 2) // edit type
 			{
-                ConfigEventCPs[playerid][1] = 4;
-                ShowPlayerDialog(playerid,RCPTYPE,DIALOG_STYLE_LIST,"Race Checkpoints Type List","1.- Start checkpoint\n2.- Normal checkpoint\n3.- Watering Station\n4.- Finish checkpoint","Okay","Cancel");
+				ConfigEventCPs[playerid][1] = 4;
+				ShowPlayerDialog(playerid,RCPTYPE,DIALOG_STYLE_LIST,"Race Checkpoints Type List","1.- Start checkpoint\n2.- Normal checkpoint\n3.- Watering Station\n4.- Finish checkpoint","Okay","Cancel");
 			}
 			else if(listitem == 3) // view checkpoint
 			{
-	        	if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
+				if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
 					SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 				}
 				else if(EventRCPT[ConfigEventCPId[playerid]] == 4) {
-				    SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+					SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 				}
 				else {
-				    SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+					SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 				}
 				SetPlayerPos(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]]);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You now have a view of this checkpoint, you are inside of the checkpoint, step outside to see it.");
 			}
-	    }
-    }
-    if(dialogid == RCPTYPE)
-    {
-        if (response && ConfigEventCPs[playerid][0] == 1)
-	    {
-	        if(listitem == 0) // Start checkpoint
-	        {
+		}
+	}
+	if(dialogid == RCPTYPE)
+	{
+		if (response && ConfigEventCPs[playerid][0] == 1)
+		{
+			if(listitem == 0) // Start checkpoint
+			{
 				EventRCPT[ConfigEventCPId[playerid]] = 1;
 				DisablePlayerCheckpoint(playerid);
-	    		ConfigEventCPs[playerid][1] = 0;
-	    		ConfigEventCPs[playerid][0] = 0;
-	    		SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
-         	}
+				ConfigEventCPs[playerid][1] = 0;
+				ConfigEventCPs[playerid][0] = 0;
+				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+			}
 			else if(listitem == 1) // Normal Checkpoint
 			{
-			    EventRCPT[ConfigEventCPId[playerid]] = 2;
-			    DisablePlayerCheckpoint(playerid);
-	    		ConfigEventCPs[playerid][1] = 0;
-	    		ConfigEventCPs[playerid][0] = 0;
-	    		SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+				EventRCPT[ConfigEventCPId[playerid]] = 2;
+				DisablePlayerCheckpoint(playerid);
+				ConfigEventCPs[playerid][1] = 0;
+				ConfigEventCPs[playerid][0] = 0;
+				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}
 			else if(listitem == 2) // Watering Checkpoint
 			{
-			    EventRCPT[ConfigEventCPId[playerid]] = 3;
-			    DisablePlayerCheckpoint(playerid);
-	    		ConfigEventCPs[playerid][1] = 0;
-	    		ConfigEventCPs[playerid][0] = 0;
-	    		SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+				EventRCPT[ConfigEventCPId[playerid]] = 3;
+				DisablePlayerCheckpoint(playerid);
+				ConfigEventCPs[playerid][1] = 0;
+				ConfigEventCPs[playerid][0] = 0;
+				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}
 			else if(listitem == 3) // Finish Checkpoint
 			{
-			    EventRCPT[ConfigEventCPId[playerid]] = 4;
-       			DisablePlayerCheckpoint(playerid);
-	    		ConfigEventCPs[playerid][1] = 0;
-	    		ConfigEventCPs[playerid][0] = 0;
-	    		SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+				EventRCPT[ConfigEventCPId[playerid]] = 4;
+				DisablePlayerCheckpoint(playerid);
+				ConfigEventCPs[playerid][1] = 0;
+				ConfigEventCPs[playerid][0] = 0;
+				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}
-	    }
-    }
-    if(dialogid == RCPSIZE)
-    {
-        if(response && ConfigEventCPs[playerid][0] == 1)
-        {
-            if(strlen(inputtext) < 1)
-	    	{
-	        	format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
+		}
+	}
+	if(dialogid == RCPSIZE)
+	{
+		if(response && ConfigEventCPs[playerid][0] == 1)
+		{
+			if(strlen(inputtext) < 1)
+			{
+				format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
 				ShowPlayerDialog(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"Please type a number for the size of the checkpoint","Ok","Cancel");
 				return 1;
-	    	}
-	    	new Float: rcpsize;
-	    	rcpsize = floatstr(inputtext);
-	    	if(rcpsize < 1.0 && rcpsize > 15.0) return 1;
-	    	EventRCPS[ConfigEventCPId[playerid]] = rcpsize;
-	    	SendClientMessage(playerid, COLOR_WHITE, "Successfully changed the size, updating preview...");
-	        /*if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
+			}
+			new Float: rcpsize;
+			rcpsize = floatstr(inputtext);
+			if(rcpsize < 1.0 && rcpsize > 15.0) return 1;
+			EventRCPS[ConfigEventCPId[playerid]] = rcpsize;
+			SendClientMessage(playerid, COLOR_WHITE, "Successfully changed the size, updating preview...");
+			/*if(EventRCPT[ConfigEventCPId[playerid]] == 1) {
 				DisablePlayerCheckpoint(playerid);
 				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}
 			else if(EventRCPT[ConfigEventCPId[playerid]] == 4) {
 				DisablePlayerCheckpoint(playerid);
-			    SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+				SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}*/
 			DisablePlayerCheckpoint(playerid);
 			if(ConfigEventCPs[playerid][2] == 1) {
@@ -2248,30 +2925,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				//SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 			}	
 		}
-    }
+	}
 	if(dialogid == UNMODCARMENU)
 	{
-	    if (response)
-	    {
-		    new count = GetPVarInt(playerid, "modCount");
+		if (response)
+		{
+			new count = GetPVarInt(playerid, "modCount");
 			new d;
 			for(new z = 0 ; z < MAX_PLAYERVEHICLES; z++)
 			{
 				if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][z][pvId]))
 				{
 					d = z;
-				    break;
+					break;
 				}
 			}
-            for (new i = 0; i < count; i++)
+			for (new i = 0; i < count; i++)
 			{
 				if(listitem == i)
 				{
-				    format(string, sizeof(string), "partList%i", i);
+					format(string, sizeof(string), "partList%i", i);
 					new partID = GetPVarInt(playerid, string);
 					if (partID == 999)
 					{
-					    for(new f = 0 ; f < MAX_MODS; f++)
+						for(new f = 0 ; f < MAX_MODS; f++)
 						{
 							SetPVarInt(playerid, "unMod", 1);
 							RemoveVehicleComponent(PlayerVehicleInfo[playerid][d][pvId], GetVehicleComponentInSlot(PlayerVehicleInfo[playerid][d][pvId], f));
@@ -2281,15 +2958,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 					SetPVarInt(playerid, "unMod", 1);
-     				RemoveVehicleComponent(GetPlayerVehicleID(playerid), partID);
+					RemoveVehicleComponent(GetPlayerVehicleID(playerid), partID);
 					if(GetVehicleComponentType(partID) == 3) {
 						PlayerVehicleInfo[playerid][d][pvMods][14] = 0;
 					}
-     				PlayerVehicleInfo[playerid][d][pvMods][GetVehicleComponentType(partID)] = 0;
-     				SendClientMessageEx(playerid, COLOR_WHITE, "The modification you requested has been removed.");
-     				return 1;
+					PlayerVehicleInfo[playerid][d][pvMods][GetVehicleComponentType(partID)] = 0;
+					SendClientMessageEx(playerid, COLOR_WHITE, "The modification you requested has been removed.");
+					return 1;
 				}
-        	}
+			}
 		}
 	}
 
@@ -2297,31 +2974,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report tips","Tips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
 	}
-    #if defined SHOPAUTOMATED
+	#if defined SHOPAUTOMATED
 	if(dialogid == DIALOG_SHOPORDER)
 	{
 		if(response)
 		{
-	    	if(strlen(inputtext) < 1 || strlen(inputtext) > 6)
-	    	{
-	        	ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
-	        	return 1;
-	    	}
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 6)
+			{
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
+				return 1;
+			}
 			if(!IsNumeric(inputtext))
 			{
-  				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
-	        	return 1;
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
+				return 1;
 			}
 			new orderid = strval(inputtext);
 			if(orderid == 0)
 			{
-			    ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID can not be 0.", "Retry", "Cancel");
-			    return 1;
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID can not be 0.", "Retry", "Cancel");
+				return 1;
 			}
 			ShowNoticeGUIFrame(playerid, 6);
 			PlayerInfo[playerid][pOrder] = orderid;
 
-            new query[384];
+			new query[384];
 			format(query, sizeof(query), "\
 			SELECT p.order_product_id, p.order_id, p.name, p.quantity, p.delivered, h.order_status_id, o.email, o.ip \
 			FROM newshoporder_product p \
@@ -2338,12 +3015,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-		    new email[256];
-		    GetPVarString(playerid, "ShopEmailVerify", email, sizeof(email));
-		    if(!isnull(inputtext) && strcmp(inputtext, email, true) == 0)
-		    {
-		        ShowNoticeGUIFrame(playerid, 6);
-	            new query[384];
+			new email[256];
+			GetPVarString(playerid, "ShopEmailVerify", email, sizeof(email));
+			if(!isnull(inputtext) && strcmp(inputtext, email, true) == 0)
+			{
+				ShowNoticeGUIFrame(playerid, 6);
+				new query[384];
 				format(query, sizeof(query), "\
 				SELECT p.order_product_id, p.order_id, p.name, p.quantity, p.delivered, h.order_status_id \
 				FROM newshoporder_product p \
@@ -2354,8 +3031,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    //ERROR ASK FURTHER HELP
-			    ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "We were unable to verify that e-mail to that order, would you like further assistance from a shop technician?", "Yes", "No");
+				//ERROR ASK FURTHER HELP
+				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "We were unable to verify that e-mail to that order, would you like further assistance from a shop technician?", "Yes", "No");
 			}
 		}
 	}
@@ -2364,8 +3041,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-		    ShowNoticeGUIFrame(playerid, 6);
-            new query[256];
+			ShowNoticeGUIFrame(playerid, 6);
+			new query[256];
 			format(query, sizeof(query), "SELECT * FROM `shop` WHERE `order_id`=%d", PlayerInfo[playerid][pOrder]);
 			mysql_function_query(ShopPipeline, query, true, "OnShopOrder2", "ii", playerid, listitem);
 		}
@@ -2375,18 +3052,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-            switch(GetPVarInt(playerid, "DShop_product_id"))
-            {
-                case 69: //Custom car
-                {
-                    new carstring[5012];
+			switch(GetPVarInt(playerid, "DShop_product_id"))
+			{
+				case 69: //Custom car
+				{
+					new carstring[5012];
 					for(new x;x<sizeof(VehicleNameShop);x++)
 					{
-					    format(carstring, sizeof(carstring), "%s%d - %s\n", carstring, VehicleNameShop[x][svehicleid], VehicleNameShop[x][svehiclename]);
+						format(carstring, sizeof(carstring), "%s%d - %s\n", carstring, VehicleNameShop[x][svehicleid], VehicleNameShop[x][svehiclename]);
 					}
-                    ShowPlayerDialog(playerid, DIALOG_SHOPDELIVERCAR, DIALOG_STYLE_LIST, "Shop Car Delivery", carstring, "Select Car", "Cancel");
-                }
-            }
+					ShowPlayerDialog(playerid, DIALOG_SHOPDELIVERCAR, DIALOG_STYLE_LIST, "Shop Car Delivery", carstring, "Select Car", "Cancel");
+				}
+			}
 		}
 	}
 
@@ -2397,22 +3074,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new dialogstring[256], name[64];
 			GetPVarString(playerid, "DShop_name", name, sizeof(name));
 			SetPVarInt(playerid, "DShop_listitem", listitem);
-   			format(dialogstring, sizeof(dialogstring), "You are about to redeem: %s\nOrder ID: %d\nWith vehicle: %s (ID %d)\n\nAre you sure?", name, GetPVarInt(playerid, "DShop_order_id"), VehicleNameShop[listitem][svehicleid], VehicleNameShop[listitem][svehiclename]);
-   			ShowPlayerDialog(playerid, DIALOG_SHOPDELIVERCAR2, DIALOG_STYLE_MSGBOX, "Shop Car Delivery", dialogstring, "Reedem", "Cancel");
+			format(dialogstring, sizeof(dialogstring), "You are about to redeem: %s\nOrder ID: %d\nWith vehicle: %s (ID %d)\n\nAre you sure?", name, GetPVarInt(playerid, "DShop_order_id"), VehicleNameShop[listitem][svehicleid], VehicleNameShop[listitem][svehiclename]);
+			ShowPlayerDialog(playerid, DIALOG_SHOPDELIVERCAR2, DIALOG_STYLE_MSGBOX, "Shop Car Delivery", dialogstring, "Reedem", "Cancel");
 		}
 	}
 
 	if(dialogid == DIALOG_SHOPDELIVERCAR2)
 	{
-	    if(response)
-	    {
-	        if(!vehicleCountCheck(playerid))
+		if(response)
+		{
+			if(!vehicleCountCheck(playerid))
 			{
 				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Error", "You can't have any more vehicles, you own too many!", "OK", "");
 			}
 			else if(!vehicleSpawnCountCheck(playerid))
 			{
-    			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Error", "You have too many vehicles spawned, you must store one first.", "OK", "");
+				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Error", "You have too many vehicles spawned, you must store one first.", "OK", "");
 			}
 			else
 			{
@@ -2425,29 +3102,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				format(string, sizeof(string), "[shoporder] created a %s (%d) for %s (invoice %s).", GetVehicleName(VehicleNameShop[listitem][svehicleid]), VehicleNameShop[listitem][svehicleid], GetPlayerNameEx(playerid), GetPVarInt(playerid, "DShop_order_id"));
 				Log("logs/shoplog.log", string);
-   			}
-	    }
+			}
+		}
 	}
 	#else
 	if(dialogid == DIALOG_SHOPORDER)
 	{
 		if(response)
 		{
-	    	if(strlen(inputtext) < 1 || strlen(inputtext) > 6)
-	    	{
-	        	ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
-	        	return 1;
-	    	}
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 6)
+			{
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be no longer than 6 characters and no lower than 1 character.", "Retry", "Cancel");
+				return 1;
+			}
 			if(!IsNumeric(inputtext))
 			{
-  				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
-	        	return 1;
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID must be a numerical value.", "Retry", "Cancel");
+				return 1;
 			}
 			new orderid = strval(inputtext);
 			if(orderid == 0)
 			{
-			    ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID can not be 0.", "Retry", "Cancel");
-			    return 1;
+				ShowPlayerDialog(playerid, DIALOG_SHOPERROR, DIALOG_STYLE_MSGBOX, "Shop Order","ERROR: The shop order ID can not be 0.", "Retry", "Cancel");
+				return 1;
 			}
 			PlayerInfo[playerid][pOrder] = orderid;
 
@@ -2462,14 +3139,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-		    ShowPlayerDialog(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
+			ShowPlayerDialog(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
 		}
 	}
 	if(dialogid == DIALOG_SHOPERROR2)
 	{
 		if(response)
 		{
-		    ShowPlayerDialog(playerid, DIALOG_SHOPSENT, DIALOG_STYLE_INPUT, "Shop Order", "", "Submit", "Cancel" );
+			ShowPlayerDialog(playerid, DIALOG_SHOPSENT, DIALOG_STYLE_INPUT, "Shop Order", "", "Submit", "Cancel" );
 		}
 	}
 	if(dialogid == PMOTDNOTICE && 1 <= PlayerInfo[playerid][pDonateRank] <= 3 && (PlayerInfo[playerid][pVIPExpire] - 86400 < gettime()))
@@ -2509,7 +3186,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	if(dialogid == DIALOG_LOADTRUCK)
 	{
- 		if(response)
+		if(response)
 		{
 			new iBusiness = ListItemTrackId[playerid][listitem];
 			if (Businesses[iBusiness][bOrderState] != 1) {
@@ -2518,56 +3195,56 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			new iTruckModel = GetVehicleModel(GetPlayerVehicleID(playerid));
 			if (iTruckModel != 443 && Businesses[iBusiness][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP) {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a Packer in order to accept orders from car dealerships.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a Packer in order to accept orders from car dealerships.");
 				TogglePlayerControllable(playerid, 1);
 				DeletePVar(playerid, "IsFrozen");
-	            return 1;
+				return 1;
 			}
 			if (iTruckModel != 514 && Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION) {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a tank truck in order to accept orders from gas stations.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a tank truck in order to accept orders from gas stations.");
 				TogglePlayerControllable(playerid, 1);
 				DeletePVar(playerid, "IsFrozen");
-	            return 1;
+				return 1;
 			}
 			if ((iTruckModel == 443 || iTruckModel == 514) && Businesses[iBusiness][bType] != BUSINESS_TYPE_NEWCARDEALERSHIP && Businesses[iBusiness][bType] != BUSINESS_TYPE_GASSTATION)
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "You need to be driving a regular truck (i.e not packer or tank truck) in order to accept orders from this type of business.");
 				TogglePlayerControllable(playerid, 1);
 				DeletePVar(playerid, "IsFrozen");
-	            return 1;
+				return 1;
 			}
 			Businesses[iBusiness][bOrderState] = 2;
 			TruckDeliveringTo[GetPlayerVehicleID(playerid)] = iBusiness;
 			SaveBusiness(iBusiness);
 			format(string,sizeof(string),"* Please wait a moment while the vehicle is being loaded with %s...", GetInventoryType(iBusiness));
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-  			SetPVarInt(playerid, "LoadTruckTime", 10);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			SetPVarInt(playerid, "LoadTruckTime", 10);
 			SetTimerEx("LoadTruck", 1000, 0, "d", playerid);
 		}
 		else
 		{
-		    DeletePVar(playerid, "IsFrozen");
+			DeletePVar(playerid, "IsFrozen");
 			TogglePlayerControllable(playerid, 1);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
 	if((dialogid == BUYTOYSCOP) && response)
 	{
-	    new stringg[4096], icount = GetPlayerToySlots(playerid);
+		new stringg[4096], icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
-  			new name[24] = "None";
+			new name[24] = "None";
 
 			for(new i;i<sizeof(HoldingObjectsAll);i++)
-   			{
+			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-    			{
-   					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				{
+					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
-			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
 			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
@@ -2577,9 +3254,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if((dialogid == BUYTOYSCOP2) && response)
 	{
 		/*
-	    if(listitem >= 5 && PlayerInfo[playerid][pDonateRank] < 1 || listitem >= 5 && PlayerInfo[playerid][pBuddyInvited] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Bronze VIP + to use that slot!");
-	    if(listitem >= 8 && PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Silver VIP + to use that slot!");
-        if(listitem >= 9 && PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP + to use that slot!");
+		if(listitem >= 5 && PlayerInfo[playerid][pDonateRank] < 1 || listitem >= 5 && PlayerInfo[playerid][pBuddyInvited] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Bronze VIP + to use that slot!");
+		if(listitem >= 8 && PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Silver VIP + to use that slot!");
+		if(listitem >= 9 && PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP + to use that slot!");
 		if(listitem >= 10 && PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Platinum VIP + to use that slot!");
 		*/
 		
@@ -2592,7 +3269,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new stringg[1024];
 		for(new x;x<sizeof(HoldingObjectsCop);x++)
 		{
-		    format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsCop[x][holdingmodelname], HoldingObjectsCop[x][holdingprice]);
+			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsCop[x][holdingmodelname], HoldingObjectsCop[x][holdingprice]);
 		}
 		ShowPlayerDialog(playerid, BUYTOYSCOP3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
 	}
@@ -2600,27 +3277,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(GetPlayerCash(playerid) < HoldingObjectsCop[listitem][holdingprice])
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
 		}
 		else
 		{
 			GivePlayerCash(playerid, -HoldingObjectsCop[listitem][holdingprice]);
-		    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjectsCop[listitem][holdingmodelid];
+			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjectsCop[listitem][holdingmodelid];
 
-   			new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
-		    if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
-		    {
-		        PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
+			if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.9;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.35;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotX] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
-		    }
-		    else if(modelid >= 18891 && modelid <= 18910)
-		    {
-		    	PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			}
+			else if(modelid >= 18891 && modelid <= 18910)
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.15;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2640,7 +3317,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid >= 18911 && modelid <= 18920)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.1;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.035;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2650,7 +3327,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid == 19078 || modelid == 19078)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0;
@@ -2660,7 +3337,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if((modelid >= 18641 && modelid <= 18644) || (modelid >= 19080 && modelid <= 19084) || modelid == 18890)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2668,8 +3345,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
 			}
-		    else
-		    {
+			else
+			{
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
@@ -2686,28 +3363,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
 			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjectsCop[listitem][holdingmodelname], HoldingObjectsCop[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
-		    SendClientMessageEx(playerid, COLOR_RED, string);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 		}
 	}
 	if((dialogid == BUYTOYSGOLD) && response)
 	{
- 		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
-	    new stringg[512], icount = GetPlayerToySlots(playerid);
+		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
+		new stringg[512], icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
-  			new name[24] = "None";
+			new name[24] = "None";
 
 			for(new i;i<sizeof(HoldingObjectsAll);i++)
-   			{
+			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-    			{
-   					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				{
+					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
-			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
 			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
@@ -2716,48 +3393,48 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	if((dialogid == BUYTOYSGOLD2) && response)
 	{
-        if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
+		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
 		
 		if(!toyCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You cannot hold anymore toys.");
 
-	    if(PlayerToyInfo[playerid][listitem][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
+		if(PlayerToyInfo[playerid][listitem][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
 
 		SetPVarInt(playerid, "ToySlot", listitem);
 
 		new stringg[5256];
 		for(new x;x<sizeof(HoldingObjectsAll);x++)
 		{
-		    format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsAll[x][holdingmodelname], HoldingObjectsAll[x][holdingprice]);
+			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsAll[x][holdingmodelname], HoldingObjectsAll[x][holdingprice]);
 		}
 		ShowPlayerDialog(playerid, BUYTOYSGOLD3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
 	}
 	if((dialogid == BUYTOYSGOLD3) && response)
 	{
-	    if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
+		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
 
 		if(GetPlayerCash(playerid) < HoldingObjects[listitem][holdingprice])
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
 		}
 		else
 		{
 			GivePlayerCash(playerid, -HoldingObjectsAll[listitem][holdingprice]);
-		    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjectsAll[listitem][holdingmodelid];
+			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjectsAll[listitem][holdingmodelid];
 
-   			new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
-		    if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
-		    {
-		        PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
+			if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.9;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.35;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotX] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
-		    }
-		    else if(modelid >= 18891 && modelid <= 18910)
-		    {
-		    	PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			}
+			else if(modelid >= 18891 && modelid <= 18910)
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.15;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2777,7 +3454,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid >= 18911 && modelid <= 18920)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.1;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.035;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2787,7 +3464,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid == 19078 || modelid == 19078)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0;
@@ -2797,7 +3474,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if((modelid >= 18641 && modelid <= 18644) || (modelid >= 19080 && modelid <= 19084) || modelid == 18890)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2805,8 +3482,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
 			}
-		    else
-		    {
+			else
+			{
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
@@ -2823,29 +3500,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
 			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjectsAll[listitem][holdingmodelname], HoldingObjectsAll[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
-		    SendClientMessageEx(playerid, COLOR_RED, string);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 
 		}
 	}
 	if((dialogid == BUYTOYS) && response)
 	{
-	    new stringg[4096], icount = GetPlayerToySlots(playerid);
+		new stringg[4096], icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
-  			new name[24];
-	    	format(name, sizeof(name), "None");
+			new name[24];
+			format(name, sizeof(name), "None");
 
 			for(new i;i<sizeof(HoldingObjectsAll);i++)
-   			{
+			{
 				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-    			{
-   					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				{
+					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 				}
 			}
 			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 			{
-			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
 			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
@@ -2854,22 +3531,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if((dialogid == BUYTOYS2) && response)
 	{
 		/*
-	    if(listitem >= 5 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 1 || listitem >= 5 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pBuddyInvited] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Bronze VIP + to use that slot!");
-	    if(listitem >= 8 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Silver VIP + to use that slot!");
-        if(listitem >= 9 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP + to use that slot!");
+		if(listitem >= 5 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 1 || listitem >= 5 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pBuddyInvited] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Bronze VIP + to use that slot!");
+		if(listitem >= 8 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Silver VIP + to use that slot!");
+		if(listitem >= 9 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP + to use that slot!");
 		if(listitem >= 10 + PlayerInfo[playerid][pToySlot] && PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Platinum VIP + to use that slot!");
 		*/
 		
 		if(!toyCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You cannot hold anymore toys.");
 		
-	    if(PlayerToyInfo[playerid][listitem][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
+		if(PlayerToyInfo[playerid][listitem][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
 
 		SetPVarInt(playerid, "ToySlot", listitem);
 		
 		new stringg[5000];
 		for(new x;x<sizeof(HoldingObjects);x++)
 		{
-		    format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjects[x][holdingmodelname], HoldingObjects[x][holdingprice]);
+			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjects[x][holdingmodelname], HoldingObjects[x][holdingprice]);
 		}
 		ShowPlayerDialog(playerid, BUYTOYS3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
 	}
@@ -2877,27 +3554,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(GetPlayerCash(playerid) < HoldingObjects[listitem][holdingprice])
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
 		}
 		else
 		{
 			GivePlayerCash(playerid, -HoldingObjects[listitem][holdingprice]);
-		    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjects[listitem][holdingmodelid];
+			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = HoldingObjects[listitem][holdingmodelid];
 
-		    new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
-		    if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
-		    {
-		        PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			new modelid = PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID];
+			if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.9;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.35;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotX] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
-		    }
-		    else if(modelid >= 18891 && modelid <= 18910)
-		    {
-		    	PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			}
+			else if(modelid >= 18891 && modelid <= 18910)
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.15;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2917,7 +3594,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid >= 18911 && modelid <= 18920)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.1;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.035;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2927,7 +3604,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid == 19078 || modelid == 19078)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0;
@@ -2937,7 +3614,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if((modelid >= 18641 && modelid <= 18644) || (modelid >= 19080 && modelid <= 19084) || modelid == 18890)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -2945,8 +3622,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
 			}
-		    else
-		    {
+			else
+			{
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
@@ -2963,83 +3640,83 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 			
 			format(string, sizeof(string), "* You have purchased %s for $%d (Slot: %d)", HoldingObjects[listitem][holdingmodelname], HoldingObjects[listitem][holdingprice], GetPVarInt(playerid, "ToySlot"));
-		    SendClientMessageEx(playerid, COLOR_RED, string);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 		}
 	}	
 	if((dialogid == TOYS) && response)
 	{
 		if(listitem == 0)
 		{
-		    new stringg[4096], icount = GetPlayerToySlots(playerid);
+			new stringg[4096], icount = GetPlayerToySlots(playerid);
 			for(new x;x<icount;x++)
 			{
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
-			    for(new i;i<sizeof(HoldingObjectsAll);i++)
-			    {
-       				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-			        {
-           				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				for(new i;i<sizeof(HoldingObjectsAll);i++)
+				{
+					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
+					{
+						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 					}
 				}
 				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 				{
-				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
 				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 			}
 			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-   			ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
-	    }
+			ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+		}
 		else if(listitem == 1)
 		{
-		    new stringg[4096], icount = GetPlayerToySlots(playerid);
+			new stringg[4096], icount = GetPlayerToySlots(playerid);
 			for(new x;x<icount;x++)
 			{
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
-			    for(new i;i<sizeof(HoldingObjectsAll);i++)
-			    {
-       				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-			        {
-           				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				for(new i;i<sizeof(HoldingObjectsAll);i++)
+				{
+					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
+					{
+						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 					}
 				}
 				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 				{
-				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
 				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 			}
 			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-   			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
-   		}
+			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+		}
 		else if(listitem == 2)
 		{
-		    new stringg[4096], icount = GetPlayerToySlots(playerid);
+			new stringg[4096], icount = GetPlayerToySlots(playerid);
 			for(new x;x<icount;x++)
 			{
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
-			    for(new i;i<sizeof(HoldingObjectsAll);i++)
-			    {
-       				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-			        {
-           				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				for(new i;i<sizeof(HoldingObjectsAll);i++)
+				{
+					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
+					{
+						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 					}
 				}
 				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
 				{
-				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
 				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 			}
 			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-   			ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
+			ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
 		}
 	}
 
@@ -3049,8 +3726,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(toycount >= 10) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");*/
 		
 		if(listitem >= GetPlayerToySlots(playerid)) 
-	    {
-	        new szstring[128];
+		{
+			new szstring[128];
 			SetPVarInt(playerid, "MiscShop", 8);
 			format(szstring, sizeof(szstring), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
 			return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Additional Toy Slot", szstring, "Purchase", "Cancel");
@@ -3061,15 +3738,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-		    SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}HINT:{FFFF00} Position your camera differently to better see where your editing.");
-		    SetPVarInt(playerid, "ToySlot", listitem);
-		    ShowEditMenu(playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}HINT:{FFFF00} Position your camera differently to better see where your editing.");
+			SetPVarInt(playerid, "ToySlot", listitem);
+			ShowEditMenu(playerid);
 		}
 	}
 	if((dialogid == EDITTOYS2)) {
-	    if(response) switch(listitem) {
-		    case 0: ShowPlayerDialog(playerid, EDITTOYSBONE, DIALOG_STYLE_LIST, "Select a Bone", "Spine\nHead\nLeft upper arm\nRight upper arm\nLeft hand\nRight hand\nLeft thigh\nRight thigh\nLeft foot\nRight foot\nRight calf\nLeft calf\nLeft forearm\nRight forearm\nLeft clavicle\nRight clavicle\nNeck\nJaw", "Select", "Cancel");
-		    case 1:
+		if(response) switch(listitem) {
+			case 0: ShowPlayerDialog(playerid, EDITTOYSBONE, DIALOG_STYLE_LIST, "Select a Bone", "Spine\nHead\nLeft upper arm\nRight upper arm\nLeft hand\nRight hand\nLeft thigh\nRight thigh\nLeft foot\nRight foot\nRight calf\nLeft calf\nLeft forearm\nRight forearm\nLeft clavicle\nRight clavicle\nNeck\nJaw", "Select", "Cancel");
+			case 1:
 			{		
 				for(new i; i < 11; i++)
 				{
@@ -3079,22 +3756,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						break;
 					}
 				}
-			    SendClientMessage(playerid, COLOR_WHITE, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+				SendClientMessage(playerid, COLOR_WHITE, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
 			}
 		}
 		else
 		{
-		    new stringg[4096], icount = GetPlayerToySlots(playerid);
+			new stringg[4096], icount = GetPlayerToySlots(playerid);
 			for(new x;x<icount;x++)
 			{
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
-			    for(new i;i<sizeof(HoldingObjectsAll);i++)
-			    {
-       				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-			        {
-           				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				for(new i;i<sizeof(HoldingObjectsAll);i++)
+				{
+					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
+					{
+						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 					}
 				}
 				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
@@ -3104,18 +3781,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 			}
 			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-   			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
 		}
 	}
 	if(dialogid == EDITTOYSBONE)
 	{
-	    if(response)
-	    {
-	        PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = listitem+1;
+		if(response)
+		{
+			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = listitem+1;
 
 			g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
 		}
-	 	ShowEditMenu(playerid);
+		ShowEditMenu(playerid);
 	}
 	if(dialogid == SELLTOY)
 	{
@@ -3141,7 +3818,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					toyid = PlayerToyInfo[playerid][listitem][ptModelID];
 				format(name, sizeof(name), "None");
 				for(new i;i<sizeof(HoldingObjectsAll);i++)
-	   			{
+				{
 					if(HoldingObjectsAll[i][holdingmodelid] == toyid)
 					{
 						format(name, sizeof(name), "(%s)", HoldingObjectsAll[i][holdingmodelname]);
@@ -3185,9 +3862,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}	
 	if((dialogid == WEARTOY) && response)
 	{
-	    //if(PlayerToyInfo[playerid][listitem][ptModelID] == 0)
+		//if(PlayerToyInfo[playerid][listitem][ptModelID] == 0)
 		if(listitem >= GetPlayerToySlots(playerid)) 
-	    {
+		{
 			new szstring[128];
 			SetPVarInt(playerid, "MiscShop", 8);
 			format(szstring, sizeof(szstring), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
@@ -3208,21 +3885,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					break;
 				}
 			}		
-		    if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
 			{	
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
 				for(new i;i<sizeof(HoldingObjectsAll);i++)
-	   			{
+				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][listitem][ptModelID])
 					{
 						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 					}
 				}
-			    format(string, sizeof(string), "Successfully dettached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
+				format(string, sizeof(string), "Successfully dettached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
 				SendClientMessageEx(playerid, COLOR_RED, string);
-			    RemovePlayerAttachedObject(playerid, toys-1);
+				RemovePlayerAttachedObject(playerid, toys-1);
 				for(new i; i < 11; i++)
 				{
 					if(PlayerHoldingObject[playerid][i] == listitem+1)
@@ -3236,17 +3913,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				new toycount = GetFreeToySlot(playerid);
 				if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
+				if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
 				
 				if(PlayerToyInfo[playerid][listitem][ptScaleX] == 0) {
 					PlayerToyInfo[playerid][listitem][ptScaleX] = 1.0;
 					PlayerToyInfo[playerid][listitem][ptScaleY] = 1.0;
 					PlayerToyInfo[playerid][listitem][ptScaleZ] = 1.0;
 				}			
-			    new name[24];
-			    format(name, sizeof(name), "None");
+				new name[24];
+				format(name, sizeof(name), "None");
 
 				for(new i;i<sizeof(HoldingObjectsAll);i++)
-	   			{
+				{
 					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][listitem][ptModelID])
 					{
 						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
@@ -3290,60 +3968,60 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 
 		format(string, sizeof(string), "You have deleted your toy in slot %d.", listitem);
-	    ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Toy Menu", string, "OK", "");
+		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Toy Menu", string, "OK", "");
 	}
 
 	if((dialogid == LAELEVATORPASS) && response)
 	{
-        listitem = GetPVarInt(playerid, "ElevatorFloorPick");
+		listitem = GetPVarInt(playerid, "ElevatorFloorPick");
 		if(FloorRequestedBy[listitem] != INVALID_PLAYER_ID || IsFloorInQueue(listitem))
-            GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
+			GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
 		else if(DidPlayerRequestElevator(playerid))
-		    GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
+			GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
 		else
 		{
-		    if(strfind(inputtext, "warfloor321", true) == 0)
-		    {
-		        CallElevator(playerid, 20);
+			if(strfind(inputtext, "warfloor321", true) == 0)
+			{
+				CallElevator(playerid, 20);
 			}
 			else if(strfind(inputtext, LAElevatorFloorData[1][listitem], true) == 0)
-		    {
-	            CallElevator(playerid, listitem);
-		    }
-		    else
-		    {
-		        GameTextForPlayer(playerid, "~r~Invalid Password", 3500, 4);
+			{
+				CallElevator(playerid, listitem);
+			}
+			else
+			{
+				GameTextForPlayer(playerid, "~r~Invalid Password", 3500, 4);
 			}
 		}
 	}
 	if((dialogid == LAELEVATOR) && response)
 	{
-        if(FloorRequestedBy[listitem] != INVALID_PLAYER_ID || IsFloorInQueue(listitem))
-            GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
+		if(FloorRequestedBy[listitem] != INVALID_PLAYER_ID || IsFloorInQueue(listitem))
+			GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
 		else if(DidPlayerRequestElevator(playerid))
-		    GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
+			GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
 		else
 		{
-		    if(strlen(LAElevatorFloorData[1][listitem]) > 0)
-   		    {
-   		        SetPVarInt(playerid, "ElevatorFloorPick", listitem);
-   		        ShowPlayerDialog(playerid, LAELEVATORPASS, DIALOG_STYLE_INPUT, "Elevator", "Enter the password for this level", "Enter", "Cancel");
+			if(strlen(LAElevatorFloorData[1][listitem]) > 0)
+			{
+				SetPVarInt(playerid, "ElevatorFloorPick", listitem);
+				ShowPlayerDialog(playerid, LAELEVATORPASS, DIALOG_STYLE_INPUT, "Elevator", "Enter the password for this level", "Enter", "Cancel");
 			}
 			else
 			{
-	        	CallElevator(playerid, listitem);
+				CallElevator(playerid, listitem);
 			}
 		}
 		return 1;
 	}
 	if((dialogid == AUDIO_URL) && response) // /audiourl
 	{
-	    if(PlayerInfo[playerid][pAdmin] >= 4)
-	    {
+		if(PlayerInfo[playerid][pAdmin] >= 4)
+		{
 			new range = GetPVarInt(playerid, "aURLrange");
 			new Float:aX, Float:aY, Float:aZ;
 			GetPlayerPos(playerid, aX, aY, aZ);
-		 	SendAudioURLToRange(inputtext,aX,aY,aZ,range);
+			SendAudioURLToRange(inputtext,aX,aY,aZ,range);
 
 			if(range > 100)
 			{
@@ -3354,7 +4032,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    format(string,sizeof(string),"You have placed url %s - Range: %d",inputtext,range);
+				format(string,sizeof(string),"You have placed url %s - Range: %d",inputtext,range);
 				SendClientMessage(playerid, COLOR_YELLOW, string);
 				format(string, sizeof(string),"Use /audiostopurl to stop playback");
 				SendClientMessage(playerid, COLOR_YELLOW, string);
@@ -3363,53 +4041,53 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 
 	/*if(dialogid == DIALOG_NUMBER_PLATE_CHOSEN) {
-	    if(response == 1) {
+		if(response == 1) {
 			for(new i = 0; i < MAX_PLAYERVEHICLES; i++) {
-			    if(listitem == i) {
-			        if(PlayerInfo[playerid][pDonateRank] > 0) {
-			            new
-			                tmpSz_NumPlate[32];
+				if(listitem == i) {
+					if(PlayerInfo[playerid][pDonateRank] > 0) {
+						new
+							tmpSz_NumPlate[32];
 
-			            GetPVarString(playerid, "szNumPS", tmpSz_NumPlate, sizeof(tmpSz_NumPlate));
-			            RegisterVehicleNumberPlate(PlayerVehicleInfo[playerid][i][pvId], tmpSz_NumPlate);
-			            SetPVarInt(playerid, "Cash", PlayerInfo[playerid][pCash]-80000);
-			            strcpy(PlayerVehicleInfo[playerid][i][pvNumberPlate], tmpSz_NumPlate, 32);
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Your registration plate has successfully been configured.");
+						GetPVarString(playerid, "szNumPS", tmpSz_NumPlate, sizeof(tmpSz_NumPlate));
+						RegisterVehicleNumberPlate(PlayerVehicleInfo[playerid][i][pvId], tmpSz_NumPlate);
+						SetPVarInt(playerid, "Cash", PlayerInfo[playerid][pCash]-80000);
+						strcpy(PlayerVehicleInfo[playerid][i][pvNumberPlate], tmpSz_NumPlate, 32);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Your registration plate has successfully been configured.");
 					}
 					else {
-			            new
-			                tmpSz_NumPlate[32];
+						new
+							tmpSz_NumPlate[32];
 
-			            GetPVarString(playerid, "szNumPS", tmpSz_NumPlate, sizeof(tmpSz_NumPlate));
-			            RegisterVehicleNumberPlate(PlayerVehicleInfo[playerid][i][pvId], tmpSz_NumPlate);
-			            strcpy(PlayerVehicleInfo[playerid][i][pvNumberPlate], tmpSz_NumPlate, 32);
-					    SetPVarInt(playerid, "Cash", PlayerInfo[playerid][pCash]-100000);
-					    SendClientMessageEx(playerid, COLOR_WHITE, "Your registration plate has successfully been configured.");
+						GetPVarString(playerid, "szNumPS", tmpSz_NumPlate, sizeof(tmpSz_NumPlate));
+						RegisterVehicleNumberPlate(PlayerVehicleInfo[playerid][i][pvId], tmpSz_NumPlate);
+						strcpy(PlayerVehicleInfo[playerid][i][pvNumberPlate], tmpSz_NumPlate, 32);
+						SetPVarInt(playerid, "Cash", PlayerInfo[playerid][pCash]-100000);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Your registration plate has successfully been configured.");
 					}
 
 					return 1;
-			    }
+				}
 			}
 		}
 	}*/
 
 	if(dialogid == DIALOG_NUMBER_PLATE) {
-	    if(response) {
-	        if(strlen(inputtext) < 1 || strlen(inputtext) > 8) {
-	            SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}ERROR:{FFFF00} You can only have a number plate that consists of 1-8 characters.");
-	        }
-	        else {
-	            if(strfind("XMT", inputtext, true) != -1) {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}ERROR:{FFFF00} You cannot use the term \"XMT\" in your registration plate.");
+		if(response) {
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 8) {
+				SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}ERROR:{FFFF00} You can only have a number plate that consists of 1-8 characters.");
+			}
+			else {
+				if(strfind("XMT", inputtext, true) != -1) {
+					SendClientMessageEx(playerid, COLOR_WHITE, "{AA3333}ERROR:{FFFF00} You cannot use the term \"XMT\" in your registration plate.");
 					return 1;
 				}
 
-			    SetPVarString(playerid, "szNumPS", inputtext);
+				SetPVarString(playerid, "szNumPS", inputtext);
 
-			    new
+				new
 					vstring[1024]; // ew, another 4096 bytes of memory down the drain
 
-		 		for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
+				for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
 				{
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
 					{
@@ -3426,32 +4104,32 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 
 		/*if(PlayerInfo[playerid][pDonateRank] > 0) {
-		    PlayerInfo[playerid][pMoney] -= 80000;
-		    SendClientMessageEx(playerid, COLOR_WHITE, "Your new number plate has been configured!");
-		    RegisterVehicleNumberPlate();
+			PlayerInfo[playerid][pMoney] -= 80000;
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your new number plate has been configured!");
+			RegisterVehicleNumberPlate();
 		}
 		else {
-		    PlayerInfo[playerid][pMoney] -= 100000;
+			PlayerInfo[playerid][pMoney] -= 100000;
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your new number plate has been configured!");
 			RegisterVehicleNumberPlate();
 		}*/
 	}
 	if(dialogid == NMUTE)
 	{
-	    if(response == 1)
-	    {
-	        switch(listitem)
-	        {
-	            case 0: // Jailtime
+		if(response == 1)
+		{
+			switch(listitem)
+			{
+				case 0: // Jailtime
 				{
-				    if(PlayerInfo[playerid][pNMuteTotal] < 4)
-				    {
-				        if(GetPVarInt(playerid, "IsInArena") >= 0)
-					    {
-					        LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
-					    }
-					    PlayerInfo[playerid][pNMute] = 0;
-				        ResetPlayerWeaponsEx(playerid);
+					if(PlayerInfo[playerid][pNMuteTotal] < 4)
+					{
+						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						{
+							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
+						}
+						PlayerInfo[playerid][pNMute] = 0;
+						ResetPlayerWeaponsEx(playerid);
 						PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pNMuteTotal]*15*60;
 						strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC] NMute Prison", 128);
 						PhoneOnline[playerid] = 1;
@@ -3463,14 +4141,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerSkin(playerid, 50);
 						SetPlayerColor(playerid, TEAM_APRISON_COLOR);
 						Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-				    }
-				    else if(PlayerInfo[playerid][pNMuteTotal] >= 4 || PlayerInfo[playerid][pNMuteTotal] < 7)
-				    {
-				        if(GetPVarInt(playerid, "IsInArena") >= 0)
-					    {
-					        LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
-					    }
-					    PlayerInfo[playerid][pNMute] = 0;
+					}
+					else if(PlayerInfo[playerid][pNMuteTotal] >= 4 || PlayerInfo[playerid][pNMuteTotal] < 7)
+					{
+						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						{
+							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
+						}
+						PlayerInfo[playerid][pNMute] = 0;
 						GameTextForPlayer(playerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 						ResetPlayerWeaponsEx(playerid);
 						PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pNMuteTotal]*15*60;
@@ -3483,22 +4161,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerSkin(playerid, 50);
 						SetPlayerColor(playerid, TEAM_APRISON_COLOR);
 						Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-				    }
+					}
 					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC][NEWB-UNMUTE]", 128);
 					format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s is serving %d Minutes in Jail/Prison for Newbie Unmute.",GetPlayerNameEx(playerid),PlayerInfo[playerid][pNMuteTotal]*15);
 					ABroadCast(COLOR_YELLOW,string,2);
-	            }
-	            case 1: // Fine
-	            {
-	                new playername[MAX_PLAYER_NAME];
-	                GetPlayerName(playerid, playername, sizeof(playername));
+				}
+				case 1: // Fine
+				{
+					new playername[MAX_PLAYER_NAME];
+					GetPlayerName(playerid, playername, sizeof(playername));
 
-	                new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
+					new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
 					if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
 
-				    new fine = 10 * totalwealth / 100;
+					new fine = 10 * totalwealth / 100;
 					if(GetPlayerCash(playerid) < fine)
 					{
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has declined the Newbie Unmute (Insufficient Funds).", GetPlayerNameEx(playerid));
@@ -3506,35 +4184,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford an unmute!");
 					}
 					
-	                format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Newbie Chat Unmute.",GetPlayerNameEx(playerid),fine);
-	                GivePlayerCash(playerid,-fine);
+					format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Newbie Chat Unmute.",GetPlayerNameEx(playerid),fine);
+					GivePlayerCash(playerid,-fine);
 					ABroadCast(COLOR_YELLOW,string,2);
 					PlayerInfo[playerid][pNMute] = 0;
-	            }
-	        }
-	    }
+				}
+			}
+		}
 		else
 		{
-		    format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has canceled punishment for Newbie Chat Unmute.",GetPlayerNameEx(playerid));
+			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has canceled punishment for Newbie Chat Unmute.",GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW,string,2);
 		}
 	}
 	if(dialogid == ADMUTE)
 	{
-	    if(response == 1)
-	    {
-	        switch(listitem)
-	        {
-	            case 0: // Jailtime
+		if(response == 1)
+		{
+			switch(listitem)
+			{
+				case 0: // Jailtime
 				{
-				    if(PlayerInfo[playerid][pADMuteTotal] < 4)
-				    {
-				        if(GetPVarInt(playerid, "IsInArena") >= 0)
-					    {
-					        LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
-					    }
-					    PlayerInfo[playerid][pADMute] = 0;
-				        ResetPlayerWeaponsEx(playerid);
+					if(PlayerInfo[playerid][pADMuteTotal] < 4)
+					{
+						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						{
+							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
+						}
+						PlayerInfo[playerid][pADMute] = 0;
+						ResetPlayerWeaponsEx(playerid);
 						PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pADMuteTotal]*15*60;
 						PhoneOnline[playerid] = 1;
 						SetPlayerInterior(playerid, 1);
@@ -3545,14 +4223,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerSkin(playerid, 50);
 						SetPlayerColor(playerid, TEAM_APRISON_COLOR);
 						Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-				    }
-				    else if(PlayerInfo[playerid][pADMuteTotal] >= 4 || PlayerInfo[playerid][pADMuteTotal] < 7)
-				    {
-				        if(GetPVarInt(playerid, "IsInArena") >= 0)
-					    {
-					        LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
-					    }
-					    PlayerInfo[playerid][pADMute] = 0;
+					}
+					else if(PlayerInfo[playerid][pADMuteTotal] >= 4 || PlayerInfo[playerid][pADMuteTotal] < 7)
+					{
+						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						{
+							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
+						}
+						PlayerInfo[playerid][pADMute] = 0;
 						GameTextForPlayer(playerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 						ResetPlayerWeaponsEx(playerid);
 						PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pADMuteTotal]*15*60;
@@ -3565,17 +4243,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerSkin(playerid, 50);
 						SetPlayerColor(playerid, TEAM_APRISON_COLOR);
 						Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-				    }
+					}
 					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC][AD-UNMUTE]", 128);
 					format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s is serving %d Minutes in Jail/Prison for Advertisement Unmute.",GetPlayerNameEx(playerid),PlayerInfo[playerid][pADMuteTotal]*15);
 					ABroadCast(COLOR_YELLOW,string,2);
-	            }
-	            case 1: // Fine
-	            {
-	                new playername[MAX_PLAYER_NAME];
-	                GetPlayerName(playerid, playername, sizeof(playername));
+				}
+				case 1: // Fine
+				{
+					new playername[MAX_PLAYER_NAME];
+					GetPlayerName(playerid, playername, sizeof(playername));
 
-	                new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
+					new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
 					if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
@@ -3588,77 +4266,77 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford an unmute!");
 					}
 					
-                    PlayerInfo[playerid][pADMute] = 0;
-	                format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Advertisement Unmute.",GetPlayerNameEx(playerid),fine);
-	                GivePlayerCash(playerid,-fine);
+					PlayerInfo[playerid][pADMute] = 0;
+					format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has paid a $%d fine for Advertisement Unmute.",GetPlayerNameEx(playerid),fine);
+					GivePlayerCash(playerid,-fine);
 					ABroadCast(COLOR_YELLOW,string,2);
-	            }
-	        }
-	    }
-	    else
-	    {
-	        format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has canceled punishment for Advertisement Unmute.",GetPlayerNameEx(playerid));
+				}
+			}
+		}
+		else
+		{
+			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has canceled punishment for Advertisement Unmute.",GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW,string,2);
-	    }
+		}
 	}
 	if(dialogid == TWADMINMENU) // Turf Wars System
 	{
-	    if(response == 1)
-	    {
-	        switch(listitem)
-	        {
+		if(response == 1)
+		{
+			switch(listitem)
+			{
 				case 0:
 				{
 					TurfWarsEditTurfsSelection(playerid);
 				}
 				case 1:
 				{
-				    TurfWarsEditFColorsSelection(playerid);
+					TurfWarsEditFColorsSelection(playerid);
 				}
-	        }
-	    }
+			}
+		}
 	}
 	if(dialogid == TWEDITTURFSSELECTION)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			for(new i = 0; i < MAX_TURFS; i++)
 			{
-			    if(listitem == i)
+				if(listitem == i)
 				{
-				    SetPVarInt(playerid, "EditingTurfs", i);
-			        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-			    }
+					SetPVarInt(playerid, "EditingTurfs", i);
+					ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				}
 			}
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
+		}
 	}
 	if(dialogid == TWEDITTURFSMENU)
 	{
-	    if(response == 1)
-	    {
-	        new tw = GetPVarInt(playerid, "EditingTurfs");
-	        switch(listitem)
-	        {
+		if(response == 1)
+		{
+			new tw = GetPVarInt(playerid, "EditingTurfs");
+			switch(listitem)
+			{
 				case 0: // Edit Dim
 				{
-				    SetPVarInt(playerid, "EditingTurfsStage", 1);
-				    SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the West Wall.");
+					SetPVarInt(playerid, "EditingTurfsStage", 1);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savetwpos) to edit the West Wall.");
 				}
 				case 1: // Edit Owner
 				{
-				    ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+					ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
 				}
 				case 2: // Edit Vulnerablity
 				{
-				    ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+					ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
 				}
 				case 3: // Edit Locks
 				{
-				    ShowPlayerDialog(playerid,TWEDITTURFSLOCKED,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Locked Menu:","Lock\nUnlock","Change","Back");
+					ShowPlayerDialog(playerid,TWEDITTURFSLOCKED,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Locked Menu:","Lock\nUnlock","Change","Back");
 				}
 				case 4: // Edit Perks
 				{
@@ -3666,152 +4344,152 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 5: // Reset War
 				{
-				    ResetTurfWarsZone(1, tw);
-				    TurfWarsEditTurfsSelection(playerid);
+					ResetTurfWarsZone(1, tw);
+					TurfWarsEditTurfsSelection(playerid);
 				}
 				case 6: // Destroy Turf
 				{
-				    DestroyTurfWarsZone(tw);
-				    TurfWarsEditTurfsSelection(playerid);
+					DestroyTurfWarsZone(tw);
+					TurfWarsEditTurfsSelection(playerid);
 				}
-	        }
-	    }
+			}
+		}
 		else
 		{
-		    TurfWarsEditTurfsSelection(playerid);
+			TurfWarsEditTurfsSelection(playerid);
 		}
 	}
 	if(dialogid == TWEDITTURFSOWNER)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			new tw = GetPVarInt(playerid, "EditingTurfs");
 			if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < -1 || strval(inputtext) > MAX_FAMILY-1)
-	        {
-	            ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
-	            return 1;
-	        }
+			{
+				ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < -1 || strval(inputtext) > MAX_FAMILY-1)
+			{
+				ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a family ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
+				return 1;
+			}
 			SetOwnerTurfWarsZone(1, tw, strval(inputtext));
 			SaveTurfWars();
 			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+		}
 	}
 	if(dialogid == TWEDITTURFSVUL)
 	{
-	    if(response == 1)
-	    {
-	        new tw = GetPVarInt(playerid, "EditingTurfs");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 0)
-	        {
-	            ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
-	            return 1;
-	        }
+		if(response == 1)
+		{
+			new tw = GetPVarInt(playerid, "EditingTurfs");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 0)
+			{
+				ShowPlayerDialog(playerid,TWEDITTURFSVUL,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Vulnerable Menu:","Please enter a Vulnerable countdown time for the turf:","Change","Back");
+				return 1;
+			}
 			TurfWars[tw][twVulnerable] = strval(inputtext);
 			SaveTurfWars();
 			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+		}
 	}
 	if(dialogid == TWEDITTURFSLOCKED)
 	{
-	    if(response == 1)
-	    {
-	        new tw = GetPVarInt(playerid, "EditingTurfs");
+		if(response == 1)
+		{
+			new tw = GetPVarInt(playerid, "EditingTurfs");
 			switch(listitem)
 			{
-			    case 0: // Lock
-			    {
-			        TurfWars[tw][twLocked] = 1;
-			        SaveTurfWars();
-			        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-			    }
-			    case 1: // Unlock
-			    {
-			        TurfWars[tw][twLocked] = 0;
-			        SaveTurfWars();
-			        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-			    }
+				case 0: // Lock
+				{
+					TurfWars[tw][twLocked] = 1;
+					SaveTurfWars();
+					ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				}
+				case 1: // Unlock
+				{
+					TurfWars[tw][twLocked] = 0;
+					SaveTurfWars();
+					ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+				}
 			}
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+		}
 	}
 	if(dialogid == TWEDITTURFSPERKS)
 	{
-	    if(response == 1)
-	    {
-	        new tw = GetPVarInt(playerid, "EditingTurfs");
-	        TurfWars[tw][twSpecial] = listitem;
-         	SaveTurfWars();
-          	ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
-	    }
+		if(response == 1)
+		{
+			new tw = GetPVarInt(playerid, "EditingTurfs");
+			TurfWars[tw][twSpecial] = listitem;
+			SaveTurfWars();
+			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+		}
 		else
 		{
-		    ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
+			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 		}
 	}
 	if(dialogid == TWEDITFCOLORSSELECTION)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			for(new i = 0; i < MAX_FAMILY-1; i++)
 			{
-			    if(listitem == i)
-			    {
-			        SetPVarInt(playerid, "EditingFamC", i+1);
-			        ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-			    }
+				if(listitem == i)
+				{
+					SetPVarInt(playerid, "EditingFamC", i+1);
+					ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
+				}
 			}
-	    }
-	    else
-	    {
+		}
+		else
+		{
 			ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
-	    }
+		}
 	}
 	if(dialogid == TWEDITFCOLORSMENU)
 	{
-	    if(response == 1)
-	    {
-	        new fam = GetPVarInt(playerid, "EditingFamC");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 0 || strval(inputtext) > 14)
-	        {
-	            ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-	            return 1;
-	        }
-	        FamilyInfo[fam][FamilyColor] = strval(inputtext);
-	        SaveFamily(fam);
+		if(response == 1)
+		{
+			new fam = GetPVarInt(playerid, "EditingFamC");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 0 || strval(inputtext) > 14)
+			{
+				ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
+				return 1;
+			}
+			FamilyInfo[fam][FamilyColor] = strval(inputtext);
+			SaveFamily(fam);
 			TurfWarsEditFColorsSelection(playerid);
 
-   			SyncTurfWarsRadarToAll();
-	    }
-	    else
-	    {
-	        TurfWarsEditFColorsSelection(playerid);
-	    }
+			SyncTurfWarsRadarToAll();
+		}
+		else
+		{
+			TurfWarsEditFColorsSelection(playerid);
+		}
 	}
 	if(dialogid == RTONEMENU) // Ringtone Menu
 	{
@@ -3877,46 +4555,46 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response == 1)
 		{
-		    switch(listitem)
-		    {
-		        case 0: // Choose a Arena
-		        {
-		            PaintballArenaSelection(playerid);
-		        }
-		        case 1: // Buy Paintball Tokens
-		        {
-		            PaintballTokenBuyMenu(playerid);
-		        }
-		        case 2:
-		        {
-		            if(PlayerInfo[playerid][pAdmin] >= 1337)
-		            {
-		            	ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+			switch(listitem)
+			{
+				case 0: // Choose a Arena
+				{
+					PaintballArenaSelection(playerid);
+				}
+				case 1: // Buy Paintball Tokens
+				{
+					PaintballTokenBuyMenu(playerid);
+				}
+				case 2:
+				{
+					if(PlayerInfo[playerid][pAdmin] >= 1337)
+					{
+						ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 					else
 					{
-					    ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have authorization to access the admin panel.");
-					    return 1;
+						ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have authorization to access the admin panel.");
+						return 1;
 					}
-		        }
-		    }
+				}
+			}
 		}
 	}
 	if(dialogid == PBADMINMENU)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			switch(listitem)
 			{
-			    case 0: // Edit Arena
-			    {
-			        PaintballEditMenu(playerid);
-			    }
-			    case 1: // Lock all Arenas
-			    {
-			        for(new i = 0; i < MAX_ARENAS; i++)
-	        		{
+				case 0: // Edit Arena
+				{
+					PaintballEditMenu(playerid);
+				}
+				case 1: // Lock all Arenas
+				{
+					for(new i = 0; i < MAX_ARENAS; i++)
+					{
 						//foreach(new p: Player)
 						for(new p = 0; p < MAX_PLAYERS; ++p)
 						{
@@ -3988,67 +4666,67 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						ResetPaintballArena(i);
 						PaintBallArena[i][pbLocked] = 2;
-	        		}
-           			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked all Arenas.", GetPlayerNameEx(playerid));
+					}
+					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked all Arenas.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, string, 2);
 					format(string, sizeof(string), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
-            		SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
-            		ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
-			    }
-			    case 2: // Unlock all Arenas
+					SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+					ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+				}
+				case 2: // Unlock all Arenas
 				{
-				    for(new i = 0; i < MAX_ARENAS; i++)
-	        		{
-	            		if(PaintBallArena[i][pbLocked] == 2)
-	            		{
+					for(new i = 0; i < MAX_ARENAS; i++)
+					{
+						if(PaintBallArena[i][pbLocked] == 2)
+						{
 							ResetPaintballArena(i);
 						}
-	        		}
-	        		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Arenas.", GetPlayerNameEx(playerid));
+					}
+					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Arenas.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, string, 2);
 					format(string, sizeof(string), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
-            		SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
-            		ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+					SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+					ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 				}
 				case 3: // Force Save Arenas
 				{
-				    SendClientMessageEx(playerid, COLOR_WHITE, "You have forced saved all changes to the Painball Arenas.");
-				    SavePaintballArenas();
-				    ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have forced saved all changes to the Painball Arenas.");
+					SavePaintballArenas();
+					ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 				}
 			}
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+		}
 	}
 	if(dialogid == PBARENASCORES)
 	{
-	    if(response == 1)
-	    {
-     		new arenaid = GetPVarInt(playerid, "IsInArena");
-       		PaintballScoreboard(playerid,arenaid);
-	    }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "IsInArena");
+			PaintballScoreboard(playerid,arenaid);
+		}
 	}
 	if(dialogid == PBEDITMENU)
 	{
-	    if(response == 1)
-	    {
-	        for(new i = 0; i < MAX_ARENAS; i++)
-	        {
-	            if(listitem == i)
-	            {
-	                if(PaintBallArena[i][pbLocked] != 2)
-	                {
-	                    PaintballEditMenu(playerid);
+		if(response == 1)
+		{
+			for(new i = 0; i < MAX_ARENAS; i++)
+			{
+				if(listitem == i)
+				{
+					if(PaintBallArena[i][pbLocked] != 2)
+					{
+						PaintballEditMenu(playerid);
 						SendClientMessageEx(playerid, COLOR_WHITE, "You cannot edit a arena that is not closed.");
 						return 1;
-	                }
-                 	ResetPaintballArena(i);
-	                PaintBallArena[i][pbLocked] = 2;
+					}
+					ResetPaintballArena(i);
+					PaintBallArena[i][pbLocked] = 2;
 
-	                new Float:oldX, Float:oldY, Float:oldZ;
+					new Float:oldX, Float:oldY, Float:oldZ;
 					GetPlayerPos(playerid, oldX, oldY, oldZ);
 
 					SetPVarFloat(playerid, "pbOldX", oldX);
@@ -4059,59 +4737,59 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "pbOldVW", GetPlayerVirtualWorld(playerid));
 
 					SetPlayerPos(playerid, PaintBallArena[i][pbDeathmatch1][0],PaintBallArena[i][pbDeathmatch1][1],PaintBallArena[i][pbDeathmatch1][2]);
-     				SetPlayerFacingAngle(playerid, PaintBallArena[i][pbDeathmatch1][3]);
-         			SetPlayerInterior(playerid, PaintBallArena[i][pbInterior]);
-            		SetPlayerVirtualWorld(playerid, PaintBallArena[i][pbVirtual]);
-            		SetPVarInt(playerid, "ArenaNumber", i);
+					SetPlayerFacingAngle(playerid, PaintBallArena[i][pbDeathmatch1][3]);
+					SetPlayerInterior(playerid, PaintBallArena[i][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[i][pbVirtual]);
+					SetPVarInt(playerid, "ArenaNumber", i);
 
-            		PaintballEditArenaMenu(playerid);
-	            }
-	        }
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
-	    }
+					PaintballEditArenaMenu(playerid);
+				}
+			}
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+		}
 	}
 	if(dialogid == PBEDITARENAMENU)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			switch(listitem)
 			{
-			    case 0: // Name
-			    {
-			        PaintballEditArenaName(playerid);
-			    }
-			    case 1: // Deathmatch Spawn Points
-			    {
-			        PaintballEditArenaDMSpawns(playerid);
-			    }
-			    case 2: // Team/CTF Spawn Points
-			    {
-       				PaintballEditArenaTeamSpawns(playerid);
-			    }
-			    case 3: // CTF Flag Spawn Points
-			    {
-			        PaintballEditArenaFlagSpawns(playerid);
-			    }
-			    case 4: // Hill Position
-			    {
-			        SetPVarInt(playerid, "EditingHillStage", 1);
-				    SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savehillpos) to edit the Hill Position.");
-			    }
-			    case 5: // Hill Radius
-			    {
-			        PaintballEditArenaHillRadius(playerid);
-			    }
-			    case 6: // Interior
-			    {
-			        PaintballEditArenaInt(playerid);
-			    }
-			    case 7: // Virtual World
-			    {
-			        PaintballEditArenaVW(playerid);
-			    }
+				case 0: // Name
+				{
+					PaintballEditArenaName(playerid);
+				}
+				case 1: // Deathmatch Spawn Points
+				{
+					PaintballEditArenaDMSpawns(playerid);
+				}
+				case 2: // Team/CTF Spawn Points
+				{
+					PaintballEditArenaTeamSpawns(playerid);
+				}
+				case 3: // CTF Flag Spawn Points
+				{
+					PaintballEditArenaFlagSpawns(playerid);
+				}
+				case 4: // Hill Position
+				{
+					SetPVarInt(playerid, "EditingHillStage", 1);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Goto a location and type (/savehillpos) to edit the Hill Position.");
+				}
+				case 5: // Hill Radius
+				{
+					PaintballEditArenaHillRadius(playerid);
+				}
+				case 6: // Interior
+				{
+					PaintballEditArenaInt(playerid);
+				}
+				case 7: // Virtual World
+				{
+					PaintballEditArenaVW(playerid);
+				}
 				case 8: // War Vehicle 1
 				{
 					SetPVarInt(playerid, "PBVeh", 1);
@@ -4143,333 +4821,333 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid, COLOR_WHITE, "Type /savepbvehicle inside the selected vehicle (or outside if you want to delete it).");
 				}				
 			}
-	    }
-	    else
-	    {
-	        if(GetPVarInt(playerid, "ArenaNumber") != -1)
-	        {
-	            SetPlayerPos(playerid, GetPVarFloat(playerid, "pbOldX"),GetPVarFloat(playerid, "pbOldY"),GetPVarFloat(playerid, "pbOldZ"));
-  				SetPlayerInterior(playerid, GetPVarInt(playerid, "pbOldInt"));
-    			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "pbOldVW"));
-     			SetPVarInt(playerid, "ArenaNumber", -1);
+		}
+		else
+		{
+			if(GetPVarInt(playerid, "ArenaNumber") != -1)
+			{
+				SetPlayerPos(playerid, GetPVarFloat(playerid, "pbOldX"),GetPVarFloat(playerid, "pbOldY"),GetPVarFloat(playerid, "pbOldZ"));
+				SetPlayerInterior(playerid, GetPVarInt(playerid, "pbOldInt"));
+				SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "pbOldVW"));
+				SetPVarInt(playerid, "ArenaNumber", -1);
 				Player_StreamPrep(playerid, GetPVarFloat(playerid, "pbOldX"),GetPVarFloat(playerid, "pbOldY"),GetPVarFloat(playerid, "pbOldZ"), FREEZE_TIME);
-	        }
-	        PaintballEditMenu(playerid);
-	    }
+			}
+			PaintballEditMenu(playerid);
+		}
 	}
 	if(dialogid == PBEDITARENANAME)
 	{
 		if(response == 1)
 		{
-		    new arenaid = GetPVarInt(playerid, "ArenaNumber");
-		    if(isnull(inputtext))
-		    {
-		        PaintballEditArenaName(playerid);
-		        return 1;
-		    }
-		    if(strlen(inputtext) > 11)
-		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "Arena names cannot be bigger than 11 characters.");
-		        PaintballEditArenaName(playerid);
-		        return 1;
-		    }
-		    format(string, sizeof(string), inputtext);
-   			strmid(PaintBallArena[arenaid][pbArenaName], string, 0, strlen(string), 64);
-		    PaintballEditArenaMenu(playerid);
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				PaintballEditArenaName(playerid);
+				return 1;
+			}
+			if(strlen(inputtext) > 11)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "Arena names cannot be bigger than 11 characters.");
+				PaintballEditArenaName(playerid);
+				return 1;
+			}
+			format(string, sizeof(string), inputtext);
+			strmid(PaintBallArena[arenaid][pbArenaName], string, 0, strlen(string), 64);
+			PaintballEditArenaMenu(playerid);
 		}
 		else
 		{
-		    PaintballEditArenaMenu(playerid);
+			PaintballEditArenaMenu(playerid);
 		}
 	}
 	if(dialogid == PBEDITARENADMSPAWNS)
 	{
 		if(response == 1)
 		{
-		    new arenaid = GetPVarInt(playerid, "ArenaNumber");
-		    switch(listitem)
-		    {
-		        case 0: // Spawn Positions 1
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 1: Move in a position and type (/savedmpos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingDMPos", 1);
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			switch(listitem)
+			{
+				case 0: // Spawn Positions 1
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 1: Move in a position and type (/savedmpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingDMPos", 1);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch1][0],PaintBallArena[arenaid][pbDeathmatch1][1],PaintBallArena[arenaid][pbDeathmatch1][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch1][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
-
-					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
-					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
-		        }
-		        case 1: // Spawn Positions 2
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 2: Move in a position and type (/savedmpos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingDMPos", 2);
-
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch2][0],PaintBallArena[arenaid][pbDeathmatch2][1],PaintBallArena[arenaid][pbDeathmatch2][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch2][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch1][0],PaintBallArena[arenaid][pbDeathmatch1][1],PaintBallArena[arenaid][pbDeathmatch1][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch1][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
-		        }
-		        case 2: // Spawn Positions 3
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 3: Move in a position and type (/savedmpos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingDMPos", 3);
+				}
+				case 1: // Spawn Positions 2
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 2: Move in a position and type (/savedmpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingDMPos", 2);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch3][0],PaintBallArena[arenaid][pbDeathmatch3][1],PaintBallArena[arenaid][pbDeathmatch3][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch3][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
-
-					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
-					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
-		        }
-		        case 3: // Spawn Positions 4
-		        {
-		        	SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 4: Move in a position and type (/savedmpos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingDMPos", 4);
-
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch4][0],PaintBallArena[arenaid][pbDeathmatch4][1],PaintBallArena[arenaid][pbDeathmatch4][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch4][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch2][0],PaintBallArena[arenaid][pbDeathmatch2][1],PaintBallArena[arenaid][pbDeathmatch2][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch2][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
-		        }
-		    }
+				}
+				case 2: // Spawn Positions 3
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 3: Move in a position and type (/savedmpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingDMPos", 3);
+
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch3][0],PaintBallArena[arenaid][pbDeathmatch3][1],PaintBallArena[arenaid][pbDeathmatch3][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch3][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+
+					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
+					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
+				}
+				case 3: // Spawn Positions 4
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "DM Position 4: Move in a position and type (/savedmpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingDMPos", 4);
+
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbDeathmatch4][0],PaintBallArena[arenaid][pbDeathmatch4][1],PaintBallArena[arenaid][pbDeathmatch4][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbDeathmatch4][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+
+					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
+					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
+				}
+			}
 		}
 		else
 		{
-		    PaintballEditArenaMenu(playerid);
+			PaintballEditArenaMenu(playerid);
 		}
 	}
 	if(dialogid == PBEDITARENATEAMSPAWNS)
 	{
 		if(response == 1)
 		{
-		    new arenaid = GetPVarInt(playerid, "ArenaNumber");
-		    switch(listitem)
-		    {
-		        case 0: // Red Spawn Positions 1
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 1: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 1);
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			switch(listitem)
+			{
+				case 0: // Red Spawn Positions 1
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 1: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 1);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed1][0],PaintBallArena[arenaid][pbTeamRed1][1],PaintBallArena[arenaid][pbTeamRed1][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed1][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed1][0],PaintBallArena[arenaid][pbTeamRed1][1],PaintBallArena[arenaid][pbTeamRed1][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed1][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
 				case 1: // Red Spawn Positions 2
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 2: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 2);
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 2: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 2);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed2][0],PaintBallArena[arenaid][pbTeamRed2][1],PaintBallArena[arenaid][pbTeamRed2][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed2][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed2][0],PaintBallArena[arenaid][pbTeamRed2][1],PaintBallArena[arenaid][pbTeamRed2][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed2][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
 				case 2: // Red Spawn Positions 3
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 3: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 3);
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Position 3: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 3);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed3][0],PaintBallArena[arenaid][pbTeamRed3][1],PaintBallArena[arenaid][pbTeamRed3][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed3][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamRed3][0],PaintBallArena[arenaid][pbTeamRed3][1],PaintBallArena[arenaid][pbTeamRed3][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamRed3][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
 				case 3: // Blue Spawn Positions 1
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 1: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 4);
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 1: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 4);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue1][0],PaintBallArena[arenaid][pbTeamBlue1][1],PaintBallArena[arenaid][pbTeamBlue1][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue1][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue1][0],PaintBallArena[arenaid][pbTeamBlue1][1],PaintBallArena[arenaid][pbTeamBlue1][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue1][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
 				case 4: // Blue Spawn Positions 2
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 2: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 5);
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 2: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 5);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue2][0],PaintBallArena[arenaid][pbTeamBlue2][1],PaintBallArena[arenaid][pbTeamBlue2][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue2][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue2][0],PaintBallArena[arenaid][pbTeamBlue2][1],PaintBallArena[arenaid][pbTeamBlue2][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue2][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
 				case 5: // Blue Spawn Positions 3
-		        {
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 3: Move in a position and type (/saveteampos).");
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-		            SetPVarInt(playerid, "EditingTeamPos", 6);
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Position 3: Move in a position and type (/saveteampos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingTeamPos", 6);
 
-		            SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue3][0],PaintBallArena[arenaid][pbTeamBlue3][1],PaintBallArena[arenaid][pbTeamBlue3][2]);
-		            SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue3][3]);
-		            SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
-		            SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
+					SetPlayerPos(playerid, PaintBallArena[arenaid][pbTeamBlue3][0],PaintBallArena[arenaid][pbTeamBlue3][1],PaintBallArena[arenaid][pbTeamBlue3][2]);
+					SetPlayerFacingAngle(playerid, PaintBallArena[arenaid][pbTeamBlue3][3]);
+					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
+					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 
 					PlayerInfo[playerid][pVW] = PaintBallArena[arenaid][pbVirtual];
 					PlayerInfo[playerid][pInt] = PaintBallArena[arenaid][pbInterior];
 				}
-		    }
+			}
 		}
 		else
 		{
-		    PaintballEditArenaMenu(playerid);
+			PaintballEditArenaMenu(playerid);
 		}
 	}
 	if(dialogid == PBEDITARENAFLAGSPAWNS)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        switch(listitem)
-	        {
-	            case 0: // Red Flag
-	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Flag Position: Move in a position and type (/saveflagpos).");
-	                SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-	                SetPVarInt(playerid, "EditingFlagPos", 1);
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			switch(listitem)
+			{
+				case 0: // Red Flag
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Red Team Flag Position: Move in a position and type (/saveflagpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingFlagPos", 1);
 
 					SetPlayerPos(playerid,PaintBallArena[arenaid][pbFlagRedSpawn][0],PaintBallArena[arenaid][pbFlagRedSpawn][1],PaintBallArena[arenaid][pbFlagRedSpawn][2]);
 					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
 					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
-	            }
-	            case 1: // Blue Flag
-	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Flag Position: Move in a position and type (/saveflagpos).");
-	                SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
-	                SetPVarInt(playerid, "EditingFlagPos", 2);
+				}
+				case 1: // Blue Flag
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team Flag Position: Move in a position and type (/saveflagpos).");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Be sure that you are in the correct position before saving.");
+					SetPVarInt(playerid, "EditingFlagPos", 2);
 
 					SetPlayerPos(playerid,PaintBallArena[arenaid][pbFlagBlueSpawn][0],PaintBallArena[arenaid][pbFlagBlueSpawn][1],PaintBallArena[arenaid][pbFlagBlueSpawn][2]);
 					SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
 					SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
 				}
-	        }
-	    }
-	    else
-	    {
-	        PaintballEditArenaMenu(playerid);
-	    }
-	}
-	if(dialogid == PBEDITARENAINT)
-	{
-	    if(response == 1)
-		{
-		    new arenaid = GetPVarInt(playerid, "ArenaNumber");
-		    if(isnull(inputtext))
-		    {
-		        PaintballEditArenaInt(playerid);
-		        return 1;
-		    }
-		    PaintBallArena[arenaid][pbInterior] = strval(inputtext);
-		    PaintballEditArenaMenu(playerid);
+			}
 		}
 		else
 		{
-		    PaintballEditArenaMenu(playerid);
+			PaintballEditArenaMenu(playerid);
+		}
+	}
+	if(dialogid == PBEDITARENAINT)
+	{
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				PaintballEditArenaInt(playerid);
+				return 1;
+			}
+			PaintBallArena[arenaid][pbInterior] = strval(inputtext);
+			PaintballEditArenaMenu(playerid);
+		}
+		else
+		{
+			PaintballEditArenaMenu(playerid);
 		}
 	}
 	if(dialogid == PBEDITARENAVW)
 	{
-	    if(response == 1)
+		if(response == 1)
 		{
-		    new arenaid = GetPVarInt(playerid, "ArenaNumber");
-		    if(isnull(inputtext))
-		    {
-		        PaintballEditArenaVW(playerid);
-		        return 1;
-		    }
-		    PaintBallArena[arenaid][pbVirtual] = strval(inputtext);
-		    PaintballEditArenaMenu(playerid);
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				PaintballEditArenaVW(playerid);
+				return 1;
+			}
+			PaintBallArena[arenaid][pbVirtual] = strval(inputtext);
+			PaintballEditArenaMenu(playerid);
 		}
 		else
 		{
-		    PaintballEditArenaMenu(playerid);
+			PaintballEditArenaMenu(playerid);
 		}
 	}
 	if(dialogid == PBEDITARENAHILLRADIUS)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            PaintballEditArenaHillRadius(playerid);
-	            return 1;
-	        }
-	        if(floatstr(inputtext) < 0.0 || floatstr(inputtext) > 100.0)
-	        {
-	            PaintballEditArenaHillRadius(playerid);
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbHillRadius] = floatstr(inputtext);
-	        PaintballEditArenaMenu(playerid);
-	    }
-	    else
-	    {
-	        PaintballEditArenaMenu(playerid);
-	    }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				PaintballEditArenaHillRadius(playerid);
+				return 1;
+			}
+			if(floatstr(inputtext) < 0.0 || floatstr(inputtext) > 100.0)
+			{
+				PaintballEditArenaHillRadius(playerid);
+				return 1;
+			}
+			PaintBallArena[arenaid][pbHillRadius] = floatstr(inputtext);
+			PaintballEditArenaMenu(playerid);
+		}
+		else
+		{
+			PaintballEditArenaMenu(playerid);
+		}
 	}
 	if(dialogid == PBARENASELECTION) // Paintball Arena System
 	{
-	    if(response == 1)
-	    {
-     		for(new i = 0; i < MAX_ARENAS; i++)
-       		{
-       		    if(listitem == i)
-       		    {
-       		        //format(string, sizeof(string), "Debug: You have entered Arena %d.", i+1);
-       		        //SendClientMessageEx(playerid, COLOR_WHITE, string);
+		if(response == 1)
+		{
+			for(new i = 0; i < MAX_ARENAS; i++)
+			{
+				if(listitem == i)
+				{
+					//format(string, sizeof(string), "Debug: You have entered Arena %d.", i+1);
+					//SendClientMessageEx(playerid, COLOR_WHITE, string);
 
-       		        if(PaintBallArena[i][pbLocked] == 0) // Open
-       		        {
-       		            if(PlayerInfo[playerid][pPaintTokens] < 3)
+					if(PaintBallArena[i][pbLocked] == 0) // Open
+					{
+						if(PlayerInfo[playerid][pPaintTokens] < 3)
 						{
-						    if(PlayerInfo[playerid][pDonateRank] <= 2)
-						    {
+							if(PlayerInfo[playerid][pDonateRank] <= 2)
+							{
 								SendClientMessageEx(playerid, COLOR_WHITE, "You need at least 3 tokens to rent a room.");
-						    	PaintballArenaSelection(playerid);
-						    	return 1;
+								PaintballArenaSelection(playerid);
+								return 1;
 							}
 						}
-       		            ResetPaintballArena(i);
-       		            PaintBallArena[i][pbPlayers] = 1;
-       		            PaintBallArena[i][pbLocked] = 3;
+						ResetPaintballArena(i);
+						PaintBallArena[i][pbPlayers] = 1;
+						PaintBallArena[i][pbLocked] = 3;
 
-       		            new Float:oldX, Float:oldY, Float:oldZ, Float:oldHealth, Float:oldArmor;
+						new Float:oldX, Float:oldY, Float:oldZ, Float:oldHealth, Float:oldArmor;
 						GetPlayerPos(playerid, oldX, oldY, oldZ);
 
 						SetPVarFloat(playerid, "pbOldX", oldX);
@@ -4483,29 +5161,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarFloat(playerid, "pbOldHealth", oldHealth);
 						SetPVarFloat(playerid, "pbOldArmor", oldArmor);
 
-       		            SetPlayerPos(playerid, PaintBallArena[i][pbDeathmatch1][0],PaintBallArena[i][pbDeathmatch1][1],PaintBallArena[i][pbDeathmatch1][2]);
-       		            SetPlayerFacingAngle(playerid, PaintBallArena[i][pbDeathmatch1][3]);
-       		            SetPlayerInterior(playerid, PaintBallArena[i][pbInterior]);
-       		            SetPlayerVirtualWorld(playerid, PaintBallArena[i][pbVirtual]);
+						SetPlayerPos(playerid, PaintBallArena[i][pbDeathmatch1][0],PaintBallArena[i][pbDeathmatch1][1],PaintBallArena[i][pbDeathmatch1][2]);
+						SetPlayerFacingAngle(playerid, PaintBallArena[i][pbDeathmatch1][3]);
+						SetPlayerInterior(playerid, PaintBallArena[i][pbInterior]);
+						SetPlayerVirtualWorld(playerid, PaintBallArena[i][pbVirtual]);
 
-       		            PlayerInfo[playerid][pVW] = PaintBallArena[i][pbVirtual];
+						PlayerInfo[playerid][pVW] = PaintBallArena[i][pbVirtual];
 						PlayerInfo[playerid][pInt] = PaintBallArena[i][pbInterior];
 
-       		            format(string, sizeof(string), "%s",GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "%s",GetPlayerNameEx(playerid));
 						strmid(PaintBallArena[i][pbOwner], string, 0, strlen(string), 64);
-       		        	SetPVarInt(playerid, "ArenaNumber", i);
-       		        	SetPVarInt(playerid, "IsInArena", i);
+						SetPVarInt(playerid, "ArenaNumber", i);
+						SetPVarInt(playerid, "IsInArena", i);
 						PaintballSetupArena(playerid);
 						return 1;
 					}
 					if(PaintBallArena[i][pbLocked] == 1) // Active
 					{
-					    if(PaintBallArena[i][pbPlayers] >= PaintBallArena[i][pbLimit])
-	    				{
-		        			//format(string, sizeof(string), "Debug: Arena %d is currently full, you can not enter it.", i+1);
-          					//SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    					PaintballArenaSelection(playerid);
-		    				return 1;
+						if(PaintBallArena[i][pbPlayers] >= PaintBallArena[i][pbLimit])
+						{
+							//format(string, sizeof(string), "Debug: Arena %d is currently full, you can not enter it.", i+1);
+							//SendClientMessageEx(playerid, COLOR_WHITE, string);
+							PaintballArenaSelection(playerid);
+							return 1;
 						}
 						if(PaintBallArena[i][pbBidMoney] > GetPlayerCash(playerid))
 						{
@@ -4515,9 +5193,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						if(PaintBallArena[i][pbTimeLeft] < 180)
 						{
-						    SendClientMessageEx(playerid, COLOR_WHITE, "That Arena's round is about to end, you cannot join it.");
+							SendClientMessageEx(playerid, COLOR_WHITE, "That Arena's round is about to end, you cannot join it.");
 							PaintballArenaSelection(playerid);
-						    return 1;
+							return 1;
 						}
 						if(PaintBallArena[i][pbWar] == 1 && PlayerInfo[playerid][pDonateRank] < 3)
 						{
@@ -4527,30 +5205,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						if(PaintBallArena[i][pbGameType] == 2 || PaintBallArena[i][pbGameType] == 3 || PaintBallArena[i][pbGameType] == 5)
 						{
-						    SetPVarInt(playerid, "ArenaEnterTeam", i);
-						    ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
-						    return 1;
+							SetPVarInt(playerid, "ArenaEnterTeam", i);
+							ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							return 1;
 						}
 						if(strcmp(PaintBallArena[i][pbPassword], "None", false))
 						{
-	    					SetPVarInt(playerid, "ArenaEnterPass", i);
-	    					ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
-	    					return 1;
+							SetPVarInt(playerid, "ArenaEnterPass", i);
+							ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+							return 1;
 						}
 						JoinPaintballArena(playerid, i, "None");
 					}
 					if(PaintBallArena[i][pbLocked] == 2) // Closed
 					{
-					    PaintballArenaSelection(playerid);
-					    return 1;
+						PaintballArenaSelection(playerid);
+						return 1;
 					}
 					if(PaintBallArena[i][pbLocked] == 3) // Setup
 					{
-					    PaintballArenaSelection(playerid);
-					    return 1;
+						PaintballArenaSelection(playerid);
+						return 1;
 					}
-       		    }
-	        }
+				}
+			}
 		}
 		else
 		{
@@ -4559,214 +5237,214 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBTOKENBUYMENU)
 	{
-	    if(response == 1)
-	    {
-	        if(isnull(inputtext))
-	        {
+		if(response == 1)
+		{
+			if(isnull(inputtext))
+			{
 				PaintballTokenBuyMenu(playerid);
 				return 1;
-	        }
-	        if(strval(inputtext) <= 0)
-	        {
-	            PaintballTokenBuyMenu(playerid);
-	            return 1;
-	        }
-	        if(strval(inputtext) > 1000)
-	        {
-	            PaintballTokenBuyMenu(playerid);
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You can not purchase more than 1000 tokens at a time.");
-	            return 1;
-	        }
-	        if(GetPlayerCash(playerid) < 5000*strval(inputtext))
-	        {
-				PaintballTokenBuyMenu(playerid);
-	        	format(string,sizeof(string), "You can not afford %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
-	        	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	        	return 1;
 			}
-	        GivePlayerCash(playerid, -5000*strval(inputtext));
+			if(strval(inputtext) <= 0)
+			{
+				PaintballTokenBuyMenu(playerid);
+				return 1;
+			}
+			if(strval(inputtext) > 1000)
+			{
+				PaintballTokenBuyMenu(playerid);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You can not purchase more than 1000 tokens at a time.");
+				return 1;
+			}
+			if(GetPlayerCash(playerid) < 5000*strval(inputtext))
+			{
+				PaintballTokenBuyMenu(playerid);
+				format(string,sizeof(string), "You can not afford %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				return 1;
+			}
+			GivePlayerCash(playerid, -5000*strval(inputtext));
 			PlayerInfo[playerid][pPaintTokens] += strval(inputtext);
 			format(string,sizeof(string), "You have purchased %d tokens for $%d.",strval(inputtext),strval(inputtext)*5000);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+		}
 	}
 	if(dialogid == PBSETUPARENA)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(PaintBallArena[arenaid][pbGameType] == 1 || PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 4 || PaintBallArena[arenaid][pbGameType] == 5) // Deathmatch, Team Deathmatch, Single and Team King of the Hill.
-	        {
-	        	switch(listitem)
-	        	{
-        			case 0: // Password
-	            	{
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(PaintBallArena[arenaid][pbGameType] == 1 || PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 4 || PaintBallArena[arenaid][pbGameType] == 5) // Deathmatch, Team Deathmatch, Single and Team King of the Hill.
+			{
+				switch(listitem)
+				{
+					case 0: // Password
+					{
 						ShowPlayerDialog(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
 						return 1;
-	            	}
-	            	case 1: // GameType
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
-	                	return 1;
-	            	}
-	            	case 2: // Limit
-	            	{
-	    				ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
-	    				return 1;
-	            	}
-	            	case 3: // Time Limit
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 4: // Bid Money
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 5: // Health
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 6: // Armor
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 7: // Weapons 1
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 8: // Weapons 2
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-            		case 9: // Weapons 3
-	            	{
-	            		ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 10: // Exploit Perm
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
-	                	return 1;
-	            	}
+					}
+					case 1: // GameType
+					{
+						ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+						return 1;
+					}
+					case 2: // Limit
+					{
+						ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+						return 1;
+					}
+					case 3: // Time Limit
+					{
+						ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+						return 1;
+					}
+					case 4: // Bid Money
+					{
+						ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+						return 1;
+					}
+					case 5: // Health
+					{
+						ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+						return 1;
+					}
+					case 6: // Armor
+					{
+						ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+						return 1;
+					}
+					case 7: // Weapons 1
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 8: // Weapons 2
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 9: // Weapons 3
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 10: // Exploit Perm
+					{
+						ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+						return 1;
+					}
 					case 11: // War
 					{
 						ShowPlayerDialog(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
 						return 1;
 					}
-	            	case 12: // Begin Arena
-	            	{
-	            	    if(PaintBallArena[arenaid][pbGameType] == 1)
-	            	    {
-	            	        if(PlayerInfo[playerid][pDonateRank] <= 2)
-	                    	{
-	                    		PlayerInfo[playerid][pPaintTokens] -= 3;
-	                			format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 27, 100);
+					case 12: // Begin Arena
+					{
+						if(PaintBallArena[arenaid][pbGameType] == 1)
+						{
+							if(PlayerInfo[playerid][pDonateRank] <= 2)
+							{
+								PlayerInfo[playerid][pPaintTokens] -= 3;
+								format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,3);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 27, 100);
 							}
 							else
 							{
-						    	format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 27, 100);
+								format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 27, 100);
 							}
-	            	    }
-	            	    if(PaintBallArena[arenaid][pbGameType] == 2)
-	            	    {
-	            	    	if(PlayerInfo[playerid][pDonateRank] <= 2)
-	                    	{
-	                    		if(PlayerInfo[playerid][pPaintTokens] >= 4)
+						}
+						if(PaintBallArena[arenaid][pbGameType] == 2)
+						{
+							if(PlayerInfo[playerid][pDonateRank] <= 2)
+							{
+								if(PlayerInfo[playerid][pPaintTokens] >= 4)
 								{
-    								PlayerInfo[playerid][pPaintTokens] -= 4;
-       								format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
-          							SendClientMessageEx(playerid, COLOR_YELLOW, string);
-          							SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-          							PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-          							//SendAudioToPlayer(playerid, 27, 100);
+									PlayerInfo[playerid][pPaintTokens] -= 4;
+									format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,4);
+									SendClientMessageEx(playerid, COLOR_YELLOW, string);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+									//SendAudioToPlayer(playerid, 27, 100);
 								}
 								else
 								{
-						    		PaintballSetupArena(playerid);
-						    		SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
-						    		return 1;
+									PaintballSetupArena(playerid);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+									return 1;
 								}
 							}
 							else
 							{
-						    	format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 41, 100);
+								format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 41, 100);
 							}
 							PlayerInfo[playerid][pPaintTeam] = 1;
 							PaintBallArena[arenaid][pbTeamRed] = 1;
-	            	    }
-	            	    if(PaintBallArena[arenaid][pbGameType] == 4)
-	            	    {
-	            	        if(PlayerInfo[playerid][pDonateRank] <= 2)
-	                    	{
-	                    		PlayerInfo[playerid][pPaintTokens] -= 5;
-	                			format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 27, 100);
+						}
+						if(PaintBallArena[arenaid][pbGameType] == 4)
+						{
+							if(PlayerInfo[playerid][pDonateRank] <= 2)
+							{
+								PlayerInfo[playerid][pPaintTokens] -= 5;
+								format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 27, 100);
 							}
 							else
 							{
-						    	format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 27, 100);
+								format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 27, 100);
 							}
 
 							CreatePaintballArenaHill(arenaid);
 							SetPVarInt(playerid, "TickKOTHID", SetTimerEx("TickKOTH", 1000, true, "d", playerid)); // Room Owner's KOTH Tick Function
 							SetPlayerCheckpoint(playerid, PaintBallArena[arenaid][pbHillX], PaintBallArena[arenaid][pbHillY], PaintBallArena[arenaid][pbHillZ], PaintBallArena[arenaid][pbHillRadius]);
-	            	    }
-	            	    if(PaintBallArena[arenaid][pbGameType] == 5)
-	            	    {
-	            	    	if(PlayerInfo[playerid][pDonateRank] <= 2)
-	                    	{
-	                    		if(PlayerInfo[playerid][pPaintTokens] >= 6)
+						}
+						if(PaintBallArena[arenaid][pbGameType] == 5)
+						{
+							if(PlayerInfo[playerid][pDonateRank] <= 2)
+							{
+								if(PlayerInfo[playerid][pPaintTokens] >= 6)
 								{
-    								PlayerInfo[playerid][pPaintTokens] -= 6;
-       								format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
-          							SendClientMessageEx(playerid, COLOR_YELLOW, string);
-          							SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-          							PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-          							//SendAudioToPlayer(playerid, 41, 100);
+									PlayerInfo[playerid][pPaintTokens] -= 6;
+									format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,6);
+									SendClientMessageEx(playerid, COLOR_YELLOW, string);
+									SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+									PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+									//SendAudioToPlayer(playerid, 41, 100);
 								}
 								else
 								{
-						    		PaintballSetupArena(playerid);
-						    		SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
-						    		return 1;
+									PaintballSetupArena(playerid);
+									SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+									return 1;
 								}
 							}
 							else
 							{
-						    	format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 41, 100);
+								format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 41, 100);
 							}
 
 							CreatePaintballArenaHill(arenaid);
@@ -4774,7 +5452,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							SetPlayerCheckpoint(playerid, PaintBallArena[arenaid][pbHillX], PaintBallArena[arenaid][pbHillY], PaintBallArena[arenaid][pbHillZ], PaintBallArena[arenaid][pbHillRadius]);
 							PlayerInfo[playerid][pPaintTeam] = 1;
 							PaintBallArena[arenaid][pbTeamRed] = 1;
-	            	    }
+						}
 						if(PaintBallArena[arenaid][pbWar] == 1)
 						{
 							if(PaintBallArena[arenaid][pbVeh1Model] != 0)
@@ -4814,116 +5492,116 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								LinkVehicleToInterior(PaintBallArena[arenaid][pbVeh6ID], PaintBallArena[arenaid][pbInterior]);
 							}							
 						}	
-    					PaintBallArena[arenaid][pbActive] = 1;
-	                	PaintBallArena[arenaid][pbLocked] = 1;
-	                	GivePlayerCash(playerid,-PaintBallArena[arenaid][pbBidMoney]);
-	                	PaintBallArena[arenaid][pbMoneyPool] += PaintBallArena[arenaid][pbBidMoney];
-	                	SpawnPaintballArena(playerid, arenaid);
+						PaintBallArena[arenaid][pbActive] = 1;
+						PaintBallArena[arenaid][pbLocked] = 1;
+						GivePlayerCash(playerid,-PaintBallArena[arenaid][pbBidMoney]);
+						PaintBallArena[arenaid][pbMoneyPool] += PaintBallArena[arenaid][pbBidMoney];
+						SpawnPaintballArena(playerid, arenaid);
 						return 1;
-	            	}
+					}
 				}
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 3) // Capture the Flag
 			{
-			    switch(listitem)
-	        	{
-        			case 0: // Password
-	            	{
+				switch(listitem)
+				{
+					case 0: // Password
+					{
 						ShowPlayerDialog(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
 						return 1;
-	            	}
-	            	case 1: // GameType
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
-	                	return 1;
-	            	}
-	            	case 2: // Limit
-	            	{
-	    				ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
-	    				return 1;
-	            	}
-	            	case 3: // Time Limit
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 4: // Bid Money
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 5: // Health
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 6: // Armor
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 7: // Weapons 1
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 8: // Weapons 2
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-            		case 9: // Weapons 3
-	            	{
-	            		ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
-	                	return 1;
-	            	}
-	            	case 10: // Exploit Perm
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
-	                	return 1;
-	            	}
+					}
+					case 1: // GameType
+					{
+						ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+						return 1;
+					}
+					case 2: // Limit
+					{
+						ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+						return 1;
+					}
+					case 3: // Time Limit
+					{
+						ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+						return 1;
+					}
+					case 4: // Bid Money
+					{
+						ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+						return 1;
+					}
+					case 5: // Health
+					{
+						ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+						return 1;
+					}
+					case 6: // Armor
+					{
+						ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+						return 1;
+					}
+					case 7: // Weapons 1
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 8: // Weapons 2
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 9: // Weapons 3
+					{
+						ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+						return 1;
+					}
+					case 10: // Exploit Perm
+					{
+						ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+						return 1;
+					}
 					case 11: // War
 					{
 						ShowPlayerDialog(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
 						return 1;
 					}
-	            	case 12: // Flag Instagib
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
-	                	return 1;
-	            	}
-	            	case 13: // Flag No Weapons
-	            	{
-	                	ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
-	                	return 1;
-	            	}
-	            	case 14: // Begin Arena
-	            	{
-	            	    if(PlayerInfo[playerid][pDonateRank] <= 2)
-	                    {
-	                    	if(PlayerInfo[playerid][pPaintTokens] >= 5)
+					case 12: // Flag Instagib
+					{
+						ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+						return 1;
+					}
+					case 13: // Flag No Weapons
+					{
+						ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+						return 1;
+					}
+					case 14: // Begin Arena
+					{
+						if(PlayerInfo[playerid][pDonateRank] <= 2)
+						{
+							if(PlayerInfo[playerid][pPaintTokens] >= 5)
 							{
-	                    		PlayerInfo[playerid][pPaintTokens] -= 5;
-	                			format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
-	                			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                			SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                			PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                			//SendAudioToPlayer(playerid, 41, 100);
+								PlayerInfo[playerid][pPaintTokens] -= 5;
+								format(string,sizeof(string),"You have rented this room for %d minutes at a cost of %d tokens.",PaintBallArena[arenaid][pbTimeLeft]/60,5);
+								SendClientMessageEx(playerid, COLOR_YELLOW, string);
+								SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+								PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+								//SendAudioToPlayer(playerid, 41, 100);
 							}
 							else
 							{
-						    	PaintballSetupArena(playerid);
-						    	SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
-						    	return 1;
+								PaintballSetupArena(playerid);
+								SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough tokens to rent this room for this gametype.");
+								return 1;
 							}
 						}
 						else
 						{
-						    format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
-	                		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	                		SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
-	                		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
-	                		//SendAudioToPlayer(playerid, 41, 100);
+							format(string,sizeof(string),"You have rented this room for %d minutes at no cost because of Gold+ VIP.",PaintBallArena[arenaid][pbTimeLeft]/60);
+							SendClientMessageEx(playerid, COLOR_YELLOW, string);
+							SendClientMessageEx(playerid, COLOR_WHITE, "Paintball Arena Commands: /scores - /exitarena - /joinarena - /switchteam");
+							PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+							//SendAudioToPlayer(playerid, 41, 100);
 						}
 
 						SetPVarInt(playerid, "TickCTFID", SetTimerEx("TickCTF", 1000, true, "d", playerid)); // Room Owner's CTF Tick Function
@@ -4934,7 +5612,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						PaintBallArena[arenaid][pbTeamRedTextID] = Create3DTextLabel("Red Base", COLOR_RED, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 1000.0, PaintBallArena[arenaid][pbVirtual], 0);
 						//PaintBallArena[arenaid][pbTeamRedTextID] = CreateDynamic3DTextLabel("Red Base", COLOR_RED, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 1000.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
 						PaintBallArena[arenaid][pbTeamBlueTextID] = Create3DTextLabel("Blue Base", COLOR_DBLUE, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 1000.0, PaintBallArena[arenaid][pbVirtual], 0);
-                        //PaintBallArena[arenaid][pbTeamBlueTextID] = CreateDynamic3DTextLabel("Blue Base", COLOR_DBLUE, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 1000.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
+						//PaintBallArena[arenaid][pbTeamBlueTextID] = CreateDynamic3DTextLabel("Blue Base", COLOR_DBLUE, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 1000.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
 						PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 						PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
@@ -4989,156 +5667,156 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								LinkVehicleToInterior(PaintBallArena[arenaid][pbVeh6ID], PaintBallArena[arenaid][pbInterior]);
 							}							
 						}			
-    					PaintBallArena[arenaid][pbActive] = 1;
-	                	PaintBallArena[arenaid][pbLocked] = 1;
-	                	GivePlayerCash(playerid,-PaintBallArena[arenaid][pbBidMoney]);
-	                	PaintBallArena[arenaid][pbMoneyPool] += PaintBallArena[arenaid][pbBidMoney];
-	                	SpawnPaintballArena(playerid, arenaid);
+						PaintBallArena[arenaid][pbActive] = 1;
+						PaintBallArena[arenaid][pbLocked] = 1;
+						GivePlayerCash(playerid,-PaintBallArena[arenaid][pbBidMoney]);
+						PaintBallArena[arenaid][pbMoneyPool] += PaintBallArena[arenaid][pbBidMoney];
+						SpawnPaintballArena(playerid, arenaid);
 						return 1;
-	            	}
+					}
 				}
 			}
-	        PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	        LeavePaintballArena(playerid, GetPVarInt(playerid, "ArenaNumber"));
-	        PaintballArenaSelection(playerid);
-	    }
+			PaintballSetupArena(playerid);
+		}
+		else
+		{
+			LeavePaintballArena(playerid, GetPVarInt(playerid, "ArenaNumber"));
+			PaintballArenaSelection(playerid);
+		}
 	}
 	if(dialogid == PBCHANGEPASSWORD)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            format(string, sizeof(string), "None");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				format(string, sizeof(string), "None");
 				strmid(PaintBallArena[arenaid][pbPassword], string, 0, strlen(string), 64);
 				PaintballSetupArena(playerid);
 				return 1;
-	        }
-	        strmid(PaintBallArena[arenaid][pbPassword], inputtext, 0, strlen(inputtext), 64);
+			}
+			strmid(PaintBallArena[arenaid][pbPassword], inputtext, 0, strlen(inputtext), 64);
 			PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	        PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGEGAMEMODE)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
 			switch(listitem)
 			{
-			    case 0:
-			    {
+				case 0:
+				{
 					PaintBallArena[arenaid][pbGameType] = 1;
 					PaintballSetupArena(playerid);
-			    }
-			    case 1:
-			    {
-			        PaintBallArena[arenaid][pbGameType] = 2;
+				}
+				case 1:
+				{
+					PaintBallArena[arenaid][pbGameType] = 2;
 					PaintballSetupArena(playerid);
-			    }
-			    case 2:
-			    {
-			        PaintBallArena[arenaid][pbGameType] = 3;
-			        PaintballSetupArena(playerid);
-			    }
-			    case 3:
-			    {
-			        PaintBallArena[arenaid][pbGameType] = 4;
-			        PaintballSetupArena(playerid);
-			    }
-			    case 4:
-			    {
-			        PaintBallArena[arenaid][pbGameType] = 5;
-			        PaintballSetupArena(playerid);
-			    }
+				}
+				case 2:
+				{
+					PaintBallArena[arenaid][pbGameType] = 3;
+					PaintballSetupArena(playerid);
+				}
+				case 3:
+				{
+					PaintBallArena[arenaid][pbGameType] = 4;
+					PaintballSetupArena(playerid);
+				}
+				case 4:
+				{
+					PaintBallArena[arenaid][pbGameType] = 5;
+					PaintballSetupArena(playerid);
+				}
 			}
-	    }
-	    else
-	    {
-	        PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGELIMIT)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 2 || strval(inputtext) > 16)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
-	            return 1;
-	        }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 2 || strval(inputtext) > 16)
+			{
+				ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+				return 1;
+			}
 			PaintBallArena[arenaid][pbLimit] = strval(inputtext);
 			PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	    	PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGETIMELEFT)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
-	            return 1;
-	        }
-	        if(strfind(".", inputtext, true) != -1)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 5 || strval(inputtext) > 15)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbTimeLeft] = strval(inputtext)*60;
-	        PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+				return 1;
+			}
+			if(strfind(".", inputtext, true) != -1)
+			{
+				ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 5 || strval(inputtext) > 15)
+			{
+				ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbTimeLeft] = strval(inputtext)*60;
 			PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGEBIDMONEY)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 0 || strval(inputtext) > 10000)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) > GetPlayerCash(playerid))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
-	            SendClientMessageEx(playerid, COLOR_WHITE, "You can't enter a bid amount greater than your current cash.");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbBidMoney] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 0 || strval(inputtext) > 10000)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) > GetPlayerCash(playerid))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You can't enter a bid amount greater than your current cash.");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbBidMoney] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5147,21 +5825,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEHEALTH)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 1 || strval(inputtext) > 100)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbHealth] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 1 || strval(inputtext) > 100)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbHealth] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5170,21 +5848,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEARMOR)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) < 0 || strval(inputtext) > 99)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbArmor] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) < 0 || strval(inputtext) > 99)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbArmor] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5193,31 +5871,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEWEAPONS1)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;
+			}
 			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;			
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;			
 			}
-	        if(strval(inputtext) < 0||strval(inputtext) > 34)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbWeapons][0] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+			if(strval(inputtext) < 0||strval(inputtext) > 34)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbWeapons][0] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5226,31 +5904,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEWEAPONS2)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+				return 1;
+			}
 			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;			
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;			
 			}			
-	        if(strval(inputtext) < 0||strval(inputtext) > 34)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbWeapons][1] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+			if(strval(inputtext) < 0||strval(inputtext) > 34)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbWeapons][1] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5259,31 +5937,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEWEAPONS3)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	        if(isnull(inputtext))
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+				return 1;
+			}
 			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
-	            return 1;			
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+				return 1;			
 			}			
-	        if(strval(inputtext) < 0||strval(inputtext) > 34)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
-	        {
-	            ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
-	            return 1;
-	        }
-	        PaintBallArena[arenaid][pbWeapons][2] = strval(inputtext);
-	        PaintballSetupArena(playerid);
+			if(strval(inputtext) < 0||strval(inputtext) > 34)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
+			{
+				ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+				return 1;
+			}
+			PaintBallArena[arenaid][pbWeapons][2] = strval(inputtext);
+			PaintballSetupArena(playerid);
 		}
 		else
 		{
@@ -5292,26 +5970,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == PBCHANGEEXPLOITPERM)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
 			if(isnull(inputtext))
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+				return 1;
 			}
 			if(strval(inputtext) < 0||strval(inputtext) > 1)
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+				return 1;
 			}
 			PaintBallArena[arenaid][pbExploitPerm] = strval(inputtext);
 			PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	        PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGEWAR)
 	{
@@ -5337,267 +6015,267 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}	
 	if(dialogid == PBCHANGEFLAGINSTAGIB)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
 			if(isnull(inputtext))
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+				return 1;
 			}
 			if(strval(inputtext) < 0||strval(inputtext) > 1)
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+				return 1;
 			}
 			PaintBallArena[arenaid][pbFlagInstagib] = strval(inputtext);
 			PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	        PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBCHANGEFLAGNOWEAPONS)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaNumber");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaNumber");
 			if(isnull(inputtext))
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+				return 1;
 			}
 			if(strval(inputtext) < 0||strval(inputtext) > 1)
 			{
-			    ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
-			    return 1;
+				ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+				return 1;
 			}
 			PaintBallArena[arenaid][pbFlagNoWeapons] = strval(inputtext);
 			PaintballSetupArena(playerid);
-	    }
-	    else
-	    {
-	        PaintballSetupArena(playerid);
-	    }
+		}
+		else
+		{
+			PaintballSetupArena(playerid);
+		}
 	}
 	if(dialogid == PBJOINPASSWORD)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaEnterPass");
-	        if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaEnterPass");
+			if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
 			{
-    			PaintballArenaSelection(playerid);
-    			SetPVarInt(playerid, "ArenaEnterPass", -1);
-    			SetPVarInt(playerid, "pbTeamChoice", 0);
-	   			return 1;
+				PaintballArenaSelection(playerid);
+				SetPVarInt(playerid, "ArenaEnterPass", -1);
+				SetPVarInt(playerid, "pbTeamChoice", 0);
+				return 1;
 			}
 			if(isnull(inputtext))
 			{
-			    PaintballArenaSelection(playerid);
-			    SetPVarInt(playerid, "ArenaEnterPass", -1);
-			    SetPVarInt(playerid, "pbTeamChoice", 0);
-			    return 1;
+				PaintballArenaSelection(playerid);
+				SetPVarInt(playerid, "ArenaEnterPass", -1);
+				SetPVarInt(playerid, "pbTeamChoice", 0);
+				return 1;
 			}
 			if(strcmp(PaintBallArena[arenaid][pbPassword], inputtext, false))
 			{
-	    		PaintballArenaSelection(playerid);
-	    		SetPVarInt(playerid, "ArenaEnterPass", -1);
-	    		SetPVarInt(playerid, "pbTeamChoice", 0);
-	    		return 1;
+				PaintballArenaSelection(playerid);
+				SetPVarInt(playerid, "ArenaEnterPass", -1);
+				SetPVarInt(playerid, "pbTeamChoice", 0);
+				return 1;
 			}
-	        if(JoinPaintballArena(playerid,arenaid,inputtext))
-	        {
-	            SetPVarInt(playerid, "ArenaEnterPass", -1);
-	        }
-	        else
-	        {
+			if(JoinPaintballArena(playerid,arenaid,inputtext))
+			{
+				SetPVarInt(playerid, "ArenaEnterPass", -1);
+			}
+			else
+			{
 				PaintballArenaSelection(playerid);
 				SetPVarInt(playerid, "pbTeamChoice", 0);
-	        }
-	    }
-	    else
-	    {
+			}
+		}
+		else
+		{
 			PaintballArenaSelection(playerid);
 			SetPVarInt(playerid, "pbTeamChoice", 0);
-	    }
+		}
 	}
 	if(dialogid == PBSWITCHTEAM)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "IsInArena");
-	        switch(listitem)
-	        {
-	        	case 0: // Red
- 				{
- 				    new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
- 				    if(PlayerInfo[playerid][pPaintTeam] == 1)
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Red Team!");
- 				        PaintballSwitchTeam(playerid);
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTimeLeft] < 180)
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "IsInArena");
+			switch(listitem)
+			{
+				case 0: // Red
+				{
+					new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
+					if(PlayerInfo[playerid][pPaintTeam] == 1)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Red Team!");
+						PaintballSwitchTeam(playerid);
 						return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
- 				    {
+					}
+					if(PaintBallArena[arenaid][pbTimeLeft] < 180)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
+					{
 						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
- 				        PaintballSwitchTeam(playerid);
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
- 				        return 1;
- 				    }
- 				    PaintBallArena[arenaid][pbTeamBlue]--;
- 				    PaintBallArena[arenaid][pbTeamRed]++;
- 				    PlayerInfo[playerid][pPaintTeam] = 1;
- 				    SetPlayerHealth(playerid, 0);
-	        	}
-	        	case 1: // Blue
-	        	{
-	        	    new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
-	        	    if(PlayerInfo[playerid][pPaintTeam] == 2)
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Blue Team!");
- 				        PaintballSwitchTeam(playerid);
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTimeLeft] < 180)
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+						PaintballSwitchTeam(playerid);
 						return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
- 				    {
+					}
+					if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
+						return 1;
+					}
+					PaintBallArena[arenaid][pbTeamBlue]--;
+					PaintBallArena[arenaid][pbTeamRed]++;
+					PlayerInfo[playerid][pPaintTeam] = 1;
+					SetPlayerHealth(playerid, 0);
+				}
+				case 1: // Blue
+				{
+					new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
+					if(PlayerInfo[playerid][pPaintTeam] == 2)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are already on the Blue Team!");
+						PaintballSwitchTeam(playerid);
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTimeLeft] < 180)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "You can not switch teams now!");
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
+					{
 						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
- 				        PaintballSwitchTeam(playerid);
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
- 				        return 1;
- 				    }
- 				    PaintBallArena[arenaid][pbTeamRed]--;
- 				    PaintBallArena[arenaid][pbTeamBlue]++;
- 				    PlayerInfo[playerid][pPaintTeam] = 2;
- 				    SetPlayerHealth(playerid, 0);
-	        	}
+						PaintballSwitchTeam(playerid);
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Teams would be un-even, you cannot switch teams right now.");
+						return 1;
+					}
+					PaintBallArena[arenaid][pbTeamRed]--;
+					PaintBallArena[arenaid][pbTeamBlue]++;
+					PlayerInfo[playerid][pPaintTeam] = 2;
+					SetPlayerHealth(playerid, 0);
+				}
 			}
-	    }
+		}
 	}
 	if(dialogid == PBJOINTEAM)
 	{
-	    if(response == 1)
-	    {
-	        new arenaid = GetPVarInt(playerid, "ArenaEnterTeam");
-	        if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
-	        {
-	            PaintballArenaSelection(playerid);
-	            SetPVarInt(playerid, "ArenaEnterTeam", -1);
-	            return 1;
-	        }
-	        switch(listitem)
-	        {
-	        	case 0: // Red
- 				{
- 				    new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
- 				    if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
- 				    {
-						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
- 				        ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
- 				        ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
- 				        return 1;
- 				    }
- 				    SetPVarInt(playerid, "pbTeamChoice", 1);
- 				    if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
-					{
-						SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-						ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
-						return 1;
-					}
-					JoinPaintballArena(playerid, arenaid, "None");
-	        	}
-	        	case 1: // Blue
-	        	{
-	        	    new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
- 				    if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
- 				    {
-						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
- 				        ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
- 				        return 1;
- 				    }
- 				    if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
- 				    {
- 				        SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
- 				        ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
- 				        return 1;
- 				    }
- 				    SetPVarInt(playerid, "pbTeamChoice", 2);
- 				    if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
-					{
-						SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-						ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
-						return 1;
-					}
-					JoinPaintballArena(playerid, arenaid, "None");
-	        	}
+		if(response == 1)
+		{
+			new arenaid = GetPVarInt(playerid, "ArenaEnterTeam");
+			if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
+			{
+				PaintballArenaSelection(playerid);
+				SetPVarInt(playerid, "ArenaEnterTeam", -1);
+				return 1;
 			}
-	    }
-	    else
-	    {
-	        PaintballArenaSelection(playerid);
-	    }
+			switch(listitem)
+			{
+				case 0: // Red
+				{
+					new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
+					if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
+						ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
+						ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+						return 1;
+					}
+					SetPVarInt(playerid, "pbTeamChoice", 1);
+					if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
+					{
+						SetPVarInt(playerid, "ArenaEnterPass", arenaid);
+						ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+						return 1;
+					}
+					JoinPaintballArena(playerid, arenaid, "None");
+				}
+				case 1: // Blue
+				{
+					new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
+					if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
+						ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+						return 1;
+					}
+					if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
+						ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+						return 1;
+					}
+					SetPVarInt(playerid, "pbTeamChoice", 2);
+					if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
+					{
+						SetPVarInt(playerid, "ArenaEnterPass", arenaid);
+						ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+						return 1;
+					}
+					JoinPaintballArena(playerid, arenaid, "None");
+				}
+			}
+		}
+		else
+		{
+			PaintballArenaSelection(playerid);
+		}
 	}
 	if(dialogid == DOORLOCK)
 	{
 		if(response == 1)
 		{
-		    new i = GetPVarInt(playerid, "Door");
-		    if(isnull(inputtext))
-		    {
-		        SendClientMessage(playerid, COLOR_GREY, "You did not enter anything" );
-		        return 1;
-		    }
-		    if(strlen(inputtext) > 24)
-		    {
-		        SendClientMessageEx(playerid, COLOR_GREY, "The password can not be greater than 24 characters.");
-		        return 1;
-		    }
-		    if(strcmp(inputtext, DDoorsInfo[i][ddPass], true) == 0)
-		    {
-		        if(DDoorsInfo[i][ddLocked] == 0)
-		        {
+			new i = GetPVarInt(playerid, "Door");
+			if(isnull(inputtext))
+			{
+				SendClientMessage(playerid, COLOR_GREY, "You did not enter anything" );
+				return 1;
+			}
+			if(strlen(inputtext) > 24)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "The password can not be greater than 24 characters.");
+				return 1;
+			}
+			if(strcmp(inputtext, DDoorsInfo[i][ddPass], true) == 0)
+			{
+				if(DDoorsInfo[i][ddLocked] == 0)
+				{
 					DDoorsInfo[i][ddLocked] = 1;
 					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors locked.");
-		        }
-		        else
-		        {
-		            DDoorsInfo[i][ddLocked] = 0;
-		            SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors unlocked.");
-		        }
+				}
+				else
+				{
+					DDoorsInfo[i][ddLocked] = 0;
+					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors unlocked.");
+				}
 				SaveDynamicDoor(i);
 			}
 			else
 			{
-			    SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
 			}
 		}
 		else
 		{
-		    return 1;
+			return 1;
 		}
 	}
 	if(dialogid == MAINMENU || dialogid == MAINMENU2)
@@ -5634,7 +6312,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Kick(playerid);
 	}
 	if (dialogid == ELEVATOR3 && response)
-    {
+	{
 		if (listitem == 0)
 		{
 			SetPlayerPos(playerid, 1564.8, -1666.2, 28.3);
@@ -5645,13 +6323,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else
 		{
 			SetPlayerPos(playerid, 1568.6676, -1689.9708, 6.2188);
-		 	SetPlayerInterior(playerid, 0);
-		 	PlayerInfo[playerid][pVW] = 0;
+			SetPlayerInterior(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
 			SetPlayerVirtualWorld(playerid, 0);
 		}
 	}
 	if (dialogid == ELEVATOR && response)
-    {
+	{
 		if (listitem == 0)
 		{
 			SetPlayerPos(playerid, 276.0980, 122.1232, 1004.6172);
@@ -5668,7 +6346,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}
 	if (dialogid == ELEVATOR2 && response)
-    {
+	{
 		if (listitem == 0)
 		{
 			SetPlayerPos(playerid, 1564.8, -1666.2, 28.3);
@@ -5685,7 +6363,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}
 	if(dialogid == VIPNUMMENU)
-    {
+	{
 		if(response)
 		{
 			new numberstr = -abs(strval(inputtext));
@@ -5788,12 +6466,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-		    SendClientMessageEx(playerid,COLOR_GREY," You chose not to change numbers.");
+			SendClientMessageEx(playerid,COLOR_GREY," You chose not to change numbers.");
 		}
 
 	}
 	if(dialogid == VIPNUMMENU2)
-    {
+	{
 		if(response)
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
@@ -5819,109 +6497,109 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}
 	/*if(dialogid == RENTMENU)
-    {
+	{
 		if(response)
-		    {
-		     	switch(listitem)
-		        	{
-			        case 0://15 Minutes
+			{
+				switch(listitem)
+					{
+					case 0://15 Minutes
 						{
 							if(GetPlayerCash(playerid) < 1000)
 								{
-								    SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
-								    RemovePlayerFromVehicle(playerid);
-								    new Float:slx, Float:sly, Float:slz;
+									SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
+									RemovePlayerFromVehicle(playerid);
+									new Float:slx, Float:sly, Float:slz;
 									GetPlayerPos(playerid, slx, sly, slz);
 									SetPlayerPos(playerid, slx, sly, slz+1.2);
-								    TogglePlayerControllable(playerid,1);
+									TogglePlayerControllable(playerid,1);
 								}
 							else
 								{
-								    GivePlayerCash(playerid,-1000);
-								    gBike[playerid] = 3;
-								    gBikeRenting[playerid] = 1;
-								    TogglePlayerControllable(playerid, 1);
-								    SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for 15 minutes, enjoy!");
-								    SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*15, true, "d", playerid));
-							    }
+									GivePlayerCash(playerid,-1000);
+									gBike[playerid] = 3;
+									gBikeRenting[playerid] = 1;
+									TogglePlayerControllable(playerid, 1);
+									SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for 15 minutes, enjoy!");
+									SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*15, true, "d", playerid));
+								}
 						}
 					case 1: // 30 minutes
 						{
 						   if(GetPlayerCash(playerid) < 2000)
 								{
-								    SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
-								    RemovePlayerFromVehicle(playerid);
-								    new Float:slx, Float:sly, Float:slz;
+									SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
+									RemovePlayerFromVehicle(playerid);
+									new Float:slx, Float:sly, Float:slz;
 									GetPlayerPos(playerid, slx, sly, slz);
 									SetPlayerPos(playerid, slx, sly, slz+1.2);
-								    TogglePlayerControllable(playerid,1);
+									TogglePlayerControllable(playerid,1);
 								}
 							else
 							{
-							    GivePlayerCash(playerid,-2000);
-							    gBike[playerid] = 6;
-							    gBikeRenting[playerid] = 1;
-							    TogglePlayerControllable(playerid, 1);
-							    SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for 30 minutes, enjoy!");
-							    SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*30, true, "d", playerid));
-						    }
+								GivePlayerCash(playerid,-2000);
+								gBike[playerid] = 6;
+								gBikeRenting[playerid] = 1;
+								TogglePlayerControllable(playerid, 1);
+								SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for 30 minutes, enjoy!");
+								SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*30, true, "d", playerid));
+							}
 						}
 					case 2: // 1 hour
 						{
-						    if(GetPlayerCash(playerid) < 4000)
+							if(GetPlayerCash(playerid) < 4000)
 								{
-								    SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
-								    RemovePlayerFromVehicle(playerid);
-								    new Float:slx, Float:sly, Float:slz;
+									SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money!");
+									RemovePlayerFromVehicle(playerid);
+									new Float:slx, Float:sly, Float:slz;
 									GetPlayerPos(playerid, slx, sly, slz);
 									SetPlayerPos(playerid, slx, sly, slz+1.2);
-								    TogglePlayerControllable(playerid,1);
+									TogglePlayerControllable(playerid,1);
 								}
 							else
 							{
-							    GivePlayerCash(playerid,-4000);
-							    gBike[playerid] = 12;
-							    gBikeRenting[playerid] = 1;
-							    TogglePlayerControllable(playerid, 1);
-							    SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for an hour, enjoy!");
-							    SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*60, true, "d", playerid));
-						    }
+								GivePlayerCash(playerid,-4000);
+								gBike[playerid] = 12;
+								gBikeRenting[playerid] = 1;
+								TogglePlayerControllable(playerid, 1);
+								SendClientMessageEx(playerid,COLOR_GREY," You have rented a bike for an hour, enjoy!");
+								SetPVarInt(playerid, "RentTime", SetTimerEx("RentTimer", (1000*60)*60, true, "d", playerid));
+							}
 						}
 					}
 			}
 		if(!response)
 		{
-		    RemovePlayerFromVehicle(playerid);
-		    new Float:slx, Float:sly, Float:slz;
+			RemovePlayerFromVehicle(playerid);
+			new Float:slx, Float:sly, Float:slz;
 			GetPlayerPos(playerid, slx, sly, slz);
 			SetPlayerPos(playerid, slx, sly, slz+1.2);
-		    TogglePlayerControllable(playerid,1);
-		    SendClientMessageEx(playerid,COLOR_GREY," You may only use these bikes if you rent one.");
+			TogglePlayerControllable(playerid,1);
+			SendClientMessageEx(playerid,COLOR_GREY," You may only use these bikes if you rent one.");
 		}
 
 	}*/
 
 	if(dialogid == 1348)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			new
 				Float: carPosF[3],
 				miscid = GetPVarInt(playerid, "playeraffectedcarTP"),
 				v = ListItemTrackId[playerid][listitem];
-	        GetVehiclePos(PlayerVehicleInfo[miscid][v][pvId], carPosF[0], carPosF[1], carPosF[2]);
-	        SetPlayerVirtualWorld(playerid,GetVehicleVirtualWorld(PlayerVehicleInfo[miscid][v][pvId]));
-	        SetPlayerPos(playerid, carPosF[0], carPosF[1], carPosF[2]);
+			GetVehiclePos(PlayerVehicleInfo[miscid][v][pvId], carPosF[0], carPosF[1], carPosF[2]);
+			SetPlayerVirtualWorld(playerid,GetVehicleVirtualWorld(PlayerVehicleInfo[miscid][v][pvId]));
+			SetPlayerPos(playerid, carPosF[0], carPosF[1], carPosF[2]);
 		}
 	}
 	if(dialogid == GOTOPLAYERCAR)
 	{
-	    if(response == 1)
-	    {
-	        for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
-	        {
-	            if(listitem == i)
-	            {
+		if(response == 1)
+		{
+			for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
+			{
+				if(listitem == i)
+				{
 					new Float: carPos[3], id = GetPVarInt(playerid, "playeraffectedcarTP");
 					if(PlayerVehicleInfo[id][i][pvId] > INVALID_PLAYER_VEHICLE_ID)
 					{
@@ -5932,11 +6610,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_WHITE, "You can not teleport to an empty, disabled or impounded slot.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "You can not teleport to an empty, disabled or impounded slot.");
 					}
 				}
 			}
-	    }
+		}
 	}
 	if(dialogid == VEHICLESTORAGE && response) {
 	
@@ -5964,7 +6642,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(vehiclehealth < 800) {
 					SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle is too damaged to be stored.");
 				}
-   				else if (GetPVarInt(playerid, "Refueling") == PlayerVehicleInfo[playerid][listitem][pvId])
+				else if (GetPVarInt(playerid, "Refueling") == PlayerVehicleInfo[playerid][listitem][pvId])
 					SendClientMessageEx(playerid, COLOR_WHITE, "You can not store a vehicle while it is being refueled.");
 				else {
 					--PlayerCars;
@@ -5990,9 +6668,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can not spawn a disabled vehicle. It is disabled due to your VIP level (vehicle restrictions).");
 		}
 		else if((PlayerInfo[playerid][pRVehRestricted] > gettime() || PlayerVehicleInfo[playerid][listitem][pvRestricted] > gettime()) && IsRestrictedVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId]))
-        {
-            SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to spawn this restricted vehicle.");
-        }
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to spawn this restricted vehicle.");
+		}
 		else if(!PlayerVehicleInfo[playerid][listitem][pvSpawned]) {
 			if(PlayerInfo[playerid][pDonateRank] == 0 && VehicleSpawned[playerid] >= 2) {
 				SendClientMessageEx(playerid, COLOR_GREY, "As non-VIP you can only have 2 vehicles spawned. You must store a vehicle in order to spawn another one.");
@@ -6023,8 +6701,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new
 					iVeh = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
 
-                SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
-                LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);
+				SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
+				LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);
 
 				++PlayerCars;
 				VehicleSpawned[playerid]++;
@@ -6060,62 +6738,62 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else SendClientMessageEx(playerid, COLOR_WHITE, "You can not spawn a non-existent vehicle.");
 	}
 	if(dialogid == ADMIN_VEHCHECK && response) {
-	    if(PlayerInfo[playerid][pAdmin] < 4) { return SendClientMessage(playerid, COLOR_GRAD2, "You are not authorized");  }
+		if(PlayerInfo[playerid][pAdmin] < 4) { return SendClientMessage(playerid, COLOR_GRAD2, "You are not authorized");  }
 		new giveplayerid = GetPVarInt(playerid, "vehcheck_giveplayerid");
 		if(!IsPlayerConnected(giveplayerid)) { return SendClientMessage(playerid, COLOR_GRAD2, "The person has disconnected"); }
 		new	iVehicleID = PlayerVehicleInfo[giveplayerid][listitem][pvId];
 		new model;
 		model = PlayerVehicleInfo[giveplayerid][listitem][pvModelId];
 		PlayerVehicleInfo[giveplayerid][listitem][pvId] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvModelId] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPosX] = 0.0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPosY] = 0.0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPosZ] = 0.0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPosAngle] = 0.0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvLock] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvLocked] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPaintJob] = -1;
-        PlayerVehicleInfo[giveplayerid][listitem][pvColor1] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvModelId] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPosX] = 0.0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPosY] = 0.0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPosZ] = 0.0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPosAngle] = 0.0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvLock] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvLocked] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPaintJob] = -1;
+		PlayerVehicleInfo[giveplayerid][listitem][pvColor1] = 0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvImpounded] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvColor2] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
-        PlayerVehicleInfo[giveplayerid][listitem][pvPark] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvVW] = 0;
-        PlayerVehicleInfo[giveplayerid][listitem][pvInt] = 0;
-        if(PlayerVehicleInfo[giveplayerid][listitem][pvSpawned])
+		PlayerVehicleInfo[giveplayerid][listitem][pvColor2] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+		PlayerVehicleInfo[giveplayerid][listitem][pvPark] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvVW] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvInt] = 0;
+		if(PlayerVehicleInfo[giveplayerid][listitem][pvSpawned])
 		{
-	        PlayerVehicleInfo[giveplayerid][iVehicleID][pvSpawned] = 0;
-	        DestroyVehicle(iVehicleID);
+			PlayerVehicleInfo[giveplayerid][iVehicleID][pvSpawned] = 0;
+			DestroyVehicle(iVehicleID);
 			PlayerVehicleInfo[playerid][listitem][pvId] = INVALID_PLAYER_VEHICLE_ID;
-	        VehicleSpawned[giveplayerid]--;
+			VehicleSpawned[giveplayerid]--;
 			
-	    }
+		}
 		DestroyPlayerVehicle(giveplayerid, listitem);
-        for(new m = 0; m < MAX_MODS; m++)
+		for(new m = 0; m < MAX_MODS; m++)
 		{
-            PlayerVehicleInfo[giveplayerid][listitem][pvMods][m] = 0;
+			PlayerVehicleInfo[giveplayerid][listitem][pvMods][m] = 0;
 		}
 		format(string, sizeof(string), "AdmCmd: Admin %s has deleted one of %s's vehicles (VehModel:%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), model);
-  		Log("logs/admin.log", string);
-  		ABroadCast(COLOR_YELLOW, string, 4);
+		Log("logs/admin.log", string);
+		ABroadCast(COLOR_YELLOW, string, 4);
 
-  		format(string, sizeof(string), "* Admin %s has deleted one of your vehicles.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "* Admin %s has deleted one of your vehicles.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
 
-  		format(string, sizeof(string), "* You have deleted one of %s's vehicles.", GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "* You have deleted one of %s's vehicles.", GetPlayerNameEx(giveplayerid));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
 	}
 	if(dialogid == TRACKCAR2)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0:
-	            {
-	                new Float: carPos[3];
-	                GetVehiclePos(GetPVarInt(playerid, "RentedVehicle"), carPos[0], carPos[1], carPos[2]);
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+				{
+					new Float: carPos[3];
+					GetVehiclePos(GetPVarInt(playerid, "RentedVehicle"), carPos[0], carPos[1], carPos[2]);
 					if(CheckPointCheck(playerid))
 					{
 						SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
@@ -6130,10 +6808,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerCheckpoint(playerid, carPos[0], carPos[1], carPos[2], 15.0);
 						SendClientMessageEx(playerid, COLOR_WHITE, "Hint: Make your way to the checkpoint to find your vehicle!");
 					}
-	            }
-	            case 1:
-	            {
-	                new vstring[1024];
+				}
+				case 1:
+				{
+					new vstring[1024];
 					for(new i, iModelID; i < MAX_PLAYERVEHICLES; i++) {
 						if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
 							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
@@ -6150,9 +6828,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else strcat(vstring, "\nEmpty");
 					}
 					ShowPlayerDialog(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", vstring, "Track", "Cancel");
-	            }
-	        }
-	    }
+				}
+			}
+		}
 	}
 	if(dialogid == TRACKCAR && response) {
 		new Float: carPos[3];
@@ -6181,10 +6859,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DV_STORAGE && response) {
 		new stpos = strfind(inputtext, "(");
-	    new fpos = strfind(inputtext, ")");
-	    new caridstr[6], carid;
-	    strmid(caridstr, inputtext, stpos+1, fpos);
-	    carid = strval(caridstr);
+		new fpos = strfind(inputtext, ")");
+		new caridstr[6], carid;
+		strmid(caridstr, inputtext, stpos+1, fpos);
+		carid = strval(caridstr);
 		if(DynVehicleInfo[carid][gv_iSpawnedID] != INVALID_VEHICLE_ID)
 		{
 			if((!IsVehicleOccupied(DynVehicleInfo[carid][gv_iSpawnedID]) || IsPlayerInVehicle(playerid, DynVehicleInfo[carid][gv_iSpawnedID])) && !IsVehicleInTow(DynVehicleInfo[carid][gv_iSpawnedID])) 
@@ -6224,11 +6902,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}	
 	if(dialogid == DV_TRACKCAR && response) {
-	    new stpos = strfind(inputtext, "(");
-	    new fpos = strfind(inputtext, ")");
-	    new caridstr[6], carid;
-	    strmid(caridstr, inputtext, stpos+1, fpos);
-	    carid = strval(caridstr);
+		new stpos = strfind(inputtext, "(");
+		new fpos = strfind(inputtext, ")");
+		new caridstr[6], carid;
+		strmid(caridstr, inputtext, stpos+1, fpos);
+		carid = strval(caridstr);
 		new Float: carPos[3];
 		GetVehiclePos(DynVehicleInfo[carid][gv_iSpawnedID], carPos[0], carPos[1], carPos[2]);
 		if(DynVehicleInfo[carid][gv_iSpawnedID] != INVALID_VEHICLE_ID)
@@ -6248,7 +6926,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "Hint: Make your way to the checkpoint to find your vehicle!");
 				if(carPos[2] > 500.0)
 				{
-				    SendClientMessageEx(playerid, COLOR_WHITE, "Note: This vehicle may be parked in a garage or interior!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "Note: This vehicle may be parked in a garage or interior!");
 				}
 			}
 		}
@@ -6258,163 +6936,163 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	// --------------------------------------------------------------------------------------------------
 	if(dialogid == VIPWEPSMENU)
 	{
-	    if(!response) return 1;
-	    if(PlayerInfo[playerid][pDonateRank] < 3 && PlayerInfo[playerid][pTokens] == 0)
-	    {
-	        SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have any tokens!");
-	        return 1;
-	    }
-	    if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
-	    switch( listitem )
-	    {
-	        case 0:
-	        {
+		if(!response) return 1;
+		if(PlayerInfo[playerid][pDonateRank] < 3 && PlayerInfo[playerid][pTokens] == 0)
+		{
+			SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have any tokens!");
+			return 1;
+		}
+		if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+		switch( listitem )
+		{
+			case 0:
+			{
 
-    			if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-			        if(PlayerInfo[playerid][pTokens] < 3)
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] < 3)
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 					PlayerInfo[playerid][pTokens] -= 3;
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for a Desert Eagle, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
 				GivePlayerValidWeapon(playerid, 24, 60000);
-	        }
-	        case 1:
-	        {
+			}
+			case 1:
+			{
 
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-			        if(PlayerInfo[playerid][pTokens] < 2)
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] < 2)
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 					PlayerInfo[playerid][pTokens] -= 2;
 					format(string, sizeof(string), "VIP: You have traded 2 tokens for a shotgun, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
 				GivePlayerValidWeapon(playerid, 25, 60000);
-	        }
-	        case 2:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-			        if(PlayerInfo[playerid][pTokens] < 3)
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+			}
+			case 2:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] < 3)
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 					PlayerInfo[playerid][pTokens] -= 3;
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for an MP5, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-    				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
 				GivePlayerValidWeapon(playerid, 29, 60000);
-	        }
-	        case 3:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-   					if(PlayerInfo[playerid][pTokens] > 1)
-			        {
+			}
+			case 3:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 1)
+					{
 						PlayerInfo[playerid][pTokens] -= 2;
 						format(string, sizeof(string), "VIP: You have traded 2 tokens for a silenced pistol, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-  					}
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 				}
-                GivePlayerValidWeapon(playerid, 23, 60000);
-	        }
-	        case 4:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-   					if(PlayerInfo[playerid][pTokens] > 0)
-			        {
+				GivePlayerValidWeapon(playerid, 23, 60000);
+			}
+			case 4:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 0)
+					{
 						PlayerInfo[playerid][pTokens] -= 1;
 						format(string, sizeof(string), "VIP: You have traded a token for a golf club, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-  					}
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 				}
-                GivePlayerValidWeapon(playerid, 2, 60000);
-	        }
-	        case 5:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-   					if(PlayerInfo[playerid][pTokens] > 0)
-			        {
+				GivePlayerValidWeapon(playerid, 2, 60000);
+			}
+			case 5:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 0)
+					{
 						PlayerInfo[playerid][pTokens] -= 1;
 						format(string, sizeof(string), "VIP: You have traded a token for a baseball bat, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-  					}
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 				}
-                GivePlayerValidWeapon(playerid, 5, 60000);
-	        }
-	        case 6:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-   					if(PlayerInfo[playerid][pTokens] > 0)
-			        {
+				GivePlayerValidWeapon(playerid, 5, 60000);
+			}
+			case 6:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 0)
+					{
 						PlayerInfo[playerid][pTokens] -= 1;
 						format(string, sizeof(string), "VIP: You have traded a token for a dildo, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-  					}
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 				}
-                GivePlayerValidWeapon(playerid, 10, 60000);
-	        }
-	        case 7:
-	        {
- 				if(PlayerInfo[playerid][pDonateRank] < 3)
-			    {
-   					if(PlayerInfo[playerid][pTokens] > 0)
-			        {
+				GivePlayerValidWeapon(playerid, 10, 60000);
+			}
+			case 7:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 0)
+					{
 						PlayerInfo[playerid][pTokens] -= 1;
 						format(string, sizeof(string), "VIP: You have traded a token for a sword, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
-			        	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-  					}
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
-			            return 1;
-			        }
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
 				}
-                GivePlayerValidWeapon(playerid, 8, 60000);
-	        }
-	    }
+				GivePlayerValidWeapon(playerid, 8, 60000);
+			}
+		}
 	}
 	if( dialogid == 3497) //famed change skin
 	{
 		new skinid = strval(inputtext);
 		if(response)
 		{
-            if(skinid < 1 || skinid > 299)
+			if(skinid < 1 || skinid > 299)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is invalid, the range of available skin IDs are 1-299 !");
-    			ShowPlayerDialog( playerid, 3497, DIALOG_STYLE_INPUT, "Skin Selection","Please enter a valid Skin ID!", "Wear", "Cancel" );
+				ShowPlayerDialog( playerid, 3497, DIALOG_STYLE_INPUT, "Skin Selection","Please enter a valid Skin ID!", "Wear", "Cancel" );
 				return 1;
 			}
 			if(PlayerInfo[playerid][pFamed] == 1)
@@ -6440,71 +7118,71 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Famed Locker: You have changed your clothes.");
 			PlayerInfo[playerid][pModel] = skinid;
 			SetPlayerSkin(playerid, skinid);
-  		}
+		}
 		else return 0;
 		return 1;
 	}
 	if(dialogid == 3498) //Famed Weapon Locker
 	{
-	    if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You exited the famed locker.");
-	    if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
-	    
-	    switch(listitem)
-	    {
-	        case 0: //Deagle
-	        {
-	            GivePlayerValidWeapon(playerid, 24, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Desert Eagle from the famed locker.");
-	        }
-	        case 1: //MP5
-	        {
-	            GivePlayerValidWeapon(playerid, 29, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
-	        }
-	        case 2: //Shotgun
-	        {
-	            GivePlayerValidWeapon(playerid, 25, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Pump Shotgun from the famed locker.");
-	        }
-	        case 3: //Rifle
-	        {
-	            GivePlayerValidWeapon(playerid, 33, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a County Rifle from the famed locker.");
-	        }
-	        case 4: //SD Pistol
-	        {
-	            GivePlayerValidWeapon(playerid, 23, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silenced Pistol from the famed locker.");
-	        }
-	        case 5: //Katana
-	        {
-	            GivePlayerValidWeapon(playerid, 8, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Japanese Katana from the famed locker.");
-	        }
-	        case 6: //Purple Dildo
-	        {
-	            GivePlayerValidWeapon(playerid, 10, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Purple Dildo from the famed locker.");
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
-	        }
-	        case 7: //White Dildo
-	        {
-	            GivePlayerValidWeapon(playerid, 11, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a White Dildo from the famed locker.");
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
-	        }
-	        case 8: //Big Vibrator
-	        {
-	            GivePlayerValidWeapon(playerid, 12, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Big Vibrator from the famed locker.");
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
-	        }
-	        case 9: //Silver Vibrator
-	        {
-	            GivePlayerValidWeapon(playerid, 13, 60000);
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silver Vibrator from the famed locker.");
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
-	        }
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You exited the famed locker.");
+		if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+		
+		switch(listitem)
+		{
+			case 0: //Deagle
+			{
+				GivePlayerValidWeapon(playerid, 24, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Desert Eagle from the famed locker.");
+			}
+			case 1: //MP5
+			{
+				GivePlayerValidWeapon(playerid, 29, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
+			}
+			case 2: //Shotgun
+			{
+				GivePlayerValidWeapon(playerid, 25, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Pump Shotgun from the famed locker.");
+			}
+			case 3: //Rifle
+			{
+				GivePlayerValidWeapon(playerid, 33, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a County Rifle from the famed locker.");
+			}
+			case 4: //SD Pistol
+			{
+				GivePlayerValidWeapon(playerid, 23, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silenced Pistol from the famed locker.");
+			}
+			case 5: //Katana
+			{
+				GivePlayerValidWeapon(playerid, 8, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Japanese Katana from the famed locker.");
+			}
+			case 6: //Purple Dildo
+			{
+				GivePlayerValidWeapon(playerid, 10, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Purple Dildo from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
+			}
+			case 7: //White Dildo
+			{
+				GivePlayerValidWeapon(playerid, 11, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a White Dildo from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
+			}
+			case 8: //Big Vibrator
+			{
+				GivePlayerValidWeapon(playerid, 12, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Big Vibrator from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
+			}
+			case 9: //Silver Vibrator
+			{
+				GivePlayerValidWeapon(playerid, 13, 60000);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silver Vibrator from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
+			}
 		}
 	}
 	else if( dialogid == LOTTOMENU) //lotteryticket
@@ -6515,44 +7193,44 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-            if(lotto < 1 || lotto > 300)
+			if(lotto < 1 || lotto > 300)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "   Lottery Number not below 1 or above 300!");
-            	ShowPlayerDialog( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
+				ShowPlayerDialog( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
 			}
 			else
 			{
-			    if(PlayerInfo[playerid][pLottoNr] >= 5) {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You can only buy up to 5 tickets.");
-			        return 1;
-			    }
+				if(PlayerInfo[playerid][pLottoNr] >= 5) {
+					SendClientMessageEx(playerid, COLOR_GREY, "You can only buy up to 5 tickets.");
+					return 1;
+				}
 				format(string, sizeof(string), "* You bought a Lottery Ticket with number: %d.", lotto);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				AddTicket(playerid, lotto);
 				for(new i = 0; i < 5; i++) {
-				    if(LottoNumbers[playerid][i] == 0) {
-				        LottoNumbers[playerid][i] = lotto;
-				        break;
+					if(LottoNumbers[playerid][i] == 0) {
+						LottoNumbers[playerid][i] = lotto;
+						break;
 					}
 				}
 				Jackpot += 800;
 				TicketsSold += 1;
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			}
-  		}
+		}
 		return 1;
 	}
 	else if(dialogid == DIALOG_CHANGEPASS2)
 	{
-	    if(response)
-	    {
-	        if( strlen( inputtext ) >= 64 || strlen(inputtext) == 0)
+		if(response)
+		{
+			if( strlen( inputtext ) >= 64 || strlen(inputtext) == 0)
 			{
-			    ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
-	    	    return SendClientMessageEx( playerid, COLOR_GREY, "You can't select a password that's above 64 characters." );
-	    	}
+				ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
+				return SendClientMessageEx( playerid, COLOR_GREY, "You can't select a password that's above 64 characters." );
+			}
 
-	        new
+			new
 				szBuffer[129],
 				szQuery[256];
 
@@ -6565,29 +7243,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0 && PlayerInfo[playerid][pTut] != 0) ShowLoginDialogs(playerid, 1);
 			else if(pMOTD[0] && GetPVarInt(playerid, "ViewedPMOTD") != 1) ShowLoginDialogs(playerid, 4);
 			else if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
-	    }
+		}
 		else
 		{
-		    ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
+			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
 		}
 	}
 	else if( dialogid == DIALOG_CHANGEPASS )
 	{
 		if(!response || strlen(inputtext) == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your password." );
-	    if( strlen( inputtext ) >= 64 )
-	    {
-	        SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a password that's above 64 characters." );
-	    }
-	    else
-	    {
-	        if( strlen( inputtext ) >= 1 )
-	        {
-	            if(!response)
-	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your password." );
-	            }
-	            else
-	            {
+		if( strlen( inputtext ) >= 64 )
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a password that's above 64 characters." );
+		}
+		else
+		{
+			if( strlen( inputtext ) >= 1 )
+			{
+				if(!response)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your password." );
+				}
+				else
+				{
 					new
 						szBuffer[129],
 						szQuery[256];
@@ -6598,34 +7276,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s' WHERE `id` = '%i'", szBuffer, PlayerInfo[playerid][pId]);
 					mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
-	            }
-	        }
-	        else
-	        {
-	            SendClientMessageEx( playerid, COLOR_WHITE, "Your password must be longer than 1 character." );
-	        }
-	    }
+				}
+			}
+			else
+			{
+				SendClientMessageEx( playerid, COLOR_WHITE, "Your password must be longer than 1 character." );
+			}
+		}
 	}
 	else if( dialogid == DIALOG_NAMECHANGE )
 	{
-	    if(!response || strlen(inputtext) == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your name." );
-	    if(strlen(inputtext) > 20)
-	    {
-	        SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a name that's above 20 characters." );
-	    }
-	    else
-	    {
-	        if( strlen(inputtext) >= 1 )
-	        {
-	            if(!response)
-	            {
-	                SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your name." );
-	            }
-	            else
-	            {
-		            for(new i = 0; i < strlen( inputtext ); i++)
+		if(!response || strlen(inputtext) == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your name." );
+		if(strlen(inputtext) > 20)
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a name that's above 20 characters." );
+		}
+		else
+		{
+			if( strlen(inputtext) >= 1 )
+			{
+				if(!response)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your name." );
+				}
+				else
+				{
+					for(new i = 0; i < strlen( inputtext ); i++)
 					{
-					    if (inputtext[i] == ' ') return SendClientMessageEx(playerid, COLOR_GRAD2, "Please use the '_'(underscore) instead of the ' '(space)");
+						if (inputtext[i] == ' ') return SendClientMessageEx(playerid, COLOR_GRAD2, "Please use the '_'(underscore) instead of the ' '(space)");
 					}
 					if( strfind( inputtext, "_", true) == -1 )
 					{
@@ -6640,93 +7318,93 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						namechangecost = 90*namechangecost/100;
 					}
 
-                    new tmpName[MAX_PLAYER_NAME];
+					new tmpName[MAX_PLAYER_NAME];
 					mysql_escape_string(inputtext, tmpName);
 					if(strcmp(inputtext, tmpName, false) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Unacceptable characters used in namechange, try again");
 					if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFreeNameChange])
 					{
-					    if(GetPVarType(playerid, "HasReport")) {
+						if(GetPVarType(playerid, "HasReport")) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-	    				new String[128];
+						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-		            	format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost, please wait until a General Admin approves it.", playername, inputtext);
-		            	SendClientMessageEx( playerid, COLOR_YELLOW, String );
-	           	 		SendReportToQue(playerid, "Name Change Request", 2, 4);
-		            	return 1;
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost, please wait until a General Admin approves it.", playername, inputtext);
+						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendReportToQue(playerid, "Name Change Request", 2, 4);
+						return 1;
 					}
 					if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0)
 					{
-					    if(GetPVarType(playerid, "HasReport")) {
+						if(GetPVarType(playerid, "HasReport")) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-	    				new String[128];
+						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-		            	format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until a General Admin approves it.", playername, inputtext, namechangecost);
-		            	SendClientMessageEx( playerid, COLOR_YELLOW, String );
-		                SendReportToQue(playerid, "Name Change Request", 2, 4);
-		            	return 1;
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until a General Admin approves it.", playername, inputtext, namechangecost);
+						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendReportToQue(playerid, "Name Change Request", 2, 4);
+						return 1;
 					}
 
 					if(GetPlayerCash(playerid) >= namechangecost)
 					{
-					    if(GetPVarType(playerid, "HasReport")) {
+						if(GetPVarType(playerid, "HasReport")) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
-					    new String[128];
+						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", namechangecost);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-		            	format( String, sizeof( String ), "You have requested a namechange from %s to %s for $%d, please wait until a General Admin approves it.", playername, inputtext, namechangecost);
-		            	SendClientMessageEx( playerid, COLOR_YELLOW, String );
-		            	SendReportToQue(playerid, "Name Change Request", 2, 4);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s for $%d, please wait until a General Admin approves it.", playername, inputtext, namechangecost);
+						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendReportToQue(playerid, "Name Change Request", 2, 4);
 					}
 					else
 					{
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money for the name change.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money for the name change.");
 					}
-	            }
-	        }
-	        else
-	        {
-	            SendClientMessageEx( playerid, COLOR_WHITE, "Your name must be longer than 1 character." );
-	        }
-	    }
+				}
+			}
+			else
+			{
+				SendClientMessageEx( playerid, COLOR_WHITE, "Your name must be longer than 1 character." );
+			}
+		}
 	}
 	else if( dialogid == DIALOG_NAMECHANGE2 )
 	{
-	    if(!response || strlen(inputtext) == 0) return Kick(playerid);
-	    if(strlen(inputtext) >= 20)
-	    {
-	        SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a name that's above 20 characters." );
-	        ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
-	    }
-	    else
-	    {
-	        if( strlen(inputtext) >= 1 )
-	        {
-	            if(!response)
-	            {
-				    ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+		if(!response || strlen(inputtext) == 0) return Kick(playerid);
+		if(strlen(inputtext) >= 20)
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a name that's above 20 characters." );
+			ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+		}
+		else
+		{
+			if( strlen(inputtext) >= 1 )
+			{
+				if(!response)
+				{
+					ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 				}
-	            else
-	            {
-           			for(new i = 0; i < strlen( inputtext ); i++)
+				else
+				{
+					for(new i = 0; i < strlen( inputtext ); i++)
 					{
-    					if (inputtext[i] == ' ')
-    					{
+						if (inputtext[i] == ' ')
+						{
 							SendClientMessageEx(playerid, COLOR_WHITE, "Please use the '_'(underscore) instead of the ' '(space)");
 							ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 							return 1;
@@ -6738,9 +7416,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 						return 1;
 					}
-     				else
+					else
 					{
-					    if(GetPVarType(playerid, "HasReport")) {
+						if(GetPVarType(playerid, "HasReport")) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 							return 1;
 						}
@@ -6750,205 +7428,205 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-    					format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until a General Admin approves it.", playername, inputtext);
-       					SendClientMessageEx( playerid, COLOR_YELLOW, String );
-          //			format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
-            //			ABroadCast( COLOR_YELLOW, String, 3 );
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until a General Admin approves it.", playername, inputtext);
+						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+		  //			format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
+			//			ABroadCast( COLOR_YELLOW, String, 3 );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
-            			return 1;
-            		}
+						return 1;
+					}
 				}
-	        }
-	        else
-	        {
-	            SendClientMessageEx( playerid, COLOR_WHITE, "Your name must be longer than 1 character." );
-	            ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
-	        }
-	    }
+			}
+			else
+			{
+				SendClientMessageEx( playerid, COLOR_WHITE, "Your name must be longer than 1 character." );
+				ShowPlayerDialog( playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+			}
+		}
 	}
 	else if(dialogid == HQENTRANCE)
 	{
-	    if(response)
-	    {
-	        new Float: x, Float: y, Float: z, Float: a;
-	        GetPlayerPos(playerid, x, y, z);
-	        GetPlayerFacingAngle(playerid, a);
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 5)
-	        {
-	            DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
-	            DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = x;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
-            	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
+		if(response)
+		{
+			new Float: x, Float: y, Float: z, Float: a;
+			GetPlayerPos(playerid, x, y, z);
+			GetPlayerFacingAngle(playerid, a);
+			if(GetPVarInt(playerid, "editingfamhqaction") == 5)
+			{
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = x;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
 				format(string, sizeof(string), "%s", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
-            	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 4.0);
-            	SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Entrance changed!.");
-            	TogglePlayerControllable(playerid, true);
-            	SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
-            	return 1;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 4.0);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Entrance changed!.");
+				TogglePlayerControllable(playerid, true);
+				SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+				return 1;
 			}
 			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = x;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
-         	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
 			format(string, sizeof(string), "%s", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
-   			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 4.0);
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 4.0);
 			SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Entrance saved! Please stand where you want the exit at, once ready press the fire button.");
-            SetPVarInt(playerid, "editingfamhqaction", 2);
-            TogglePlayerControllable(playerid, true);
-	    }
-	    else
-	    {
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 5)
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the exterior change of this HQ.");
-	            SetPVarInt(playerid, "editingfamhqaction", 0);
-	        	SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	        	TogglePlayerControllable(playerid, true);
-	            return 1;
-	        }
-	        SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
-	        DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+			SetPVarInt(playerid, "editingfamhqaction", 2);
+			TogglePlayerControllable(playerid, true);
+		}
+		else
+		{
+			if(GetPVarInt(playerid, "editingfamhqaction") == 5)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the exterior change of this HQ.");
+				SetPVarInt(playerid, "editingfamhqaction", 0);
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+				TogglePlayerControllable(playerid, true);
+				return 1;
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
+			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
 			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
 			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
-	        SetPVarInt(playerid, "editingfamhqaction", 0);
-	        SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	        TogglePlayerControllable(playerid, true);
-	    }
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+			SetPVarInt(playerid, "editingfamhqaction", 0);
+			SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+			TogglePlayerControllable(playerid, true);
+		}
 	}
 	else if(dialogid == HQEXIT)
 	{
-	    if(response)
-	    {
-	        new Float: x, Float: y, Float: z, Float: a;
-	        GetPlayerPos(playerid, x, y, z);
-	        GetPlayerFacingAngle(playerid, a);
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 6)
-	        {
-	            DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
-	            FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
-	        	FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
-            	SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Exit changed!.");
-            	TogglePlayerControllable(playerid, true);
-            	SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
-            	return 1;
-	        }
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
-            format(string,128,"HQ Exit saved!\n\nIs this interior a custom mapped one?");
-        	ShowPlayerDialog(playerid,HQCUSTOMINT,DIALOG_STYLE_MSGBOX,"Warning:",string,"Yes","No");
-            SetPVarInt(playerid, "editingfamhqaction", 3);
-            TogglePlayerControllable(playerid, true);
-	    }
-	    else
-	    {
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 6)
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the interior change of this HQ.");
-	            SetPVarInt(playerid, "editingfamhqaction", 0);
-	        	SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	        	TogglePlayerControllable(playerid, true);
-	            return 1;
-	        }
-	        SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
-	       	DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+		if(response)
+		{
+			new Float: x, Float: y, Float: z, Float: a;
+			GetPlayerPos(playerid, x, y, z);
+			GetPlayerFacingAngle(playerid, a);
+			if(GetPVarInt(playerid, "editingfamhqaction") == 6)
+			{
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
+				SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Exit changed!.");
+				TogglePlayerControllable(playerid, true);
+				SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+				return 1;
+			}
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
+			format(string,128,"HQ Exit saved!\n\nIs this interior a custom mapped one?");
+			ShowPlayerDialog(playerid,HQCUSTOMINT,DIALOG_STYLE_MSGBOX,"Warning:",string,"Yes","No");
+			SetPVarInt(playerid, "editingfamhqaction", 3);
+			TogglePlayerControllable(playerid, true);
+		}
+		else
+		{
+			if(GetPVarInt(playerid, "editingfamhqaction") == 6)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the interior change of this HQ.");
+				SetPVarInt(playerid, "editingfamhqaction", 0);
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+				TogglePlayerControllable(playerid, true);
+				return 1;
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
+			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
 			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
 			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
-	        SetPVarInt(playerid, "editingfamhqaction", 0);
-	        SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	        TogglePlayerControllable(playerid, true);
-	    }
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+			SetPVarInt(playerid, "editingfamhqaction", 0);
+			SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+			TogglePlayerControllable(playerid, true);
+		}
 	}
 	else if(dialogid == HQCUSTOMINT)
 	{
-	    if(response)
-	    {
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 1;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 255;
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 7)
-	        {
-	        	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
-   			}
-   			else
-   			{
-   				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
-   			}
-   			SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
-	        SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	    }
-	    else
-	    {
-	        if(GetPVarInt(playerid, "editingfamhqaction") == 7)
-	        {
-	        	SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
-   			}
-   			else
-   			{
-   				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
-   			}
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 0;
-	        SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
-	        SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	    }
+		if(response)
+		{
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 1;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 255;
+			if(GetPVarInt(playerid, "editingfamhqaction") == 7)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
+			}
+			SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+			SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+		}
+		else
+		{
+			if(GetPVarInt(playerid, "editingfamhqaction") == 7)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
+			}
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 0;
+			SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+			SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+		}
 	}
 	else if(dialogid == HQDELETE)
 	{
-	    if(!response)
-	    {
-	    }
-	    else
-	    {
-	        format(string,128,"You have successfully deleted '%s' HQ", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
-	        SendClientMessageEx(playerid, COLOR_GRAD2, string);
-	        DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+		if(!response)
+		{
+		}
+		else
+		{
+			format(string,128,"You have successfully deleted '%s' HQ", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
+			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
 			DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
 			DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
 			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
-	        FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
-	        SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
-	        SetPVarInt(playerid, "editingfamhqaction", 0);
-	        SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
-	        TogglePlayerControllable(playerid, true);
-	    }
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+			FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+			SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+			SetPVarInt(playerid, "editingfamhqaction", 0);
+			SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+			TogglePlayerControllable(playerid, true);
+		}
 	}
 	if(dialogid == DIALOG_CDLOCKMENU)
 	{
@@ -6956,28 +7634,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(GetPVarInt(playerid, "lockmenu") == 1)
 			{
-	            new pvid;
-	            if (IsNumeric(inputtext))
-		        {
+				new pvid;
+				if (IsNumeric(inputtext))
+				{
 					pvid = strval(inputtext)-1;
-				    if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
-				    {
-					    SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
-					    SetPVarInt(playerid, "lockmenu", 0);
-					    return 1;
-				    }
-				    if(PlayerVehicleInfo[playerid][pvid][pvLock] == 1)
-				    {
-					    SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
-					    SetPVarInt(playerid, "lockmenu", 0);
-					    return 1;
-				    }
-				    format(string, sizeof(string), "   You have purchased an alarm lock!");
-				    SendClientMessageEx(playerid, COLOR_GRAD4, string);
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
-				    PlayerVehicleInfo[playerid][pvid][pvLock] = 1;
-				    g_mysql_SaveVehicle(playerid, pvid);
-				    SetPVarInt(playerid, "lockmenu", 0);
+					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
+						SetPVarInt(playerid, "lockmenu", 0);
+						return 1;
+					}
+					if(PlayerVehicleInfo[playerid][pvid][pvLock] == 1)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
+						SetPVarInt(playerid, "lockmenu", 0);
+						return 1;
+					}
+					format(string, sizeof(string), "   You have purchased an alarm lock!");
+					SendClientMessageEx(playerid, COLOR_GRAD4, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
+					PlayerVehicleInfo[playerid][pvid][pvLock] = 1;
+					g_mysql_SaveVehicle(playerid, pvid);
+					SetPVarInt(playerid, "lockmenu", 0);
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -6991,7 +7669,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
-					    format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
+						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					}
 					format(string,sizeof(string),"%s (IP: %s) has bought a Alarm Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
@@ -7006,16 +7684,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						DeletePVar(playerid, "Business_ItemOfferer");
 						DeletePVar(playerid, "Business_ItemOffererSQLId");
 					}
-			    }
+				}
 			}
 			else if(GetPVarInt(playerid, "lockmenu") == 2)
 			{
-			    new pvid;
-	            if (IsNumeric(inputtext))
-		        {
-		            pvid = strval(inputtext)-1;
-				    if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
-				    {
+				new pvid;
+				if (IsNumeric(inputtext))
+				{
+					pvid = strval(inputtext)-1;
+					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
+					{
 						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
 						SetPVarInt(playerid, "lockmenu", 0);
 						return 1;
@@ -7047,7 +7725,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
-					    format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
+						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					}
 					format(string,sizeof(string),"%s (IP: %s) has bought a Electronic Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
@@ -7066,30 +7744,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(GetPVarInt(playerid, "lockmenu") == 3)
 			{
-			    new pvid;
-	            if (IsNumeric(inputtext))
-		        {
-	                pvid = strval(inputtext)-1;
-				    if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
-				    {
-					    SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
-					    SetPVarInt(playerid, "lockmenu", 0);
-		                return 1;
-				    }
-				    if(PlayerVehicleInfo[playerid][pvid][pvLock] == 3)
-			  	    {
-					    SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
-					    SetPVarInt(playerid, "lockmenu", 0);
-					    return 1;
-				    }
+				new pvid;
+				if (IsNumeric(inputtext))
+				{
+					pvid = strval(inputtext)-1;
+					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
+						SetPVarInt(playerid, "lockmenu", 0);
+						return 1;
+					}
+					if(PlayerVehicleInfo[playerid][pvid][pvLock] == 3)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
+						SetPVarInt(playerid, "lockmenu", 0);
+						return 1;
+					}
 					if(IsABike(PlayerVehicleInfo[playerid][pvid][pvId]))
 						return SendClientMessageEx(playerid, COLOR_GRAD4, "You cannot place this type of lock on a bike.");
-				    format(string, sizeof(string), "   You have Purchased an industrial lock!");
-				    SendClientMessageEx(playerid, COLOR_GRAD4, string);
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
-				    PlayerVehicleInfo[playerid][pvid][pvLock] = 3;
-				    g_mysql_SaveVehicle(playerid, pvid);
-				    SetPVarInt(playerid, "lockmenu", 0);
+					format(string, sizeof(string), "   You have Purchased an industrial lock!");
+					SendClientMessageEx(playerid, COLOR_GRAD4, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
+					PlayerVehicleInfo[playerid][pvid][pvLock] = 3;
+					g_mysql_SaveVehicle(playerid, pvid);
+					SetPVarInt(playerid, "lockmenu", 0);
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -7103,7 +7781,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
-					    format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
+						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					}
 					format(string,sizeof(string),"%s (IP: %s) has bought a Industrial Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
@@ -7118,32 +7796,32 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						DeletePVar(playerid, "Business_ItemOfferer");
 						DeletePVar(playerid, "Business_ItemOffererSQLId");
 					}
-			    }
+				}
 			}
 		}
 	}
 	if(dialogid == DIALOG_LOCKER_OS)
 	{
-	    if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-	    
-	    if(listitem == 0)
-	    {
-            new Float:health;
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		
+		if(listitem == 0)
+		{
+			new Float:health;
 			GetPlayerHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
-  			if( hpint >= 100 )
+			if( hpint >= 100 )
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
 				return 1;
- 			}
- 			else {
+			}
+			else {
 				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
-		    new Float:armour;
+			new Float:armour;
 			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
@@ -7153,7 +7831,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else if(GetPlayerCash(playerid) < 10000)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10000");
-  				return 1;
+				return 1;
 			}
 			else {
 				GivePlayerCash(playerid, -10000);
@@ -7172,26 +7850,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_LOCKER_COS)
 	{
-	    if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
 
-	    if(listitem == 0)
-	    {
-            new Float:health;
+		if(listitem == 0)
+		{
+			new Float:health;
 			GetPlayerHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
-  			if( hpint >= 100 )
+			if( hpint >= 100 )
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
 				return 1;
- 			}
- 			else {
+			}
+			else {
 				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
-		    new Float:armour;
+			new Float:armour;
 			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
@@ -7201,7 +7879,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else if(GetPlayerCash(playerid) < 5000)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $5000");
-  				return 1;
+				return 1;
 			}
 			else {
 				GivePlayerCash(playerid, -5000);
@@ -7220,26 +7898,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_LOCKER_FAMED)
 	{
-	    if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
 
-	    if(listitem == 0)
-	    {
-            new Float:health;
+		if(listitem == 0)
+		{
+			new Float:health;
 			GetPlayerHealth(playerid, health);
 			new hpint = floatround(health, floatround_round);
-  			if(hpint >= 100)
+			if(hpint >= 100)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
 				return 1;
- 			}
- 			else {
+			}
+			else {
 				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
-		    new Float:armour;
+			new Float:armour;
 			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
@@ -7254,7 +7932,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 2)
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-		    ShowPlayerDialog(playerid, 3498, DIALOG_STYLE_LIST, "Famed Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)\nCounty Rifle (Free)\nSilenced Pistol (Free)\nJapanese Katana (Free)\nPurple Dildo (Free)\nWhite Dildo (Free)\nBig Vibrator (Free)\nSilver Vibrator (Free)\n", "Take", "Cancel");
+			ShowPlayerDialog(playerid, 3498, DIALOG_STYLE_LIST, "Famed Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)\nCounty Rifle (Free)\nSilenced Pistol (Free)\nJapanese Katana (Free)\nPurple Dildo (Free)\nWhite Dildo (Free)\nBig Vibrator (Free)\nSilver Vibrator (Free)\n", "Take", "Cancel");
 		}
 		if(listitem == 3)
 		{
@@ -7266,29 +7944,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if(listitem == 5)
 		{
-		    if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the famed locker.");
+			if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the famed locker.");
 
-	        if(PlayerInfo[playerid][pWantedLevel] >= 6)
-	            return SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot use this as Most Wanted!");
-	            
+			if(PlayerInfo[playerid][pWantedLevel] >= 6)
+				return SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot use this as Most Wanted!");
+				
 			if(PlayerInfo[playerid][pJailTime] > 0)
 			{
-	            SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot do this at this time.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot do this at this time.");
 				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has attempted to change his name tag color to famed while in jail/prison.", GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_YELLOW, string, 2);
-	            return 1;
+				return 1;
 			}
 			
 			if(GetPVarInt(playerid, "famedTag") == 0)
 			{
-			    SetPlayerColor(playerid, COLOR_FAMED);
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Your name color will now appear as famed.");
-			    SetPVarInt(playerid, "famedTag", 1);
-			    return 1;
+				SetPlayerColor(playerid, COLOR_FAMED);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Your name color will now appear as famed.");
+				SetPVarInt(playerid, "famedTag", 1);
+				return 1;
 			}
 			else {
-			    SetPlayerToTeamColor(playerid);
-			    SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Your name color will now appear as normal.");
+				SetPlayerToTeamColor(playerid);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Your name color will now appear as normal.");
 				SetPVarInt(playerid, "famedTag", 0);
 			}
 		}
@@ -7299,16 +7977,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(listitem == 0)
 			{
- 				new Float:health;
- 				GetPlayerHealth(playerid, health);
+				new Float:health;
+				GetPlayerHealth(playerid, health);
 				new hpint = floatround( health, floatround_round );
-		    	if( hpint >= 100 )
+				if( hpint >= 100 )
 				{
-  					SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
-	 				return 1;
-	   			}
+					SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+					return 1;
+				}
 
-			    SetPlayerHealth(playerid, 100);
+				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have used a first aid kit, you now have 100.0 HP.");
 			}
 			if(listitem == 1)
@@ -7323,10 +8001,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PlayerInfo[playerid][pDonateRank] == 1)
 				{
 					if(GetPlayerCash(playerid) < 15000)
-			    	{
-			        	SendClientMessageEx(playerid, COLOR_GREY,"You can't afford the $15000!");
-			        	return 1;
-			    	}
+					{
+						SendClientMessageEx(playerid, COLOR_GREY,"You can't afford the $15000!");
+						return 1;
+					}
 					GivePlayerCash(playerid, -15000);
 					SetPlayerArmor(playerid, 100);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You paid $15000 for a kevlar vest.");
@@ -7334,10 +8012,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(PlayerInfo[playerid][pDonateRank] == 2)
 				{
 					if(GetPlayerCash(playerid) < 10000)
-			    	{
-			        	SendClientMessageEx(playerid, COLOR_GREY,"You can't afford the $10000!");
-			        	return 1;
-			    	}
+					{
+						SendClientMessageEx(playerid, COLOR_GREY,"You can't afford the $10000!");
+						return 1;
+					}
 					GivePlayerCash(playerid, -10000);
 					SetPlayerArmor(playerid, 100);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You paid $10000 for a kevlar vest.");
@@ -7366,94 +8044,94 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(listitem == 3)
 			{
-            	if(PlayerInfo[playerid][pDonateRank] >= 2)
-            	{
-			    	ShowModelSelectionMenu(playerid, SkinList, "Change your clothes.");
-			    }
-			    else
-			    {
-			    	SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You must be at least Silver VIP to access the clothes corner. In the clothes corner you can get ANY skin.");
-			    }
+				if(PlayerInfo[playerid][pDonateRank] >= 2)
+				{
+					ShowModelSelectionMenu(playerid, SkinList, "Change your clothes.");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You must be at least Silver VIP to access the clothes corner. In the clothes corner you can get ANY skin.");
+				}
 			}
 			if(listitem == 4)
 			{
-  				if(PlayerInfo[playerid][pDonateRank] >= 2)
-            	{
-			    	ShowPlayerDialog(playerid, 7484, DIALOG_STYLE_LIST, "VIP: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
-		    	}
-			    else
-			    {
-			    	SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You must be at least Silver VIP to access the job center.");
-			    }
+				if(PlayerInfo[playerid][pDonateRank] >= 2)
+				{
+					ShowPlayerDialog(playerid, 7484, DIALOG_STYLE_LIST, "VIP: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You must be at least Silver VIP to access the job center.");
+				}
 			}
 			if(listitem == 5)
 			{
-			    ShowPlayerDialog(playerid, 7486, DIALOG_STYLE_LIST, "VIP: VIP Color", "On\nOff", "Proceed", "Cancel");
+				ShowPlayerDialog(playerid, 7486, DIALOG_STYLE_LIST, "VIP: VIP Color", "On\nOff", "Proceed", "Cancel");
 			}
 		}
 	}
 	if(dialogid == 7484) //This is now the default dialog for job centers in any lockers AKA VIP & Famed
 	{
-	    if(!response) return 1;
-	    switch(listitem)
-	    {
-	        case 0: // Detective
-	        {
-	            SetPVarInt(playerid, "jobSelection", 1);
-	        }
-	        case 1: // Lawyer
-	        {
-	            SetPVarInt(playerid, "jobSelection", 2);
-	        }
-	        case 2: // Whore
-	        {
-	            SetPVarInt(playerid, "jobSelection", 3);
-	        }
-	        case 3: // Drugs Dealer
-	        {
-	            SetPVarInt(playerid, "jobSelection", 4);
-	        }
-	        case 4: // Bodyguard
-	        {
-	            SetPVarInt(playerid, "jobSelection", 8);
-	        }
-	        case 5: // Mechanic
-	        {
-	            SetPVarInt(playerid, "jobSelection", 7);
-	        }
-	        case 6: // Arms Dealer
-	        {
-	            SetPVarInt(playerid, "jobSelection", 9);
-	        }
-	        case 7: // Boxer
-	        {
-	            SetPVarInt(playerid, "jobSelection", 12);
-	        }
-	        case 8: // Drugs Smuggler
-	        {
-	            SetPVarInt(playerid, "jobSelection", 14);
-	        }
-	        case 9: // Taxi Driver
-	        {
-	            SetPVarInt(playerid, "jobSelection", 17);
-	        }
-	        case 10: // Craftsman
-	        {
-	            SetPVarInt(playerid, "jobSelection", 18);
-	        }
-	        case 11: // Bartender
-	        {
-	            SetPVarInt(playerid, "jobSelection", 19);
-	        }
-	        case 12: // Trucker
-	        {
-	            SetPVarInt(playerid, "jobSelection", 20);
-	        }
-	        case 13: // Pizza Boy
-	        {
-	            SetPVarInt(playerid, "jobSelection", 21);
-	        }
-	    }
+		if(!response) return 1;
+		switch(listitem)
+		{
+			case 0: // Detective
+			{
+				SetPVarInt(playerid, "jobSelection", 1);
+			}
+			case 1: // Lawyer
+			{
+				SetPVarInt(playerid, "jobSelection", 2);
+			}
+			case 2: // Whore
+			{
+				SetPVarInt(playerid, "jobSelection", 3);
+			}
+			case 3: // Drugs Dealer
+			{
+				SetPVarInt(playerid, "jobSelection", 4);
+			}
+			case 4: // Bodyguard
+			{
+				SetPVarInt(playerid, "jobSelection", 8);
+			}
+			case 5: // Mechanic
+			{
+				SetPVarInt(playerid, "jobSelection", 7);
+			}
+			case 6: // Arms Dealer
+			{
+				SetPVarInt(playerid, "jobSelection", 9);
+			}
+			case 7: // Boxer
+			{
+				SetPVarInt(playerid, "jobSelection", 12);
+			}
+			case 8: // Drugs Smuggler
+			{
+				SetPVarInt(playerid, "jobSelection", 14);
+			}
+			case 9: // Taxi Driver
+			{
+				SetPVarInt(playerid, "jobSelection", 17);
+			}
+			case 10: // Craftsman
+			{
+				SetPVarInt(playerid, "jobSelection", 18);
+			}
+			case 11: // Bartender
+			{
+				SetPVarInt(playerid, "jobSelection", 19);
+			}
+			case 12: // Trucker
+			{
+				SetPVarInt(playerid, "jobSelection", 20);
+			}
+			case 13: // Pizza Boy
+			{
+				SetPVarInt(playerid, "jobSelection", 21);
+			}
+		}
 		if(PlayerInfo[playerid][pFamed] > 0 && PlayerInfo[playerid][pDonateRank] < 3)
 		{
 			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, "Locker: Job Center", "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
@@ -7469,62 +8147,62 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == 7485)
 	{
-	    if(!response) return 1;
+		if(!response) return 1;
 
-	    switch(listitem)
-	    {
-	        case 0:
-	        {
-	        	PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection");
-	        	SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
-			}
-	        case 1:
+		switch(listitem)
+		{
+			case 0:
 			{
-		 		PlayerInfo[playerid][pJob2] = GetPVarInt(playerid, "jobSelection");
-		 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your second job!");
+				PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
+			}
+			case 1:
+			{
+				PlayerInfo[playerid][pJob2] = GetPVarInt(playerid, "jobSelection");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your second job!");
 			}
 			case 2:
 			{
 				PlayerInfo[playerid][pJob3] = GetPVarInt(playerid, "jobSelection");
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your third job!");
 			}
-	    }
+		}
 	}
 	if(dialogid == 7486)
 	{
-	    if(!response) return 1;
+		if(!response) return 1;
 
-        if(PlayerInfo[playerid][pWantedLevel] >= 6)
-        {
-            SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot use this as Most Wanted!");
-            return 1;
+		if(PlayerInfo[playerid][pWantedLevel] >= 6)
+		{
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot use this as Most Wanted!");
+			return 1;
 		}
 		if(PlayerInfo[playerid][pJailTime] > 0)
-        {
-            SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot do this at this time.");
+		{
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You cannot do this at this time.");
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has attempted to change to VIP color while jailed.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, string, 2);
-            return 1;
+			return 1;
 		}
-	    switch(listitem)
-	    {
-	        case 0:
-	        {
-				SetPlayerColor(playerid, COLOR_VIP);
-	        	SendClientMessageEx(playerid, COLOR_YELLOW, "You have turned on your VIP Name Color!");
-			}
-	        case 1:
+		switch(listitem)
+		{
+			case 0:
 			{
-		 		SetPlayerToTeamColor(playerid);
-		 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have turned off your VIP Name Color!");
+				SetPlayerColor(playerid, COLOR_VIP);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have turned on your VIP Name Color!");
 			}
-	    }
+			case 1:
+			{
+				SetPlayerToTeamColor(playerid);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have turned off your VIP Name Color!");
+			}
+		}
 	}
 	if(dialogid == RESTAURANTMENU)
 	{
-	    new pvar[25];
-	    if (response)
-	    {
+		new pvar[25];
+		if (response)
+		{
 			new iBusiness = InBusiness(playerid);
 
 			format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", listitem);
@@ -7534,20 +8212,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(iPrice * 0.8)) : (iPrice);
 
 			if (!iPrice) {
-			    SendClientMessageEx(playerid, COLOR_GRAD4, "Item is not for sale anymore.");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "Item is not for sale anymore.");
 			}
-		 	else if (Businesses[iBusiness][bInventory] < 1) {
-	   	 		SendClientMessageEx(playerid, COLOR_GRAD2, "Store does not have any items anymore!");
+			else if (Businesses[iBusiness][bInventory] < 1) {
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Store does not have any items anymore!");
 			}
 			else if (iPrice != Businesses[iBusiness][bItemPrices][iItem]) {
-			    SendClientMessageEx(playerid, COLOR_GRAD4, "Purchase failed because the price for this item has changed.");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "Purchase failed because the price for this item has changed.");
 			}
 			else if (GetPlayerCash(playerid) < cost) {
 				SendClientMessageEx(playerid, COLOR_GRAD4, "You can't afford this item!");
 			}
 			else {
-		        format(pvar, sizeof(pvar), "Business_MenuItem%d", listitem);
-    			Businesses[iBusiness][bInventory]--;
+				format(pvar, sizeof(pvar), "Business_MenuItem%d", listitem);
+				Businesses[iBusiness][bInventory]--;
 				Businesses[iBusiness][bTotalSales]++;
 				Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
 				Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
@@ -7564,7 +8242,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Log("logs/business.log", string);
 				format(string,sizeof(string),"* You have purchased a %s from %s for $%d.",RestaurantItems[iItem],Businesses[iBusiness][bName], cost);
 				SendClientMessage(playerid, COLOR_GRAD2, string);
-				SetPlayerHealth(playerid, 100.0);
 
 				printf("%s\n%i", RestaurantItems[iItem], iItem);
 
@@ -7579,6 +8256,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if (strcmp("Full Meal", RestaurantItems[iItem]) == 0) // full meal
 				{
+					switch(PlayerInfo[playerid][pBackpack]) {
+						case 1: if(PlayerInfo[playerid][pBItems][0] < 1) {
+							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
+							return 1;
+						}
+						case 2: if(PlayerInfo[playerid][pBItems][0] < 3) {
+							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
+							return 1;
+						}
+						case 3: if(PlayerInfo[playerid][pBItems][0] < 5) {
+							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
+							return 1;
+						}
+					}
 					PlayerInfo[playerid][pHunger] += 83;
 
 					if (PlayerInfo[playerid][pFitness] >= 5)
@@ -7592,6 +8283,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pHungerDeathTimer] = 0;
 
 				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
+				SetPlayerHealth(playerid, 100.0);
 			}
 		}
 		for (new i; i <= 13; i++)
@@ -7608,10 +8300,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			new business = InBusiness(playerid);
 			if (GetPlayerCash(playerid) < Businesses[business][bItemPrices][listitem])
-		    {
-			    return SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have the cash for this item!");
-	  		}
-	  		GivePlayerCash(playerid, -Businesses[business][bItemPrices][listitem]);
+			{
+				return SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have the cash for this item!");
+			}
+			GivePlayerCash(playerid, -Businesses[business][bItemPrices][listitem]);
 			Businesses[business][bSafeBalance] += TaxSale(Businesses[business][bItemPrices][listitem]);
 			Businesses[business][bTotalSales]++;
 			Businesses[business][bTotalProfits] += Businesses[business][bItemPrices][listitem];
@@ -7654,8 +8346,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == STOREMENU)
 	{
 		new pvar[25];
-	    if (response)
-	    {
+		if (response)
+		{
 			new iBusiness = InBusiness(playerid);
 
 			format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", listitem);
@@ -7665,33 +8357,33 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(iPrice * 0.8)) : (iPrice);
 
 			if (!iPrice) {
-			    SendClientMessageEx(playerid, COLOR_GRAD4, "Item is not for sale anymore.");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "Item is not for sale anymore.");
 			}
-		 	else if (Businesses[iBusiness][bInventory] < 1) {
-	   	 		SendClientMessageEx(playerid, COLOR_GRAD2, "Store does not have any items anymore!");
+			else if (Businesses[iBusiness][bInventory] < 1) {
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Store does not have any items anymore!");
 			}
 			else if (iPrice != Businesses[iBusiness][bItemPrices][iItem-1]) {
-			    SendClientMessageEx(playerid, COLOR_GRAD4, "Purchase failed because the price for this item has changed.");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "Purchase failed because the price for this item has changed.");
 			}
 			else if (GetPlayerCash(playerid) < cost) {
 				SendClientMessageEx(playerid, COLOR_GRAD4, "You can't afford this item!");
 			}
 			else {
-		        format(pvar, sizeof(pvar), "Business_MenuItem%d", listitem);
-   				if(iItem == ITEM_ILOCK || iItem == ITEM_ALOCK || iItem == ITEM_ELOCK)
-			    {
-       				if(Businesses[iBusiness][bInventory] >= StoreItemCost[iItem-1][ItemValue])
-		        	{
-      					SetPVarInt(playerid, "lockcost", cost);
-			        	SetPVarInt(playerid, "businessid", iBusiness);
-				        SetPVarInt(playerid, "item", iItem);
-				        SetPVarInt(playerid, "penalty", 1);
-				        GivePlayerStoreItem(playerid, 0, iBusiness, iItem, cost);
+				format(pvar, sizeof(pvar), "Business_MenuItem%d", listitem);
+				if(iItem == ITEM_ILOCK || iItem == ITEM_ALOCK || iItem == ITEM_ELOCK)
+				{
+					if(Businesses[iBusiness][bInventory] >= StoreItemCost[iItem-1][ItemValue])
+					{
+						SetPVarInt(playerid, "lockcost", cost);
+						SetPVarInt(playerid, "businessid", iBusiness);
+						SetPVarInt(playerid, "item", iItem);
+						SetPVarInt(playerid, "penalty", 1);
+						GivePlayerStoreItem(playerid, 0, iBusiness, iItem, cost);
 					}
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
-	    		}
-			    else
-			    {
+				}
+				else
+				{
 					GivePlayerStoreItem(playerid, 0, iBusiness, iItem, cost);
 				}
 			}
@@ -7708,62 +8400,62 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-		    new biz = InBusiness(playerid);
-		    if (GetPlayerCash(playerid) < Businesses[biz][bItemPrices][listitem])
-		    {
-			    return SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have the cash for this item!");
-	  		}
+			new biz = InBusiness(playerid);
+			if (GetPlayerCash(playerid) < Businesses[biz][bItemPrices][listitem])
+			{
+				return SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have the cash for this item!");
+			}
 			Businesses[biz][bTotalSales]++;
 			Businesses[biz][bSafeBalance] += TaxSale(Businesses[biz][bItemPrices][listitem]);
-	  		GivePlayerCash(playerid, -Businesses[biz][bItemPrices][listitem]);
+			GivePlayerCash(playerid, -Businesses[biz][bItemPrices][listitem]);
 
-	  		switch (listitem)
-	  		{
-	  		    case 0:
-	  		    {
+			switch (listitem)
+			{
+				case 0:
+				{
 					GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Purple Dildo purchased, you can now pleasure yourself.");
-	  		    }
-	  		    case 1:
-	  		    {
+				}
+				case 1:
+				{
 					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR, 99999);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Short Vibrator purchased, you can now pleasure yourself.");
-	  		    }
-	  		    case 2:
-	  		    {
-				  	GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR2, 99999);
+				}
+				case 2:
+				{
+					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR2, 99999);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Long Vibrator purchased, you can now pleasure yourself.");
-	  		    }
+				}
 				case 3:
-	  		    {
+				{
 					GivePlayerValidWeapon(playerid, WEAPON_DILDO2, 99999);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "White Dildo purchased, you can now pleasure yourself.");
-	  		    }
-	  		}
+				}
+			}
 		}
 		return 1;
 	}
 	if(dialogid == GIVEKEYS)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			if(PlayerVehicleInfo[playerid][listitem][pvId] == INVALID_PLAYER_VEHICLE_ID) {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You can't give out keys to a non-existent, impounded vehicle or stored vehicle.");
-	            GiveKeysTo[playerid] = INVALID_PLAYER_ID;
-	            return 1;
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You can't give out keys to a non-existent, impounded vehicle or stored vehicle.");
+				GiveKeysTo[playerid] = INVALID_PLAYER_ID;
+				return 1;
 			}
-	        if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] != INVALID_PLAYER_ID)
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You already gave someone the keys of this car.");
-	            GiveKeysTo[playerid] = INVALID_PLAYER_ID;
-	            return 1;
-	        }
-	        if(PlayerInfo[GiveKeysTo[playerid]][pVehicleKeysFrom] != INVALID_PLAYER_ID)
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "That person already has keys from a different car.");
-	            GiveKeysTo[playerid] = INVALID_PLAYER_ID;
-	            return 1;
-	        }
+			if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] != INVALID_PLAYER_ID)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You already gave someone the keys of this car.");
+				GiveKeysTo[playerid] = INVALID_PLAYER_ID;
+				return 1;
+			}
+			if(PlayerInfo[GiveKeysTo[playerid]][pVehicleKeysFrom] != INVALID_PLAYER_ID)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "That person already has keys from a different car.");
+				GiveKeysTo[playerid] = INVALID_PLAYER_ID;
+				return 1;
+			}
 			PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = GiveKeysTo[playerid];
 			PlayerInfo[GiveKeysTo[playerid]][pVehicleKeys] = listitem;
 			PlayerInfo[GiveKeysTo[playerid]][pVehicleKeysFrom] = playerid;
@@ -7772,26 +8464,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "You gave %s the keys for your %s.", GetPlayerNameEx(GiveKeysTo[playerid]), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
 			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			GiveKeysTo[playerid] = INVALID_PLAYER_ID;
-	    }
+		}
 	}
 	if(dialogid == REMOVEKEYS)
 	{
-	    if(response)
-	    {
-	        if(PlayerVehicleInfo[playerid][listitem][pvId] == INVALID_PLAYER_VEHICLE_ID) {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You can't remove the keys of a non-existent, impounded vehicle or stored vehicle.");
-	            return 1;
+		if(response)
+		{
+			if(PlayerVehicleInfo[playerid][listitem][pvId] == INVALID_PLAYER_VEHICLE_ID) {
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You can't remove the keys of a non-existent, impounded vehicle or stored vehicle.");
+				return 1;
 			}
-	        if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] != PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "This person doesn't have the keys of this car.");
-	            return 1;
-	        }
-	        if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] == INVALID_PLAYER_ID)
-	        {
-	            SendClientMessageEx(playerid, COLOR_GRAD2, "You have not given anyone the keys for this car.");
-	            return 1;
-	        }
+			if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] != PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "This person doesn't have the keys of this car.");
+				return 1;
+			}
+			if(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] == INVALID_PLAYER_ID)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have not given anyone the keys for this car.");
+				return 1;
+			}
 			PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
 			format(string, sizeof(string), "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
@@ -7799,12 +8491,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "You took the keys of your %s from %s.", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]),GetPlayerNameEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]));
 			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
-	    }
+		}
 	}
 	if(dialogid == MPSPAYTICKETSCOP)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			new
 				szMessage[128],
 				iTargetID = GetPVarInt(playerid, "vRel");
@@ -7854,13 +8546,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				g_mysql_SaveVehicle(iTargetID, listitem);
 			}
 			else SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle either does not exist, or does not need to be released or have its tickets paid.");
-	    }
+		}
 		return 1;
 	}
 	if(dialogid == MPSPAYTICKETS)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			new
 				szMessage[128];
 
@@ -7907,15 +8599,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return SendClientMessage(playerid, COLOR_GRAD2, "You don't have enough money on you.");
 				}
 
-    			if(!vehicleSpawnCountCheck(playerid)) {
+				if(!vehicleSpawnCountCheck(playerid)) {
 					return SendClientMessage(playerid, COLOR_GRAD2, "You have too many vehicles spawned - store one first.");
 				}
 
 				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], iCost);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMessage);
 				GivePlayerCash(playerid, -iCost);
-                Tax += (iCost / 100) * 30;
-                SpeedingTickets += iCost;
+				Tax += (iCost / 100) * 30;
+				SpeedingTickets += iCost;
 				for(new z; z < MAX_GROUPS; z++)
 				{
 					if(arrGroupData[z][g_iAllegiance] == 1)
@@ -7952,38 +8644,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				g_mysql_SaveVehicle(playerid, listitem);
 			}
 			else SendClientMessage(playerid, COLOR_GRAD2, "This vehicle either does not exist, or does not need to be released or have its tickets paid.");
-	    }
+		}
 		return 1;
 	}
 	if(dialogid == REPORTSMENU)
 	{
-	    if(response)
-	    {
-	        if(CancelReport[playerid] == listitem) return 1;
+		if(response)
+		{
+			if(CancelReport[playerid] == listitem) return 1;
 			new reportid = ListItemReportId[playerid][listitem];
-	        if(Reports[reportid][BeingUsed] == 0)
+			if(Reports[reportid][BeingUsed] == 0)
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+				return 1;
 			}
 			if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
-			    Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
-			    Reports[reportid][BeingUsed] = 0;
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+				Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
+				Reports[reportid][BeingUsed] = 0;
+				return 1;
 			}
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), Reports[reportid][ReportFrom], reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
 			AddReportToken(playerid); // Report Tokens
 			if(PlayerInfo[playerid][pAdmin] == 1)
 			{
-			    SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.");
+				SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.");
 			}
 			else
 			{
-			    format(string, sizeof(string), "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
-			    SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+				format(string, sizeof(string), "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
 			}
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
@@ -7994,40 +8686,40 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			Reports[reportid][BeingUsed] = 0;
 			Reports[reportid][TimeToExpire] = 0;
 			//strmid(Reports[reportid][Report], "None", 0, 4, 4);
-	    }
-	    else
-	    {
-	        if(CancelReport[playerid] == listitem) return 1;
-	        new reportid = ListItemReportId[playerid][listitem];
-	        if(Reports[reportid][BeingUsed] == 0)
+		}
+		else
+		{
+			if(CancelReport[playerid] == listitem) return 1;
+			new reportid = ListItemReportId[playerid][listitem];
+			if(Reports[reportid][BeingUsed] == 0)
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+				return 1;
 			}
 			if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
-			    Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
-			    Reports[reportid][BeingUsed] = 0;
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+				Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
+				Reports[reportid][BeingUsed] = 0;
+				return 1;
 			}
 			format(string, sizeof(string), "AdmCmd: %s has trashed the report from %s (RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
 			if(PlayerInfo[playerid][pAdmin] == 1)
 			{
-			    SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has marked your report invalid. It will not be reviewed.");
+				SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has marked your report invalid. It will not be reviewed.");
 			}
 			else
 			{
-			    format(string, sizeof(string), "%s has marked your report invalid. It will not be reviewed.", GetPlayerNameEx(playerid));
-			    SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+				format(string, sizeof(string), "%s has marked your report invalid. It will not be reviewed.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
 			}
 			PlayerInfo[playerid][pTrashReport]++;
 			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 			Reports[reportid][BeingUsed] = 0;
 			Reports[reportid][TimeToExpire] = 0;
 			new reportdialog[2048], itemid = 0;
-		    for(new i = 0; i < MAX_REPORTS; i++)
+			for(new i = 0; i < MAX_REPORTS; i++)
 			{
 				if(Reports[i][BeingUsed] == 1 && itemid < 40)
 				{
@@ -8054,21 +8746,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			//SendClientMessageEx(playerid, COLOR_GREEN, "___________________________________________________");
 			ShowPlayerDialog(playerid, REPORTSMENU, DIALOG_STYLE_LIST, "Reports", reportdialog, "Accept", "Trash");
 			//strmid(Reports[reportid][Report], "None", 0, 4, 4);
-	    }
+		}
 	}
 	/*if((dialogid == DUTY_OPTIONS) && (response))
 	{
-	    if(listitem == 0) // Public Duty
+		if(listitem == 0) // Public Duty
 		{
-		    if(PlayerInfo[playerid][pDuty] == 0)
-		    {
+			if(PlayerInfo[playerid][pDuty] == 0)
+			{
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					format(string, sizeof(string), "* Officer %s takes a badge and a gun from their locker.", sendername);
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					SetPlayerColor(playerid, TEAM_BLUE_COLOR);
 					SetPlayerSkin(playerid, 280);
 					PlayerInfo[playerid][pModel] = 280;
-	    			SetPlayerArmor(playerid, 100.0);
+					SetPlayerArmor(playerid, 100.0);
 					GivePlayerValidWeapon(playerid, 24, 99999);
 					GivePlayerValidWeapon(playerid, 41, 99999);
 					GivePlayerValidWeapon(playerid, 3, 99999);
@@ -8089,14 +8781,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerInfo[playerid][pDuty] = 0;
 			}
 		}
-	    if(listitem == 1) // Undercover Duty
+		if(listitem == 1) // Undercover Duty
 		{
-		    if(PlayerInfo[playerid][pDuty] == 0)
-		    {
+			if(PlayerInfo[playerid][pDuty] == 0)
+			{
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					format(string, sizeof(string), "* Officer %s takes a badge and a gun from their locker.", sendername);
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	    			SetPlayerArmor(playerid, 100.0);
+					SetPlayerArmor(playerid, 100.0);
 					GivePlayerValidWeapon(playerid, 24, 99999);
 					GivePlayerValidWeapon(playerid, 29, 99999);
 					OnDuty[playerid] = 1;
@@ -8166,45 +8858,45 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
- 	if(dialogid == FAQMENU)
-  	{
-   		if(response)
-     	{
-           	if(listitem == 0) // Vehicle Locks
-            {
-            	ShowPlayerDialog(playerid, LOCKSFAQ, DIALOG_STYLE_MSGBOX, "Vehicle Locks", "Information:\n\nLocks can be bought at a 24/7 for $5000 using /buy.\nYou can type /lock to lock your vehicle, and /lock once more to unlock it.\nYou will lose your lock when you log out.", "Thanks", "Cancel");
-            }
-            else if(listitem == 1) //Skins
-            {
-           		ShowPlayerDialog(playerid, SKINSFAQ, DIALOG_STYLE_MSGBOX, "Skins & Toys", "Information:\n\nSkins and toys can be bought at a clothes store, such as Binco, by typing /buyclothes and /buytoys.\nIf you are in a family or faction, you can type /clothes to change your skin for free.\nTo change your skin, you must know the SkinID. If you don't know it, then just search for it on Google.", "Thanks", "Cancel");
-            }
-            else if(listitem == 2) //ATMs
+	if(dialogid == FAQMENU)
+	{
+		if(response)
+		{
+			if(listitem == 0) // Vehicle Locks
 			{
-   				ShowPlayerDialog(playerid, ATMFAQ, DIALOG_STYLE_MSGBOX, "ATMs", "Information:\n\nATMs are little machines located around Los Santos, that allows you to deposit, or withdraw money into your bank account.\nInstead of running to the bank, you can simply access your bank account through one of these.\nIf you need help with the ATM commands, just type /help.", "Thanks", "Cancel");
-       		}
-         	else if(listitem == 3) //Factions
-          	{
-           		ShowPlayerDialog(playerid, FACTIONSFAQ, DIALOG_STYLE_MSGBOX, "Factions", "Information:\n\nFactions such as the LSPD, FBI, FDSA, etc. are legal organizations.\nYou can apply to join for these factions at www.NG-Gaming.net/forums.", "Thanks", "Cancel");
-           	}
-           	else if(listitem == 4) //Gangs
-            {
-            	ShowPlayerDialog(playerid, GANGSFAQ, DIALOG_STYLE_MSGBOX, "Gangs", "Information:\n\nGangs are obviously illegal organizations. To view the list of families, simply type /families.\nDo not use /families to metagame someone's name. You must ICly find them and roleplay with them, in order for you to join.\nMost families also do points, which you can earn money from.", "Thanks", "Cancel");
-            }
-            else if(listitem == 5) //Hitmen
-            {
-            	ShowPlayerDialog(playerid, HITMENFAQ, DIALOG_STYLE_MSGBOX, "Hitmen", "Information:\n\nHitmen are pretty much 'hired killers' You can type /contract to put a hit on someone, but it must be for a RP reason.\nIf someone finds out that you put an OOC hit on someone, you will get in trouble and possibly banned.\nYou DO NOT ask to be a hitman, because they ask you, if they want you.\nPlease note that if you EVER release a hitman's name, you WILL BE BANNED.", "Thanks", "Cancel");
-            }
-            else if(listitem == 6) //Website
-            {
-           		ShowPlayerDialog(playerid, WEBSITEFAQ, DIALOG_STYLE_MSGBOX, "Ventrilo and Other Information", "Information:\n\nFeedback: www.feedback.NG-Gaming.net\nForums: www.NG-Gaming.net/forums\nTeamspeak: TS.NG-Gaming.net | Port: 9987\nFacebook: www.FaceBook.com/NextGenerationGaming\nXFire Group: www.XFire.com/communities/nextgenerationroleplay", "Thanks", "Cancel");
-            }
-            else if(listitem == 7) //Further Help
-           	{
-           		ShowPlayerDialog(playerid, FURTHERHELPFAQ, DIALOG_STYLE_MSGBOX, "Further Help", "Information:\n\nIf you think you still need further help, then please use /newb to ask a question\nIf you need EVEN MORE help, then please use /requesthelp, and a community advisor will be with you shortly.\nAlso, please note that /newb is for script-related questions only.", "Thanks", "Cancel");
+				ShowPlayerDialog(playerid, LOCKSFAQ, DIALOG_STYLE_MSGBOX, "Vehicle Locks", "Information:\n\nLocks can be bought at a 24/7 for $5000 using /buy.\nYou can type /lock to lock your vehicle, and /lock once more to unlock it.\nYou will lose your lock when you log out.", "Thanks", "Cancel");
+			}
+			else if(listitem == 1) //Skins
+			{
+				ShowPlayerDialog(playerid, SKINSFAQ, DIALOG_STYLE_MSGBOX, "Skins & Toys", "Information:\n\nSkins and toys can be bought at a clothes store, such as Binco, by typing /buyclothes and /buytoys.\nIf you are in a family or faction, you can type /clothes to change your skin for free.\nTo change your skin, you must know the SkinID. If you don't know it, then just search for it on Google.", "Thanks", "Cancel");
+			}
+			else if(listitem == 2) //ATMs
+			{
+				ShowPlayerDialog(playerid, ATMFAQ, DIALOG_STYLE_MSGBOX, "ATMs", "Information:\n\nATMs are little machines located around Los Santos, that allows you to deposit, or withdraw money into your bank account.\nInstead of running to the bank, you can simply access your bank account through one of these.\nIf you need help with the ATM commands, just type /help.", "Thanks", "Cancel");
+			}
+			else if(listitem == 3) //Factions
+			{
+				ShowPlayerDialog(playerid, FACTIONSFAQ, DIALOG_STYLE_MSGBOX, "Factions", "Information:\n\nFactions such as the LSPD, FBI, FDSA, etc. are legal organizations.\nYou can apply to join for these factions at www.NG-Gaming.net/forums.", "Thanks", "Cancel");
+			}
+			else if(listitem == 4) //Gangs
+			{
+				ShowPlayerDialog(playerid, GANGSFAQ, DIALOG_STYLE_MSGBOX, "Gangs", "Information:\n\nGangs are obviously illegal organizations. To view the list of families, simply type /families.\nDo not use /families to metagame someone's name. You must ICly find them and roleplay with them, in order for you to join.\nMost families also do points, which you can earn money from.", "Thanks", "Cancel");
+			}
+			else if(listitem == 5) //Hitmen
+			{
+				ShowPlayerDialog(playerid, HITMENFAQ, DIALOG_STYLE_MSGBOX, "Hitmen", "Information:\n\nHitmen are pretty much 'hired killers' You can type /contract to put a hit on someone, but it must be for a RP reason.\nIf someone finds out that you put an OOC hit on someone, you will get in trouble and possibly banned.\nYou DO NOT ask to be a hitman, because they ask you, if they want you.\nPlease note that if you EVER release a hitman's name, you WILL BE BANNED.", "Thanks", "Cancel");
+			}
+			else if(listitem == 6) //Website
+			{
+				ShowPlayerDialog(playerid, WEBSITEFAQ, DIALOG_STYLE_MSGBOX, "Ventrilo and Other Information", "Information:\n\nFeedback: www.feedback.NG-Gaming.net\nForums: www.NG-Gaming.net/forums\nTeamspeak: TS.NG-Gaming.net | Port: 9987\nFacebook: www.FaceBook.com/NextGenerationGaming\nXFire Group: www.XFire.com/communities/nextgenerationroleplay", "Thanks", "Cancel");
+			}
+			else if(listitem == 7) //Further Help
+			{
+				ShowPlayerDialog(playerid, FURTHERHELPFAQ, DIALOG_STYLE_MSGBOX, "Further Help", "Information:\n\nIf you think you still need further help, then please use /newb to ask a question\nIf you need EVEN MORE help, then please use /requesthelp, and a community advisor will be with you shortly.\nAlso, please note that /newb is for script-related questions only.", "Thanks", "Cancel");
 			}
 		}
- 	}
- 	if(dialogid == FIGHTMENU)
+	}
+	if(dialogid == FIGHTMENU)
 	{
 		if(response)
 		{
@@ -8212,14 +8904,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(listitem == 0)
 				{
-			    	PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_BOXING;
+					PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_BOXING;
 					SetPlayerFightingStyle (playerid, FIGHT_STYLE_BOXING);
 					SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the boxing fighting style!");
 
-    				if(PlayerInfo[playerid][pDonateRank] >= 1)
-				    {
-				    	GivePlayerCash(playerid, -40000);
-        				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
+					if(PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						GivePlayerCash(playerid, -40000);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
 					}
 					else
 					{
@@ -8232,10 +8924,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerFightingStyle (playerid, FIGHT_STYLE_ELBOW);
 					SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the elbow fighting style!");
 
- 					if(PlayerInfo[playerid][pDonateRank] >= 1)
-				    {
-				    	GivePlayerCash(playerid, -40000);
-        				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
+					if(PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						GivePlayerCash(playerid, -40000);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
 					}
 					else
 					{
@@ -8244,14 +8936,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if(listitem == 2)
 				{
-			    	PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_KNEEHEAD;
-				    SetPlayerFightingStyle (playerid, FIGHT_STYLE_KNEEHEAD);
-				    SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the kneehead fighting style!");
+					PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_KNEEHEAD;
+					SetPlayerFightingStyle (playerid, FIGHT_STYLE_KNEEHEAD);
+					SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the kneehead fighting style!");
 
-    				if(PlayerInfo[playerid][pDonateRank] >= 1)
-				    {
-				    	GivePlayerCash(playerid, -40000);
-        				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
+					if(PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						GivePlayerCash(playerid, -40000);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
 					}
 					else
 					{
@@ -8260,14 +8952,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if(listitem == 3)
 				{
-   					PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_KUNGFU;
+					PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_KUNGFU;
 					SetPlayerFightingStyle (playerid, FIGHT_STYLE_KUNGFU);
 					SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the kungfu fighting style!");
 
- 					if(PlayerInfo[playerid][pDonateRank] >= 1)
-				    {
-				    	GivePlayerCash(playerid, -40000);
-        				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
+					if(PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						GivePlayerCash(playerid, -40000);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
 					}
 					else
 					{
@@ -8277,13 +8969,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(listitem == 4)
 				{
 					PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_GRABKICK;
-	    			SetPlayerFightingStyle (playerid, FIGHT_STYLE_GRABKICK);
-			  	  	SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the grabkick fighting style!");
+					SetPlayerFightingStyle (playerid, FIGHT_STYLE_GRABKICK);
+					SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the grabkick fighting style!");
 
-    				if(PlayerInfo[playerid][pDonateRank] >= 1)
-				    {
-				    	GivePlayerCash(playerid, -40000);
-        				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
+					if(PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						GivePlayerCash(playerid, -40000);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have received 20 percent off this product. Instead of paying $50000, you paid $40000.");
 					}
 					else
 					{
@@ -8301,14 +8993,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				PlayerInfo[playerid][pFightStyle] = FIGHT_STYLE_NORMAL;
 				SetPlayerFightingStyle (playerid, FIGHT_STYLE_NORMAL);
-	  			SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the normal fighting style!");
+				SendClientMessageEx(playerid, COLOR_WHITE, " You are now using the normal fighting style!");
 				return 1;
 			}
 		}
 	}
 	if(dialogid == JOBHELPMENU)
 	{
- 		if(response)
+		if(response)
 		{
 			if(listitem == 0) //Detective
 			{
@@ -8323,7 +9015,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, WHOREJOB, DIALOG_STYLE_MSGBOX, "Whore", "Information:\n\nThis job can be used to bring pleasure to any clients who may be interested in having some fun.\nThis is a job that offers sex to every client who comes along.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 			}
 			if(listitem == 3) //Drug Dealer
-            {
+			{
 				ShowPlayerDialog(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell pot and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 			}
 			if(listitem == 4) //Mechanic
@@ -8343,167 +9035,167 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, BOXERJOB, DIALOG_STYLE_MSGBOX, "Boxer", "Information:\n\nThis job can be used to box people inside the Ganton Gym.\nThis job is not very money-making, but you can become the boxing champion.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 			}
 			if(listitem == 8) //Taxi Driver
-            {
+			{
 				ShowPlayerDialog(playerid, TAXIJOB, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Information:\n\nThis job can be used to take passengers around the city for any price you desire($1 - $500 per 16 seconds).\nThis job is not very profitable as people do not usually call taxis, and sometimes they try to steal your taxi vehicle.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 			}
 			if(listitem == 9) //Drug Smuggling
-            {
+			{
 				ShowPlayerDialog(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Pot filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and pot, and sometimes they try to steal your pot and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
 			}
 			if(listitem == 10) //Craftsman
-            {
+			{
 				ShowPlayerDialog(playerid, CRAFTJOB, DIALOG_STYLE_MSGBOX, "Craftsman", "Information:\nThis job can be used to sell crafts to other players.\nThis job is very profitable as people have a need for many of the things you can make.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/getmats /craft\nLocation of job: This job can be obtained in Willowfield at the junkyard, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 			if(listitem == 11) //Bartender
-            {
+			{
 				ShowPlayerDialog(playerid, BARTENDERJOB, DIALOG_STYLE_MSGBOX, "Bartender", "Information:\nThis job can be used to sell drinks to other players.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/selldrink\nLocation of job: This job can be obtained in Idlewood inside the Alhambra Club, at the job icon(yellow i).", "Done", "Cancel");
 			}
 			if(listitem == 12) //Trucker
-            {
+			{
 				ShowPlayerDialog(playerid, TRUCKERJOB, DIALOG_STYLE_MSGBOX, "Shipment Contractor","Information:\nThis job can be used to earn money by making truck deliveries\nThis is a legal job, however you can get busted if you transport illegal goods or hijack trucks. Also Shipment Contractors get a 50 percent bonus for carting illegal goods.\n\nCommands:\n/loadshipment /checkcargo /hijackcargo\nLocation of job: This job can be obtained at the San Fierro Docks, at the job icon(yellow I).", "Done", "Cancel");
 			}
 			if(listitem == 13) //Pizza Boy
-            {
+			{
 				ShowPlayerDialog(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pier 69, at the job icon(yellow I).", "Done", "Cancel");
 			}
 		}
 	}
 	if(dialogid == SMUGGLEJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Pot/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == SMUGGLEJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, SMUGGLEJOB2, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Note: There is no reload time for drug smuggling and you do need to level it up to obtain more money. There are 5 levels for this job.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == TAXIJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, TAXIJOB2, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Note: There is no reload time for taxi fares and there are no levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == TAXIJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, TAXIJOB3, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Commands:\n\n/fare [$1 - $500]\n\nLocation of job: This job can be obtained in front of Unity Station at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == BOXERJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, BOXERJOB3, DIALOG_STYLE_MSGBOX, "Boxer", "Commands:\n\n/fight [PlayerID/Name], /boxstats\n\nLocation of job: This job can be obtained inside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == BOXERJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, BOXERJOB2, DIALOG_STYLE_MSGBOX, "Boxer", "Note: There is no reload time for boxing and you don't need to level it up to box people in the gym. There are 3 levels for this job.\n\nLevel 1: Beginner Boxer.\nLevel 2: Amateur Boxer.\nLevel 3: Professional Boxer.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == ARMSDEALERJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, ARMSDEALERJOB2, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Note: The reload time for selling guns is always 10 seconds, no matter what level.\n\nSkills:\n\nLevel 1 Weapons: Flowers, Knuckles, SDPistol, 9mm, and Shotgun.\nLevel 2 Weapons: Baseball Bat, Cane, MP5, and Rifle.\nLevel 3 Weapons: Shovel and Deagle.\nLevel 4 Weapons: Poolcue and Golf Club.\nLevel 5 Weapons: Katana, Dildo, UZI & TEC9.\nGold+ VIP Feature: AK-47", "Next", "Cancel");
 		}
 	}
 	if(dialogid == ARMSDEALERJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, ARMSDEALERJOB3, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Commands:\n\n/getmats, /sellgun\n\nLocation of job: This job can be obtained outside the large Ammunation, at the 'gun' icon.", "Done", "Cancel");
 		}
 	}
 	if(dialogid == BODYGUARDJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, BODYGUARDJOB3, DIALOG_STYLE_MSGBOX, "Bodyguard", "Commands:\n\n/guard [player] [Price $2000 - $10000]\n/frisk [player]\n\nLocation of job: This job can be obtained outside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == BODYGUARDJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: The reload time is always 1 minute. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == MECHANICJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, MECHANICJOB2, DIALOG_STYLE_MSGBOX, "Mechanic", "Note: The reload time is always 1 minute, no matter what level.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == MECHANICJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, MECHANICJOB3, DIALOG_STYLE_MSGBOX, "Mechanic", "Commands:\n\n/fix, /repair, /hyd, /nos, /refill, /mechduty\n\nLocation of job: This job can be obtained at blueberry, at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == DRUGDEALERJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 pot and 5 crack.\nLevel 2: You can hold 20 pot and 15 crack.\nLevel 3: You can hold 30 pot and 15 crack.\nLevel 4: You can hold 40 pot and 20 crack.\nLevel 5: You can hold 50 pot and 25 crack.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == DRUGDEALERJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/getpot, /sell, /getcrack, /getseeds, /plantpotseeds\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
 		}
 	}
 	if(dialogid == WHOREJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, WHOREJOB3, DIALOG_STYLE_MSGBOX, "Whore", "Commands:\n\n/sex\n/sex is a command to offer sex to a client, and may only be used in a vehicle.\n\nLocation of job: This job can be obtained inside the Pig Pen, at the job icon(yellow circle).", "Done", "Cancel");
 		}
 	}
 	if(dialogid == LAWYERJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, LAWYERJOB3, DIALOG_STYLE_MSGBOX, "Lawyer", "Commands:\n\n/defend, /free, /wanted, /lawyerduty, /offerappeal, /finishappeal\n\nLocation of job: This job can be found at the job map icon(yellow circle)near the bank.", "Done", "Cancel");
 		}
 	}
 	if(dialogid == WHOREJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, WHOREJOB2, DIALOG_STYLE_MSGBOX, "Whore", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You have a very high chance of catching/giving STD's.\nLevel 2: You have a high chance of catching/giving STD's.\nLevel 3: You have a medium chance of catching/giving STD's.\nLevel 4: You have a low chance of catching/giving STD's.\nLevel 5: You have a very low chance of catching/giving STD's.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == LAWYERJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, LAWYERJOB2, DIALOG_STYLE_MSGBOX, "Lawyer", "Note: The reload time is always 2 minutes, no matter what level.\n\nSkills:\n\nLevel 1: You can reduce inmates sentences by 1 minute.\nLevel 2: You can reduce inmates sentences by 2 minutes.\nLevel 3: You can reduce inmates sentences by 3 minutes.\nLevel 4: You can reduce inmates sentences by 4 minutes.\nLevel 5: You can reduce inmates sentences by 5 minutes.", "Next", "Cancel");
 		}
 	}
 	if(dialogid == DETECTIVEJOB2)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, DETECTIVEJOB3, DIALOG_STYLE_MSGBOX, "Detective", "Commands:\n\n/find\n/find is a command that can locate a player's position.\n\nLocation of job: This job can be obtained in the Los Santos Police Department.", "Done", "Cancel");
 		}
 	}
-    if(dialogid == DETECTIVEJOB)
+	if(dialogid == DETECTIVEJOB)
 	{
-   		if(response)
+		if(response)
 		{
 			ShowPlayerDialog(playerid, DETECTIVEJOB2, DIALOG_STYLE_MSGBOX, "Detective", "Skills:\n\nLevel 1: You can find someone for 3 seconds, the reload time is 2 minutes.\nLevel 2: You can find someone for 5 seconds, the reload time is 1 minute, 20 seconds.\nLevel 3: You can find someone for 7 seconds, the reload time is 1 minute.\nLevel 4: You can find someone for 9 seconds, the reload time is 30 seconds.\nLevel 5: You can find someone for 11 seconds, the reload time is 20 seconds.", "Next", "Cancel");
 		}
@@ -8514,13 +9206,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			case 0:
 			{
-			    if(PlayerInfo[playerid][pCarLic] == 0)
-			    {
-			        if(GetPlayerCash(playerid) < 5000)
-			        {
-			            SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a driver's license.");
-			            return 1;
-			        }
+				if(PlayerInfo[playerid][pCarLic] == 0)
+				{
+					if(GetPlayerCash(playerid) < 5000)
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a driver's license.");
+						return 1;
+					}
 					GivePlayerCash(playerid,-5000);
 					PlayerInfo[playerid][pCarLic] = 1;
 					SendClientMessageEx(playerid, COLOR_GREY, "You have successfully acquired a driver's license.");
@@ -8529,13 +9221,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 1:
 			{
-			    if(PlayerInfo[playerid][pBoatLic] == 0)
-			    {
-			        if(GetPlayerCash(playerid) < 5000)
-			        {
-			            SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a boating license.");
-			            return 1;
-			        }
+				if(PlayerInfo[playerid][pBoatLic] == 0)
+				{
+					if(GetPlayerCash(playerid) < 5000)
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a boating license.");
+						return 1;
+					}
 					GivePlayerCash(playerid,-5000);
 					PlayerInfo[playerid][pBoatLic] = 1;
 					SendClientMessageEx(playerid, COLOR_GREY, "You have successfully acquired a boating license.");
@@ -8544,56 +9236,56 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 2:
 			{
-			    if(PlayerInfo[playerid][pFlyLic] == 0)
-			    {
-			    	if(PlayerInfo[playerid][pLevel] >=2)
-			    	{
-			    	    if(GetPlayerCash(playerid) < 25000)
-			        	{
-			            	SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a pilot's license.");
-			            	return 1;
-			        	}
+				if(PlayerInfo[playerid][pFlyLic] == 0)
+				{
+					if(PlayerInfo[playerid][pLevel] >=2)
+					{
+						if(GetPlayerCash(playerid) < 25000)
+						{
+							SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a pilot's license.");
+							return 1;
+						}
 						GivePlayerCash(playerid,-25000);
 						PlayerInfo[playerid][pFlyLic] = 1;
-      					SendClientMessageEx(playerid, COLOR_GREY, "You have successfully acquired a pilot license; you will now be able to pilot aircraft.");
+						SendClientMessageEx(playerid, COLOR_GREY, "You have successfully acquired a pilot license; you will now be able to pilot aircraft.");
 					}
 					else SendClientMessageEx(playerid, COLOR_GREY, "You must be level 2 or above to acquire a pilot license.");
 				}
-                else SendClientMessageEx(playerid, COLOR_GREY, "You already have a pilot license.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "You already have a pilot license.");
 			}
 			case 3:
 			{
-			    if(PlayerInfo[playerid][pTaxiLicense] == 0)
-			    {
-			        if(GetPlayerCash(playerid) < 35000)
-			        {
-			            SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a taxi license.");
-			            return 1;
-			        }
+				if(PlayerInfo[playerid][pTaxiLicense] == 0)
+				{
+					if(GetPlayerCash(playerid) < 35000)
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "You can not afford to buy a taxi license.");
+						return 1;
+					}
 					GivePlayerCash(playerid,-35000);
 					PlayerInfo[playerid][pTaxiLicense] = 1;
 					SendClientMessageEx(playerid, COLOR_GREY, "You have successfully acquired a taxi license; you will be able to use /fare in any vehicle, and accept calls for taxis.");
 				}
-                else SendClientMessageEx(playerid, COLOR_GREY, "You already have a taxi license.");
+				else SendClientMessageEx(playerid, COLOR_GREY, "You already have a taxi license.");
 			}
 		}
 	}
 	if(dialogid == MDC_MAIN && response)
 	{//*Find LEO\n*Civilian Information\n*Law Enforcement Agencies\n*Options
- 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-	   	switch( listitem )
-	    {
-	    	case 0:
-	        {
-	            ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
-	        }
-	        case 1:
-	        {
-	            ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
-	        }
-	        case 2:
-	        {
-	            new groups[1024], item;
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		switch( listitem )
+		{
+			case 0:
+			{
+				ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
+			}
+			case 1:
+			{
+				ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
+			}
+			case 2:
+			{
+				new groups[1024], item;
 				for (new i; i < MAX_GROUPS; i++)
 				{
 					if (arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_iGroupType] == 1 && arrGroupData[i][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
@@ -8601,16 +9293,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(groups, sizeof(groups), "%s*%s\n", groups, arrGroupData[i][g_szGroupName]);
 						ListItemTrackId[playerid][item++] = i;
 					}
-         			ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "MDC - Logged in | Agency List", groups, "OK", "Cancel");
-         		}
-	        }
-	        case 3: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
-		    case 4: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
+					ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "MDC - Logged in | Agency List", groups, "OK", "Cancel");
+				}
+			}
+			case 3: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
+			case 4: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
 		}
 	}
 	if(dialogid == MDC_FIND && response)
 	{
-	    new giveplayerid;
+		new giveplayerid;
 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		if(sscanf(inputtext, "u", giveplayerid))
 		{
@@ -8624,28 +9316,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(giveplayerid == playerid)
 				{
-				    ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: You cannot find yourself.\nEnter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
+					ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | ERROR", "ERROR: You cannot find yourself.\nEnter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 
 					return 1;
 				}
 				if(IsACop(giveplayerid) && arrGroupData[PlayerInfo[giveplayerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 				{
-	    			SetPlayerMarkerForPlayer(playerid,giveplayerid,FIND_COLOR);
-                    FindingPlayer[playerid] = giveplayerid;
-		    		FindTime[playerid] = 1;
-		    		FindTimePoints[playerid] = 30;
-		    	}
-		    	else
-		    	{
-			    	SendClientMessageEx(playerid, COLOR_GRAD2, " You can only track other cops!");
-		    	}
+					SetPlayerMarkerForPlayer(playerid,giveplayerid,FIND_COLOR);
+					FindingPlayer[playerid] = giveplayerid;
+					FindTime[playerid] = 1;
+					FindTimePoints[playerid] = 30;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, " You can only track other cops!");
+				}
 			}
 		}
 	}
 	if(dialogid == MDC_CIVILIANS && response)
 	{ //"*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete"
 		new WarrantString[512];
-	 	if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		if(News[hTaken6] == 1)
 		{
 			format(string, sizeof(string), "%s :: Officer: %s\n", News[hAdd6], News[hContact6]);
@@ -8659,7 +9351,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(News[hTaken8] == 1)
 		{
 			format(string, sizeof(string), "%s :: Officer: %s\n", News[hAdd8], News[hContact8]);
-		    strcat(WarrantString, string, sizeof(WarrantString));
+			strcat(WarrantString, string, sizeof(WarrantString));
 		}
 		if(News[hTaken9] == 1)
 		{
@@ -8688,17 +9380,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if(strlen(WarrantString) == 0)
 		{
-		    strcat(WarrantString, "No Warrants at this time.", sizeof(WarrantString));
+			strcat(WarrantString, "No Warrants at this time.", sizeof(WarrantString));
 		}
 		switch(listitem)
 		{
-		    case 0: ShowPlayerDialog(playerid, MDC_CHECK, DIALOG_STYLE_INPUT, "MDC - Logged in | Records Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+			case 0: ShowPlayerDialog(playerid, MDC_CHECK, DIALOG_STYLE_INPUT, "MDC - Logged in | Records Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
 			case 1: ShowPlayerDialog(playerid, MDC_REPORTS, DIALOG_STYLE_INPUT, "MDC - Logged in | Reports Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
-		    case 2: ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
+			case 2: ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | License Check", "Enter the Person's Name or ID No.", "Enter", "Cancel");
 			case 3: ShowPlayerDialog(playerid, MDC_WARRANTS, DIALOG_STYLE_LIST, "MDC - Logged in | Warrant List", WarrantString, "Enter", "Cancel");
 			case 4: ShowPlayerDialog(playerid, MDC_ISSUE_SLOT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
-		    case 5:
-		    {
+			case 5:
+			{
 				new BOLOString[512];
 				if(News[hTaken14] == 1)
 				{
@@ -8713,7 +9405,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(News[hTaken16] == 1)
 				{
 					format(string, sizeof(string), "%s :: Officer: %s\n", News[hAdd16], News[hContact16]);
-				    strcat(BOLOString, string, sizeof(BOLOString));
+					strcat(BOLOString, string, sizeof(BOLOString));
 				}
 				if(News[hTaken17] == 1)
 				{
@@ -8742,24 +9434,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if(strlen(BOLOString) == 0)
 				{
-				    strcat(BOLOString, "No BOLOs at this time.", sizeof(BOLOString));
+					strcat(BOLOString, "No BOLOs at this time.", sizeof(BOLOString));
 				}
 				ShowPlayerDialog(playerid, MDC_BOLOLIST, DIALOG_STYLE_LIST, "MDC - Logged In | BOLO List", BOLOString, "OK", "Cancel");
-		    }
-		    case 6:
-		    {
-		    	ShowPlayerDialog(playerid, MDC_BOLO_SLOT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
-		    }
-		    case 7:
-	        {
-	        	ShowPlayerDialog(playerid, MDC_DELETE, DIALOG_STYLE_LIST, "MDC - Logged In | Delete", "*BOLO\n*Warrant", "OK", "Cancel");
-	        }
+			}
+			case 6:
+			{
+				ShowPlayerDialog(playerid, MDC_BOLO_SLOT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Slot would you like to use?", "1\n2\n3\n4\n5\n6\n7\n8", "Enter", "Cancel");
+			}
+			case 7:
+			{
+				ShowPlayerDialog(playerid, MDC_DELETE, DIALOG_STYLE_LIST, "MDC - Logged In | Delete", "*BOLO\n*Warrant", "OK", "Cancel");
+			}
 		}
 
 	}
 	if(dialogid == MDC_MEMBERS && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		new MemberString[1024], giveplayer[MAX_PLAYER_NAME];
 		new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
 		new group = ListItemTrackId[playerid][listitem];
@@ -8779,24 +9471,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if(strlen(MemberString) == 0)
 		{
-		    strcat(MemberString, "No Members online at this time.", sizeof(MemberString));
+			strcat(MemberString, "No Members online at this time.", sizeof(MemberString));
 		}
 		format(string, sizeof(string), "MDC - Logged in | %s Members", arrGroupData[group][g_szGroupName]);
 		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, string, MemberString, "Select", "Cancel");
 	}
 	if(dialogid == MDC_WARRANTS && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Warrants", inputtext, "OK", "Back");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Warrants", inputtext, "OK", "Back");
 	}
 	if(dialogid == MDC_BOLOLIST && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-	    ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | BOLO Hot Sheet", inputtext, "OK", "Back");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | BOLO Hot Sheet", inputtext, "OK", "Back");
 	}
 /*	if(dialogid == MDC_CHECK && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		new giveplayerid = ReturnUser(inputtext);
 		new HistoryString[1024];
 		new giveplayer[MAX_PLAYER_NAME];
@@ -8815,18 +9507,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			strcat(HistoryString, string, sizeof(HistoryString));
 			if(PlayerInfo[giveplayerid][pProbationTime] != 0)
 			{
-			    format(string, sizeof(string), "Probation : %d minutes left\n", PlayerInfo[giveplayerid][pProbationTime]);
+				format(string, sizeof(string), "Probation : %d minutes left\n", PlayerInfo[giveplayerid][pProbationTime]);
 				strcat(HistoryString, string, sizeof(HistoryString));
 			}
 			for(new i=0; i<MAX_PLAYERVEHICLES; i++)
-        	{
-		    	if(PlayerVehicleInfo[giveplayerid][i][pvTicket] != 0)
+			{
+				if(PlayerVehicleInfo[giveplayerid][i][pvTicket] != 0)
 				{
-            	    format(string, sizeof(string), "Vehicle registration: %d | Vehicle Name: %s | Ticket: $%d.\n",PlayerVehicleInfo[giveplayerid][i][pvId],GetVehicleName(PlayerVehicleInfo[giveplayerid][i][pvId]),PlayerVehicleInfo[giveplayerid][i][pvTicket]);
+					format(string, sizeof(string), "Vehicle registration: %d | Vehicle Name: %s | Ticket: $%d.\n",PlayerVehicleInfo[giveplayerid][i][pvId],GetVehicleName(PlayerVehicleInfo[giveplayerid][i][pvId]),PlayerVehicleInfo[giveplayerid][i][pvTicket]);
 					strcat(HistoryString, string, sizeof(HistoryString));
-		    	}
-	    	}
-	    	ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", HistoryString, "OK", "Cancel");
+				}
+			}
+			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", HistoryString, "OK", "Cancel");
 			format(string, sizeof(string), "** DISPATCH: %s has run a check for warrants on %s **", GetPlayerNameEx(playerid), giveplayer);
 			SendRadioMessage(1, COLOR_DBLUE, string);
 			SendRadioMessage(2, COLOR_DBLUE, string);
@@ -8841,7 +9533,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}*/
 	if(dialogid == MDC_REPORTS && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		new giveplayerid = ReturnUser(inputtext);
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
@@ -8859,10 +9551,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == MDC_SHOWREPORTS && response)
 	{
 		new stpos = strfind(inputtext, "(");
-	    new fpos = strfind(inputtext, ")");
-	    new reportidstr[6], repid;
-	    strmid(reportidstr, inputtext, stpos+1, fpos);
-	    repid = strval(reportidstr);
+		new fpos = strfind(inputtext, ")");
+		new reportidstr[6], repid;
+		strmid(reportidstr, inputtext, stpos+1, fpos);
+		repid = strval(reportidstr);
 		return DisplayReport(playerid, repid);
 	}
 	if(dialogid == DIALOG_JFINECONFIRM)
@@ -9124,7 +9816,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_CHECK && response)
 	{
-	    if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
+		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		new giveplayerid = ReturnUser(inputtext);
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
@@ -9152,7 +9844,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-			    new LicenseString[256], giveplayer[MAX_PLAYER_NAME];
+				new LicenseString[256], giveplayer[MAX_PLAYER_NAME];
 				GetPlayerName(playerid, sendername, sizeof(sendername));
 				GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
 				new text1[20];
@@ -9165,7 +9857,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PlayerInfo[giveplayerid][pCarLic] == 3) { text1 = "Cancelled"; }
 				if(PlayerInfo[giveplayerid][pFlyLic]) { text4 = "Passed"; } else { text4 = "Not Passed"; }
 				if(PlayerInfo[giveplayerid][pBoatLic]) { text2 = "Passed"; } else { text2 = "Not Passed"; }
-	   			if(PlayerInfo[giveplayerid][pGunLic]) { text3 = "Passed"; } else { text3 = "Not Passed"; }
+				if(PlayerInfo[giveplayerid][pGunLic]) { text3 = "Passed"; } else { text3 = "Not Passed"; }
 				format(string, sizeof(string), "   Name: %s\n", giveplayer);
 				strcat(LicenseString, string, sizeof(LicenseString));
 				format(string, sizeof(string), "-Drivers License: %s.\n", text1);
@@ -9197,9 +9889,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-			    format(string, sizeof(string), " Enter your message to %s ", GetPlayerNameEx(giveplayerid));
-            	ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", string, "OK", "Cancel");
-            	SetPVarInt(playerid, "MDCMessageRecipient", giveplayerid);
+				format(string, sizeof(string), " Enter your message to %s ", GetPlayerNameEx(giveplayerid));
+				ShowPlayerDialog(playerid, MDC_MESSAGE_2, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", string, "OK", "Cancel");
+				SetPVarInt(playerid, "MDCMessageRecipient", giveplayerid);
 			}
 			else  return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 		}
@@ -9213,13 +9905,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		new phonenumb = strval(inputtext);
 		format(string, sizeof(string), " Enter your message to %d ", phonenumb);
-        ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS Message", string, "OK", "Cancel");
-        SetPVarInt(playerid, "SMSMessageRecipient", phonenumb);
+		ShowPlayerDialog(playerid, MDC_SMS_2, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS Message", string, "OK", "Cancel");
+		SetPVarInt(playerid, "SMSMessageRecipient", phonenumb);
 	}
 	if(dialogid == MDC_MESSAGE_2 && response)
 	{
 		new giveplayerid = GetPVarInt(playerid, "MDCMessageRecipient");
-	    if(giveplayerid == INVALID_PLAYER_ID) return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
+		if(giveplayerid == INVALID_PLAYER_ID) return ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | Error!", "ERROR: Invalid Recipient\nEnter recipient's Name or ID No.", "OK", "Cancel");
 		if(giveplayerid == playerid)
 		{
 			ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "You cannot send messages to yourself!", "OK", "Cancel");
@@ -9227,7 +9919,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if(ConnectedToPC[giveplayerid] == 1337 || IsPlayerInAnyVehicle(giveplayerid))
 		{
-	 		if(!IsMDCPermitted(giveplayerid))
+			if(!IsMDCPermitted(giveplayerid))
 			{
 				return ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | ERROR ", "That person is not logged into the MDC.", "OK", "Cancel");
 			}
@@ -9467,13 +10159,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_BOLO_SLOT && response)
 	{
-	    SetPVarInt(playerid, "BOLOISSUESLOT", listitem + 1);
-	    ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter BOLO Details", "Enter", "Cancel");
+		SetPVarInt(playerid, "BOLOISSUESLOT", listitem + 1);
+		ShowPlayerDialog(playerid, MDC_BOLO, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter BOLO Details", "Enter", "Cancel");
 	}
 	if(dialogid == MDC_ISSUE_SLOT && response)
 	{
-	    SetPVarInt(playerid, "ISSUESLOT", listitem + 1);
-	    ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter Arrest Warrant Details", "Enter", "Cancel");
+		SetPVarInt(playerid, "ISSUESLOT", listitem + 1);
+		ShowPlayerDialog(playerid, MDC_ISSUE, DIALOG_STYLE_INPUT, "MDC - Logged in | Issue Warrant", "Enter Arrest Warrant Details", "Enter", "Cancel");
 	}
 	if(dialogid == MDC_END_ID && response)
 	{
@@ -9637,10 +10329,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_DELETE && response)
 	{
-	    if(listitem == 0)
-	    {
-	    	ShowPlayerDialog(playerid, MDC_DEL_BOLO, DIALOG_STYLE_LIST, "MDC - Logged in | Which BOLO Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
-	    }
+		if(listitem == 0)
+		{
+			ShowPlayerDialog(playerid, MDC_DEL_BOLO, DIALOG_STYLE_LIST, "MDC - Logged in | Which BOLO Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
+		}
 		if(listitem == 1)
 		{
 			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
@@ -9750,7 +10442,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_DEL_WARRANT && response)
 	{
-	    new string1[MAX_PLAYER_NAME];
+		new string1[MAX_PLAYER_NAME];
 		if(isnull(inputtext))
 		{
 			ShowPlayerDialog(playerid, MDC_DEL_WARRANT, DIALOG_STYLE_LIST, "MDC - Logged in | Which Warrant Slot would you like to delete?", "1\n2\n3\n4\n5\n6\n7\n8\nALL", "Enter", "Cancel");
@@ -9858,12 +10550,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if( (dialogid >= MDC_START_ID && dialogid <= MDC_END_ID) && !response)
 	{
-	    if(dialogid == MDC_MAIN)
-	    {
-	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now logged off the MDC.");
+		if(dialogid == MDC_MAIN)
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now logged off the MDC.");
 			ConnectedToPC[playerid] = 0;
-	    }
-	    else
+		}
+		else
 		{
 			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 		}
@@ -9875,55 +10567,55 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			iPrice = GetPVarInt(playerid, "VIPCost"),
 			logstring[156];
 
-	    if(response)
-	    {
+		if(response)
+		{
 
-	        if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "The other person has disconnected.");
+			if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "The other person has disconnected.");
 			new iTargetName[MAX_PLAYER_NAME];
 			GetPVarString(playerid, "VIPSeller", iTargetName, sizeof(iTargetName));
 			if(strcmp(iTargetName, GetPlayerNameEx(iTargetID)) != 0) {
-                return SendClientMessageEx(playerid, COLOR_GREY, "The other person has disconnected.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "The other person has disconnected.");
 			}
-	        new	viptype[7];
-	        if(GetPlayerCash(playerid) >= iPrice)
-	        {
-	            if(PlayerInfo[iTargetID][pDonateRank] == 3)
-	            {
-                    PlayerInfo[iTargetID][pGVip] = 0;
-                    PlayerInfo[playerid][pGVip] = 1;
-	            }
-	        	//Player buying the VIP
-	        	GivePlayerCash(playerid, -GetPVarInt(playerid, "VIPCost"));
-	        	PlayerInfo[playerid][pDonateRank] = PlayerInfo[iTargetID][pDonateRank];
-	        	PlayerInfo[playerid][pVIPExpire] = PlayerInfo[iTargetID][pVIPExpire];
-                PlayerInfo[playerid][pTempVIP] = 0;
+			new	viptype[7];
+			if(GetPlayerCash(playerid) >= iPrice)
+			{
+				if(PlayerInfo[iTargetID][pDonateRank] == 3)
+				{
+					PlayerInfo[iTargetID][pGVip] = 0;
+					PlayerInfo[playerid][pGVip] = 1;
+				}
+				//Player buying the VIP
+				GivePlayerCash(playerid, -GetPVarInt(playerid, "VIPCost"));
+				PlayerInfo[playerid][pDonateRank] = PlayerInfo[iTargetID][pDonateRank];
+				PlayerInfo[playerid][pVIPExpire] = PlayerInfo[iTargetID][pVIPExpire];
+				PlayerInfo[playerid][pTempVIP] = 0;
 				PlayerInfo[playerid][pBuddyInvited] = 0;
 				PlayerInfo[playerid][pVIPSellable] = 0;
 				
 				LoadPlayerDisabledVehicles(iTargetID);
 
-	        	if(PlayerInfo[playerid][pVIPM] != 0)
-	        	{
-	        	    PlayerInfo[playerid][pVIPMO] = PlayerInfo[playerid][pVIPM];
-	        	}
-	        	PlayerInfo[playerid][pVIPM] = PlayerInfo[iTargetID][pVIPM];
+				if(PlayerInfo[playerid][pVIPM] != 0)
+				{
+					PlayerInfo[playerid][pVIPMO] = PlayerInfo[playerid][pVIPM];
+				}
+				PlayerInfo[playerid][pVIPM] = PlayerInfo[iTargetID][pVIPM];
 
-	        	// person selling the vip
-	        	GivePlayerCash(iTargetID, GetPVarInt(playerid, "VIPCost"));
-	        	PlayerInfo[iTargetID][pDonateRank] = 0;
+				// person selling the vip
+				GivePlayerCash(iTargetID, GetPVarInt(playerid, "VIPCost"));
+				PlayerInfo[iTargetID][pDonateRank] = 0;
 				PlayerInfo[iTargetID][pVIPExpire] = 0;
 				PlayerInfo[iTargetID][pVIPMO] = PlayerInfo[iTargetID][pVIPM];
 				PlayerInfo[iTargetID][pVIPM] = 0;
 				switch(PlayerInfo[playerid][pDonateRank])
-        		{
-        		    case 1: viptype = "Bronze";
-        		    case 2: viptype = "Silver";
-        		    case 3: viptype = "Gold";
-  					default: viptype = "Error";
-        		}
+				{
+					case 1: viptype = "Bronze";
+					case 2: viptype = "Silver";
+					case 3: viptype = "Gold";
+					default: viptype = "Error";
+				}
 				format(string, sizeof(string), "You have purchased %s VIP from %s for $%d which will expire on %s.", viptype, GetPlayerNameEx(iTargetID), iPrice, date(PlayerInfo[playerid][pVIPExpire], 2));
 				SendClientMessage(playerid, COLOR_WHITE, string);
-            	format(string, sizeof(string), "You have sold your %s VIP to %s for $%d.", viptype, GetPlayerNameEx(playerid), iPrice);
+				format(string, sizeof(string), "You have sold your %s VIP to %s for $%d.", viptype, GetPlayerNameEx(playerid), iPrice);
 				SendClientMessage(iTargetID, COLOR_WHITE, string);
 				new iYear, iMonth, iDay, szIP[16], szIP2[16];
 				getdate(iYear, iMonth, iDay);
@@ -9937,45 +10629,45 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    SendClientMessage(playerid, COLOR_GREY, "You don't have enough cash to purchase it!");
-			    SendClientMessage(iTargetID, COLOR_GREY, "He did not have enough cash to purchase it!");
+				SendClientMessage(playerid, COLOR_GREY, "You don't have enough cash to purchase it!");
+				SendClientMessage(iTargetID, COLOR_GREY, "He did not have enough cash to purchase it!");
 			}
 			DeletePVar(playerid, "VIPSell");
 			DeletePVar(playerid, "VIPCost");
-	    }
-	    else
-	    {
-	        format(string, sizeof(string), "You have declined the offer to purchase VIP from %s.", GetPlayerNameEx(iTargetID));
-	        SendClientMessage(playerid, COLOR_WHITE, string);
-	        format(string, sizeof(string), "%s has declined the offer to purchase VIP.", GetPlayerNameEx(playerid));
-	        SendClientMessage(iTargetID, COLOR_WHITE, string);
+		}
+		else
+		{
+			format(string, sizeof(string), "You have declined the offer to purchase VIP from %s.", GetPlayerNameEx(iTargetID));
+			SendClientMessage(playerid, COLOR_WHITE, string);
+			format(string, sizeof(string), "%s has declined the offer to purchase VIP.", GetPlayerNameEx(playerid));
+			SendClientMessage(iTargetID, COLOR_WHITE, string);
 			DeletePVar(playerid, "VIPSell");
 			DeletePVar(playerid, "VIPCost");
-	    }
-	    return 1;
+		}
+		return 1;
 	}
 	if((dialogid == DRINKDIALOG))
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			ShowPlayerDialog(playerid, TIPDIALOG, DIALOG_STYLE_INPUT, "Tipping the Bartender", "How much would you like to tip the bartender for their service?", "OK", "Cancel");
 		}
 		else
 		{
-		    DrinkOffer[playerid] = INVALID_PLAYER_ID;
+			DrinkOffer[playerid] = INVALID_PLAYER_ID;
 		}
 	}
 	if((dialogid == TIPDIALOG))
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			if(GetPlayerCash(playerid) >= strval(inputtext))
 			{
-			    if(strval(inputtext) < 0 || strval(inputtext) > 10000)
-			    {
-			    	return ShowPlayerDialog(playerid, TIPDIALOG, DIALOG_STYLE_INPUT, "Tipping the Bartender", "Must be above $0 or below $10,000.\nHow much would you like to tip the bartender for their service?", "OK", "Cancel");
-			    }
-			    format(string, sizeof(string), "** %s gives %s a tip for their service.", GetPlayerNameEx(playerid), GetPlayerNameEx(DrinkOffer[playerid]));
+				if(strval(inputtext) < 0 || strval(inputtext) > 10000)
+				{
+					return ShowPlayerDialog(playerid, TIPDIALOG, DIALOG_STYLE_INPUT, "Tipping the Bartender", "Must be above $0 or below $10,000.\nHow much would you like to tip the bartender for their service?", "OK", "Cancel");
+				}
+				format(string, sizeof(string), "** %s gives %s a tip for their service.", GetPlayerNameEx(playerid), GetPlayerNameEx(DrinkOffer[playerid]));
 				ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				format(string, sizeof(string), "* %s has given you a tip of $%d for your service.", GetPlayerNameEx(playerid), strval(inputtext));
 				SendClientMessageEx(DrinkOffer[playerid], COLOR_LIGHTBLUE, string);
@@ -9998,30 +10690,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-		    DrinkOffer[playerid] = INVALID_PLAYER_ID;
+			DrinkOffer[playerid] = INVALID_PLAYER_ID;
 		}
 	}
 	if((dialogid == PANEL))
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
+		if(response)
+		{
+			switch(listitem)
+			{
 				case 0:
 				{
-    				new
+					new
 						szPanel[566],
 						szPosition[16][23];
 
 					for(new i = 0; i < 16; i++)
 					{
-				    	if(CellDoors[i])
+						if(CellDoors[i])
 						{
 							szPosition[i]="{00FF00}Opened{FFFFFF}";
 						}
 						else
 						{
-						    szPosition[i]="{FF0000}Closed{FFFFFF}";
+							szPosition[i]="{FF0000}Closed{FFFFFF}";
 						}
 					}
 
@@ -10043,393 +10735,393 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Block B-1 (%s)\r\n\
 					Block B-2 (%s)", szPosition[0],szPosition[1], szPosition[2], szPosition[3], szPosition[4], szPosition[5], szPosition[6],
 					szPosition[7], szPosition[8], szPosition[9], szPosition[10], szPosition[11], szPosition[12], szPosition[13], szPosition[14], szPosition[15]);
-            		ShowPlayerDialog(playerid, PANELCONTROLS, DIALOG_STYLE_LIST, "Security Panel", szPanel, "Operate", "Cancel");
+					ShowPlayerDialog(playerid, PANELCONTROLS, DIALOG_STYLE_LIST, "Security Panel", szPanel, "Operate", "Cancel");
 				}
 				case 1:
 				{
-				    if(PlayerInfo[playerid][pRank] < 2)
-				        return SendClientMessageEx(playerid, COLOR_GREY, "You are to low rank to use this! (Rank 2+)");
+					if(PlayerInfo[playerid][pRank] < 2)
+						return SendClientMessageEx(playerid, COLOR_GREY, "You are to low rank to use this! (Rank 2+)");
 
-    				for(new i = 0; i < 16; i++)
+					for(new i = 0; i < 16; i++)
 					{
 						if(CellDoors[i])
 						{
-		    				CellDoors[i] = 0;
+							CellDoors[i] = 0;
 						}
 					}
-      				MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,977.75732422, 1);
-          			MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,977.75732422, 1);
+					MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,977.75732422, 1);
+					MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,977.75732422, 1);
 					MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 984.02539062, 1);
-      				MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,984.02539062, 1);
-      				MoveDynamicObject(BlastDoors[3], -2041.79785156, -195.64550781, 990.45825195, 1);
-      				MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,990.45825195, 1);
-      				MoveDynamicObject(BlastDoors[2],-2048.29296875, -205.54394531, 990.45825195, 1);
-      				MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,990.45825195, 1);
-      				MoveDynamicObject(CellGates[11], -2084.99902344,-207.03710938,992.19836426, 1);
-      				MoveDynamicObject(CellGates[10], -2081.52539062,-205.66894531,992.19836426, 1);
-     				MoveDynamicObject(CellGates[9], -2074.00585938,-207.03710938,992.19836426, 1);
- 					MoveDynamicObject(CellGates[8], -2069.53710938,-205.66894531,992.19836426, 1);
-      				MoveDynamicObject(CellGates[7], -2061.96289062,-207.03710938,992.19836426, 1);
-      				MoveDynamicObject(CellGates[6],-2057.59765625,-205.66894531,992.19836426, 1);
-      				MoveDynamicObject(CellGates[5], -2052.22460938,-191.64550781,992.19836426, 1);
-      				MoveDynamicObject(CellGates[4], -2055.99511719,-193.01757812,992.19836426, 1);
-      				MoveDynamicObject(CellGates[3], -2063.56738281,-191.64550781,992.19836426, 1);
-			 		MoveDynamicObject(CellGates[2], -2068.00195312,-193.01757812,992.19836426, 1);
-      				MoveDynamicObject(CellGates[1], -2075.55273438,-191.64550781,992.19836426, 1);
+					MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,984.02539062, 1);
+					MoveDynamicObject(BlastDoors[3], -2041.79785156, -195.64550781, 990.45825195, 1);
+					MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,990.45825195, 1);
+					MoveDynamicObject(BlastDoors[2],-2048.29296875, -205.54394531, 990.45825195, 1);
+					MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,990.45825195, 1);
+					MoveDynamicObject(CellGates[11], -2084.99902344,-207.03710938,992.19836426, 1);
+					MoveDynamicObject(CellGates[10], -2081.52539062,-205.66894531,992.19836426, 1);
+					MoveDynamicObject(CellGates[9], -2074.00585938,-207.03710938,992.19836426, 1);
+					MoveDynamicObject(CellGates[8], -2069.53710938,-205.66894531,992.19836426, 1);
+					MoveDynamicObject(CellGates[7], -2061.96289062,-207.03710938,992.19836426, 1);
+					MoveDynamicObject(CellGates[6],-2057.59765625,-205.66894531,992.19836426, 1);
+					MoveDynamicObject(CellGates[5], -2052.22460938,-191.64550781,992.19836426, 1);
+					MoveDynamicObject(CellGates[4], -2055.99511719,-193.01757812,992.19836426, 1);
+					MoveDynamicObject(CellGates[3], -2063.56738281,-191.64550781,992.19836426, 1);
+					MoveDynamicObject(CellGates[2], -2068.00195312,-193.01757812,992.19836426, 1);
+					MoveDynamicObject(CellGates[1], -2075.55273438,-191.64550781,992.19836426, 1);
 					MoveDynamicObject(CellGates[0], -2080.28613281,-193.01757812,992.19836426, 1);
 
-      				new
-	        			szAlert[128];
+					new
+						szAlert[128];
 
 					format( szAlert, sizeof(szAlert), "ALERT: The Easter Basin Correctional Facility is now on Lockdown for an emergency (( %s ))", GetPlayerNameEx(playerid));
 					SendGroupMessage(1, COLOR_DBLUE, szAlert);
 				}
 				case 2:
 				{
-				    if(PlayerInfo[playerid][pRank] < 2)
-				        return SendClientMessageEx(playerid, COLOR_GREY, "You are to low rank to use this! (Rank 2+)");
+					if(PlayerInfo[playerid][pRank] < 2)
+						return SendClientMessageEx(playerid, COLOR_GREY, "You are to low rank to use this! (Rank 2+)");
 
-				    for(new i = 0; i < 16; i++)
+					for(new i = 0; i < 16; i++)
 					{
-		    			if(!CellDoors[i])
+						if(!CellDoors[i])
 						{
-						    CellDoors[i] = 1;
+							CellDoors[i] = 1;
 						}
 					}
 					MoveDynamicObject(CellGates[0], -2078.6,-193,992.1983, 1);
-				 	MoveDynamicObject(CellGates[1], -2077.1,-191.6455 ,992.1983, 1);
-				 	MoveDynamicObject(CellGates[2], -2066, -193.0175, 992.1983, 1);
-				 	MoveDynamicObject(CellGates[3], -2065.5,-191.6455,992.1983, 1);
-				 	MoveDynamicObject(CellGates[4], -2054.2,-193.0175,992.1983, 1);
-				 	MoveDynamicObject(CellGates[5], -2054, -191.6455,992.1983, 1);
-				 	MoveDynamicObject(CellGates[6], -2059.6,-205.6689, 992.1983, 1);
-				 	MoveDynamicObject(CellGates[7], -2059.9 ,-207.037,992.1983, 1);
-				 	MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,980.75732422, 1);
-      				MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,980.75732422, 1);
-          			MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 987.02539062, 1);
-	            	MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,987.02539062, 1);
-		           	MoveDynamicObject(BlastDoors[3],  -2041.79785156, -195.64550781, 993.45825195, 1);
-		            MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,993.45825195, 1);
-      				MoveDynamicObject(BlastDoors[2], -2048.29296875, -205.54394531, 993.45825195, 1);
-          			MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,993.45825195, 1);
-          			MoveDynamicObject(CellGates[11], -2083.3999, -207.0371,992.1983, 1);
-	            	MoveDynamicObject(CellGates[10], -2083.1, -205.6689,992.1983, 1);
-		            MoveDynamicObject(CellGates[9], -2071.9, -207.0371,992.1983, 1);
-		            MoveDynamicObject(CellGates[8], -2071.6,-205.6689,992.1983, 1);
+					MoveDynamicObject(CellGates[1], -2077.1,-191.6455 ,992.1983, 1);
+					MoveDynamicObject(CellGates[2], -2066, -193.0175, 992.1983, 1);
+					MoveDynamicObject(CellGates[3], -2065.5,-191.6455,992.1983, 1);
+					MoveDynamicObject(CellGates[4], -2054.2,-193.0175,992.1983, 1);
+					MoveDynamicObject(CellGates[5], -2054, -191.6455,992.1983, 1);
+					MoveDynamicObject(CellGates[6], -2059.6,-205.6689, 992.1983, 1);
+					MoveDynamicObject(CellGates[7], -2059.9 ,-207.037,992.1983, 1);
+					MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,980.75732422, 1);
+					MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,980.75732422, 1);
+					MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 987.02539062, 1);
+					MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,987.02539062, 1);
+					MoveDynamicObject(BlastDoors[3],  -2041.79785156, -195.64550781, 993.45825195, 1);
+					MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,993.45825195, 1);
+					MoveDynamicObject(BlastDoors[2], -2048.29296875, -205.54394531, 993.45825195, 1);
+					MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,993.45825195, 1);
+					MoveDynamicObject(CellGates[11], -2083.3999, -207.0371,992.1983, 1);
+					MoveDynamicObject(CellGates[10], -2083.1, -205.6689,992.1983, 1);
+					MoveDynamicObject(CellGates[9], -2071.9, -207.0371,992.1983, 1);
+					MoveDynamicObject(CellGates[8], -2071.6,-205.6689,992.1983, 1);
 
 					new
-	        			szAlert[128];
+						szAlert[128];
 
 					format( szAlert, sizeof(szAlert), "The Lockdown has been lifted at the Easter Basin Correctional Facility (( %s ))", GetPlayerNameEx(playerid));
 					SendGroupMessage(1, COLOR_DBLUE, szAlert);
 				}
 				case 3:
 				{
-				    new
-				        szAlert[128];
+					new
+						szAlert[128];
 
 					format( szAlert, sizeof(szAlert), "%s has activated a distress beacon inside Easter Basin Correctional Facility - assistance is required.", GetPlayerNameEx(playerid));
 					SendGroupMessage(1, COLOR_DBLUE, szAlert);
 				}
 			}
-	    }
+		}
 	}
 	if((dialogid == PANELCONTROLS))
 	{
- 		if(response)
-	    {
+		if(response)
+		{
 			switch(listitem)
 			{
-			    case 0:
-			    {
-			        if(CellDoors[0])
-			        {
-			            CellDoors[0] = 0;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 1 is closing...");
-			            MoveDynamicObject(CellGates[0], -2080.28613281,-193.01757812,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[0] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 1 is opening...");
-           				MoveDynamicObject(CellGates[0], -2078.6,-193,992.1983, 1);
-			        }
-			    }
-			    case 1:
-			    {
-			        if(CellDoors[1])
-			        {
+				case 0:
+				{
+					if(CellDoors[0])
+					{
+						CellDoors[0] = 0;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 1 is closing...");
+						MoveDynamicObject(CellGates[0], -2080.28613281,-193.01757812,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[0] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 1 is opening...");
+						MoveDynamicObject(CellGates[0], -2078.6,-193,992.1983, 1);
+					}
+				}
+				case 1:
+				{
+					if(CellDoors[1])
+					{
 						CellDoors[1] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 2 is closing...");
-			            MoveDynamicObject(CellGates[1], -2075.55273438,-191.64550781,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[1] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 2 is opening...");
-			            MoveDynamicObject(CellGates[1], -2077.1,-191.6455 ,992.1983, 1);
-			        }
-			    }
-			    case 2:
-			    {
-			        if(CellDoors[2])
-			        {
+						MoveDynamicObject(CellGates[1], -2075.55273438,-191.64550781,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[1] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 2 is opening...");
+						MoveDynamicObject(CellGates[1], -2077.1,-191.6455 ,992.1983, 1);
+					}
+				}
+				case 2:
+				{
+					if(CellDoors[2])
+					{
 						CellDoors[2] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 3 is closing...");
-			            MoveDynamicObject(CellGates[2], -2068.00195312,-193.01757812,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[2] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 3 is opening...");
-			            MoveDynamicObject(CellGates[2], -2066, -193.0175, 992.1983, 1);
-			        }
-			    }
-			    case 3:
-			    {
-			        if(CellDoors[3])
-			        {
+						MoveDynamicObject(CellGates[2], -2068.00195312,-193.01757812,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[2] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 3 is opening...");
+						MoveDynamicObject(CellGates[2], -2066, -193.0175, 992.1983, 1);
+					}
+				}
+				case 3:
+				{
+					if(CellDoors[3])
+					{
 						CellDoors[3] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 4 is closing...");
-			            MoveDynamicObject(CellGates[3], -2063.56738281,-191.64550781,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[3] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 4 is opening...");
-			            MoveDynamicObject(CellGates[3], -2065.5,-191.6455,992.1983, 1);
-			        }
-			    }
-			    case 4:
-			    {
-			        if(CellDoors[4])
-			        {
+						MoveDynamicObject(CellGates[3], -2063.56738281,-191.64550781,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[3] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 4 is opening...");
+						MoveDynamicObject(CellGates[3], -2065.5,-191.6455,992.1983, 1);
+					}
+				}
+				case 4:
+				{
+					if(CellDoors[4])
+					{
 						CellDoors[4] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 5 is closing...");
-			            MoveDynamicObject(CellGates[4], -2055.99511719,-193.01757812,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[4] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 5 is opening...");
-			            MoveDynamicObject(CellGates[4], -2054.2,-193.0175,992.1983, 1);
-			        }
-			    }
-			    case 5:
-			    {
-			        if(CellDoors[5])
-			        {
+						MoveDynamicObject(CellGates[4], -2055.99511719,-193.01757812,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[4] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 5 is opening...");
+						MoveDynamicObject(CellGates[4], -2054.2,-193.0175,992.1983, 1);
+					}
+				}
+				case 5:
+				{
+					if(CellDoors[5])
+					{
 						CellDoors[5] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 6 is closing...");
-			            MoveDynamicObject(CellGates[5], -2052.22460938,-191.64550781,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[5] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 6 is opening...");
-			            MoveDynamicObject(CellGates[5], -2054, -191.6455,992.1983, 1);
-			        }
-			    }
-			    case 6:
-			    {
-			        if(CellDoors[6])
-			        {
+						MoveDynamicObject(CellGates[5], -2052.22460938,-191.64550781,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[5] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 6 is opening...");
+						MoveDynamicObject(CellGates[5], -2054, -191.6455,992.1983, 1);
+					}
+				}
+				case 6:
+				{
+					if(CellDoors[6])
+					{
 						CellDoors[6] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 7 is closing...");
-			            MoveDynamicObject(CellGates[6],-2057.59765625,-205.66894531,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[6] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 7 is opening...");
-			            MoveDynamicObject(CellGates[6], -2059.6,-205.6689, 992.1983, 1);
-			        }
-			    }
-			    case 7:
-			    {
-			        if(CellDoors[7])
-			        {
+						MoveDynamicObject(CellGates[6],-2057.59765625,-205.66894531,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[6] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 7 is opening...");
+						MoveDynamicObject(CellGates[6], -2059.6,-205.6689, 992.1983, 1);
+					}
+				}
+				case 7:
+				{
+					if(CellDoors[7])
+					{
 						CellDoors[7] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 8 is closing...");
-			            MoveDynamicObject(CellGates[7], -2061.96289062,-207.03710938,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[7] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 8 is opening...");
-			            MoveDynamicObject(CellGates[7], -2059.9 ,-207.037,992.1983, 1);
-			        }
-			    }
-			    case 8:
-			    {
-			        if(CellDoors[8])
-			        {
+						MoveDynamicObject(CellGates[7], -2061.96289062,-207.03710938,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[7] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 8 is opening...");
+						MoveDynamicObject(CellGates[7], -2059.9 ,-207.037,992.1983, 1);
+					}
+				}
+				case 8:
+				{
+					if(CellDoors[8])
+					{
 						CellDoors[8] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 9 is closing...");
-			            MoveDynamicObject(CellGates[8], -2069.53710938,-205.66894531,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[8] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 9 is opening...");
-			            MoveDynamicObject(CellGates[8], -2071.6,-205.6689,992.1983, 1);
-			        }
-			    }
-			    case 9:
-			    {
-			        if(CellDoors[9])
-			        {
+						MoveDynamicObject(CellGates[8], -2069.53710938,-205.66894531,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[8] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 9 is opening...");
+						MoveDynamicObject(CellGates[8], -2071.6,-205.6689,992.1983, 1);
+					}
+				}
+				case 9:
+				{
+					if(CellDoors[9])
+					{
 						CellDoors[9] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 10 is closing...");
-			            MoveDynamicObject(CellGates[9], -2074.00585938,-207.03710938,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[9] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 10 is opening...");
-			            MoveDynamicObject(CellGates[9], -2071.9, -207.0371,992.1983, 1);
-			        }
-			    }
-			    case 10:
-			    {
-			        if(CellDoors[10])
-			        {
+						MoveDynamicObject(CellGates[9], -2074.00585938,-207.03710938,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[9] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 10 is opening...");
+						MoveDynamicObject(CellGates[9], -2071.9, -207.0371,992.1983, 1);
+					}
+				}
+				case 10:
+				{
+					if(CellDoors[10])
+					{
 						CellDoors[10] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 11 is closing...");
-			            MoveDynamicObject(CellGates[10], -2081.52539062,-205.66894531,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[10] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 11 is opening...");
-			            MoveDynamicObject(CellGates[10], -2083.1, -205.6689,992.1983, 1);
-			        }
-			    }
-			    case 11:
-			    {
-			        if(CellDoors[11])
-			        {
+						MoveDynamicObject(CellGates[10], -2081.52539062,-205.66894531,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[10] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 11 is opening...");
+						MoveDynamicObject(CellGates[10], -2083.1, -205.6689,992.1983, 1);
+					}
+				}
+				case 11:
+				{
+					if(CellDoors[11])
+					{
 						CellDoors[11] = 0;
 						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 12 is closing...");
-			            MoveDynamicObject(CellGates[11], -2084.99902344,-207.03710938,992.19836426, 1);
-			        }
-			        else
-			        {
-			            CellDoors[11] = 1;
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 12 is opening...");
-			            MoveDynamicObject(CellGates[11], -2083.3999, -207.0371,992.1983, 1);
-			        }
-			    }
-			    case 12:
-			    {
-			        if(CellDoors[12])
-			        {
-			            CellDoors[12] = 0;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block A-1 is closing...");
-			            MoveDynamicObject(BlastDoors[2],-2048.29296875, -205.54394531, 990.45825195, 1);
-			            MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,990.45825195, 1);
-			        }
-			        else
-			        {
-			            CellDoors[12] = 1;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block A-1 is opening...");
-			            MoveDynamicObject(BlastDoors[2], -2048.29296875, -205.54394531, 993.45825195, 1);
-			            MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,993.45825195, 1);
-			        }
+						MoveDynamicObject(CellGates[11], -2084.99902344,-207.03710938,992.19836426, 1);
+					}
+					else
+					{
+						CellDoors[11] = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Cell - 12 is opening...");
+						MoveDynamicObject(CellGates[11], -2083.3999, -207.0371,992.1983, 1);
+					}
+				}
+				case 12:
+				{
+					if(CellDoors[12])
+					{
+						CellDoors[12] = 0;
+						SendClientMessage(playerid, COLOR_WHITE, "Block A-1 is closing...");
+						MoveDynamicObject(BlastDoors[2],-2048.29296875, -205.54394531, 990.45825195, 1);
+						MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,990.45825195, 1);
+					}
+					else
+					{
+						CellDoors[12] = 1;
+						SendClientMessage(playerid, COLOR_WHITE, "Block A-1 is opening...");
+						MoveDynamicObject(BlastDoors[2], -2048.29296875, -205.54394531, 993.45825195, 1);
+						MoveDynamicObject(BlastDoors[7], -2048.29296875,-207.67382812,993.45825195, 1);
+					}
 				}
 				case 13:
-			    {
-			        if(CellDoors[13])
-			        {
-			            CellDoors[13] = 0;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block A-2 is closing...");
-			            MoveDynamicObject(BlastDoors[3], -2041.79785156, -195.64550781, 990.45825195, 1);
-			            MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,990.45825195, 1);
-			        }
-			        else
-			        {
-			            CellDoors[13] = 1;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block A-2 is opening...");
-			            MoveDynamicObject(BlastDoors[3],  -2041.79785156, -195.64550781, 993.45825195, 1);
-			            MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,993.45825195, 1);
-			        }
+				{
+					if(CellDoors[13])
+					{
+						CellDoors[13] = 0;
+						SendClientMessage(playerid, COLOR_WHITE, "Block A-2 is closing...");
+						MoveDynamicObject(BlastDoors[3], -2041.79785156, -195.64550781, 990.45825195, 1);
+						MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,990.45825195, 1);
+					}
+					else
+					{
+						CellDoors[13] = 1;
+						SendClientMessage(playerid, COLOR_WHITE, "Block A-2 is opening...");
+						MoveDynamicObject(BlastDoors[3],  -2041.79785156, -195.64550781, 993.45825195, 1);
+						MoveDynamicObject(BlastDoors[8], -2041.79687500,-197.77246094,993.45825195, 1);
+					}
 				}
 				case 14:
-			    {
-			        if(CellDoors[14])
-			        {
-			            CellDoors[14] = 0;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block B-1 is closing...");
-			            MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 984.02539062, 1);
-			            MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,984.02539062, 1);
-			        }
-			        else
-			        {
-			            CellDoors[14] = 1;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block B-1 is opening...");
-			            MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 987.02539062, 1);
-			            MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,987.02539062, 1);
-			        }
+				{
+					if(CellDoors[14])
+					{
+						CellDoors[14] = 0;
+						SendClientMessage(playerid, COLOR_WHITE, "Block B-1 is closing...");
+						MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 984.02539062, 1);
+						MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,984.02539062, 1);
+					}
+					else
+					{
+						CellDoors[14] = 1;
+						SendClientMessage(playerid, COLOR_WHITE, "Block B-1 is opening...");
+						MoveDynamicObject(BlastDoors[4], -2041.78613281, -211.28515625, 987.02539062, 1);
+						MoveDynamicObject(BlastDoors[9], -2041.78808594,-209.15917969,987.02539062, 1);
+					}
 				}
 				case 15:
-			    {
-			        if(CellDoors[15])
-			        {
-			            CellDoors[15] = 0;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block B-2 is closing...");
-			            MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,977.75732422, 1);
-			            MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,977.75732422, 1);
-			        }
-			        else
-			        {
-			            CellDoors[15] = 1;
-			            SendClientMessage(playerid, COLOR_WHITE, "Block B-2 is opening...");
-			            MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,980.75732422, 1);
-			            MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,980.75732422, 1);
-			        }
+				{
+					if(CellDoors[15])
+					{
+						CellDoors[15] = 0;
+						SendClientMessage(playerid, COLOR_WHITE, "Block B-2 is closing...");
+						MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,977.75732422, 1);
+						MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,977.75732422, 1);
+					}
+					else
+					{
+						CellDoors[15] = 1;
+						SendClientMessage(playerid, COLOR_WHITE, "Block B-2 is opening...");
+						MoveDynamicObject(BlastDoors[5], -2053.92187500,-205.46679688,980.75732422, 1);
+						MoveDynamicObject(BlastDoors[10], -2053.92187500,-207.59570312,980.75732422, 1);
+					}
 				}
 			}
 		}
 	}
 	else if(dialogid == SETSTATION)
 	{
-	    if(response)
-	    {
-	        if(listitem == 0)
-	        {
-	            if(!GetPVarType(playerid, "pHTTPWait"))
-	        	{
-	        		SetPVarInt(playerid, "pHTTPWait", 1);
+		if(response)
+		{
+			if(listitem == 0)
+			{
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					SetPVarInt(playerid, "pHTTPWait", 1);
 					format(string, sizeof(string), "%s/radio/radio.php?listgenres=1", SAMP_WEB);
 					HTTP(playerid, HTTP_GET, string, "", "GenreHTTP");
 				}
 				else
 				{
-				    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 				}
-	        }
-	        else if(listitem == 1)
-	        {
-	            if(!GetPVarType(playerid, "pHTTPWait"))
-	        	{
-	        		SetPVarInt(playerid, "pHTTPWait", 1);
+			}
+			else if(listitem == 1)
+			{
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					SetPVarInt(playerid, "pHTTPWait", 1);
 					format(string, sizeof(string), "%s/radio/radio.php?top50=1", SAMP_WEB);
 					HTTP(playerid, HTTP_GET, string, "", "Top50HTTP");
 				}
 				else
 				{
-				    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 				}
-	        }
-	        else if(listitem == 2)
-	        {
-	            ShowPlayerDialog(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
+			}
+			else if(listitem == 2)
+			{
+				ShowPlayerDialog(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
 			}
 			else if(listitem == 3)
 			{
-			    if(IsPlayerInAnyVehicle(playerid))
+				if(IsPlayerInAnyVehicle(playerid))
 				{
-			 	    //foreach(new i: Player)
+					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -10438,14 +11130,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
 							}
 						}	
-				  	}
-				  	format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
-				  	format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
+					}
+					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+					format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
 				{
-				    //foreach(new i: Player)
+					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -10455,20 +11147,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
 							}
 						}	
-				  	}
-			  		SetPVarString(playerid, "pBoomBoxStation", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+					}
+					SetPVarString(playerid, "pBoomBoxStation", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
 				}
 				else
 				{
-				    PlayAudioStreamForPlayerEx(playerid, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
-				    SetPVarInt(playerid, "MusicIRadio", 1);
+					PlayAudioStreamForPlayerEx(playerid, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+					SetPVarInt(playerid, "MusicIRadio", 1);
 				}
 			}
 			else if(listitem == 4)
 			{
-			    if(IsPlayerInAnyVehicle(playerid))
+				if(IsPlayerInAnyVehicle(playerid))
 				{
-			 	    //foreach(new i: Player)
+					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -10478,13 +11170,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}	
 					}
-				  	format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://nick.ng-gaming.net:8000/listen.pls");
-				  	format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
+					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://nick.ng-gaming.net:8000/listen.pls");
+					format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
 				{
-				    //foreach(new i: Player)
+					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -10494,13 +11186,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
 							}
 						}	
-				  	}
-			  		SetPVarString(playerid, "pBoomBoxStation", "http://nick.ng-gaming.net:8000/listen.pls");
+					}
+					SetPVarString(playerid, "pBoomBoxStation", "http://nick.ng-gaming.net:8000/listen.pls");
 				}
 				else
 				{
-				    PlayAudioStreamForPlayerEx(playerid, "http://nick.ng-gaming.net:8000/listen.pls");
-				    SetPVarInt(playerid, "MusicIRadio", 1);
+					PlayAudioStreamForPlayerEx(playerid, "http://nick.ng-gaming.net:8000/listen.pls");
+					SetPVarInt(playerid, "MusicIRadio", 1);
 				}
 			}
 			else if(listitem == 5)
@@ -10520,11 +11212,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 6)
 			{
-			    if(!IsPlayerInAnyVehicle(playerid))
-			    {
-			        if(GetPVarType(playerid, "pBoomBox"))
-			        {
-				        SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
+				if(!IsPlayerInAnyVehicle(playerid))
+				{
+					if(GetPVarType(playerid, "pBoomBox"))
+					{
+						SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
 						//foreach(new i: Player)
 						for(new i = 0; i < MAX_PLAYERS; ++i)
 						{
@@ -10533,18 +11225,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) StopAudioStreamForPlayerEx(i);
 							}
 						}
-				  		DeletePVar(playerid, "pBoomBoxStation");
+						DeletePVar(playerid, "pBoomBoxStation");
 					}
 					else
 					{
-					    StopAudioStreamForPlayerEx(playerid);
+						StopAudioStreamForPlayerEx(playerid);
 					}
-			    }
-			  	else
-	  			{
-		  			format(string, sizeof(string), "* %s turns off the radio.", GetPlayerNameEx(playerid), string);
+				}
+				else
+				{
+					format(string, sizeof(string), "* %s turns off the radio.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				    //foreach(new i: Player)
+					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -10554,10 +11246,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}	
 					}
-       				stationidv[GetPlayerVehicleID(playerid)][0] = 0;
+					stationidv[GetPlayerVehicleID(playerid)][0] = 0;
 				}
 			}
-	    }
+		}
 	}
 	else if(dialogid == CUSTOM_URLCHOICE)
 	{
@@ -10579,307 +11271,307 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-		    if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    format(string, sizeof(string), "%s/radio/radio.php?genre=%d", SAMP_WEB, (listitem+1));
-			    SetPVarInt(playerid, "pSelectGenre", (listitem+1));
-			    SetPVarInt(playerid, "pHTTPWait", 1);
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?genre=%d", SAMP_WEB, (listitem+1));
+				SetPVarInt(playerid, "pSelectGenre", (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
 				HTTP(playerid, HTTP_GET, string, "", "StationListHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
 		else
 		{
-		    ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
-        	DeletePVar(playerid, "pSelectGenre");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			DeletePVar(playerid, "pSelectGenre");
 		}
 	}
 	else if(dialogid == STATIONLIST)
 	{
-	    if(response)
+		if(response)
 		{
-		    if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    format(string, sizeof(string), "%s/radio/radio.php?genre=%d&station=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), (listitem+1));
-			    SetPVarInt(playerid, "pHTTPWait", 1);
-			    SetPVarInt(playerid, "pSelectStation", (listitem+1));
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?genre=%d&station=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
 				HTTP(playerid, HTTP_GET, string, "", "StationInfoHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
-	    else
-	    {
-	        if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
 				SetPVarInt(playerid, "pHTTPWait", 1);
 				format(string, sizeof(string), "%s/radio/radio.php?listgenres=1", SAMP_WEB);
 				HTTP(playerid, HTTP_GET, string, "", "GenreHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
 	}
 	else if(dialogid == TOP50LIST)
 	{
-	    if(!response)
+		if(!response)
 		{
 			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
 		}
-	    else
+		else
 		{
-		    if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    format(string, sizeof(string), "%s/radio/radio.php?top50=1&station=%d", SAMP_WEB, (listitem+1));
-			    SetPVarInt(playerid, "pHTTPWait", 1);
-			    SetPVarInt(playerid, "pSelectStation", (listitem+1));
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?top50=1&station=%d", SAMP_WEB, (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
 				HTTP(playerid, HTTP_GET, string, "", "Top50InfoHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
+		}
 	}
 	else if(dialogid == STATIONLISTEN)
 	{
-	    if(response)
-	    {
-	        if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    format(string, sizeof(string), "%s/radio/radio.php?genre=%d&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), GetPVarInt(playerid, "pSelectStation"));
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?genre=%d&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), GetPVarInt(playerid, "pSelectStation"));
 				SetPVarInt(playerid, "pHTTPWait", 1);
 				HTTP(playerid, HTTP_GET, string, "", "StationSelectHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
-	    else
+		else
 		{
-            if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-		    	format(string, sizeof(string), "%s/radio/radio.php?genre=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"));
-			   	SetPVarInt(playerid, "pHTTPWait", 1);
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?genre=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"));
+				SetPVarInt(playerid, "pHTTPWait", 1);
 				HTTP(playerid, HTTP_GET, string, "", "StationListHTTP");
 				DeletePVar(playerid, "pSelectStation");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
+		}
 	}
 	else if(dialogid == TOP50LISTEN)
 	{
-	    if(!response)
-	    {
-	        if(!GetPVarType(playerid, "pHTTPWait"))
-        	{
-        	    DeletePVar(playerid, "pSelectStation");
-	        	SetPVarInt(playerid, "pHTTPWait", 1);
+		if(!response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				DeletePVar(playerid, "pSelectStation");
+				SetPVarInt(playerid, "pHTTPWait", 1);
 				format(string, sizeof(string), "%s/radio/radio.php?top50=1", SAMP_WEB);
 				HTTP(playerid, HTTP_GET, string, "", "Top50HTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
-	    else
+		else
 		{
-		    if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    format(string, sizeof(string), "%s/radio/radio.php?top50=1&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectStation"));
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(string, sizeof(string), "%s/radio/radio.php?top50=1&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectStation"));
 				SetPVarInt(playerid, "pHTTPWait", 1);
 				HTTP(playerid, HTTP_GET, string, "", "StationSelectHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
+		}
 	}
 	else if(dialogid == STATIONSEARCH)
 	{
-	    if(response)
-	    {
-	        if(strlen(inputtext) < 0 || strlen(inputtext) > 64)
-	        {
-	            ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+		if(response)
+		{
+			if(strlen(inputtext) < 0 || strlen(inputtext) > 64)
+			{
+				ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
 			}
 			else
 			{
-		        if(!GetPVarType(playerid, "pHTTPWait"))
-			    {
-				    format(string, sizeof(string), "%s/radio/radio.php?search=%s", SAMP_WEB, inputtext);
-				    SetPVarString(playerid, "pSearchStation", inputtext);
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					format(string, sizeof(string), "%s/radio/radio.php?search=%s", SAMP_WEB, inputtext);
+					SetPVarString(playerid, "pSearchStation", inputtext);
 					SetPVarInt(playerid, "pHTTPWait", 1);
 					ShowNoticeGUIFrame(playerid, 6);
 					HTTP(playerid, HTTP_GET, string, "", "StationSearchHTTP");
 				}
 				else
 				{
-				    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 				}
 			}
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+		}
 	}
 	else if(dialogid == STATIONSEARCHLIST)
 	{
-	    if(response)
+		if(response)
 		{
-		    if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-			    GetPVarString(playerid, "pSearchStation", string, sizeof(string));
-			    format(string, sizeof(string), "%s/radio/radio.php?search=%s&station=%d", SAMP_WEB, string, (listitem+1));
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", string, sizeof(string));
+				format(string, sizeof(string), "%s/radio/radio.php?search=%s&station=%d", SAMP_WEB, string, (listitem+1));
 				SetPVarInt(playerid, "pHTTPWait", 1);
-			    ShowNoticeGUIFrame(playerid, 6);
-			    SetPVarInt(playerid, "pSelectStation", (listitem+1));
+				ShowNoticeGUIFrame(playerid, 6);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
 				HTTP(playerid, HTTP_GET, string, "", "StationSearchInfoHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+		}
+		else
+		{
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
 		}
 	}
 	else if(dialogid == STATIONSEARCHLISTEN)
 	{
-	    if(response)
-	    {
-	        if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-  			 	GetPVarString(playerid, "pSearchStation", string, sizeof(string));
-			    format(string, sizeof(string), "%s/radio/radio.php?search=%s&station=%d&listen=1", SAMP_WEB, string, GetPVarInt(playerid, "pSelectStation"));
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", string, sizeof(string));
+				format(string, sizeof(string), "%s/radio/radio.php?search=%s&station=%d&listen=1", SAMP_WEB, string, GetPVarInt(playerid, "pSelectStation"));
 				SetPVarInt(playerid, "pHTTPWait", 1);
 				ShowNoticeGUIFrame(playerid, 6);
 				HTTP(playerid, HTTP_GET, string, "", "StationSelectHTTP");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
-	    else
+		else
 		{
-            if(!GetPVarType(playerid, "pHTTPWait"))
-		    {
-		        GetPVarString(playerid, "pSearchStation", string, sizeof(string));
-		    	format(string, sizeof(string), "%s/radio/radio.php?search=%s", SAMP_WEB, string);
-			    ShowNoticeGUIFrame(playerid, 6);
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", string, sizeof(string));
+				format(string, sizeof(string), "%s/radio/radio.php?search=%s", SAMP_WEB, string);
+				ShowNoticeGUIFrame(playerid, 6);
 				HTTP(playerid, HTTP_GET, string, "", "StationSearchHTTP");
 				DeletePVar(playerid, "pSelectStation");
 			}
 			else
 			{
-			    SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
-	    }
+		}
 	}
 	else if(dialogid == INTERACTMAIN)
 	{
-	    if(response)
-	    {
-	        new name[MAX_PLAYER_NAME+8];
-	    	GetPVarString(playerid, "pInteractName", name, sizeof(name));
-		    if(listitem == 0)
+		if(response)
+		{
+			new name[MAX_PLAYER_NAME+8];
+			GetPVarString(playerid, "pInteractName", name, sizeof(name));
+			if(listitem == 0)
 			{
-		        ShowPlayerDialog(playerid, INTERACTPAY, DIALOG_STYLE_INPUT, name, "Input an amount to pay", "Pay", "Cancel");
-		    }
-		    else if(listitem == 1)
-		    {
-                ShowPlayerDialog(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Pot\nCrack\nMaterials\nFirework", "Select", "Cancel");
-		    }
+				ShowPlayerDialog(playerid, INTERACTPAY, DIALOG_STYLE_INPUT, name, "Input an amount to pay", "Pay", "Cancel");
+			}
+			else if(listitem == 1)
+			{
+				ShowPlayerDialog(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Pot\nCrack\nMaterials\nFirework", "Select", "Cancel");
+			}
 		}
 		else
 		{
-		    DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
 		}
 	}
 	else if(dialogid == INTERACTPAY)
 	{
-	    if(response)
-	    {
-	        new params[24];
-	        format(params, sizeof(params), "%d %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
-	        DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
-	        return cmd_pay(playerid, params);
-	    }
-	    else
+		if(response)
 		{
-		    DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
+			new params[24];
+			format(params, sizeof(params), "%d %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
+			return cmd_pay(playerid, params);
+		}
+		else
+		{
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
 		}
 	}
 	else if(dialogid == INTERACTGIVE)
 	{
-	    if(response)
-	    {
-	        new name[MAX_PLAYER_NAME+8];
-	       	SetPVarInt(playerid, "pInteractGiveType", listitem);
-	    	GetPVarString(playerid, "pInteractName", name, sizeof(name));
-	        ShowPlayerDialog(playerid, INTERACTGIVE2, DIALOG_STYLE_INPUT, name, "Input an amount to give", "Give", "Cancel");
-	    }
-	    else
+		if(response)
 		{
-		    DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
+			new name[MAX_PLAYER_NAME+8];
+			SetPVarInt(playerid, "pInteractGiveType", listitem);
+			GetPVarString(playerid, "pInteractName", name, sizeof(name));
+			ShowPlayerDialog(playerid, INTERACTGIVE2, DIALOG_STYLE_INPUT, name, "Input an amount to give", "Give", "Cancel");
+		}
+		else
+		{
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
 		}
 	}
 	else if(dialogid == INTERACTGIVE2)
 	{
-	    if(response)
-	    {
-	        new params[24];
-	        switch(GetPVarInt(playerid, "pInteractGiveType"))
-	        {
-	        	case 0: format(params, sizeof(params), "%d pot %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
-	        	case 1: format(params, sizeof(params), "%d crack %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
-	        	case 2: format(params, sizeof(params), "%d materials %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
-	        	case 3: format(params, sizeof(params), "%d firework %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
-			}
-	        DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
-		    DeletePVar(playerid, "pInteractGive");
-	        return cmd_give(playerid, params);
-	    }
-	    else
+		if(response)
 		{
-		    DeletePVar(playerid, "pInteractName");
-		    DeletePVar(playerid, "pInteractID");
-		    DeletePVar(playerid, "pInteractGive");
+			new params[24];
+			switch(GetPVarInt(playerid, "pInteractGiveType"))
+			{
+				case 0: format(params, sizeof(params), "%d pot %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 1: format(params, sizeof(params), "%d crack %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 2: format(params, sizeof(params), "%d materials %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 3: format(params, sizeof(params), "%d firework %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+			}
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
+			DeletePVar(playerid, "pInteractGive");
+			return cmd_give(playerid, params);
+		}
+		else
+		{
+			DeletePVar(playerid, "pInteractName");
+			DeletePVar(playerid, "pInteractID");
+			DeletePVar(playerid, "pInteractGive");
 		}
 	}
 	else if(dialogid == DMRCONFIRM)
 	{
-	    if(response)
-	    {
-	        new giveplayerid = GetPVarInt(playerid, "pDMReport");
+		if(response)
+		{
+			new giveplayerid = GetPVarInt(playerid, "pDMReport");
 			SetPVarInt(playerid, "_rAutoM", 5);
 			SetPVarInt(playerid, "_rRepID", giveplayerid);			format(string, sizeof(string), "You have successfully reported %s.", GetPlayerNameEx(giveplayerid));
 			SendClientMessage(playerid, COLOR_WHITE, string);
 
-   			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1) format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp,superwatch) VALUES (%d,%d,%d,1)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
-      		else format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp) VALUES (%d,%d,%d)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
+			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1) format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp,superwatch) VALUES (%d,%d,%d,1)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
+			else format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp) VALUES (%d,%d,%d)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 			format(string, sizeof(string), "%s(%i) Deathmatching (last shot: %i seconds ago)", GetPlayerNameEx(giveplayerid), giveplayerid, gettime() - ShotPlayer[giveplayerid][playerid]);
@@ -10890,8 +11582,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 			SetPVarInt(playerid, "AlertType", 1);
 			AlertTime[playerid] = 300;
-	    }
-	    else
+		}
+		else
 		{
 			SendClientMessage(playerid, COLOR_GRAD2, "DM Report Cancelled");
 		}
@@ -10993,7 +11685,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SetPVarInt(playerid, "listitem_toyslot", listitem);
 			format(string, sizeof(string), "Are you sure you want to delete %s's toy (Model ID: %d) from slot %d?", GetPlayerNameEx(giveplayerid), PlayerToyInfo[giveplayerid][listitem][ptModelID], listitem);
 			ShowPlayerDialog(playerid, LISTTOYS_DELETETOYCONFIRM, DIALOG_STYLE_MSGBOX, "Delete Toy - Are you sure?", string, "Yes", "No");
-	    }
+		}
 	}
 	else if(dialogid == LISTTOYS_DELETETOYCONFIRM)
 	{
@@ -11034,54 +11726,54 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == MDC_SHOWCRIMES)
 	{
-	    if(response)
-	    {
-	        ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
-	    }
+		if(response)
+		{
+			ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
+		}
 	}
 	else if(dialogid == FLAG_LIST)
 	{
-	    if(response)
-	    {
-	        ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
-	    }
+		if(response)
+		{
+			ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
+		}
 	}
 	else if(dialogid == FLAG_DELETE)
 	{
 		if(response)
-	    {
+		{
 			format(string, sizeof(string), "Are you sure you want to delete Flag ID No: %d", strval(inputtext));
-	       	ShowPlayerDialog(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
-	       	SetPVarInt(playerid, "Flag_Delete_ID", strval(inputtext));
-	    }
+			ShowPlayerDialog(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
+			SetPVarInt(playerid, "Flag_Delete_ID", strval(inputtext));
+		}
 	}
 	else if(dialogid == FLAG_DELETE2)
 	{
 		if(response)
-	    {
-	        new flagid = GetPVarInt(playerid, "Flag_Delete_ID");
-	       	DeleteFlag(flagid, playerid);
-	       	SendClientMessageEx(playerid, COLOR_YELLOW, " Flag deleted succesfully ");
-	    }
+		{
+			new flagid = GetPVarInt(playerid, "Flag_Delete_ID");
+			DeleteFlag(flagid, playerid);
+			SendClientMessageEx(playerid, COLOR_YELLOW, " Flag deleted succesfully ");
+		}
 	}
 	else if(dialogid == SKIN_LIST)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			new query[128];
 			SetPVarInt(playerid, "closetchoiceid", listitem);
 			format(query, sizeof(query), "SELECT `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_ID);
-	    }
+		}
 	}
 	else if(dialogid == SKIN_CONFIRM)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			PlayerInfo[playerid][pModel] = GetPVarInt(playerid, "closetskinid");
 			DeletePVar(playerid, "closetchoiceid");
 			DeletePVar(playerid, "closetskinid");
-	    }
+		}
 		else
 		{
 			SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
@@ -11092,23 +11784,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == SKIN_DELETE)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			new query[128];
 			SetPVarInt(playerid, "closetchoiceid", listitem);
 			format(query, sizeof(query), "SELECT `id`, `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_Delete_ID);
-	    }
+		}
 	}
 	else if(dialogid == SKIN_DELETE2)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			DeleteSkin(GetPVarInt(playerid, "closetskinid"));
 			DeletePVar(playerid, "closetchoiceid");
 			DeletePVar(playerid, "closetskinid");
 			SendClientMessageEx(playerid, COLOR_WHITE, "Clothes removed successfully!");
-	    }
+		}
 		else
 		{
 			DeletePVar(playerid, "closetchoiceid");
@@ -11118,15 +11810,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == NATION_APP_LIST)
 	{
-	    if(response)
-	    {
-	       	ShowPlayerDialog(playerid, NATION_APP_CHOOSE, DIALOG_STYLE_MSGBOX, "Nation Applications", "What would you like to do with this application?", "Accept", "Deny");
-	       	SetPVarInt(playerid, "Nation_App_ID", listitem);
-	    }
+		if(response)
+		{
+			ShowPlayerDialog(playerid, NATION_APP_CHOOSE, DIALOG_STYLE_MSGBOX, "Nation Applications", "What would you like to do with this application?", "Accept", "Deny");
+			SetPVarInt(playerid, "Nation_App_ID", listitem);
+		}
 	}
 	else if(dialogid == NATION_APP_CHOOSE)
 	{
-	    if(response)
+		if(response)
 		{
 			switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 			{
@@ -11145,7 +11837,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_911MENU)
 	{
-	    if(response)
+		if(response)
 		{
 			switch(listitem)
 			{
@@ -11158,7 +11850,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_911EMERGENCY)
 	{
-	    if(response)
+		if(response)
 		{
 			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_911EMERGENCY, DIALOG_STYLE_INPUT, "911 Emergency Services", "Sorry, I don't quite understand. What is the emergency you are experiencing?", "Enter", "End Call");
@@ -11175,7 +11867,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_911MEDICAL)
 	{
-	    if(response)
+		if(response)
 		{
 			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_911MEDICAL, DIALOG_STYLE_INPUT, "911 Emergency Services", "Sorry, I don't quite understand. What is the medical emergency you are experiencing?", "Enter", "End Call");
@@ -11192,7 +11884,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_911POLICE)
 	{
-	    if(response)
+		if(response)
 		{
 			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_911POLICE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Sorry, I don't quite understand. Why are you needing police assistance?", "Enter", "End Call");
@@ -11209,7 +11901,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_911TOWING)
 	{
-	    if(response)
+		if(response)
 		{
 			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
 			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_911TOWING, DIALOG_STYLE_INPUT, "911 Emergency Services", "Sorry, I don't quite understand. Why do you need towing assistance?", "Enter", "End Call");
@@ -11226,24 +11918,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == CRATE_GUNMENU)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 			new CrateID = GetPVarInt(playerid, "CrateGuns_CID");
 			switch(listitem)
 			{ //Desert Eagle\nSPAS-12\nMP5\nM4A1\nAK-47\nSniper Rifle\nShotgun
-			    /*
-			    Deagle - 4
+				/*
+				Deagle - 4
 				Spas - 8
 				AK-47 - 5
 				M4    - 6
 				Sniper Rifle - 5
 				MP5 - 5
-			    */
-			    case 0: // CRATE GUNS
+				*/
+				case 0: // CRATE GUNS
 				{
-				    if(CrateInfo[CrateID][GunQuantity] >= 4)
-				    {
+					if(CrateInfo[CrateID][GunQuantity] >= 4)
+					{
 						GivePlayerValidWeapon(playerid, 24, 99999); // deagle
 						CrateInfo[CrateID][GunQuantity] -= 4;
 					}
@@ -11251,7 +11943,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 8)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 27, 99999); //spas
 						CrateInfo[CrateID][GunQuantity] -= 8;
 					}
@@ -11259,7 +11951,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 29, 99999);//mp5
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
@@ -11267,7 +11959,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 3: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 6)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 31, 99999); //m4
 						CrateInfo[CrateID][GunQuantity] -= 6;
 					}
@@ -11275,7 +11967,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 4: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 30, 99999); //ak47
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
@@ -11283,7 +11975,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 5: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 34, 99999);//sniper
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
@@ -11291,7 +11983,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 6: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 3)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 25, 99999);//shotgun
 						CrateInfo[CrateID][GunQuantity] -= 3;
 					}
@@ -11299,7 +11991,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 7: // CRATE GUNS
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 1)
-				    {
+					{
 						GivePlayerValidWeapon(playerid, 22, 99999);//shotgun
 						CrateInfo[CrateID][GunQuantity] -= 1;
 					}
@@ -11307,24 +11999,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			format(string, sizeof(string), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", CrateID, CrateInfo[CrateID][GunQuantity], CrateInfo[CrateID][crPlacedBy]);
 			UpdateDynamic3DTextLabelText(CrateInfo[CrateID][crLabel], COLOR_ORANGE, string);
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_SUSPECTMENU)
 	{
-	    if(response)
-	    {
-	        if(strcmp(inputtext, "Other (Not Listed)", true) == 0)
-	        {
-	            return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_INPUT, "Specify a crime", "Please specify a crime", "Submit", "Cancel");
-	        }
-	        if(strlen(inputtext) <= 3)
-	        {
-	            return ShowPlayerCrimeDialog(playerid);
-	        }
-	        if(inputtext[0] == '-')
-	        {
-	        	return ShowPlayerCrimeDialog(playerid);
-	        }
+		if(response)
+		{
+			if(strcmp(inputtext, "Other (Not Listed)", true) == 0)
+			{
+				return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_INPUT, "Specify a crime", "Please specify a crime", "Submit", "Cancel");
+			}
+			if(strlen(inputtext) <= 3)
+			{
+				return ShowPlayerCrimeDialog(playerid);
+			}
+			if(inputtext[0] == '-')
+			{
+				return ShowPlayerCrimeDialog(playerid);
+			}
 			new iTargetID = GetPVarInt(playerid, "suspect_TargetID");
 			new
 				szMessage[128];
@@ -11332,11 +12024,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new crimeid = -1;
 			for(new i; i < sizeof(SuspectCrimes); i++)
 			{
-			    if(strcmp(inputtext, SuspectCrimes[i]) == 0)
-			    {
-			        crimeid = i;
-			        break;
-			    }
+				if(strcmp(inputtext, SuspectCrimes[i]) == 0)
+				{
+					crimeid = i;
+					break;
+				}
 			}
 			if(crimeid != -1)
 			{
@@ -11345,17 +12037,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else PlayerInfo[iTargetID][pWantedLevel] += 1;
 			if(PlayerInfo[iTargetID][pWantedLevel] > 6)
 			{
-			    PlayerInfo[iTargetID][pWantedLevel] = 6;
+				PlayerInfo[iTargetID][pWantedLevel] = 6;
 			}
 			SetPlayerWantedLevel(iTargetID, PlayerInfo[iTargetID][pWantedLevel]);
 			new szCountry[10], szCrime[128];
 			if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
 			{
-			    format(szCountry, sizeof(szCountry), "[SA] ");
+				format(szCountry, sizeof(szCountry), "[SA] ");
 			}
 			else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
 			{
-			    format(szCountry, sizeof(szCountry), "[TR] ");
+				format(szCountry, sizeof(szCountry), "[TR] ");
 			}
 			strcat(szCrime, szCountry);
 			strcat(szCrime, inputtext);
@@ -11381,168 +12073,168 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}	
 			}
 			PlayerInfo[iTargetID][pDefendTime] = 60;
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTMENU)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
+		if(response)
+		{
+			switch(listitem)
 			{
-			    case 0: //Deathmatch
-			    {
-			        if(PlayerInfo[playerid][pJailTime] > 0) {
-			            SendClientMessage(playerid, COLOR_GREY, "You can't report while in prison.");
-			        }
-			        else {
-			        	ShowPlayerDialog(playerid, DIALOG_REPORTDM, DIALOG_STYLE_INPUT, "Report player - Deathmatch", "Enter the name or ID of the player.", "Enter", "Cancel");
+				case 0: //Deathmatch
+				{
+					if(PlayerInfo[playerid][pJailTime] > 0) {
+						SendClientMessage(playerid, COLOR_GREY, "You can't report while in prison.");
+					}
+					else {
+						ShowPlayerDialog(playerid, DIALOG_REPORTDM, DIALOG_STYLE_INPUT, "Report player - Deathmatch", "Enter the name or ID of the player.", "Enter", "Cancel");
 					}
 				}
-			    case 1: //Falling
-			    {
-    				if(gettime() - LastShot[playerid] < 20)
-			        {
-			            SendClientMessageEx(playerid, COLOR_GREY, "You have been hurt in the last 20 seconds, abusing this system will result in a temporary ban.");
-			        }
-			        else
-			        {
-			            new
-			                Message[128];
+				case 1: //Falling
+				{
+					if(gettime() - LastShot[playerid] < 20)
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "You have been hurt in the last 20 seconds, abusing this system will result in a temporary ban.");
+					}
+					else
+					{
+						new
+							Message[128];
 
-			            TogglePlayerControllable(playerid, 0);
+						TogglePlayerControllable(playerid, 0);
 						SetPVarInt(playerid, "IsFrozen", 1);
 						SetPVarInt(playerid, "_rAutoM", 5);
 						SetPVarInt(playerid, "_rRepID", playerid);
-      					format(Message, sizeof(Message), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has been frozen. (Falling Report)", GetPlayerNameEx(playerid), playerid);
+						format(Message, sizeof(Message), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has been frozen. (Falling Report)", GetPlayerNameEx(playerid), playerid);
 						ABroadCast(COLOR_YELLOW, Message, 2);
 						SendReportToQue(playerid, "Falling (Player Frozen)", 2, GetPlayerPriority(playerid));
 						SendClientMessageEx(playerid, COLOR_WHITE, "A report has been sent to the available admins, you have been frozen.");
-			        }
-			    }
-			    case 2: //Hacking
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTHACK, DIALOG_STYLE_INPUT, "Report player - Hacking", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 3: //Chicken Running
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTCR, DIALOG_STYLE_INPUT, "Report player - Chicken Running", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 4: //Car Ramming
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTCARRAM, DIALOG_STYLE_INPUT, "Report player - Car Ramming", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 5: //Power Gaming
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTPG, DIALOG_STYLE_INPUT, "Report player - Power Gaming", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 6: //Meta Gaming
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTMG, DIALOG_STYLE_INPUT, "Report player - Meta Gaming", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 7: //Gun Discharge Exploits
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTGDE, DIALOG_STYLE_INPUT, "Report player - Gun Discharge Exploits", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 8: //Spamming
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTSPAM, DIALOG_STYLE_INPUT, "Report player - Spamming", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 9: //Money Farming
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTMF, DIALOG_STYLE_INPUT, "Report player - Money Farming", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 10: //Ban Evader
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTBANEVADE, DIALOG_STYLE_INPUT, "Report player - Ban Evader", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 11: //General Exploits
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTGE, DIALOG_STYLE_INPUT, "Report player - General Exploits", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 12: //Releasing Hitman Names
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTRHN, DIALOG_STYLE_INPUT, "Report player - Releasing Hitman Names", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 13: //Running/Swimming Man Exploit
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTRSE, DIALOG_STYLE_INPUT, "Report player - Running/Swimming Man Exploit", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 14: //Car Surfing
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTCARSURF, DIALOG_STYLE_INPUT, "Report player - Car Surfing", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 15: //NonRp Behavior
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTNRPB, DIALOG_STYLE_INPUT, "Report player - NonRP Behavior", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 16: //Next Page
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTMENU2, DIALOG_STYLE_LIST, "Report Menu [2/2]", "Revenge Killing\nOOC Hit\nServer Advertising\nNonRP Name\nOther/Freetext (PVIP Only)\nHouse Move\nAppeal Admin Action\nPrize Claim\nShop Issue\nNot Listed Here\nRequest CA\nRequest Unmute\nPrevious Page","Select", "Exit");
-			    }
+					}
+				}
+				case 2: //Hacking
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTHACK, DIALOG_STYLE_INPUT, "Report player - Hacking", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 3: //Chicken Running
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTCR, DIALOG_STYLE_INPUT, "Report player - Chicken Running", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 4: //Car Ramming
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTCARRAM, DIALOG_STYLE_INPUT, "Report player - Car Ramming", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 5: //Power Gaming
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTPG, DIALOG_STYLE_INPUT, "Report player - Power Gaming", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 6: //Meta Gaming
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTMG, DIALOG_STYLE_INPUT, "Report player - Meta Gaming", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 7: //Gun Discharge Exploits
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTGDE, DIALOG_STYLE_INPUT, "Report player - Gun Discharge Exploits", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 8: //Spamming
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTSPAM, DIALOG_STYLE_INPUT, "Report player - Spamming", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 9: //Money Farming
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTMF, DIALOG_STYLE_INPUT, "Report player - Money Farming", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 10: //Ban Evader
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTBANEVADE, DIALOG_STYLE_INPUT, "Report player - Ban Evader", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 11: //General Exploits
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTGE, DIALOG_STYLE_INPUT, "Report player - General Exploits", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 12: //Releasing Hitman Names
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTRHN, DIALOG_STYLE_INPUT, "Report player - Releasing Hitman Names", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 13: //Running/Swimming Man Exploit
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTRSE, DIALOG_STYLE_INPUT, "Report player - Running/Swimming Man Exploit", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 14: //Car Surfing
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTCARSURF, DIALOG_STYLE_INPUT, "Report player - Car Surfing", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 15: //NonRp Behavior
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTNRPB, DIALOG_STYLE_INPUT, "Report player - NonRP Behavior", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 16: //Next Page
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTMENU2, DIALOG_STYLE_LIST, "Report Menu [2/2]", "Revenge Killing\nOOC Hit\nServer Advertising\nNonRP Name\nOther/Freetext (PVIP Only)\nHouse Move\nAppeal Admin Action\nPrize Claim\nShop Issue\nNot Listed Here\nRequest CA\nRequest Unmute\nPrevious Page","Select", "Exit");
+				}
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTMENU2)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
+		if(response)
+		{
+			switch(listitem)
 			{
-			    case 0: //Revenge Killing
-			    {
-       				ShowPlayerDialog(playerid, DIALOG_REPORTRK, DIALOG_STYLE_INPUT, "Report player - Revenge Killing", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 1: //OOC Hit
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "OOC Hit", "{FFFFFF}OOC Hits are to be handled on the forums. (Player Complaint)\n\n                 ng-gaming.net/forums", "Close", "");
-			    }
-			    case 2: //Server Advertising
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTSA, DIALOG_STYLE_INPUT, "Report player - Server Advertising", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 3: //Non RP Name
-			    {
-			        ShowPlayerDialog(playerid, DIALOG_REPORTNRPN, DIALOG_STYLE_INPUT, "Report player - Non-RP Name", "Enter the name or ID of the player.", "Enter", "Cancel");
-			    }
-			    case 4: //Other/Freetext (PVip Only!!)
-			    {
-			        if(PlayerInfo[playerid][pDonateRank] >= 4) {
-			        	ShowPlayerDialog(playerid, DIALOG_REPORTFREE, DIALOG_STYLE_INPUT,"Other / Free Text","Enter the message you want to send to the admin team.","Send","Cancel");
+				case 0: //Revenge Killing
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTRK, DIALOG_STYLE_INPUT, "Report player - Revenge Killing", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 1: //OOC Hit
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "OOC Hit", "{FFFFFF}OOC Hits are to be handled on the forums. (Player Complaint)\n\n                 ng-gaming.net/forums", "Close", "");
+				}
+				case 2: //Server Advertising
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTSA, DIALOG_STYLE_INPUT, "Report player - Server Advertising", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 3: //Non RP Name
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTNRPN, DIALOG_STYLE_INPUT, "Report player - Non-RP Name", "Enter the name or ID of the player.", "Enter", "Cancel");
+				}
+				case 4: //Other/Freetext (PVip Only!!)
+				{
+					if(PlayerInfo[playerid][pDonateRank] >= 4) {
+						ShowPlayerDialog(playerid, DIALOG_REPORTFREE, DIALOG_STYLE_INPUT,"Other / Free Text","Enter the message you want to send to the admin team.","Send","Cancel");
 					}
 					else {
-					    SendClientMessageEx(playerid, COLOR_GREY, "This is a Platinum VIP feature only.");
+						SendClientMessageEx(playerid, COLOR_GREY, "This is a Platinum VIP feature only.");
 					}
 				}
 				case 5: //House Move
-			    {
-			        SendReportToQue(playerid, "House Move", 4, GetPlayerPriority(playerid));
-			        SendClientMessageEx(playerid, COLOR_WHITE, "Your house move request has been sent to the current available admins.");
-			    }
-			    case 6: //Appeal Admin Action
-			    {
+				{
+					SendReportToQue(playerid, "House Move", 4, GetPlayerPriority(playerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, "Your house move request has been sent to the current available admins.");
+				}
+				case 6: //Appeal Admin Action
+				{
 					if(gettime() < GetPVarInt(playerid, "_rAppeal")) return SendClientMessageEx(playerid, COLOR_GREY, "You need to wait at least 60 seconds before appealing an admin action.");
-			        SendReportToQue(playerid,"Appeal Admin Action", 4, GetPlayerPriority(playerid));
-			        SendClientMessageEx(playerid, COLOR_WHITE, "Your Appeal Admin Action report has been sent to the current available admins.");
-			    }
-			    case 7: //Prize Claim
-			    {
-			        if(PlayerInfo[playerid][pFlagged] == 0) {
-			            SendClientMessageEx(playerid, COLOR_GREY, "You do not have any prize claims pending. (Not Flagged)");
-			            return 1;
-			        }
-			        else
-			        {
-			            SendReportToQue(playerid, "Prize Claim", 4, 5);
-			            SendClientMessageEx(playerid, COLOR_WHITE, "Your Prize Claim report has been sent to the current available admins.");
-			        }
-			    }
-			    case 8: //Shop Issue
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Issue", "{FFFFFF}You can use /shophelp for additional information.", "Close", "");
-	            }
-	            case 9: //Not Listed Here
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Not Listed","Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response.","Send","Cancel");
+					SendReportToQue(playerid,"Appeal Admin Action", 4, GetPlayerPriority(playerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, "Your Appeal Admin Action report has been sent to the current available admins.");
+				}
+				case 7: //Prize Claim
+				{
+					if(PlayerInfo[playerid][pFlagged] == 0) {
+						SendClientMessageEx(playerid, COLOR_GREY, "You do not have any prize claims pending. (Not Flagged)");
+						return 1;
+					}
+					else
+					{
+						SendReportToQue(playerid, "Prize Claim", 4, 5);
+						SendClientMessageEx(playerid, COLOR_WHITE, "Your Prize Claim report has been sent to the current available admins.");
+					}
+				}
+				case 8: //Shop Issue
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Issue", "{FFFFFF}You can use /shophelp for additional information.", "Close", "");
+				}
+				case 9: //Not Listed Here
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Not Listed","Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response.","Send","Cancel");
 				}
 				case 10: // Request CA
 				{
@@ -11559,51 +12251,51 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 11: //Request Unmute
 				{
-				    if(gettime()-GetPVarInt(playerid, "UnmuteTime") < 300) {
-				        SendClientMessageEx(playerid, COLOR_GREY, "You must wait at least 5 minutes before requesting an unmute.");
-				        return 1;
-				    }
-    				ShowPlayerDialog(playerid, DIALOG_UNMUTE, DIALOG_STYLE_LIST, "Requesting Unmute", "Ad Unmute\nNewbie Unmute", "Select", "Exit");
-	            }
-			    case 12: //Previous Page
-			    {
-	    			ShowPlayerDialog(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Report Menu [1/2]", "Deathmatch\nHacking\nRevenge Killing\nChicken Running\nCar Ramming\nPower Gaming\nMeta Gaming\nGun Discharge Exploits (QS/CS)\nSpamming\nMoney Farming\nBan Evader\nGeneral Exploits\nReleasing Hitman Names\nRunning Man Exploiter\nCar Surfing\nNonRP Behavior\nNext Page","Select", "Exit");
-       			}
+					if(gettime()-GetPVarInt(playerid, "UnmuteTime") < 300) {
+						SendClientMessageEx(playerid, COLOR_GREY, "You must wait at least 5 minutes before requesting an unmute.");
+						return 1;
+					}
+					ShowPlayerDialog(playerid, DIALOG_UNMUTE, DIALOG_STYLE_LIST, "Requesting Unmute", "Ad Unmute\nNewbie Unmute", "Select", "Exit");
+				}
+				case 12: //Previous Page
+				{
+					ShowPlayerDialog(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Report Menu [1/2]", "Deathmatch\nHacking\nRevenge Killing\nChicken Running\nCar Ramming\nPower Gaming\nMeta Gaming\nGun Discharge Exploits (QS/CS)\nSpamming\nMoney Farming\nBan Evader\nGeneral Exploits\nReleasing Hitman Names\nRunning Man Exploiter\nCar Surfing\nNonRP Behavior\nNext Page","Select", "Exit");
+				}
 			}
 		}
 	}
 	else if(dialogid == DIALOG_UNMUTE)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0:
-	            {
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+				{
 					if(PlayerInfo[playerid][pADMute] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are not muted from /ads.");
 					SetPVarInt(playerid, "_rAutoM", 1);
 					SendReportToQue(playerid, "Ad Unmute", 2, GetPlayerPriority(playerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, "Your report has been sent to the current available admins.");		
-	            }
-	            case 1:
-	            {
+				}
+				case 1:
+				{
 					if(PlayerInfo[playerid][pNMute] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are not muted from /newb.");
 					SetPVarInt(playerid, "_rAutoM", 2);
 					SendReportToQue(playerid, "Newbie Unmute", 2, GetPlayerPriority(playerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, "Your report has been sent to the current available admins.");
 				}
-	        }
-	    }
+			}
+		}
 	}
 	else if(dialogid == DIALOG_REPORTDM)
 	{
-	    if(response)
-	    {
-	        new
-	            Player;
+		if(response)
+		{
+			new
+				Player;
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTDM, DIALOG_STYLE_INPUT, "Report player - Deathmatch", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTDM, DIALOG_STYLE_INPUT, "Report player - Deathmatch", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			if(!IsPlayerConnected(Player)) {
@@ -11615,34 +12307,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(PlayerInfo[Player][pAdmin] >= 2 && PlayerInfo[Player][pTogReports] != 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use this command on admins!");
 			if(gettime() - ShotPlayer[Player][playerid] < 300)
-  			{
+			{
 				SetPVarInt(playerid, "pDMReport", Player);
 				ShowPlayerDialog(playerid, DMRCONFIRM, DIALOG_STYLE_MSGBOX, "DM Report", "You personally witnessed the reported player death matching within the last 60 seconds. Abuse of this command could result in a temporary ban.", "Confirm", "Cancel");
 			}
 			else
 			{
-  				SendClientMessage(playerid, COLOR_WHITE, "You have not been shot by that person or have already reported them in the last 5 minutes.");
+				SendClientMessage(playerid, COLOR_WHITE, "You have not been shot by that person or have already reported them in the last 5 minutes.");
 				SendClientMessage(playerid, COLOR_WHITE, "As a reminder, abuse of this system could lead to punishment up to a temporary ban.");
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTRK)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTRK, DIALOG_STYLE_INPUT, "Report player - Revenge Killing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTRK, DIALOG_STYLE_INPUT, "Report player - Revenge Killing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTRK, DIALOG_STYLE_INPUT, "Report player - Revenge Killing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 4);
@@ -11655,25 +12347,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 2);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTCR)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTCR, DIALOG_STYLE_INPUT, "Report player - Chicken Running", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTCR, DIALOG_STYLE_INPUT, "Report player - Chicken Running", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTCR, DIALOG_STYLE_INPUT, "Report player - Chicken Running", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11683,25 +12375,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Chicken Running. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTCARRAM)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTCARRAM, DIALOG_STYLE_INPUT, "Report player - Car Ramming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTCARRAM, DIALOG_STYLE_INPUT, "Report player - Car Ramming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTCARRAM, DIALOG_STYLE_INPUT, "Report player - Car Ramming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11714,25 +12406,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 4);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTPG)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTPG, DIALOG_STYLE_INPUT, "Report player - Power Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTPG, DIALOG_STYLE_INPUT, "Report player - Power Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTPG, DIALOG_STYLE_INPUT, "Report player - Power Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11742,25 +12434,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Power Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTMG)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTMG, DIALOG_STYLE_INPUT, "Report player - Meta Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTMG, DIALOG_STYLE_INPUT, "Report player - Meta Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTMG, DIALOG_STYLE_INPUT, "Report player - Meta Gaming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 6);
@@ -11770,25 +12462,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Meta Gaming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTSPAM)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTSPAM, DIALOG_STYLE_INPUT, "Report player - Spamming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTSPAM, DIALOG_STYLE_INPUT, "Report player - Spamming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTSPAM, DIALOG_STYLE_INPUT, "Report player - Spamming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 6);
@@ -11801,25 +12493,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 6);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTGDE)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTGDE, DIALOG_STYLE_INPUT, "Report player - Gun Discharge Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTGDE, DIALOG_STYLE_INPUT, "Report player - Gun Discharge Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTGDE, DIALOG_STYLE_INPUT, "Report player - Gun Discharge Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11832,25 +12524,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 7);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
- 	else if(dialogid == DIALOG_REPORTHACK)
+	else if(dialogid == DIALOG_REPORTHACK)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTHACK, DIALOG_STYLE_INPUT, "Report player - Hacking", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTHACK, DIALOG_STYLE_INPUT, "Report player - Hacking", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTHACK, DIALOG_STYLE_INPUT, "Report player - Hacking", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11860,25 +12552,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Hacking. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTMF)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTMF, DIALOG_STYLE_INPUT, "Report player - Money Farming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTMF, DIALOG_STYLE_INPUT, "Report player - Money Farming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTMF, DIALOG_STYLE_INPUT, "Report player - Money Farming", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				format(Message, sizeof(Message), "%s(%i) Money Farming", GetPlayerNameEx(Player), Player);
@@ -11886,25 +12578,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Money Farming. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTSA)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTSA, DIALOG_STYLE_INPUT, "Report player - Server Advertising", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTSA, DIALOG_STYLE_INPUT, "Report player - Server Advertising", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTSA, DIALOG_STYLE_INPUT, "Report player - Server Advertising", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 6);
@@ -11914,25 +12606,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Server Advertising. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTNRPN)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTNRPN, DIALOG_STYLE_INPUT, "Report player - NonRP Name", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTNRPN, DIALOG_STYLE_INPUT, "Report player - NonRP Name", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTNRPN, DIALOG_STYLE_INPUT, "Report player - NonRP Name", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 3);
@@ -11945,25 +12637,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 8);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTBANEVADE)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTBANEVADE, DIALOG_STYLE_INPUT, "Report player - Ban Evader", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTBANEVADE, DIALOG_STYLE_INPUT, "Report player - Ban Evader", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTBANEVADE, DIALOG_STYLE_INPUT, "Report player - Ban Evader", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				format(Message, sizeof(Message), "%s(%i) Ban Evader", GetPlayerNameEx(Player), Player);
@@ -11971,25 +12663,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Ban Evader. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTGE)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTGE, DIALOG_STYLE_INPUT, "Report player - General Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTGE, DIALOG_STYLE_INPUT, "Report player - General Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTGE, DIALOG_STYLE_INPUT, "Report player - General Exploits", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -11999,25 +12691,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for General Exploits. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTRHN)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTRHN, DIALOG_STYLE_INPUT, "Report player - Releasing Hitman Names", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTRHN, DIALOG_STYLE_INPUT, "Report player - Releasing Hitman Names", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTRHN, DIALOG_STYLE_INPUT, "Report player - Releasing Hitman Names", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				format(Message, sizeof(Message), "%s(%i) Releasing Hitman Names", GetPlayerNameEx(Player), Player);
@@ -12025,25 +12717,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Releasing Hitman Names. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTRSE)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTRSE, DIALOG_STYLE_INPUT, "Report player - Running/Swimming Man Exploit", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTRSE, DIALOG_STYLE_INPUT, "Report player - Running/Swimming Man Exploit", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTRSE, DIALOG_STYLE_INPUT, "Report player - Running/Swimming Man Exploit", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -12053,25 +12745,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(Message, sizeof(Message), "You have submitted a report on %s for Running/Swimming Man Exploit. It has been sent to all available admins.", GetPlayerNameEx(Player));
 				SendClientMessageEx(playerid, COLOR_WHITE, Message);
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTCARSURF)
 	{
-	    if(response)
-	    {
-	        new
-	            Player,
+		if(response)
+		{
+			new
+				Player,
 				Message[128];
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTCARSURF, DIALOG_STYLE_INPUT, "Report player - Car Surfing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTCARSURF, DIALOG_STYLE_INPUT, "Report player - Car Surfing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTCARSURF, DIALOG_STYLE_INPUT, "Report player - Car Surfing", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-			    SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
 				SetPVarInt(playerid, "_rAutoM", 5);
@@ -12084,30 +12776,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "AlertType", 10);
 				AlertTime[playerid] = 300;
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTNRPB)
 	{
-	    if(response)
-	    {
-	        new
-	            Player;
+		if(response)
+		{
+			new
+				Player;
 
-            if(sscanf(inputtext, "u", Player)) {
-        		ShowPlayerDialog(playerid, DIALOG_REPORTNRPB, DIALOG_STYLE_INPUT, "Report player - NonRP Behavior", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
+			if(sscanf(inputtext, "u", Player)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTNRPB, DIALOG_STYLE_INPUT, "Report player - NonRP Behavior", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 				return 1;
 			}
 			else if(!IsPlayerConnected(Player)) {
 				ShowPlayerDialog(playerid, DIALOG_REPORTNRPB, DIALOG_STYLE_INPUT, "Report player - NonRP Behavior", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			else if(Player == playerid) {
-		    	SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
+				SendClientMessage(playerid, COLOR_GREY, "You can't submit a report on yourself.");
 			}
 			else {
-			    SetPVarInt(playerid, "NRPB", Player);
-			    ShowPlayerDialog(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
+				SetPVarInt(playerid, "NRPB", Player);
+				ShowPlayerDialog(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
 			}
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_REPORTNRPB2)
 	{
@@ -12116,44 +12808,44 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(isnull(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
 
 			new
-			    Message[128],
+				Message[128],
 				Player;
 
 			Player = GetPVarInt(playerid, "NRPB");
 			SetPVarInt(playerid, "_rAutoM", 5);
 			SetPVarInt(playerid, "_rRepID", Player);
-		    format(Message, sizeof(Message), "%s(%i), %s (nonrp behavior)", GetPlayerNameEx(Player), Player, inputtext);
-   		    SendReportToQue(playerid, Message, 2, GetPlayerPriority(playerid));
-   		    format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Behavior. It has been sent to all available admins.", GetPlayerNameEx(Player));
+			format(Message, sizeof(Message), "%s(%i), %s (nonrp behavior)", GetPlayerNameEx(Player), Player, inputtext);
+			SendReportToQue(playerid, Message, 2, GetPlayerPriority(playerid));
+			format(Message, sizeof(Message), "You have submitted a report on %s for NonRP Behavior. It has been sent to all available admins.", GetPlayerNameEx(Player));
 			SendClientMessageEx(playerid, COLOR_WHITE, Message);
-   		    DeletePVar(playerid, "NRPB");
+			DeletePVar(playerid, "NRPB");
 			SetPVarInt(playerid, "AlertedThisPlayer", Player);
 			SetPVarInt(playerid, "AlertType", 11);
 			AlertTime[playerid] = 300;
 		}
 		else {
-		    DeletePVar(playerid, "NRPB");
+			DeletePVar(playerid, "NRPB");
 		}
 	}
 	else if(dialogid == DIALOG_REPORTFREE)
 	{
 		if(response == 1)
 		{
-		    if(isnull(inputtext)) {
-		        ShowPlayerDialog(playerid, DIALOG_REPORTFREE, DIALOG_STYLE_INPUT,"Other / Free Text","(Error - No Message) Enter the message you want to send to the admin team.","Send","Cancel");
-		    }
+			if(isnull(inputtext)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTFREE, DIALOG_STYLE_INPUT,"Other / Free Text","(Error - No Message) Enter the message you want to send to the admin team.","Send","Cancel");
+			}
 
-   		    SendReportToQue(playerid, inputtext, 2, GetPlayerPriority(playerid));
-   		    SendClientMessageEx(playerid, COLOR_WHITE, "Your message has been sent to the admin team.");
+			SendReportToQue(playerid, inputtext, 2, GetPlayerPriority(playerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your message has been sent to the admin team.");
 		}
 	}
 	else if(dialogid == DIALOG_REPORTNOTLIST)
 	{
 		if(response == 1)
 		{
-		    if(isnull(inputtext)) {
-		        ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Not Listed","(Error - No Message) Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response","Send","Cancel");
-		    }
+			if(isnull(inputtext)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Not Listed","(Error - No Message) Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response","Send","Cancel");
+			}
 
 			SetPVarString(playerid, "ReportNotList", inputtext);
 
@@ -12162,22 +12854,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNOTLIST2)
 	{
-	    if(response == 1)
-	    {
+		if(response == 1)
+		{
 			new Message[128];
 
 			GetPVarString(playerid, "ReportNotList", Message, sizeof(Message));
 			SendReportToQue(playerid, Message, 2, 5);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your message has been sent to to the admin team.");
-	    }
+		}
 	}
 	else if(dialogid == DIALOG_SPEAKTOADMIN)
 	{
 		if(response == 1)
 		{
-		    if(isnull(inputtext)) {
-		        ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Other / Free Text","(Error - No Message) Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response","Send","Cancel");
-		    }
+			if(isnull(inputtext)) {
+				ShowPlayerDialog(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Other / Free Text","(Error - No Message) Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response","Send","Cancel");
+			}
 
 			SetPVarString(playerid, "ReportNotList", inputtext);
 
@@ -12186,12 +12878,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNAME)
 	{
-	    new
+		new
 			Player;
 
 		Player = GetPVarInt(playerid, "NameChange");
 
-        if(GetPVarInt(Player, "RequestingNameChange") == 0)
+		if(GetPVarInt(Player, "RequestingNameChange") == 0)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't requesting a namechange!");
 			return 1;
@@ -12220,12 +12912,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTTEAMNAME)
 	{
-	    new
+		new
 			Player;
 
 		Player = GetPVarInt(playerid, "RFLNameChange");
 
-        if(GetPVarInt(Player, "RFLNameRequest") == 0)
+		if(GetPVarInt(Player, "RFLNameRequest") == 0)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "That person isn't requesting a namechange!");
 			return 1;
@@ -12253,10 +12945,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}		
 	else if(dialogid == DIALOG_DEDICATEDPLAYER)
 	{
-	    if(response)
-	    {
-            new
-                szName[MAX_PLAYER_NAME],
+		if(response)
+		{
+			new
+				szName[MAX_PLAYER_NAME],
 				szDialogStr[260],
 				szFileStr[32],
 				iPos,
@@ -12264,10 +12956,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				iTime = gettime() - 5184000,
 				File: fDedicated = fopen("RewardDedicated.cfg", io_read);
 
-            GetPVarString(playerid, "DedicatedPlayer", szName, sizeof(szName));
+			GetPVarString(playerid, "DedicatedPlayer", szName, sizeof(szName));
 
 			while(fread(fDedicated, szFileStr)) {
-    			iPos = strfind(szFileStr, "|");
+				iPos = strfind(szFileStr, "|");
 
 				if(strval(szFileStr[iPos + 1]) > iTime && iCount == 0 && strcmp(szFileStr, szName, false, strlen(szName))==0 ) {
 					szFileStr[iPos] = 0;
@@ -12278,10 +12970,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(iCount > 0)
 				{
-				    szFileStr[iPos] = 0;
+					szFileStr[iPos] = 0;
 					strcat(szDialogStr, szFileStr);
 					iCount++;
-                    if(iCount == 10) {
+					if(iCount == 10) {
 						SetPVarString(playerid, "DedicatedPlayer", szFileStr);
 						printf("%s - Dedicated Player", szFileStr);
 						break;
@@ -12297,16 +12989,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Dedicated Players (over 150 Reward Hours)", szDialogStr, "Exit", "");
+				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Dedicated Players (over 150 Reward Hours)", szDialogStr, "Exit", "");
 			}
-	        return 1;
-	    }
+			return 1;
+		}
 	}
 
 	else if (dialogid == DIALOG_POSTAMP && response)
 	{
 
-	    switch (listitem) {
+		switch (listitem) {
 			case REGULAR_MAIL: {
 				SetPVarInt(playerid, "LetterTime", 240);
 				SetPVarInt(playerid, "LetterCost", 100);
@@ -12317,27 +13009,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case PREMIUM_MAIL: {
 				if (PlayerInfo[playerid][pDonateRank] < 3) {
-				    return SendClientMessageEx(playerid, COLOR_GREY, "You need to be at least Gold VIP for sending Premium Mail.");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You need to be at least Gold VIP for sending Premium Mail.");
 				}
 				else {
 					SetPVarInt(playerid, "LetterCost", 500);
-	        	   	SetPVarInt(playerid, "LetterNotify", 1);
+					SetPVarInt(playerid, "LetterNotify", 1);
 				}
 			}
 			case GOVERNMENT_MAIL:  {
 				if (!IsAGovernment(playerid) && !IsACop(playerid) && !IsAJudge(playerid)) {
-		  			return SendClientMessageEx(playerid, COLOR_GREY, " Only Government agencies can use Government Mail! ");
+					return SendClientMessageEx(playerid, COLOR_GREY, " Only Government agencies can use Government Mail! ");
 				}
 				if (PlayerInfo[playerid][pRank] < 4) {
 					return SendClientMessageEx(playerid, COLOR_GREY, " Only rank 4 or higher can do this.");
 				}
 				SetPVarInt(playerid, "LetterTime", 60);
 				SetPVarInt(playerid, "LetterCost", 500);
-	       	    SetPVarInt(playerid, "LetterNotify", 1);
+				SetPVarInt(playerid, "LetterNotify", 1);
 				SetPVarInt(playerid, "LetterGov", 1);
 			}
 			default:
-			    return 1;
+				return 1;
 		}
 
 		if (listitem != GOVERNMENT_MAIL && GetPlayerCash(playerid) < GetPVarInt(playerid, "LetterCost")) {
@@ -12350,9 +13042,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		return 1;
 
- 	}
+	}
 
- 	else if (dialogid == DIALOG_PORECEIVER && response)
+	else if (dialogid == DIALOG_PORECEIVER && response)
 	{
 
 		if (!strlen(inputtext)) {
@@ -12391,14 +13083,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Send Letter", "{FFFFFF}Please type the message.", "Send", "Cancel");
 			}
 		}
- 		return 1;
- 	}
+		return 1;
+	}
 
 	else if (dialogid == DIALOG_POMESSAGE && response)
 	{
 
-	    if (PlayerInfo[playerid][pAdmin] < 2 && CheckServerAd(inputtext)) {
-		    format(string,sizeof(string),"Warning: %s may be server advertising via mail: '%s'.", GetPlayerNameEx(playerid),inputtext);
+		if (PlayerInfo[playerid][pAdmin] < 2 && CheckServerAd(inputtext)) {
+			format(string,sizeof(string),"Warning: %s may be server advertising via mail: '%s'.", GetPlayerNameEx(playerid),inputtext);
 			ABroadCast(COLOR_RED, string, 2);
 			Log("logs/hack.log", string);
 			return 1;
@@ -12406,10 +13098,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		new query[512], rec[MAX_PLAYER_NAME];
 
-        if (strlen(inputtext) == 0) {
+		if (strlen(inputtext) == 0) {
 			ShowPlayerDialog(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Send Letter", "{FF3333}Error: {FFFFFF}Message Not Entered!\n\nPlease type the message.", "Send", "Cancel");
 			return 1;
-	 	}
+		}
 		if (strlen(inputtext) > 128) return 1; // Apparently not possible, but just in case
 
 		if (!GetPVarType(playerid, "LetterGov")) {
@@ -12475,14 +13167,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		if (response) // Back
 		{
-		    DisplayMails(playerid);
+			DisplayMails(playerid);
 		}
 		else // Trash
-  		{
-    	    new query[64];
-		    format(query, sizeof(query), "DELETE FROM `letters` WHERE `ID` = %i", GetPVarInt(playerid, "ReadingMail"));
+		{
+			new query[64];
+			format(query, sizeof(query), "DELETE FROM `letters` WHERE `ID` = %i", GetPVarInt(playerid, "ReadingMail"));
 			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		    ShowPlayerDialog(playerid, DIALOG_POTRASHED, DIALOG_STYLE_MSGBOX, "Info", "You've trashed your mail.", "Back", "Close");
+			ShowPlayerDialog(playerid, DIALOG_POTRASHED, DIALOG_STYLE_MSGBOX, "Info", "You've trashed your mail.", "Back", "Close");
 		}
 		DeletePVar(playerid, "ReadingMail");
 		return 1;
@@ -12492,7 +13184,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 
 		DisplayMails(playerid);
- 		return 1;
+		return 1;
 
 	}
 
@@ -12503,10 +13195,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else {
 			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", StoreItems[listitem]);
-		    ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
-		    SetPVarInt(playerid, "EditingStoreItem", listitem);
-	    }
-	    return 1;
+			ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+			SetPVarInt(playerid, "EditingStoreItem", listitem);
+		}
+		return 1;
 	}
 
 	else if (dialogid == DIALOG_BARPRICE)
@@ -12516,22 +13208,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else {
 			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", Drinks[listitem]);
-		    ShowPlayerDialog(playerid, DIALOG_BARPRICE2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
-		    SetPVarInt(playerid, "EditingStoreItem", listitem);
-	    }
-	    return 1;
+			ShowPlayerDialog(playerid, DIALOG_BARPRICE2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+			SetPVarInt(playerid, "EditingStoreItem", listitem);
+		}
+		return 1;
 	}
 	else if(dialogid == DIALOG_SEXSHOP)
 	{
-	    if (!response || (GetPVarInt(playerid, "EditingBusiness") != PlayerInfo[playerid][pBusiness]) || (GetPVarInt(playerid, "EditingBusiness") != InBusiness(playerid)) || PlayerInfo[playerid][pBusinessRank] != 5) {
+		if (!response || (GetPVarInt(playerid, "EditingBusiness") != PlayerInfo[playerid][pBusiness]) || (GetPVarInt(playerid, "EditingBusiness") != InBusiness(playerid)) || PlayerInfo[playerid][pBusinessRank] != 5) {
 			DeletePVar(playerid, "EditingBusiness");
 		}
 		else {
 			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", Drinks[listitem]);
-		    ShowPlayerDialog(playerid, DIALOG_SEXSHOP2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
-		    SetPVarInt(playerid, "EditingStoreItem", listitem);
-	    }
-	    return 1;
+			ShowPlayerDialog(playerid, DIALOG_SEXSHOP2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+			SetPVarInt(playerid, "EditingStoreItem", listitem);
+		}
+		return 1;
 	}
 	else if (dialogid == DIALOG_RESTAURANT)
 	{
@@ -12562,7 +13254,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if (iPrice < 0 || iPrice > 500000) {
 				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", Drinks[item]);
-			    ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
@@ -12573,11 +13265,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), SexItems[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[302];
 			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
-	        ShowPlayerDialog(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
+			ShowPlayerDialog(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
-	    }
-	    DeletePVar(playerid, "EditingStoreItem");
-	    return 1;
+		}
+		DeletePVar(playerid, "EditingStoreItem");
+		return 1;
 	}
 	else if (dialogid == DIALOG_RESTAURANT2)
 	{
@@ -12597,7 +13289,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if (price < 0 || price > 500000)
 			{
 				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", RestaurantItems[item]);
-			    ShowPlayerDialog(playerid, DIALOG_RESTAURANT2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_RESTAURANT2, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
@@ -12608,14 +13300,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to %s in %s ($%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), RestaurantItems[item], number_format(price), Businesses[business][bName], business);
 			new szDialog[302];
 			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[i], number_format(Businesses[business][bItemPrices][i]));
-	        ShowPlayerDialog(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
+			ShowPlayerDialog(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
 		}
 
 		DeletePVar(playerid, "EditingStoreItem");
 		return 1;
 	}
-    else if (dialogid == DIALOG_BARPRICE2)
+	else if (dialogid == DIALOG_BARPRICE2)
 	{
 
 		if (PlayerInfo[playerid][pBusiness] != GetPVarInt(playerid, "EditingBusiness") || (GetPVarInt(playerid, "EditingBusiness") != InBusiness(playerid)) || PlayerInfo[playerid][pBusinessRank] != 5) {
@@ -12631,7 +13323,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if (iPrice < 0 || iPrice > 500000) {
 				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", Drinks[item]);
-			    ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
 				return 1;
 			}
 
@@ -12642,11 +13334,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), Drinks[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[302];
 			for (new i = 0; i <= 13; i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, Drinks[i], number_format(Businesses[iBusiness][bItemPrices][i]));
-	        ShowPlayerDialog(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
+			ShowPlayerDialog(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Okay", "Cancel");
 			Log("logs/business.log", string);
-	    }
-	    DeletePVar(playerid, "EditingStoreItem");
-	    return 1;
+		}
+		DeletePVar(playerid, "EditingStoreItem");
+		return 1;
 	}
 	else if (dialogid == DIALOG_STOREITEMPRICE)
 	{
@@ -12664,7 +13356,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if (iPrice < 0 || iPrice > 500000) {
 				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", StoreItems[item]);
-			    ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_STOREITEMPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
 				return 1;
 			}
 
@@ -12675,17 +13367,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), StoreItems[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[912];
 			for (new i = 0; i <= sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)));
-	        ShowPlayerDialog(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "OK", "Cancel");
+			ShowPlayerDialog(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "OK", "Cancel");
 			Log("logs/business.log", string);
-	    }
-	    DeletePVar(playerid, "EditingStoreItem");
-	    return 1;
+		}
+		DeletePVar(playerid, "EditingStoreItem");
+		return 1;
 	}
 	else if(dialogid == DIALOG_STORECLOTHINGPRICE)
 	{
-	    new iBusiness = PlayerInfo[playerid][pBusiness];
+		new iBusiness = PlayerInfo[playerid][pBusiness];
 
-        if (PlayerInfo[playerid][pBusiness] != GetPVarInt(playerid, "EditingBusiness") || (GetPVarInt(playerid, "EditingBusiness") != InBusiness(playerid)) || PlayerInfo[playerid][pBusinessRank] != 5) {
+		if (PlayerInfo[playerid][pBusiness] != GetPVarInt(playerid, "EditingBusiness") || (GetPVarInt(playerid, "EditingBusiness") != InBusiness(playerid)) || PlayerInfo[playerid][pBusinessRank] != 5) {
 			DeletePVar(playerid, "EditingStoreItem");
 			DeletePVar(playerid, "EditingBusiness");
 			return 1;
@@ -12695,7 +13387,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new iPrice = strval(inputtext);
 
 			if (iPrice < 0 || iPrice > 500000) {
-			    ShowPlayerDialog(playerid, DIALOG_STORECLOTHINGPRICE, DIALOG_STYLE_INPUT, "Edit Price", "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for clothing", "Okay", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_STORECLOTHINGPRICE, DIALOG_STYLE_INPUT, "Edit Price", "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for clothing", "Okay", "Cancel");
 				return 1;
 			}
 
@@ -12705,9 +13397,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), "clothing", number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			Log("logs/business.log", string);
-	    }
+		}
 
-	    DeletePVar(playerid, "EditingStoreItem");
+		DeletePVar(playerid, "EditingStoreItem");
 	}
 	else if (dialogid == DIALOG_GUNPRICES)
 	{
@@ -12716,10 +13408,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else {
 			format(string, sizeof(string), "{FFFFFF}Enter the new sale price for %s\n(Items with the price of $0 will not be for sale)", GetWeaponNameEx(Weapons[listitem][WeaponId]));
-		    ShowPlayerDialog(playerid, DIALOG_GUNSHOPPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
-		    SetPVarInt(playerid, "EditingStoreItem", listitem);
-	    }
-	    return 1;
+			ShowPlayerDialog(playerid, DIALOG_GUNSHOPPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "Okay", "Cancel");
+			SetPVarInt(playerid, "EditingStoreItem", listitem);
+		}
+		return 1;
 	}
 	else if(dialogid == DIALOG_GUNSHOPPRICE)
 	{
@@ -12736,7 +13428,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if (iPrice < 0 || iPrice > 500000) {
 				format(string, sizeof(string), "{FF0000}Error: {DDDDDD}Price is out of range{FFFFFF}\n\nEnter the new sale price for %s", StoreItems[item]);
-			    ShowPlayerDialog(playerid, DIALOG_GUNSHOPPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_GUNSHOPPRICE, DIALOG_STYLE_INPUT, "Edit Price", string, "OK", "Cancel");
 				return 1;
 			}
 
@@ -12747,19 +13439,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetWeaponParam(item, WeaponId), number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[512];
 			for (new i = 0; i < sizeof(Weapons); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, GetWeaponNameEx(Weapons[i][WeaponId]), number_format(Businesses[iBusiness][bItemPrices][i]));
-	        ShowPlayerDialog(playerid, DIALOG_GUNPRICES, DIALOG_STYLE_LIST, "Edit Gun Store Prices", szDialog, "OK", "Cancel");
+			ShowPlayerDialog(playerid, DIALOG_GUNPRICES, DIALOG_STYLE_LIST, "Edit Gun Store Prices", szDialog, "OK", "Cancel");
 			Log("logs/business.log", string);
-	    }
-	    DeletePVar(playerid, "EditingStoreItem");
-	    return 1;
+		}
+		DeletePVar(playerid, "EditingStoreItem");
+		return 1;
 	}
 	else if (dialogid == DIALOG_GASPRICE)
 	{
 		if (!response || (GetPVarInt(playerid, "EditingBusiness") != PlayerInfo[playerid][pBusiness]) || PlayerInfo[playerid][pBusinessRank] != 5) {
 		}
 		else {
-		    new szSaleText[148], Float:price = floatstr(inputtext);
-		    if (price < 1 || price > 500) return SendClientMessageEx(playerid, COLOR_WHITE, "Price can't be lower than $1 or higher than $500");
+			new szSaleText[148], Float:price = floatstr(inputtext);
+			if (price < 1 || price > 500) return SendClientMessageEx(playerid, COLOR_WHITE, "Price can't be lower than $1 or higher than $500");
 			Businesses[PlayerInfo[playerid][pBusiness]][bGasPrice] = price;
 			for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++)
 			{
@@ -12771,9 +13463,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s (IP: %s) has set the gas price to %f in %s", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), price, Businesses[PlayerInfo[playerid][pBusiness]][bName]);
 			Log("logs/business.log", string);
-	    }
+		}
 		DeletePVar(playerid, "EditingBusiness");
-	    return 1;
+		return 1;
 	}
 
 	else if (dialogid == DIALOG_SWITCHGROUP && response)
@@ -12832,10 +13524,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		switch(listitem)
 		{
 			case 0..20: {
-			    format(string, sizeof(string), "You have set your badge to %s", arrGroupData[iGroupID][g_szGroupName]);
-			    SendClientMessageEx(playerid, COLOR_WHITE, string);
-			    SetPlayerColor(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256);
-			    SetPVarInt(playerid, "HitmanBadgeColour", arrGroupData[iGroupID][g_hDutyColour] * 256);
+				format(string, sizeof(string), "You have set your badge to %s", arrGroupData[iGroupID][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SetPlayerColor(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256);
+				SetPVarInt(playerid, "HitmanBadgeColour", arrGroupData[iGroupID][g_hDutyColour] * 256);
 			}
 			default: {
 				SendClientMessageEx(playerid, COLOR_GREY, "Invalid group specified.");
@@ -12844,10 +13536,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_CDBUY)
 	{
-	    // Account Eating Bug Fix
-	    if(!IsPlayerInAnyVehicle(playerid))
+		// Account Eating Bug Fix
+		if(!IsPlayerInAnyVehicle(playerid))
 		{
-		    TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, 1);
 			SendClientMessageEx(playerid,COLOR_GRAD2,"You need to be in the vehicle you wish to purchase.");
 			return 1;
 		}
@@ -12861,8 +13553,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!vehicleCountCheck(playerid))
 				return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: You cannot own any additional vehicles. You may purchase additional vehicle slots through /vstorage.");
 				
-            if(Businesses[d][bPurchaseX] == 0.0 && Businesses[d][bPurchaseY] == 0.0 && Businesses[d][bPurchaseZ] == 0.0)
-            {
+			if(Businesses[d][bPurchaseX] == 0.0 && Businesses[d][bPurchaseY] == 0.0 && Businesses[d][bPurchaseZ] == 0.0)
+			{
 				SendClientMessageEx(playerid, COLOR_GRAD1, "ERROR: The owner of this Car Dealership hasn't set the purchased vehicles spawn point.");
 				RemovePlayerFromVehicle(playerid);
 				new Float:slx, Float:sly, Float:slz;
@@ -12870,105 +13562,105 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPlayerPos(playerid, slx, sly, slz+1.2);
 				TogglePlayerControllable(playerid, 1);
 				return 1;
-            }
+			}
 
-		    new randcolor1 = Random(0, 126);
-		    new randcolor2 = Random(0, 126);
-		    SetPlayerPos(playerid, Businesses[d][bParkPosX][v], Businesses[d][bParkPosY][v], Businesses[d][bParkPosZ][v]+2);
-		    TogglePlayerControllable(playerid, 1);
-		    new cost;
-		    if(PlayerInfo[playerid][pDonateRank] < 1)
-            {
-                cost = Businesses[d][bPrice][v];
-	            if(PlayerInfo[playerid][pCash] < cost)
-	            {
+			new randcolor1 = Random(0, 126);
+			new randcolor2 = Random(0, 126);
+			SetPlayerPos(playerid, Businesses[d][bParkPosX][v], Businesses[d][bParkPosY][v], Businesses[d][bParkPosZ][v]+2);
+			TogglePlayerControllable(playerid, 1);
+			new cost;
+			if(PlayerInfo[playerid][pDonateRank] < 1)
+			{
+				cost = Businesses[d][bPrice][v];
+				if(PlayerInfo[playerid][pCash] < cost)
+				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "ERROR: You don't have enough money to buy this.");
 					RemovePlayerFromVehicle(playerid);
 					new Float:slx, Float:sly, Float:slz;
 					GetPlayerPos(playerid, slx, sly, slz);
 					SetPlayerPos(playerid, slx, sly, slz+1.2);
 					return 1;
-	            }
+				}
 
-                format(string, sizeof(string), " Thank you for buying at %s.", Businesses[d][bName]);
-		        SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				format(string, sizeof(string), " Thank you for buying at %s.", Businesses[d][bName]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, string);
 				PlayerInfo[playerid][pCash] -= cost;
 				cost = Businesses[d][bPrice][v] / 100 * 15;
-		        Businesses[d][bSafeBalance] += TaxSale( cost );
-	        }
-	        else
-	        {
-	            cost = Businesses[d][bPrice][v];
-	            if(PlayerInfo[playerid][pCash] < cost)
-	            {
+				Businesses[d][bSafeBalance] += TaxSale( cost );
+			}
+			else
+			{
+				cost = Businesses[d][bPrice][v];
+				if(PlayerInfo[playerid][pCash] < cost)
+				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "ERROR: You don't have enough money to buy this.");
 					RemovePlayerFromVehicle(playerid);
 					new Float:slx, Float:sly, Float:slz;
 					GetPlayerPos(playerid, slx, sly, slz);
 					SetPlayerPos(playerid, slx, sly, slz+1.2);
 					return 1;
-	            }
+				}
 
-                format(string, sizeof(string), " Thank you for buying at %s.",Businesses[d][bName]);
-		        SendClientMessageEx(playerid, COLOR_GRAD1, string);
-		        PlayerInfo[playerid][pCash] -= cost;
-		        cost = Businesses[d][bPrice][v] / 100 * 15;
+				format(string, sizeof(string), " Thank you for buying at %s.",Businesses[d][bName]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				PlayerInfo[playerid][pCash] -= cost;
+				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
-     		}
-     		Businesses[d][bInventory]--;
+			}
+			Businesses[d][bInventory]--;
 			Businesses[d][bTotalSales]++;
-     		IsPlayerEntering{playerid} = true;
-            new car = CreatePlayerVehicle(playerid, playervehicleid, Businesses[d][bModel][v], Businesses[d][bPurchaseX], Businesses[d][bPurchaseY], Businesses[d][bPurchaseZ], Businesses[d][bPurchaseAngle], randcolor1, randcolor2, cost, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            PutPlayerInVehicle(playerid, car, 0);
-            SaveBusiness(d);
+			IsPlayerEntering{playerid} = true;
+			new car = CreatePlayerVehicle(playerid, playervehicleid, Businesses[d][bModel][v], Businesses[d][bPurchaseX], Businesses[d][bPurchaseY], Businesses[d][bPurchaseZ], Businesses[d][bPurchaseAngle], randcolor1, randcolor2, cost, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+			PutPlayerInVehicle(playerid, car, 0);
+			SaveBusiness(d);
 		}
 		else
 		{
-            RemovePlayerFromVehicle(playerid);
-            new Float:slx, Float:sly, Float:slz;
+			RemovePlayerFromVehicle(playerid);
+			new Float:slx, Float:sly, Float:slz;
 			GetPlayerPos(playerid, slx, sly, slz);
 			SetPlayerPos(playerid, slx, sly, slz+1.2);
-            TogglePlayerControllable(playerid, 1);
+			TogglePlayerControllable(playerid, 1);
 			return 1;
 		}
 	}
 	else if(dialogid == DIALOG_LOADTRUCKOLD) // TRUCKER JOB LOAD TRUCK
 	{
- 		if(response)
+		if(response)
 		{
 			if(listitem == 0) // Legal goods
 			{
 
-			    ShowPlayerDialog(playerid, DIALOG_LOADTRUCKL, DIALOG_STYLE_LIST, "What do you want to transport?","{00F70C}Food & beverages\n{00F70C}Clothing\n{00F70C}Materials\n{00F70C}24/7 Items", "Select", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_LOADTRUCKL, DIALOG_STYLE_LIST, "What do you want to transport?","{00F70C}Food & beverages\n{00F70C}Clothing\n{00F70C}Materials\n{00F70C}24/7 Items", "Select", "Cancel");
 			}
 			if(listitem == 1) // Illegal goods
 			{
 				new level = PlayerInfo[playerid][pTruckSkill];
 				if(level >= 0 && level <= 50)
 				{
-            		ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 pot, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 25 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 pot, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 25 materials)", "Select", "Cancel");
 				}
 				else if(level >= 51 && level <= 100)
 				{
-		    		ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 pot, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 50 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 pot, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 50 materials)", "Select", "Cancel");
 				}
 				else if(level >= 101 && level <= 200)
 				{
-		    		ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 pot, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 100 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 pot, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 100 materials)", "Select", "Cancel");
 				}
 				else if(level >= 201 && level <= 400)
 				{
-            		ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 pot, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 150 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 pot, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 150 materials)", "Select", "Cancel");
 				}
 				else if(level >= 401)
 				{
- 		 			ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 pot, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 200 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 pot, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 200 materials)", "Select", "Cancel");
 				}
 			}
 		}
 		else
 		{
-		    DeletePVar(playerid, "IsFrozen");
+			DeletePVar(playerid, "IsFrozen");
 			TogglePlayerControllable(playerid, 1);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
@@ -12976,36 +13668,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	else if(dialogid == DIALOG_LOADTRUCKL) // TRUCKER JOB LEGAL GOODS
 	{
- 		if(response)
+		if(response)
 		{
 
 			if(listitem == 0) // Food & beverages
 			{
-    			SetPVarInt(playerid, "TruckDeliver", 1);
-    			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with food & beverages....");
+				SetPVarInt(playerid, "TruckDeliver", 1);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with food & beverages....");
 			}
 			if(listitem == 1) // Clothing
 			{
-    			SetPVarInt(playerid, "TruckDeliver", 2);
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with clothing....");
+				SetPVarInt(playerid, "TruckDeliver", 2);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with clothing....");
 			}
 			if(listitem == 2) // Materials
 			{
 				SetPVarInt(playerid, "TruckDeliver", 3);
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with materials....");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with materials....");
 			}
 			if(listitem == 3) // 24/7 Items
 			{
-    			SetPVarInt(playerid, "TruckDeliver", 4);
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with 24/7 items....");
+				SetPVarInt(playerid, "TruckDeliver", 4);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with 24/7 items....");
 			}
 			SetPVarInt(playerid, "LoadType", 1);
-  			SetPVarInt(playerid, "LoadTruckTime", 10);
+			SetPVarInt(playerid, "LoadTruckTime", 10);
 			SetTimerEx("LoadTruckOld", 1000, 0, "d", playerid);
 		}
 		else
 		{
-		    DeletePVar(playerid, "IsFrozen");
+			DeletePVar(playerid, "IsFrozen");
 			TogglePlayerControllable(playerid, 1);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
@@ -13013,149 +13705,149 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	else if(dialogid == DIALOG_LOADTRUCKI) // TRUCKER JOB ILLEGAL GOODS
 	{
- 		if(response)
+		if(response)
 		{
-		    // 1 = food and bev
+			// 1 = food and bev
 			// 2 = clothing
 			// 3 = legal mats
 			// 4 = 24/7 items
 			// 5 = weapons
 			// 6 = illegal drugs
 			// 7 = illegal materials
-		    //new level = PlayerInfo[playerid][pTruckSkill];
+			//new level = PlayerInfo[playerid][pTruckSkill];
 			if(listitem == 0) // Weapons
 			{
-			    SetPVarInt(playerid, "TruckDeliver", 5);
-    			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with weapons....");
+				SetPVarInt(playerid, "TruckDeliver", 5);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with weapons....");
 			}
 			if(listitem == 1) // Drugs
 			{
-			    SetPVarInt(playerid, "TruckDeliver", 6);
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with drugs....");
+				SetPVarInt(playerid, "TruckDeliver", 6);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with drugs....");
 			}
 			if(listitem == 2) // Illegal materials
 			{
-			    SetPVarInt(playerid, "TruckDeliver", 7);
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with illegal materials....");
+				SetPVarInt(playerid, "TruckDeliver", 7);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Please wait a moment while the vehicle is being loaded with illegal materials....");
 			}
-            SetPVarInt(playerid, "LoadType", 1);
-  		    SetPVarInt(playerid, "LoadTruckTime", 10);
+			SetPVarInt(playerid, "LoadType", 1);
+			SetPVarInt(playerid, "LoadTruckTime", 10);
 			SetTimerEx("LoadTruckOld", 1000, 0, "d", playerid);
 		}
 		else
 		{
-		    DeletePVar(playerid, "IsFrozen");
+			DeletePVar(playerid, "IsFrozen");
 			TogglePlayerControllable(playerid, 1);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You canceled the loading of the shipment, type /loadshipment to try again.");
 		}
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS)
 	{
-	    if(response) {
-	        SetPVarInt(playerid, "AuctionItem", listitem);
-	        ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS2, DIALOG_STYLE_LIST, "Edit Auction", "Auction Enabled\nAuction Item Description\nAuction Expiration\nStarting Bid\nIncease Increment", "Select", "Exit");
-	    }
+		if(response) {
+			SetPVarInt(playerid, "AuctionItem", listitem);
+			ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS2, DIALOG_STYLE_LIST, "Edit Auction", "Auction Enabled\nAuction Item Description\nAuction Expiration\nStarting Bid\nIncease Increment", "Select", "Exit");
+		}
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS2)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0:
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS3, DIALOG_STYLE_LIST, "Edit Auction Enabled", "Enabled\nDisabled", "Select", "Exit");
-	            }
-	            case 1:
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
-	            }
-	            case 2:
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS5, DIALOG_STYLE_INPUT, "Edit Auction Expiration", "Enter the amount of minutes you want the auction to last for.","Change","Exit");
-	            }
-	            case 3:
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS6, DIALOG_STYLE_INPUT, "Edit Auction Starting Bid", "Enter the starting bid amount.","Change","Exit");
-	            }
-	            case 4:
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS7, DIALOG_STYLE_INPUT, "Edit Auction Increase Increment", "Enter the increase increment amount.","Change","Exit");
-	            }
-	        }
-	    }
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+				{
+					ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS3, DIALOG_STYLE_LIST, "Edit Auction Enabled", "Enabled\nDisabled", "Select", "Exit");
+				}
+				case 1:
+				{
+					ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
+				}
+				case 2:
+				{
+					ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS5, DIALOG_STYLE_INPUT, "Edit Auction Expiration", "Enter the amount of minutes you want the auction to last for.","Change","Exit");
+				}
+				case 3:
+				{
+					ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS6, DIALOG_STYLE_INPUT, "Edit Auction Starting Bid", "Enter the starting bid amount.","Change","Exit");
+				}
+				case 4:
+				{
+					ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS7, DIALOG_STYLE_INPUT, "Edit Auction Increase Increment", "Enter the increase increment amount.","Change","Exit");
+				}
+			}
+		}
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS3)
 	{
-	    if(response) {
+		if(response) {
 
-	    	new
+			new
 				AuctionItem = GetPVarInt(playerid, "AuctionItem"),
 				szMessage[128];
 
-	        if(listitem == 0)
-	        {
-	            if(Auctions[AuctionItem][Expires] == 0) {
-	                SendClientMessageEx(playerid, COLOR_GREY, "Before you can start an auction you must set the expiration time.");
-	                return 1;
-	            }
-	            format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i enabled to 1 (Enabled)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem);
+			if(listitem == 0)
+			{
+				if(Auctions[AuctionItem][Expires] == 0) {
+					SendClientMessageEx(playerid, COLOR_GREY, "Before you can start an auction you must set the expiration time.");
+					return 1;
+				}
+				format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i enabled to 1 (Enabled)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem);
 				Log("logs/adminauction.log", szMessage);
-	            Auctions[AuctionItem][InProgress] = 1;
-	            Auctions[AuctionItem][Timer] = SetTimerEx("EndAuction", 60000, true, "i", AuctionItem);
-	            SendClientMessageEx(playerid, COLOR_WHITE, "Auction has been enabled, people can start biding.");
-	        }
-	        else
-	        {
-	            KillTimer(Auctions[AuctionItem][Timer]);
-	            format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i enabled to 0 (disabled)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem);
+				Auctions[AuctionItem][InProgress] = 1;
+				Auctions[AuctionItem][Timer] = SetTimerEx("EndAuction", 60000, true, "i", AuctionItem);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Auction has been enabled, people can start biding.");
+			}
+			else
+			{
+				KillTimer(Auctions[AuctionItem][Timer]);
+				format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i enabled to 0 (disabled)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem);
 				Log("logs/adminauction.log", szMessage);
-	            Auctions[AuctionItem][InProgress] = 0;
-	            SendClientMessageEx(playerid, COLOR_WHITE, "Auction has been disabled.");
-	        }
-	        SaveAuction(AuctionItem);
-	        DeletePVar(playerid, "AuctionItem");
-	    }
+				Auctions[AuctionItem][InProgress] = 0;
+				SendClientMessageEx(playerid, COLOR_WHITE, "Auction has been disabled.");
+			}
+			SaveAuction(AuctionItem);
+			DeletePVar(playerid, "AuctionItem");
+		}
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS4)
 	{
 		if(response)
 		{
-		    new
+			new
 				AuctionItem = GetPVarInt(playerid, "AuctionItem"),
 				szMessage[128];
 
-		    if(isnull(inputtext))
-		    {
-		        ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
-		        return 1;
-		    }
-		    if(strlen(inputtext) > 64)
-		    {
-		        SendClientMessageEx(playerid, COLOR_GREY, "The item description can't be longer then 64 characters.");
-                ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
-		        return 1;
-		    }
-		    format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i item description to %s", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem, inputtext);
+			if(isnull(inputtext))
+			{
+				ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
+				return 1;
+			}
+			if(strlen(inputtext) > 64)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "The item description can't be longer then 64 characters.");
+				ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS4, DIALOG_STYLE_INPUT, "Edit Auction Item Description", "Enter below the item description for the auction.","Change","Exit");
+				return 1;
+			}
+			format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i item description to %s", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem, inputtext);
 			Log("logs/adminauction.log", szMessage);
-		    format(Auctions[AuctionItem][BiddingFor], 64, inputtext);
-		    SaveAuction(AuctionItem);
-		    DeletePVar(playerid, "AuctionItem");
+			format(Auctions[AuctionItem][BiddingFor], 64, inputtext);
+			SaveAuction(AuctionItem);
+			DeletePVar(playerid, "AuctionItem");
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have adjusted the auction item description.");
 		}
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS5)
 	{
-	    if(response) {
-	        new
-            	Time = strval(inputtext),
-            	AuctionItem = GetPVarInt(playerid, "AuctionItem"),
+		if(response) {
+			new
+				Time = strval(inputtext),
+				AuctionItem = GetPVarInt(playerid, "AuctionItem"),
 				szMessage[128];
 
 			if(Time < 0) {
-			    ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS5, DIALOG_STYLE_INPUT, "Edit Auction Expiration", "Enter the amount of minutes you want the auction to last for.","Change","Exit");
-			    SendClientMessageEx(playerid, COLOR_GREY, "The time can't be below 0.");
-			    return 1;
+				ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS5, DIALOG_STYLE_INPUT, "Edit Auction Expiration", "Enter the amount of minutes you want the auction to last for.","Change","Exit");
+				SendClientMessageEx(playerid, COLOR_GREY, "The time can't be below 0.");
+				return 1;
 			}
 			format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i expire time to %i", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem, Time);
 			Log("logs/adminauction.log", szMessage);
@@ -13167,16 +13859,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS6)
 	{
-	    if(response) {
-	        new
-            	Time = strval(inputtext),
-            	AuctionItem = GetPVarInt(playerid, "AuctionItem"),
+		if(response) {
+			new
+				Time = strval(inputtext),
+				AuctionItem = GetPVarInt(playerid, "AuctionItem"),
 				szMessage[128];
 
 			if(Time < 0) {
-			    ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS6, DIALOG_STYLE_INPUT, "Edit Auction Starting Bid", "Enter the starting bid amount.","Change","Exit");
-			    SendClientMessageEx(playerid, COLOR_GREY, "The starting bid can't be below 0.");
-			    return 1;
+				ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS6, DIALOG_STYLE_INPUT, "Edit Auction Starting Bid", "Enter the starting bid amount.","Change","Exit");
+				SendClientMessageEx(playerid, COLOR_GREY, "The starting bid can't be below 0.");
+				return 1;
 			}
 			format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i starting bid to %i", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem, Time );
 			Log("logs/adminauction.log", szMessage);
@@ -13188,16 +13880,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_ADMINAUCTIONS7)
 	{
-	    if(response) {
-	        new
-            	Time = strval(inputtext),
-            	AuctionItem = GetPVarInt(playerid, "AuctionItem"),
+		if(response) {
+			new
+				Time = strval(inputtext),
+				AuctionItem = GetPVarInt(playerid, "AuctionItem"),
 				szMessage[128];
 
 			if(Time < 0) {
-			    ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS7, DIALOG_STYLE_INPUT, "Edit Auction Increase Increment", "Enter the increase increment amount.","Change","Exit");
-			    SendClientMessageEx(playerid, COLOR_GREY, "The increase increment amount can't be below 0.");
-			    return 1;
+				ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS7, DIALOG_STYLE_INPUT, "Edit Auction Increase Increment", "Enter the increase increment amount.","Change","Exit");
+				SendClientMessageEx(playerid, COLOR_GREY, "The increase increment amount can't be below 0.");
+				return 1;
 			}
 			format(szMessage, sizeof(szMessage), "%s (IP:%s) has edited auction %i increment to %i", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), AuctionItem, Time );
 			Log("logs/adminauction.log", szMessage);
@@ -13210,12 +13902,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_AUCTIONS)
 	{
-	    if(response) {
+		if(response) {
 
 			if(Auctions[listitem][InProgress] == 1) {
 
 				new
-				    szInfo[200];
+					szInfo[200];
 
 				format(szInfo, sizeof(szInfo), "{00BFFF}Item: {FFFFFF}%s\n\n{00BFFF}Current Bid: {FFFFFF}$%i\n\n{00BFFF}Bidder: {FFFFFF}%s\n\n{00BFFF}Expires: {FFFFFF}%s", Auctions[listitem][BiddingFor], Auctions[listitem][Bid], Auctions[listitem][Wining], Auctions[listitem][Expires]);
 				ShowPlayerDialog(playerid, DIALOG_AUCTIONS2, DIALOG_STYLE_MSGBOX, "{00BFFF}Auction Information", szInfo, "Bid", "Exit");
@@ -13226,17 +13918,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_AUCTIONS2)
 	{
-	    if(response) {
+		if(response) {
 
 			new
 				AuctionItem = GetPVarInt(playerid, "AuctionItem");
 			if(Auctions[AuctionItem][InProgress] == 1) {
 
-			    new
-			        szInfo[128];
+				new
+					szInfo[128];
 
 				format(szInfo, sizeof(szInfo), "You are bidding on %s. The current bid is $%i, to place a bid it must be higher then the current one.", Auctions[AuctionItem][BiddingFor], Auctions[AuctionItem][Bid]);
-			    ShowPlayerDialog(playerid, DIALOG_AUCTIONS3, DIALOG_STYLE_INPUT, "Auction - Bidding",szInfo,"Place Bid","Exit");
+				ShowPlayerDialog(playerid, DIALOG_AUCTIONS3, DIALOG_STYLE_INPUT, "Auction - Bidding",szInfo,"Place Bid","Exit");
 			}
 			else {
 
@@ -13247,36 +13939,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_AUCTIONS3)
 	{
-	    if(response) {
+		if(response) {
 
 			new
 				BidPlaced = strval(inputtext),
 				AuctionItem = GetPVarInt(playerid, "AuctionItem");
 
 			if(GetPlayerCash(playerid) < BidPlaced) {
-			    SendClientMessageEx(playerid, COLOR_GREY, "You can't bid money you don't have.");
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "You can't bid money you don't have.");
+				return 1;
 			}
 			if(BidPlaced < 1) {
-			    SendClientMessageEx(playerid, COLOR_GREY, "You can't place a bid under $1.");
-			    return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "You can't place a bid under $1.");
+				return 1;
 			}
 			if(BidPlaced < Auctions[AuctionItem][Bid]+Auctions[AuctionItem][Increment]) {
-			    new szMessage[128];
-			    format(szMessage, sizeof(szMessage), "You need to bid at least %i over the current bid of %i.", Auctions[AuctionItem][Increment], Auctions[AuctionItem][Bid]);
+				new szMessage[128];
+				format(szMessage, sizeof(szMessage), "You need to bid at least %i over the current bid of %i.", Auctions[AuctionItem][Increment], Auctions[AuctionItem][Bid]);
 				SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 				return 1;
 			}
 
 			if(Auctions[AuctionItem][InProgress] == 1) {
 				if(BidPlaced > Auctions[AuctionItem][Bid]) {
-                    SetPVarInt(playerid, "BidPlaced", BidPlaced);
+					SetPVarInt(playerid, "BidPlaced", BidPlaced);
 					HigherBid(playerid);
 				}
 				else SendClientMessageEx(playerid, COLOR_GREY, "That bid is to low, a higher amount is needed to place the bid.");
 			}
 			else SendClientMessageEx(playerid, COLOR_GREY, "That auction isn't currently available.");
-	    }
+		}
 	}
 	if(dialogid == DIALOG_CGAMESADMINMENU)
 	{
@@ -13951,14 +14643,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_CHARGEPLAYER)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < GetPVarInt(playerid, "FineAmount"))
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to be fined.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < GetPVarInt(playerid, "FineAmount"))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to be fined.");
 
 			new reason[60];
 			GetPVarString(playerid, "FineReason", reason, 60);
-	        format(string, sizeof(string), "AdmCmd: %s was fined %s credits by %s, reason: %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "FineAmount")), GetPlayerNameEx(GetPVarInt(playerid, "FineBy")), reason);
+			format(string, sizeof(string), "AdmCmd: %s was fined %s credits by %s, reason: %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "FineAmount")), GetPlayerNameEx(GetPVarInt(playerid, "FineBy")), reason);
 			Log("logs/admin.log", string);
 
 			format(string, sizeof(string), "[CHARGEPLAYER] [User: %s(%i)] [IP: %s] [Credits: %s] [Charged: %s]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]),  number_format(GetPVarInt(playerid, "FineAmount")));
@@ -13972,22 +14664,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "You charged %s %s credits for %s.", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "FineAmount")), reason);
 			SendClientMessageEx(GetPVarInt(playerid, "FineBy"), COLOR_CYAN, string);
 		}
-	    else
-	    {
-	        SendClientMessageEx(GetPVarInt(playerid, "FineBy"), COLOR_CYAN, "The player has declined the charge.");
-	    }
-	    DeletePVar(playerid, "FineAmount");
-	    DeletePVar(playerid, "FineBy");
-	    DeletePVar(playerid, "FineReason");
+		else
+		{
+			SendClientMessageEx(GetPVarInt(playerid, "FineBy"), COLOR_CYAN, "The player has declined the charge.");
+		}
+		DeletePVar(playerid, "FineAmount");
+		DeletePVar(playerid, "FineBy");
+		DeletePVar(playerid, "FineReason");
 	}
 	if(dialogid == DIALOG_EDITSHOPMENU)
 	{
 		if(response)
 		{
-		    if(listitem == 0)
-		    {
-		        new szDialog[1300];
-       			format(szDialog, sizeof(szDialog),
+			if(listitem == 0)
+			{
+				new szDialog[1400];
+				format(szDialog, sizeof(szDialog),
 				"Gold VIP (Credits: %s)\n\
 				Gold VIP Renewal (Credits: %s)\n\
 				Silver VIP (Credits: %s)\n\
@@ -14034,36 +14726,40 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Restricted Last Name (CHANGE) (Credits: %s)\n\
 				Custom User Title (NEW) (Credits: %s)\n\
 				Custom User Title (CHANGE) (Credits: %s)\n\
-				Teamspeak User Channel (Credits: %s)", 
-				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
+				Teamspeak User Channel (Credits: %s)\n\
+				Small Backpack (Credits: %s)\n\
+				Medium Backpack (Credits: %s)\n\
+				Large Backpack (Credits: %s)", 
+				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
+				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
-		    }
-		    else
-		    {
-		        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-		    }
+			}
+			else
+			{
+				ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+			}
 		}
 	}
 	if(dialogid == DIALOG_EDITSHOP)
 	{
-	    if(response) {
-	    	new item[30];
-	    	SetPVarInt(playerid, "EditingPrice", listitem);
-	    	switch(listitem)
-	    	{
-    			case 0: item = "Gold VIP";
-    		 	case 1: item = "Gold VIP Renewal";
-	       	 	case 2: item = "Silver VIP";
-	        	case 3: item = "Bronze VIP";
-	        	case 4: item = "Toys";
-	        	case 5: item = "Vehicles";
-	        	case 6: item = "Poker Table";
-	        	case 7: item = "Boombox";
-	        	case 8: item = "Paintball Tokens";
-	        	case 9: item = "EXP Token";
-	        	case 10: item = "Fireworks x5";
-	        	case 11: item = "Renewal Regular";
-	        	case 12: item = "Renewal Standard";
+		if(response) {
+			new item[30];
+			SetPVarInt(playerid, "EditingPrice", listitem);
+			switch(listitem)
+			{
+				case 0: item = "Gold VIP";
+				case 1: item = "Gold VIP Renewal";
+				case 2: item = "Silver VIP";
+				case 3: item = "Bronze VIP";
+				case 4: item = "Toys";
+				case 5: item = "Vehicles";
+				case 6: item = "Poker Table";
+				case 7: item = "Boombox";
+				case 8: item = "Paintball Tokens";
+				case 9: item = "EXP Token";
+				case 10: item = "Fireworks x5";
+				case 11: item = "Renewal Regular";
+				case 12: item = "Renewal Standard";
 				case 13: item = "Renewal Premium";
 				case 14: item = "House";
 				case 15: item = "House Interior Change";
@@ -14087,34 +14783,37 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 33: item = "Custom User Title (NEW)";
 				case 34: item = "Custom User Title (CHANGE)";
 				case 35: item = "Teamspeak User Channel";
+				case 36: item = "Small Backpack";
+				case 37: item = "Medium Backpack";
+				case 38: item = "Large Backpack";
 			}
-	    	format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
-	    	ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
+			format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
 		}
 	}
 	if(dialogid == DIALOG_EDITSHOP2)
 	{
-	    if(response) {
+		if(response) {
 
 			new
 				Prices = strval(inputtext),
 				item[30];
 
-            switch(GetPVarInt(playerid, "EditingPrice"))
-  			{
-   				case 0: item = "Gold VIP";
-    		 	case 1: item = "Gold VIP Renewal";
-	       	 	case 2: item = "Silver VIP";
-	        	case 3: item = "Bronze VIP";
-	        	case 4: item = "Toys";
-	        	case 5: item = "Vehicles";
-	        	case 6: item = "Poker Table";
-	        	case 7: item = "Boombox";
-	        	case 8: item = "Paintball Tokens";
-	        	case 9: item = "EXP Token";
-	        	case 10: item = "Fireworks x5";
-	        	case 11: item = "Renewal Regular";
-	        	case 12: item = "Renewal Standard";
+			switch(GetPVarInt(playerid, "EditingPrice"))
+			{
+				case 0: item = "Gold VIP";
+				case 1: item = "Gold VIP Renewal";
+				case 2: item = "Silver VIP";
+				case 3: item = "Bronze VIP";
+				case 4: item = "Toys";
+				case 5: item = "Vehicles";
+				case 6: item = "Poker Table";
+				case 7: item = "Boombox";
+				case 8: item = "Paintball Tokens";
+				case 9: item = "EXP Token";
+				case 10: item = "Fireworks x5";
+				case 11: item = "Renewal Regular";
+				case 12: item = "Renewal Standard";
 				case 13: item = "Renewal Premium";
 				case 14: item = "House";
 				case 15: item = "House Interior Change";
@@ -14138,20 +14837,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 33: item = "Custom User Title (NEW)";
 				case 34: item = "Custom User Title (CHANGE)";
 				case 35: item = "Teamspeak User Channel";
+				case 36: item = "Small Backpack";
+				case 37: item = "Medium Backpack";
+				case 38: item = "Large Backpack";
 			}
 
 			if(isnull(inputtext) || Prices <= 0) {
-			    format(string, sizeof(string), "The price can't be below 0.\n\nYou are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice]);
-	    		ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
+				format(string, sizeof(string), "The price can't be below 0.\n\nYou are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice]);
+				ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
 			}
-			SetPVarInt(playerid, "EditingPriceValue", Prices);
+			else
+			{
+				SetPVarInt(playerid, "EditingPriceValue", Prices);
 
-            format(string,sizeof(string),"Are you sure you want to edit the cost of %s?\n\nOld Cost: %d\nNew Cost: %d", item, ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice], Prices);
-			ShowPlayerDialog(playerid, DIALOG_EDITSHOP3, DIALOG_STYLE_MSGBOX, "Confirmation", string, "Confirm", "Cancel");
-			return 1;
+				format(string,sizeof(string),"Are you sure you want to edit the cost of %s?\n\nOld Cost: %d\nNew Cost: %d", item, ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice], Prices);
+				ShowPlayerDialog(playerid, DIALOG_EDITSHOP3, DIALOG_STYLE_MSGBOX, "Confirmation", string, "Confirm", "Cancel");
+				return 1;
+			}
 		}
 		new szDialog[1300];
-	    format(szDialog, sizeof(szDialog),
+		format(szDialog, sizeof(szDialog),
 		"Gold VIP (Credits: %s)\n\
 		Gold VIP Renewal (Credits: %s)\n\
 		Silver VIP (Credits: %s)\n\
@@ -14198,29 +14903,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Restricted Last Name (CHANGE) (Credits: %s)\n\
 		Custom User Title (NEW) (Credits: %s)\n\
 		Custom User Title (CHANGE) (Credits: %s)\n\
-		Teamspeak User Channel (Credits: %s)", szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
-	    ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
+		Teamspeak User Channel (Credits: %s)\n\
+		Small Backpack (Credits: %s)\n\
+		Medium Backpack (Credits: %s)\n\
+		Large Backpack (Credits: %s)", 
+		szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
+		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]));
+		ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
 	{
-	    if(response)
-	    {
-	        new item[30];
-	        switch(GetPVarInt(playerid, "EditingPrice"))
-  			{
-   				case 0: item = "Gold VIP";
-    		 	case 1: item = "Gold VIP Renewal";
-	       	 	case 2: item = "Silver VIP";
-	        	case 3: item = "Bronze VIP";
-	        	case 4: item = "Toys";
-	        	case 5: item = "Vehicles";
-	        	case 6: item = "Poker Table";
-	        	case 7: item = "Boombox";
-	        	case 8: item = "Paintball Tokens";
-	        	case 9: item = "EXP Token";
-	        	case 10: item = "Fireworks x5";
-	        	case 11: item = "Renewal Regular";
-	        	case 12: item = "Renewal Standard";
+		if(response)
+		{
+			new item[30];
+			switch(GetPVarInt(playerid, "EditingPrice"))
+			{
+				case 0: item = "Gold VIP";
+				case 1: item = "Gold VIP Renewal";
+				case 2: item = "Silver VIP";
+				case 3: item = "Bronze VIP";
+				case 4: item = "Toys";
+				case 5: item = "Vehicles";
+				case 6: item = "Poker Table";
+				case 7: item = "Boombox";
+				case 8: item = "Paintball Tokens";
+				case 9: item = "EXP Token";
+				case 10: item = "Fireworks x5";
+				case 11: item = "Renewal Regular";
+				case 12: item = "Renewal Standard";
 				case 13: item = "Renewal Premium";
 				case 14: item = "House";
 				case 15: item = "House Interior Change";
@@ -14239,55 +14949,59 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 28: item = "Additional Toy Slot";
 				case 29: item = "Hunger Voucher";
 				case 30: item = "Spawn at Gold VIP+ room";
-				case 31: item = "Restricted Last Name";
-				case 32: item = "Custom User Title (NEW)";
-				case 33: item = "Custom User Title (CHANGE)";
-				case 34: item = "Teamspeak User Channel";
+				case 31: item = "Restricted Last Name (NEW)";
+				case 32: item = "Restricted Last Name (CHANGE)";
+				case 33: item = "Custom User Title (NEW)";
+				case 34: item = "Custom User Title (CHANGE)";
+				case 35: item = "Teamspeak User Channel";
+				case 36: item = "Small Backpack";
+				case 37: item = "Medium Backpack";
+				case 38: item = "Large Backpack";
 			}
 			if(GetPVarInt(playerid, "EditingPriceValue") == 0)
-			    SetPVarInt(playerid, "EditingPriceValue", 999999);
+				SetPVarInt(playerid, "EditingPriceValue", 999999);
 
 			Price[GetPVarInt(playerid, "EditingPrice")] = GetPVarInt(playerid, "EditingPriceValue");
-	        ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice] = GetPVarInt(playerid, "EditingPriceValue");
-	        format(string, sizeof(string), "You have successfully edited the price of %s to %d.", item, GetPVarInt(playerid, "EditingPriceValue"));
-	        SendClientMessageEx(playerid, COLOR_WHITE, string);
-	        format(string, sizeof(string), "[EDITSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), item, number_format(ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice]));
+			ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice] = GetPVarInt(playerid, "EditingPriceValue");
+			format(string, sizeof(string), "You have successfully edited the price of %s to %d.", item, GetPVarInt(playerid, "EditingPriceValue"));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			format(string, sizeof(string), "[EDITSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), item, number_format(ShopItems[GetPVarInt(playerid, "EditingPrice")][sItemPrice]));
 			Log("logs/editshop.log", string), print(string);
-	        g_mysql_SavePrices();
-	        return 1;
-	    }
-        DeletePVar(playerid, "EditingPrice");
-        DeletePVar(playerid, "EditingPriceValue");
-	    SendClientMessageEx(playerid, COLOR_GREY, "You have canceled the price change.");
+			g_mysql_SavePrices();
+			return 1;
+		}
+		DeletePVar(playerid, "EditingPrice");
+		DeletePVar(playerid, "EditingPriceValue");
+		SendClientMessageEx(playerid, COLOR_GREY, "You have canceled the price change.");
 	}
 	if(dialogid == DIALOG_ENTERPIN)
 	{
-	    if(response)
-	    {
-            if(isnull(inputtext) || strlen(inputtext) > 4 || !IsNumeric(inputtext))
-		    {
-		        ShowPlayerDialog(playerid, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
-		        return 1;
-		    }
+		if(response)
+		{
+			if(isnull(inputtext) || strlen(inputtext) > 4 || !IsNumeric(inputtext))
+			{
+				ShowPlayerDialog(playerid, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
+				return 1;
+			}
 
 			SetPVarString(playerid, "PinNumber", inputtext);
 
-    		format(string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+			format(string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, string, true, "OnPinCheck2", "i", playerid);
 
 		}
 	}
 	if(dialogid == DIALOG_CREATEPIN)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 
-            if(strlen(inputtext) > 4 || !IsNumeric(inputtext))
-			    return ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Error: A pin must be numbers only, and have at least 4 digits. \nCreate a pin number so you can secure your account credits.", "Create", "Exit");
+			if(strlen(inputtext) > 4 || !IsNumeric(inputtext))
+				return ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Error: A pin must be numbers only, and have at least 4 digits. \nCreate a pin number so you can secure your account credits.", "Create", "Exit");
 
 			if(GetPVarType(playerid, "ChangePin"))
 			{
-			    if(isnull(inputtext))
+				if(isnull(inputtext))
 					return ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
 			}
 			else
@@ -14303,16 +15017,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_VIEWSALE)
 	{
-	    if(response)
-	    {
-            format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", Selected[playerid][listitem]);
-            mysql_function_query(MainPipeline, string, true, "CheckSales2", "i", playerid);
-	    }
+		if(response)
+		{
+			format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", Selected[playerid][listitem]);
+			mysql_function_query(MainPipeline, string, true, "CheckSales2", "i", playerid);
+		}
 	}
 	if(dialogid == DIALOG_CREATEPIN2)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			if(isnull(inputtext))
 				return ShowPlayerDialog(playerid, DIALOG_CREATEPIN2, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number again to confirm it.", "Create", "Exit");
 
@@ -14320,9 +15034,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			GetPVarString(playerid, "PinConfirm", confirm, 128);
 			if(strcmp(inputtext, confirm, true) != 0)
 			{
-			    if(GetPVarType(playerid, "ChangePin"))
+				if(GetPVarType(playerid, "ChangePin"))
 				{
-                    ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
 				}
 				else
 				{
@@ -14332,7 +15046,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    format(string, sizeof(string), "Your new pin number is '%s.'", inputtext);
+				format(string, sizeof(string), "Your new pin number is '%s.'", inputtext);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 
 				new passbuffer[258];
@@ -14348,38 +15062,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_MISCSHOP && response)
 	{
-	    SetPVarInt(playerid, "MiscShop", listitem+1);
-	    switch(listitem)
-	    {
+		SetPVarInt(playerid, "MiscShop", listitem+1);
+		switch(listitem)
+		{
 			case 0:
 			{
-			    format(string, sizeof(string), "Item: Poker Table\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[6][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[6][sItemPrice]));
-	   		 	ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: Poker Table\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[6][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[6][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 1:
 			{
-			    format(string, sizeof(string), "Item: Boombox\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[7][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[7][sItemPrice]));
-        	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: Boombox\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[7][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[7][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 2:
 			{
-			    format(string, sizeof(string), "Item: 100 Paintball Tokens\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[8][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[8][sItemPrice]));
-        	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: 100 Paintball Tokens\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[8][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[8][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 3:
 			{
-			    format(string, sizeof(string), "Item: EXP Token\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[9][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[9][sItemPrice]));
-        	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: EXP Token\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[9][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[9][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 4:
 			{
-			    format(string, sizeof(string), "Item: Fireworks x5\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[10][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[10][sItemPrice]));
-        	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: Fireworks x5\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[10][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[10][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 5:
 			{
-			    format(string, sizeof(string), "Item: Custom License Plate\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[22][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[22][sItemPrice]));
-        	    ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
+				format(string, sizeof(string), "Item: Custom License Plate\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[22][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[22][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 			case 6:
 			{
@@ -14411,30 +15125,62 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "Item: Teamspeak User Channel\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[35][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[35][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
+			case 11:
+			{
+				new bdialog[145];
+				format(bdialog, sizeof(bdialog), "Small Backpack (Credits: {FFD700}%s{A9C4E4})\nMedium Backpack (Credits: {FFD700}%s{A9C4E4})\nLarge Backpack (Credits: {FFD700}%s{A9C4E4})",
+				number_format(ShopItems[36][sItemPrice]), number_format(ShopItems[37][sItemPrice]), number_format(ShopItems[38][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_BACKPACKS, DIALOG_STYLE_LIST, "Misc Shop", bdialog, "Select", "Cancel");
+			}
+		}
+	}
+	if(dialogid == DIALOG_BACKPACKS && response)
+	{
+		new bdialog[170];
+		switch(listitem)
+		{
+			case 0:
+			{
+				SetPVarInt(playerid, "MiscShop", 15); // small backpack
+				format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 1 Meal\nNarcotics Storage: 30 Grams\nFirearms Storage: 1 Weapon\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[36][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[36][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", bdialog, "Purchase", "Cancel");
+			}
+			case 1:
+			{
+				SetPVarInt(playerid, "MiscShop", 16); // med backpack
+				format(bdialog, sizeof(bdialog), "Item: Medium Backpack\nFood Storage: 3 Meals\nNarcotics Storage: 50 Grams\nFirearms Storage: 2 Weapons\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[37][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[37][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", bdialog, "Purchase", "Cancel");
+			}
+			case 2:
+			{
+				SetPVarInt(playerid, "MiscShop", 17); // large backpack
+				format(bdialog, sizeof(bdialog), "Item: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 80 Grams\nFirearms Storage: 4 Weapons\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[38][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[38][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", bdialog, "Purchase", "Cancel");
+			}
 		}
 	}
 	if(dialogid == DIALOG_MISCSHOP2 && response)
 	{
 		if(GetPVarInt(playerid, "MiscShop") == 1)
 		{
-		    if(PlayerInfo[playerid][pCredits] < ShopItems[6][sItemPrice])
-		        return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[6][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			else if(PlayerInfo[playerid][pTable] == 1)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "You already own a poker table.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "You already own a poker table.");
 				
 			else
 			{
-			    AmountSold[6]++;
+				AmountSold[6]++;
 				AmountMade[6] += ShopItems[6][sItemPrice];
-			    //ShopItems[6][sSold]++;
+				//ShopItems[6][sSold]++;
 				//ShopItems[6][sMade] += ShopItems[6][sItemPrice];
 				new szQuery[128];
 				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold6` = '%d', `AmountMade6` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[6], AmountMade[6]);
-    			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			    GivePlayerCredits(playerid, -ShopItems[6][sItemPrice], 1);
-			    printf("Price6: %d", 250);
+				GivePlayerCredits(playerid, -ShopItems[6][sItemPrice], 1);
+				printf("Price6: %d", 250);
 				PlayerInfo[playerid][pTable] = 1;
 
 				format(string, sizeof(string), "[SHOPMISC] [User: %s(%i)] [IP: %s] [Credits: %s] [Pokertable] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[6][sItemPrice]));
@@ -14447,24 +15193,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 2)
 		{
-		    if(PlayerInfo[playerid][pCredits] < ShopItems[7][sItemPrice])
-		        return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[7][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			else if(PlayerInfo[playerid][pBoombox] == 1)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "You already own a boombox.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "You already own a boombox.");
 
 			else
 			{
 				AmountSold[7]++;
 				AmountMade[7] += ShopItems[7][sItemPrice];
-			    //ShopItems[7][sSold]++;
-		 		//ShopItems[7][sMade] += ShopItems[7][sItemPrice];
-		 		new szQuery[128];
-		 		format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold7` = '%d', `AmountMade7` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[7], AmountMade[7]);
-    			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				//ShopItems[7][sSold]++;
+				//ShopItems[7][sMade] += ShopItems[7][sItemPrice];
+				new szQuery[128];
+				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold7` = '%d', `AmountMade7` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[7], AmountMade[7]);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-			    GivePlayerCredits(playerid, -ShopItems[7][sItemPrice], 1);
-			    printf("Price7: %d", ShopItems[7][sItemPrice]);
+				GivePlayerCredits(playerid, -ShopItems[7][sItemPrice], 1);
+				printf("Price7: %d", ShopItems[7][sItemPrice]);
 				PlayerInfo[playerid][pBoombox] = 1;
 
 				format(string, sizeof(string), "[SHOPMISC] [User: %s(%i)] [IP: %s] [Credits: %s] [Boombox] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[7][sItemPrice]));
@@ -14477,12 +15223,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 3)
 		{
-		    if(PlayerInfo[playerid][pCredits] < ShopItems[8][sItemPrice])
-		        return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[8][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-            AmountSold[8]++;
+			AmountSold[8]++;
 			AmountMade[8] += ShopItems[8][sItemPrice];
-            //ShopItems[8][sSold]++;
+			//ShopItems[8][sSold]++;
 			//ShopItems[8][sMade] += ShopItems[8][sItemPrice];
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold8` = '%d', `AmountMade8` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[8], AmountMade[8]);
@@ -14501,12 +15247,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 4)
 		{
-		    if(PlayerInfo[playerid][pCredits] < ShopItems[9][sItemPrice])
-		        return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[9][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			AmountSold[9]++;
 			AmountMade[9] += ShopItems[9][sItemPrice];
-            //ShopItems[9][sSold]++;
+			//ShopItems[9][sSold]++;
 			//ShopItems[9][sMade] += ShopItems[9][sItemPrice];
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold9` = '%d', `AmountMade9` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[9], AmountMade[9]);
@@ -14525,12 +15271,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 5)
 		{
-		    if(PlayerInfo[playerid][pCredits] < ShopItems[10][sItemPrice])
-		        return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[10][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-            AmountSold[10]++;
+			AmountSold[10]++;
 			AmountMade[10] += ShopItems[10][sItemPrice];
-            //ShopItems[10][sSold]++;
+			//ShopItems[10][sSold]++;
 			//ShopItems[10][sMade] += ShopItems[10][sItemPrice];
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold10` = '%d', `AmountMade10` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[10], AmountMade[10]);
@@ -14548,14 +15294,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DeletePVar(playerid, "MiscShop");
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 6)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[22][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[22][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[22][sItemPrice], 1);
 			printf("Price22: %d", ShopItems[22][sItemPrice]);
 
-            AmountSold[22]++;
+			AmountSold[22]++;
 			AmountMade[22] += ShopItems[22][sItemPrice];
 			//ShopItems[22][sSold]++;
 			//ShopItems[22][sMade] += ShopItems[22][sItemPrice];
@@ -14571,16 +15317,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[Custom License Plate] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[22][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 		else if(GetPVarInt(playerid, "MiscShop") == 7) // Vehicle Slots
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[23][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[23][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[23][sItemPrice], 1);
 			printf("Price23: %d", ShopItems[23][sItemPrice]);		
 				
-            AmountSold[23]++;
+			AmountSold[23]++;
 			AmountMade[23] += ShopItems[23][sItemPrice];
 
 			
@@ -14595,16 +15341,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[Additional Vehicle Slot] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[23][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 		else if(GetPVarInt(playerid, "MiscShop") == 8) // Toy Slots
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[28][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[28][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[28][sItemPrice], 1);
 			printf("Price28: %d", ShopItems[28][sItemPrice]);		
 				
-            AmountSold[28]++;
+			AmountSold[28]++;
 			AmountMade[28] += ShopItems[28][sItemPrice];
 
 			
@@ -14619,16 +15365,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[Additional Toy Slot] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 		else if(GetPVarInt(playerid, "MiscShop") == 9) // Spawn at Gold VIP+ room
 		{
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[30][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[30][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[30][sItemPrice], 1);
 			printf("Price30: %d", ShopItems[30][sItemPrice]);		
 				
-            AmountSold[30]++;
+			AmountSold[30]++;
 			AmountMade[30] += ShopItems[30][sItemPrice];
 
 			
@@ -14760,177 +15506,267 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string, sizeof(string), "[Teamspeak User Channel] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[35][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
 		}
-		DeletePVar(playerid, "MiscShop");
+		else if(GetPVarInt(playerid, "MiscShop") == 15) // Small Backpack
+		{
+			if(PlayerInfo[playerid][pBackpack] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only purchase one backpack at a time, use /sellbackpack.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[36][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			GivePlayerCredits(playerid, -ShopItems[36][sItemPrice], 1);
+			printf("Price35: %d", ShopItems[36][sItemPrice]);
+
+			AmountSold[36]++;
+			AmountMade[36] += ShopItems[36][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold36` = '%d', `AmountMade36` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[36], AmountMade[36]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			
+			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+
+			PlayerInfo[playerid][pBEquipped] = 1;
+			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+			
+			PlayerInfo[playerid][pBackpack] = 1;
+			format(string, sizeof(string), "You have purchased a Small Backpack for %s credits.", number_format(ShopItems[36][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
+
+			format(string, sizeof(string), "[Small Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[36][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 16) // Medium Backpack
+		{
+			if(PlayerInfo[playerid][pBackpack] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only purchase one backpack at a time, use /sellbackpack.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[37][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			GivePlayerCredits(playerid, -ShopItems[37][sItemPrice], 1);
+			printf("Price35: %d", ShopItems[37][sItemPrice]);
+
+			AmountSold[37]++;
+			AmountMade[37] += ShopItems[37][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold37` = '%d', `AmountMade37` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[37], AmountMade[37]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+
+			PlayerInfo[playerid][pBEquipped] = 1;
+			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+			
+			PlayerInfo[playerid][pBackpack] = 2;
+			format(string, sizeof(string), "You have purchased a Medium Backpack for %s credits.", number_format(ShopItems[37][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
+
+			format(string, sizeof(string), "[Medium Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[37][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 17) // Large Backpack
+		{
+			if(PlayerInfo[playerid][pBackpack] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only purchase one backpack at a time, use /sellbackpack.");
+			if(PlayerInfo[playerid][pCredits] < ShopItems[38][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			GivePlayerCredits(playerid, -ShopItems[38][sItemPrice], 1);
+			printf("Price35: %d", ShopItems[38][sItemPrice]);
+
+			AmountSold[38]++;
+			AmountMade[38] += ShopItems[38][sItemPrice];
+
+			new szQuery[128];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold38` = '%d', `AmountMade38` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[38], AmountMade[38]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
+			
+			PlayerInfo[playerid][pBEquipped] = 1;
+			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+			
+			PlayerInfo[playerid][pBackpack] = 3;
+			format(string, sizeof(string), "You have purchased a Large Backpack for %s credits.", number_format(ShopItems[38][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
+
+			format(string, sizeof(string), "[Large Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[38][sItemPrice]));
+			Log("logs/credits.log", string), print(string);
+		}
+	    DeletePVar(playerid, "MiscShop");
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU)
 	{
-	    if(response)
-	    {
-	    	switch(listitem)
-	    	{
-	    	    case 0: //VIP Shop
-	    	    {
-	    	        SetPVarInt(playerid, "ShopCheckpoint", listitem+1);
-	    	        ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU8, DIALOG_STYLE_MSGBOX, "VIP Shop", "To purchase Bronze VIP, Silver VIP or Gold VIP you use /vipshop at one of the VIP points located outside each VIP Club.\n You can renew your Gold VIP by using /vipshop however you need to make sure that you have renewable Gold VIP.\n You can read the benefits of VIP on the Shop Control Panel or listed within /vipshop.", "Checkpoint", "Exit");
-	    	    }
-	    	    case 1:
-	    	    {
-	    	        ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Shop", "To purchase a house, change your house interior, or buy a house move from the shop, you can use /houseshop anywhere. \nYou can read more information regarding houses on the Shop Control Panel.", "Exit", "");
-	    	    }
-	    	    case 2:
-	    	    {
-	    	        ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Business Shop", "Want to buy a business or renew your current one? Use the command /businessshop and this will allow you to purchase a business or renew your current one.\n It is important that you read the business rules on the forums and read more about businesses on the Shop Control Panel. Note: The Purchase Business will list the available businesses for sale at that time.", "Exit", "");
-	    	    }
-	    	    case 3:
-	    	    {
-	    	        ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Toy Shop", "To purchase a custom toy use /toyshop at a clothing shop. This allows you to see the selection of toys available and purchase one by simply clicking on it!\n After purchasing the toy will be put in your toy slot.", "Exit", "");
-	     		}
-	        	case 4:
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: //VIP Shop
 				{
-				    ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Miscellaneous Shop", "To buy miscellaneous products such as poker tables and EXP tokens, visit any 24/7 business and use the /miscshop command.\n This will pop-up all the available miscellaneous products that are for sale. Keep an eye out as there are always new additions!", "Exit", "");
+					SetPVarInt(playerid, "ShopCheckpoint", listitem+1);
+					ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU8, DIALOG_STYLE_MSGBOX, "VIP Shop", "To purchase Bronze VIP, Silver VIP or Gold VIP you use /vipshop at one of the VIP points located outside each VIP Club.\n You can renew your Gold VIP by using /vipshop however you need to make sure that you have renewable Gold VIP.\n You can read the benefits of VIP on the Shop Control Panel or listed within /vipshop.", "Checkpoint", "Exit");
+				}
+				case 1:
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Shop", "To purchase a house, change your house interior, or buy a house move from the shop, you can use /houseshop anywhere. \nYou can read more information regarding houses on the Shop Control Panel.", "Exit", "");
+				}
+				case 2:
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Business Shop", "Want to buy a business or renew your current one? Use the command /businessshop and this will allow you to purchase a business or renew your current one.\n It is important that you read the business rules on the forums and read more about businesses on the Shop Control Panel. Note: The Purchase Business will list the available businesses for sale at that time.", "Exit", "");
+				}
+				case 3:
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Toy Shop", "To purchase a custom toy use /toyshop at a clothing shop. This allows you to see the selection of toys available and purchase one by simply clicking on it!\n After purchasing the toy will be put in your toy slot.", "Exit", "");
+				}
+				case 4:
+				{
+					ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Miscellaneous Shop", "To buy miscellaneous products such as poker tables and EXP tokens, visit any 24/7 business and use the /miscshop command.\n This will pop-up all the available miscellaneous products that are for sale. Keep an eye out as there are always new additions!", "Exit", "");
 				}
 				case 5:
 				{
-				    ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU2, DIALOG_STYLE_MSGBOX, "Car Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
+					ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU2, DIALOG_STYLE_MSGBOX, "Car Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
 				}
 				case 6:
 				{
-				    ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU3, DIALOG_STYLE_MSGBOX, "Plane Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
+					ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU3, DIALOG_STYLE_MSGBOX, "Plane Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
 				}
 				case 7:
 				{
-                    ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU5, DIALOG_STYLE_MSGBOX, "Boat Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
+					ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU5, DIALOG_STYLE_MSGBOX, "Boat Shop", "To purchase a custom car, you can use /carshop at locations from shipping docks and other locations.\n Using /carshop allows you to see the selection of cars available and purchase one by simply clicking on it!\n The car will be put into your car slot after you purchase.", "Checkpoint", "Exit");
 				}
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU8)
 	{
-	    if(response)
-	    {
-	         ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU9, DIALOG_STYLE_LIST, "Boat Shop Locater", "Los Santos\nSan Fierro\nLas Venturas", "Locate", "Cancel");
-	    }
+		if(response)
+		{
+			 ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU9, DIALOG_STYLE_LIST, "Boat Shop Locater", "Los Santos\nSan Fierro\nLas Venturas", "Locate", "Cancel");
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU9)
 	{
-	    if(response)
-	    {
-	        if(CheckPointCheck(playerid))
+		if(response)
+		{
+			if(CheckPointCheck(playerid))
 				return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 
-	        SetPVarInt(playerid, "ShopCheckpoint", 1);
+			SetPVarInt(playerid, "ShopCheckpoint", 1);
 			switch(listitem)
 			{
-			    case 0: SetPlayerCheckpoint(playerid, 1811.3344, -1569.4244, 13.4811, 5.0);
-			    case 1: SetPlayerCheckpoint(playerid, -2443.6013, 499.7480, 30.0906, 5.0);
-			    case 2: SetPlayerCheckpoint(playerid,  1934.1083, 1364.5004, 9.2578, 5.0);
+				case 0: SetPlayerCheckpoint(playerid, 1811.3344, -1569.4244, 13.4811, 5.0);
+				case 1: SetPlayerCheckpoint(playerid, -2443.6013, 499.7480, 30.0906, 5.0);
+				case 2: SetPlayerCheckpoint(playerid,  1934.1083, 1364.5004, 9.2578, 5.0);
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU5)
 	{
-	    if(response)
-	    {
-	         ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU6, DIALOG_STYLE_LIST, "Boat Shop Locater", "Los Santos\nSan Fierro\nBayside", "Locate", "Cancel");
-	    }
+		if(response)
+		{
+			 ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU6, DIALOG_STYLE_LIST, "Boat Shop Locater", "Los Santos\nSan Fierro\nBayside", "Locate", "Cancel");
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU6)
 	{
-	    if(response)
-	    {
-	        if(CheckPointCheck(playerid))
+		if(response)
+		{
+			if(CheckPointCheck(playerid))
 				return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 
-	        SetPVarInt(playerid, "ShopCheckpoint", 1);
+			SetPVarInt(playerid, "ShopCheckpoint", 1);
 			switch(listitem)
 			{
-			    case 0: SetPlayerCheckpoint(playerid, 723.1553, -1494.4547, 1.9343, 5.0);
-			    case 1: SetPlayerCheckpoint(playerid, -2975.8950, 505.1325, 2.4297, 5.0);
-			    case 2: SetPlayerCheckpoint(playerid, -2214.1636, 2422.4763, 2.496, 5.0);
+				case 0: SetPlayerCheckpoint(playerid, 723.1553, -1494.4547, 1.9343, 5.0);
+				case 1: SetPlayerCheckpoint(playerid, -2975.8950, 505.1325, 2.4297, 5.0);
+				case 2: SetPlayerCheckpoint(playerid, -2214.1636, 2422.4763, 2.496, 5.0);
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU3)
 	{
-	    if(response)
-	    {
-	         ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU4, DIALOG_STYLE_LIST, "Plane Shop Locater", "Los Santos Airport\nLas Venturas Airport", "Locate", "Cancel");
-	    }
+		if(response)
+		{
+			 ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU4, DIALOG_STYLE_LIST, "Plane Shop Locater", "Los Santos Airport\nLas Venturas Airport", "Locate", "Cancel");
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU4)
 	{
-	    if(response)
-	    {
-	        if(CheckPointCheck(playerid))
+		if(response)
+		{
+			if(CheckPointCheck(playerid))
 				return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 
-	        SetPVarInt(playerid, "ShopCheckpoint", 1);
+			SetPVarInt(playerid, "ShopCheckpoint", 1);
 			switch(listitem)
 			{
-			    case 0: SetPlayerCheckpoint(playerid, 1891.9105, -2279.6174, 13.5469, 5.0);
-			    case 1: SetPlayerCheckpoint(playerid, 1632.0836, 1551.7365, 10.8061, 5.0);
+				case 0: SetPlayerCheckpoint(playerid, 1891.9105, -2279.6174, 13.5469, 5.0);
+				case 1: SetPlayerCheckpoint(playerid, 1632.0836, 1551.7365, 10.8061, 5.0);
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU2)
 	{
-	    if(response)
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU7, DIALOG_STYLE_LIST, "Car Shop Locater", "Los Santos\nSan Fierro\nLas Venturas", "Locate", "Cancel");
+		if(response)
+		{
+			ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU7, DIALOG_STYLE_LIST, "Car Shop Locater", "Los Santos\nSan Fierro\nLas Venturas", "Locate", "Cancel");
 		}
 	}
 	if(dialogid == DIALOG_SHOPHELPMENU7)
 	{
-	    if(response)
-	    {
-	        if(CheckPointCheck(playerid))
+		if(response)
+		{
+			if(CheckPointCheck(playerid))
 				return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 
-	        SetPVarInt(playerid, "ShopCheckpoint", 1);
+			SetPVarInt(playerid, "ShopCheckpoint", 1);
 			switch(listitem)
 			{
-			    case 0: SetPlayerCheckpoint(playerid, 2280.5720, -2325.2490, 13.5469, 5.0);
-			    case 1: SetPlayerCheckpoint(playerid, -1731.1923, 127.4794, 3.2976, 5.0);
+				case 0: SetPlayerCheckpoint(playerid, 2280.5720, -2325.2490, 13.5469, 5.0);
+				case 1: SetPlayerCheckpoint(playerid, -1731.1923, 127.4794, 3.2976, 5.0);
 				case 2: SetPlayerCheckpoint(playerid, 1663.9569, 1628.5106, 10.8203, 5.0);
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_RENTACAR)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[20][sItemPrice])
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[20][sItemPrice])
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-            new
+			new
 				szQuery[215];
 
-            AmountSold[20]++;
+			AmountSold[20]++;
 			AmountMade[20] += ShopItems[20][sItemPrice];
 
-            //ShopItems[20][sSold]++;
+			//ShopItems[20][sSold]++;
 			//ShopItems[20][sMade] += ShopItems[20][sItemPrice];
 
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold20` = '%d', `AmountMade20` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[20], AmountMade[20]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			if(IsPlayerInRangeOfPoint(playerid, 4, 1102.8999, -1440.1669, 15.7969))
-            {
-                format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1060.4927,-1474.9323,13.1905,345.2816);
-            	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			{
+				format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1060.4927,-1474.9323,13.1905,345.2816);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-   				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1060.4927, -1474.9323, 13.1905, 345.2816, random(128), random(128), 2000000));
-            }
-            else if(IsPlayerInRangeOfPoint(playerid, 4, 1796.0620, -1588.5571, 13.4951))
-            {
-                format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617,13.1750, 76.7439);
-            	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1060.4927, -1474.9323, 13.1905, 345.2816, random(128), random(128), 2000000));
+			}
+			else if(IsPlayerInRangeOfPoint(playerid, 4, 1796.0620, -1588.5571, 13.4951))
+			{
+				format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617,13.1750, 76.7439);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-   				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617, 13.1750, 76.7439, random(128), random(128), 2000000));
-            }
+				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617, 13.1750, 76.7439, random(128), random(128), 2000000));
+			}
 
-            GivePlayerCredits(playerid, -ShopItems[20][sItemPrice], 1);
-            printf("Price20: %d", ShopItems[20][sItemPrice]);
+			GivePlayerCredits(playerid, -ShopItems[20][sItemPrice], 1);
+			printf("Price20: %d", ShopItems[20][sItemPrice]);
 			IsPlayerEntering{playerid} = true;
 			PutPlayerInVehicle(playerid, GetPVarInt(playerid, "RentedVehicle"), 0);
 
@@ -14943,17 +15779,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			SetPVarInt(playerid, "RentedHours", 180);
 			VehicleFuel[GetPVarInt(playerid, "RentedVehicle")] = 100;
-	    }
-	    DeletePVar(playerid, "VehicleID");
+		}
+		DeletePVar(playerid, "VehicleID");
 	}
 	if(dialogid == DIALOG_CARSHOP)
 	{
-	    if(response)
-	    {
-	    	if(PlayerInfo[playerid][pCredits] < ShopItems[5][sItemPrice])
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[5][sItemPrice])
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-	   		else if(!vehicleCountCheck(playerid))
+			else if(!vehicleCountCheck(playerid))
 				return ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Error", "You can't have any more vehicles, you own too many!", "OK", "");
 
 			else if(!vehicleSpawnCountCheck(playerid))
@@ -14961,38 +15797,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			else
 			{
-			    if(GetPVarType(playerid, "BoatShop"))
-			    {
-			        new createdcar;
-			        if(IsPlayerInRangeOfPoint(playerid, 4, -2214.1636, 2422.4763, 2.4961))
-            		{
-            		    createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2218.4795, 2424.9880, -0.3707, 314.4837, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            		}
-            		else if(IsPlayerInRangeOfPoint(playerid, 4, -2975.8950, 505.1325, 2.4297))
-            		{
-            		    createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2975.4841, 509.6216, -0.4241, 89.7179, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            		}
-            		else if(IsPlayerInRangeOfPoint(playerid, 4, 723.1553, -1494.4547, 1.9343))
-            		{
-            		    createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 723.4292, -1505.4899, -0.4145, 180.4212, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            		}
+				if(GetPVarType(playerid, "BoatShop"))
+				{
+					new createdcar;
+					if(IsPlayerInRangeOfPoint(playerid, 4, -2214.1636, 2422.4763, 2.4961))
+					{
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2218.4795, 2424.9880, -0.3707, 314.4837, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+					}
+					else if(IsPlayerInRangeOfPoint(playerid, 4, -2975.8950, 505.1325, 2.4297))
+					{
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2975.4841, 509.6216, -0.4241, 89.7179, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+					}
+					else if(IsPlayerInRangeOfPoint(playerid, 4, 723.1553, -1494.4547, 1.9343))
+					{
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 723.4292, -1505.4899, -0.4145, 180.4212, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+					}
 					else if(IsPlayerInRangeOfPoint(playerid, 4, 2974.7520, -1462.9265, 2.8184))
 					{
 						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 2996.4255, -1467.3026, 2.8184, 0, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 						DeletePVar(playerid, "ShopTP");
 					}
 
-			        GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
-			        printf("Price5: %d", ShopItems[5][sItemPrice]);
-			        IsPlayerEntering{playerid} = true;
+					GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
+					printf("Price5: %d", ShopItems[5][sItemPrice]);
+					IsPlayerEntering{playerid} = true;
 					PutPlayerInVehicle(playerid, createdcar, 0);
 					AmountSold[5]++;
 					AmountMade[5] += ShopItems[5][sItemPrice];
-			    	//ShopItems[5][sSold]++;
-				 	//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
-				 	new szQuery[128];
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
-    				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					//ShopItems[5][sSold]++;
+					//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
+					new szQuery[128];
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
+					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					new Float: arr_fPlayerPos[4];
 
@@ -15005,20 +15841,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 					DeletePVar(playerid, "BoatShop");
-			    }
-			    else
-			    {
-			    	GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
-			    	printf("Price5: %d", ShopItems[5][sItemPrice]);
+				}
+				else
+				{
+					GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
+					printf("Price5: %d", ShopItems[5][sItemPrice]);
 
-			    	AmountSold[5]++;
+					AmountSold[5]++;
 					AmountMade[5] += ShopItems[5][sItemPrice];
-			    	//ShopItems[5][sSold]++;
-				 	//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
+					//ShopItems[5][sSold]++;
+					//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
 
-				 	new szQuery[128];
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
-    				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					new szQuery[128];
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
+					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					new Float: arr_fPlayerPos[4], createdcar;
 
@@ -15042,7 +15878,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
-                    IsPlayerEntering{playerid} = true;
+					IsPlayerEntering{playerid} = true;
 					PutPlayerInVehicle(playerid, createdcar, 0);
 					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -15053,12 +15889,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_CARSHOP2)
 	{
-	    if(response)
-	    {
-	    	if(PlayerInfo[playerid][pCarVoucher] == 0)
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCarVoucher] == 0)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a restricted vehicle voucher. ");
 
-	   		else if(!vehicleCountCheck(playerid))
+			else if(!vehicleCountCheck(playerid))
 				return ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Error", "You can't have any more vehicles, you own too many!", "OK", "");
 
 			else if(!vehicleSpawnCountCheck(playerid))
@@ -15066,14 +15902,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			else
 			{
-			    PlayerInfo[playerid][pCarVoucher]--;
+				PlayerInfo[playerid][pCarVoucher]--;
 				new Float: arr_fPlayerPos[4], createdcar;
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
 				createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 				format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 				Log("logs/carvoucher.log", string), print(string);
-     			IsPlayerEntering{playerid} = true;
+				IsPlayerEntering{playerid} = true;
 				PutPlayerInVehicle(playerid, createdcar, 0);
 				format(string, sizeof(string), "[Car Shop] You have purchased a %s for 1 restricted car voucher.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400]);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -15083,275 +15919,275 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0: // Add Business
-	            {
-	                for (new i; i < sizeof(BusinessSales); i++)
-    				{
-    		    		if(BusinessSales[i][bAvailable] == 0)
-    		    		{
-    		    		    SetPVarInt(playerid, "EditingSale", i);
-    		    		    break;
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: // Add Business
+				{
+					for (new i; i < sizeof(BusinessSales); i++)
+					{
+						if(BusinessSales[i][bAvailable] == 0)
+						{
+							SetPVarInt(playerid, "EditingSale", i);
+							break;
 						}
 					}
-	                ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
-	            }
-	            case 1: // Edit Business
-	            {
-	                new Count, szDialog[500];
-	                for (new i; i < sizeof(BusinessSales); i++)
-    				{
-    		    		if(BusinessSales[i][bAvailable] == 1 || BusinessSales[i][bAvailable] == 3)
-    		    		{
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
+				}
+				case 1: // Edit Business
+				{
+					new Count, szDialog[500];
+					for (new i; i < sizeof(BusinessSales); i++)
+					{
+						if(BusinessSales[i][bAvailable] == 1 || BusinessSales[i][bAvailable] == 3)
+						{
 							format(szDialog, sizeof(szDialog), "%s\n(%d) %s | Type: %d | Credits: %s", szDialog, BusinessSales[i][bBusinessID], BusinessSales[i][bText],BusinessSales[i][bType], number_format(BusinessSales[i][bPrice]));
-                            Selected[playerid][Count] = i;
-    						Count++;
+							Selected[playerid][Count] = i;
+							Count++;
 						}
 					}
 					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS8, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	            }
-	            case 2: // View Businesses Sold
-	            {
-	                new Count, szDialog[500];
-	                for (new i; i < sizeof(BusinessSales); i++)
-    				{
-    		    		if(BusinessSales[i][bAvailable] == 2)
-    		    		{
+				}
+				case 2: // View Businesses Sold
+				{
+					new Count, szDialog[500];
+					for (new i; i < sizeof(BusinessSales); i++)
+					{
+						if(BusinessSales[i][bAvailable] == 2)
+						{
 							format(szDialog, sizeof(szDialog), "%s\n(Business ID: %d)%s | (Credits: %s) | Purchaser: %d", szDialog, BusinessSales[i][bBusinessID], BusinessSales[i][bText], number_format(BusinessSales[i][bPrice]), BusinessSales[i][bPurchased]);
-                            Selected[playerid][Count] = i;
-    						Count++;
+							Selected[playerid][Count] = i;
+							Count++;
 						}
 					}
 					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS7, DIALOG_STYLE_LIST, "Businesses Purchased", szDialog, "Reset", "Exit");
-	            }
-	        }
-	    }
+				}
+			}
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS8)
 	{
-	    if(response)
-	    {
-	        new szDialog[128];
-	        SetPVarInt(playerid, "BusinessList", listitem);
-	    	format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][listitem]][bBusinessID], BusinessSales[Selected[playerid][listitem]][bText],BusinessSales[Selected[playerid][listitem]][bType],
+		if(response)
+		{
+			new szDialog[128];
+			SetPVarInt(playerid, "BusinessList", listitem);
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][listitem]][bBusinessID], BusinessSales[Selected[playerid][listitem]][bText],BusinessSales[Selected[playerid][listitem]][bType],
 			number_format(BusinessSales[Selected[playerid][listitem]][bPrice]), BusinessSales[Selected[playerid][listitem]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Reset", "Exit");
-	    }
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Reset", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS9)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0: // Business ID
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS10, DIALOG_STYLE_INPUT, "Editing Business","Enter the business ID you wish to sell.", "Submit", "Back");
-	            }
-	            case 1: // Text
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
-	            }
-	            case 2: // Type
-	            {
-	                ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS12, DIALOG_STYLE_INPUT, "Editing Business","Enter the type of the business. (1-3)", "Submit", "Back");
-	            }
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: // Business ID
+				{
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS10, DIALOG_STYLE_INPUT, "Editing Business","Enter the business ID you wish to sell.", "Submit", "Back");
+				}
+				case 1: // Text
+				{
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
+				}
+				case 2: // Type
+				{
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS12, DIALOG_STYLE_INPUT, "Editing Business","Enter the type of the business. (1-3)", "Submit", "Back");
+				}
 				case 3: // Credits
 				{
-				    ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS13, DIALOG_STYLE_INPUT, "Editing Business","Enter the amount of credits needed to purchase the business.", "Submit", "Back");
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS13, DIALOG_STYLE_INPUT, "Editing Business","Enter the amount of credits needed to purchase the business.", "Submit", "Back");
 				}
 				case 4: // Available
 				{
 					if(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable] == 1)
 					{
-     					BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable] = 3;
-     					SendClientMessageEx(playerid, COLOR_CYAN, "That business is now unavailable for purchase.");
+						BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable] = 3;
+						SendClientMessageEx(playerid, COLOR_CYAN, "That business is now unavailable for purchase.");
 					}
 					else
 					{
-     					BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable] = 1;
-     					SendClientMessageEx(playerid, COLOR_CYAN, "That business is now available for purchase.");
+						BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable] = 1;
+						SendClientMessageEx(playerid, COLOR_CYAN, "That business is now available for purchase.");
 					}
 					new szDialog[128];
 					format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            		ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+					number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+					ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
 				}
-	        }
-	    }
-	    else
-	    {
-	        SaveBusinessSale(Selected[playerid][GetPVarInt(playerid, "BusinessList")]);
-	        DeletePVar(playerid, "BusinessList");
+			}
+		}
+		else
+		{
+			SaveBusinessSale(Selected[playerid][GetPVarInt(playerid, "BusinessList")]);
+			DeletePVar(playerid, "BusinessList");
 		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS13)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS13, DIALOG_STYLE_INPUT, "Editing Business","Enter the amount of credits needed to purchase the business.", "Submit", "Back");
 
 			if(BusinessID < 0)
-			    return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS13, DIALOG_STYLE_INPUT, "Editing Business","Enter the amount of credits needed to purchase the business.", "Submit", "Back");
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS13, DIALOG_STYLE_INPUT, "Editing Business","Enter the amount of credits needed to purchase the business.", "Submit", "Back");
 
 			new szDialog[128];
 			BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice] = BusinessID;
 			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 	number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
-	    else
-	    {
-	        new szDialog[128];
-	        format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 	number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
+			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
+		else
+		{
+			new szDialog[128];
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
+			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS12)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS12, DIALOG_STYLE_INPUT, "Editing Business","Enter the type of the business. (1-3)", "Submit", "Back");
 
 			if(BusinessID < 1 || BusinessID > 3)
-			    return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS12, DIALOG_STYLE_INPUT, "Editing Business","Enter the type of the business. (1-3)", "Submit", "Back");
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS12, DIALOG_STYLE_INPUT, "Editing Business","Enter the type of the business. (1-3)", "Submit", "Back");
 
 			new szDialog[128];
 			BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType] = BusinessID;
 			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 	number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
-	    else
-	    {
-	        new szDialog[128];
-	        format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 	number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
+			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
+		else
+		{
+			new szDialog[128];
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
+			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS11)
 	{
-	    if(response)
-	    {
-	        if(isnull(inputtext))
-		        return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
+		if(response)
+		{
+			if(isnull(inputtext))
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
 
-		    if(strlen(inputtext) > 128)
-                return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
+			if(strlen(inputtext) > 128)
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS11, DIALOG_STYLE_INPUT, "Editing Business","Enter the business description.", "Submit", "Back");
 
-            new szDialog[128];
-            strcpy(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText], inputtext, 128);
-            format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
+			new szDialog[128];
+			strcpy(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText], inputtext, 128);
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
 			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
-	    else
-	    {
-	        new szDialog[128];
-	        format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
+		else
+		{
+			new szDialog[128];
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
 			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS10)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS10, DIALOG_STYLE_INPUT, "Editing Business","Enter the business ID you wish to sell.", "Submit", "Back");
 
 			if(!IsValidBusinessID(BusinessID))
-			    return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS10, DIALOG_STYLE_INPUT, "Editing Business","Enter the business ID you wish to sell.", "Submit", "Back");
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS10, DIALOG_STYLE_INPUT, "Editing Business","Enter the business ID you wish to sell.", "Submit", "Back");
 
 			new szDialog[128];
 			BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID] = BusinessID;
 			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
 			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
-	    else
-	    {
-	        new szDialog[128];
-	        format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
-		 	number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
-	    }
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
+		else
+		{
+			new szDialog[128];
+			format(szDialog, sizeof(szDialog), "Business ID: %d\nText: %s\nType: %d\nCredits: %s\nAvailable: %d", BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bBusinessID], BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bText],BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bType],
+			number_format(BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bPrice]), BusinessSales[Selected[playerid][GetPVarInt(playerid, "BusinessList")]][bAvailable]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS9, DIALOG_STYLE_LIST, "Select business to edit.", szDialog, "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS7)
 	{
-	    if(response)
-	    {
-	        if(BusinessSales[Selected[playerid][listitem]][bAvailable] == 2) {
-	        	strcpy(BusinessSales[Selected[playerid][listitem]][bText], "None", 128);
-	        	BusinessSales[Selected[playerid][listitem]][bBusinessID] = -1;
-	        	BusinessSales[Selected[playerid][listitem]][bType] = 0;
-	        	BusinessSales[Selected[playerid][listitem]][bAvailable] = 0;
-	        	BusinessSales[Selected[playerid][listitem]][bPrice] = 0;
+		if(response)
+		{
+			if(BusinessSales[Selected[playerid][listitem]][bAvailable] == 2) {
+				strcpy(BusinessSales[Selected[playerid][listitem]][bText], "None", 128);
+				BusinessSales[Selected[playerid][listitem]][bBusinessID] = -1;
+				BusinessSales[Selected[playerid][listitem]][bType] = 0;
+				BusinessSales[Selected[playerid][listitem]][bAvailable] = 0;
+				BusinessSales[Selected[playerid][listitem]][bPrice] = 0;
 				SendClientMessageEx(playerid, COLOR_CYAN, "You have reset the business sale.");
 			}
 		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS2)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
 
 			if(!IsValidBusinessID(BusinessID))
-			    return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
 
 			for (new i; i < sizeof(BusinessSales); i++)
 			{
- 				if(BusinessSales[i][bBusinessID] == BusinessID)
-   				{
+				if(BusinessSales[i][bBusinessID] == BusinessID)
+				{
 					SendClientMessageEx(playerid, COLOR_GREY, "That business ID is already in use.");
 					return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS2, DIALOG_STYLE_INPUT, "Adding Business [1/4]","Enter the business ID you wish to sell.", "Next", "Cancel");
 				}
 			}
 			BusinessSales[GetPVarInt(playerid, "EditingSale")][bBusinessID] = BusinessID;
 			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS3, DIALOG_STYLE_INPUT, "Adding Business [2/4]", "Enter a description for the business.", "Next", "Cancel");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS3)
 	{
-	    if(response)
-	    {
-	        if(isnull(inputtext))
-		        return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS3, DIALOG_STYLE_INPUT, "Adding Business [2/4]", "Enter a description for the business.", "Next", "Cancel");
+		if(response)
+		{
+			if(isnull(inputtext))
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS3, DIALOG_STYLE_INPUT, "Adding Business [2/4]", "Enter a description for the business.", "Next", "Cancel");
 
-		    if(strlen(inputtext) > 128)
-                return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS3, DIALOG_STYLE_INPUT, "Adding Business [2/4]", "Enter a description for the business.", "Next", "Cancel");
+			if(strlen(inputtext) > 128)
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS3, DIALOG_STYLE_INPUT, "Adding Business [2/4]", "Enter a description for the business.", "Next", "Cancel");
 
-            strcpy(BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], inputtext, 128);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS4, DIALOG_STYLE_INPUT, "Adding Business [3/4]", "Enter the business type (1-3).", "Next", "Cancel");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	    }
+			strcpy(BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], inputtext, 128);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS4, DIALOG_STYLE_INPUT, "Adding Business [3/4]", "Enter the business type (1-3).", "Next", "Cancel");
+		}
+		else
+		{
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS4)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS4, DIALOG_STYLE_INPUT, "Adding Business [3/4]", "Enter the business type (1-3).", "Next", "Cancel");
 
 			if(BusinessID < 1 || BusinessID > 3)
@@ -15359,145 +16195,145 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			BusinessSales[GetPVarInt(playerid, "EditingSale")][bType] = BusinessID;
 			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS5, DIALOG_STYLE_INPUT, "Adding Business [4/4]", "Enter the amount of credits needed to purchase this business.", "Next", "Cancel");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	    }
+		}
+		else
+		{
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS5)
 	{
-	    if(response)
-	    {
-	        new BusinessID;
-	        if (sscanf(inputtext, "d", BusinessID))
+		if(response)
+		{
+			new BusinessID;
+			if (sscanf(inputtext, "d", BusinessID))
 				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS5, DIALOG_STYLE_INPUT, "Adding Business [4/4]", "Enter the amount of credits needed to purchase this business.", "Next", "Cancel");
 
 			if(BusinessID < 0)
-			    return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS5, DIALOG_STYLE_INPUT, "Adding Business [4/4]", "Enter the amount of credits needed to purchase this business.", "Next", "Cancel");
+				return ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS5, DIALOG_STYLE_INPUT, "Adding Business [4/4]", "Enter the amount of credits needed to purchase this business.", "Next", "Cancel");
 
-            BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice] = BusinessID;
-            format(string, sizeof(string), "Business ID: %d\nBusiness Description: %s\nBusiness Type: %d\nBusiness Price: %d", BusinessSales[GetPVarInt(playerid, "EditingSale")][bBusinessID], BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], BusinessSales[GetPVarInt(playerid, "EditingSale")][bType], BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice]);
-            ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS6, DIALOG_STYLE_MSGBOX, "Finalize Business Sale", string, "Submit Business", "Cancel");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	    }
+			BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice] = BusinessID;
+			format(string, sizeof(string), "Business ID: %d\nBusiness Description: %s\nBusiness Type: %d\nBusiness Price: %d", BusinessSales[GetPVarInt(playerid, "EditingSale")][bBusinessID], BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], BusinessSales[GetPVarInt(playerid, "EditingSale")][bType], BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice]);
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS6, DIALOG_STYLE_MSGBOX, "Finalize Business Sale", string, "Submit Business", "Cancel");
+		}
+		else
+		{
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_EDITSHOPBUSINESS6)
 	{
-	    if(response)
-	    {
-	        format(string, sizeof(string), "[EDITBUSINESSSHOP] [User: %s(%i)] [IP: %s] [BusinessID: %d] [Description: %s] [Type: %d] [Price: %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), BusinessSales[GetPVarInt(playerid, "EditingSale")][bBusinessID], BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], BusinessSales[GetPVarInt(playerid, "EditingSale")][bType], BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice]);
+		if(response)
+		{
+			format(string, sizeof(string), "[EDITBUSINESSSHOP] [User: %s(%i)] [IP: %s] [BusinessID: %d] [Description: %s] [Type: %d] [Price: %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), BusinessSales[GetPVarInt(playerid, "EditingSale")][bBusinessID], BusinessSales[GetPVarInt(playerid, "EditingSale")][bText], BusinessSales[GetPVarInt(playerid, "EditingSale")][bType], BusinessSales[GetPVarInt(playerid, "EditingSale")][bPrice]);
 			Log("logs/editshop.log", string), print(string);
 
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	        SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully submitted a business sale.");
-            BusinessSales[GetPVarInt(playerid, "EditingSale")][bAvailable] = 1;
-            SaveBusinessSale(GetPVarInt(playerid, "EditingSale"));
-            DeletePVar(playerid, "EditingSale");
-	    }
-	    else
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
-	    }
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+			SendClientMessageEx(playerid, COLOR_CYAN, "You have successfully submitted a business sale.");
+			BusinessSales[GetPVarInt(playerid, "EditingSale")][bAvailable] = 1;
+			SaveBusinessSale(GetPVarInt(playerid, "EditingSale"));
+			DeletePVar(playerid, "EditingSale");
+		}
+		else
+		{
+			ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+		}
 	}
 	if(dialogid == DIALOG_SHOPBUSINESS)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
-	            case 0:
-	            {
-	                new szDialog[500], Count;
-	        		for (new i; i < sizeof(BusinessSales); i++)
-    				{
-    		    		if(BusinessSales[i][bAvailable] == 1)
-    		    		{
-    						format(szDialog, sizeof(szDialog), "%s\n%s (Credits: %s)", szDialog, BusinessSales[i][bText], number_format(BusinessSales[i][bPrice]));
-    						Selected[playerid][Count] = i;
-    						Count++;
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+				{
+					new szDialog[500], Count;
+					for (new i; i < sizeof(BusinessSales); i++)
+					{
+						if(BusinessSales[i][bAvailable] == 1)
+						{
+							format(szDialog, sizeof(szDialog), "%s\n%s (Credits: %s)", szDialog, BusinessSales[i][bText], number_format(BusinessSales[i][bPrice]));
+							Selected[playerid][Count] = i;
+							Count++;
 						}
 					}
 					if(Count != 0)
 						ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS2, DIALOG_STYLE_LIST, "Businesses Shop", szDialog, "More Info", "Exit");
 					else
-					    SendClientMessageEx(playerid, COLOR_GREY, "No businesses are currently available.");
-	            }
-	            case 1:
-	            {
-	                if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pBusinessRank] < 5)
+						SendClientMessageEx(playerid, COLOR_GREY, "No businesses are currently available.");
+				}
+				case 1:
+				{
+					if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pBusinessRank] < 5)
 						return SendClientMessageEx(playerid, COLOR_GREY, "You don't currently own a business.");
 
 					if(Businesses[PlayerInfo[playerid][pBusiness]][bGrade] == 0)
-					    return SendClientMessageEx(playerid, COLOR_GREY, "An error has occured please contact the Director of Customer Relations.");
+						return SendClientMessageEx(playerid, COLOR_GREY, "An error has occured please contact the Director of Customer Relations.");
 
-                    ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS4, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
-	            }
-	        }
-	    }
+					ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS4, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
+				}
+			}
+		}
 	}
 	if(dialogid == DIALOG_SHOPBUSINESS4)
 	{
-	    if(response)
-	    {
-	    	new Prices;
-	    	SetPVarInt(playerid, "BusinessMonths", listitem+1);
-	    	switch (Businesses[PlayerInfo[playerid][pBusiness]][bGrade])
-	    	{
+		if(response)
+		{
+			new Prices;
+			SetPVarInt(playerid, "BusinessMonths", listitem+1);
+			switch (Businesses[PlayerInfo[playerid][pBusiness]][bGrade])
+			{
 				case 1: Prices = ShopItems[11][sItemPrice];
 				case 2: Prices = ShopItems[12][sItemPrice];
 				case 3: Prices = ShopItems[13][sItemPrice];
-	    	}
-	    	SetPVarInt(playerid, "BusinessPrice", (listitem+1)*Prices);
-	    	format(string, sizeof(string),"Business Renew\nGrade: %d\nExpires: %d Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", Businesses[PlayerInfo[playerid][pBusiness]][bGrade],listitem+1, number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "BusinessPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "BusinessPrice")));
-     		ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS5, DIALOG_STYLE_MSGBOX, "Purchase Business Renew", string, "Purchase", "Cancel");
+			}
+			SetPVarInt(playerid, "BusinessPrice", (listitem+1)*Prices);
+			format(string, sizeof(string),"Business Renew\nGrade: %d\nExpires: %d Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", Businesses[PlayerInfo[playerid][pBusiness]][bGrade],listitem+1, number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "BusinessPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "BusinessPrice")));
+			ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS5, DIALOG_STYLE_MSGBOX, "Purchase Business Renew", string, "Purchase", "Cancel");
 		}
 	}
 	if(dialogid == DIALOG_SHOPBUSINESS5)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pBusinessRank] < 5)
+		if(response)
+		{
+			if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pBusinessRank] < 5)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't currently own a business.");
 
-            new Prices;
-            Prices = GetPVarInt(playerid, "BusinessPrice");
+			new Prices;
+			Prices = GetPVarInt(playerid, "BusinessPrice");
 
-	    	if(PlayerInfo[playerid][pCredits] < Prices)
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < Prices)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			if(!GetPVarType(playerid, "BusinessMonths"))
-			    return SendClientMessageEx(playerid, COLOR_GREY, "An error has occurred please try again.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "An error has occurred please try again.");
 
 			new szQuery[128];
-            switch (Businesses[PlayerInfo[playerid][pBusiness]][bGrade])
-	    	{
+			switch (Businesses[PlayerInfo[playerid][pBusiness]][bGrade])
+			{
 				case 1:
 				{
-				    AmountSold[11]++;
+					AmountSold[11]++;
 					AmountMade[11] += Prices;
 					//ShopItems[11][sSold]++;
-				 	//ShopItems[11][sMade] += Prices;
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold11` = '%d', `AmountMade11` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[11], AmountMade[11]);
+					//ShopItems[11][sMade] += Prices;
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold11` = '%d', `AmountMade11` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[11], AmountMade[11]);
 				}
 				case 2:
 				{
-				    AmountSold[12]++;
+					AmountSold[12]++;
 					AmountMade[12] += Prices;
-			 		//ShopItems[12][sSold]++;
-			 		//ShopItems[12][sMade] += Prices;
-			 		format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold12` = '%d', `AmountMade12` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[12], AmountMade[12]);
+					//ShopItems[12][sSold]++;
+					//ShopItems[12][sMade] += Prices;
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold12` = '%d', `AmountMade12` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[12], AmountMade[12]);
 				}
 				case 3:
 				{
-				    AmountSold[13]++;
+					AmountSold[13]++;
 					AmountMade[13] += Prices;
-			 		//ShopItems[13][sSold]++;
-			 		//ShopItems[13][sMade] += Prices;
-			 		format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold13` = '%d', `AmountMade13` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[13], AmountMade[13]);
+					//ShopItems[13][sSold]++;
+					//ShopItems[13][sMade] += Prices;
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold13` = '%d', `AmountMade13` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[13], AmountMade[13]);
 				}
 			}
 
@@ -15512,37 +16348,37 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "You have successfully payed %s credits to renew your business for %d months.", number_format(Prices), Months);
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
-	    }
-	    DeletePVar(playerid, "BusinessMonths");
+		}
+		DeletePVar(playerid, "BusinessMonths");
 	}
 	if(dialogid == DIALOG_SHOPBUSINESS2)
 	{
-	    if(response)
-	    {
-	        format(string, sizeof(string),"Business: %s\nType: %d\nExpires: 1 Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", BusinessSales[Selected[playerid][listitem]][bText], BusinessSales[Selected[playerid][listitem]][bType], number_format(PlayerInfo[playerid][pCredits]), number_format(BusinessSales[Selected[playerid][listitem]][bPrice]), number_format(PlayerInfo[playerid][pCredits]-BusinessSales[Selected[playerid][listitem]][bPrice]));
-	        ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS3, DIALOG_STYLE_MSGBOX, "Purchase Business", string, "Purchase", "Cancel");
-	        SetPVarInt(playerid, "BusinessSaleID", BusinessSales[Selected[playerid][listitem]][bBusinessID]), SetPVarInt(playerid, "BusinessSale", Selected[playerid][listitem]);
-	    }
+		if(response)
+		{
+			format(string, sizeof(string),"Business: %s\nType: %d\nExpires: 1 Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", BusinessSales[Selected[playerid][listitem]][bText], BusinessSales[Selected[playerid][listitem]][bType], number_format(PlayerInfo[playerid][pCredits]), number_format(BusinessSales[Selected[playerid][listitem]][bPrice]), number_format(PlayerInfo[playerid][pCredits]-BusinessSales[Selected[playerid][listitem]][bPrice]));
+			ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS3, DIALOG_STYLE_MSGBOX, "Purchase Business", string, "Purchase", "Cancel");
+			SetPVarInt(playerid, "BusinessSaleID", BusinessSales[Selected[playerid][listitem]][bBusinessID]), SetPVarInt(playerid, "BusinessSale", Selected[playerid][listitem]);
+		}
 	}
 	if(dialogid == DIALOG_SHOPBUSINESS3)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice])
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "You already own a business.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "You already own a business.");
 
 			if(BusinessSales[GetPVarInt(playerid, "BusinessSale")][bAvailable] != 1)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "This business is not for sale anymore.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "This business is not for sale anymore.");
 
-            if (!IsValidBusinessID(GetPVarInt(playerid, "BusinessSaleID")))
+			if (!IsValidBusinessID(GetPVarInt(playerid, "BusinessSaleID")))
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "An error has occurred.");
 
-            BusinessSales[GetPVarInt(playerid, "BusinessSale")][bAvailable] = 2;
-	        GivePlayerCredits(playerid, -BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice], 1);
-	        BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPurchased] = GetPlayerSQLId(playerid);
+			BusinessSales[GetPVarInt(playerid, "BusinessSale")][bAvailable] = 2;
+			GivePlayerCredits(playerid, -BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPrice], 1);
+			BusinessSales[GetPVarInt(playerid, "BusinessSale")][bPurchased] = GetPlayerSQLId(playerid);
 
 			Businesses[GetPVarInt(playerid, "BusinessSaleID")][bOwner] = GetPlayerSQLId(playerid);
 			strcpy(Businesses[GetPVarInt(playerid, "BusinessSaleID")][bOwnerName], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
@@ -15566,67 +16402,67 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			Log("logs/credits.log", string), print(string);
 
 			for(new i = 0; i < MAX_BUSINESSSALES; i++) {
-     		   Selected[playerid][i] = 0;
+			   Selected[playerid][i] = 0;
 			}
-	    }
-	    DeletePVar(playerid, "BusinessSaleID");
-	    DeletePVar(playerid, "BusinessSale");
+		}
+		DeletePVar(playerid, "BusinessSaleID");
+		DeletePVar(playerid, "BusinessSale");
 	}
 	if(dialogid == DIALOG_HOUSESHOP)
 	{
-	    if(response)
-	    {
-	        new szDialog[180];
-	        switch(listitem)
-	        {
-	            case 0: // Purchase House
-	            {
-	    			format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[14][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[14][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP2, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
-	            }
-	            case 1: // House Interior Change
-	            {
-	                format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House Interior Change\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[15][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[15][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP3, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
-	            }
-	            case 2: // House Move
-	            {
-	                format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House Move\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[16][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[16][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP4, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
-	            }
+		if(response)
+		{
+			new szDialog[180];
+			switch(listitem)
+			{
+				case 0: // Purchase House
+				{
+					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[14][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[14][sItemPrice]));
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP2, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+				}
+				case 1: // House Interior Change
+				{
+					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House Interior Change\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[15][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[15][sItemPrice]));
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP3, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+				}
+				case 2: // House Move
+				{
+					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: House Move\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[16][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[16][sItemPrice]));
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP4, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+				}
 				case 3: // Small Garage
 				{
 					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: Garage - Small\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[24][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[24][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP5, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP5, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
 				}
 				case 4: // Medium Garage
 				{
 					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: Garage - Medium\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[25][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[25][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP6, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP6, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
 				}
 				case 5: // Large Garage
 				{
 					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: Garage - Large\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[26][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[26][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP7, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP7, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
 				}
 				case 6: // Large Garage
 				{
 					format(szDialog, sizeof(szDialog),"*You must contact a senior admin to have this issued.\n\n\nItem: Garage - Extra Large\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[27][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[27][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP8, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
+					ShowPlayerDialog( playerid, DIALOG_HOUSESHOP8, DIALOG_STYLE_MSGBOX, "House Shop", szDialog, "Purchase", "Cancel" );
 				}
-	        }
-	    }
+			}
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP2)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[14][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[14][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[14][sItemPrice], 1);
-            printf("Price14: %d", ShopItems[14][sItemPrice]);
-            AmountSold[14]++;
+			printf("Price14: %d", ShopItems[14][sItemPrice]);
+			AmountSold[14]++;
 			AmountMade[14] += ShopItems[14][sItemPrice];
 			//ShopItems[14][sSold]++;
 			//ShopItems[14][sMade] += ShopItems[14][sItemPrice];
@@ -15635,25 +16471,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House (Credits)");
-            SendReportToQue(playerid, "House (Credits)", 2, 2);
+			SendReportToQue(playerid, "House (Credits)", 2, 2);
 			format(string, sizeof(string), "You have purchased a house for %s credits.", number_format(ShopItems[14][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the house issued.");
 
 			format(string, sizeof(string), "[House] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[14][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP3)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[15][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[15][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[15][sItemPrice], 1);
-            printf("Price15: %d", ShopItems[15][sItemPrice]);
-            AmountSold[15]++;
+			printf("Price15: %d", ShopItems[15][sItemPrice]);
+			AmountSold[15]++;
 			AmountMade[15] += ShopItems[15][sItemPrice];
 			//ShopItems[15][sSold]++;
 			//ShopItems[15][sMade] += ShopItems[15][sItemPrice];
@@ -15669,18 +16505,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[House Interior Change] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[15][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP4)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[16][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[16][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[16][sItemPrice], 1);
-            printf("Price16: %d", ShopItems[16][sItemPrice]);
-            AmountSold[16]++;
+			printf("Price16: %d", ShopItems[16][sItemPrice]);
+			AmountSold[16]++;
 			AmountMade[16] += ShopItems[16][sItemPrice];
 			//ShopItems[16][sSold]++;
 			//ShopItems[16][sMade] += ShopItems[16][sItemPrice];
@@ -15689,25 +16525,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House Move (Credits)");
-            SendReportToQue(playerid, "House Move (Credits)", 2, 2);
+			SendReportToQue(playerid, "House Move (Credits)", 2, 2);
 			format(string, sizeof(string), "You have purchased a house move for %s credits.", number_format(ShopItems[16][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the house move issued.");
 
 			format(string, sizeof(string), "[House Move] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[16][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP5)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[24][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[24][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[24][sItemPrice], 1);
-            printf("Price24: %d", ShopItems[24][sItemPrice]);
-            AmountSold[24]++;
+			printf("Price24: %d", ShopItems[24][sItemPrice]);
+			AmountSold[24]++;
 			AmountMade[24] += ShopItems[24][sItemPrice];
 
 			new szQuery[128];
@@ -15719,25 +16555,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szQuery, sizeof(szQuery), "Garage - Small (VW: %d)", GarageVW);
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 			
-            SendReportToQue(playerid, szQuery, 2, 2);
+			SendReportToQue(playerid, szQuery, 2, 2);
 			format(string, sizeof(string), "You have purchased a small garage for %s credits.", number_format(ShopItems[24][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the small garage issued.");
 
 			format(string, sizeof(string), "[Garage - Small] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[24][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP6)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[25][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[25][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[25][sItemPrice], 1);
-            printf("Price25: %d", ShopItems[25][sItemPrice]);
-            AmountSold[25]++;
+			printf("Price25: %d", ShopItems[25][sItemPrice]);
+			AmountSold[25]++;
 			AmountMade[25] += ShopItems[25][sItemPrice];
 
 			new szQuery[128];
@@ -15749,25 +16585,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szQuery, sizeof(szQuery), "Garage - Medium (VW: %d)", GarageVW);
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 			
-            SendReportToQue(playerid, szQuery, 2, 2);
+			SendReportToQue(playerid, szQuery, 2, 2);
 			format(string, sizeof(string), "You have purchased a medium garage for %s credits.", number_format(ShopItems[25][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the medium garage issued.");
 
 			format(string, sizeof(string), "[Garage - Medium] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[25][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP7)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[26][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[26][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[26][sItemPrice], 1);
-            printf("Price26: %d", ShopItems[26][sItemPrice]);
-            AmountSold[26]++;
+			printf("Price26: %d", ShopItems[26][sItemPrice]);
+			AmountSold[26]++;
 			AmountMade[26] += ShopItems[26][sItemPrice];
 
 			new szQuery[128];
@@ -15779,25 +16615,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szQuery, sizeof(szQuery), "Garage - Large (VW: %d)", GarageVW);
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 			
-            SendReportToQue(playerid, szQuery, 2, 2);
+			SendReportToQue(playerid, szQuery, 2, 2);
 			format(string, sizeof(string), "You have purchased a large garage for %s credits.", number_format(ShopItems[26][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the large garage issued.");
 
 			format(string, sizeof(string), "[Garage - Large] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[26][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSESHOP8)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[27][sItemPrice])
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[27][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -ShopItems[27][sItemPrice], 1);
-            printf("Price27: %d", ShopItems[27][sItemPrice]);
-            AmountSold[27]++;
+			printf("Price27: %d", ShopItems[27][sItemPrice]);
+			AmountSold[27]++;
 			AmountMade[27] += ShopItems[27][sItemPrice];
 
 			new szQuery[128];
@@ -15809,94 +16645,94 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szQuery, sizeof(szQuery), "Garage - Extra Large (VW: %d)", GarageVW);
 			AddFlag(playerid, INVALID_PLAYER_ID, szQuery);
 			
-            SendReportToQue(playerid, szQuery, 2, 2);
+			SendReportToQue(playerid, szQuery, 2, 2);
 			format(string, sizeof(string), "You have purchased a extra large garage for %s credits.", number_format(ShopItems[27][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the extra large garage issued.");
 
 			format(string, sizeof(string), "[Garage - Extra Large] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[27][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HEALTHCARE)
 	{
-	    if(response)
-	    {
-	        switch(listitem)
-	        {
+		if(response)
+		{
+			switch(listitem)
+			{
 				case 0:
 				{
-				    new szDialog[160];
-				    format(szDialog, sizeof(szDialog), "When spawning from the hospital you will spawn with full health, and will be served a full meal.\n\nCost per hospital visit: {FFD700}%s{A9C4E4}", number_format(ShopItems[18][sItemPrice]));
-				    ShowPlayerDialog(playerid, DIALOG_HEALTHCARE2, DIALOG_STYLE_MSGBOX, "Advanced Health Care" , szDialog, "Activate", "Exit");
+					new szDialog[160];
+					format(szDialog, sizeof(szDialog), "When spawning from the hospital you will spawn with full health, and will be served a full meal.\n\nCost per hospital visit: {FFD700}%s{A9C4E4}", number_format(ShopItems[18][sItemPrice]));
+					ShowPlayerDialog(playerid, DIALOG_HEALTHCARE2, DIALOG_STYLE_MSGBOX, "Advanced Health Care" , szDialog, "Activate", "Exit");
 				}
 				case 1:
 				{
-				    new szDialog[160];
-				    SetPVarInt(playerid, "HealthCare", 1);
-				    format(szDialog, sizeof(szDialog), "When spawning from the hospital you will spawn 80%% faster, with full health, and be served a full meal.\n\nCost per hospital visit: {FFD700}%s{A9C4E4}", number_format(ShopItems[19][sItemPrice]));
-				    ShowPlayerDialog(playerid, DIALOG_HEALTHCARE2, DIALOG_STYLE_MSGBOX, "Super Advanced Health Care" , szDialog, "Activate", "Exit");
+					new szDialog[160];
+					SetPVarInt(playerid, "HealthCare", 1);
+					format(szDialog, sizeof(szDialog), "When spawning from the hospital you will spawn 80%% faster, with full health, and be served a full meal.\n\nCost per hospital visit: {FFD700}%s{A9C4E4}", number_format(ShopItems[19][sItemPrice]));
+					ShowPlayerDialog(playerid, DIALOG_HEALTHCARE2, DIALOG_STYLE_MSGBOX, "Super Advanced Health Care" , szDialog, "Activate", "Exit");
 				}
-	        }
+			}
 		}
 	}
 	if(dialogid == DIALOG_HEALTHCARE2)
 	{
-	    if(response)
+		if(response)
 		{
-		    if(!GetPVarType(playerid, "HealthCare")) // Advanced
-		    {
-		        PlayerInfo[playerid][pHealthCare] = 1;
-		        SendClientMessageEx(playerid, COLOR_CYAN, "You have enabled Advanced Health Care, type /togglehealthcare to disable it.");
-		    }
-		    else // Super Advanced
-		    {
-		        PlayerInfo[playerid][pHealthCare] = 2;
-		        SendClientMessageEx(playerid, COLOR_CYAN, "You have enabled Super Advanced Health Care, type /togglehealthcare to disable it.");
-		    }
-	    }
-	    DeletePVar(playerid, "HealthCare");
+			if(!GetPVarType(playerid, "HealthCare")) // Advanced
+			{
+				PlayerInfo[playerid][pHealthCare] = 1;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have enabled Advanced Health Care, type /togglehealthcare to disable it.");
+			}
+			else // Super Advanced
+			{
+				PlayerInfo[playerid][pHealthCare] = 2;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have enabled Super Advanced Health Care, type /togglehealthcare to disable it.");
+			}
+		}
+		DeletePVar(playerid, "HealthCare");
 	}
 	if(dialogid == DIALOG_VIPSHOP && response)
 	{
-	    if(listitem == 0)
-	    {
-	        ShowPlayerDialog(playerid, DIALOG_VIPSHOP2, DIALOG_STYLE_LIST, "Select which VIP you want to purchase.", "Bronze\nSilver\nGold", "Select", "Cancel");
-	    }
-	    else
-	    {
-	        if(PlayerInfo[playerid][pGVip] == 0) {
-		    	SendClientMessageEx(playerid, COLOR_GREY, "You have never purchased Gold VIP, so you can't renew it.");
+		if(listitem == 0)
+		{
+			ShowPlayerDialog(playerid, DIALOG_VIPSHOP2, DIALOG_STYLE_LIST, "Select which VIP you want to purchase.", "Bronze\nSilver\nGold", "Select", "Cancel");
+		}
+		else
+		{
+			if(PlayerInfo[playerid][pGVip] == 0) {
+				SendClientMessageEx(playerid, COLOR_GREY, "You have never purchased Gold VIP, so you can't renew it.");
 			}
 			else
 			{
-	        	ShowPlayerDialog(playerid, DIALOG_VIPSHOP3, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_VIPSHOP3, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
 			}
 		}
 	}
-    if(dialogid == DIALOG_VIPSHOP3 && response)
+	if(dialogid == DIALOG_VIPSHOP3 && response)
 	{
-	    new Months = listitem+1;
+		new Months = listitem+1;
 		SetPVarInt(playerid, "VIPType", 3), SetPVarInt(playerid, "VIPPrice", ShopItems[1][sItemPrice]*Months), SetPVarInt(playerid, "VIPMonths", Months), SetPVarInt(playerid, "GoldRenewal", 1);
 		format(string, sizeof(string),"Type: Gold VIP\nExpires: %d Month(s)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", listitem+1, number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "VIPPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "VIPPrice")));
 		ShowPlayerDialog( playerid, DIALOG_PURCHASEVIP, DIALOG_STYLE_MSGBOX, "Gold VIP Renew", string, "Purchase", "Cancel" );
 	}
 	if(dialogid == DIALOG_VIPSHOP2 && response)
 	{
-	    switch(listitem)
-	    {
-	        case 0:
-	        {
-	            new Message[520];
-	            Message = "Purple VIP name on the forums.\nVIP Forums Access\
+		switch(listitem)
+		{
+			case 0:
+			{
+				new Message[520];
+				Message = "Purple VIP name on the forums.\nVIP Forums Access\
 				\nVIP Chat\nVIP Garage with access to all the most select cars on the map.\nVIP Lounge\nFirst Aid Station [HP Refills]\nGun Locker \nAbility to get Pot and Crack using the jobs without having to wait for refills at the Drug House.";
-    			strcat(Message, "\nPreferred Pricing on Cars from the Dealership [20% off]\n24/7 VIP Pricing [20% Off]\nFree ATM Use \nFree Checking \nInvites to VIP Only Parties\nMax Hourly Interest Increase: $100k per paycheck");
+				strcat(Message, "\nPreferred Pricing on Cars from the Dealership [20% off]\n24/7 VIP Pricing [20% Off]\nFree ATM Use \nFree Checking \nInvites to VIP Only Parties\nMax Hourly Interest Increase: $100k per paycheck");
 				ShowPlayerDialog(playerid, DIALOG_VIPBRONZE, DIALOG_STYLE_MSGBOX, "Bronze VIP Features" , Message, "Continue", "Cancel" );
 			}
 			case 1:
 			{
-			    new Message[850];
-	            Message = "Purple VIP name on the forums. \n\
+				new Message[850];
+				Message = "Purple VIP name on the forums. \n\
 				VIP Forums Access \n\
 				VIP Chat \n\
 				VIP Garage with access to all the most select cars on the map. \n\
@@ -15907,7 +16743,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Preferred Pricing on Cars from the Dealership [20% off] \n\
 				24/7 VIP Pricing [20% Off]";
 
-    			strcat(Message, "\nFree ATM Use \n\
+				strcat(Message, "\nFree ATM Use \n\
 				Free Checking \n\
 				Invites to VIP Only Parties \n\
 				Caller ID \n\
@@ -15925,8 +16761,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 2:
 			{
-			    new Message[1000];
-	            Message = "Purple VIP name on the forums. \n\
+				new Message[1000];
+				Message = "Purple VIP name on the forums. \n\
 				VIP Forums Access \n\
 				Gold VIP Tag on TS. \n\
 				VIP Chat \n\
@@ -15939,7 +16775,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Full Health and Hunger after death \n\
 				24/7 VIP Pricing [20% Off]";
 
-    			strcat(Message, "\nFree ATM Use \n\
+				strcat(Message, "\nFree ATM Use \n\
 				Free Checking \n\
 				Invites to VIP Only Parties \n\
 				Caller ID \n\
@@ -15960,11 +16796,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				ShowPlayerDialog(playerid, DIALOG_VIPGOLD, DIALOG_STYLE_MSGBOX, "Gold VIP Features" , Message, "Continue", "Cancel" );
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_VIPBRONZE && response)
 	{
-	    ShowPlayerDialog(playerid, DIALOG_VIPBRONZE2, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
+		ShowPlayerDialog(playerid, DIALOG_VIPBRONZE2, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
 	}
 	if(dialogid == DIALOG_VIPBRONZE2 && response)
 	{
@@ -15975,33 +16811,33 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_VIPSILVER && response)
 	{
-	    ShowPlayerDialog(playerid, DIALOG_VIPSILVER2, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
+		ShowPlayerDialog(playerid, DIALOG_VIPSILVER2, DIALOG_STYLE_LIST, "Select how many months you wish to renew for.", "1 Month\n2 Months\n3 Months\n4 Months\n5 Months\n6 Months\n7 Months\n8 Months\n9 Months\n10 Months\n11 Months\n1 Year", "Select", "Cancel");
 	}
 	if(dialogid == DIALOG_VIPSILVER2 && response)
 	{
-	    new Months = listitem+1;
+		new Months = listitem+1;
 		SetPVarInt(playerid, "VIPType", 2), SetPVarInt(playerid, "VIPPrice", ShopItems[2][sItemPrice]*Months), SetPVarInt(playerid, "VIPMonths", Months);
 		format(string, sizeof(string),"Type: Silver VIP\nExpires: %d Month(s)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", listitem+1, number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "VIPPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "VIPPrice")));
 		ShowPlayerDialog( playerid, DIALOG_PURCHASEVIP, DIALOG_STYLE_MSGBOX, "Silver VIP", string, "Purchase", "Cancel" );
 	}
 	if(dialogid == DIALOG_VIPGOLD && response)
 	{
-	    SetPVarInt(playerid, "VIPMonths", 1), SetPVarInt(playerid, "VIPType", 3), SetPVarInt(playerid, "VIPPrice", ShopItems[0][sItemPrice]);
-	    format(string, sizeof(string),"Type: Gold VIP\nExpires: 1 Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "VIPPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "VIPPrice")));
-	    ShowPlayerDialog( playerid, DIALOG_PURCHASEVIP, DIALOG_STYLE_MSGBOX, "Gold VIP", string, "Purchase", "Cancel" );
+		SetPVarInt(playerid, "VIPMonths", 1), SetPVarInt(playerid, "VIPType", 3), SetPVarInt(playerid, "VIPPrice", ShopItems[0][sItemPrice]);
+		format(string, sizeof(string),"Type: Gold VIP\nExpires: 1 Month\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(GetPVarInt(playerid, "VIPPrice")), number_format(PlayerInfo[playerid][pCredits]-GetPVarInt(playerid, "VIPPrice")));
+		ShowPlayerDialog( playerid, DIALOG_PURCHASEVIP, DIALOG_STYLE_MSGBOX, "Gold VIP", string, "Purchase", "Cancel" );
 	}
 	if(dialogid == DIALOG_PURCHASEVIP)
 	{
-	    if(response)
-	    {
-	    	if(PlayerInfo[playerid][pCredits] < GetPVarInt(playerid, "VIPPrice"))
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < GetPVarInt(playerid, "VIPPrice"))
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			if(PlayerInfo[playerid][pDonateRank] != 0)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "You already have VIP, please wait for it to expire.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "You already have VIP, please wait for it to expire.");
 
 			if(GetPVarType(playerid, "VIPType") != 1)
-			    return SendClientMessageEx(playerid, COLOR_GREY, "An error has occured, please try again.");
+				return SendClientMessageEx(playerid, COLOR_GREY, "An error has occured, please try again.");
 
 
 			PlayerInfo[playerid][pDonateRank] = GetPVarInt(playerid, "VIPType");
@@ -16019,12 +16855,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				PlayerInfo[playerid][pVIPExpire] = (2592000*GetPVarInt(playerid, "VIPMonths"))+gettime();
 			}
-	  		else
-	  		{
-	            PlayerInfo[playerid][pVIPExpire] = 2592000+gettime();
+			else
+			{
+				PlayerInfo[playerid][pVIPExpire] = 2592000+gettime();
 			}
 
-            GivePlayerCredits(playerid, -GetPVarInt(playerid, "VIPPrice"), 1);
+			GivePlayerCredits(playerid, -GetPVarInt(playerid, "VIPPrice"), 1);
 
 			if(GetPVarInt(playerid, "VIPType") == 3)
 				PlayerInfo[playerid][pGVip] = 1;
@@ -16033,9 +16869,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			if(GetPVarType(playerid, "GoldRenewal"))
 			{
-			    AmountSold[1]++;
+				AmountSold[1]++;
 				AmountMade[1] += GetPVarInt(playerid, "VIPPrice");
-			    VIPType = "Gold";
+				VIPType = "Gold";
 				//ShopItems[1][sMade] += GetPVarInt(playerid, "VIPPrice");
 				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold1` = '%d', `AmountMade1` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[1], AmountMade[1]);
 				DeletePVar(playerid, "GoldRenewal");
@@ -16043,7 +16879,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				switch(GetPVarInt(playerid, "VIPType")) {
-				    case 1:
+					case 1:
 					{
 						VIPType = "Bronze";
 						AmountSold[3]++;
@@ -16054,12 +16890,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 2:
 					{
-					 	VIPType = "Silver";
-					 	AmountSold[2]++;
+						VIPType = "Silver";
+						AmountSold[2]++;
 						AmountMade[2] += GetPVarInt(playerid, "VIPPrice");
-					  	//ShopItems[2][sSold]++;
-				 		//ShopItems[2][sMade] += GetPVarInt(playerid, "VIPPrice");
-				 		format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold2` = '%d', `AmountMade2` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[2], AmountMade[2]);
+						//ShopItems[2][sSold]++;
+						//ShopItems[2][sMade] += GetPVarInt(playerid, "VIPPrice");
+						format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold2` = '%d', `AmountMade2` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[2], AmountMade[2]);
 					}
 					case 3:
 					{
@@ -16073,10 +16909,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 
-    		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "You have purchased %s VIP (%d Month(s)) for %s credits.", VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
-	  		SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
 
 			format(string, sizeof(string), "[VIP %i] [User: %s(%i)] [IP: %s] [Credits: %s] [VIP: %s(%d)] [Price: %s]", PlayerInfo[playerid][pVIPM], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
 			Log("logs/credits.log", string), Log("logs/setvip.log", string), print(string);
@@ -16087,47 +16923,47 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_SHOPGIFTRESET)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < ShopItems[17][sItemPrice])
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[17][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			PlayerInfo[playerid][pGiftTime] = 0;
 
 			GivePlayerCredits(playerid, -ShopItems[17][sItemPrice], 1);
-            printf("Price18: %d", ShopItems[17][sItemPrice]);
-            format(string, sizeof(string), "You have purchased gift timer reset for %s credits.", number_format(ShopItems[17][sItemPrice]));
-	  		SendClientMessageEx(playerid, COLOR_CYAN, string);
+			printf("Price18: %d", ShopItems[17][sItemPrice]);
+			format(string, sizeof(string), "You have purchased gift timer reset for %s credits.", number_format(ShopItems[17][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
 
-            AmountSold[17]++;
+			AmountSold[17]++;
 			AmountMade[17] += ShopItems[17][sItemPrice];
-	  		//ShopItems[17][sSold]++;
+			//ShopItems[17][sSold]++;
 			//ShopItems[17][sMade] += ShopItems[17][sItemPrice];
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold17` = '%d', `AmountMade17` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[17], AmountMade[17]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-            format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Gift Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]));
+			format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Gift Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPTOTRESET)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < 20)
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < 20)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			PlayerInfo[playerid][pTrickortreat] = 0;
 
 			GivePlayerCredits(playerid, -20, 1);
-            format(string, sizeof(string), "You have purchased a Holiday timer reset for %s credits.", number_format(20));
-	  		SendClientMessageEx(playerid, COLOR_CYAN, string);
+			format(string, sizeof(string), "You have purchased a Holiday timer reset for %s credits.", number_format(20));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
 
-            
-            format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Special Holiday Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(20));
+			
+			format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Special Holiday Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(20));
 			Log("logs/zombiecure.log", string), print(string);
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HALLOWEENSHOP)
 	{
@@ -16147,22 +16983,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_HALLOWEENSHOP1)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			if(PumpkinStock <= 0)
 				return SendClientMessageEx(playerid, COLOR_GREY, "This limited item has sold out!");
-	        if(PlayerInfo[playerid][pCredits] < 75)
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			if(PlayerInfo[playerid][pCredits] < 75)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -75, 1);
 			PumpkinStock--;
-            format(string, sizeof(string), "You have purchased the Pumpkin Toy for %s credits.", number_format(75));
-	  		SendClientMessageEx(playerid, COLOR_CYAN, string);
+			format(string, sizeof(string), "You have purchased the Pumpkin Toy for %s credits.", number_format(75));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
-            
-            format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Pumpkin Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(75));
+			
+			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Pumpkin Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(75));
 			Log("logs/zombiecure.log", string), print(string);	
 			
 			new icount = GetPlayerToySlots(playerid);
@@ -16214,23 +17050,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}	
 			}
 
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HALLOWEENSHOP2)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pCredits] < 60)
-	    	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pCredits] < 60)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
 			GivePlayerCredits(playerid, -60, 1);
-            format(string, sizeof(string), "You have purchased the Spiked Club Toy for %s credits.", number_format(120));
-	  		SendClientMessageEx(playerid, COLOR_CYAN, string);
+			format(string, sizeof(string), "You have purchased the Spiked Club Toy for %s credits.", number_format(120));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
-            
-            format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Club Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(60));
+			
+			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Club Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(60));
 			Log("logs/zombiecure.log", string), print(string);
 			
 			new icount = GetPlayerToySlots(playerid);
@@ -16282,20 +17118,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}	
 			}
 
-	    }
+		}
 	}
 	if(dialogid == DIALOG_SHOPNEON && response)
 	{
-	    switch(listitem)
-	    {
-	        case 0: SetPVarInt(playerid, "ToyID", 18647);
+		switch(listitem)
+		{
+			case 0: SetPVarInt(playerid, "ToyID", 18647);
 			case 1: SetPVarInt(playerid, "ToyID", 18648);
 			case 2: SetPVarInt(playerid, "ToyID", 18649);
 			case 3: SetPVarInt(playerid, "ToyID", 18650);
 			case 4: SetPVarInt(playerid, "ToyID", 18651);
 			case 5: SetPVarInt(playerid, "ToyID", 18652);
-	    }
-	    new stringg[512], icount = GetPlayerToySlots(playerid);
+		}
+		new stringg[512], icount = GetPlayerToySlots(playerid);
 		for(new z;z<icount;z++)
 		{
 			new name[24];
@@ -16315,35 +17151,35 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_SHOPBUYTOYS && response)
 	{
-	    new name[24];
-	    for(new i;i<sizeof(HoldingObjectsShop);i++)
-	    {
+		new name[24];
+		for(new i;i<sizeof(HoldingObjectsShop);i++)
+		{
 			if(HoldingObjectsShop[i][holdingmodelid] == GetPVarInt(playerid, "ToyID"))
-       		{
+			{
 				format(name, sizeof(name), "%s", HoldingObjectsShop[i][holdingmodelname]);
 			}
 		}
 		format(string, sizeof(string), "Item: %s\n\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[4][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[4][sItemPrice]));
- 		ShowPlayerDialog(playerid, DIALOG_SHOPBUYTOYS2, DIALOG_STYLE_MSGBOX, "Toy Shop", string, "Purchase", "Cancel");
- 		SetPVarInt(playerid, "ToySlot", listitem);
+		ShowPlayerDialog(playerid, DIALOG_SHOPBUYTOYS2, DIALOG_STYLE_MSGBOX, "Toy Shop", string, "Purchase", "Cancel");
+		SetPVarInt(playerid, "ToySlot", listitem);
 	}
 	if((dialogid == DIALOG_SHOPBUYTOYS2) && response)
 	{
 		if(PlayerInfo[playerid][pCredits] < ShopItems[4][sItemPrice])
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits for that item. Purchase some credits at shop.ng-gaming.net");
+			SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits for that item. Purchase some credits at shop.ng-gaming.net");
 		}
 		else
 		{
-		    if(!toyCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough toy slots, you may purchase more via /toys");
+			if(!toyCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough toy slots, you may purchase more via /toys");
 
-	    	if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
+			if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] != 0) return SendClientMessageEx(playerid, COLOR_YELLOW, "* You already have something in that slot. Delete it with /toys");
 
-            new name[24];
-	    	for(new i;i<sizeof(HoldingObjectsShop);i++)
-	    	{
+			new name[24];
+			for(new i;i<sizeof(HoldingObjectsShop);i++)
+			{
 				if(HoldingObjectsShop[i][holdingmodelid] == GetPVarInt(playerid, "ToyID"))
-       			{
+				{
 					format(name, sizeof(name), "%s", HoldingObjectsShop[i][holdingmodelname]);
 				}
 			}
@@ -16356,27 +17192,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			//ShopItems[4][sMade] += ShopItems[4][sItemPrice];
 			new szQuery[1024];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold4` = '%d', `AmountMade4` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[4], AmountMade[4]);
-    		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "[TOY %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Toy: %s] [Price: %s]", AmountSold[4], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), name, number_format(ShopItems[4][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
 
-		    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = GetPVarInt(playerid, "ToyID");
+			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptModelID] = GetPVarInt(playerid, "ToyID");
 
-		    new modelid = GetPVarInt(playerid, "ToyID");
-		    if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
-		    {
-		        PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			new modelid = GetPVarInt(playerid, "ToyID");
+			if((modelid >= 19006 && modelid <= 19035) || (modelid >= 19138 && modelid <= 19140))
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.9;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.35;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotX] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 90.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
-		    }
-		    else if(modelid >= 18891 && modelid <= 18910)
-		    {
-		    	PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+			}
+			else if(modelid >= 18891 && modelid <= 18910)
+			{
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.15;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -16396,7 +17232,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid >= 18911 && modelid <= 18920)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.1;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.035;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -16406,7 +17242,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(modelid == 19078 || modelid == 19078)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 16;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0;
@@ -16416,7 +17252,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if((modelid >= 18641 && modelid <= 18644) || (modelid >= 19080 && modelid <= 19084) || modelid == 18890)
 			{
-			    PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 6;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosZ] = 0.0;
@@ -16424,8 +17260,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotY] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptRotZ] = 0.0;
 			}
-		    else
-		    {
+			else
+			{
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = 2;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosX] = 0.0;
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptPosY] = 0.0;
@@ -16442,15 +17278,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			g_mysql_NewToy(playerid, GetPVarInt(playerid, "ToySlot"));
 
 			format(string, sizeof(string), "You have purchased %s for %s credits. (Slot: %d)", name, number_format(ShopItems[4][sItemPrice]), GetPVarInt(playerid, "ToySlot"));
-		    SendClientMessageEx(playerid, COLOR_CYAN, string);
-		    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Use /toys to wear/edit this");
 			DeletePVar(playerid, "ToyID"), DeletePVar(playerid, "ToySlot");
 		}
 	}
 	if(dialogid == DIALOG_SELLCREDITS)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			if(GetPVarInt(GetPVarInt(playerid, "CreditsSeller"), "CreditsSeller") != playerid)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "The other player has disconnected please try again.");
@@ -16462,8 +17298,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(PlayerInfo[GetPVarInt(playerid, "CreditsSeller")][pCredits] < GetPVarInt(playerid, "CreditsAmount"))
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "The seller didn't have enough credits.");
-			    SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "You don't have enough credits.");
+				SendClientMessageEx(playerid, COLOR_GREY, "The seller didn't have enough credits.");
+				SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "You don't have enough credits.");
 				DeletePVar(playerid, "CreditsOffer");
 				DeletePVar(playerid, "CreditsAmount");
 				DeletePVar(playerid, "CreditsSeller");
@@ -16472,13 +17308,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(GetPlayerCash(playerid) < GetPVarInt(playerid, "CreditsOffer"))
 			{
- 				SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough money to accept the offer.");
- 				SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "That player does not have enough money to accept your offer.");
-		 		DeletePVar(playerid, "CreditsOffer");
-		 		DeletePVar(playerid, "CreditsAmount");
-		 		DeletePVar(playerid, "CreditsSeller");
-		 		DeletePVar(playerid, "CreditsFirstAmount");
-		 		return 1;
+				SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough money to accept the offer.");
+				SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "That player does not have enough money to accept your offer.");
+				DeletePVar(playerid, "CreditsOffer");
+				DeletePVar(playerid, "CreditsAmount");
+				DeletePVar(playerid, "CreditsSeller");
+				DeletePVar(playerid, "CreditsFirstAmount");
+				return 1;
 			}
 			new szMessage[156];
 
@@ -16509,32 +17345,32 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You have declined the credits offer.");
-		    SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "Your credits offer has been declined.");
+			SendClientMessageEx(playerid, COLOR_GREY, "You have declined the credits offer.");
+			SendClientMessageEx(GetPVarInt(playerid, "CreditsSeller"), COLOR_GREY, "Your credits offer has been declined.");
 		}
-	    DeletePVar(playerid, "CreditsOffer");
-	    DeletePVar(playerid, "CreditsAmount");
-	    DeletePVar(playerid, "CreditsSeller");
-	    DeletePVar(playerid, "CreditsFirstAmount");
+		DeletePVar(playerid, "CreditsOffer");
+		DeletePVar(playerid, "CreditsAmount");
+		DeletePVar(playerid, "CreditsSeller");
+		DeletePVar(playerid, "CreditsFirstAmount");
 	}
 	if(dialogid == DIALOG_TACKLED)
 	{
-	    if(response) // complying
-	    {
-	        SetPVarInt(playerid, "TackledResisting", 1);
-	    }
+		if(response) // complying
+		{
+			SetPVarInt(playerid, "TackledResisting", 1);
+		}
 		else // resisting
 		{
-		    SetPVarInt(playerid, "TackledResisting", 2);
-		    format(string, sizeof(string), "** %s struggles with %s, attempting to escape.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "IsTackled")));
+			SetPVarInt(playerid, "TackledResisting", 2);
+			format(string, sizeof(string), "** %s struggles with %s, attempting to escape.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "IsTackled")));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 	}
 	if(dialogid == DIALOG_RIMMOD)
 	{
-	    if(response)
-	    {
-	        new szRims[24];
+		if(response)
+		{
+			new szRims[24];
 			switch(listitem)
 			{
 				case 0: SetPVarInt(playerid, "RimMod", 1025), szRims = "Offroad";
@@ -16554,22 +17390,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 14: SetPVarInt(playerid, "RimMod", 1096), szRims = "Ahab";
 				case 15: SetPVarInt(playerid, "RimMod", 1097), szRims = "Virtual";
 				case 16: SetPVarInt(playerid, "RimMod", 1098), szRims = "Access";
-  			}
-  			new szMessage[128];
-  			format(szMessage, 128, "You are about to place %s rims on this vehicle.", szRims);
+			}
+			new szMessage[128];
+			format(szMessage, 128, "You are about to place %s rims on this vehicle.", szRims);
 			ShowPlayerDialog(playerid, DIALOG_RIMMOD2, DIALOG_STYLE_MSGBOX, "Confirm Rims", szMessage, "Confirm", "Deny");
-	    }
+		}
 	}
 	if(dialogid == DIALOG_RIMMOD2)
 	{
-	    if(response)
-	    {
-	        if(PlayerInfo[playerid][pRimMod] == 0)
-	            return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any rim modification kits.");
+		if(response)
+		{
+			if(PlayerInfo[playerid][pRimMod] == 0)
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any rim modification kits.");
 
 			if(InvalidModCheck(GetVehicleModel(GetPlayerVehicleID(playerid)), 1025))
 			{
-                for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
+				for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 				{
 					if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
 					{
@@ -16581,7 +17417,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						AddVehicleComponent(GetPlayerVehicleID(playerid), GetPVarInt(playerid, "RimMod"));
 						DeletePVar(playerid, "RimMod");
-	        			UpdatePlayerVehicleMods(playerid, d);
+						UpdatePlayerVehicleMods(playerid, d);
 						return 1;
 					}
 				}
@@ -16589,9 +17425,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    SendClientMessageEx(playerid, COLOR_GREY, "That vehicle can't be modded with rims.");
+				SendClientMessageEx(playerid, COLOR_GREY, "That vehicle can't be modded with rims.");
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_PVIPVOUCHER)
 	{
@@ -16600,7 +17436,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerInfo[playerid][pPVIPVoucher]--;
 			PlayerInfo[playerid][pTotalCredits] = ShopItems[21][sItemPrice];
 			
-		    PlayerInfo[playerid][pDonateRank] = 4;
+			PlayerInfo[playerid][pDonateRank] = 4;
 			PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
 			PlayerInfo[playerid][pTempVIP] = 0;
 			PlayerInfo[playerid][pBuddyInvited] = 0;
@@ -16654,48 +17490,48 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}	
 	if(dialogid == PBFORCE)
 	{
-	    new giveplayerid = GetPVarInt(playerid, "tempPBP");
-	    DeletePVar(playerid, "tempPSP");
-	    if(response)
-	    {
+		new giveplayerid = GetPVarInt(playerid, "tempPBP");
+		DeletePVar(playerid, "tempPSP");
+		if(response)
+		{
 			if(PlayerInfo[playerid][pAdmin] >= 2)
 			{
-		        if(IsPlayerConnected(giveplayerid))
-		        {
-                    if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
-			        {
-			            LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
-			            format(string, sizeof(string), "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));
-			            SendClientMessageEx(playerid, COLOR_WHITE, string);
-			            format(string, sizeof(string), "You have been forced out of paintball by %s.", GetPlayerNameEx(playerid));
-			            SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-			        }
-			        else
-			        {
-			            SendClientMessageEx(playerid, COLOR_WHITE, "This user is not in an active paintball match.");
-			        }
+				if(IsPlayerConnected(giveplayerid))
+				{
+					if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
+					{
+						LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
+						format(string, sizeof(string), "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						format(string, sizeof(string), "You have been forced out of paintball by %s.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "This user is not in an active paintball match.");
+					}
 				}
 				else
 				{
-				    SendClientMessageEx(playerid, COLOR_GRAD2, "This user has logged off.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This user has logged off.");
 				}
 			}
-	    }
-	    else
-	    {
-	        if(PlayerInfo[playerid][pAdmin] >= 2)
-	        {
-		        if(IsPlayerConnected(giveplayerid))
-		        {
-			        format(string, sizeof(string), "%s will remain in the paintball match.", GetPlayerNameEx(giveplayerid));
-			        SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
+		else
+		{
+			if(PlayerInfo[playerid][pAdmin] >= 2)
+			{
+				if(IsPlayerConnected(giveplayerid))
+				{
+					format(string, sizeof(string), "%s will remain in the paintball match.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
 				else
 				{
-				    SendClientMessageEx(playerid, COLOR_GRAD2, "This user has logged off.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This user has logged off.");
 				}
 			}
-	    }
+		}
 	}
 	if(dialogid == DIALOG_HOUSEINVITE)
 	{

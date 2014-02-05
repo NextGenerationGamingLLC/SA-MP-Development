@@ -112,7 +112,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		INVALID_CALL_ID 			-1
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
-#define 		MAX_ITEMS 					(36)
+#define 		MAX_ITEMS 					(39)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001
@@ -771,6 +771,7 @@ native gpci(playerid, serial[], maxlen);
 #define         DIALOG_CREATEPIN2           (4850)
 
 #define         DIALOG_VIEWSALE             (4855)
+#define         DIALOG_VIEWSALE2            (4856)
 
 #define         DIALOG_SHOPGIFTRESET        (4860)
 #define			DIALOG_SHOPTOTRESET			(4861)
@@ -862,6 +863,16 @@ native gpci(playerid, serial[], maxlen);
 
 #define 		DIALOG_NONRPACTION			(5081)
 #define			DIALOG_WATCHLIST			(5082)
+
+#define 		DIALOG_BACKPACKS			(5085)
+#define 		DIALOG_OBACKPACK			(5086)
+#define 		DIALOG_BFOOD				(5087)
+#define 		DIALOG_BNARCOTICS			(5088)
+#define 		DIALOG_BNARCOTICS2			(5089)
+#define 		DIALOG_BNARCOTICS3			(5090)
+#define 		DIALOG_BGUNS				(5091)
+#define 		DIALOG_BGUNS2				(5092)
+#define 		DIALOG_BMEALSTORE			(5093)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
