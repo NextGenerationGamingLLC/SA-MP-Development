@@ -54227,7 +54227,7 @@ CMD:rflchangename(playerid, params[])
 
 CMD:buyhotdog(playerid, params[])
 {
-	if(!IsPlayerInRangeOfPoint(playerid, 10.0, -2450.6028, 161.1246, 35.1210) && !IsPlayerInRangeOfPoint(playerid, 4.0, 2958.0425, -1393.6724, 5.5500)) 
+	if(!IsPlayerInRangeOfPoint(playerid, 10.0, -2450.6028, 161.1246, 35.1210) && !IsPlayerInRangeOfPoint(playerid, 4.0, 2958.0425, -1393.6724, 5.5500) && !IsPlayerInRangeOfPoint(playerid, 4.0, 300.4977, 200.2298, 1104.3500))
 		return SendClientMessage(playerid, COLOR_GREY, "You are not at a hot dog stand.");
 	if(GetPlayerCash(playerid) < 500) return SendClientMessage(playerid, COLOR_GREY, "You need $500 to buy a hot dog.");
 	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Hot Dog' for $500.");

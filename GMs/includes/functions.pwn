@@ -12828,6 +12828,11 @@ stock IsAtBar(playerid)
 			//Syndicate HQ Bar
 			return 1;
 		}
+		else if(IsPlayerInRangeOfPoint(playerid,10.0,300.4993, 203.9201, 1104.3500))
+		{
+			//SHIELD HQ Bar
+			return 1;
+		}
 		else if(IsPlayerInRangeOfPoint(playerid,10.0,252.205978, -54.826644, 1.577644))
 		{
 			//Red County Liquor Store
