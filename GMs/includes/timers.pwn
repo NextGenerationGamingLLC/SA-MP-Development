@@ -1934,7 +1934,7 @@ task ServerHeartbeat[1000]() {
 				SetPlayerPos(i, 2914.0706, -2263.0193, 7.2367);
 			}
 			if(GetPVarInt(i, "BackpackDisabled") > 0)
-				SetPVarInt(i, "BackpackDisabled", GetPVarInt(i, "BackpackDisabled"));
+				SetPVarInt(i, "BackpackDisabled", GetPVarInt(i, "BackpackDisabled")-1);
 			else
 				DeletePVar(i, "BackpackDisabled");
 		}	

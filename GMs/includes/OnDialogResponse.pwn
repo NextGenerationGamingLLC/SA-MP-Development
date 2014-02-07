@@ -2282,7 +2282,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 1: {
 							new myweapons[2], itemcount;
 							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0])
+							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2291,7 +2291,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 10, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0] && PlayerInfo[playerid][pAGuns][10] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2300,7 +2300,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2331,7 +2331,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 2, 3: {
 							new myweapons[2], itemcount;
 							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0])
+							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2340,7 +2340,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 10, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][10] == myweapons[0] && PlayerInfo[playerid][pAGuns][10] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2349,7 +2349,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2358,7 +2358,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 3, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][3] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][3] == myweapons[0] && PlayerInfo[playerid][pAGuns][3] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2367,7 +2367,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 4, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][4] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][4] == myweapons[0] && PlayerInfo[playerid][pAGuns][4] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2376,7 +2376,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 5, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][5] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][5] == myweapons[0] && PlayerInfo[playerid][pAGuns][5] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2385,7 +2385,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 6, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][6] == myweapons[0])
+							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][6] == myweapons[0] && PlayerInfo[playerid][pAGuns][6] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -4547,7 +4547,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerInfo[playerid][pRingtone] = 0;
 				}
 			}
-			RemovePlayerAttachedObject(playerid, 9);
+			RemovePlayerAttachedObject(playerid, 8);
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		}
 	}
@@ -15521,7 +15521,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold36` = '%d', `AmountMade36` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[36], AmountMade[36]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			
+			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 
 			PlayerInfo[playerid][pBEquipped] = 1;
@@ -15551,7 +15552,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold37` = '%d', `AmountMade37` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[37], AmountMade[37]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
+			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 
 			PlayerInfo[playerid][pBEquipped] = 1;
@@ -15581,7 +15583,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold38` = '%d', `AmountMade38` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[38], AmountMade[38]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
+			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
 			SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 			
 			PlayerInfo[playerid][pBEquipped] = 1;

@@ -313,7 +313,7 @@ CMD:placekit(playerid, params[]) {
 				}
 				else if(PlayerInfo[playerid][pBItems][5] > 2 && PlayerInfo[playerid][pBackpack] == 3)
 				{
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "Your backpack size only lets you store 2 med kit.");
+					return SendClientMessageEx(playerid, COLOR_GRAD1, "Your backpack size only lets you store 3 med kit.");
 				}
 				format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and places a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have loaded the Med Kit in to your backpack. /usekit to use it.");
@@ -7003,8 +7003,8 @@ CMD:aobject(playerid, params[])
 	}
 	else
 	{
-		if(IsPlayerAttachedObjectSlotUsed(id, 9)) RemovePlayerAttachedObject(id, 9);
-		SetPlayerAttachedObject(id, 9, objectid, bone, offsetx, offsety, offsetz, rotx, roty, rotz, scalex, scaley, scalez);
+		if(IsPlayerAttachedObjectSlotUsed(id, 8)) RemovePlayerAttachedObject(id, 8);
+		SetPlayerAttachedObject(id, 8, objectid, bone, offsetx, offsety, offsetz, rotx, roty, rotz, scalex, scaley, scalez);
 		new string[256];
 		format(string, sizeof(string), "%s has given %s object ID %d with /aobject", GetPlayerNameEx(playerid), GetPlayerNameEx(id), objectid);
 		Log("logs/toys.log", string);
@@ -11904,6 +11904,8 @@ CMD:accept(playerid, params[])
 						return 1;
 					}
 					new btype[8];
+					if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
 					switch(PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack])
 					{
 						case 1: 
@@ -20789,41 +20791,43 @@ CMD:siren(playerid, params[])
 	{
 	    if(GetPVarType(playerid, "Siren"))
 		{
-  			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
-    		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1);
+			/* freeslot = FindFreeAttachedObjectSlot(playerid);
+			if(freeslot == -1) { RemovePlayerAttachedObject(playerid, 8), freeslot = 8; } */
+  			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3);
+    		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
       		DeletePVar(playerid, "Siren");
       		SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
 			return 1;
 		}
 	    else if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	    {
+			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3);
 			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
-			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1);
 			switch(GetVehicleModel(GetPlayerVehicleID(playerid)))
 			{
 				case 415:
 				{
+					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.20, 0.30, 0.3, -90, -30, 0);
 					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.20, 0.30, 0.3, -90, -30, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1, 18646, 10, -0.20, 0.30, 0.3, -90, -30, 0);
 				}
 				case 402:
 				{
+					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.20, 0.5, 0.4, -90, -50, 0);
 					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.20, 0.5, 0.4, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1, 18646, 10, -0.20, 0.5, 0.4, -90, -50, 0);
 				}
 				case 541, 411:
 				{
+					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, 0.0, 0.2, 0.4, -90, -30, 0);
 					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, 0.0, 0.2, 0.4, -90, -30, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1, 18646, 10, 0.0, 0.2, 0.4, -90, -30, 0);
 				}
 				case 451: {
+					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.30, 0.4, 0.6, -90, -50, 0);
 					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.30, 0.4, 0.6, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1, 18646, 10, -0.30, 0.4, 0.6, -90, -50, 0);
 				}
 				default:
 				{
+					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.30, 0.4, 0.4, -90, -50, 0);
 					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.30, 0.4, 0.4, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 1, 18646, 10, -0.30, 0.4, 0.4, -90, -50, 0);
 				}
 			}
 			SetPVarInt(playerid, "Siren", 1);
@@ -28463,15 +28467,15 @@ CMD:trunkput(playerid, params[])
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
 	}	
+	else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid weapon name!"); return 1; }
 	if(weapon == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that weapon.");
 	if(PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] == 0)
 	{
 		PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] = weapon;
 		RemovePlayerWeapon(playerid, weapon);
 		g_mysql_SaveVehicle(playerid, pvid);
-		return 1;
 	}
-	else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid weapon name!"); return 1; }
+	return 1;
 }
 
 CMD:trunktake(playerid, params[]) {
@@ -30951,7 +30955,7 @@ CMD:call(playerid, params[])
 							//SendRingtoneToArea(playerid, 100, rX, rY, rZ);
 							//SendAudioToPlayer(playerid, 60, 100);
 							CellTime[playerid] = 1;
-							SetPlayerAttachedObject(playerid, 9, 330, 6);
+							SetPlayerAttachedObject(playerid, 8, 330, 6);
 							return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 						}
 					}
@@ -31123,7 +31127,7 @@ CMD:pickup(playerid, params[])
 				format(string, sizeof(string), "* %s answers their cellphone.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RingTone[playerid] = 0;
-				SetPlayerAttachedObject(playerid, 9, 330, 6);
+				SetPlayerAttachedObject(playerid, 8, 330, 6);
 				return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 			}
 		}	
@@ -31162,8 +31166,8 @@ CMD:hangup(playerid,params[])
 		Mobile[playerid] = INVALID_PLAYER_ID;
 		CellTime[playerid] = 0;
 		RingTone[playerid] = 0;
-		RemovePlayerAttachedObject(playerid, 9);
-		RemovePlayerAttachedObject(caller, 9);
+		RemovePlayerAttachedObject(playerid, 8);
+		RemovePlayerAttachedObject(caller, 8);
 		SetPlayerSpecialAction(caller, SPECIAL_ACTION_STOPUSECELLPHONE);
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		return 1;
@@ -31299,10 +31303,10 @@ CMD:acceptcall(playerid, params[])
 				format(string, sizeof(string), "You have accepted %s's call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(Calls[callid][CallFrom]));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				Mobile[playerid] = Calls[callid][CallFrom];
-				SetPlayerAttachedObject(playerid, 9, 330, 6);
+				SetPlayerAttachedObject(playerid, 8, 330, 6);
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 				Mobile[Calls[callid][CallFrom]] = playerid;
-				SetPlayerAttachedObject(Calls[callid][CallFrom], 9, 330, 6);
+				SetPlayerAttachedObject(Calls[callid][CallFrom], 8, 330, 6);
 				SetPlayerSpecialAction(Calls[callid][CallFrom], SPECIAL_ACTION_USECELLPHONE);
 				PlayerInfo[playerid][pCallsAccepted]++;
 				Calls[callid][RespondingID] = playerid;
@@ -43335,6 +43339,7 @@ CMD:wt(playerid, params[])
 	if(PlayerToyInfo[playerid][toyslot-1][ptModelID] != 0)
 	{
 		new toycount = GetFreeToySlot(playerid);
+		if(PlayerInfo[playerid][pBEquipped] && toycount == 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use attach this toy since you have your backpack equipped.");
 		PlayerHoldingObject[playerid][toycount] = toyslot;
 		SetPlayerAttachedObject(playerid, toycount-1,
 			PlayerToyInfo[playerid][toyslot-1][ptModelID],
@@ -43365,7 +43370,7 @@ CMD:dt(playerid, params[])
 	{
 		if(PlayerHoldingObject[playerid][i] == toyslot)
 		{
-			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1) && !PlayerInfo[playerid][pBEquipped])
 			{
 				RemovePlayerAttachedObject(playerid, i-1);
 				PlayerHoldingObject[playerid][i] = 0;
@@ -43389,8 +43394,16 @@ CMD:wat(playerid, params[])
 			PlayerToyInfo[playerid][x][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][x][ptScaleZ] = 1.0;
 		}
-		if(PlayerToyInfo[playerid][x][ptModelID] != 0) SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
-		PlayerHoldingObject[playerid][x+1] = x+1;
+		if(x == 9 && !PlayerInfo[playerid][pBEquipped] && PlayerToyInfo[playerid][x][ptModelID] != 0) 
+		{
+			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
+			PlayerHoldingObject[playerid][x+1] = x+1;
+		}
+		else if(PlayerToyInfo[playerid][x][ptModelID] != 0) 
+		{
+			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
+			PlayerHoldingObject[playerid][x+1] = x+1;
+		}
 		if(count == 10)
 			break;
 	}
@@ -43400,10 +43413,10 @@ CMD:wat(playerid, params[])
 CMD:dat(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "* Deattached all toys.");
-	for(new x;x<MAX_PLAYERTOYS;x++)
-	{
-		RemovePlayerAttachedObject(playerid, x);
-    }
+	for(new x;x<MAX_PLAYERTOYS;x++) {
+		if(x == 9 && !PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, x);
+		else RemovePlayerAttachedObject(playerid, x);
+	}
 	for(new i; i < 11; i++)
 	{
 		PlayerHoldingObject[playerid][i] = 0;
@@ -58737,6 +58750,8 @@ CMD:bwear(playerid, params[])
 			}
 			if(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[pvid][hInteriorX], HouseInfo[pvid][hInteriorY], HouseInfo[pvid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[pvid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[pvid][hIntIW])
 			{
+				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 
@@ -58824,7 +58839,7 @@ CMD:bstore(playerid, params[])
 		{
 			if(Homes[playerid] > 0)
 			{
-				new hid;
+				new hid = -1;
 				for(new i; i < MAX_HOUSES; i++)
 				{
 					if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) 
