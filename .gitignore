@@ -1,3 +1,7 @@
 # Compiled sources
 GMs/NGRP.amx
 
+FSs/Mapping/PlayerInteriors.amx
+FSs/Mapping/PlayerExteriors.amx
+FSs/Mapping/PlayerExteriors.amx
+*.amx
