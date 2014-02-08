@@ -6644,6 +6644,7 @@ CMD:upgrade(playerid, params[])
 						GameTextForPlayer(playerid,"~r~Vehicle Gunlocker Upgraded!",5000,6);
 						PlayerPlaySound(playerid, 1145, 0.0, 0.0, 0.0);
 						PlayerVehicleInfo[playerid][d][pvWepUpgrade]++;
+						PlayerVehicleInfo[playerid][d][pvWeapons][PlayerVehicleInfo[playerid][d][pvWepUpgrade]] = 0;
 						PlayerInfo[playerid][gPupgrade] = PlayerInfo[playerid][gPupgrade]-2;
 						SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased a new car locker space.");
 						format(string, sizeof(string), "HINT: To use your car lockers, the commands are /trunkput and /trunktake. You have %d locker spaces available.", PlayerVehicleInfo[playerid][d][pvWepUpgrade]+1);
@@ -9581,6 +9582,15 @@ CMD:accept(playerid, params[])
                             new Float:slx, Float:sly, Float:slz;
                             GetPlayerPos(VehicleOffer[playerid], slx, sly, slz);
                             SetPlayerPos(VehicleOffer[playerid], slx, sly, slz+2);
+							if(PlayerInfo[VehicleOffer[playerid]][pBackpack] > 0 && PlayerInfo[VehicleOffer[playerid]][pBStoredV] == PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId])
+							{
+								PlayerInfo[VehicleOffer[playerid]][pBackpack] = 0;
+								PlayerInfo[VehicleOffer[playerid]][pBEquipped] = 0;
+								PlayerInfo[VehicleOffer[playerid]][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+								PlayerInfo[VehicleOffer[playerid]][pBStoredH] = INVALID_HOUSE_ID;
+								SendClientMessageEx(VehicleOffer[playerid], COLOR_WHITE, "You have lost your backpack since you did not withdraw it");
+
+							}
                             PlayerVehicleInfo[playerid][playervehicleid][pvId] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId];
                             PlayerVehicleInfo[playerid][playervehicleid][pvModelId] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvModelId];
                             PlayerVehicleInfo[playerid][playervehicleid][pvPosX] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosX];
@@ -9672,6 +9682,14 @@ CMD:accept(playerid, params[])
 					if(House[playerid] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_RED, "Error: No house specified.");
                     if(GetPlayerCash(playerid) > HousePrice[playerid])
 					{
+						if(PlayerInfo[HouseOffer[playerid]][pBackpack] > 0 && PlayerInfo[HouseOffer[playerid]][pBStoredH] == HouseInfo[House[playerid]][hSQLId])
+						{
+							PlayerInfo[HouseOffer[playerid]][pBackpack] = 0;
+							PlayerInfo[HouseOffer[playerid]][pBEquipped] = 0;
+							PlayerInfo[HouseOffer[playerid]][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+							PlayerInfo[HouseOffer[playerid]][pBStoredH] = INVALID_HOUSE_ID;
+							SendClientMessageEx(HouseOffer[playerid], COLOR_WHITE, "You have lost your backpack since you did not withdraw it");
+						}
                         ClearHouse(House[playerid]);
                         HouseInfo[House[playerid]][hLock] = 1;
                         format(HouseInfo[House[playerid]][hOwnerName], 128, "Nobody");
@@ -23783,6 +23801,11 @@ CMD:sellmycar(playerid, params[])
 	{
         if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
  		{
+			if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBStoredV] == PlayerVehicleInfo[playerid][d][pvSlotId] && !GetPVarInt(playerid, "confirmvehsell")) 
+			{
+				SetPVarInt(playerid, "confirmvehsell", 1);
+				return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You have a backpack stored in this car, withdraw it first or you will loose it, please confirm!");
+			}
             new Float:health;
             GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], health);
             if(PlayerInfo[playerid][pLevel] == 1)
@@ -23838,6 +23861,7 @@ CMD:sellmycar(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
                 format(string, sizeof(string), "* %s has offered you their %s (VID: %d) for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], number_format(price));
                 SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				DeletePVar(playerid, "confirmvehsell");
                 return 1;
             }
             else
@@ -23878,6 +23902,11 @@ CMD:sellmyhouse(playerid, params[])
 				{
 					if(ProxDetectorS(8.0, playerid, giveplayerid) && GetPlayerVirtualWorld(giveplayerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(giveplayerid) == HouseInfo[i][hExtIW])
 					{
+						if(PlayerInfo[playerid][pBackpack] > 0 && HouseInfo[i][hSQLId] == PlayerInfo[playerid][pBStoredH] && !GetPVarInt(playerid, "confirmhousell")) 
+						{
+							SetPVarInt(playerid, "confirmhousell", 1);
+							return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You have a backpack stored in this house, withdraw it first or you will loose it, please confirm!");
+						}
 						HouseOffer[giveplayerid] = playerid;
 						HousePrice[giveplayerid] = price;
 						House[giveplayerid] = i;
@@ -23885,6 +23914,7 @@ CMD:sellmyhouse(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 						format(string, sizeof(string), "* %s has offered you their house for $%s, (type /accept house) to buy.", GetPlayerNameEx(playerid), number_format(price));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						DeletePVar(playerid, "confirmhousell");
 						return 1;
 					}
 					else return SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you.");
@@ -58913,7 +58943,7 @@ CMD:backpackhelp(playerid, params[])
 	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 1 Meal\nNarcotics Storage: 30 Grams\nFirearms Storage: 1 Weapon(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Medium Backpack\nFood Storage: 3 Meal\nNarcotics Storage: 50 Grams\nFirearms Storage: 2 Weapons(Handguns or Handgun & Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", bdialog, number_format(ShopItems[37][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 5 Meal\nNarcotics Storage: 80 Grams\nFirearms Storage: 4 Weapons(2 Handguns & 2 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack (/miscshop to buy one with credits)", bdialog);
+	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", bdialog);
 	
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", bdialog, "Exit", "");
     return 1;

@@ -16481,9 +16481,7 @@ stock LeavePaintballArena(playerid, arenaid)
   		SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "pbOldX"), GetPVarFloat(playerid, "pbOldY"), GetPVarFloat(playerid, "pbOldZ"));
 		SetPlayerHealth(playerid, GetPVarFloat(playerid, "pbOldHealth"));
-		if(GetPVarFloat(playerid, "pbOldArmor") > 0) {
-			SetPlayerArmor(playerid, GetPVarFloat(playerid, "pbOldArmor"));
-		}
+		SetPlayerArmor(playerid, GetPVarFloat(playerid, "pbOldArmor"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "pbOldVW"));
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "pbOldInt"));
 		PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "pbOldVW");
@@ -17347,9 +17345,9 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 		PlayerVehicleInfo[playerid][playervehicleid][pvVW] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvInt] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = -1;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = -1;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = -1;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
         PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = 0;
@@ -18478,9 +18476,9 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvVW] = VW;
 		PlayerVehicleInfo[playerid][playervehicleid][pvInt] = Int;
 		PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = -1;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = -1;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = -1;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
         PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = 0;
