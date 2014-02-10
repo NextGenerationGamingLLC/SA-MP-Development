@@ -16110,7 +16110,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 stock RemoveBuildingsFromPlayer(playerid)
 {
-	if(BuildingRemoved[playerid] == 1)
+	if(BuildingRemoved[playerid] == 0)
 	{
 		//SF VIP Lounge Exterior
 		RemoveBuildingForPlayer(playerid, 10662, -2453.6563, 514.5000, 24.4375, 0.25);
