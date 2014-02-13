@@ -5879,7 +5879,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 				return 1;
 			}
-			if(strval(inputtext) == 16 || strval(inputtext) == 18 || strval(inputtext) == 4)
+			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 				return 1;			
@@ -5912,7 +5912,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 				return 1;
 			}
-			if(strval(inputtext) == 16 || strval(inputtext) == 18 || strval(inputtext) == 4)
+			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 				return 1;			
@@ -5945,7 +5945,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 				return 1;
 			}
-			if(strval(inputtext) == 16 || strval(inputtext) == 18 || strval(inputtext) == 4)
+			if(strval(inputtext) == 16 || strval(inputtext) == 18)
 			{
 				ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 				return 1;			
