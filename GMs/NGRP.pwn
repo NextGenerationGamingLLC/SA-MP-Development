@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.057"
+#define SERVER_GM_TEXT "NG:RP v3.0.058"
 
 
 
@@ -87,7 +87,7 @@
 #include <crashdetect>
 #include <YSI\y_timers>
 #include <YSI\y_utils>
-#include <fuckhacks> // Akatony's Anticheat ;)
+//#include <fuckhacks> // Akatony's Anticheat ;)
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
@@ -103,6 +103,8 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
+
+#pragma unused DynamicBusiness
 
 main() {}
 
