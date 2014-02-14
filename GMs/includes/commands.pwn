@@ -27209,7 +27209,7 @@ CMD:v(playerid, params[]) {
 
 			new szMessage[128];
 			
-			if(PlayerInfo[playerid][pAdmin] > 2 && GetPVarInt(playerid, "Undercover") == 0)
+			if(PlayerInfo[playerid][pAdmin] >= 2 && GetPVarInt(playerid, "Undercover") == 0)
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
