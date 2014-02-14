@@ -964,7 +964,7 @@ new hgPlayerCount,
 	hgCountdown,
 	hgBackpackCount,
 	hgActive;	
-	
+
 SSCANF:storeitem(string[])
 {
 	if (!strcmp(string, "cellphone", true)) return ITEM_CELLPHONE;
@@ -1146,6 +1146,8 @@ new dgMoney[4], dgRimKit[4], dgFirework[4], dgGVIP[4], dgGVIPEx[4], dgSVIP[4], d
 	dgRespectPoint[4], dgCarVoucher[4], dgBuddyInvite[4], dgLaser[4], dgCustomToy[4], dgAdmuteReset[4], dgNewbieMuteReset[4], dgRestrictedCarVoucher[4], dgPlatinumVIPVoucher[4];
 
 new bool: IsDynamicGiftBoxEnabled = false;
+
+new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
 
 new Float:JoinCameraPosition[8][3] = {
 	{2211.1460, -1748.3909, 29.3744},

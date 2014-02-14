@@ -125,6 +125,9 @@ native gpci(playerid, serial[], maxlen);
 #define 		GOVERNMENT_MAIL 			3
 #define			MAX_RFLTEAMS				200
 #define			MAX_GANGTAGS				150
+#define			MAX_DYNAMIC_BUSINESSES		(200)
+#define			MAX_DYNAMIC_BUSINESS_NAME	(32)
+#define			MAX_DYNAMIC_BUSINESS_RANKS	(6)
 //#define 		SHOPAUTOMATED
 #define 		zombiemode
 #define 		event_chancegambler

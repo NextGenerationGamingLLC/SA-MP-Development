@@ -58048,7 +58048,7 @@ CMD:watchdogs(playerid, params[])
 
 CMD:togwd(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "WatchdogChat") == 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");

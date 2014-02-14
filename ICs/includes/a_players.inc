@@ -121,6 +121,7 @@ native SetPlayerSkillLevel(playerid, skill, level);
 native GetPlayerSurfingVehicleID(playerid);
 native GetPlayerSurfingObjectID(playerid);
 native RemoveBuildingForPlayer(playerid, modelid, Float:fX, Float:fY, Float:fZ, Float:fRadius);
+native GetPlayerLastShotVectors(playerid, &Float:fOriginX, &Float:fOriginY, &Float:fOriginZ, &Float:fHitPosX, &Float:fHitPosY, &Float:fHitPosZ);
 
 // Attached to bone objects
 
@@ -219,6 +220,8 @@ native SetCameraBehindPlayer(playerid);
 native GetPlayerCameraPos(playerid, &Float:x, &Float:y, &Float:z);
 native GetPlayerCameraFrontVector(playerid, &Float:x, &Float:y, &Float:z);
 native GetPlayerCameraMode(playerid);
+native Float:GetPlayerCameraAspectRatio(playerid);
+native Float:GetPlayerCameraZoom(playerid);
 native AttachCameraToObject(playerid, objectid);
 native AttachCameraToPlayerObject(playerid, playerobjectid);
 native InterpolateCameraPos(playerid, Float:FromX, Float:FromY, Float:FromZ, Float:ToX, Float:ToY, Float:ToZ, time, cut = CAMERA_CUT);

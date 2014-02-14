@@ -68,6 +68,7 @@ native GetTickCount();
 native GetMaxPlayers();
 native CallRemoteFunction(const function[], const format[], {Float,_}:...);
 native CallLocalFunction(const function[], const format[], {Float,_}:...);
+native Float:VectorSize(Float:x, Float:y, Float:z);
 native Float:asin(Float:value);
 native Float:acos(Float:value);
 native Float:atan(Float:value);
@@ -120,6 +121,17 @@ native GetServerVarAsBool(const varname[]);
 native GetPlayerNetworkStats(playerid, retstr[], retstr_size);
 native GetNetworkStats(retstr[], retstr_size);
 native GetPlayerVersion(playerid, const version[], len); // Returns the SA-MP client revision as reported by the player
+
+// Extended admin network stats
+native NetStats_GetConnectedTime(playerid);
+native NetStats_MessagesReceived(playerid);
+native NetStats_BytesReceived(playerid);
+native NetStats_MessagesSent(playerid);
+native NetStats_BytesSent(playerid);
+native NetStats_MessagesRecvPerSecond(playerid);
+native Float:NetStats_PacketLossPercent(playerid);
+native NetStats_ConnectionStatus(playerid);
+native NetStats_GetIpPort(playerid, ip_port[], ip_port_len);
 
 // Menu
 native Menu:CreateMenu(const title[], columns, Float:x, Float:y, Float:col1width, Float:col2width = 0.0);
@@ -331,8 +343,8 @@ forward OnPlayerStreamOut(playerid, forplayerid);
 forward OnVehicleStreamIn(vehicleid, forplayerid);
 forward OnVehicleStreamOut(vehicleid, forplayerid);
 forward OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]);
-forward OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid);
-forward OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid);
+forward OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart);
+forward OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart);
 forward OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ);
 forward OnPlayerClickTextDraw(playerid, Text:clickedid);
 forward OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid);
@@ -356,5 +368,13 @@ Float:fScaleX, Float:fScaleY, Float:fScaleZ );
 #define SELECT_OBJECT_PLAYER_OBJECT 2
 
 forward OnPlayerSelectObject(playerid, type, objectid, modelid, Float:fX, Float:fY, Float:fZ);
+
+#define BULLET_HIT_TYPE_NONE			0
+#define BULLET_HIT_TYPE_PLAYER			1
+#define BULLET_HIT_TYPE_VEHICLE			2
+#define BULLET_HIT_TYPE_OBJECT			3
+#define BULLET_HIT_TYPE_PLAYER_OBJECT	4
+
+forward OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
 
 // --------------------------------------------------
