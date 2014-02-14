@@ -3941,6 +3941,14 @@ public OnVehicleDeath(vehicleid) {
 	{
 		if(IsPlayerConnected(i))
 		{
+			if(TruckUsed[i] == vehicleid)
+			{
+				DeletePVar(i, "LoadTruckTime");
+				DeletePVar(i, "TruckDeliver");
+				TruckUsed[i] = INVALID_VEHICLE_ID;
+				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+				DisablePlayerCheckpoint(i);
+			}
 			if(InsidePlane[i] == vehicleid)
 			{
 				GetVehiclePos(InsidePlane[i], X, Y, Z);

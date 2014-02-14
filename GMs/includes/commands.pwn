@@ -283,7 +283,7 @@ CMD:placekit(playerid, params[]) {
 					GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 					if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to search it.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to place it.");
 						return 1;
 					}
 				}
@@ -9289,7 +9289,7 @@ CMD:accept(playerid, params[])
 				return SendClientMessageEx(playerid, COLOR_GREY, "Inviter has disconnected.");
 			}
 			new Float: ppFloats[3], targetid;
-			targetid = GetPVarType(playerid, "kissvaloffer");
+			targetid = GetPVarInt(playerid, "kissvaloffer");
 			GetPlayerPos(targetid, ppFloats[0], ppFloats[1], ppFloats[2]);
 
 			if(!IsPlayerInRangeOfPoint(playerid, 2, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[targetid] > 0)
@@ -18163,7 +18163,6 @@ CMD:loadshipment(playerid, params[])
 				{
 				    return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle is already loaded.");
 				}
-	            gPlayerCheckpointStatus[playerid] = CHECKPOINT_LOADTRUCK;
 	            if(!IsABoat(vehicleid))
 	            {
 		            SetPlayerCheckpoint(playerid,-1572.767822, 81.137527, 3.554687, 4);
@@ -18180,6 +18179,7 @@ CMD:loadshipment(playerid, params[])
 					}
 					else return SendClientMessageEx(playerid, COLOR_WHITE, "Water shipments are restricted to Level 4+ Shipment Contracter.");
 				}
+				gPlayerCheckpointStatus[playerid] = CHECKPOINT_LOADTRUCK;
 	        }
 	        else return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	    }
@@ -20006,76 +20006,76 @@ CMD:gvbuyback(playerid, params[])
 		}
 		if(strcmp(iVehicle, "all", true) == 0)
 		{
-		    for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
+			for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
 			{
-			    if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
-			    {
-				    if(DynVehicleInfo[iDvSlotID][gv_iModel] != 0 && (400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612))
-				    {
-				        if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1)
-				        {
+				if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
+				{
+					if(DynVehicleInfo[iDvSlotID][gv_iModel] != 0 && (400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612))
+					{
+						if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1)
+						{
 							if(arrGroupData[iGroupID][g_iBudget] > floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2))
 							{
-							    arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2);
-							    SaveGroup(iGroupID);
-							    DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
-							    DynVeh_Save(iDvSlotID);
-							    DynVeh_Spawn(iDvSlotID);
-							    format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", GetVehicleName(DynVehicleInfo[iDvSlotID][gv_iModel]), iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-							    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							    new str[128], file[32];
-				                format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
-				                new month, day, year;
+								arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2);
+								SaveGroup(iGroupID);
+								DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
+								DynVeh_Save(iDvSlotID);
+								DynVeh_Spawn(iDvSlotID);
+								format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+								new str[128], file[32];
+								format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
+								new month, day, year;
 								getdate(year,month,day);
 								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 								Log(file, str);
-								return 1;
 							}
 							else
 							{
-								format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", GetVehicleName(DynVehicleInfo[iDvSlotID][gv_iModel]), iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-							    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							    return 1;
+								format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+								return 1;
 							}
 						}
 				    }
 				}
 			}
+			return 1;
 		}
 		else if((0 <= strval(iVehicle) <= MAX_DYNAMIC_VEHICLES))
 		{
-		    new iDvSlotID = strval(iVehicle);
-		    if(DynVehicleInfo[iDvSlotID][gv_iDisabled] && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
+			new iDvSlotID = strval(iVehicle);
+			if(DynVehicleInfo[iDvSlotID][gv_iDisabled] && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
 			{
-    			if(arrGroupData[iGroupID][g_iBudget] > floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2))
+				if(arrGroupData[iGroupID][g_iBudget] > floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2))
 				{
 					arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2);
-				    SaveGroup(iGroupID);
-				    DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
-				    DynVeh_Save(iDvSlotID);
-				    DynVeh_Spawn(iDvSlotID);
-				    format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", GetVehicleName(DynVehicleInfo[iDvSlotID][gv_iModel]), iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				    new str[128], file[32];
-	                format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
-	                new month, day, year;
+					SaveGroup(iGroupID);
+					DynVehicleInfo[iDvSlotID][gv_iDisabled] = 0;
+					DynVeh_Save(iDvSlotID);
+					DynVeh_Spawn(iDvSlotID);
+					format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					new str[128], file[32];
+					format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
+					new month, day, year;
 					getdate(year,month,day);
 					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 					Log(file, str);
-				    return 1;
+					return 1;
 				}
 				else
 				{
-					format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", GetVehicleName(DynVehicleInfo[iDvSlotID][gv_iModel]), iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
-				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				    return 1;
+					format(string, sizeof(string), "Your agency could not afford to buy back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					return 1;
 				}
 			}
 			else return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "That car has either not been repossessed or does not belong to your agency.");
 		}
 		else SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid ID");
 	}
-    else SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
+	else SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
 	return 1;
 }
 
@@ -41947,28 +41947,30 @@ CMD:report(playerid, params[])
 
 CMD:cancelreport(playerid, params[])
 {
-    for(new i = 0; i < MAX_REPORTS; i++)
+	for(new i = 0; i < MAX_REPORTS; i++)
 	{
-	    if(Reports[i][ReportFrom] == playerid)
-	    {
+		if(Reports[i][ReportFrom] == playerid)
+		{
 			if(GetPVarInt(Reports[i][ReportFrom], "AlertedThisPlayer"))
 			{
 				DeletePVar(Reports[i][ReportFrom], "AlertedThisPlayer");
 				DeletePVar(Reports[i][ReportFrom], "AlertType");
 				if(AlertTime[Reports[i][ReportFrom]] != 0) AlertTime[Reports[i][ReportFrom]] = 0;
 			}
-	        Reports[i][ReportFrom] = INVALID_PLAYER_ID;
-			Reports[i][BeingUsed] = 0;
-			Reports[i][TimeToExpire] = 0;
-        	Reports[i][ReportPriority] = 0;
-        	Reports[i][ReportLevel] = 0;
-			DeletePVar(playerid, "HasReport");
-			
 			if(GetPVarInt(Reports[i][ReportFrom], "RequestingAdP") == 1)
 			{
 				DeletePVar(Reports[i][ReportFrom], "PriorityAdText");
 				DeletePVar(Reports[i][ReportFrom], "RequestingAdP");
 			}
+			Reports[i][ReportFrom] = INVALID_PLAYER_ID;
+			Reports[i][BeingUsed] = 0;
+			Reports[i][TimeToExpire] = 0;
+			Reports[i][ReportPriority] = 0;
+			Reports[i][ReportLevel] = 0;
+			strmid(Reports[i][Report], "None", 0, 4, 4);
+			DeletePVar(playerid, "HasReport");
+			DeletePVar(playerid, "_rAutoM");
+			DeletePVar(playerid, "_rRepID");
 			return SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully canceled your report." );
 		}
 	}
@@ -58065,6 +58067,7 @@ CMD:wd(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
+		if(GetPVarInt(playerid, "WatchdogChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
 		if(!isnull(params)) 
 		{
 			new szMessage[128];

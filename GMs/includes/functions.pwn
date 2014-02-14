@@ -1156,25 +1156,26 @@ Vehicle_ResetData(iVehicleID) {
 		TruckContents{iVehicleID} = 0;
 		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
 		VehicleFuel[iVehicleID] = 100.0;
-
-		if(LockStatus{iVehicleID}) {
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+		
+		//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
 			{
-				if(IsPlayerConnected(i))
+				if(TruckUsed[i] == iVehicleID)
 				{
+					DeletePVar(i, "LoadTruckTime");
+					DeletePVar(i, "TruckDeliver");
+					TruckUsed[i] = INVALID_VEHICLE_ID;
+					gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+					DisablePlayerCheckpoint(i);
+				}
+				if(LockStatus{iVehicleID}) {
 					if(PlayerInfo[i][pLockCar] == iVehicleID) {
 						PlayerInfo[i][pLockCar] = INVALID_VEHICLE_ID;
 					}
-				}	
-			}
-		}
-		if(VehicleBomb{iVehicleID} == 1) {
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
-				{
+				}
+				if(VehicleBomb{iVehicleID} == 1) {
 					if(PlacedVehicleBomb[i] == iVehicleID) {
 						VehicleBomb{iVehicleID} = 0;
 						PlacedVehicleBomb[i] = INVALID_VEHICLE_ID;
@@ -1182,7 +1183,7 @@ Vehicle_ResetData(iVehicleID) {
 						PlayerInfo[i][pC4Used] = 0;
 						PlayerInfo[i][pC4Get] = 1;
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -3361,7 +3362,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
-		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]], arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]
+		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]],
+		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2])
 	);
 
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");

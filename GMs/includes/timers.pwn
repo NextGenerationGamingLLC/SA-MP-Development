@@ -2187,7 +2187,7 @@ task ServerMicrobeat[500]() {
 						GameTextForPlayer(i, "~r~Totalled!", 2500, 3);
 						arr_Engine{iVehicle} = 0;
 					}
-					else if(PlayerInfo[i][pSpeedo] != 0 && FindTimePoints[i] == 0 && arr_Engine{iVehicle} == 1 && !GetPVarType(i, "LoadTruckTime")) {
+					else if(PlayerInfo[i][pSpeedo] != 0 && arr_Engine{iVehicle} == 1) {
 						UpdateVehicleHUDForPlayer(i, floatround(VehicleFuel[iVehicle]), floatround(fCurrentSpeed));
 					}
 				}
