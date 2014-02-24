@@ -332,6 +332,11 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), FREEZE_TIME);
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
+		DeletePVar(playerid, "tmpX");
+		DeletePVar(playerid, "tmpY");
+		DeletePVar(playerid, "tmpZ");
+		DeletePVar(playerid, "tmpInt");
+		DeletePVar(playerid, "tmpVW");
 		DeletePVar(playerid, "ShopTP");
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for visiting our shop, come back soon!");
 	}
@@ -2550,6 +2555,9 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][LastOnFootPosition][0] = 0.0; acstruct[playerid][LastOnFootPosition][1] = 0.0; acstruct[playerid][LastOnFootPosition][2] = 0.0;
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
+
+	oldticks[playerid] = 0;
+	deny_damage[playerid] = 0;
 
 	for(new x = 0; x < MAX_PLAYERS; x++)
 	{
@@ -6899,6 +6907,48 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gEdit");
 			DeletePVar(playerid, "EditingGateID");
 			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
+		}
+	}
+	return 1;
+}
+
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
+	if(PlayerInfo[playerid][pAdmin] < 2)
+	{
+		//Credits to Lordz AKA Lordzy.
+		if(oldticks[playerid] == 0) oldticks[playerid] = GetTickCount();
+		else
+		{
+			new intervals;
+			if((intervals = GetTickCount() - oldticks[playerid]) <= 35 && GetPlayerWeapon(playerid) != 38 && GetPlayerWeapon(playerid) != 28 && GetPlayerWeapon(playerid) != 32 || 
+			(intervals = GetTickCount() - oldticks[playerid]) <= 370 && (GetPlayerWeapon(playerid) == 34 || GetPlayerWeapon(playerid) == 33))
+			{
+				new szMessage[128];
+				if(deny_damage[playerid] == 1)
+				{
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be using a Rapid Fire modification.", GetPlayerNameEx(playerid), playerid);
+					ABroadCast(COLOR_YELLOW, szMessage, 2);
+				}
+				format(szMessage, sizeof(szMessage), "%s may be using Rapid Fire with weapon ID %d (%d ms).", GetPlayerNameEx(playerid), weaponid, intervals);
+				Log("logs/hack.log", szMessage);
+				if(++deny_damage[playerid] == 5) // 5 to gather data in logs
+				{
+					format(szMessage, sizeof(szMessage), "AdmCmd: %s has been banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_LIGHTRED, szMessage, 2);
+					PlayerInfo[playerid][pBanned] = 3;
+					format(szMessage, sizeof(szMessage), "AdmCmd: %s (IP:%s) was banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+					Log("logs/ban.log", szMessage);
+					SystemBan(playerid, "[System] (Rapid Fire Modifications)");
+					MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Rapid Fire Modifications", 1, "System");
+					deny_damage[playerid] = 0;
+					Kick(playerid);
+					TotalAutoBan++;
+					return 0;
+				}
+			}
+			oldticks[playerid] = GetTickCount();
+			if(deny_damage[playerid] != 0) return 0;
 		}
 	}
 	return 1;

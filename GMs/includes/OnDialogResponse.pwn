@@ -6773,8 +6773,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			PlayerVehicleInfo[giveplayerid][listitem][pvMods][m] = 0;
 		}
-		format(string, sizeof(string), "AdmCmd: Admin %s has deleted one of %s's vehicles (VehModel:%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), model);
+		format(string, sizeof(string), "AdmCmd: Admin %s has deleted one of %s's(%d) vehicles (VehModel:%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), model);
 		Log("logs/admin.log", string);
+		format(string, sizeof(string), "AdmCmd: Admin %s has deleted one of %s's vehicles (VehModel:%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), model);
 		ABroadCast(COLOR_YELLOW, string, 4);
 
 		format(string, sizeof(string), "* Admin %s has deleted one of your vehicles.", GetPlayerNameEx(playerid));
@@ -14650,7 +14651,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			new reason[60];
 			GetPVarString(playerid, "FineReason", reason, 60);
-			format(string, sizeof(string), "AdmCmd: %s was fined %s credits by %s, reason: %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(playerid, "FineAmount")), GetPlayerNameEx(GetPVarInt(playerid, "FineBy")), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined %s credits by %s, reason: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(GetPVarInt(playerid, "FineAmount")), GetPlayerNameEx(GetPVarInt(playerid, "FineBy")), reason);
 			Log("logs/admin.log", string);
 
 			format(string, sizeof(string), "[CHARGEPLAYER] [User: %s(%i)] [IP: %s] [Credits: %s] [Charged: %s]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]),  number_format(GetPVarInt(playerid, "FineAmount")));
