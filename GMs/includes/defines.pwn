@@ -46,7 +46,7 @@ native WP_Hash(buffer[], len, const str[]);
 native gpci(playerid, serial[], maxlen);
 			/*  ---------------- SERVER DEFINES ----------------- */
 #undef 			MAX_PLAYERS
-#define 		MAX_PLAYERS					(700)
+#define 		MAX_PLAYERS					(500)
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
 #define			WEB_SERVER					"64.31.32.194"
@@ -87,7 +87,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		MAX_GATES 					(4000)
 #define 		MAX_EVENTPOINTS 			(50)
 #define 		INVALID_HOUSE_ID			(-1)
-#define			MAX_TURFS					(150)
+#define			MAX_TURFS					(65)
 #define			MAX_ARENAS					(10)
 #define			MAX_MAILBOXES				(50)
 #define 		MAX_3DLABELS 				(500)

@@ -1489,3 +1489,16 @@ enum DYNAMIC_BUSINESS_INFO
 	bRankName[MAX_DYNAMIC_BUSINESS_RANKS],
 	bRankPay[MAX_DYNAMIC_BUSINESS_RANKS]
 }
+
+enum FuckHacksEnum
+{
+	Float: playerHealth[2], // 0 = What the health should be at | 1 = Is the health synced?
+	Float: playerArmour[2], // 0 = What the armour should be at | 1 = Is the armour synced?
+	playerAlive,
+	lastUpdateTime,
+	syncFailed[2],
+	playerStatus[3],
+	OPUTick,
+	playerState,
+	playerTimer
+}

@@ -382,10 +382,6 @@ new sobeitCheckvar[MAX_PLAYERS];
 new sobeitCheckIsDone[MAX_PLAYERS];
 new IsPlayerFrozen[MAX_PLAYERS];
 
-//Rapid Fire check vars
-new oldticks[MAX_PLAYERS];
-new deny_damage[MAX_PLAYERS];
-
 // Vehicle HUD Text
 new PlayerText:_vhudTextFuel[MAX_PLAYERS];
 new PlayerText:_vhudTextSpeed[MAX_PLAYERS];
@@ -936,7 +932,7 @@ new STD4[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 3};
 new Float:PlayerPos[MAX_PLAYERS][3];
 new lspddoor1;
 new lspddoor2;
-new Seatbelt[MAX_PLAYERS], Float: CurrentArmor[MAX_PLAYERS];
+new Seatbelt[MAX_PLAYERS];
 new SpikeStrips[MAX_SPIKES][Spikes];
 new Cones[MAX_CONES][Cone];
 new Flares[MAX_FLARES][Flare];
@@ -956,6 +952,7 @@ new rBigEarT[MAX_PLAYERS];
 new aLastShot[MAX_PLAYERS];
 new IsSpawned[MAX_PLAYERS];
 new SpawnKick[MAX_PLAYERS];
+new pGodMode[MAX_PLAYERS];
 
 // Tradable Toys
 new InsideTradeToys[MAX_PLAYERS], PlayerText: ttBackground[MAX_PLAYERS], PlayerText: ttModel[MAX_PLAYERS], PlayerText: ttObjectInfo[MAX_PLAYERS], PlayerText: ttLogo[MAX_PLAYERS], PlayerText: ttPurchase[MAX_PLAYERS],
@@ -1153,6 +1150,8 @@ new bool: IsDynamicGiftBoxEnabled = false;
 
 new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
 
+new FuckHacksVar[MAX_PLAYERS][FuckHacksEnum];
+
 new Float:JoinCameraPosition[8][3] = {
 	{2211.1460, -1748.3909, 29.3744},
 	{1283.8524, -1385.5304, -10.0},
@@ -1224,8 +1223,7 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19421, 0, "White Headphones"},
 {19422, 0, "Black Headphones"},
 {19423, 0, "Red Headphones"},
-{19424, 0, "Blue Headphones"},
-{19351, 0, "moustache2"}
+{19424, 0, "Blue Headphones"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1542,8 +1540,7 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {1598, 0,"Beachball"},
 {19331, 0, "Firefigher Helmet"},
 {2045, 0, "Spiked Club"},
-{19320, 0, "Pumpkin Toy"},
-{19351, 0, "moustache2"}
+{19320, 0, "Pumpkin Toy"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

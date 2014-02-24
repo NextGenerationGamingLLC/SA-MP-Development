@@ -332,11 +332,6 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), FREEZE_TIME);
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
-		DeletePVar(playerid, "tmpX");
-		DeletePVar(playerid, "tmpY");
-		DeletePVar(playerid, "tmpZ");
-		DeletePVar(playerid, "tmpInt");
-		DeletePVar(playerid, "tmpVW");
 		DeletePVar(playerid, "ShopTP");
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for visiting our shop, come back soon!");
 	}
@@ -1591,20 +1586,22 @@ public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
 	return 1;
 }
 
-public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
+	printf("%d", issuerid);
+	print("is this being called?");
+	if(issuerid != INVALID_PLAYER_ID)
+	{
+		if(PlayerInfo[issuerid][pAccountRestricted] == 1)
+		{
+			SetPlayerHealthEx(playerid, GetClientHealth(playerid));
+			SetPlayerArmourEx(playerid, GetClientArmour(playerid));
+			return true;
+		}
+	}
 	if(GetPVarInt(playerid, "commitSuicide") == 1)
 	{
 		SetPVarInt(playerid, "commitSuicide", 0);
-	}
-	if(PlayerInfo[issuerid][pAccountRestricted] == 1)
-	{
-		new Float: fHealth, Float: fArmour;
-		GetPlayerHealth(playerid, fHealth);
-		GetPlayerArmour(playerid, fArmour);
-		SetPlayerHealth(playerid, fHealth);
-		SetPlayerArmour(playerid, fArmour);
-		return true;
 	}
 	if(GetPVarInt(playerid, "BackpackProt") == 1)
 	{
@@ -1631,8 +1628,8 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	if(GetPVarInt(playerid, "PlayerCuffed") == 1)
 	{
 		new Float:currenthealth;
-		GetPlayerHealth(playerid, currenthealth);
-		if(currenthealth+amount > 100) SetPlayerHealth(playerid, 100); else SetPlayerHealth(playerid, currenthealth+amount);
+		currenthealth = GetClientHealth(playerid);
+		if(currenthealth+amount > 100) SetPlayerHealthEx(playerid, 100); else SetPlayerHealthEx(playerid, currenthealth+amount);
 	}
 
 	//foreach(new i: Player) {
@@ -1657,25 +1654,28 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		
 		if(hgActive == 1 && HungerPlayerInfo[playerid][hgInEvent] == 1) return 1;
 		
-		if (PlayerInfo[issuerid][pFitness] < 50)
+		if(issuerid != INVALID_PLAYER_ID)
 		{
- 			multiply = 2;
-		}
-		else if (PlayerInfo[issuerid][pFitness] >= 50 && PlayerInfo[issuerid][pFitness] <= 79)
-		{
-		    multiply = 3.5;
-		}
-		else if (PlayerInfo[issuerid][pFitness] >= 80)
-		{
-		    multiply = 5;
-		}
+			if (PlayerInfo[issuerid][pFitness] < 50)
+			{
+				multiply = 2;
+			}
+			else if (PlayerInfo[issuerid][pFitness] >= 50 && PlayerInfo[issuerid][pFitness] <= 79)
+			{
+				multiply = 3.5;
+			}
+			else if (PlayerInfo[issuerid][pFitness] >= 80)
+			{
+				multiply = 5;
+			}
 
-		if (PlayerInfo[playerid][pFitness] >= 80)
-		{
-			actual_damage = actual_damage/2;
-		}
+			if (PlayerInfo[playerid][pFitness] >= 80)
+			{
+				actual_damage = actual_damage/2;
+			}
 
-  		actual_damage *= multiply;
+			actual_damage *= multiply;
+		}
 
 	}
 
@@ -1687,20 +1687,32 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	//armor & hp calculations AFTER damage modifiers
 	new Float:difference;
 	new Float:health, Float:armour;
-	GetPlayerHealth(playerid, health);
-	GetPlayerArmour(playerid, armour);
+	health = GetClientHealth(playerid);
+	armour = GetClientArmour(playerid);
+	
+	if(pGodMode[playerid] == 1)
+	{
+		SetPlayerHealthEx(playerid, health);
+		return SetPlayerArmourEx(playerid, armour);
+	}
+	if(playerTabbed[playerid] >= 30)
+	{
+		SetPlayerHealthEx(playerid, GetClientHealth(playerid));
+		SetPlayerArmourEx(playerid, GetClientArmour(playerid));
+		return true;
+	}
 
 	if (armour == 0)
 	{
 		if (actual_damage > amount)
 		{
 			difference = actual_damage - amount;
-			SetPlayerHealth(playerid, health - difference);
+			SetPlayerHealthEx(playerid, health - difference);
 		}
 		else if (actual_damage < amount)
 		{
 			difference = amount - actual_damage;
-			SetPlayerHealth(playerid, health - difference);
+			SetPlayerHealthEx(playerid, health - difference);
 		}
 	}
 	else if (armour >= actual_damage)
@@ -1708,12 +1720,12 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		if (actual_damage > amount)
 		{
 			difference = actual_damage - amount;
-			SetPlayerArmor(playerid, armour - difference);
+			SetPlayerArmourEx(playerid, armour - difference);
 		}
 		else if (actual_damage < amount)
 		{
 			difference = amount - actual_damage;
-			SetPlayerArmor(playerid, armour - difference);
+			SetPlayerArmourEx(playerid, armour - difference);
 		}
 	}
 	else // damage needs to be split between armour & health
@@ -1723,24 +1735,69 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 			difference = actual_damage - amount;
 
 			new Float:leftOver = difference - armour;
-			SetPlayerArmor(playerid, 0);
-			SetPlayerHealth(playerid, health - leftOver);
+			SetPlayerArmourEx(playerid, 0);
+			SetPlayerHealthEx(playerid, health - leftOver);
 		}
 		else if (actual_damage < amount)
 		{
 			difference = amount - actual_damage;
 
 			new Float:leftOver = difference - armour;
-			SetPlayerArmor(playerid, 0);
-			SetPlayerHealth(playerid, health - leftOver);
+			SetPlayerArmourEx(playerid, 0);
+			SetPlayerHealthEx(playerid, health - leftOver);
 		}
+	}
+	
+	// Akatony's Anti-Cheat
+	new Float: value, Float:valuex;
+	health = GetClientHealth(playerid);
+	armour = GetClientArmour(playerid);
+	
+	if(weaponid == 51 || weaponid == 49) // Vehicle Damage or Explosion Damage
+	{
+		if(armour > 0)
+		{
+			value = armour - amount;
+			if(value < 0)
+			{
+				amount = amount - armour;
+				armour = 0;
+			}
+			else
+			{
+				armour = value;
+				amount = 0;
+			}
+			valuex = GetClientArmour(playerid);
+			if(armour > valuex)
+			{
+				armour = 0;
+			}
+
+			SetPlayerArmourEx(playerid, armour);
+		}
+		value = (health - amount);
+		if(value > health)
+		{
+			value = 0;
+		}
+		SetPlayerHealthEx(playerid, value);
+	}
+	else if(weaponid == 53 || weaponid == 54) // Fall Damage or Drown Damage
+	{
+		SetPlayerHealthEx(playerid, health - amount);
+	}
+	else if(weaponid == 50) 
+	{
+		SetPlayerHealthEx(playerid, health);
+		SetPlayerArmourEx(playerid, armour);
 	}
 
 
 	return 1;
 }
 
-public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
+public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
@@ -1765,8 +1822,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
  		if(TazerTimeout[playerid] > 0 && !GetPVarType(damagedid, "IsFrozen"))
   		{
   		    new Float:hp;
-  		    GetPlayerHealth(damagedid, hp);
-  		    SetPlayerHealth(damagedid, hp-amount);
+  		    hp = GetClientHealth(damagedid);
+  		    SetPlayerHealthEx(damagedid, hp-amount);
 			return 1;
 		}
 		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
@@ -1775,8 +1832,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 			{
 			    SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tazed!");
 			    new Float:hp;
-	  		    GetPlayerHealth(damagedid, hp);
-	  		    SetPlayerHealth(damagedid, hp+amount);
+	  		    hp = GetClientHealth(damagedid);
+	  		    SetPlayerHealthEx(damagedid, hp+amount);
 				return 1;
 			}
 			#if defined zombiemode
@@ -1788,12 +1845,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 			#endif
 			new Float:X, Float:Y, Float:Z, Float:hp;
 	  		GetPlayerPos(playerid, X, Y, Z);
-			GetPlayerHealth(damagedid, hp);
+			hp = GetClientHealth(damagedid);
 			new string[44 + (MAX_PLAYER_NAME * 2)];
 			format(string, sizeof(string), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
-   			SetPlayerHealth(damagedid, hp+amount);
+   			SetPlayerHealthEx(damagedid, hp+amount);
 			TogglePlayerControllable(damagedid, 0);
 			ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
 			PlayerPlaySound(damagedid, 1085, X, Y, Z);
@@ -1805,99 +1862,68 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 			TazerTimeout[playerid] = 6;
 			SetTimerEx("TazerTimer",1000,false,"d",playerid);
 			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~5", 1500,3);
+			return true; // Return true to not touch the damage modifier
 		}
 	}
-	return 1;
-}
-
-/*public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 && GetPVarType(playerid, "pGodMode")) return 1;
-	if(weaponid == 50)
+	
+	// Akatony's Anti-Cheat
+	new Float: health, Float: armour, Float: value, Float: valuex;
+	health = GetClientHealth(damagedid);
+	armour = GetClientArmour(damagedid);
+	
+	if(pGodMode[damagedid] == 1)
 	{
-		return 1;
+		SetPlayerHealthEx(damagedid, health);
+		return SetPlayerArmourEx(damagedid, armour);
 	}
-
-	new Float:armour, Float:HP;
-	GetPlayerArmour(playerid, armour);
-	GetPlayerHealth(playerid, HP);
-
-	if(HP <= 0) return 1;
-
-	if(((GetTickCount() - pSSHealthTime[playerid][0]) > (pSSHealthTime[playerid][1] * 2)))
+	
+	if(weaponid == 41 || weaponid == 42) // Spray Tag
 	{
-	    if(weaponid != 54 && weaponid != 37 && weaponid != 38 && weaponid != 51 && weaponid != 53)
-	    {
-			if(HP <= 0) return 1; // let them die if they are dead!
-
-			if((pSSArmour[playerid] > 0) && (((pSSArmour[playerid] > armour) && ((pSSArmour[playerid]-armour) > 1)) || ((pSSArmour[playerid] < armour) && ((armour-pSSArmour[playerid]) > 1))))
-			{
-			    if(pSSArmour[playerid] > armour)
-			    {
-			        new string[128];
-					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly armour hacking", GetPlayerNameEx(playerid), playerid);
-			 		ABroadCast( COLOR_YELLOW, string, 2 );
-
-			 		format(string, sizeof(string), "{AA3333}Expected Armour: {AA3333}%f | {AA3333}Armour: {AA3333}%f]", pSSArmour[playerid], armour);
-					ABroadCast( COLOR_YELLOW, string, 2 );
-				}
-			}
-			if((pSSHealth[playerid] > 0) && (((pSSHealth[playerid] > HP) && ((pSSHealth[playerid]-HP) > 1)) || ((pSSHealth[playerid] < HP) && ((HP-pSSHealth[playerid]) > 1))))
-		 	{
-		 	    if(pSSHealth[playerid] > HP)
-		 	    {
-		 	        new string[128];
-					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly health hacking", GetPlayerNameEx(playerid), playerid);
-			 		ABroadCast( COLOR_YELLOW, string, 2 );
-
-			 		format(string, sizeof(string), "{AA3333}Expected HP: {AA3333}%f | {AA3333}HP: {AA3333}%f]", pSSHealth[playerid], HP);
-			 	 	ABroadCast( COLOR_YELLOW, string, 2 );
-				}
-			}
-		}
+		amount = amount - ((25.0 * amount) / 99.0);
 	}
-
-	if(armour > 0)
+	if(weaponid != 54 && weaponid != 53)
 	{
-		if(armour >= amount)
+		if(armour > 0)
 		{
-		    //Don't set double damage for drowning, splat, fire
-		    if(weaponid == 54 || weaponid == 53 || weaponid == 37)
+			value = armour - amount;
+			if(value < 0)
 			{
-				pSSArmour[playerid] = (pSSArmour[playerid]-amount);
+				amount = amount - armour;
+				armour = 0;
 			}
 			else
 			{
-				SetPlayerArmor(playerid, pSSArmour[playerid]-amount);
+				armour = value;
+				amount = 0;
 			}
-		}
-		else
-		{
-			if(weaponid == 54 || weaponid == 53 || weaponid == 37)
-		    {
-		        pSSArmour[playerid] = 0;
-		        pSSHealth[playerid] = (pSSHealth[playerid]-(amount-pSSArmour[playerid]));
-			}
-			else
+			valuex = GetClientArmour(damagedid);
+			if(armour > valuex)
 			{
-				SetPlayerArmor(playerid, 0);
-				SetPlayerHealth(playerid, pSSHealth[playerid]-(amount-pSSArmour[playerid]));
+				armour = 0;
 			}
+
+			SetPlayerArmourEx(damagedid, armour);
 		}
+		value = (health - amount);
+		if(value > health)
+		{
+			value = 0;
+		}
+		SetPlayerHealthEx(damagedid, value);
 	}
 	else
 	{
- 		if(weaponid == 54 || weaponid == 53 || weaponid == 37)
- 		{
-		 	pSSHealth[playerid] = (pSSHealth[playerid]-amount);
+		value = (health - amount);
+		if(value > health)
+		{
+			value = 0;
 		}
- 		else
-	 	{
-	 		SetPlayerHealth(playerid, pSSHealth[playerid]-amount);
-		}
+		SetPlayerHealthEx(damagedid, value);
 	}
+
+	//PlayerPlaySound(damagedid, 17802, 0.0, 0.0, 0.0); Make this dynamic
 	return 1;
-}*/
+}
 
 public OnPlayerStreamIn(playerid, forplayerid)
 {
@@ -2323,7 +2349,6 @@ public OnPlayerConnect(playerid)
 	BackupClearTimer[playerid] = 0;
 	Backup[playerid] = 0;
     CarRadars[playerid] = 0;
-    CurrentArmor[playerid] = 0.0;
 	PlayerInfo[playerid][pReg] = 0;
 	HHcheckVW[playerid] = 0;
 	HHcheckInt[playerid] = 0;
@@ -2556,9 +2581,6 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
 
-	oldticks[playerid] = 0;
-	deny_damage[playerid] = 0;
-
 	for(new x = 0; x < MAX_PLAYERS; x++)
 	{
 	    ShotPlayer[playerid][x] = 0;
@@ -2621,6 +2643,12 @@ public OnPlayerConnect(playerid)
 	SetTimerEx("LoginCheckEx", 5000, 0, "i", playerid);
 
 	RemoveBuildings(playerid);
+	
+	// Start the sync check
+	FuckHacksVar[playerid][playerTimer] = SetTimerEx("OnPlayerSync", 1000, 0, "i", playerid);
+	
+	// Set the player to the same team so SA:MP cannot control their health
+	SetPlayerTeam(playerid, 254);
 	return 1;
 }
 
@@ -2668,8 +2696,8 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -2697,8 +2725,8 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -2727,8 +2755,8 @@ public OnPlayerDisconnect(playerid, reason)
 							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 								
-							SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-							SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+							SetPlayerHealthEx(i, HungerPlayerInfo[i][hgLastHealth]);
+							SetPlayerArmourEx(i, HungerPlayerInfo[i][hgLastArmour]);
 							SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 							SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 							SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -2769,8 +2797,8 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				else if(hgPlayerCount > 3)
 				{
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -2988,8 +3016,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetPlayerHealthEx(playerid, 0x7FB00000);
+						SetPlayerArmourEx(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3005,8 +3033,8 @@ public OnPlayerDisconnect(playerid, reason)
 				{
 					if(PlayerCuffed[playerid] == 2)
 				    {
-					    SetPlayerHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
-	                    SetPlayerArmor(playerid, GetPVarFloat(playerid, "cuffarmor"));
+					    SetPlayerHealthEx(playerid, GetPVarFloat(playerid, "cuffhealth"));
+	                    SetPlayerArmourEx(playerid, GetPVarFloat(playerid, "cuffarmor"));
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
@@ -3027,8 +3055,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetPlayerHealthEx(playerid, 0x7FB00000);
+						SetPlayerArmourEx(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3044,8 +3072,8 @@ public OnPlayerDisconnect(playerid, reason)
 				{
 				    if(PlayerCuffed[playerid] == 2)
 				    {
-					    SetPlayerHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
-	                    SetPlayerArmor(playerid, GetPVarFloat(playerid, "cuffarmor"));
+					    SetPlayerHealthEx(playerid, GetPVarFloat(playerid, "cuffhealth"));
+	                    SetPlayerArmourEx(playerid, GetPVarFloat(playerid, "cuffarmor"));
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
@@ -3069,8 +3097,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetPlayerHealthEx(playerid, 0x7FB00000);
+						SetPlayerArmourEx(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3121,8 +3149,8 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "pbOldZ");
 			PlayerInfo[playerid][pHealth] = GetPVarFloat(playerid, "pbOldHealth");
 			PlayerInfo[playerid][pArmor] = GetPVarFloat(playerid, "pbOldArmor");
-			SetPlayerHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
-			SetPlayerArmor(playerid,GetPVarFloat(playerid, "pbOldArmor"));
+			SetPlayerHealthEx(playerid,GetPVarFloat(playerid, "pbOldHealth"));
+			SetPlayerArmourEx(playerid,GetPVarFloat(playerid, "pbOldArmor"));
 		}
 		else if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "LoadingObjects"))
 		{
@@ -3418,9 +3446,9 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "pGodMode") == 1)
 		{
 			health = GetPVarFloat(playerid, "pPreGodHealth");
-			SetPlayerHealth(playerid,health);
+			SetPlayerHealthEx(playerid,health);
 			armor = GetPVarFloat(playerid, "pPreGodArmor");
-			SetPlayerArmor(playerid, armor);
+			SetPlayerArmourEx(playerid, armor);
 			DeletePVar(playerid, "pGodMode");
 			DeletePVar(playerid, "pPreGodHealth");
 			DeletePVar(playerid, "pPreGodArmor");
@@ -3610,6 +3638,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 	    DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
 	    SetPVarInt(playerid, "MovingStretcher", -1);
 	}
+	
+	if(FuckHacksVar[playerid][playerTimer])
+	{
+		KillTimer(FuckHacksVar[playerid][playerTimer]);
+		FuckHacksVar[playerid][playerTimer] = -1;
+	}
 
 	if(IsPlayerConnected(Mobile[playerid]))
 	{
@@ -3707,7 +3741,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			    {
 			        --PaintBallArena[iKiller][pbTeamRedKills];
 			        ++PaintBallArena[iPlayer][pbTeamBlueKills];
-			        SetPlayerHealth(killerid, 0);
+			        SetPlayerHealthEx(killerid, 0);
 			        PlayerInfo[killerid][pKills] -= 2;
 			        ++PlayerInfo[killerid][pDeaths];
 		    		--PlayerInfo[playerid][pDeaths];
@@ -3725,7 +3759,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			    {
 			        --PaintBallArena[iKiller][pbTeamBlueKills];
 			        ++PaintBallArena[iPlayer][pbTeamRedKills];
-			        SetPlayerHealth(killerid, 0);
+			        SetPlayerHealthEx(killerid, 0);
 			        PlayerInfo[killerid][pKills] -= 2;
 			        ++PlayerInfo[killerid][pDeaths];
 		    		--PlayerInfo[playerid][pDeaths];
@@ -3843,6 +3877,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}	
+	FuckHacksVar[playerid][playerAlive] = 0;
 	return 1;
 }
 
@@ -3951,9 +3986,9 @@ public OnPlayerSpawn(playerid)
 	    SetPlayerWeaponsEx(playerid);
         GivePlayerValidWeapon(playerid, 46, 60000);
         SetPlayerSkin(playerid, GetPVarInt(playerid, "NGPassengerSkin"));
-        SetPlayerHealth(playerid, GetPVarFloat(playerid, "NGPassengerHP"));
+        SetPlayerHealthEx(playerid, GetPVarFloat(playerid, "NGPassengerHP"));
         if(GetPVarFloat(playerid, "NGPassengerArmor") > 0) {
-        	SetPlayerArmor(playerid, GetPVarFloat(playerid, "NGPassengerArmor"));
+        	SetPlayerArmourEx(playerid, GetPVarFloat(playerid, "NGPassengerArmor"));
         }
 		DeletePVar(playerid, "NGPassenger");
 	    DeletePVar(playerid, "NGPassengerVeh");
@@ -3966,9 +4001,9 @@ public OnPlayerSpawn(playerid)
 	{
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "air_Xpos"), GetPVarFloat(playerid, "air_Ypos"), GetPVarFloat(playerid, "air_Zpos"));
 		SetPlayerFacingAngle(playerid, GetPVarFloat(playerid, "air_Rpos"));
-		SetPlayerHealth(playerid, GetPVarFloat(playerid, "air_HP"));
+		SetPlayerHealthEx(playerid, GetPVarFloat(playerid, "air_HP"));
 		if(GetPVarFloat(playerid, "air_Arm") > 0) {
-			SetPlayerArmor(playerid, GetPVarFloat(playerid, "air_Arm"));
+			SetPlayerArmourEx(playerid, GetPVarFloat(playerid, "air_Arm"));
 		}
 		SetPlayerWeaponsEx(playerid);
 		SetPlayerToTeamColor(playerid);
@@ -3994,12 +4029,13 @@ public OnPlayerSpawn(playerid)
 		DeletePVar(playerid, "STD");
 	}
 
-	SetPlayerTeam(playerid, NO_TEAM);
+	//SetPlayerTeam(playerid, NO_TEAM);
 	SetPlayerSpawn(playerid);
 	SetPlayerWeapons(playerid);
 	SetPlayerToTeamColor(playerid);
 	IsSpawned[playerid] = 1;
 	SpawnKick[playerid] = 0;
+	FuckHacksVar[playerid][playerAlive] = 1;
 	return 1;
 }
 
@@ -4116,7 +4152,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 			}	
-			SetPlayerHealth(playerid, 0);
+			SetPlayerHealthEx(playerid, 0);
 			return 1;
 		}
 	    if(EventRCPT[RCPIdCurrent[playerid]] == 1) {
@@ -5207,10 +5243,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    if(GetPVarInt(playerid, "DrinkCooledDown") == 1)
 	    {
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			cHealth = GetClientHealth(playerid);
 		    if(cHealth < 100)
 		    {
-				SetPlayerHealth(playerid, cHealth+5);
+				SetPlayerHealthEx(playerid, cHealth+5);
 		    }
 		    else
 		    {
@@ -5227,10 +5263,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    if(GetPVarInt(playerid, "DrinkCooledDown") == 1)
 	    {
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			cHealth = GetClientHealth(playerid);
 		    if(cHealth < 100)
 		    {
-				SetPlayerHealth(playerid, cHealth+8);
+				SetPlayerHealthEx(playerid, cHealth+8);
 		    }
 		    else
 		    {
@@ -5248,10 +5284,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(GetPVarInt(playerid, "DrinkCooledDown") == 1 && GetPVarInt(playerid, "UsingSprunk") == 1)
 		{
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			cHealth = GetClientHealth(playerid);
 			if(cHealth < 100)
 			{
-				SetPlayerHealth(playerid, cHealth+2);
+				SetPlayerHealthEx(playerid, cHealth+2);
 			}
 			else
 			{
@@ -5403,7 +5439,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							SendClientMessageEx(GoChase[playerid], COLOR_YELLOW, string);
 							PlayerInfo[GoChase[playerid]][pHeadValue] = 0;
 							PlayerInfo[playerid][pCHits] += 1;
-							SetPlayerHealth(GoChase[playerid], 0.0);
+							SetPlayerHealthEx(GoChase[playerid], 0.0);
 							// KillEMSQueue(GoChase[playerid]);
 							GotHit[GoChase[playerid]] = 0;
 							GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
@@ -5555,7 +5591,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					PlayerInfo[playerid][pHeadValue] = 0;
 					PlayerInfo[GetChased[playerid]][pCHits] += 1;
-					SetPlayerHealth(playerid, 0.0);
+					SetPlayerHealthEx(playerid, 0.0);
 					GoChase[GetChased[playerid]] = INVALID_PLAYER_ID;
 					PlayerInfo[GetChased[playerid]][pC4Used] = 0;
 					PlayerInfo[GetChased[playerid]][pC4] = 0;
@@ -5570,7 +5606,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 }
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
-{
+{	
+	// If the player died, set their server side armour & health to 0
+	if(newstate == PLAYER_STATE_WASTED) FuckHacksVar[playerid][playerArmour][0] = 0, FuckHacksVar[playerid][playerHealth][0] = 0;
     if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{
  		if(!IsPlayerEntering{playerid} && PlayerInfo[playerid][pAdmin] < 2)
@@ -5831,8 +5869,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarInt(playerid, "NGPassengerVeh", vehicleid);
 			SetPVarInt(playerid, "NGPassengerSkin", GetPlayerSkin(playerid));
 			new Float:health, Float:armour;
-			GetPlayerHealth(playerid, health);
-			GetPlayerArmour(playerid, armour);
+			GetClientHealth(playerid, health);
+			GetClientArmour(playerid, armour);
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);
 		}*/
@@ -6233,6 +6271,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting commands right now.");
 		return 0;
 	}
+	/* Will be fixed ASAP
 	if(++CommandSpamTimes[playerid] >= 5 && PlayerInfo[playerid][pAdmin] < 1337) {
 		CommandSpamTimes[playerid] = 0;
 		CommandSpamUnmute[playerid] = 10;
@@ -6240,6 +6279,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
 		return 0;
 	}
+	*/
 
 	if(strfind(cmdtext, "|") != -1 || strfind(cmdtext, "\n") != -1 || strfind(cmdtext, "\r") != -1) {
 	    SendClientMessageEx(playerid, COLOR_GREY, "You cannot use non-standard characters in commands.");
@@ -6912,44 +6952,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	return 1;
 }
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
-{
-	if(PlayerInfo[playerid][pAdmin] < 2)
-	{
-		//Credits to Lordz AKA Lordzy.
-		if(oldticks[playerid] == 0) oldticks[playerid] = GetTickCount();
-		else
-		{
-			new intervals;
-			if((intervals = GetTickCount() - oldticks[playerid]) <= 35 && GetPlayerWeapon(playerid) != 38 && GetPlayerWeapon(playerid) != 28 && GetPlayerWeapon(playerid) != 32 || 
-			(intervals = GetTickCount() - oldticks[playerid]) <= 370 && (GetPlayerWeapon(playerid) == 34 || GetPlayerWeapon(playerid) == 33))
-			{
-				new szMessage[128];
-				if(deny_damage[playerid] == 1)
-				{
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be using a Rapid Fire modification.", GetPlayerNameEx(playerid), playerid);
-					ABroadCast(COLOR_YELLOW, szMessage, 2);
-				}
-				format(szMessage, sizeof(szMessage), "%s may be using Rapid Fire with weapon ID %d (%d ms).", GetPlayerNameEx(playerid), weaponid, intervals);
-				Log("logs/hack.log", szMessage);
-				if(++deny_damage[playerid] == 5) // 5 to gather data in logs
-				{
-					format(szMessage, sizeof(szMessage), "AdmCmd: %s has been banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_LIGHTRED, szMessage, 2);
-					PlayerInfo[playerid][pBanned] = 3;
-					format(szMessage, sizeof(szMessage), "AdmCmd: %s (IP:%s) was banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
-					Log("logs/ban.log", szMessage);
-					SystemBan(playerid, "[System] (Rapid Fire Modifications)");
-					MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Rapid Fire Modifications", 1, "System");
-					deny_damage[playerid] = 0;
-					Kick(playerid);
-					TotalAutoBan++;
-					return 0;
-				}
-			}
-			oldticks[playerid] = GetTickCount();
-			if(deny_damage[playerid] != 0) return 0;
-		}
-	}
-	return 1;
+public OnPlayerRequestSpawn(playerid)
+{	
+	FuckHacksVar[playerid][playerAlive] = 0;
+	return true;
 }

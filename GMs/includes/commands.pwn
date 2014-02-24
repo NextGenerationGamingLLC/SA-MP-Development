@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ 
 #if defined event_chancegambler
 CMD:togchancegambler(playerid, params[])
 {
@@ -356,8 +356,8 @@ CMD:usekit(playerid, params[]) {
 		        format(string, sizeof(string), "{FF8000}** {C2A2DA}%s leans in to the trunk and takes out a Kevlar Vest & First Aid Kit.", GetPlayerNameEx(playerid));
             	SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the Vehicle Trunk.");
             	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				SetPlayerHealth(playerid, 100);
-				SetPlayerArmor(playerid, 100);
+				SetPlayerHealthEx(playerid, 100);
+				SetPlayerArmourEx(playerid, 100);
             	CrateVehicleLoad[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }
@@ -1484,8 +1484,8 @@ CMD:hhcheck(playerid, params[])
   			format(string, sizeof(string), "Checking %s for health hacks, please wait....", GetPlayerNameEx(giveplayerid));
 		    SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-			GetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
-			GetPlayerArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
+			HHcheckFloats[giveplayerid][0] = GetClientHealth(giveplayerid);
+			HHcheckFloats[giveplayerid][1] = GetClientArmour(giveplayerid);
 			GetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 			GetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
 			HHcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -1498,7 +1498,7 @@ CMD:hhcheck(playerid, params[])
 			SetPlayerCameraLookAt(giveplayerid, 785.1896,1692.6887,0);
             SetPlayerVirtualWorld(giveplayerid, 0);
 		    SetPlayerInterior(giveplayerid, 1);
-		    SetPlayerHealth(giveplayerid, 100);
+		    SetPlayerHealthEx(giveplayerid, 100);
 		    RemoveArmor(giveplayerid);
 			SetPlayerPos(giveplayerid, -1400.994873, 106.899650, 1032.273437);
 			SetPlayerFacingAngle(giveplayerid, 90.66);
@@ -1731,7 +1731,7 @@ CMD:sethp(playerid, params[])
 		if(IsPlayerConnected(playa)) {
 			if(playa != INVALID_PLAYER_ID)
 			{
-				SetPlayerHealth(playa, health);
+				SetPlayerHealthEx(playa, health);
 				format(string, sizeof(string), "You have set %s's health to %d.", GetPlayerNameEx(playa), health);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
@@ -1750,7 +1750,7 @@ CMD:setmyhp(playerid, params[])
         return 1;
     }
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1) {
-        SetPlayerHealth(playerid, health);
+        SetPlayerHealthEx(playerid, health);
         format(string, sizeof(string), "You have set your health to %d.", health);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -1774,7 +1774,7 @@ CMD:setarmor(playerid, params[])
 		{
             if(playa != INVALID_PLAYER_ID)
 			{
-                SetPlayerArmor(playa, health);
+                SetPlayerArmourEx(playa, health);
                 format(string, sizeof(string), "You have set %s's armor to %d.", GetPlayerNameEx(playa), health);
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
             }
@@ -1787,30 +1787,6 @@ CMD:setarmor(playerid, params[])
     return 1;
 }
 
-CMD:hackwarnings(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
-		{
-			if(IsPlayerConnected(i))
-			{
-				if(GetPVarType(i, "ArmorWarning"))
-				{
-					new Float: armor, szMessage[128];
-					GetPlayerArmour(i, armor);
-					if(armor > CurrentArmor[i])
-					{
-						format(szMessage, sizeof(szMessage), "%s (ID: %i, Level: %d) - Armor Hacking - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], CurrentArmor[i], armor);
-						SendClientMessage(playerid, COLOR_WHITE, szMessage);
-					}
-				}
-			}	
-		}
-	}
-	return 1;
-}
-
 CMD:setmyarmor(playerid, params[])
 {
     new string[128], armor;
@@ -1821,7 +1797,7 @@ CMD:setmyarmor(playerid, params[])
     }
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
-        SetPlayerArmor(playerid, armor);
+        SetPlayerArmourEx(playerid, armor);
         format(string, sizeof(string), "You have set your armor to %d.", armor);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -1846,7 +1822,7 @@ CMD:setarmorall(playerid, params[])
 		{
 			if(IsPlayerConnected(i))
 			{
-				SetPlayerArmor(i, armor);
+				SetPlayerArmourEx(i, armor);
 			}	
         }
     }
@@ -2077,8 +2053,8 @@ CMD:bite(playerid, params[])
 			    			return 1;
 						}
 					}
-					GetPlayerHealth(i, hp);
-					SetPlayerHealth(i, hp - 30);
+					hp = GetClientHealth(i);
+					SetPlayerHealthEx(i, hp - 30);
 					SetPVarInt(i, "pZombieBit", 1);
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
@@ -2107,8 +2083,8 @@ CMD:bite(playerid, params[])
 				    if(IsPlayerInRangeOfPoint(i, 2, X, Y, Z))
 				    {
 						new Float:hp, string[128];
-						GetPlayerHealth(i, hp);
-						SetPlayerHealth(i, hp-20);
+						hp = GetClientHealth(i);
+						SetPlayerHealthEx(i, hp-20);
 						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						//SendAudioToRange(65, 100, X, Y, Z, 5);
@@ -4942,7 +4918,7 @@ CMD:mjail(playerid, params[]) {
 			SetPVarInt(iTargetID, "_rAppeal", gettime()+60);
 			SetPlayerInterior(iTargetID, 1);
 			PlayerInfo[iTargetID][pInt] = 1;
-        	SetPlayerHealth(iTargetID, 0x7FB00000);
+        	SetPlayerHealthEx(iTargetID, 0x7FB00000);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 			SetPlayerPos(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -5741,8 +5717,8 @@ CMD:joinevent(playerid, params[]) {
 		    }
 		    ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			GetPlayerHealth(playerid, EventFloats[playerid][4]);
-			GetPlayerArmour(playerid, EventFloats[playerid][5]);
+			EventFloats[playerid][4] = GetClientHealth(playerid);
+			EventFloats[playerid][5] = GetClientArmour(playerid);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -5777,8 +5753,8 @@ CMD:joinevent(playerid, params[]) {
 			SetPVarInt( playerid, "EventToken", 1 );
 			ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			GetPlayerHealth(playerid, EventFloats[playerid][4]);
-			GetPlayerArmour(playerid, EventFloats[playerid][5]);
+			EventFloats[playerid][4] = GetClientHealth(playerid);
+			EventFloats[playerid][5] = GetClientArmour(playerid);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -5796,9 +5772,9 @@ CMD:joinevent(playerid, params[]) {
 				Streamer_UpdateEx(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ]);
 			}
 			
-			SetPlayerHealth( playerid, EventKernel[ EventHealth ] );
+			SetPlayerHealthEx( playerid, EventKernel[ EventHealth ] );
 			if(EventKernel[EventArmor] > 0) {
-				SetPlayerArmor( playerid, EventKernel[ EventArmor ]);
+				SetPlayerArmourEx( playerid, EventKernel[ EventArmor ]);
 			}
 			//if(PlayerInfo[playerid][pBEquipped]) PlayerInfo[playerid][pBEquipped] = 0;
 			for(new x;x<MAX_PLAYERTOYS;x++) {
@@ -10175,8 +10151,8 @@ CMD:accept(playerid, params[])
                     if(IsPlayerInRangeOfPoint(playerid,20.0,758.98, -60.32, 1000.78) || IsPlayerInRangeOfPoint(BoxOffer[playerid],20.0,758.98, -60.32, 1000.78)) {
                         ResetPlayerWeapons(playerid);
                         ResetPlayerWeapons(BoxOffer[playerid]);
-                        SetPlayerHealth(playerid, mypoints);
-                        SetPlayerHealth(BoxOffer[playerid], points);
+                        SetPlayerHealthEx(playerid, mypoints);
+                        SetPlayerHealthEx(BoxOffer[playerid], points);
                         SetPlayerInterior(playerid, 7); SetPlayerInterior(BoxOffer[playerid], 7);
                         SetPlayerPos(playerid, 768.94, -70.87, 1001.56); SetPlayerFacingAngle(playerid, 131.8632);
                         SetPlayerPos(BoxOffer[playerid], 764.35, -66.48, 1001.56); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -10215,8 +10191,8 @@ CMD:accept(playerid, params[])
                     }
                     ResetPlayerWeapons(playerid);
                     ResetPlayerWeapons(BoxOffer[playerid]);
-                    SetPlayerHealth(playerid, mypoints);
-                    SetPlayerHealth(BoxOffer[playerid], points);
+                    SetPlayerHealthEx(playerid, mypoints);
+                    SetPlayerHealthEx(BoxOffer[playerid], points);
                     SetPlayerInterior(playerid, 5); SetPlayerInterior(BoxOffer[playerid], 5);
                     SetPlayerPos(playerid, 762.9852,2.4439,1001.5942); SetPlayerFacingAngle(playerid, 131.8632);
                     SetPlayerPos(BoxOffer[playerid], 758.7064,-1.8038,1001.5942); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -10535,7 +10511,7 @@ CMD:accept(playerid, params[])
                     if(IsPlayerConnected(GuardOffer[playerid])) {
                         if(ProxDetectorS(6.0, playerid, GuardOffer[playerid])) {
                             new Float:armour;
-                            GetPlayerArmour(playerid, armour);
+                            armour = GetClientArmour(playerid);
                             if(armour >= 50) {
                                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You already have a vest!");
                                 return 1;
@@ -10552,7 +10528,7 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            SetPlayerArmor(playerid, 50);
+                            SetPlayerArmourEx(playerid, 50);
                             GetPlayerName(GuardOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
                             format(szMessage, sizeof(szMessage), "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
@@ -11656,13 +11632,13 @@ CMD:accept(playerid, params[])
                                     new Float:health;
                                     new level = PlayerInfo[SexOffer[playerid]][pSexSkill];
                                     if(level >= 0 && level <= 50) {
-                                        GetPlayerHealth(playerid, health);
+                                        health = GetClientHealth(playerid);
                                         if(health < 100) {
                                             if(health > 90) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetPlayerHealthEx(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 10.0);
+                                                SetPlayerHealthEx(playerid, health + 10.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD1));
@@ -11676,13 +11652,13 @@ CMD:accept(playerid, params[])
                                         else if(STD1[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 10 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 51 && level <= 100) {
-                                        GetPlayerHealth(playerid, health);
+                                        health = GetClientHealth(playerid);
                                         if(health < 100) {
                                             if(health > 80) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetPlayerHealthEx(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 20.0);
+                                                SetPlayerHealthEx(playerid, health + 20.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD2));
@@ -11694,13 +11670,13 @@ CMD:accept(playerid, params[])
                                         else if(STD2[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 20 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 101 && level <= 200) {
-                                        GetPlayerHealth(playerid, health);
+                                        health = GetClientHealth(playerid);
                                         if(health < 100) {
                                             if(health > 70) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetPlayerHealthEx(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 30.0);
+                                                SetPlayerHealthEx(playerid, health + 30.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD3));
@@ -11712,13 +11688,13 @@ CMD:accept(playerid, params[])
                                         else if(STD3[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 30 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 201 && level <= 400) {
-                                        GetPlayerHealth(playerid, health);
+                                        health = GetClientHealth(playerid);
                                         if(health < 100) {
                                             if(health > 60) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetPlayerHealthEx(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 40.0);
+                                                SetPlayerHealthEx(playerid, health + 40.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD4));
@@ -11730,12 +11706,12 @@ CMD:accept(playerid, params[])
                                         else if(STD4[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 40 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 401) {
-                                        GetPlayerHealth(playerid, health);
+                                        health = GetClientHealth(playerid);
                                         if(health > 50) {
-                                            SetPlayerHealth(playerid, 100);
+                                            SetPlayerHealthEx(playerid, 100);
                                         }
                                         else {
-                                            SetPlayerHealth(playerid, health + 50.0);
+                                            SetPlayerHealthEx(playerid, health + 50.0);
                                         }
                                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your sex skill level was high enough to give them a lot of health and no STD.");
                                         SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* The whore's sex skill level was high enough to give you a lot of health and no STD.");
@@ -12684,8 +12660,8 @@ CMD:window(playerid, params[])
 
             GetPlayerPos(playerid, fSpecPos[0], fSpecPos[1], fSpecPos[2]);
             GetPlayerFacingAngle(playerid, fSpecPos[3]);
-            GetPlayerHealth(playerid, fSpecPos[4]);
-            GetPlayerArmour(playerid, fSpecPos[5]);
+            fSpecPos[4] = GetClientHealth(playerid);
+            fSpecPos[5] = GetClientArmour(playerid);
 
             SetPVarFloat(playerid, "air_Xpos", fSpecPos[0]);
             SetPVarFloat(playerid, "air_Ypos", fSpecPos[1]);
@@ -13759,7 +13735,7 @@ CMD:exit(playerid, params[])
             SetPlayerPos(playerid,200.2569,1869.5732,13.1470);
         }
         else {
-            SetPlayerHealth(playerid, 0);
+            SetPlayerHealthEx(playerid, 0);
             SendClientMessageEx(playerid, COLOR_WHITE, "You can not escape admin prison!");
         }
 
@@ -14094,12 +14070,10 @@ CMD:eventstaff(playerid, params[])
 					PlayerInfo[playerid][pAGuns][GetWeaponSlot(38)] = 38;
 					GivePlayerValidWeapon(playerid, 38, 60000);
 					EventKernel[EventStaff][i] = playerid;
-					GetPlayerHealth(playerid,health);
+					health = GetClientHealth(playerid);
 					SetPVarFloat(playerid, "pPreGodHealth", health);
-					GetPlayerArmour(playerid,armor);
+					armor = GetClientArmour(playerid);
 					SetPVarFloat(playerid, "pPreGodArmor", armor);
-					SetPlayerHealth(playerid, 0x7FB00000);
-					SetPlayerArmor(playerid, 0x7FB00000);
 					SetPVarInt(playerid, "eventStaff", 1);
 					return SendClientMessageEx( playerid, COLOR_WHITE, "You have joined the event staff." );
 				}
@@ -14159,9 +14133,9 @@ CMD:quitevent(playerid, params[])
         EventLastInt[playerid] = 0;
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealth(playerid,health);
+		SetPlayerHealthEx(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
-		SetPlayerArmor(playerid, armor);
+		SetPlayerArmourEx(playerid, armor);
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
 		DeletePVar(playerid, "eventStaff");
@@ -14183,9 +14157,9 @@ CMD:quitevent(playerid, params[])
         			SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
         			SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
         			SetPlayerInterior(playerid,EventLastInt[playerid]);
-        			SetPlayerHealth(playerid, EventFloats[playerid][4]);
+        			SetPlayerHealthEx(playerid, EventFloats[playerid][4]);
         			if(EventFloats[playerid][5] > 0) {
-        				SetPlayerArmor(playerid, EventFloats[playerid][5]);
+        				SetPlayerArmourEx(playerid, EventFloats[playerid][5]);
         			}
         			Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
         			RemovePlayerWeapon(playerid, 38);
@@ -14207,9 +14181,9 @@ CMD:quitevent(playerid, params[])
       	SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
        	SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
        	SetPlayerInterior(playerid,EventLastInt[playerid]);
-       	SetPlayerHealth(playerid, EventFloats[playerid][4]);
+       	SetPlayerHealthEx(playerid, EventFloats[playerid][4]);
        	if(EventFloats[playerid][5] > 0) {
-       		SetPlayerArmor(playerid, EventFloats[playerid][5]);
+       		SetPlayerArmourEx(playerid, EventFloats[playerid][5]);
        	}
        	Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
        	if(EventKernel[EventType] == 4)
@@ -14225,11 +14199,11 @@ CMD:quitevent(playerid, params[])
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
 		if(health > 0) {
-			SetPlayerHealth(playerid,health);
+			SetPlayerHealthEx(playerid,health);
 		}
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmor(playerid, armor);
+			SetPlayerArmourEx(playerid, armor);
 		}	
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
@@ -14335,9 +14309,9 @@ CMD:denyevent(playerid, params[])
                 SetPlayerVirtualWorld(EventKernel[EventStaff][i], EventLastVW[EventKernel[EventStaff][i]]);
                 SetPlayerFacingAngle(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][0]);
                 SetPlayerInterior(EventKernel[EventStaff][i],EventLastInt[EventKernel[EventStaff][i]]);
-                SetPlayerHealth(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
+                SetPlayerHealthEx(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
                 if(EventFloats[EventKernel[EventStaff][i]][5] > 0) {
-                	SetPlayerArmor(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
+                	SetPlayerArmourEx(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
                 }
                 for(new d = 0; d < 6; d++) {
                     EventFloats[EventKernel[EventStaff][i]][d] = 0.0;
@@ -14423,33 +14397,19 @@ CMD:approveevent(playerid, params[])
 
 CMD:god(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	
+	if(pGodMode[playerid] == 0)
 	{
-		new Float:health, Float:armor;
-	    if(GetPVarType(playerid, "pGodMode"))
-	    {
-			health = GetPVarFloat(playerid, "pPreGodHealth");
-			SetPlayerHealth(playerid,health);
-			armor = GetPVarFloat(playerid, "pPreGodArmor");
-			SetPlayerArmor(playerid, armor);
-			DeletePVar(playerid, "pGodMode");
-			DeletePVar(playerid, "pPreGodHealth");
-			DeletePVar(playerid, "pPreGodArmor");
-			SendClientMessage(playerid, COLOR_WHITE, "God mode disabled");
-		}
-		else
-		{
-			GetPlayerHealth(playerid,health);
-			SetPVarFloat(playerid, "pPreGodHealth", health);
-			GetPlayerArmour(playerid,armor);
-			SetPVarFloat(playerid, "pPreGodArmor", armor);
-		    SetPlayerHealth(playerid, 0x7FB00000);
-		    SetPlayerArmor(playerid, 0x7FB00000);
-		    SetPVarInt(playerid, "pGodMode", 1);
-		    SendClientMessage(playerid, COLOR_WHITE, "God mode enabled");
-		}
-    }
-	return 1;
+		pGodMode[playerid] = 1;
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled God Mode!");
+	}
+	else
+	{
+		pGodMode[playerid] = 0;
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled God Mode!");
+	}
+	return true;
 }
 
 CMD:damagecheck(playerid, params[])
@@ -14500,7 +14460,7 @@ CMD:healnear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerHealth(i, 100);
+					SetPlayerHealthEx(i, 100);
 					count++;
 				}
 			}	
@@ -14527,7 +14487,7 @@ CMD:armornear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerArmor(i, 100);
+					SetPlayerArmourEx(i, 100);
 					count++;
 				}
 			}	
@@ -15157,7 +15117,7 @@ CMD:kos(playerid, params[])
 				if(fine > 0) {
 					format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/kos).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/kos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
@@ -15175,7 +15135,7 @@ CMD:kos(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned (/kos) by %s, reason: Killing on Sight ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned (/kos) by %s, reason: Killing on Sight ", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15188,7 +15148,7 @@ CMD:kos(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15205,7 +15165,7 @@ CMD:kos(playerid, params[])
 			if(fine > 0) {
 				format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/kos).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/kos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
 			
@@ -15323,7 +15283,7 @@ CMD:skos(playerid, params[])
 				if(fine > 0) {
 					format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/skos).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/skos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
@@ -15341,7 +15301,7 @@ CMD:skos(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned (/skos) by %s, reason: Killing on Sight ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned (/skos) by %s, reason: Killing on Sight ", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: Killing on Sight", GetPlayerNameEx(giveplayerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15354,7 +15314,7 @@ CMD:skos(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15371,7 +15331,7 @@ CMD:skos(playerid, params[])
 			if(fine > 0) {
 				format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/skos).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/skos).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
 			
@@ -15493,7 +15453,7 @@ CMD:pg(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15506,7 +15466,7 @@ CMD:pg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15604,7 +15564,7 @@ CMD:spg(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned (/spg) by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned (/spg) by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: Powergaming", GetPlayerNameEx(giveplayerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15617,7 +15577,7 @@ CMD:spg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15698,7 +15658,7 @@ CMD:mg(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned (/mg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned (/mg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15711,7 +15671,7 @@ CMD:mg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15792,7 +15752,7 @@ CMD:smg(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned (/smg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned (/smg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: Metagaming", GetPlayerNameEx(giveplayerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15805,7 +15765,7 @@ CMD:smg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15900,7 +15860,7 @@ CMD:nonrp(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been issued a gang warning as a result of your prison.");
 				if(PlayerInfo[giveplayerid][pGangWarn] >= 3)
 				{
-					format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 					format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -15941,7 +15901,7 @@ CMD:nonrp(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned (/nonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned (/nonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15954,7 +15914,7 @@ CMD:nonrp(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16038,7 +15998,7 @@ CMD:snonrp(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been issued a gang warning as a result of your prison.");
 				if(PlayerInfo[giveplayerid][pGangWarn] >= 3)
 				{
-					format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 					format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -16079,7 +16039,7 @@ CMD:snonrp(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned (/snonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned (/snonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16092,7 +16052,7 @@ CMD:snonrp(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16181,7 +16141,7 @@ CMD:dm(playerid, params[])
 				if(fine > 0) {
 					format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
@@ -16199,7 +16159,7 @@ CMD:dm(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: DM ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: DM ", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16212,7 +16172,7 @@ CMD:dm(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16226,7 +16186,7 @@ CMD:dm(playerid, params[])
 			if(fine > 0) {
 				format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
 			
@@ -16307,7 +16267,7 @@ CMD:sdm(playerid, params[])
 				if(fine > 0) {
 					format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}	
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
@@ -16325,7 +16285,7 @@ CMD:sdm(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned (/sdm) by %s, reason: DM ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned (/sdm) by %s, reason: DM ", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned (/sdm) by %s, reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
    			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -16338,7 +16298,7 @@ CMD:sdm(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16352,7 +16312,7 @@ CMD:sdm(playerid, params[])
 			if(fine > 0) {
 				format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s (/dm).", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 			}	
 			
@@ -16916,8 +16876,8 @@ CMD:jarrest(playerid, params[])
 				ClearAnimations(suspect);
 				if(PlayerCuffed[suspect] == 2)
 				{
-					SetPlayerHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
-					SetPlayerArmor(suspect, GetPVarFloat(suspect, "cuffarmor"));
+					SetPlayerHealthEx(suspect, GetPVarFloat(suspect, "cuffhealth"));
+					SetPlayerArmourEx(suspect, GetPVarFloat(suspect, "cuffarmor"));
 					DeletePVar(suspect, "cuffhealth");
 					DeletePVar(suspect, "PlayerCuffed");
 				}
@@ -23247,7 +23207,7 @@ CMD:deliverpt(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
                             return 1;
                         }
-                        SetPlayerHealth(giveplayerid, 100);
+                        SetPlayerHealthEx(giveplayerid, 100);
                         if(GetPVarType(giveplayerid, "STD"))
 						{
 							DeletePVar(giveplayerid, "STD");
@@ -23444,9 +23404,9 @@ CMD:triage(playerid, params[])
     	    if (ProxDetectorS(5.0, playerid, giveplayerid))
 			{
 	    	    new Float: health;
-	    	    GetPlayerHealth(giveplayerid, health);
-	    	    if(health >= 85) SetPlayerHealth(giveplayerid, 100);
-				else SetPlayerHealth(giveplayerid, health+15.0);
+	    	    health = GetClientHealth(giveplayerid);
+	    	    if(health >= 85) SetPlayerHealthEx(giveplayerid, 100);
+				else SetPlayerHealthEx(giveplayerid, health+15.0);
 	    	    format(string, sizeof(string), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	    ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[playerid][pTriageTime] = 120;
@@ -24923,7 +24883,7 @@ CMD:revive(playerid, params[])
 
 				KillEMSQueue(giveplayerid);
    				ClearAnimations(giveplayerid);
-   				SetPlayerHealth(giveplayerid, 100);
+   				SetPlayerHealthEx(giveplayerid, 100);
 			}
 			else
 			{
@@ -24959,13 +24919,13 @@ CMD:revivenear(playerid, params[])
 				{
 					if(ProxDetectorS(radius, playerid, i))
 					{
-						SetPlayerHealth(i, 100);
+						SetPlayerHealthEx(i, 100);
 						count++;
 					}
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
 					KillEMSQueue(i);
 					ClearAnimations(i);
-					SetPlayerHealth(i, 100);
+					SetPlayerHealthEx(i, 100);
 					format(string, sizeof(string), "AdmCmd: %s has been revived by %s", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
@@ -25028,7 +24988,7 @@ CMD:giveweapon(playerid, params[])
 		return 1;
 	}
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	health = GetClientHealth(playerid);
 	if (health < 80)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give weapons if your health is below 80!");
@@ -26716,20 +26676,17 @@ CMD:pfine(playerid, params[])
 			{
 				//GivePlayerCash(giveplayerid, -minimum);
 				GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minimum);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minimum), GetPlayerNameEx(playerid), reason);
-				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(minimum), GetPlayerNameEx(playerid), reason);
 			}
 			else
 			{
 				//GivePlayerCash(giveplayerid, -fine);
 				GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fine);
-				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid), reason);
-				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid), reason);
 			}
 
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
 			//OnPlayerStatsUpdate(giveplayerid);
 			return 1;
 		}
@@ -26753,7 +26710,7 @@ CMD:fine(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
 				return 1;
 			}
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -26785,7 +26742,7 @@ CMD:sfine(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
 				return 1;
 			}
-			format(string, sizeof(string), "AdmCmd: %s(%d) was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -27923,7 +27880,7 @@ CMD:ofine(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
             if (amount < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -28277,7 +28234,7 @@ CMD:trunkput(playerid, params[])
 	if(GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 510)  return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
 
 	new Float: Health;
-	GetPlayerHealth(playerid, Health);
+	Health = GetClientHealth(playerid);
 	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons in a car when your health lower than 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
@@ -29502,7 +29459,7 @@ CMD:gangwarn(playerid, params[])
 			PlayerInfo[giveplayerid][pGangWarn] += 1;
 			if(PlayerInfo[giveplayerid][pGangWarn] == 3)
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -29516,7 +29473,7 @@ CMD:gangwarn(playerid, params[])
 			}
 			format(string, sizeof(string), "AdmCmd: %s was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "You were given a gang warning by %s, reason: %s", GetPlayerNameEx(playerid), reason);
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
@@ -29543,7 +29500,7 @@ CMD:gangunban(playerid, params[])
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 			PlayerInfo[giveplayerid][pGangWarn] = 0;
 
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -29924,7 +29881,7 @@ CMD:order(playerid, params[])
 				}
 				if(GetPlayerCash(playerid) >= 500)
 				{
-					SetPlayerHealth(playerid, 100);
+					SetPlayerHealthEx(playerid, 100);
 					GivePlayerCash(playerid, -500);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a firstaid!");
 					return 1;
@@ -30084,7 +30041,7 @@ CMD:order(playerid, params[])
 				}
 				if(GetPlayerCash(playerid) >= 6000)
 				{
-					SetPlayerArmor(playerid, 99);
+					SetPlayerArmourEx(playerid, 99);
 					GivePlayerCash(playerid, -6000);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a kevlar vest!");
 					return 1;
@@ -34356,7 +34313,7 @@ CMD:heal(playerid, params[])
 
 				if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"You are not near them!");
 				new Float:tempheal;
-				GetPlayerHealth(giveplayerid,tempheal);
+				tempheal = GetClientHealth(giveplayerid);
 				if(tempheal >= 100.0)
 				{
 					SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
@@ -34368,7 +34325,7 @@ CMD:heal(playerid, params[])
 				GivePlayerCash(playerid, price / 2);
 				Tax += price / 2;
 				GivePlayerCash(giveplayerid, -price);
-				SetPlayerHealth(giveplayerid, 100);
+				SetPlayerHealthEx(giveplayerid, 100);
 				PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 				PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
 				format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
@@ -34783,7 +34740,7 @@ CMD:rcabuse(playerid, params[]) {
 
 						GameTextForPlayer(iTargetID, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 						ResetPlayerWeaponsEx(iTargetID);
-						format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerNameEx(playerid));
+						format(szMessage, sizeof(szMessage), "AdmCmd: %s has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid));
 						Log("logs/admin.log", szMessage);
 						format(szMessage, sizeof(szMessage), "AdmCmd: %s has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid));
 						SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
@@ -34850,14 +34807,14 @@ CMD:prison(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			SetPlayerWantedLevel(giveplayerid, 0);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			SetPVarInt(giveplayerid, "_rAppeal", gettime()+60);			format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON] %s", reason);
 			format(PlayerInfo[giveplayerid][pPrisonedBy], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
@@ -35110,7 +35067,7 @@ CMD:suspend(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -35172,7 +35129,7 @@ CMD:vsuspend(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -35215,7 +35172,7 @@ CMD:prisonaccount(playerid, params[])
 
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "The person is online and has been prisoned!");
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -35296,14 +35253,14 @@ CMD:release(playerid, params[])
 			}
 			else
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealth(giveplayerid, 100);
+				SetPlayerHealthEx(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -35344,7 +35301,7 @@ CMD:sprison(playerid, params[])
 				ClearAnimations(giveplayerid);
 			}	
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35352,7 +35309,7 @@ CMD:sprison(playerid, params[])
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			SetPlayerWantedLevel(giveplayerid, 0);
 			SetPlayerToTeamColor(giveplayerid);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			PhoneOnline[giveplayerid] = 1;
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][SPRISON] %s", reason);
@@ -35568,7 +35525,7 @@ CMD:sjail(playerid, params[])
 				ClearAnimations(giveplayerid);
 			}	
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent jailed by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s has been silent jailed by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been jailed by an Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35576,7 +35533,7 @@ CMD:sjail(playerid, params[])
 			PhoneOnline[giveplayerid] = 1;
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			SetPlayerFacingAngle(giveplayerid, 0);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			SetPlayerPos(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -35617,14 +35574,14 @@ CMD:jail(playerid, params[])
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			if(PlayerInfo[playerid][pSMod] > 0 && PlayerInfo[playerid][pAdmin] == 1)
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) jailed by Senior Moderator %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s jailed by Senior Moderator %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/moderator.log", string);
 				format(string, sizeof(string), "You have been jailed by Senior Moderator %s for %d minutes for violation of server rules.", GetPlayerNameEx(playerid), minutes);
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			}
 			else
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) jailed by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s jailed by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "You have been jailed by Admin %s for %d minutes for violation of server rules.", GetPlayerNameEx(playerid), minutes);
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
@@ -35639,7 +35596,7 @@ CMD:jail(playerid, params[])
 			SetPlayerInterior(giveplayerid, 1);
 			SetPlayerFacingAngle(giveplayerid, 0);
 			TogglePlayerControllable(giveplayerid, 1);
-			SetPlayerHealth(giveplayerid, 0x7FB00000);
+			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			SetPlayerPos(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -36839,9 +36796,9 @@ CMD:endevent(playerid, params[])
 						EventLastInt[i] = 0;
 						RemovePlayerWeapon(i, 38);
 						health = GetPVarFloat(i, "pPreGodHealth");
-						SetPlayerHealth(i,health);
+						SetPlayerHealthEx(i,health);
 						armor = GetPVarFloat(i, "pPreGodArmor");
-						SetPlayerArmor(i, armor);
+						SetPlayerArmourEx(i, armor);
 						DeletePVar(i, "pPreGodHealth");
 						DeletePVar(i, "pPreGodArmor");
 						SetPVarInt(i, "eventStaff", 0);
@@ -36867,9 +36824,9 @@ CMD:endevent(playerid, params[])
 						SetPlayerVirtualWorld(i, EventLastVW[i]);
 						SetPlayerFacingAngle(i, EventFloats[i][0]);
 						SetPlayerInterior(i,EventLastInt[i]);
-						SetPlayerHealth(i, EventFloats[i][4]);
+						SetPlayerHealthEx(i, EventFloats[i][4]);
 						if(EventFloats[i][5] > 0) {
-							SetPlayerArmor(i, EventFloats[i][5]);
+							SetPlayerArmourEx(i, EventFloats[i][5]);
 						}
 						for(new d = 0; d < 6; d++)
 						{
@@ -37082,10 +37039,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+								SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
 							}	
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+								SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
 							}
 							GivePlayerEventWeapons( i );
 						}
@@ -37094,10 +37051,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+								SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
 							}
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+								SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
 							}	
 							GivePlayerEventWeapons( i );
 						}
@@ -37106,7 +37063,7 @@ CMD:beginevent(playerid, params[])
 							if(zombiemade == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
-								SetPlayerHealth(playerid, 30);
+								SetPlayerHealthEx(playerid, 30);
 								RemoveArmor(playerid);
 								SetPlayerSkin(playerid, 134);
 								SetPlayerColor(playerid, 0x0BC43600);
@@ -37119,10 +37076,10 @@ CMD:beginevent(playerid, params[])
 								//GivePlayerEventWeapons( i );
 								SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
 								if(GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerHealth( i, EventKernel[ EventHealth ] );
+									SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
 								}	
 								if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerArmor( i, EventKernel[ EventArmor ]);
+									SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
 								}
 								GivePlayerEventWeapons( i );
 							}
@@ -38347,8 +38304,8 @@ CMD:slap(playerid, params[])
 			return 1;
 		}
 		else {
-		    GetPlayerHealth(giveplayerid, shealth);
-			SetPlayerHealth(giveplayerid, shealth-5);
+		    shealth = GetClientHealth(giveplayerid);
+			SetPlayerHealthEx(giveplayerid, shealth-5);
 			GetPlayerPos(giveplayerid, posx, posy, posz);
 			SetPlayerPos(giveplayerid, posx, posy, posz+5);
 			PlayerPlaySound(giveplayerid, 1130, posx, posy, posz+5);
@@ -39104,7 +39061,7 @@ CMD:warn(playerid, params[])
 			}
 			format(string, sizeof(string), "AdmCmd: %s was warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 			format(string, sizeof(string), "You were warned by %s, reason: %s", GetPlayerNameEx(playerid), reason);
@@ -39144,7 +39101,7 @@ CMD:swarn(playerid, params[])
 			}
 			format(string, sizeof(string), "AdmCmd: %s was silent warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was silent warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s was silent warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 			format(string, sizeof(string), "You were warned by an Admin, reason: %s", reason);
@@ -39610,10 +39567,9 @@ CMD:nunmute(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pNMute] == 1)
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) was unmuted from speaking in /newb by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
-				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was unmuted from speaking in /newb by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
+				Log("logs/admin.log", string);
 				PlayerInfo[giveplayerid][pNMute] = 0;
 				PlayerInfo[giveplayerid][pNMuteTotal]--;
 			}
@@ -39645,10 +39601,9 @@ CMD:nmute(playerid, params[])
 			    SetPVarInt(giveplayerid, "UnmuteTime", gettime());
 				PlayerInfo[giveplayerid][pNMute] = 1;
 				PlayerInfo[giveplayerid][pNMuteTotal] += 1;
-				format(string, sizeof(string), "AdmCmd: %s(%d) was muted from speaking in /newb by %s(%d).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
-				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was muted from speaking in /newb by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
+				Log("logs/admin.log", string);
 				if(PlayerInfo[giveplayerid][pNMuteTotal] > 6)
 				{
 					new playerip[32];
@@ -39722,10 +39677,9 @@ CMD:adunmute(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "Sorry, you cannot be unmuted from /ad while you are in jail/prison.");
 					return 1;
 				}
-				format(string, sizeof(string), "AdmCmd: %s(%d) was unmuted from /ad by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
-				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was unmuted from /ad by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
+				Log("logs/admin.log", string);
 				PlayerInfo[giveplayerid][pADMute] = 0;
 				PlayerInfo[giveplayerid][pADMuteTotal]--;
 			}
@@ -39757,9 +39711,8 @@ CMD:admute(playerid, params[])
 				    SetPVarInt(giveplayerid, "UnmuteTime", gettime());
 					PlayerInfo[giveplayerid][pADMute] = 1;
 					PlayerInfo[giveplayerid][pADMuteTotal] += 1;
-					format(string, sizeof(string), "AdmCmd: %s(%d) was muted from placing /ad's by %s(%d).", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
-					Log("logs/admin.log", string);
 					format(string, sizeof(string), "AdmCmd: %s was muted from placing /ad's by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					Log("logs/admin.log", string);
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					if(PlayerInfo[giveplayerid][pADMuteTotal] > 6)
@@ -39844,7 +39797,7 @@ CMD:makeadvisor(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "You have given Helper to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Helper by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s has been made a Helper by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 2:
@@ -39853,7 +39806,7 @@ CMD:makeadvisor(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "You have given Community Advisor to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Community Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s has been made a Community Advisor by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 3:
@@ -39862,7 +39815,7 @@ CMD:makeadvisor(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "You have promoted %s to Senior Advisor", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Senior Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s has been made a Senior Advisor by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 4:
@@ -39871,7 +39824,7 @@ CMD:makeadvisor(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "You have promoted %s to Chief Advisor", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Chief Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s has been made a Chief Advisor by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 			}
@@ -40653,7 +40606,7 @@ CMD:fstoregun(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You can not store weapons from a vehicle!");
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	health = GetClientHealth(playerid);
 	if (health < 80) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not store weapons if your health is below 80!");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || GetPlayerState(playerid) == 7) 
 		return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
@@ -42687,11 +42640,6 @@ CMD:leaveshop(playerid, params[]) {
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
 		TogglePlayerControllable(playerid, 1);
-		DeletePVar(playerid, "tmpX");
-		DeletePVar(playerid, "tmpY");
-		DeletePVar(playerid, "tmpZ");
-		DeletePVar(playerid, "tmpInt");
-		DeletePVar(playerid, "tmpVW");
 		DeletePVar(playerid, "ShopTP");
 	}
 	return 1;
@@ -44547,12 +44495,10 @@ CMD:accepthelp(playerid, params[])
 			SetPlayerPos(playerid, x, y+2, z);
 			SetPlayerVirtualWorld(playerid, vw);
 			SetPlayerInterior(playerid, i);
-			GetPlayerHealth(playerid,health);
+			health = GetClientHealth(playerid);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
-			GetPlayerArmour(playerid,armor);
+			armor = GetClientArmour(playerid);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);
-			SetPlayerHealth(playerid, 0x7FB00000);
-		    SetPlayerArmor(playerid, 0x7FB00000);
 		    SetPVarInt(playerid, "pGodMode", 1);
 			if(i > 0 || vw > 0) Player_StreamPrep(playerid, x, y, z, FREEZE_TIME);
 			HelpingNewbie[playerid] = Player;
@@ -44578,10 +44524,10 @@ CMD:finishhelp(playerid, params[])
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "AdvisorLastInt"));
 		DeletePVar(playerid, "pGodMode");
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealth(playerid,health);
+		SetPlayerHealthEx(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmor(playerid,armor);
+			SetPlayerArmourEx(playerid,armor);
 		}
 		else
 		{
@@ -47851,8 +47797,8 @@ CMD:cuff(playerid, params[])
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 0);
 					ClearAnimations(giveplayerid);
-					GetPlayerHealth(giveplayerid, health);
-					GetPlayerArmour(giveplayerid, armor);
+					health = GetClientHealth(giveplayerid);
+					armor = GetClientArmour(giveplayerid);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
 					SetPVarFloat(giveplayerid, "cuffarmor",armor);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
@@ -47926,8 +47872,8 @@ CMD:uncuff(playerid, params[])
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
-                    SetPlayerHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
-                    SetPlayerArmor(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
+                    SetPlayerHealthEx(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
+                    SetPlayerArmourEx(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
                     DeletePVar(giveplayerid, "cuffhealth");
 					DeletePVar(giveplayerid, "PlayerCuffed");
 				}
@@ -48532,7 +48478,7 @@ CMD:cancel(playerid, params[])
 	{
 		if(!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in the Hitman Agency!");
 		new Float:health;
-		GetPlayerHealth(playerid, health);
+		health = GetClientHealth(playerid);
 		new hpint = floatround( health, floatround_round );
 		if (hpint >=  80)
 		{
@@ -49283,7 +49229,7 @@ CMD:usepot(playerid, params[])
 
 	if(storageid == 0 && PlayerInfo[playerid][pPot] > 1 || (storageid > 0) && StorageInfo[playerid][storageid-1][sPot] > 1)
 	{
-		GetPlayerHealth(playerid, health);
+		health = GetClientHealth(playerid);
 		healthint = floatround(health, floatround_round);
 		if(healthint >= 100 )
 		{
@@ -49298,11 +49244,11 @@ CMD:usepot(playerid, params[])
 		}
 		if(healthint > 80)
 		{
-			SetPlayerHealth(playerid, 100);
+			SetPlayerHealthEx(playerid, 100);
 		}
 		else
 		{
-			SetPlayerHealth(playerid, health + 20.0);
+			SetPlayerHealthEx(playerid, health + 20.0);
 		}
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of pot!");
 		format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
@@ -49367,7 +49313,7 @@ CMD:usecrack(playerid, params[])
 		return 1;
 	}
 	new Float:armour;
-	GetPlayerArmour(playerid, armour);
+	armour = GetClientArmour(playerid);
 	if(armour >= 100)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -49409,7 +49355,7 @@ CMD:usecrack(playerid, params[])
 			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
 		}
 		new string[128], Float:PlayersArmour;
-		GetPlayerArmour(playerid, PlayersArmour);
+		PlayersArmour = GetClientArmour(playerid);
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of crack!");
 		format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -49419,23 +49365,15 @@ CMD:usecrack(playerid, params[])
 		} else {
 			StorageInfo[playerid][storageid-1][sCrack] -= 2;
 		}
-		if(CurrentArmor[playerid] < PlayersArmour && GetPVarInt(playerid, "IsInArena") == 0)
-	    {
-	    	format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
-			ABroadCast( COLOR_YELLOW, string, 2 );
-			format(string, sizeof(string), "%s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
-			Log("logs/hack.log", string);
-	        return 1;
-	    }
 		UsedCrack[playerid] = 1;
 		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
 		if(PlayersArmour > 90)
 		{
-			SetPlayerArmor(playerid, 100);
+			SetPlayerArmourEx(playerid, 100);
 		}
 		else
 		{
-			SetPlayerArmor(playerid, PlayersArmour + 10.0);
+			SetPlayerArmourEx(playerid, PlayersArmour + 10.0);
 		}
 		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
 		switch(GetPVarInt(playerid, "STD")) {
@@ -50986,7 +50924,7 @@ CMD:docarrest(playerid, params[])
 			PlayerCuffedTime[suspect] = 0;
 			PlayerInfo[suspect][pVW] = 0;
 			SetPlayerVirtualWorld(suspect, 0);
-			SetPlayerHealth(suspect, 100);
+			SetPlayerHealthEx(suspect, 100);
 			strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
 			SetPlayerToTeamColor(suspect);
@@ -53745,7 +53683,6 @@ CMD:fmute(playerid, params[])
 					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 1);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s has muted %s(%d) from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), reason);
 					Log("logs/admin.log", string);
 				}
 			}
@@ -53780,7 +53717,6 @@ CMD:funmute(playerid, params[])
 					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
 					ABroadCast(COLOR_LIGHTRED, string, 1);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
-					format(string, sizeof(string), "AdmCmd: %s has unmuted %s(%d) from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), reason);
 					Log("logs/admin.log", string);
 				}
 			}
@@ -54515,8 +54451,8 @@ CMD:qs(playerid, params[]) return cmd_quickstats(playerid, params);
 CMD:quickstats(playerid, params[])
 {
 	new string[128], Float: health, Float: armor;
-	GetPlayerHealth(playerid, health);
-	GetPlayerArmour(playerid, armor);
+	health = GetClientHealth(playerid);
+	armor = GetClientArmour(playerid);
 	
 	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
@@ -54726,8 +54662,8 @@ CMD:endhunger(playerid, params[])
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
-					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetPlayerHealthEx(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetPlayerArmourEx(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -54787,8 +54723,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54816,8 +54752,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54846,8 +54782,8 @@ CMD:leavehunger(playerid, params[])
 					format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 							
-					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetPlayerHealthEx(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetPlayerArmourEx(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -54889,8 +54825,8 @@ CMD:leavehunger(playerid, params[])
 		}
 		else if(hgPlayerCount > 3 || hgPlayerCount == 1)
 		{
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54942,11 +54878,11 @@ CMD:joinhunger(playerid, params[])
 	new rand = random(sizeof(hgRandomSpawn));
 	SetPlayerPos(playerid, hgRandomSpawn[rand][0], hgRandomSpawn[rand][1], hgRandomSpawn[rand][2]);
 	
-	GetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-	SetPlayerHealth(playerid, 9999.9);
+	HungerPlayerInfo[playerid][hgLastHealth] = GetClientHealth(playerid);
+	SetPlayerHealthEx(playerid, 9999.9);
 	
-	GetPlayerArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
-	SetPlayerArmour(playerid, 0);
+	HungerPlayerInfo[playerid][hgLastArmour] = GetClientArmour(playerid);
+	SetPlayerArmourEx(playerid, 0);
 	
 	HungerPlayerInfo[playerid][hgLastVW] = GetPlayerVirtualWorld(playerid);
 	SetPlayerVirtualWorld(playerid, 2039);
@@ -55020,8 +54956,8 @@ CMD:openbackpack(playerid, params[])
 			if(HungerBackpackInfo[backpack][hgBackpackType] == 1)
 			{
 				new Float: exarmor;
-				GetPlayerArmour(playerid, exarmor);
-				SetPlayerArmor(playerid, exarmor+15);
+				exarmor = GetClientArmour(playerid);
+				SetPlayerArmourEx(playerid, exarmor+15);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 15 percent armor.");
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -55081,7 +55017,7 @@ CMD:openbackpack(playerid, params[])
 			}
 			else if(HungerBackpackInfo[backpack][hgBackpackType] == 4)
 			{
-				SetPlayerHealth(playerid, 100.0);
+				SetPlayerHealthEx(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 100 percent health.");\
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -57574,19 +57510,17 @@ CMD:ddmove(playerid, params[])
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
 			
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
 		}
 	}
 	else if(strcmp(choice, "exterior", true) == 0)
@@ -57605,20 +57539,19 @@ CMD:ddmove(playerid, params[])
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
+			
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);	
 		}
-	}
+	}	
 	return 1;
 }
 
@@ -57665,18 +57598,17 @@ CMD:hmove(playerid, params[])
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
+			
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
 		}
 	}	
 	else if(strcmp(choice, "exterior", true) == 0)
@@ -57694,20 +57626,19 @@ CMD:hmove(playerid, params[])
 		if(minfee > fee && minfee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			Log("logs/admin.log", string);
+			
 		}
 		else if(fee > 0)
 		{
 			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-	}
+			Log("logs/admin.log", string);	
+		}		
+	}	
 	return 1;
 }
 
@@ -57757,19 +57688,18 @@ CMD:gmove(playerid, params[])
 	if(minfee > fee && minfee > 0)
 	{
 		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		Log("logs/admin.log", string);
 		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
 		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		Log("logs/admin.log", string);
+		
 	}
 	else if(fee > 0)
 	{
 		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		Log("logs/admin.log", string);
 		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
 		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-	}
+		Log("logs/admin.log", string);	
+	}	
 	return 1;
 }
 
@@ -57788,14 +57718,14 @@ CMD:srelease(playerid, params[])
 			}
 			else
 			{
-				format(string, sizeof(string), "AdmCmd: %s(%d) has been silent released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s has been silent released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s has been silent released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealth(giveplayerid, 100);
+				SetPlayerHealthEx(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -57820,7 +57750,6 @@ CMD:giftbox(playerid, params[])
 {
 	if(dynamicgift != 0)
 	{
-		if(GetPVarInt(playerid, "GiftBoxCP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a checkpoint placed for the giftbox!");
 		new Float: pos[3];
 		SendClientMessageEx(playerid, COLOR_YELLOW, "** There is currently a giftbox placed down and we have set a checkpoint to the location of the giftbox.");
 		if(CheckPointCheck(playerid)) cmd_killcheckpoint(playerid, params); //If they have a checkpoint, just remove it
@@ -57844,7 +57773,7 @@ CMD:sgcheck(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sgcheck [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	new Float:health;
-	GetPlayerHealth(giveplayerid, health);
+	health = GetClientHealth(giveplayerid);
 	if(health < 1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is currently dead.");
 	if(SGcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently being checked for using sprunk guard!");
 	if(HHcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently being checked for health hacks!");
@@ -57856,8 +57785,8 @@ CMD:sgcheck(playerid, params[])
    	ABroadCast(COLOR_YELLOW, string, 2);
   	format(string, sizeof(string), "Checking %s for sprunk guard, please wait....", GetPlayerNameEx(giveplayerid));
     SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	GetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
-	GetPlayerArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
+	SGcheckFloats[giveplayerid][0] = GetClientHealth(giveplayerid);
+	SGcheckFloats[giveplayerid][1] = GetClientArmour(giveplayerid);
 	GetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 	GetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
 	SGcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -57865,7 +57794,6 @@ CMD:sgcheck(playerid, params[])
 	DeletePVar(giveplayerid, "IsFrozen");
 	TogglePlayerControllable(giveplayerid, 1);
 	SGcheckPlane = AddStaticVehicle(513,993.9423,-3078.1812,803.2570,195.0611,0,0);
-	SetVehicleHealth(SGcheckPlane, 1500.0);
 	IsPlayerEntering{giveplayerid} = true;
 	PutPlayerInVehicle(giveplayerid, SGcheckPlane, 0);	
 	SetPVarInt(giveplayerid, "SprunkGuardLic", 1);
@@ -57885,7 +57813,7 @@ CMD:relog(playerid, params[])
 	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player has not logged in.");
 	
 	OnPlayerDisconnect(giveplayerid, 4);
-	SetPlayerArmor(giveplayerid, 0);
+	SetPlayerArmourEx(giveplayerid, 0);
 	ResetPlayerWeapons(giveplayerid);
 	OnPlayerConnect(giveplayerid);
 	format(string, sizeof(string), "You have relogged %s.", GetPlayerNameEx(giveplayerid));
@@ -58851,7 +58779,7 @@ CMD:bstore(playerid, params[])
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new Float: Health;
-		GetPlayerHealth(playerid, Health);
+		Health = GetClientHealth(playerid);
 		if(Health < 50.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store a backpack in a house/car when your health lower than 80.");
 		
 		new string[128], housecar[6];
