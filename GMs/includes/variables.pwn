@@ -382,6 +382,10 @@ new sobeitCheckvar[MAX_PLAYERS];
 new sobeitCheckIsDone[MAX_PLAYERS];
 new IsPlayerFrozen[MAX_PLAYERS];
 
+//Rapid Fire check vars
+new oldticks[MAX_PLAYERS];
+new deny_damage[MAX_PLAYERS];
+
 // Vehicle HUD Text
 new PlayerText:_vhudTextFuel[MAX_PLAYERS];
 new PlayerText:_vhudTextSpeed[MAX_PLAYERS];
@@ -1223,7 +1227,8 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19421, 0, "White Headphones"},
 {19422, 0, "Black Headphones"},
 {19423, 0, "Red Headphones"},
-{19424, 0, "Blue Headphones"}
+{19424, 0, "Blue Headphones"},
+{19351, 0, "moustache2"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1540,7 +1545,8 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {1598, 0,"Beachball"},
 {19331, 0, "Firefigher Helmet"},
 {2045, 0, "Spiked Club"},
-{19320, 0, "Pumpkin Toy"}
+{19320, 0, "Pumpkin Toy"},
+{19351, 0, "moustache2"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

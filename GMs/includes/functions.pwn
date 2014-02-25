@@ -6878,7 +6878,7 @@ public SprunkGuardCheck(playerid, giveplayerid)
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SPRUNK GUARD CHECK RESULT_______________");
         format(string, sizeof(string), "The sprunk guard check on %s was {00F70C}positive{FFFFFF}. The person may be using sprunk guard.", GetPlayerNameEx(giveplayerid));
         SendClientMessageEx(playerid, COLOR_WHITE, string);
-        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1000.0");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1500.0");
         format(string, sizeof(string), "Plane Health after check: %.1f", health);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
         SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
@@ -6888,7 +6888,7 @@ public SprunkGuardCheck(playerid, giveplayerid)
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SPRUNK GUARD CHECK RESULT_______________");
         format(string, sizeof(string), "The sprunk guard check on %s was {FF0606}negative{FFFFFF}. The person was not using sprunk guard.", GetPlayerNameEx(giveplayerid));
         SendClientMessageEx(playerid, COLOR_WHITE, string);
-        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1000.0");
+        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1500.0");
         format(string, sizeof(string), "Plane Health after check: %.1f", health);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
         SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
@@ -10024,7 +10024,7 @@ stock ShowAdMuteFine(playerid)
 
 stock TurfWarsEditTurfsSelection(playerid)
 {
-	new string[2048];
+	new string[4096];
 	for(new i = 0; i < MAX_TURFS; i++)
 	{
 		if(TurfWars[i][twOwnerId] != -1)
@@ -14410,7 +14410,7 @@ stock OnPlayerStatsUpdate(playerid) {
 				PlayerInfo[playerid][pPos_y] = -1691.2;
 				PlayerInfo[playerid][pPos_z] = 13.3;
 			}
-			else if(GetPVarInt(playerid, "ShopTP") == 1 && IsPlayerInDynamicArea(playerid, NGGShop))
+			else if(GetPVarInt(playerid, "ShopTP") == 1 && GetPVarFloat(playerid, "tmpX") != 0)
 			{
 				PlayerInfo[playerid][pPos_x] = GetPVarFloat(playerid, "tmpX");
 				PlayerInfo[playerid][pPos_y] = GetPVarFloat(playerid, "tmpY");
@@ -20427,7 +20427,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20486,7 +20486,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20545,7 +20545,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20608,7 +20608,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20691,7 +20691,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20753,7 +20753,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20815,7 +20815,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20877,7 +20877,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -20955,7 +20955,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21017,7 +21017,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21079,7 +21079,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21141,7 +21141,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21217,7 +21217,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21279,7 +21279,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21341,7 +21341,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
@@ -21403,7 +21403,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
-						ABroadCast(COLOR_YELLOW, string, 2);
+						ABroadCast(COLOR_YELLOW, string, 4);
 					}
 					else if(PlayerInfo[fromplayerid][pAdmin] < 2)
 					{
