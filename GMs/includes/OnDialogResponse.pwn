@@ -2024,6 +2024,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else {
 							format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+							if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
 							switch(PlayerInfo[playerid][pBackpack])
 							{
 								case 1: 
@@ -2063,6 +2064,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						strcat(szDialog, "Deposit a weapon");
 						ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
 					}
+					case 3: { // Med Kits
+						if(PlayerInfo[playerid][pBItems][5] > 0) {
+							ShowPlayerDialog(playerid, DIALOG_BMEDKIT, DIALOG_STYLE_MSGBOX, "Confirm", "Are you sure you want to use this Medical & Kevlar Vest kit now?", "Confirm", "Cancel");
+						}
+						else {
+							format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+							if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+							switch(PlayerInfo[playerid][pBackpack])
+							{
+								case 1: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items - You don't have med kits", string, "Select", "Cancel");
+								}
+								case 2: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items - You don't have med kits", string, "Select", "Cancel");
+								}
+								case 3: 
+								{
+									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items - You don't have med kits", string, "Select", "Cancel");
+								}
+							}
+						}
+					}
 				}
 			}
 			else {
@@ -2088,6 +2113,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessage(playerid, COLOR_GRAD2, string);
 				SetPlayerHealthEx(playerid, 100.0);
 				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 
@@ -2106,6 +2132,63 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+		}
+		case DIALOG_BMEDKIT: {
+			if(response) {
+				if(IsACop(playerid))
+				{
+					if(GetPVarInt(playerid, "BackpackProt") == 1) {
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
+					}
+					else 
+					{
+						defer FinishMedKit(playerid);
+						SetPVarInt(playerid, "BackpackProt", 1);
+						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+						format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
+						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					}
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You are not a cop.");
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+					}
+					case 2: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+					}
+					case 3: 
+					{
+						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+					}
+				}
+			}
+			else {
+				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 
@@ -2136,6 +2219,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 
@@ -2450,6 +2534,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 
