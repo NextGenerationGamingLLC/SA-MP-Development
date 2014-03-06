@@ -3821,7 +3821,7 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        new rand = Random(1, 6); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else
@@ -5769,7 +5769,7 @@ CMD:joinevent(playerid, params[]) {
 			
 			if(EventKernel[EventCustomInterior] == 1)
 			{
-				Streamer_UpdateEx(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ]);
+				Player_StreamPrep(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ], FREEZE_TIME);
 			}
 			
 			SetPlayerHealthEx( playerid, EventKernel[ EventHealth ] );
@@ -7591,14 +7591,74 @@ CMD:goto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg");
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop");
 			return 1;
 		}
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
 			return 1;
-		}		
+		}
+		if(strcmp(params,"glenpark",true) == 0 || strcmp(params,"gp",true) == 0)
+		{
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, 2012.500366, -1264.768554, 23.547389);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, 1986.69, -1300.49, 25.03);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+		}
+		if(strcmp(params,"palomino",true) == 0 || strcmp(params,"pc",true) == 0)
+		{
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, 2229.485351, -63.457298, 26.134857);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, 2231.578613, -48.729660, 26.484375);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+		}
+		if(strcmp(params,"nggshop",true) == 0)
+		{
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, 2930.920410, -1429.603637, 10.675988);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, 2957.967041, -1459.404541, 10.809198);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+		}
 		if(strcmp(params,"ls",true) == 0)
 		{
 			if (GetPlayerState(playerid) == 2)
@@ -8393,6 +8453,7 @@ CMD:sendto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,MHC,Famed,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
@@ -8416,6 +8477,72 @@ CMD:sendto(playerid, params[])
 		    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
 		    ShowPlayerDialog(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 		    return 1;
+		}
+		if(strcmp(location,"glenpark",true) == 0 || strcmp(location,"gp",true) == 0)
+		{
+			if (GetPlayerState(giveplayerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(giveplayerid);
+				SetVehiclePos(tmpcar, 2012.500366, -1264.768554, 23.547389);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[giveplayerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(giveplayerid, 1986.69, -1300.49, 25.03);
+			}
+			format(string, sizeof(string), " You have sent %s to Glen Park.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(giveplayerid,0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
+		}
+		if(strcmp(location,"palomino",true) == 0 || strcmp(location,"pc",true) == 0)
+		{
+			if (GetPlayerState(giveplayerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(giveplayerid);
+				SetVehiclePos(tmpcar, 2229.485351, -63.457298, 26.134857);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[giveplayerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(giveplayerid, 2231.578613, -48.729660, 26.484375);
+			}
+			format(string, sizeof(string), " You have sent %s to Palomino Creek.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(giveplayerid,0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
+		}
+		if(strcmp(location,"nggshop",true) == 0)
+		{
+			if (GetPlayerState(giveplayerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(giveplayerid);
+				SetVehiclePos(tmpcar, 2930.920410, -1429.603637, 10.675988);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[giveplayerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(giveplayerid, 2957.967041, -1459.404541, 10.809198);
+			}
+			format(string, sizeof(string), " You have sent %s to the NGG Shop.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(giveplayerid,0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
 		}
 		if(strcmp(location,"ls",true) == 0)
 		{
@@ -14399,14 +14526,14 @@ CMD:god(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	
-	if(pGodMode[playerid] == 0)
+	if(GetPVarInt(playerid, "pGodMode") == 0)
 	{
-		pGodMode[playerid] = 1;
+		SetPVarInt(playerid, "pGodMode", 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled God Mode!");
 	}
 	else
 	{
-		pGodMode[playerid] = 0;
+		DeletePVar(playerid, "pGodMode");
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled God Mode!");
 	}
 	return true;
@@ -27780,6 +27907,7 @@ CMD:setvip(playerid, params[])
 				}
 				if(level == 4)
 				{
+					if(PlayerInfo[playerid][pAdmin] < 1338 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 					if (PlayerInfo[giveplayerid][pAdmin] < 1337)
 					{
 						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
@@ -54220,11 +54348,12 @@ CMD:rflchangename(playerid, params[])
 
 CMD:buyhotdog(playerid, params[])
 {
-	if(!IsPlayerInRangeOfPoint(playerid, 10.0, -2450.6028, 161.1246, 35.1210) && !IsPlayerInRangeOfPoint(playerid, 4.0, 2958.0425, -1393.6724, 5.5500) && !IsPlayerInRangeOfPoint(playerid, 4.0, 300.4977, 200.2298, 1104.3500))
+	if(!IsPlayerInRangeOfPoint(playerid, 10.0, -2450.6028, 161.1246, 35.1210) && !IsPlayerInRangeOfPoint(playerid, 4.0, 2958.0425, -1393.6724, 5.5500) && 
+	!IsPlayerInRangeOfPoint(playerid, 4.0, 300.4977, 200.2298, 1104.3500) && !IsPlayerInRangeOfPoint(playerid, 4.0, 1973.0710, -1298.6427, 25.0172))
 		return SendClientMessage(playerid, COLOR_GREY, "You are not at a hot dog stand.");
-	if(GetPlayerCash(playerid) < 500) return SendClientMessage(playerid, COLOR_GREY, "You need $500 to buy a hot dog.");
-	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Hot Dog' for $500.");
-	GivePlayerCash(playerid, -500);
+	if(GetPlayerCash(playerid) < 2000) return SendClientMessage(playerid, COLOR_GREY, "You need $2000 to buy a hot dog.");
+	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Hot Dog' for $2000.");
+	GivePlayerCash(playerid, -2000);
 	PlayerInfo[playerid][pHunger] += 83;
 	if (PlayerInfo[playerid][pFitness] >= 5) {
 		PlayerInfo[playerid][pFitness] -= 5;
@@ -54236,6 +54365,19 @@ CMD:buyhotdog(playerid, params[])
 	PlayerInfo[playerid][pHungerDeathTimer] = 0;
 	if (PlayerInfo[playerid][pHunger] > 100) {
 		PlayerInfo[playerid][pHunger] = 100;
+	}
+	new Float:health;
+	GetPlayerHealth(playerid, health);
+	if(health < 100) 
+	{
+		if(health > 90) 
+		{
+			SetPlayerHealth(playerid, 100);
+		}
+		else 
+		{
+			SetPlayerHealth(playerid, health + 10.0);
+		}
 	}
 	return 1;
 }
@@ -55517,7 +55659,7 @@ CMD:togfireworks(playerid, params[])
 // Dynamic Giftbox
 CMD:dgedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999)
+	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		new string[128], choice[32], type, amount;
 		if(sscanf(params, "s[32]dD", choice, type, amount))
@@ -57213,7 +57355,7 @@ CMD:dgedit(playerid, params[])
 
 CMD:viewgiftbox(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999)
+	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		ShowPlayerDynamicGiftBox(playerid);
 	}
@@ -57224,7 +57366,7 @@ CMD:viewgiftbox(playerid, params[])
 
 CMD:togdynamicgift(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999)
+	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		if(IsDynamicGiftBoxEnabled == false)
 		{
@@ -57850,12 +57992,12 @@ CMD:undercover(playerid, params[])
 		if(GetPVarInt(playerid, "Undercover") == 0)
 		{
 			SetPVarInt(playerid, "Undercover", 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went into undercover mode, you're admin rank will no longer show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
 		}
 		else
 		{
 			SetPVarInt(playerid, "Undercover", 0);
-			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went out of undercover mode, you're admin rank will now show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");

@@ -2362,9 +2362,3 @@ timer FinishMedKit[5000](playerid)
 	DeletePVar(playerid, "BackpackProt");
 	return 1;
 }
-
-timer playerTabbedVar[1000](playerid)
-{
-	SetPVarInt(playerid, "playerTabbedStatus", playerTabbed[playerid]);
-	return true;
-}

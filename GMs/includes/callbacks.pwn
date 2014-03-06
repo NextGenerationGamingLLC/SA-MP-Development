@@ -1693,7 +1693,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	health = GetClientHealth(playerid);
 	armour = GetClientArmour(playerid);
 	
-	if(pGodMode[playerid] == 1)
+	if(GetPVarInt(playerid, "pGodMode") == 1 ||  GetPVarInt(playerid, "eventStaff") >= 1 || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
 	{
 		SetPlayerHealthEx(playerid, health);
 		return SetPlayerArmourEx(playerid, armour);
@@ -1874,7 +1874,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	health = GetClientHealth(damagedid);
 	armour = GetClientArmour(damagedid);
 	
-	if(pGodMode[damagedid] == 1)
+	if(GetPVarInt(damagedid, "pGodMode") == 1 ||  GetPVarInt(damagedid, "eventStaff") >= 1 || (PlayerInfo[damagedid][pJailTime] > 0 && strfind(PlayerInfo[damagedid][pPrisonReason], "[OOC]", true) != -1))
 	{
 		SetPlayerHealthEx(damagedid, health);
 		return SetPlayerArmourEx(damagedid, armour);
@@ -2278,9 +2278,6 @@ public OnPlayerConnect(playerid)
 	SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
 	SetPVarInt(playerid, "sellerVoucher", INVALID_PLAYER_ID);
 	SetPVarInt(playerid, "buyerVoucher", INVALID_PLAYER_ID);
-	DeletePVar(playerid, "BeingDragged");
-	DeletePVar(playerid, "PlayerCuffed");
-	DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST");
 	SetPVarInt(playerid, "Undercover", 0);
 	SetPVarInt(playerid, "AlertedThisPlayer", INVALID_PLAYER_ID);
 	
@@ -2584,9 +2581,6 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
 
-	oldticks[playerid] = 0;
-	deny_damage[playerid] = 0;
-
 	for(new x = 0; x < MAX_PLAYERS; x++)
 	{
 	    ShotPlayer[playerid][x] = 0;
@@ -2667,6 +2661,11 @@ public OnPlayerDisconnect(playerid, reason)
 	    SendRconCommand(string);
 	}
 	KillTimer(logincheck[playerid]);
+	if(FuckHacksVar[playerid][playerTimer])
+	{
+		KillTimer(FuckHacksVar[playerid][playerTimer]);
+		FuckHacksVar[playerid][playerTimer] = -1;
+	}
 	//foreach(new i: Player) {
 	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{
@@ -4572,7 +4571,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		}
 		else if(truckdeliver == 3)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the materials, return the truvehicleck to the Docks to collect your pay.");
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You delivered the materials, return the vehicle to the Docks to collect your pay.");
 		}
 		else if(truckdeliver == 4)
 		{
@@ -6962,45 +6961,4 @@ public OnPlayerRequestSpawn(playerid)
 {	
 	FuckHacksVar[playerid][playerAlive] = 0;
 	return true;
-}
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
-{
-	if(PlayerInfo[playerid][pAdmin] < 2)
-	{
-		//Credits to Lordz AKA Lordzy.
-		if(oldticks[playerid] == 0) oldticks[playerid] = GetTickCount();
-		else
-		{
-			new intervals;
-			if((intervals = GetTickCount() - oldticks[playerid]) <= 35 && GetPlayerWeapon(playerid) != 38 && GetPlayerWeapon(playerid) != 28 && GetPlayerWeapon(playerid) != 32 || 
-			(intervals = GetTickCount() - oldticks[playerid]) <= 370 && (GetPlayerWeapon(playerid) == 34 || GetPlayerWeapon(playerid) == 33))
-			{
-				new szMessage[128];
-				if(deny_damage[playerid] < 4)
-				{
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be using a Rapid Fire modification.", GetPlayerNameEx(playerid), playerid);
-					ABroadCast(COLOR_YELLOW, szMessage, 2);
-				}
-				format(szMessage, sizeof(szMessage), "%s may be using Rapid Fire with weapon ID %d (%d ms).", GetPlayerNameEx(playerid), weaponid, intervals);
-				Log("logs/hack.log", szMessage);
-				if(++deny_damage[playerid] == 5) // 5 to gather data in logs
-				{
-					format(szMessage, sizeof(szMessage), "AdmCmd: %s has been banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_LIGHTRED, szMessage, 2);
-					PlayerInfo[playerid][pBanned] = 3;
-					format(szMessage, sizeof(szMessage), "AdmCmd: %s (IP:%s) was banned, reason: Rapid Fire Modifications.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
-					Log("logs/ban.log", szMessage);
-					SystemBan(playerid, "[System] (Rapid Fire Modifications)");
-					MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Rapid Fire Modifications", 1, "System");
-					deny_damage[playerid] = 0;
-					Kick(playerid);
-					TotalAutoBan++;
-					return 0;
-				}
-			}
-			oldticks[playerid] = GetTickCount();
-			if(deny_damage[playerid] != 0) return 0;
-		}
-	}
-	return 1;
 }

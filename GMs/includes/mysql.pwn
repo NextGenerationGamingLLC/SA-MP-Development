@@ -140,7 +140,7 @@ SaveGroup(iGroupID) {
 		i = 0;
 
 	format(szQuery, sizeof szQuery, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `Allegiance` = %i, `Bug` = %i, \
+		`Type` = %i, `Name` = '%s', `MOTD` = '%e', `Allegiance` = %i, `Bug` = %i, \
 		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
 		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), arrGroupData[iGroupID][g_szGroupMOTD], arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
 		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
@@ -1229,7 +1229,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgFirstaid[array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgDDFlag%d", array);
 					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgDDFlag[array] = strval(szResult);
-					format(arraystring, sizeof(arraystring), "dgGateFlage%d", array);
+					format(arraystring, sizeof(arraystring), "dgGateFlag%d", array);
 					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgGateFlag[array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCredits%d", array);
 					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCredits[array] = strval(szResult);

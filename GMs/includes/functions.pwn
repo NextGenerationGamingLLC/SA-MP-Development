@@ -11233,6 +11233,7 @@ stock IsAtATM(playerid)
 		    return 1;
 		}
 		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 2926.9199, -1529.9800, 10.6900)) return 1; //NGG Shop
+		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 986.4434,2056.2480,1085.8531) || IsPlayerInRangeOfPoint(playerid, 3.0, 1014.1396,2060.8284,1085.8531) || IsPlayerInRangeOfPoint(playerid, 3.0, 1013.4720,2023.8784,1085.8531)) return 1; //Glen Park
 	}
 	return 0;
 }
@@ -25764,7 +25765,8 @@ stock GetBackpackFreeSlotGun(playerid) {
 	return slot;
 }
 
-stock SetPlayerHealthEx(playerid, Float: amount)
+forward SetPlayerHealthEx(playerid, Float: amount);
+public SetPlayerHealthEx(playerid, Float: amount)
 {
 	// Correct the values incase they're invalid
 	if(amount > 100.0) amount = 100.0;
@@ -25782,7 +25784,8 @@ stock SetPlayerHealthEx(playerid, Float: amount)
 	return SetPlayerHealth(playerid, amount);
 }
 
-stock SetPlayerArmourEx(playerid, Float: amount)
+forward SetPlayerArmourEx(playerid, Float: amount);
+public SetPlayerArmourEx(playerid, Float: amount)
 {
 	// Correct the values incase they're invalid
 	if(amount > 100.0) amount = 100.0;
@@ -25816,9 +25819,10 @@ forward OnPlayerSync(playerid);
 public OnPlayerSync(playerid)
 {
 	// Is the player tabbed?
-	if(GetPVarInt(playerid, "playerTabbedStatus") > 0)
+	if(playerTabbed[playerid] > 0)
 	{
 		FuckHacksVar[playerid][playerTimer] = SetTimerEx("OnPlayerSync", 1000, 0, "i", playerid);
+		return 1;
 	}
 	
 	// Is the player spawned and not dead?

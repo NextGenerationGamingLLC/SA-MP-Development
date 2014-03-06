@@ -331,6 +331,8 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, 2958.0425, -1393.6724, 5.5500);// NGGShop - Hotdog Stand
 	CreateDynamicPickup(1241, 23, 2946.8672, -1484.9561, 11.0000);// NGGShop - Healthcare
 	CreateDynamicPickup(1239, 23, 2937.2878, -1357.2294, 11.0000);// NGGShop - Gift Reset
+
+	CreateDynamicPickup(1239, 23, 1973.0710, -1298.6427, 25.0172);// Glen Park - Hotdog Stand
 	print("[Streamer] Dynamic Pickups has been loaded.");
 	
 	return 1;
@@ -476,6 +478,8 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Misc Shop\n/miscshop", COLOR_YELLOW, 2939.8442, -1411.2906, 11.0000+0.6, 10.0);
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 2958.0425, -1393.6724, 5.5500+0.6, 10.0);
 	CreateDynamic3DTextLabel("HealthCare Shop\n/buyhealthcare", COLOR_YELLOW, 2946.8672, -1484.9561, 11.0000+0.6, 10.0);
+	
+	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	print("[Streamer] Dynamic 3D Text Labels has been loaded.");
 	return 1;
 }
