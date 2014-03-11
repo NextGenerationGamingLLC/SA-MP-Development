@@ -40181,7 +40181,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /relog");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /relog /ovmute");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
@@ -40229,7 +40229,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip" );
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /shopbusiness /shopbusinessname /brenewal");
 	}
-	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd");
+	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute");
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
 	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -59065,4 +59065,23 @@ CMD:backpackhelp(playerid, params[])
 	
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", bdialog, "Exit", "");
     return 1;
+}
+
+CMD:ovmute(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	new query[256], tmpName[MAX_PLAYER_NAME];
+	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ovmute [player name]");
+	new giveplayerid = ReturnUser(tmpName);
+	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "This player is currently connected, please use /vmute.");
+
+	mysql_escape_string(params, tmpName);
+	SetPVarString(playerid, "OnSetVMute", tmpName);
+
+	format(query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 1 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
+	mysql_function_query(MainPipeline, query, false, "OnSetVMute", "i", playerid);
+
+	format(query, sizeof(query), "Attempting to vip mute %s's account.", tmpName);
+	SendClientMessageEx(playerid, COLOR_YELLOW, query);
+	return 1;
 }

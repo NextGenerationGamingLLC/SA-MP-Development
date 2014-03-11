@@ -8058,3 +8058,22 @@ public FetchWatchlist2(index, input[])
 	FetchingWatchlist = 0;
 	return true;
 }
+
+forward OnSetVMute(playerid);
+public OnSetVMute(playerid)
+{
+	new string[128], tmpName[MAX_PLAYER_NAME];
+	GetPVarString(playerid, "OnSetVMute", tmpName, sizeof(tmpName));
+	DeletePVar(playerid, "OnSetVMute");
+	if(cache_affected_rows(MainPipeline))
+	{
+		format(string, sizeof(string), "AdmCmd: %s has offline vip muted %s.", GetPlayerNameEx(playerid), tmpName);
+		ABroadCast(COLOR_LIGHTRED, string, 3);
+	}
+	else
+	{
+		format(string, sizeof(string), "Could not vip mute %s..", tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	}
+	return 1;
+}
