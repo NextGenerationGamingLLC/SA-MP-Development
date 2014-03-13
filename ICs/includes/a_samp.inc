@@ -123,6 +123,7 @@ native GetNetworkStats(retstr[], retstr_size);
 native GetPlayerVersion(playerid, const version[], len); // Returns the SA-MP client revision as reported by the player
 
 // Extended admin network stats
+native GetServerTickRate();
 native NetStats_GetConnectedTime(playerid);
 native NetStats_MessagesReceived(playerid);
 native NetStats_BytesReceived(playerid);
@@ -331,7 +332,7 @@ forward OnEnterExitModShop(playerid, enterexit, interiorid);
 forward OnVehiclePaintjob(playerid, vehicleid, paintjobid);
 forward OnVehicleRespray(playerid, vehicleid, color1, color2);
 forward OnVehicleDamageStatusUpdate(vehicleid, playerid);
-forward OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat);
+forward OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z);
 forward OnPlayerSelectedMenuRow(playerid, row);
 forward OnPlayerExitedMenu(playerid);
 forward OnPlayerInteriorChange(playerid, newinteriorid, oldinteriorid);

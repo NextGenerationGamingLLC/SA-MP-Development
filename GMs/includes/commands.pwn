@@ -5778,8 +5778,12 @@ CMD:joinevent(playerid, params[]) {
 			}
 			//if(PlayerInfo[playerid][pBEquipped]) PlayerInfo[playerid][pBEquipped] = 0;
 			for(new x;x<MAX_PLAYERTOYS;x++) {
-				if(x == 9 && !PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, x);
-				else RemovePlayerAttachedObject(playerid, x);
+				if(IsPlayerAttachedObjectSlotUsed(playerid, x)) 
+				{
+					if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
+						break;
+					RemovePlayerAttachedObject(playerid, x); 
+				}
 			}
 			for(new i; i < 11; i++) {
 				PlayerHoldingObject[playerid][i] = 0;
@@ -43499,8 +43503,10 @@ CMD:dt(playerid, params[])
 	{
 		if(PlayerHoldingObject[playerid][i] == toyslot)
 		{
-			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1) && !PlayerInfo[playerid][pBEquipped])
+			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1))
 			{
+				if(i == 10 && PlayerInfo[playerid][pBEquipped]) 
+					break;
 				RemovePlayerAttachedObject(playerid, i-1);
 				PlayerHoldingObject[playerid][i] = 0;
 				break;
@@ -43523,13 +43529,10 @@ CMD:wat(playerid, params[])
 			PlayerToyInfo[playerid][x][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][x][ptScaleZ] = 1.0;
 		}
-		if(x == 9 && !PlayerInfo[playerid][pBEquipped] && PlayerToyInfo[playerid][x][ptModelID] != 0) 
+		if(PlayerToyInfo[playerid][x][ptModelID] != 0) 
 		{
-			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
-			PlayerHoldingObject[playerid][x+1] = x+1;
-		}
-		else if(PlayerToyInfo[playerid][x][ptModelID] != 0) 
-		{
+			if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
+				break;
 			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
 			PlayerHoldingObject[playerid][x+1] = x+1;
 		}
@@ -43543,8 +43546,12 @@ CMD:dat(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "* Deattached all toys.");
 	for(new x;x<MAX_PLAYERTOYS;x++) {
-		if(x == 9 && !PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, x);
-		else RemovePlayerAttachedObject(playerid, x);
+		if(IsPlayerAttachedObjectSlotUsed(playerid, x)) 
+		{
+			if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
+				break;
+			RemovePlayerAttachedObject(playerid, x);
+		}
 	}
 	for(new i; i < 11; i++)
 	{
@@ -59017,6 +59024,10 @@ CMD:bopen(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
+		#if defined zombiemode
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+		#endif
+		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
@@ -59025,8 +59036,8 @@ CMD:bopen(playerid, params[])
 		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 		if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"   You can not make guns while in jail or prison!");
-		if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"   You can not open a backpack while in jail or prison!");
+		if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't open your backpack whilst in Hospital.");
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be wearing your backpack.");
 		new string[70 + MAX_PLAYER_NAME];
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
