@@ -840,6 +840,7 @@ new gHelp[MAX_PLAYERS];
 new gFam[MAX_PLAYERS];
 new Spectate[MAX_PLAYERS];
 new GettingSpectated[MAX_PLAYERS];
+new SpecTime[MAX_PLAYERS];
 new CellTime[MAX_PLAYERS];
 new StartTime[MAX_PLAYERS];
 new HireCar[MAX_PLAYERS];

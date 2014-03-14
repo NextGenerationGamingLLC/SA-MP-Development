@@ -25184,9 +25184,7 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 2 ] != 23 && PlayerInfo[giveplayerid][pGuns][ 2 ] != 24)
 			{
-			    if(PlayerInfo[playerid][pDonateRank] > 2)
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
-
+				if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your silenced pistol.");
 				format(string, sizeof(string), "* %s has given %s their silenced pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25242,8 +25240,7 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 3 ] != 25 && PlayerInfo[giveplayerid][pGuns][ 3 ] != 27)
 			{
-			    if(PlayerInfo[playerid][pDonateRank] > 2)
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+				if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your shotgun.");
 				format(string, sizeof(string), "* %s has given %s their shotgun.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25272,8 +25269,7 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 4 ] != 28 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 29 && PlayerInfo[giveplayerid][pGuns][ 4 ] != 32)
 			{
-			    if(PlayerInfo[playerid][pDonateRank] > 2)
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+				if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your MP5.");
 				format(string, sizeof(string), "* %s has given %s their MP5.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25356,8 +25352,7 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 2 ] != 24)
 			{
-			    if(PlayerInfo[playerid][pDonateRank] > 2)
-					return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+				if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your Desert Eagle.");
 				format(string, sizeof(string), "* %s has given %s their Desert Eagle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25619,8 +25614,7 @@ CMD:giveweapon(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 2)
 		{
-		    if(PlayerInfo[playerid][pDonateRank] > 2)
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your golf club.");
 			format(string, sizeof(string), "* %s has given %s golf club.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25642,8 +25636,7 @@ CMD:giveweapon(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pGuns][ 1 ] == 8)
 		{
-		    if(PlayerInfo[playerid][pDonateRank] > 2)
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your katana.");
 			format(string, sizeof(string), "* %s has given %s their katana.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -25665,8 +25658,7 @@ CMD:giveweapon(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pGuns][ 10 ] == 10)
 		{
-		    if(PlayerInfo[playerid][pDonateRank] > 2)
-				return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+			if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your dildo.");
 			format(string, sizeof(string), "* %s has given %s their dildo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -26739,12 +26731,12 @@ CMD:oipcheck(playerid, params[])
 	}
 
 	new query[128], name[MAX_PLAYER_NAME];
-	if(sscanf(params, "s", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oipcheck [name]");
+	if(sscanf(params, "s[24]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oipcheck [name]");
 
 	new tmpName[24];
 	mysql_escape_string(name, tmpName, MainPipeline);
 
-	format(query, sizeof(query), "SELECT `Username`, `IP` FROM `accounts` WHERE `Username` = '%s' AND `AdminLevel` <= %d", tmpName, PlayerInfo[playerid][pAdmin]);
+	format(query, sizeof(query), "SELECT `AdminLevel`, `Username`, `IP` FROM `accounts` WHERE `Username` = '%s'", tmpName);
 	mysql_function_query(MainPipeline, query, true, "OnIPCheck", "i", playerid);
 	return 1;
 }
@@ -26757,25 +26749,31 @@ CMD:ipcheck(playerid, params[])
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ipcheck [player]");
 
 		if(giveplayerid == INVALID_PLAYER_ID) return 1;
-		if(IsPlayerConnected(giveplayerid) && PlayerInfo[giveplayerid][pAdmin] <= 1)
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		
+		if(PlayerInfo[giveplayerid][pAdmin] <= 1 || (PlayerInfo[giveplayerid][pAdmin] <= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] >= 1338))
 		{
 			new playerip[32];
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
 			format(string, sizeof(string), "(ID: %d) - (Name: %s) - (IP: %s)", giveplayerid, GetPlayerNameEx(giveplayerid), playerip);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			Log("logs/ipcheck.log", string);
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
+			return 1;
 		}
-		else if(IsPlayerConnected(giveplayerid) && PlayerInfo[giveplayerid][pAdmin] <= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] >= 1338)
+		if(PlayerInfo[giveplayerid][pAdmin] >= 2)
 		{
-			new playerip[32];
-			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "(ID: %d) - (Name: %s) - (IP: %s)", giveplayerid, GetPlayerNameEx(giveplayerid), playerip);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			Log("logs/ipcheck.log", string);
+			if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
+			{
+				format(string, sizeof(string), "%s has tried to check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(playerid));
+				for(new i; i < MAX_PLAYERS; i++)
+				{
+					if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
+				}
+			}
+			format(string, sizeof(string), "%s tried to IP check %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			Log("logs/adminipcheck.log", string);
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
 	else
 	{
@@ -26807,17 +26805,20 @@ CMD:pfine(playerid, params[])
 			{
 				//GivePlayerCash(giveplayerid, -minimum);
 				GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minimum);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minimum), GetPlayerNameEx(playerid), reason);
+				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(minimum), GetPlayerNameEx(playerid), reason);
 			}
 			else
 			{
 				//GivePlayerCash(giveplayerid, -fine);
 				GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fine);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fine), GetPlayerNameEx(playerid), reason);
+				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(fine), GetPlayerNameEx(playerid), reason);
 			}
 
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			Log("logs/admin.log", string);
 			//OnPlayerStatsUpdate(giveplayerid);
 			return 1;
 		}
@@ -26841,7 +26842,7 @@ CMD:fine(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
 				return 1;
 			}
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -26873,7 +26874,7 @@ CMD:sfine(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
 				return 1;
 			}
-			format(string, sizeof(string), "AdmCmd: %s was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was silent fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -28012,7 +28013,7 @@ CMD:ofine(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
             if (amount < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Amount must be greater than 0");
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: %s", GetPlayerNameEx(giveplayerid), number_format(amount), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -29591,7 +29592,7 @@ CMD:gangwarn(playerid, params[])
 			PlayerInfo[giveplayerid][pGangWarn] += 1;
 			if(PlayerInfo[giveplayerid][pGangWarn] == 3)
 			{
-				format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -29605,7 +29606,7 @@ CMD:gangwarn(playerid, params[])
 			}
 			format(string, sizeof(string), "AdmCmd: %s was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED, string, 2);
-			format(string, sizeof(string), "AdmCmd: %s was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was gang warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "You were given a gang warning by %s, reason: %s", GetPlayerNameEx(playerid), reason);
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
@@ -29632,7 +29633,7 @@ CMD:gangunban(playerid, params[])
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 			PlayerInfo[giveplayerid][pGangWarn] = 0;
 
-			format(string, sizeof(string), "AdmCmd: %s has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been unbanned from gangs by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -30749,6 +30750,7 @@ CMD:awiretransfer(playerid, params[])
 	{
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
+			if(gPlayerLogged{giveplayerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "* The player you are trying to transfer money to is not logged in!");
 			new playermoney = PlayerInfo[playerid][pAccount];
 			if (amount > 0 && playermoney >= amount)
 			{
@@ -30773,11 +30775,17 @@ CMD:awiretransfer(playerid, params[])
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
 				format(string, sizeof(string), "[ATM] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
+				if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
 				if(amount >= 420000)
 				{
-					ABroadCast(COLOR_YELLOW,string,2);
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[ATM] %s has transferred $%s to %s", GetPlayerNameEx(playerid), number_format(amount), GetPlayerNameEx(giveplayerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(giveplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW,string, 4);
+					}
+					else ABroadCast(COLOR_YELLOW,string,2);
 				}
-				Log("logs/pay.log", string);
 				PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
 				SetPVarInt(playerid, "LastTransaction", gettime());
 
@@ -30925,15 +30933,19 @@ CMD:wiretransfer(playerid, params[])
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
 				format(string, sizeof(string), "[BANK] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
-
+				if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
 				if(amount >= 500000)
 				{
-					ABroadCast(COLOR_YELLOW,string,2);
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[BANK] %s has transferred $%s to %s", GetPlayerNameEx(playerid), number_format(amount), GetPlayerNameEx(giveplayerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(giveplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW,string, 4);
+					}
+					else ABroadCast(COLOR_YELLOW,string,2);
 				}
-				Log("logs/pay.log", string);
 				PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
 				SetPVarInt(playerid, "LastTransaction", gettime());
-
 				/*OnPlayerStatsUpdate(playerid);
 				OnPlayerStatsUpdate(giveplayerid);*/
 			}
@@ -34567,6 +34579,7 @@ CMD:spec(playerid, params[])
 			GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 			Spectating[playerid] = 0;
 			Spectate[playerid] = INVALID_PLAYER_ID;
+			SpecTime[playerid] = 0;
 			SetPVarInt(playerid, "SpecOff", 1 );
 			TogglePlayerSpectating(playerid, false);
 			SetCameraBehindPlayer(playerid);
@@ -34601,6 +34614,12 @@ CMD:spec(playerid, params[])
 		{
 			new string[128];
 			format(string, sizeof(string), "Admin %s is speccing %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(Spectate[giveplayerid]));
+			if(PlayerInfo[playerid][pAdmin] >= 1338 && SpecTime[giveplayerid]) 
+			{
+				new seconds = gettime()-SpecTime[giveplayerid];
+				new minutes = seconds/60;
+				format(string, sizeof(string), "%s (%d min %d sec)", string, minutes, seconds-60*minutes);
+			}
 			SendClientMessageEx(playerid, COLOR_GREEN, string);
 			return 1;
 		}
@@ -34872,7 +34891,7 @@ CMD:rcabuse(playerid, params[]) {
 
 						GameTextForPlayer(iTargetID, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 						ResetPlayerWeaponsEx(iTargetID);
-						format(szMessage, sizeof(szMessage), "AdmCmd: %s has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid));
+						format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerNameEx(playerid));
 						Log("logs/admin.log", szMessage);
 						format(szMessage, sizeof(szMessage), "AdmCmd: %s has been prisoned by %s, reason: Abuse of faction vehicles.", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid));
 						SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
@@ -34939,7 +34958,7 @@ CMD:prison(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35199,7 +35218,7 @@ CMD:suspend(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			format(string, sizeof(string), "AdmCmd: %s has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -35261,7 +35280,7 @@ CMD:vsuspend(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			format(string, sizeof(string), "AdmCmd: %s has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been VIP suspended by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -35304,7 +35323,7 @@ CMD:prisonaccount(playerid, params[])
 
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "The person is online and has been prisoned!");
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -35385,7 +35404,7 @@ CMD:release(playerid, params[])
 			}
 			else
 			{
-				format(string, sizeof(string), "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35433,7 +35452,7 @@ CMD:sprison(playerid, params[])
 				ClearAnimations(giveplayerid);
 			}	
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s has been silent prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been silent prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, sizeof(string), "AdmCmd: %s has been prisoned by an Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -37396,13 +37415,13 @@ CMD:gethere(playerid, params[])
 	new Float:plocx,Float:plocy,Float:plocz;
 	if (IsPlayerConnected(giveplayerid))
 	{
-		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			return 1;
-		}
 		if (PlayerInfo[playerid][pAdmin] >= 2)
 		{
+			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+				return 1;
+			}
 			if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)
 			{
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is spectating someone.");
@@ -40739,7 +40758,7 @@ CMD:fstoregun(playerid, params[])
 {
 	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
-	if(PlayerInfo[playerid][pDonateRank] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP!");
+	if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You can not store weapons from a vehicle!");
 	new Float:health;
 	health = GetClientHealth(playerid);
@@ -42260,9 +42279,6 @@ CMD:ar(playerid, params[])
 		{
 			new advert[128];
 			GetPVarString(Reports[reportid][ReportFrom], "PriorityAdText", advert, 128);
-
-			format(string, sizeof(string), "Advertisement: %s - contact %s (%i)", advert, GetPlayerNameEx(Reports[reportid][ReportFrom]), PlayerInfo[Reports[reportid][ReportFrom]][pPnumber]);
-			SetPVarString(playerid, "PriorityAdText", string);
 			SetPVarInt(playerid, "ReporterID", Reports[reportid][ReportFrom]);
 			ShowPlayerDialog(playerid, DIALOG_CONFIRMADP, DIALOG_STYLE_MSGBOX, "Advertisement Confirmation", advert, "Approve", "Deny");
 			
@@ -49758,26 +49774,7 @@ CMD:drop(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pBackpack] > 0)
 		{
-			switch(PlayerInfo[playerid][pBackpack])
-			{
-				case 1: choice = "Small";
-				case 2: choice = "Medium";
-				case 3: choice = "Large";
-			}
-			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			format(string, sizeof(string), "You have dropped your %s Backpack.", choice);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			RemovePlayerAttachedObject(playerid, 9);
-			PlayerInfo[playerid][pBackpack] = 0;
-			PlayerInfo[playerid][pBEquipped] = 0;
-			PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
-			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
-			for(new i = 0; i < 10; i++)
-			{
-				PlayerInfo[playerid][pBItems][i] = 0;
-			}
-			format(string, sizeof(string), "* %s has thrown away their backpack.", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			ShowPlayerDialog(playerid, DIALOG_BDROP, DIALOG_STYLE_MSGBOX, "Drop Backpack Confirmation", "{FFFFFF}Are you sure you would like to drop your backpack?\n{FF8000}Note{FFFFFF}: This will {FF0000}permanently{FFFFFF} remove the backpack and all of its contents!", "Yes", "No");
 		}
 		else
 		{
@@ -58203,7 +58200,7 @@ CMD:wd(playerid, params[])
 			{
 				if(IsPlayerConnected(i))
 				{
-					if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(playerid, "WatchdogChat") == 1)
+					if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(i, "WatchdogChat") == 1)
 					{
 						SendClientMessageEx(i, 0x2267F0FF, szMessage);
 					}
@@ -58311,8 +58308,6 @@ CMD:makewatchdog(playerid, params[])  {
 			if(PlayerInfo[iTargetID][pWatchdog] == ivalue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this watchdog level.");
 			else {
 
-				new
-					szMessage[47 + (MAX_PLAYER_NAME * 2)];	
 				new szRank[128];
 				switch(ivalue) {
 					case 0: format(szRank, sizeof(szRank), "AdmCmd: %s has removed %s's watchdog rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
@@ -58325,7 +58320,7 @@ CMD:makewatchdog(playerid, params[])  {
 				
 				PlayerInfo[iTargetID][pWatchdog] = ivalue;
 				ABroadCast(COLOR_LIGHTRED, szRank, 2);
-				Log("logs/makewatchdog.log", szMessage);
+				Log("logs/makewatchdog.log", szRank);
 				
 				switch(ivalue) {
 					case 0: format(szRank, sizeof(szRank), "Your watchdog rank has been removed by %s.", GetPlayerNameEx(playerid));

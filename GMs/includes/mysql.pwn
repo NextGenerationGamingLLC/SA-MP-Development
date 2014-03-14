@@ -140,9 +140,9 @@ SaveGroup(iGroupID) {
 		i = 0;
 
 	format(szQuery, sizeof szQuery, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%s', `MOTD` = '%e', `Allegiance` = %i, `Bug` = %i, \
+		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `Allegiance` = %i, `Bug` = %i, \
 		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
-		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), arrGroupData[iGroupID][g_szGroupMOTD], arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
+		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupMOTD], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
 		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
 	);
 	format(szQuery, sizeof szQuery, "%s\
@@ -1821,9 +1821,16 @@ stock AddFlag(playerid, adminid, flag[])
 	}
 	PlayerInfo[playerid][pFlagged]++;
 	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`) VALUES ('%d',NOW(),'%s','%s')", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline));
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	format(query, sizeof(query), "FLAG: %s added flag %s to %s.", admin, flag, GetPlayerNameEx(playerid));
-	Log("logs/flags.log", query);
+	mysql_function_query(MainPipeline, query, true, "OnAddFlag", "iss", playerid, admin, flag);
+	return 1;
+}
+
+forward OnAddFlag(target, admin[], flag[]);
+public OnAddFlag(target, admin[], flag[])
+{
+	new string[128], flag_sqlid = mysql_insert_id(MainPipeline);
+	format(string, sizeof(string), "FLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, GetPlayerNameEx(target), GetPlayerSQLId(target));
+	Log("logs/flags.log", string);
 	return 1;
 }
 
@@ -1839,20 +1846,46 @@ stock AddOFlag(sqlid, adminid, flag[]) // offline add
 	}
 	GetPVarString(adminid, "OnAddFlag", name, sizeof(name));
 	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`) VALUES ('%d',NOW(),'%s','%s')", sqlid, g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline));
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	format(query, sizeof(query), "FLAG: %s added flag %s to %s.", admin, flag, name);
-	Log("logs/flags.log", query);
+	mysql_function_query(MainPipeline, query, true, "OnAddOFlag", "isss", sqlid, name, admin, flag);
 	DeletePVar(adminid, "OnAddFlag");
 	return 1;
 }
 
+forward OnAddOFlag(psqlid, name[], admin[], flag[]);
+public OnAddOFlag(psqlid, name[], admin[], flag[])
+{
+	new string[128], flag_sqlid = mysql_insert_id(MainPipeline);
+	format(string, sizeof(string), "FLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, name, psqlid);
+	Log("logs/flags.log", string);
+	return 1;
+}
+
+forward OnRequestDeleteFlag(playerid, flagid);
+public OnRequestDeleteFlag(playerid, flagid)
+{
+	new rows, fields, string[256];
+	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
+	cache_get_data(rows, fields, MainPipeline);
+	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
+	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
+	cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
+	SetPVarInt(playerid, "Flag_Delete_ID", flagid);
+	SetPVarString(playerid, "FlagText", FlagText);
+	format(string, sizeof(string), "Are you sure you want to delete:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate);
+	return ShowPlayerDialog(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
+}
+
 stock DeleteFlag(flagid, adminid)
 {
-	new query[80];
-	format(query, sizeof(query), "FLAG: Flag %d was deleted by %s.", flagid, GetPlayerNameEx(adminid));
+	new query[256], flagtext[64];
+	GetPVarString(adminid, "FlagText", flagtext, sizeof(flagtext));
+	format(query, sizeof(query), "FLAG (%d): \"%s\" was deleted by %s.", flagid, flagtext, GetPlayerNameEx(adminid));
 	Log("logs/flags.log", query);
 	format(query, sizeof(query), "DELETE FROM `flags` WHERE `fid` = %i", flagid);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	DeletePVar(adminid, "Flag_Delete_ID");
+	DeletePVar(adminid, "FlagText");
 	return 1;
 }
 
@@ -3732,7 +3765,6 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			new string[128], name[24], reason[64], psqlid[12];
 			GetPVarString(playerid, "OnAddFlag", name, 24);
 			GetPVarString(playerid, "OnAddFlagReason", reason, 64);
-			SendClientMessage(playerid, COLOR_YELLOW, string);
 			if(rows > 0) {
 				format(string, sizeof(string), "You have appended %s's flag.", name);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -5875,17 +5907,36 @@ public OnIPCheck(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new string[128], ip[16], name[24];
+		new string[128], ip[16], name[24], AdminLvL;
 		new rows, fields;
 		cache_get_data(rows, fields, MainPipeline);
 		if(rows)
 		{
-   			cache_get_field_content(0, "IP", ip, MainPipeline, 16);
-   			cache_get_field_content(0, "Username", name, MainPipeline, MAX_PLAYER_NAME);
-			format(string, sizeof(string), "%s's IP: %s", name, ip);
-			SendClientMessageEx(index, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(index), name);
-			Log("logs/ipcheck.log", string);
+			cache_get_field_content(0, "AdminLevel", ip, MainPipeline, 16); AdminLvL = strval(ip);
+			cache_get_field_content(0, "Username", name, MainPipeline, MAX_PLAYER_NAME);
+			if(AdminLvL <= 1 || (AdminLvL <= PlayerInfo[index][pAdmin] && PlayerInfo[index][pAdmin] >= 1338))
+			{
+				cache_get_field_content(0, "IP", ip, MainPipeline, 16);
+				format(string, sizeof(string), "%s's IP: %s", name, ip);
+				SendClientMessageEx(index, COLOR_WHITE, string);
+				format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(index), name);
+				if(AdminLvL >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
+				return 1;
+			}
+			if(AdminLvL >= 2)
+			{
+				if(AdminLvL > PlayerInfo[index][pAdmin])
+				{
+					format(string, sizeof(string), "%s has tried to offline check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(index));
+					for(new i; i < MAX_PLAYERS; i++)
+					{
+						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
+					}
+				}
+				format(string, sizeof(string), "%s tried to offline IP check %s", GetPlayerNameEx(index), name);
+				Log("logs/adminipcheck.log", string);
+			}
+			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with checking the account's IP.");
 		}
 		else
 		{
@@ -6170,7 +6221,7 @@ public OnDMWatchListLookup(playerid)
 		cache_get_row(i, 0, name, MainPipeline);
 		sscanf(name, "u", watchid);
 		format(string, sizeof(string), "(ID: %d) %s", watchid, name);
-		SendClientMessage(playerid, COLOR_WHITE, string);
+		SendClientMessage(playerid, (PlayerInfo[watchid][pJailTime] > 0) ? TEAM_ORANGE_COLOR:COLOR_WHITE, string);
 	}
 	return 1;
 }

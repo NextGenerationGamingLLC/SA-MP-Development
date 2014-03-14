@@ -257,20 +257,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					new
-						szDialog[(32 + 8) * (MAX_GROUP_WEAPONS+1)];
+					if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0) 
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Locker weapons have been restricted from admins, /togreports to gain access.");
+					if(PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2)
+					{
+						new
+							szDialog[(32 + 8) * (MAX_GROUP_WEAPONS+1)];
 
-					for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
-						if(arrGroupData[iGroupID][g_iLockerGuns][i]) {
-							format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]));
-							if (arrGroupData[iGroupID][g_iLockerCostType] == 2) format(szDialog, sizeof szDialog, "%s    $%d", szDialog, arrGroupData[iGroupID][g_iLockerCost][i]);
+						for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
+							if(arrGroupData[iGroupID][g_iLockerGuns][i]) {
+								format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, arrGroupData[iGroupID][g_iLockerGuns][i], Weapon_ReturnName(arrGroupData[iGroupID][g_iLockerGuns][i]));
+								if (arrGroupData[iGroupID][g_iLockerCostType] == 2) format(szDialog, sizeof szDialog, "%s    $%d", szDialog, arrGroupData[iGroupID][g_iLockerCost][i]);
+							}
+							else strcat(szDialog, "\n(empty)");
 						}
-						else strcat(szDialog, "\n(empty)");
+						strcat(szDialog, "\nAccessories");
+						format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
+						ShowPlayerDialog(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
 					}
-					strcat(szDialog, "\nAccessories");
-					format(string, sizeof(string), "%s Weapon Locker", arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialog(playerid, G_LOCKER_EQUIPMENT, DIALOG_STYLE_LIST, string, szDialog, "Purchase", "Cancel");
-
 				}
 				case 2:
 				{
@@ -2775,6 +2779,38 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pHungerTimer] = 0;
 				PlayerInfo[playerid][pHungerDeathTimer] = 0;
 				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
+			}
+		}
+		case DIALOG_BDROP:
+		{
+			if(!response) return SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully cancelled dropping your backpack.");
+			if(PlayerInfo[playerid][pBackpack] > 0)
+			{
+				new choice[7];
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: choice = "Small";
+					case 2: choice = "Medium";
+					case 3: choice = "Large";
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				format(string, sizeof(string), "You have dropped your %s Backpack.", choice);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				RemovePlayerAttachedObject(playerid, 9);
+				PlayerInfo[playerid][pBackpack] = 0;
+				PlayerInfo[playerid][pBEquipped] = 0;
+				PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+				PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
+				for(new i = 0; i < 10; i++)
+				{
+					PlayerInfo[playerid][pBItems][i] = 0;
+				}
+				format(string, sizeof(string), "* %s has thrown away their backpack.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You do not have a backpack!");
 			}
 		}
 	}
@@ -11828,9 +11864,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			format(string, sizeof(string), "Are you sure you want to delete Flag ID No: %d", strval(inputtext));
-			ShowPlayerDialog(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
-			SetPVarInt(playerid, "Flag_Delete_ID", strval(inputtext));
+			new flagid;
+			if(sscanf(inputtext, "d", flagid)) return ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
+			new query[128];
+			format(query, sizeof(query), "SELECT flag, issuer, time FROM `flags` WHERE `fid` = %i", flagid);
+			mysql_function_query(MainPipeline, query, true, "OnRequestDeleteFlag", "ii", playerid, flagid);
 		}
 	}
 	else if(dialogid == FLAG_DELETE2)
@@ -11839,7 +11877,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			new flagid = GetPVarInt(playerid, "Flag_Delete_ID");
 			DeleteFlag(flagid, playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, " Flag deleted succesfully ");
+			SendClientMessageEx(playerid, COLOR_YELLOW, " Flag deleted successfully ");
 		}
 	}
 	else if(dialogid == SKIN_LIST)
@@ -13205,12 +13243,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		format(query,sizeof(query),	"INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%s', %d, %d)", GetPlayerSQLId(playerid), GetPVarInt(playerid, "LetterRecipient"), g_mysql_ReturnEscaped(inputtext, MainPipeline), GetPVarInt(playerid, "LetterTime"), GetPVarInt(playerid, "LetterNotify"));
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-
+		
+		GetPVarString(playerid, "LetterRecipientName", rec, MAX_PLAYER_NAME);
 		if (GetPVarInt(playerid, "LetterTime") == 0)
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your letter has been sent. It will be delivered immediately.");
-
-			GetPVarString(playerid, "LetterRecipientName", rec, MAX_PLAYER_NAME);
 			new xid=ReturnUser(rec);
 			if (xid != INVALID_PLAYER_ID)
 			{
@@ -13234,7 +13271,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		DeletePVar(playerid, "LetterNotify");
 		SetPVarInt(playerid, "MailTime", 30);
 
-		new szLog[128];
+		new szLog[256];
 		format(szLog, sizeof(szLog), "%s has sent mail to %s: %s", GetPlayerNameEx(playerid), rec, inputtext);
 		Log("logs/mail.log", szLog);
 
@@ -18842,7 +18879,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				for(new x; x < MAX_GROUPS; x++)
 				{
-					if(arrGroupData[x][g_iGroupType] == 3)
+					if(arrGroupData[x][g_iGroupType] == 4)
 					{
 						arrGroupData[x][g_iBudget] += shared;
 					}
@@ -18867,6 +18904,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else
 		{
 			SendClientMessageEx(GetPVarInt(playerid, "ReporterID"), -1, "Your priority advertisement has been denied.");
+			szAdvert[GetPVarInt(playerid, "ReporterID")][0] = 0;
 			DeletePVar(GetPVarInt(playerid, "ReporterID"), "PriorityAdText");
 			DeletePVar(GetPVarInt(playerid, "ReporterID"), "AdvertVoucher");
 			DeletePVar(GetPVarInt(playerid, "ReporterID"), "RequestingAdP");

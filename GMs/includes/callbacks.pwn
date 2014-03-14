@@ -2566,6 +2566,7 @@ public OnPlayerConnect(playerid)
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}
+	SpecTime[playerid] = 0;
 
 	// These need to be reset to prevent some bugs (DO NOT REMOVE)
 	PlayerInfo[playerid][pModel] = 0;
