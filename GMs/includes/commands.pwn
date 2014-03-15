@@ -366,13 +366,13 @@ CMD:usekit(playerid, params[]) {
 		{
 			if(PlayerInfo[playerid][pBItems][5] > 0)
 			{
-				if(GetPVarInt(playerid, "BackpackProt") == 1) {
+				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
 					return SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
 				}
 				else 
 				{
 					defer FinishMedKit(playerid);
-					SetPVarInt(playerid, "BackpackProt", 1);
+					SetPVarInt(playerid, "BackpackMedKit", 1);
 					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 					format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
@@ -381,7 +381,6 @@ CMD:usekit(playerid, params[]) {
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You have no kits inside your backpack.");
 		}
-		
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not near a vehicle.");
 	}
 	return 1;
@@ -12074,6 +12073,7 @@ CMD:accept(playerid, params[])
 
 					format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought %s Backpack for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, number_format(GetPVarInt(playerid, "sellbackpackprice")),  GetPlayerNameEx(GetPVarInt(playerid, "sellbackpack")), GetPlayerIpEx(GetPVarInt(playerid, "sellbackpack")));
 					Log("logs/pay.log", szMessage);
+					Log("logs/backpack.log", szMessage);
 
 					OnPlayerStatsUpdate(playerid);
 					OnPlayerStatsUpdate(GetPVarInt(playerid, "sellbackpack"));
@@ -58937,7 +58937,7 @@ CMD:bstore(playerid, params[])
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
 		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
-		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+		if(GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new Float: Health;

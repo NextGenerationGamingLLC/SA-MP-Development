@@ -1617,6 +1617,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			DeletePVar(playerid, "BackpackOpen");
 		}
 	}
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
+	{
+		DeletePVar(playerid, "BackpackMedKit");
+	}
+	if(GetPVarInt(playerid, "BackpackMeal") == 1)
+	{
+		DeletePVar(playerid, "BackpackMeal");
+	}
 	if(issuerid != INVALID_PLAYER_ID)
 	{
 	    ShotPlayer[issuerid][playerid] = gettime();

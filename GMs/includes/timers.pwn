@@ -2347,18 +2347,94 @@ task alertTimer[1000]()
 
 timer FinishMedKit[5000](playerid)
 {
-	if(GetPVarInt(playerid, "BackpackProt") == 1) 
+	new string[102];
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
 	{
 		SetPlayerHealthEx(playerid, 100);
 		SetPlayerArmourEx(playerid, 100);
 		PlayerInfo[playerid][pBItems][5]--;
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
+		new ip[MAX_PLAYER_NAME];
+		GetPlayerIp(playerid, ip, sizeof(ip));
+		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
+		Log("logs/backpack.log", string);
 	}
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Med Kit.");
 		SetPVarInt(playerid, "BackpackDisabled", 30);
 	}
-	DeletePVar(playerid, "BackpackProt");
+	TogglePlayerControllable(playerid, false);
+	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+	switch(PlayerInfo[playerid][pBackpack])
+	{
+		case 1: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+		}
+		case 2: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+		}
+		case 3: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+		}
+	}
+	DeletePVar(playerid, "BackpackMedKit");
+	return 1;
+}
+
+timer FinishMeal[5000](playerid)
+{
+	new string[102];
+	if(GetPVarInt(playerid, "BackpackMeal") == 1) 
+	{
+		PlayerInfo[playerid][pHunger] += 83;
+
+		if (PlayerInfo[playerid][pFitness] >= 5)
+			PlayerInfo[playerid][pFitness] -= 5;
+		else
+			PlayerInfo[playerid][pFitness] = 0;
+		PlayerInfo[playerid][pHungerTimer] = 0;
+		PlayerInfo[playerid][pHungerDeathTimer] = 0;
+
+		if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
+		
+		PlayerInfo[playerid][pBItems][0]--;
+		format(string,sizeof(string),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
+		SendClientMessage(playerid, COLOR_GRAD2, string);
+		SetPlayerHealthEx(playerid, 100.0);
+		
+		new ip[MAX_PLAYER_NAME];
+		GetPlayerIp(playerid, ip, sizeof(ip));
+		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
+		Log("logs/backpack.log", string);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Full Meal.");
+		SetPVarInt(playerid, "BackpackDisabled", 30);
+	}
+	TogglePlayerControllable(playerid, false);
+	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+	switch(PlayerInfo[playerid][pBackpack])
+	{
+		case 1: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+		}
+		case 2: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+		}
+		case 3: 
+		{
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+		}
+	}
+	DeletePVar(playerid, "BackpackMeal");
 	return 1;
 }

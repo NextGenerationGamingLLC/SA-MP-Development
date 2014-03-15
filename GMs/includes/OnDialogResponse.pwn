@@ -2101,37 +2101,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BFOOD: {
 			if(response) {
-				PlayerInfo[playerid][pHunger] += 83;
-
-				if (PlayerInfo[playerid][pFitness] >= 5)
-					PlayerInfo[playerid][pFitness] -= 5;
-				else
-					PlayerInfo[playerid][pFitness] = 0;
-				PlayerInfo[playerid][pHungerTimer] = 0;
-				PlayerInfo[playerid][pHungerDeathTimer] = 0;
-
-				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-				
-				PlayerInfo[playerid][pBItems][0]--;
-				format(string,sizeof(string),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
-				SendClientMessage(playerid, COLOR_GRAD2, string);
-				SetPlayerHealthEx(playerid, 100.0);
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
+				if(GetPVarInt(playerid, "BackpackMeal") == 1) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a meal.");
+				}
+				else 
 				{
-					case 1: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-					}
+					defer FinishMeal(playerid);
+					SetPVarInt(playerid, "BackpackMeal", 1);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+					TogglePlayerControllable(playerid, true);
+					format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Full Meal.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Meal from your backpack, please wait.");
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
 			else {
@@ -2158,35 +2139,37 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) {
 				if(IsACop(playerid))
 				{
-					if(GetPVarInt(playerid, "BackpackProt") == 1) {
+					if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
 					}
 					else 
 					{
 						defer FinishMedKit(playerid);
-						SetPVarInt(playerid, "BackpackProt", 1);
+						SetPVarInt(playerid, "BackpackMedKit", 1);
 						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 						format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 				}
-				else SendClientMessageEx(playerid, COLOR_WHITE, "You are not a cop.");
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
-				{
-					case 1: 
+				else {
+					SendClientMessageEx(playerid, COLOR_WHITE, "You are not a cop.");
+					format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
+					if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+					switch(PlayerInfo[playerid][pBackpack])
 					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+						case 1: 
+						{
+							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
+						}
+						case 2: 
+						{
+							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
+						}
+						case 3: 
+						{
+							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
+						}
 					}
 				}
 			}
@@ -2324,6 +2307,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerInfo[playerid][pBItems][pbi] += namount;
 					format(string, sizeof(string), "You have deposited %d grams of %s in your backpack.", namount, TypeName);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					new ip[MAX_PLAYER_NAME];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					format(string, sizeof(string), "[DRUGS] %s (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
+					Log("logs/backpack.log", string);
 					new szDialog[130];
 					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
 					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
@@ -2347,6 +2334,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					format(string, sizeof(string), "You have withdrawn %d grams of %s in your backpack.", namount, TypeName);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					new ip[MAX_PLAYER_NAME];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					format(string, sizeof(string), "[DRUGS] %s (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
+					Log("logs/backpack.log", string);
 					new szDialog[130];
 					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
 					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
@@ -2509,7 +2500,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pBItems][slot] > 0) {
 						GetWeaponName(PlayerInfo[playerid][pBItems][slot], weapname, sizeof(weapname));
 						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot], 60000);
-						PlayerInfo[playerid][pBItems][slot] = 0;
+						
 						DeletePVar(playerid, string);
 
 						format(string, sizeof(string), "You have withdrawn a %s from your backpack.", weapname);
@@ -2517,6 +2508,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						format(string, sizeof(string), "* %s has withdrawn a %s from their backpack.", GetPlayerNameEx(playerid), weapname);
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						new ip[MAX_PLAYER_NAME];
+						GetPlayerIp(playerid, ip, sizeof(ip));
+						format(string, sizeof(string), "[WEAPONS] %s (IP:%s) withdrawn a %s(%d) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, PlayerInfo[playerid][pBItems][slot], PlayerInfo[playerid][pBackpack]);
+						Log("logs/backpack.log", string);
+						PlayerInfo[playerid][pBItems][slot] = 0;
 						new itemcount = 0;
 						for(new i = 6; i < 10; i++)
 						{
@@ -2592,6 +2588,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							new ip[MAX_PLAYER_NAME];
+							GetPlayerIp(playerid, ip, sizeof(ip));
+							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
+							Log("logs/backpack.log", string);
 							itemcount = 0;
 							strdel(szDialog, 0, strlen(szDialog));
 							for(new i = 6; i < 10; i++)
@@ -2648,6 +2648,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							new ip[MAX_PLAYER_NAME];
+							GetPlayerIp(playerid, ip, sizeof(ip));
+							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
+							Log("logs/backpack.log", string);
 							itemcount = 0;
 							strdel(szDialog, 0, strlen(szDialog));
 							for(new i = 6; i < 10; i++)
@@ -2704,6 +2708,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 							format(string, sizeof(string), "* %s has deposited a %s inside their backpack.", GetPlayerNameEx(playerid), weapname);
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+							new ip[MAX_PLAYER_NAME];
+							GetPlayerIp(playerid, ip, sizeof(ip));
+							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
+							Log("logs/backpack.log", string);
 							itemcount = 0;
 							strdel(szDialog, 0, strlen(szDialog));
 							for(new i = 6; i < 10; i++)
@@ -2807,6 +2815,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				format(string, sizeof(string), "* %s has thrown away their backpack.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				new ip[MAX_PLAYER_NAME];
+				GetPlayerIp(playerid, ip, sizeof(ip));
+				format(string, sizeof(string), "[DROP] %s (IP:%s) has thrown away his %s Backpack", GetPlayerNameEx(playerid), choice);
+				Log("logs/backpack.log", string);
 			}
 			else
 			{
