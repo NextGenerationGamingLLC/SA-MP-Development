@@ -2356,7 +2356,7 @@ timer FinishMedKit[5000](playerid)
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
-		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
+		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
 		Log("logs/backpack.log", string);
 	}
 	else
@@ -2364,9 +2364,8 @@ timer FinishMedKit[5000](playerid)
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Med Kit.");
 		SetPVarInt(playerid, "BackpackDisabled", 30);
 	}
-	TogglePlayerControllable(playerid, false);
 	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
 	switch(PlayerInfo[playerid][pBackpack])
 	{
 		case 1: 
@@ -2409,7 +2408,7 @@ timer FinishMeal[5000](playerid)
 		
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
-		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
+		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
 		Log("logs/backpack.log", string);
 	}
 	else
@@ -2417,9 +2416,8 @@ timer FinishMeal[5000](playerid)
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Full Meal.");
 		SetPVarInt(playerid, "BackpackDisabled", 30);
 	}
-	TogglePlayerControllable(playerid, false);
 	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\n%d Medic & Kevlar Vest Kits",string, PlayerInfo[playerid][pBItems][5]);
+	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
 	switch(PlayerInfo[playerid][pBackpack])
 	{
 		case 1: 
