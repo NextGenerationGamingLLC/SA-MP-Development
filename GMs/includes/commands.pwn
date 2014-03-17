@@ -260,7 +260,7 @@ CMD:speedcam(playerid, params[])
 }
 
 CMD:placekit(playerid, params[]) {
-	if(IsACop(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))
 	{
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -326,7 +326,7 @@ CMD:placekit(playerid, params[]) {
 		else 
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /placekit [name]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Vehicle, Backpack");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Car, Backpack");
 			return 1;
 		}
 	}
@@ -334,7 +334,7 @@ CMD:placekit(playerid, params[]) {
 }
 
 CMD:usekit(playerid, params[]) {
-	if(IsACop(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))
 	{
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -1928,7 +1928,8 @@ CMD:zombieevent(playerid, params[])
 	        SyncMinTime();
 			SetWeather(5);
 			mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			foreach(Player, i)
+			//foreach(Player, i)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
 			    UnZombie(i);
 			}
@@ -2033,7 +2034,8 @@ CMD:bite(playerid, params[])
 		{
 		    new Float:X, Float:Y, Float:Z;
 		    GetPlayerPos(playerid, X, Y, Z);
-			foreach(Player, i)
+			//foreach(Player, i)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
 			    if(!GetPVarType(i, "pIsZombie") && !IsPlayerInAnyVehicle(i) && IsPlayerInRangeOfPoint(i, 2, X, Y, Z))
 			    {
@@ -2075,7 +2077,8 @@ CMD:bite(playerid, params[])
 		{
 		    new Float:X, Float:Y, Float:Z;
 		    GetPlayerPos(playerid, X, Y, Z);
-			foreach(Player, i)
+			//foreach(Player, i)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
 			    if((GetPVarInt(i, "EventToken") == 1) && !GetPVarType(i, "pEventZombie"))
 			    {
@@ -6786,7 +6789,7 @@ CMD:help(playerid, params[])
                     format(string, sizeof(string), "*** %s ***  /cratelimit /viewcrateorders", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /calls /a(ccept)c(all) /i(gnore)c(all)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 
 			}
@@ -21540,6 +21543,49 @@ CMD:backupall(playerid, params[])
 			Backup[playerid] = 3;
 			foreach(Player, i)
 			{
+				if(IsACop(i) && PlayerInfo[playerid][pNation] == PlayerInfo[i][pNation])
+				{
+      				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
+					SendClientMessageEx(i, DEPTRADIO, string);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /nobackup to clear your backup request.");
+			if(BackupClearTimer[playerid] != 0)
+			{
+				KillTimer(BackupClearTimer[playerid]);
+				BackupClearTimer[playerid] = 0;
+			}
+			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "  You already have an active backup request! Type /nobackup to cancel.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer or medic!");
+	}
+	return 1;
+}
+
+CMD:backupint(playerid, params[])
+{
+    if(IsACop(playerid) || IsAMedic(playerid))
+	{
+	    new
+			zone[MAX_ZONE_NAME],
+			string[128];
+	    GetPlayer3DZone(playerid, zone, sizeof(zone));
+		if(Backup[playerid] == 0 || Backup[playerid] == 1)
+		{
+			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "* %s is requesting international backup at %s. {AA3333}Respond Code 3A [Lights and Sirens].", GetPlayerNameEx(playerid), zone);
+            ShowBackupActiveForPlayer(playerid);
+			Backup[playerid] = 3;
+			foreach(Player, i)
+			{
 				if(IsACop(i))
 				{
       				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
@@ -29753,7 +29799,7 @@ CMD:groupkick(playerid, params[])
 CMD:m(playerid, params[]) {
 	if(!isnull(params))
 	{
-		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid))
+		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAJudge(playerid))
 		{
 			new
 				szMessage[128];
@@ -51570,7 +51616,7 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirstAid & Kevlar\nMedkit & Vest Trunk Kit\nTazer & Cuffs") : (""));
+					    format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirstAid & Kevlar\nMedkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nMedkit & Vest Kit") : ("")));
 						ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
 					}

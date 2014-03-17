@@ -282,7 +282,63 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 3:
 				{
-					ShowPlayerDialog(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Who would you like to clear?","Clear","Return");
+					if(IsAMedic(playerid) || IsAGovernment(playerid)) {
+						if(GetPVarInt(playerid, "MedVestKit") == 1) {
+							return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
+						}
+						if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
+						{
+							SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+							SetPVarInt(playerid, "MedVestKit", 1);
+							arrGroupData[iGroupID][g_iLockerStock] -= 1;
+							new str[128], file[32];
+							format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+							new month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+							Log(file, str);
+						}
+						else if(arrGroupData[iGroupID][g_iLockerCostType] == 1)
+						{
+							if(arrGroupData[iGroupID][g_iBudget] > 3000)
+							{
+								SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+								SetPVarInt(playerid, "MedVestKit", 1);
+								arrGroupData[iGroupID][g_iBudget] -= 3000;
+								new str[128], file[32];
+								format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of $3,000 to the budget fund.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+								new month, day, year;
+								getdate(year,month,day);
+								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+								Log(file, str);
+							}
+							else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($3,000)");
+						}
+						else if(arrGroupData[iGroupID][g_iLockerCostType] == 2)
+						{
+							if(GetPlayerCash(playerid) > 3000)
+							{
+								SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
+								SetPVarInt(playerid, "MedVestKit", 1);
+								GivePlayerCash(playerid, -3000);
+								new str[128], file[32];
+								format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a personal cost of $3,000.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+								new month, day, year;
+								getdate(year,month,day);
+								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+								Log(file, str);
+							}
+							else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($3,000)");
+						}
+						else
+						{
+							SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your trunk kit.");
+							SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						}
+					}
+					else {
+						ShowPlayerDialog(playerid, G_LOCKER_CLEARSUSPECT,DIALOG_STYLE_INPUT, arrGroupData[iGroupID][g_szGroupName]," Who would you like to clear?","Clear","Return");
+					}
 				}
 				case 4: // LEOs - HP + Armour
 				{
@@ -2135,24 +2191,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 		case DIALOG_BMEDKIT: {
-			if(response) {
-				if(IsACop(playerid))
-				{
-					if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
-						SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
-					}
-					else 
-					{
-						defer FinishMedKit(playerid);
-						SetPVarInt(playerid, "BackpackMedKit", 1);
-						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
-						format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
-						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					}
-				}
-				else {
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are not a cop.");
+			if(response && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))) {
+				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
 					format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
 					if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
 					switch(PlayerInfo[playerid][pBackpack])
@@ -2170,6 +2211,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
 						}
 					}
+				}
+				else 
+				{
+					defer FinishMedKit(playerid);
+					SetPVarInt(playerid, "BackpackMedKit", 1);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+					format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
 			else {

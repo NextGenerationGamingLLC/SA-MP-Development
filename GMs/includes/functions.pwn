@@ -6078,7 +6078,8 @@ public SyncPlayerTime(playerid)
 forward SyncMinTime();
 public SyncMinTime()
 {
-	foreach(Player, i)
+	//foreach(Player, i)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{
  		if(GetPlayerVirtualWorld(i) == 133769)
 		{
@@ -11124,7 +11125,7 @@ stock IsARacer(playerid)
 
 stock IsMDCPermitted(playerid)
 {
-	if(IsACop(playerid))
+	if(IsACop(playerid) || IsAJudge(playerid))
 	{
 		return 1;
 	}

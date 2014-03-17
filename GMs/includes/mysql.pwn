@@ -689,7 +689,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 				SendClientMessage(extraid, COLOR_GRAD2, "We will be going down to do some maintenance on the server/script, we will be back online shortly.");
 				SetTimerEx("KickEx", 1000, 0, "i", extraid);
 
-				foreach(extraid: Player) if(gPlayerLogged{extraid}) {
+				//foreach(extraid: Player) if(gPlayerLogged{extraid})
+				for(extraid = 0; extraid < MAX_PLAYERS; ++extraid) if(gPlayerLogged{extraid}) {
 					SetPVarInt(extraid, "RestartKick", 1);
 					return OnPlayerStatsUpdate(extraid);
 				}
@@ -700,7 +701,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 			}
 			if(GetPVarType(extraid, "AccountSaving") && (GetPVarInt(extraid, "AccountSaved") == 0)) {
 				SetPVarInt(extraid, "AccountSaved", 1);
-				foreach(extraid: Player)
+				//foreach(extraid: Player)
+				for(extraid = 0; extraid < MAX_PLAYERS; ++extraid)
 				{
 					if(gPlayerLogged{extraid} && (GetPVarInt(extraid, "AccountSaved") == 0))
 					{
