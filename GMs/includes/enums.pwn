@@ -281,6 +281,7 @@ enum cVehicleLoad
 	vForkObject,
 	vCarVestKit,
 	vCarWindows,
+	vLastDriver[MAX_PLAYER_NAME],
 }
 
 enum crateInfo

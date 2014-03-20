@@ -21543,7 +21543,7 @@ CMD:backupall(playerid, params[])
 			Backup[playerid] = 3;
 			foreach(Player, i)
 			{
-				if(IsACop(i) && PlayerInfo[playerid][pNation] == PlayerInfo[i][pNation])
+				if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
 				{
       				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
 					SendClientMessageEx(i, DEPTRADIO, string);
@@ -21583,7 +21583,7 @@ CMD:backupint(playerid, params[])
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			format(string, sizeof(string), "* %s is requesting international backup at %s. {AA3333}Respond Code 3A [Lights and Sirens].", GetPlayerNameEx(playerid), zone);
             ShowBackupActiveForPlayer(playerid);
-			Backup[playerid] = 3;
+			Backup[playerid] = 4;
 			foreach(Player, i)
 			{
 				if(IsACop(i))
@@ -59135,5 +59135,36 @@ CMD:ovmute(playerid, params[])
 
 	format(query, sizeof(query), "Attempting to vip mute %s's account.", tmpName);
 	SendClientMessageEx(playerid, COLOR_YELLOW, query);
+	return 1;
+}
+
+CMD:lastdriver(playerid, params[])
+{
+	new vehid, string[128];
+	if(sscanf(params, "d", vehid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /lastdriver [vehicle id]");
+	if(!CrateVehicleLoad[vehid][vLastDriver][0]) format(CrateVehicleLoad[vehid][vLastDriver], MAX_PLAYER_NAME, "{AA3333}Unoccupied");
+	if(GetVehicleModel(vehid) != 0)
+	{
+		if(PlayerInfo[playerid][pAdmin] > 1)
+		{
+			format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, CrateVehicleLoad[vehid][vLastDriver]);
+			SendClientMessage(playerid, COLOR_YELLOW, string);
+		}
+		else if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID)
+		{
+			if(DynVeh[vehid] != -1)
+			{
+				if(DynVehicleInfo[DynVeh[vehid]][gv_igID] == PlayerInfo[playerid][pLeader])
+				{
+					format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, CrateVehicleLoad[vehid][vLastDriver]);
+					SendClientMessage(playerid, COLOR_YELLOW, string);				
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle does not belong to your group");
+			
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Vehicle ID");
 	return 1;
 }

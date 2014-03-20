@@ -5978,6 +5978,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			engine, lights, alarm, doors, bonnet, boot, objective, v;
 
 		gLastCar[playerid] = newcar;
+		format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+		
 		if(GetPVarInt(playerid, "EventToken") == 1) {
 			if(EventKernel[EventFootRace] == 1) {
 				new Float:X, Float:Y, Float:Z;

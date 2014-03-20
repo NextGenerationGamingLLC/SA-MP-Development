@@ -18,18 +18,18 @@
 								     Carlos
 								
 								***  Director of SA:MP Development: 
-								     Akatony (ViruZz)
+									 Miguel (s0nic)								     
 								
 								**   Development Staff: 								
 									 Brendan
 									 Neo
-									 Miguel (s0nic)
 									 Donuts
 									 AlexR
 
 
 				Past Developers:
 								*** Director of SA:MP Development:
+									Akatony (ViruZz)
 									John
 									Brendan
 									Brian
@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.072"
+#define SERVER_GM_TEXT "NG:RP v3.0.073"
 
 
 

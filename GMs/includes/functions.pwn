@@ -2507,7 +2507,7 @@ PayDay(i) {
 		
 	getdate(year, month, day);	
 	
- 	if(PlayerInfo[i][pLevel] > 0) {
+ 	if(PlayerInfo[i][pLevel] > 0 && PlayerInfo[i][pAdmin] < 2) {
 		if(GetPVarType(i, "debtMsg")) {
 			if(GetPlayerCash(i) < 0 && PlayerInfo[i][pJailTime] < 1 && !IsACop(i) && PlayerInfo[i][pWantedLevel] < 6) {
 				format(string,sizeof(string),"You're in debt $%s - find a way to pay back the money or you might get in trouble!", number_format(GetPlayerCash(i)));
@@ -4818,8 +4818,14 @@ public BackupClear(playerid, calledbytimer)
 										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 									}
 								}
+								case 3:
+								{
+									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+									}
+								}
 								default: if(IsACop(i)) {
-									SendClientMessageEx(i, DEPTRADIO, string);
+									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
 								}
 							}
 						}	
@@ -4841,8 +4847,15 @@ public BackupClear(playerid, calledbytimer)
 										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 									}
 								}
+								case 3:
+								{
+									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+		
+								}
+								}
 								default: if(IsACop(i)) {
-									SendClientMessageEx(i, DEPTRADIO, string);
+									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
 								}
 							}
 						}	
