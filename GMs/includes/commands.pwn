@@ -47741,8 +47741,8 @@ CMD:holster(playerid, params[])
 	{
 	    if(GetPVarInt(playerid, "TackleMode") == 0)
 		{
-	        DeletePVar(playerid, "WeaponsHolstered");
-	    	format(string, sizeof(string), "* %s unholsters their weapon.", GetPlayerNameEx(playerid));
+			DeletePVar(playerid, "WeaponsHolstered");
+			format(string, sizeof(string), "* %s unholsters their weapon.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			return 1;
 		}
@@ -47753,7 +47753,7 @@ CMD:holster(playerid, params[])
 	}
 }
 
-/*
+
 CMD:tackle(playerid, params[])
 {
 	#if defined zombiemode
@@ -47761,7 +47761,13 @@ CMD:tackle(playerid, params[])
 	#endif
 	if(IsACop(playerid))
 	{
-		if(GetPVarInt(playerid, "WeaponsHolstered") == 0)
+		if(GetPVarInt(playerid, "TackleCooldown") != 0 || gettime() < GetPVarInt(playerid, "TackleCooldown") + 30)
+		{
+			new string[128];
+			format(string, sizeof(string), "You must wait %d seconds before you can enable tackle mode again!", gettime() - GetPVarInt(playerid, "TackleCooldown") + 30);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		}
+		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
 	    {
 	        cmd_holster(playerid, params);
 		}
@@ -47773,11 +47779,13 @@ CMD:tackle(playerid, params[])
 		else
 		{
 	        SetPVarInt(playerid, "TackleMode", 0);
-	        return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon. (/holster)");
+	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon. (/holster)");
+			cmd_holster(playerid, params);
+			return SetPVarInt(playerid, "TackleCooldown", gettime());
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not Law Enforcement.");
-}*/
+}
 
 CMD:tazer(playerid, params[])
 {
