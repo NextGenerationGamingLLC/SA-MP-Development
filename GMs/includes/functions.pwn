@@ -6671,7 +6671,8 @@ public RadarCooldown(playerid)
 forward CopGetUp(playerid);
 public CopGetUp(playerid)
 {
-    SetPVarInt(playerid, "CopTackleCooldown", 30);
+    SetPVarInt(playerid, "CopTackleCooldown", 30); // a Cooldown on when the cop can tackle again after tackling someone
+	DeletePVar(playerid, "Tackling");
     SendClientMessageEx(playerid, COLOR_GRAD2, "It will be 30 seconds before you can tackle again.");
 	TogglePlayerControllable(playerid, 1);
 	PreloadAnimLib(playerid, "SUNBATHE");
@@ -6687,20 +6688,19 @@ stock TacklePlayer(playerid, tacklee)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetPVarInt(tacklee, "IsTackled", playerid);
 	TogglePlayerControllable(tacklee, 0);
-	SetPVarInt(tacklee, "TackleCooldown", 20);
+	SetPVarInt(tacklee, "IsFrozen", 1);
+	SetPVarInt(tacklee, "TackleCooldown", 20); //Actually a countdown till the tackle is over
 	SetPVarInt(playerid, "Tackling", tacklee);
 	GetPlayerPos(tacklee, posx, posy,posz);
 	SetPlayerFacingAngle(playerid, 180.0);
 	SetPlayerFacingAngle(tacklee, 0.0);
-	GetXYBehindPlayer(tacklee, posx, posy, 0.8);
+	GetXYBehindPlayer(tacklee, posx, posy, 0.5);
 	ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 20000, 1);
 	ApplyAnimation(tacklee, "DILDO", "Dildo_Hit_3", 4.1, 0, 1, 1, 1, 20000, 1);
 	GetPlayerGroupInfo(playerid, group, rank, division);
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
 	ShowPlayerDialog(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
-	SetPVarInt(playerid, "TackleMode", 0);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Tackle mode disabled. You may now unholster your weapon. (/holster)");
 	return 1;
 }
 
@@ -17730,10 +17730,12 @@ stock ClearTackle(playerid)
 	PreloadAnimLib(playerid, "SUNBATHE");
 	PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
     ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, 0, 1, 1, 0, 0, 1);
+	SetPVarInt(playerid, "CantBeTackledCount", 15); // cant be tackled again for 15 seconds
 	DeletePVar(GetPVarInt(playerid, "IsTackled"), "Tackling");
 	DeletePVar(playerid, "IsTackled");
 	DeletePVar(playerid, "TackleCooldown");
 	DeletePVar(playerid, "TackledResisting");
+	DeletePVar(playerid, "IsFrozen");
 	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 	return 1;
 }

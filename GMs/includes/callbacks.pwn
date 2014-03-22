@@ -3098,6 +3098,15 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
+				else if(GetPVarType(playerid, "IsTackled"))
+				{
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC] Left while tackled [Leaving]", 128);
+					strcpy(PlayerInfo[playerid][pPrisonedBy], "System", 128);
+					PlayerInfo[playerid][pJailTime] += 60*60;
+					new szMessage[80+MAX_PLAYER_NAME];
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_YELLOW, szMessage, 2);
+				}
 			}
 			case 2:
 			{
@@ -5093,6 +5102,23 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tackled!");
 					return 1;
 				}
+				if(IsPlayerInAnyVehicle(GetPlayerTargetPlayer(playerid)))
+				{
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tackle someone who is in a vehicle!");
+				}
+				if(IsPlayerInAnyVehicle(playerid))
+				{
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tackle someone while in a vehicle!");
+				}
+				if(GetPVarType(GetPlayerTargetPlayer(playerid), "IsTackled"))
+				{
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "That person has already been tackled, stand next to them to assist!");
+				}
+				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount") > 0)
+				{
+					format(string, sizeof(string), "That player cannot be tackled for another %d seconds.", GetPVarInt(GetPlayerTargetPlayer(playerid), "CantBeTackledCount"));
+		            return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				}
 				#if defined zombiemode
 				if(GetPVarInt(GetPlayerTargetPlayer(playerid), "pIsZombie"))
 				{
@@ -5174,8 +5200,8 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			return 1;
 		}
 		if(GetPVarType(playerid, "Tackling"))	{
-		    CopGetUp(playerid);
 		    ClearTackle(GetPVarInt(playerid, "Tackling"));
+			CopGetUp(playerid);
 		    return 1;
 		}
         if(GetPlayerTargetPlayer(playerid) != INVALID_PLAYER_ID && ProxDetectorS(5.0, playerid, GetPlayerTargetPlayer(playerid)) && !IsPlayerNPC(GetPlayerTargetPlayer(playerid)))

@@ -590,12 +590,30 @@ task MoneyUpdate[1000]()
 							format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d", GetPVarInt(i, "TackleCooldown"));
 							GameTextForPlayer(i, string, 1100, 3);
 							SetPVarInt(i, "TackleCooldown", GetPVarInt(i, "TackleCooldown")-1);
-							if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+							if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 2 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
 							{
 								new escapechance = random(100);
 								switch(escapechance)
 								{
-									case 35,40,22,72,11..16, 50..57, 62..65:
+									case 35,40,22,72,11..16, 62..64:
+									{
+										GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
+										SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
+										format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+										ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+										TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
+										ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+										SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
+										ClearTackle(i);
+									}
+								}
+							}
+							else if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+							{
+								new escapechance = random(100);
+								switch(escapechance)
+								{
+									case 35,40,22,62:
 									{
 										GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
 										SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
@@ -624,6 +642,10 @@ task MoneyUpdate[1000]()
 				if(GetPVarInt(i, "CopTackleCooldown") > 0)
 				{
 					SetPVarInt(i, "CopTackleCooldown", GetPVarInt(i, "CopTackleCooldown")-1);
+				}
+				if(GetPVarInt(i, "CantBeTackledCount") > 0)
+				{
+					SetPVarInt(i, "CantBeTackledCount", GetPVarInt(i, "CantBeTackledCount")-1);
 				}
 				if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
 				{

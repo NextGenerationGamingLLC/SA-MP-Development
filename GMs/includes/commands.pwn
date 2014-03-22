@@ -47761,10 +47761,10 @@ CMD:tackle(playerid, params[])
 	#endif
 	if(IsACop(playerid))
 	{
-		if(GetPVarInt(playerid, "TackleCooldown") != 0 || gettime() < GetPVarInt(playerid, "TackleCooldown") + 30)
+		if(GetPVarInt(playerid, "ReTackleCooldown") != 0 && gettime() < GetPVarInt(playerid, "ReTackleCooldown") + 30)
 		{
 			new string[128];
-			format(string, sizeof(string), "You must wait %d seconds before you can enable tackle mode again!", gettime() - GetPVarInt(playerid, "TackleCooldown") + 30);
+			format(string, sizeof(string), "You must wait %d seconds before you can enable tackle mode again!", GetPVarInt(playerid, "ReTackleCooldown") + 30 - gettime());
 			return SendClientMessageEx(playerid, COLOR_GRAD2, string);
 		}
 		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
@@ -47781,7 +47781,7 @@ CMD:tackle(playerid, params[])
 	        SetPVarInt(playerid, "TackleMode", 0);
 	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon. (/holster)");
 			cmd_holster(playerid, params);
-			return SetPVarInt(playerid, "TackleCooldown", gettime());
+			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not Law Enforcement.");
