@@ -879,6 +879,9 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
 
+#define			DIALOG_HELP1				(5100)
+
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 
@@ -1082,3 +1085,16 @@ native gpci(playerid, serial[], maxlen);
 //OnGangTagQueryFinish Threads
 #define			LOAD_GANGTAGS					1
 #define			SAVE_GANGTAG					2
+
+//Help Menu
+#define			MAX_HELP_ITEMS				(10)
+#define			ITEM_GENERAL				(1)
+#define			ITEM_ADMIN					(2)
+#define			ITEM_WATCHDOG				(3)
+#define			ITEM_ADVISOR				(4)
+#define			ITEM_FACTION				(5)
+#define			ITEM_GANG					(6)
+#define			ITEM_BUSINESS				(7)
+/* #define			ITEM_				(8)
+#define			ITEM_				(9)
+#define			ITEM_				(10) */

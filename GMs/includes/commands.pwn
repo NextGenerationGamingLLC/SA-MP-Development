@@ -6682,20 +6682,54 @@ CMD:ringtone(playerid, params[])
 }
 */
 
+CMD:helpnew(playerid, params[])
+{
+	new string[512], listitemcount = 0;
+	format(string, sizeof(string), "General Commands");
+	ListItemHelpMenu[playerid][listitemcount] = ITEM_GENERAL, listitemcount++;
+	if(PlayerInfo[playerid][pAdmin] == 1) {
+		format(string, sizeof(string), "%s\nModerator Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADMIN, listitemcount++;
+	}
+	else if(PlayerInfo[playerid][pAdmin] > 1) {
+		format(string, sizeof(string), "%s\nAdministrator Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADMIN, listitemcount++;
+	}
+	if(PlayerInfo[playerid][pWatchdog] >= 1) {
+		format(string, sizeof(string), "%s\nWatchdog Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_WATCHDOG, listitemcount++;
+	}
+	if(PlayerInfo[playerid][pHelper] == 1) {
+		format(string, sizeof(string), "%s\nHelper Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADVISOR, listitemcount++;
+	}
+	else if(PlayerInfo[playerid][pHelper] > 1) {
+		format(string, sizeof(string), "%s\nAdvisor Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADVISOR, listitemcount++;
+	}
+	/* if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID) {
+		format(string, sizeof(string), "%s\nFaction Leader Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_FACTION, listitemcount++;
+	} */
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) {
+		format(string, sizeof(string), "%s\nFaction Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_FACTION, listitemcount++;
+	}
+	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) {
+		format(string, sizeof(string), "%s\nGang Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_GANG, listitemcount++;
+	}
+	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) {
+		format(string, sizeof(string), "%s\nBusiness Commands", string);
+		ListItemHelpMenu[playerid][listitemcount] = ITEM_BUSINESS, listitemcount++;
+	}
+	ShowPlayerDialog(playerid, DIALOG_HELP1, DIALOG_STYLE_LIST, "Help Center", string, "Select", "Cancel");
+}
+
 CMD:help(playerid, params[])
 {
 	new string[512];
-	// Work in progress? - Akatony
-	/*format(string, sizeof(string), "General Commands");
-	if(PlayerInfo[playerid][pAdmin] == 1) format(string, sizeof(string), "%s\nModerator Commands", string);
-	else if(PlayerInfo[playerid][pAdmin] > 1) format(string, sizeof(string), "%s\nAdministrator Commands", string);
-	if(PlayerInfo[playerid][pHelper] == 1) format(string, sizeof(string), "%s\nHelper Commands", string);
-	else if(PlayerInfo[playerid][pHelper] > 1) format(string, sizeof(string), "%s\nAdvisor Commands", string);
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID) format(string, sizeof(string), "%s\nFaction Leader Commands", string);
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) format(string, sizeof(string), "%s\nFaction Commands", string);
-	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) format(string, sizeof(string), "%s\nGang Commands", string);
-	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) format(string, sizeof(string), "%s\nBusiness Commands", string);
-	ShowPlayerDialog(playerid, DIALOG_HELP1, DIALOG_STYLE_LIST, "Help Center", string, "Select", "Cancel");*/
+	
 	if(PlayerInfo[playerid][pLevel] <= 3)
 	{
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
@@ -6768,7 +6802,7 @@ CMD:help(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");	
-	}	
+	}
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if(iGroupID != INVALID_GROUP_ID)
 	{
@@ -6872,10 +6906,7 @@ CMD:help(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "*** ADMIN *** (/a)dmin (/ah)elp");
 	}
-	if (PlayerInfo[playerid][pHelper] >= 1)
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "*** COMMUNITY ADVISOR *** (/ch)elp");
-	}
+	
 	if(PlayerInfo[playerid][pDonateRank] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /travel /viplocker /tokenhelp /buddyinvite /phoneprivacy /setautoreply");
@@ -14490,7 +14521,7 @@ CMD:acceptevent(playerid, params[])
                     EventKernel[EventRequest] = INVALID_PLAYER_ID;
                     SetPVarInt( EventKernel[EventCreator], "EventToken", 1 );
                     SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Your event request has been accepted, use /seteventpos to change the event position, once you do it people will be able to /eventstaff." );
-                    if(PlayerInfo[playerid][pHelper] >= 2) {
+                    if(EventKernel[EventCreator] >= 2) {
                         SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "You now have temporary access to (/o)oc and /goto." );
                     }
                     format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has approved the event request from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
@@ -48690,19 +48721,22 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"contract",true) == 0)
 	{
-		if(!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in the Hitman Agency!");
-		new Float:health;
-		health = GetClientHealth(playerid);
-		new hpint = floatround( health, floatround_round );
-		if (hpint >=  80)
-		{
-			HitToGet[playerid] = INVALID_PLAYER_ID;
-			HitOffer[playerid] = INVALID_PLAYER_ID;
-			GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
-			GotHit[GoChase[playerid]] = 0;
-			GoChase[playerid] = INVALID_PLAYER_ID;
+		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
+			new Float:health;
+			health = GetClientHealth(playerid);
+			new hpint = floatround( health, floatround_round );
+			if (hpint >=  80)
+			{
+				HitToGet[playerid] = INVALID_PLAYER_ID;
+				HitOffer[playerid] = INVALID_PLAYER_ID;
+				GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
+				GotHit[GoChase[playerid]] = 0;
+				GoChase[playerid] = INVALID_PLAYER_ID;
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
+		
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
 	}
 	else if(strcmp(choice,"ticket",true) == 0) { TicketOffer[playerid] = INVALID_PLAYER_ID; TicketMoney[playerid] = 0; }
 	else if(strcmp(choice,"medic",true) == 0) { if(IsPlayerConnected(MedicCall)) { if(MedicCall == playerid) { MedicCall = INVALID_PLAYER_ID; } else { SendClientMessageEx(playerid, COLOR_GREY, "   You are not the current Caller!"); return 1; } } }

@@ -395,6 +395,7 @@ new _vhudVisible[MAX_PLAYERS]; // not to be confused with pSpeedo
 new CarRadars[MAX_PLAYERS];
 new PlayerText:BackupText[MAX_PLAYERS];
 new BackupClearTimer[MAX_PLAYERS]; // backup clear timer
+new ListItemHelpMenu[MAX_PLAYERS][MAX_HELP_ITEMS];
 
 // Hunger text
 new PlayerText:_hungerText[MAX_PLAYERS];
