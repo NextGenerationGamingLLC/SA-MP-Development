@@ -330,6 +330,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+		PlayerInfo[playerid][pBugReportTimeout] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 10; i++)
 		{
@@ -942,5 +943,6 @@ public OnPlayerLoad(playerid)
 		PlayerTextDrawShow(playerid, AccountRestriction[playerid]);
 		PlayerTextDrawShow(playerid, AccountRestrictionEx[playerid]);
 	}
+	if(PlayerInfo[playerid][pAdmin] >= 2) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]); //Used for filterscripts
 	return 1;
 }

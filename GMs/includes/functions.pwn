@@ -11250,6 +11250,7 @@ stock IsAtATM(playerid)
 		}
 		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 2926.9199, -1529.9800, 10.6900)) return 1; //NGG Shop
 		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 986.4434,2056.2480,1085.8531) || IsPlayerInRangeOfPoint(playerid, 3.0, 1014.1396,2060.8284,1085.8531) || IsPlayerInRangeOfPoint(playerid, 3.0, 1013.4720,2023.8784,1085.8531)) return 1; //Glen Park
+		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 1378.0894, 1740.0106, 927.3564)) return 1; //Olympics
 	}
 	return 0;
 }
@@ -18516,7 +18517,8 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 	return INVALID_PLAYER_VEHICLE_ID;
 }
 
-stock SetPlayerWeapons(playerid)
+forward SetPlayerWeapons(playerid);
+public SetPlayerWeapons(playerid)
 {
 	if(HungerPlayerInfo[playerid][hgInEvent] == 1) { return 1;}
     if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }
@@ -18598,7 +18600,7 @@ stock ShowStats(playerid,targetid)
 			default: insur = "None";
 		}
 		new staffrank[64];
-		if(PlayerInfo[targetid][pHelper] > 0 || PlayerInfo[targetid][pAdmin] == 1 || (PlayerInfo[targetid][pAdmin] > 1 && PlayerInfo[playerid][pAdmin] <= PlayerInfo[targetid][pAdmin])) format(staffrank, sizeof(staffrank), "%s", GetStaffRank(targetid));
+		if(PlayerInfo[targetid][pHelper] > 0 || PlayerInfo[targetid][pWatchdog] > 0 || PlayerInfo[targetid][pAdmin] == 1 || (PlayerInfo[targetid][pAdmin] > 1 && PlayerInfo[playerid][pAdmin] <= PlayerInfo[targetid][pAdmin])) format(staffrank, sizeof(staffrank), "%s", GetStaffRank(targetid));
 		else staffrank = "";
 		new drank[64];
 		if(PlayerInfo[targetid][pDonateRank] > 0)
@@ -21602,7 +21604,7 @@ stock StaffAccountCheck(playerid, ip[])
 
 stock GetStaffRank(playerid)
 {
-	new string[42];
+	new string[43];
 
 	if(PlayerInfo[playerid][pHelper] > 0)
 	{
@@ -21614,7 +21616,17 @@ stock GetStaffRank(playerid)
 			case 4: format(string, sizeof(string), "{00FFFF}Chief Advisor{FFFFFF}");
 		}
 	}
-	else if(PlayerInfo[playerid][pAdmin] == 1)
+	if(PlayerInfo[playerid][pWatchdog] > 0)
+	{
+		switch(PlayerInfo[playerid][pWatchdog])
+		{
+			case 1: format(string, sizeof(string), "{2267F0}Watchdog{FFFFFF}");
+			case 2: format(string, sizeof(string), "{2267F0}Senior Watchdog{FFFFFF}");
+			case 3: format(string, sizeof(string), "{2267F0}RP Specialist{FFFFFF}");
+			case 4: format(string, sizeof(string), "{2267F0}Director of RP Improvement{FFFFFF}");
+		}
+	}
+	if(PlayerInfo[playerid][pAdmin] == 1)
 	{
 		switch(PlayerInfo[playerid][pSMod])
 		{
@@ -21622,7 +21634,7 @@ stock GetStaffRank(playerid)
 			case 1: format(string, sizeof(string), "{FFFF00}Senior Server Moderator{FFFFFF}");
 		}
 	}
-	else if(PlayerInfo[playerid][pAdmin] > 1)
+	if(PlayerInfo[playerid][pAdmin] > 1)
 	{
 		switch(PlayerInfo[playerid][pAdmin])
 		{
@@ -25907,4 +25919,16 @@ public OnPlayerSync(playerid)
 	FuckHacksVar[playerid][playerStatus][2] = 0;
 	FuckHacksVar[playerid][playerTimer] = SetTimerEx("OnPlayerSync", 1000, 0, "i", playerid);
 	return true;
+}
+
+ShowBugReportMainMenu(playerid)
+{
+	new string[256], bug[41], bugdesc[41];
+	DeletePVar(playerid, "BugStep");
+	SetPVarInt(playerid, "BugListItem", 1);
+	if(GetPVarType(playerid, "BugSubject")) GetPVarString(playerid, "BugSubject", bug, 40); else bug = "N/A";
+	if(GetPVarType(playerid, "BugDetail")) GetPVarString(playerid, "BugDetail", bugdesc, 40); else bugdesc = "N/A";
+	if(strlen(bugdesc) > 35) strmid(bugdesc, bugdesc, 0, 35, 35), format(bugdesc, 41, "%s [...]", bugdesc);
+	format(string, sizeof(string), "Subject: %s\nDetails: %s\nSubmit Anonymously?: %s\nSubmit", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
+	return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
 }

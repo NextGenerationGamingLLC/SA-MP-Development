@@ -1595,7 +1595,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	if(issuerid != INVALID_PLAYER_ID)
 	{
-		if(PlayerInfo[issuerid][pAccountRestricted] == 1)
+		if(PlayerInfo[issuerid][pAccountRestricted] == 1 || PlayerInfo[playerid][pAccountRestricted] == 1)
 		{
 			SetPlayerHealthEx(playerid, GetClientHealth(playerid));
 			SetPlayerArmourEx(playerid, GetClientArmour(playerid));
@@ -4051,7 +4051,10 @@ public OnPlayerSpawn(playerid)
 	if(GetPVarType(playerid, "STD")) {
 		DeletePVar(playerid, "STD");
 	}
-
+	if(!FuckHacksVar[playerid][playerTimer])
+	{
+		FuckHacksVar[playerid][playerTimer] = SetTimerEx("OnPlayerSync", 1000, 0, "i", playerid);
+	}
 	//SetPlayerTeam(playerid, NO_TEAM);
 	SetPlayerSpawn(playerid);
 	SetPlayerWeapons(playerid);
@@ -4500,35 +4503,35 @@ public OnPlayerEnterCheckpoint(playerid)
 				return 1;
 			}
 		}
-		else if(GetPVarInt(playerid, "MatDeliver") == 555 && IsPlayerInRangeOfPoint(playerid, 6.0, -688.7897, 966.1434, 12.1627))
+		else if(GetPVarInt(playerid, "MatDeliver") == 555 && IsPlayerInRangeOfPoint(playerid, 6.0, 578.0073, 1221.9861, 11.7113))
 		{
 			if(GetPVarInt(playerid, "Packages") > 0)
 			{
 				if(PlayerInfo[playerid][pDonateRank] == 1)
 				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 450, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 450 materials for your 18 materials packages.");
+				    TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 30 materials packages.");
 					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
 
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
 				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 600, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 600 materials for your 24 materials packages.");
+				    TransferStorage(playerid, -1, -1, -1, 4, 1000, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 1,000 materials for your 40 materials packages.");
 					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
 
 				}
 				else if(PlayerInfo[playerid][pDonateRank] >= 4)
 				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 30 materials packages.");
+				    TransferStorage(playerid, -1, -1, -1, 4, 1250, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 1,250 materials for your 50 materials packages.");
 					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
 
 				}
 				else
 				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 300, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 300 materials for your 12 materials packages.");
+			    	TransferStorage(playerid, -1, -1, -1, 4, 500, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 500 materials for your 20 materials packages.");
 				}
 
 				DeletePVar(playerid, "Packages");

@@ -650,6 +650,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "BEquipped", szResult, MainPipeline); PlayerInfo[extraid][pBEquipped] = strval(szResult);
 					cache_get_field_content(row,  "BStoredH", szResult, MainPipeline); PlayerInfo[extraid][pBStoredH] = strval(szResult);
 					cache_get_field_content(row,  "BStoredV", szResult, MainPipeline); PlayerInfo[extraid][pBStoredV] = strval(szResult);
+					cache_get_field_content(row,  "BRTimeout", szResult, MainPipeline); PlayerInfo[extraid][pBugReportTimeout] = strval(szResult);
 					for(new i = 0; i < 10; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
@@ -3198,6 +3199,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem7", PlayerInfo[playerid][pBItems][7]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem8", PlayerInfo[playerid][pBItems][8]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem9", PlayerInfo[playerid][pBItems][9]);
+	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -6127,7 +6130,7 @@ public OnGetOKills(playerid)
 		{
 			cache_get_field_content(0, "id", string, MainPipeline); giveplayerid = strval(string);
 			cache_get_field_content(0, "Username", giveplayername, MainPipeline, MAX_PLAYER_NAME);
-			format(string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM Kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
+			format(string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
 			mysql_function_query(MainPipeline, string, true, "OnGetLatestOKills", "iis", playerid, giveplayerid, giveplayername);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "This account does not exist.");
@@ -8072,7 +8075,7 @@ public FetchWatchlist(index)
 		// Is the player connected?
 		for(new x = 0; x < MAX_PLAYERS; x++)
 		{
-			if(PlayerInfo[x][pId] == sqlid)
+			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid)
 			{
 				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Manually Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
@@ -8080,7 +8083,7 @@ public FetchWatchlist(index)
 		}
 	}
 	
-	mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '0' ORDER BY `point` DESC LIMIT 15", false, "FetchWatchlist2", "i", index);
+	mysql_function_query(MainPipeline, "SELECT sqlid, point  FROM `nonrppoints` LEFT JOIN accounts on sqlid = accounts.id WHERE `active` = '1' AND accounts.`Online` = 1 ORDER BY `point` DESC LIMIT 15", true, "FetchWatchlist2", "i", index);
 	return true;
 }
 
@@ -8099,7 +8102,7 @@ public FetchWatchlist2(index, input[])
 		// Is the player connected?
 		for(new x = 0; x < MAX_PLAYERS; x++)
 		{
-			if(PlayerInfo[x][pId] == sqlid)
+			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid)
 			{
 				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Automatically Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
@@ -8128,5 +8131,22 @@ public OnSetVMute(playerid)
 		format(string, sizeof(string), "Could not vip mute %s..", tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	}
+	return 1;
+}
+
+forward OnBugReport(playerid);
+public OnBugReport(playerid)
+{
+	new string[128], bug[41];
+	GetPVarString(playerid, "BugSubject", bug, 40);
+	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
+	Log("logs/bugreport.log", string);
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", "Your bug report has been successfully submitted.\nIf you would like to add more information regarding the bug visit: http://devcp.ng-gaming.net", "Close", "");
+	PlayerInfo[playerid][pBugReportTimeout] = gettime();
+	DeletePVar(playerid, "BugStep");
+	DeletePVar(playerid, "BugSubject");
+	DeletePVar(playerid, "BugDetail");
+	DeletePVar(playerid, "BugAnonymous");
+	DeletePVar(playerid, "BugListItem");
 	return 1;
 }
