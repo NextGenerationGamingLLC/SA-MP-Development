@@ -6686,44 +6686,45 @@ CMD:helpnew(playerid, params[])
 {
 	new string[512], listitemcount = 0;
 	format(string, sizeof(string), "General Commands");
-	ListItemHelpMenu[playerid][listitemcount] = ITEM_GENERAL, listitemcount++;
+	ListItemHelpMenu[playerid][listitemcount] = HELP_GENERAL, listitemcount++;
 	if(PlayerInfo[playerid][pAdmin] == 1) {
 		format(string, sizeof(string), "%s\nModerator Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADMIN, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_ADMIN, listitemcount++;
 	}
 	else if(PlayerInfo[playerid][pAdmin] > 1) {
 		format(string, sizeof(string), "%s\nAdministrator Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADMIN, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_ADMIN, listitemcount++;
 	}
 	if(PlayerInfo[playerid][pWatchdog] >= 1) {
 		format(string, sizeof(string), "%s\nWatchdog Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_WATCHDOG, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_WATCHDOG, listitemcount++;
 	}
 	if(PlayerInfo[playerid][pHelper] == 1) {
 		format(string, sizeof(string), "%s\nHelper Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADVISOR, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_ADVISOR, listitemcount++;
 	}
 	else if(PlayerInfo[playerid][pHelper] > 1) {
 		format(string, sizeof(string), "%s\nAdvisor Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_ADVISOR, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_ADVISOR, listitemcount++;
 	}
 	/* if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID) {
 		format(string, sizeof(string), "%s\nFaction Leader Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_FACTION, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_FACTION, listitemcount++;
 	} */
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) {
 		format(string, sizeof(string), "%s\nFaction Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_FACTION, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_FACTION, listitemcount++;
 	}
 	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) {
 		format(string, sizeof(string), "%s\nGang Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_GANG, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_GANG, listitemcount++;
 	}
 	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) {
 		format(string, sizeof(string), "%s\nBusiness Commands", string);
-		ListItemHelpMenu[playerid][listitemcount] = ITEM_BUSINESS, listitemcount++;
+		ListItemHelpMenu[playerid][listitemcount] = HELP_BUSINESS, listitemcount++;
 	}
 	ShowPlayerDialog(playerid, DIALOG_HELP1, DIALOG_STYLE_LIST, "Help Center", string, "Select", "Cancel");
+	return 1;
 }
 
 CMD:help(playerid, params[])
