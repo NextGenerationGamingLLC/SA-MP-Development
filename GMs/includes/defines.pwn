@@ -35,8 +35,8 @@
  			/*  ---------------- Enable the Windows/Android Application ----------------- */
 //#define SOCKET_ENABLED
 			/*  ---------------- SERVER PLATFORM ---------------- */
-#define _WIN32
-// #define _LINUX
+//#define _WIN32
+#define _LINUX
 			/*  ---------------- DISABLE NPCs ----------------- */
 #define	FOREACH_NO_BOTS
 			/*  ---------------- PRAGMAS ----------------- */
@@ -880,7 +880,6 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_BDROP				(5095)
 
 #define			DIALOG_HELP1				(5100)
-#define			DIALOG_HELP2				(5105)
 
 
 // Objects
@@ -1089,13 +1088,13 @@ native gpci(playerid, serial[], maxlen);
 
 //Help Menu
 #define			MAX_HELP_ITEMS				(10)
-#define			HELP_GENERAL				(1)
-#define			HELP_ADMIN					(2)
-#define			HELP_WATCHDOG				(3)
-#define			HELP_ADVISOR				(4)
-#define			HELP_FACTION				(5)
-#define			HELP_GANG					(6)
-#define			HELP_BUSINESS				(7)
-/* #define			HELP_				(8)
-#define			HELP_				(9)
-#define			HELP_				(10) */
+#define			ITEM_GENERAL				(1)
+#define			ITEM_ADMIN					(2)
+#define			ITEM_WATCHDOG				(3)
+#define			ITEM_ADVISOR				(4)
+#define			ITEM_FACTION				(5)
+#define			ITEM_GANG					(6)
+#define			ITEM_BUSINESS				(7)
+/* #define			ITEM_				(8)
+#define			ITEM_				(9)
+#define			ITEM_				(10) */

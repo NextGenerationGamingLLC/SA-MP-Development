@@ -18537,12 +18537,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			new hDialogSize[4955], choice[18];
+			new hDialogSize[4955];
 			switch(ListItemHelpMenu[playerid][listitem])
 			{
-				case HELP_GENERAL:
+				case ITEM_GENERAL:
 				{
-					choice = "General";
 					if(PlayerInfo[playerid][pLevel] <= 3)
 					{
 						format(hDialogSize, sizeof(hDialogSize),"{01FCFF}*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
@@ -18550,9 +18549,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** ACCOUNT *** /rules /faq /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)", hDialogSize);
 					format(hDialogSize, sizeof(hDialogSize),"%s\n*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /me /togooc /tognews /togfam /togwhisper /do /cancelcall", hDialogSize);
 					format(hDialogSize, sizeof(hDialogSize),"%s\n*** BANK *** /balance /withdraw /deposit /wiretransfer /abalance /awithdraw /adeposit /awiretransfer", hDialogSize);
-					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants /pointtime", hDialogSize);
-					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt /defendtime", hDialogSize);
-					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck /nextgift", hDialogSize);
+					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants", hDialogSize);
+					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime", hDialogSize);
+					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime", hDialogSize);
 					format(hDialogSize, sizeof(hDialogSize),"%s\n*** GENERAL *** /speedo /speedopos /viewmotd", hDialogSize);
 					format(hDialogSize, sizeof(hDialogSize),"%s\n*** SHOP *** /shophelp /credits", hDialogSize);
 
@@ -18658,17 +18657,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					//end of famed commands
 				}
-				case HELP_ADMIN: {
+				case ITEM_ADMIN: {
 					if (PlayerInfo[playerid][pAdmin] >= 1)
 					{
-						choice = "Moderator";
 						format(hDialogSize, sizeof(hDialogSize),"{00FF08}_______________________________________");
 						if(PlayerInfo[playerid][pSMod] > 0) format(hDialogSize, sizeof(hDialogSize),"%s\n{B4B5B7}*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} *** /jail /kick /staff /togstaff /changename /dmwatch /dmalert", hDialogSize);
 						else format(hDialogSize, sizeof(hDialogSize),"%s\n{B4B5B7}*** {FFFF00}SERVER MODERATOR{B4B5B7} *** /mjail /kick /staff /togstaff /dmwatch /dmalert", hDialogSize);
 					}
 					if (PlayerInfo[playerid][pAdmin] >= 2)
 					{
-						choice = "Administrator";
 						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** REPORTS *** (/a)dmin /reports /ar /tr /sta /nao /st /post /dmr *** MOVEMENT *** /up /dn /fd /bk /lt /rt /fly", hDialogSize);
 						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** {00FF00}JUNIOR ADMIN{A9C4E4} *** /kick /ban /prison /freeze /unfreeze /slap /warn /admins /spec /levelones", hDialogSize);
 						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** {00FF00}JUNIOR ADMIN{A9C4E4} *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns", hDialogSize);
@@ -18739,15 +18736,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Shop Tech *** /orders /adjustoid /shop(car(del)/house/tokens/exp/plate/laser/vest/firework/viptokens/boombox/object/backpack)", hDialogSize);
 						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Shop Tech *** /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip", hDialogSize);
-						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Shop Tech *** /shopbusiness /shopbusinessname /brenewal /gedit /gnear", hDialogSize);
+						format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Shop Tech *** /shopbusiness /shopbusinessname /brenewal /gedit /gnear");
 					}
 					if (PlayerInfo[playerid][pShopTech] >= 3) format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - DoCR *** /pmotd /ovmute", hDialogSize);
 					if (PlayerInfo[playerid][pFactionModerator] >= 1) format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn", hDialogSize);
 					if (PlayerInfo[playerid][pPR] >= 1) format(hDialogSize, sizeof(hDialogSize),"%s\n{A9C4E4}*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor", hDialogSize);
 					if (PlayerInfo[playerid][pAdmin] >= 1) format(hDialogSize, sizeof(hDialogSize),"%s\n{00FF08}_______________________________________", hDialogSize);
 				}
-				case HELP_WATCHDOG: {
-					choice = "Watchdog";
+				case ITEM_WATCHDOG: {
 					if (PlayerInfo[playerid][pWatchdog] >= 1)
 					{
 						format(hDialogSize, sizeof(hDialogSize),"{A9C4E4}*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist");
@@ -18765,8 +18761,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(hDialogSize, sizeof(hDialogSize),"%s\n*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove /wdwhitelist", hDialogSize);
 					}
 				}
-				case HELP_ADVISOR: {
-					choice = "Community Advisor";
+				case ITEM_ADVISOR: {
 					if (PlayerInfo[playerid][pHelper] >= 1)
 					{
 						format(hDialogSize, sizeof(hDialogSize),"*** HELPER *** (/newb)ie (/ch)elp /advisors /hlban /hlkick");
@@ -18785,8 +18780,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(hDialogSize, sizeof(hDialogSize),"%s\n*** CHIEF ADVISOR *** /nonewbie /cmotd", hDialogSize);
 					}
 				}
-				case HELP_FACTION: {
-					choice = "Faction";
+				case ITEM_FACTION: {
 					new iGroupID = PlayerInfo[playerid][pMember];
 					if(iGroupID != INVALID_GROUP_ID)
 					{
@@ -18801,7 +18795,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								format(hDialogSize, sizeof(hDialogSize), "%s\n*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all)", hDialogSize, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 								if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) format(hDialogSize, sizeof(hDialogSize), "%s /bug /listbugs /clearbugs /hfind", hDialogSize);
 								if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) {
-									format(hDialogSize, sizeof(hDialogSize), "%s /cratelimit /viewcrateorders", hDialogSize, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], hDialogSize);
+									format(hDialogSize, sizeof(hDialogSize), "%s /cratelimit /viewcrateorders", hDialogSize, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 								}
 							}
 							case 2:
@@ -18828,7 +18822,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								{
 									format(hDialogSize, sizeof(hDialogSize), "*** GOVERNMENT *** (/r)adio /dept /locker /settax /checktax /taxwithdraw /invite /giverank (/gov)ernment (/su)spect");
 									format(hDialogSize, sizeof(hDialogSize), "%s\n*** GOVERNMENT *** /mdc /detain /arrest /wanted /take /ticket /clothes /ram /invite /giverank /setbudget", hDialogSize);
-									format(hDialogSize, sizeof(hDialogSize), "%s\n*** GOVERNMENT *** /spikes /destroyplant /radargun /warrantarrest /pardon /commute /wants /deploy /destroy", hDialogSize);
+									format(hDialogSize, sizeof(hDialogSize), "%s\n*** GOVERNMENT *** /spikes /destroyplant /radargun /warrantarrest /pardon /commute /wants /deploy /destroy");
 								}
 							}
 							case 6:
@@ -18852,7 +18846,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
 						{
-							format(hDialogSize, sizeof(hDialogSize), "%s\n*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online", hDialogSize);
+							format(hDialogSize, sizeof(hDialogSize), "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online");
 							if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
 							{
 								format(hDialogSize, sizeof(hDialogSize), "%s\n*** GROUP LEADER *** /viewbudget /grepocars /gvbuyback /gdonate /ordercrates /dvtrackcar /gwithdraw, /dvstorage", hDialogSize);
@@ -18864,8 +18858,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 				}
-				case HELP_GANG: {
-					choice = "Gang";
+				case ITEM_GANG: {
 					if (PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
 					{
 						if(PlayerInfo[playerid][pRank] < 5)
@@ -18879,8 +18872,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 				}
-				case HELP_BUSINESS: {
-					choice = "Business";
+				case ITEM_BUSINESS: {
 					format(hDialogSize, sizeof(hDialogSize),"{00FF08}_______________________________________");
 					format(hDialogSize, sizeof(hDialogSize), "%s\n{61A1ED}*** BUSINESS HELP *** - type a command for more infomation.", hDialogSize);
 					format(hDialogSize, sizeof(hDialogSize), "%s\n{A9C4E4}*** BUSINESS *** /buybizlevel /binvite /buninvite /bouninvite /bgiverank /resign /bsafe", hDialogSize);
@@ -18909,9 +18901,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 			}
-			format(string, sizeof(string), "%s Commands", choice);
-			ShowPlayerDialog(playerid, DIALOG_HELP2, DIALOG_STYLE_MSGBOX, string, hDialogSize, "Close", "");
-			return 1;
 		}
 		else return 0;
 	}
