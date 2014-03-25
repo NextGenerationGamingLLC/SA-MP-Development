@@ -14490,7 +14490,7 @@ CMD:acceptevent(playerid, params[])
                     EventKernel[EventRequest] = INVALID_PLAYER_ID;
                     SetPVarInt( EventKernel[EventCreator], "EventToken", 1 );
                     SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Your event request has been accepted, use /seteventpos to change the event position, once you do it people will be able to /eventstaff." );
-                    if(PlayerInfo[playerid][pHelper] >= 2) {
+                    if(PlayerInfo[EventKernel[EventCreator]][pHelper] >= 2) {
                         SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "You now have temporary access to (/o)oc and /goto." );
                     }
                     format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has approved the event request from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
@@ -48690,19 +48690,22 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"contract",true) == 0)
 	{
-		if(!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in the Hitman Agency!");
-		new Float:health;
-		health = GetClientHealth(playerid);
-		new hpint = floatround( health, floatround_round );
-		if (hpint >=  80)
-		{
-			HitToGet[playerid] = INVALID_PLAYER_ID;
-			HitOffer[playerid] = INVALID_PLAYER_ID;
-			GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
-			GotHit[GoChase[playerid]] = 0;
-			GoChase[playerid] = INVALID_PLAYER_ID;
+		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
+			new Float:health;
+			health = GetClientHealth(playerid);
+			new hpint = floatround( health, floatround_round );
+			if (hpint >=  80)
+			{
+				HitToGet[playerid] = INVALID_PLAYER_ID;
+				HitOffer[playerid] = INVALID_PLAYER_ID;
+				GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
+				GotHit[GoChase[playerid]] = 0;
+				GoChase[playerid] = INVALID_PLAYER_ID;
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
+		
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
 	}
 	else if(strcmp(choice,"ticket",true) == 0) { TicketOffer[playerid] = INVALID_PLAYER_ID; TicketMoney[playerid] = 0; }
 	else if(strcmp(choice,"medic",true) == 0) { if(IsPlayerConnected(MedicCall)) { if(MedicCall == playerid) { MedicCall = INVALID_PLAYER_ID; } else { SendClientMessageEx(playerid, COLOR_GREY, "   You are not the current Caller!"); return 1; } } }
