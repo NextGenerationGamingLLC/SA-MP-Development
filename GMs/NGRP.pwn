@@ -75,7 +75,11 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
+<<<<<<< HEAD
 #define SERVER_GM_TEXT "NG:RP v3.0.077"
+=======
+#define SERVER_GM_TEXT "NG:RP v3.0.081"
+>>>>>>> a851b7a3ed27497d77073e644d2344f8e5639eff
 
 
 

@@ -2369,7 +2369,7 @@ task alertTimer[1000]()
 
 timer FinishMedKit[5000](playerid)
 {
-	new string[102];
+	new string[122];
 	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
 	{
 		SetPlayerHealthEx(playerid, 100);
@@ -2409,7 +2409,7 @@ timer FinishMedKit[5000](playerid)
 
 timer FinishMeal[5000](playerid)
 {
-	new string[102];
+	new string[122];
 	if(GetPVarInt(playerid, "BackpackMeal") == 1) 
 	{
 		PlayerInfo[playerid][pHunger] += 83;

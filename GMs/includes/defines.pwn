@@ -879,6 +879,8 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
 
+#define			DIALOG_BUGREPORT 			(6000)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 

@@ -330,9 +330,13 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+<<<<<<< HEAD
 		PlayerInfo[playerid][pNewbieTogged] = 0;
 		PlayerInfo[playerid][pVIPTogged] = 0;
 		PlayerInfo[playerid][pFamedTogged] = 0;
+=======
+		PlayerInfo[playerid][pBugReportTimeout] = 0;
+>>>>>>> a851b7a3ed27497d77073e644d2344f8e5639eff
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 10; i++)
 		{
@@ -945,5 +949,6 @@ public OnPlayerLoad(playerid)
 		PlayerTextDrawShow(playerid, AccountRestriction[playerid]);
 		PlayerTextDrawShow(playerid, AccountRestrictionEx[playerid]);
 	}
+	if(PlayerInfo[playerid][pAdmin] >= 2) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]); //Used for filterscripts
 	return 1;
 }
