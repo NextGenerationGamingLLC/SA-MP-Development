@@ -6995,18 +6995,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1:
 				{
 					new vstring[1024];
-					for(new i, iModelID; i < MAX_PLAYERVEHICLES; i++) {
-						if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
+					new szCarLocation[MAX_ZONE_NAME];
+					for(new i, iModelID; i < MAX_PLAYERVEHICLES; i++) 
+					{
+						if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0)
+						{
+							Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-								format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[iModelID]);
+								format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
 							}
 							else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-								format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[iModelID]);
+								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 							}
 							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-								format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+								format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 							}
-							else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[iModelID]);
+							else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 						}
 						else strcat(vstring, "\nEmpty");
 					}

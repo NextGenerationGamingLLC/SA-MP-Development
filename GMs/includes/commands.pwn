@@ -5548,14 +5548,14 @@ CMD:tognews(playerid, params[])
 
 CMD:tognewbie(playerid, params[])
 {
-	if (!gNewbie[playerid])
+	if (PlayerInfo[playerid][pNewbieTogged] == 1)
 	{
-		gNewbie[playerid] = 1;
+		PlayerInfo[playerid][pNewbieTogged] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled newbie chat.");
 	}
 	else
 	{
-		gNewbie[playerid] = 0;
+		PlayerInfo[playerid][pNewbieTogged] = 1;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled newbie chat.");
 	}
 	return 1;
@@ -21759,18 +21759,22 @@ CMD:vstorage(playerid, params[])
 	if(PlayerInfo[playerid][pFreezeCar] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
-		for(new i, iModelID; i < icount; i++) {
-			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
+		new szCarLocation[MAX_ZONE_NAME];
+		for(new i, iModelID; i < icount; i++)
+		{
+			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) 
+			{
+				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-					format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-					format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 				}
-				else format(vstring, sizeof(vstring), "%s\n%s (spawned)", vstring, VehicleName[iModelID]);
+				else format(vstring, sizeof(vstring), "%s\n%s (spawned) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
 			else strcat(vstring, "\nEmpty");
 		}
@@ -21822,18 +21826,22 @@ CMD:trackcar(playerid, params[])
 	else
 	{
 		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
-		for(new i, iModelID; i < icount; i++) {
-			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
+		new szCarLocation[MAX_ZONE_NAME];
+		for(new i, iModelID; i < icount; i++) 
+		{
+			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0)
+			{
+				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-					format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-					format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 				}
-				else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[iModelID]);
+				else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
 		}
 		ShowPlayerDialog(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", vstring, "Track", "Cancel");
@@ -24077,18 +24085,22 @@ CMD:gotopveh(playerid, params[]) {
 
 			new szVehString[8024], icount = GetPlayerVehicleSlots(iTargetID);
 			if(!GetPlayerVehicleCount(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: Player doesn't own any vehicles.");
-			for(new i, iModelID; i < icount; i++) {
-				if((iModelID = PlayerVehicleInfo[iTargetID][i][pvModelId] - 400) >= 0) {
+			new szCarLocation[MAX_ZONE_NAME];
+			for(new i, iModelID; i < icount; i++) 
+			{
+				Get3DZone(PlayerVehicleInfo[iTargetID][i][pvPosX], PlayerVehicleInfo[iTargetID][i][pvPosY], PlayerVehicleInfo[iTargetID][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
+				if((iModelID = PlayerVehicleInfo[iTargetID][i][pvModelId] - 400) >= 0)
+				{
 					if(PlayerVehicleInfo[iTargetID][i][pvImpounded]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (impounded)", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (impounded) | Location: DMV", szVehString, VehicleName[iModelID]);
 					}
 					else if(PlayerVehicleInfo[iTargetID][i][pvDisabled]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (disabled)", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (disabled) | Location: Unknown", szVehString, VehicleName[iModelID]);
 					}
 					else if(!PlayerVehicleInfo[iTargetID][i][pvSpawned]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (stored)", szVehString, VehicleName[iModelID]);
+						format(szVehString, sizeof(szVehString), "%s\n%s (stored) | Location: %s", szVehString, VehicleName[iModelID], szCarLocation);
 					}
-					else format(szVehString, sizeof(szVehString), "%s\n%s (ID %i)", szVehString, VehicleName[iModelID], PlayerVehicleInfo[iTargetID][i][pvId]);
+					else format(szVehString, sizeof(szVehString), "%s\n%s (ID %i) | Location: %s", szVehString, VehicleName[iModelID], PlayerVehicleInfo[iTargetID][i][pvId], szCarLocation);
 				}
 			}
 		    ShowPlayerDialog(playerid, GOTOPLAYERCAR, DIALOG_STYLE_LIST, "Vehicle Teleportation", szVehString, "Teleport", "Cancel");
@@ -27311,12 +27323,12 @@ CMD:payday(playerid, params[])
 
 CMD:togvip(playerid, params[]) {
 	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
-		if(GetPVarType(playerid, "togVIP")) {
-			DeletePVar(playerid, "togVIP");
+		if(PlayerInfo[playerid][pVIPTogged] == 1) {
+			PlayerInfo[playerid][pVIPTogged] = 0;
 			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat disabled.");
 		}
 		else {
-			SetPVarInt(playerid, "togVIP", 1);
+			PlayerInfo[playerid][pVIPTogged] = 1;
 			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat enabled.");
 		}
 	}
@@ -27337,7 +27349,7 @@ CMD:v(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeVIP") - gettime());
 			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
-		else if(!GetPVarType(playerid, "togVIP")) {
+		else if(PlayerInfo[playerid][pVIPTogged] == 0) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /togvip to enable it.");
 		}
 		else if(PlayerInfo[playerid][pVMuted] > 0) {
@@ -39509,7 +39521,7 @@ CMD:newb(playerid, params[])
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(gNewbie[playerid] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
+	if(PlayerInfo[playerid][pNewbieTogged] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
 
 	new string[128];
 	if(gettime() < NewbieTimer[playerid])
@@ -39561,7 +39573,7 @@ CMD:newb(playerid, params[])
 	{
 		if(IsPlayerConnected(n))
 		{
-			if (gNewbie[n]==0)
+			if (PlayerInfo[n][pNewbieTogged] == 1)
 			{
 				SendClientMessageEx(n, COLOR_NEWBIE, string);
 			}
@@ -43631,11 +43643,10 @@ CMD:nrn(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if (PlayerInfo[giveplayerid][pAdmin] >= 2)
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You can not use that command on admins!");
-				return 1;
-			}
+			if(PlayerInfo[giveplayerid][pAdmin] >= 2)return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not use that command on admins!");
+			// Can't believe this isn't fixed, happened to me like 2321231321 times - Akatony
+			if((PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2) && (PlayerInfo[giveplayerid][pSMod] == 1 || PlayerInfo[giveplayerid][pWatchdog] == 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command on this person!");
+			
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has offered %s a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			//foreach(new i: Player)
 			for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -53685,120 +53696,6 @@ CMD:reloadlist(playerid, params[])
 	return 1;
 }
 
-
-/*
-CMD:gotocharmpoint(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 4)
-	{
-		SetPlayerPos(playerid, CharmPoints[ActiveCharmPoint][0], CharmPoints[ActiveCharmPoint][1], CharmPoints[ActiveCharmPoint][2]);
-
-		new vw, int;
-
-		switch (ActiveCharmPoint)
-		{
-			case 0:
-			{
-				vw = 123051;
-				int = 1;
-			}
-
-			case 1:
-			{
-				vw = 100078;
-				int = 17;
-			}
-
-			case 2:
-			{
-				vw = 2345;
-				int = 1;
-			}
-
-			case 3:
-			{
-				vw = 32423;
-				int = 1;
-			}
-
-			case 4:
-			{
-				vw = 20083;
-				int = 11;
-			}
-		}
-
-		SetPlayerVirtualWorld(playerid, vw);
-		SetPlayerInterior(playerid, int);
-	}
-
-	return 1;
-}
-
-CMD:giveeventtokens(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 4)
-	{
-		new giveplayerid, amount;
-
-		if (sscanf(params, "ui", giveplayerid, amount))
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /giveeventtokens [player] [amount]");
-			return 1;
-		}
-
-		if (amount == 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "  Amount cannot be 0!");
-			return 1;
-		}
-
-		PlayerInfo[giveplayerid][pTrickortreat] += amount;
-
-		new string[128];
-
-		if (amount < 0)
-		{
-			format(string, sizeof(string), "You have taken %i of %s's tokens away.", -amount, GetPlayerNameEx(giveplayerid));
-		}
-		else
-		{
-			format(string, sizeof(string), "You have given %s %i tokens.", GetPlayerNameEx(giveplayerid), amount);
-		}
-
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-	}
-
-	return 1;
-}
-
-CMD:claimtokens(playerid, params[])
-{
-	if (IsPlayerInRangeOfCharm(playerid))
-	{
-		new time = gettime();
-
-		if (time >= PlayerInfo[playerid][pLastCharmReceived] + 3600)
-		{
-			SendClientMessageEx(playerid, 0x37A621FF, "You collected 5 tokens!");
-			PlayerInfo[playerid][pLastCharmReceived] = gettime();
-			PlayerInfo[playerid][pTrickortreat] += 5;
-			return 1;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a charm from that point!");
-			return 1;
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the charm point!");
-	}
-
-	return 1;
-} */
-
 //======[Start of Famed Commands]=======
 
 CMD:fc(playerid, params[]) {
@@ -53814,7 +53711,7 @@ CMD:fc(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeFamed") - gettime());
 			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
-		else if(GetPVarType(playerid, "togFamed") == 0) {
+		else if(PlayerInfo[playerid][pFamedTogged] == 0) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have the famed chat toggled - /togfamed to enable it.");
 		}
 		else if(PlayerInfo[playerid][pFMuted] != 0) {
@@ -53844,13 +53741,13 @@ CMD:togfamed(playerid, params[])
 {
 	if(PlayerInfo[playerid][pFamed] >= 1)
 	{
-	    if(GetPVarInt(playerid, "togFamed") == 0)
+	    if(PlayerInfo[playerid][pFamedTogged] == 0)
 	    {
-	        SetPVarInt(playerid, "togFamed", 1);
+	        PlayerInfo[playerid][pFamedTogged] = 1;
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the famed chat.");
 	    }
 		else {
-		    SetPVarInt(playerid, "togFamed", 0);
+		    PlayerInfo[playerid][pFamedTogged] = 0;
 		    SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the famed chat.");
 		}
 	}

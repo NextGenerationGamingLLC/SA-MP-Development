@@ -330,6 +330,9 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
+		PlayerInfo[playerid][pNewbieTogged] = 0;
+		PlayerInfo[playerid][pVIPTogged] = 0;
+		PlayerInfo[playerid][pFamedTogged] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 10; i++)
 		{
@@ -551,7 +554,7 @@ public OnPlayerLoad(playerid)
 	}	
 	if (PlayerInfo[playerid][pLevel] < 6 || PlayerInfo[playerid][pHelper] > 0)
 	{
-		gNewbie[playerid] = 0;
+		PlayerInfo[playerid][pNewbieTogged] = 0;
 	}
 	if (PlayerInfo[playerid][pHelper] == 1)
 	{

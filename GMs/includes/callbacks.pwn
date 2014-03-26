@@ -2520,7 +2520,6 @@ public OnPlayerConnect(playerid)
 	gOoc[playerid] = 0;
 	arr_Towing[playerid] = INVALID_VEHICLE_ID;
 	gNews[playerid] = 0;
-	gNewbie[playerid] = 1;
 	gHelp[playerid] = 1;
 	gFam[playerid] = 0;
 	gPlayerLogged{playerid} = 0;

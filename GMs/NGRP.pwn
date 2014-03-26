@@ -20,16 +20,15 @@
 								***  Director of SA:MP Development: 
 									 Miguel (s0nic)								     
 								
-								**   Development Staff: 								
+								**   Development Staff: 	
+									 Akatony
 									 Brendan
-									 Neo
 									 Donuts
-									 AlexR
 
 
 				Past Developers:
 								*** Director of SA:MP Development:
-									Akatony (ViruZz)
+									Akatony
 									John
 									Brendan
 									Brian
@@ -41,6 +40,8 @@
 									Calgon
 	  
 								** 	Developers:
+									Neo
+									AlexR
 									ThomasJWhite
 									Beren
 									Kareemtastic
@@ -74,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.076"
+#define SERVER_GM_TEXT "NG:RP v3.0.077"
 
 
 
@@ -116,6 +117,7 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
+	print("Exiting the gamemode, please wait..."); // Added this for easier access to find logs about the gamemode exiting
     g_mysql_Exit();
 	return 1;
 }

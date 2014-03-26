@@ -17036,7 +17036,7 @@ stock SendVIPMessage(color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2) && GetPVarType(i, "togVIP")) {
+			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2) && PlayerInfo[i][pVIPTogged] == 1) {
 				SendClientMessageEx(i, color, string);
 			}
 		}	
@@ -17050,7 +17050,7 @@ stock SendFamedMessage(color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && GetPVarInt(i, "togFamed") == 1) {
+			if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pFamedTogged] == 1) {
 				SendClientMessageEx(i, color, string);
 			}
 		}	

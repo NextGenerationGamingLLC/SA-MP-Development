@@ -835,7 +835,6 @@ new gPlayerLogTries[MAX_PLAYERS];
 new gLastCar[MAX_PLAYERS];
 new gOoc[MAX_PLAYERS];
 new gNews[MAX_PLAYERS];
-new gNewbie[MAX_PLAYERS];
 new gHelp[MAX_PLAYERS];
 new gFam[MAX_PLAYERS];
 new Spectate[MAX_PLAYERS];

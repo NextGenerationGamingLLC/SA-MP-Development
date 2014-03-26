@@ -3007,19 +3007,6 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bombs", PlayerInfo[playerid][pBombs]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Wins", PlayerInfo[playerid][pWins]);
 
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun0", PlayerInfo[playerid][pGuns][0]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun1", PlayerInfo[playerid][pGuns][1]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun2", PlayerInfo[playerid][pGuns][2]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun3", PlayerInfo[playerid][pGuns][3]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun4", PlayerInfo[playerid][pGuns][4]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun5", PlayerInfo[playerid][pGuns][5]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun6", PlayerInfo[playerid][pGuns][6]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun7", PlayerInfo[playerid][pGuns][7]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun8", PlayerInfo[playerid][pGuns][8]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun9", PlayerInfo[playerid][pGuns][9]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun10", PlayerInfo[playerid][pGuns][10]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Gun11", PlayerInfo[playerid][pGuns][11]);
-
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Loses", PlayerInfo[playerid][pLoses]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Tutorial", PlayerInfo[playerid][pTut]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "OnDuty", PlayerInfo[playerid][pDuty]);
@@ -3188,16 +3175,23 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BEquipped", PlayerInfo[playerid][pBEquipped]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredH", PlayerInfo[playerid][pBStoredH]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem0", PlayerInfo[playerid][pBItems][0]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem1", PlayerInfo[playerid][pBItems][1]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem2", PlayerInfo[playerid][pBItems][2]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem3", PlayerInfo[playerid][pBItems][3]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem4", PlayerInfo[playerid][pBItems][4]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem5", PlayerInfo[playerid][pBItems][5]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem6", PlayerInfo[playerid][pBItems][6]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem7", PlayerInfo[playerid][pBItems][7]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem8", PlayerInfo[playerid][pBItems][8]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BItem9", PlayerInfo[playerid][pBItems][9]);
+	// Seriously, please save some lines! - Akatony
+	new szForLoop[16];
+	for(new x = 0; x < 10; x++)
+	{	
+		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
+	}
+
+	for(new x = 0; x < 12; x++)
+	{
+		format(szForLoop, sizeof(szForLoop), "szWeapon%d", x);
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
+	}
+	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NewbieTogged", PlayerInfo[playerid][pNewbieTogged]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPTogged", PlayerInfo[playerid][pNewbieTogged]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pNewbieTogged]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
