@@ -12080,7 +12080,7 @@ CMD:accept(playerid, params[])
 
 					OnPlayerStatsUpdate(playerid);
 					OnPlayerStatsUpdate(GetPVarInt(playerid, "sellbackpack"));
-
+					DeletePVar(GetPVarInt(playerid, "sellbackpack"), "sellingbackpack");
 					DeletePVar(playerid, "sellbackpack");
 					DeletePVar(playerid, "sellbackpackprice");
 					return 1;
@@ -58469,6 +58469,8 @@ CMD:sellbackpack(playerid, params[])
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
+		if(GetPVarInt(playerid, "sellingbackpack")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already selling a backpack!");
+		
 		new string[128], giveplayerid, price, bptype[8];
 		if(sscanf(params, "ui", giveplayerid, price)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellbackpack [player] [price]");
@@ -58494,6 +58496,7 @@ CMD:sellbackpack(playerid, params[])
 				if(PlayerInfo[giveplayerid][pBackpack] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a backpack!");
 				SetPVarInt(giveplayerid, "sellbackpack", playerid);
 				SetPVarInt(giveplayerid, "sellbackpackprice", price);
+				SetPVarInt(playerid, "sellingbackpack", 1);
 				format(string, sizeof(string), "* %s has offered you a %s Backpack for $s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "* You have offered %s your %s Backpack for $%s.",GetPlayerNameEx(giveplayerid), bptype, number_format(price));
