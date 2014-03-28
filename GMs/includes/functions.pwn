@@ -2507,7 +2507,7 @@ PayDay(i) {
 		
 	getdate(year, month, day);	
 	
- 	if(PlayerInfo[i][pLevel] > 0 && PlayerInfo[i][pAdmin] < 2) {
+ 	if(PlayerInfo[i][pLevel] > 0 && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2)) {
 		if(GetPVarType(i, "debtMsg")) {
 			if(GetPlayerCash(i) < 0 && PlayerInfo[i][pJailTime] < 1 && !IsACop(i) && PlayerInfo[i][pWantedLevel] < 6) {
 				format(string,sizeof(string),"You're in debt $%s - find a way to pay back the money or you might get in trouble!", number_format(GetPlayerCash(i)));
@@ -2678,61 +2678,58 @@ PayDay(i) {
 					PlayerInfo[i][pFallIntoFun] = 0;
 				}
 			}*/
-			if(PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2)
-			{
-				new
-					iGroupID = PlayerInfo[i][pMember],
-					iRank = PlayerInfo[i][pRank];
+			new
+				iGroupID = PlayerInfo[i][pMember],
+				iRank = PlayerInfo[i][pRank];
 
-				if((0 <= iGroupID < MAX_GROUPS) && 0 <= iRank <= 9 && arrGroupData[iGroupID][g_iPaycheck][iRank] > 0) {
-					if(arrGroupData[iGroupID][g_iAllegiance] == 1)
-					{
-						if(Tax > 0) {
-							Tax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
-							GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
-							format(string,sizeof(string),"  SA Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-							SendClientMessageEx(i, COLOR_GRAD2, string);
-							for(new z; z < MAX_GROUPS; z++)
+			if((0 <= iGroupID < MAX_GROUPS) && 0 <= iRank <= 9 && arrGroupData[iGroupID][g_iPaycheck][iRank] > 0) {
+				if(arrGroupData[iGroupID][g_iAllegiance] == 1)
+				{
+					if(Tax > 0) {
+						Tax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
+						GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
+						format(string,sizeof(string),"  SA Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
+						SendClientMessageEx(i, COLOR_GRAD2, string);
+						for(new z; z < MAX_GROUPS; z++)
+						{
+							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iAllegiance] == 1)
+								if(arrGroupData[z][g_iGroupType] == 5)
 								{
-									if(arrGroupData[z][g_iGroupType] == 5)
-									{
-										new str[128], file[32];
-										format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-										format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-										Log(file, str);
-										break;
-									}
+									new str[128], file[32];
+									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
+									break;
 								}
-							}	
-						}
-						else SendClientMessageEx(i, COLOR_RED, "The SA government is in debt; no money is available for pay.");
+							}
+						}	
 					}
-					else if(arrGroupData[iGroupID][g_iAllegiance] == 2)
-					{
-						if(TRTax > 0) {
-							TRTax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
-							GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
-							format(string,sizeof(string),"  TR Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-							SendClientMessageEx(i, COLOR_GRAD2, string);
-							for(new z; z < MAX_GROUPS; z++)
+					else SendClientMessageEx(i, COLOR_RED, "The SA government is in debt; no money is available for pay.");
+				}
+				else if(arrGroupData[iGroupID][g_iAllegiance] == 2)
+				{
+					if(TRTax > 0) {
+						TRTax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
+						GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
+						format(string,sizeof(string),"  TR Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
+						SendClientMessageEx(i, COLOR_GRAD2, string);
+						for(new z; z < MAX_GROUPS; z++)
+						{
+							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iAllegiance] == 2)
+								if(arrGroupData[z][g_iGroupType] == 5)
 								{
-									if(arrGroupData[z][g_iGroupType] == 5)
-									{
-										new str[128], file[32];
-										format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-										format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-										Log(file, str);
-										break;
-									}
+									new str[128], file[32];
+									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
+									break;
 								}
 							}
 						}
-						else SendClientMessageEx(i, COLOR_RED, "The TR government is in debt; no money is available for pay.");
 					}
+					else SendClientMessageEx(i, COLOR_RED, "The TR government is in debt; no money is available for pay.");
 				}
 			}
    			if (PlayerInfo[i][pBusiness] != INVALID_BUSINESS_ID) {
@@ -21273,7 +21270,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					{
 						if(PlayerInfo[fromplayerid][pPot] < amount)
 						{
-							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
 							return 0;
 						}
@@ -21282,7 +21279,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					{
 						if(StorageInfo[fromplayerid][fromstorageid-1][sPot] < amount)
 						{
-							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
 							return 0;
 						}
@@ -21336,7 +21333,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					{
 						if(PlayerInfo[fromplayerid][pCrack] < amount)
 						{
-							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
 							return 0;
 						}
@@ -21345,7 +21342,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					{
 						if(StorageInfo[fromplayerid][fromstorageid-1][sCrack] < amount)
 						{
-							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
 							return 0;
 						}

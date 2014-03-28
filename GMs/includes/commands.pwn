@@ -5548,14 +5548,14 @@ CMD:tognews(playerid, params[])
 
 CMD:tognewbie(playerid, params[])
 {
-	if (PlayerInfo[playerid][pNewbieTogged] == 1)
+	if (PlayerInfo[playerid][pNewbieTogged] == 0)
 	{
-		PlayerInfo[playerid][pNewbieTogged] = 0;
+		PlayerInfo[playerid][pNewbieTogged] = 1;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled newbie chat.");
 	}
 	else
 	{
-		PlayerInfo[playerid][pNewbieTogged] = 1;
+		PlayerInfo[playerid][pNewbieTogged] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled newbie chat.");
 	}
 	return 1;
@@ -21756,7 +21756,7 @@ CMD:vstorage(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s (spawned) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
@@ -21823,7 +21823,7 @@ CMD:trackcar(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
@@ -24082,7 +24082,7 @@ CMD:gotopveh(playerid, params[]) {
 						format(szVehString, sizeof(szVehString), "%s\n%s (disabled) | Location: Unknown", szVehString, VehicleName[iModelID]);
 					}
 					else if(!PlayerVehicleInfo[iTargetID][i][pvSpawned]) {
-						format(szVehString, sizeof(szVehString), "%s\n%s (stored) | Location: %s", szVehString, VehicleName[iModelID], szCarLocation);
+						format(szVehString, sizeof(szVehString), "%s\n%s (stored)", szVehString, VehicleName[iModelID]);
 					}
 					else format(szVehString, sizeof(szVehString), "%s\n%s (ID %i) | Location: %s", szVehString, VehicleName[iModelID], PlayerVehicleInfo[iTargetID][i][pvId], szCarLocation);
 				}
@@ -33384,7 +33384,7 @@ CMD:hname(playerid, params[])
 
 CMD:hedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pShopTech] < 1)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -38557,7 +38557,7 @@ CMD:okills(playerid, params[])
 		mysql_escape_string(params, tmpName, MainPipeline);
 
 		format(query, sizeof(query), "SELECT `id` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-		mysql_function_query(MainPipeline, query, true, "OnGetOKills", "i", playerid);
+		mysql_function_query(MainPipeline, query, true, "OnGetOKills", "is", playerid, tmpName);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
 	return 1;
@@ -38802,7 +38802,7 @@ CMD:dmwatchlist(playerid, params[])
 
 CMD:dmwatch(playerid, params[])
 {
-	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2)
+	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2)
 	{
 		if(GetPVarType(playerid, "pWatchdogWatching"))
 		{
@@ -39515,7 +39515,7 @@ CMD:newb(playerid, params[])
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(PlayerInfo[playerid][pNewbieTogged] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
+	if(PlayerInfo[playerid][pNewbieTogged] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
 
 	new string[128];
 	if(gettime() < NewbieTimer[playerid])
@@ -39567,7 +39567,7 @@ CMD:newb(playerid, params[])
 	{
 		if(IsPlayerConnected(n))
 		{
-			if (PlayerInfo[n][pNewbieTogged] == 1)
+			if (PlayerInfo[n][pNewbieTogged] == 0)
 			{
 				SendClientMessageEx(n, COLOR_NEWBIE, string);
 			}
@@ -40216,7 +40216,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist /refer");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 2)
 	{
@@ -42087,7 +42087,7 @@ CMD:dmalert(playerid, params[])
 	JustReported[playerid]=25;
 	new giveplayerid = GetPVarInt(playerid, "pWatchdogWatching");
 	new string[128];
-	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.", GetPlayerNameEx(giveplayerid), giveplayerid);
+	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SetPVarInt(playerid, "AlertType", 1);
@@ -46291,6 +46291,11 @@ CMD:getpizza(playerid, params[]) {
 	else if(!IsPlayerInRangeOfPoint(playerid, 3.0, -1713.961425, 1348.545166, 7.180452)) {
 		SendClientMessageEx(playerid,COLOR_GREY,"   You are not at the Pizza Stack pickup!");
 	}
+	else if(gettime() < GetPVarInt(playerid, "PizzaCoolDown")) {
+		new str[53];
+		format(str, sizeof(str), "Please wait %d seconds before getting another pizza!", GetPVarInt(playerid, "PizzaCoolDown")-gettime());
+		SendClientMessageEx(playerid,COLOR_GREY, str);
+	}
 	else {
 
 		new rand = random(MAX_HOUSES - 1), i;
@@ -46309,6 +46314,7 @@ CMD:getpizza(playerid, params[]) {
 		SetPVarInt(playerid, "pizzaTotal", iDist / 10);
 		SetPVarInt(playerid, "pizzaTimer", iDist / 10);
 		SetPVarInt(playerid, "Pizza", rand);
+		SetPVarInt(playerid, "PizzaCoolDown", gettime()+60);
 
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPPIZZARUNTIMER);
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_PIZZATIMER);
@@ -58180,7 +58186,7 @@ CMD:refer(playerid, params[])
 	JustReported[playerid] = 25;
 	new giveplayerid = GetPVarInt(playerid, "pWatchdogWatching");
 	new string[128];
-	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
+	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(giveplayerid, "BeenAlerted", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
@@ -58497,7 +58503,7 @@ CMD:sellbackpack(playerid, params[])
 				SetPVarInt(giveplayerid, "sellbackpack", playerid);
 				SetPVarInt(giveplayerid, "sellbackpackprice", price);
 				SetPVarInt(playerid, "sellingbackpack", 1);
-				format(string, sizeof(string), "* %s has offered you a %s Backpack for $s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));
+				format(string, sizeof(string), "* %s has offered you a %s Backpack for $%s. /accept backpack to get the backpack.", GetPlayerNameEx(playerid), bptype, number_format(price));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "* You have offered %s your %s Backpack for $%s.",GetPlayerNameEx(giveplayerid), bptype, number_format(price));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);

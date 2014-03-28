@@ -40,7 +40,7 @@ public OnPlayerLoad(playerid)
 	{
 	    if(PlayerInfo[playerid][pOnline] != servernumber)
 	    {
-		    SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: This account is already online!");
+		    SendClientMessage(playerid, COLOR_WHITE, "SERVER: This account is already online!");
 			SetTimerEx("KickEx", 1000, 0, "i", playerid);
 			return 1;
 		}
@@ -51,7 +51,7 @@ public OnPlayerLoad(playerid)
 	{
 		format(string, sizeof(string), "WARNING: %s (IP:%s) tried to login whilst banned and has been auto-banned.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
 		ABroadCast(COLOR_YELLOW, string, 2);
-		SendClientMessageEx(playerid, COLOR_RED, "Your account is banned! You can appeal this at http://www.ng-gaming.net/forums");
+		SendClientMessage(playerid, COLOR_RED, "Your account is banned! You can appeal this at http://www.ng-gaming.net/forums");
 		SystemBan(playerid, "[System] (Tried to login while banned)");
 		Log("logs/ban.log", string);
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
@@ -66,7 +66,10 @@ public OnPlayerLoad(playerid)
 		if( PlayerInfo[playerid][pFactionModerator] > 1) PlayerInfo[playerid][pFactionModerator] = 0;
 		if( PlayerInfo[playerid][pGangModerator] > 1) PlayerInfo[playerid][pGangModerator] = 0;
 		if( PlayerInfo[playerid][pPR] > 1) PlayerInfo[playerid][pPR] = 0;
-		SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: This account is disabled!");
+		if(PlayerInfo[playerid][pHR] > 1) PlayerInfo[playerid][pHR] = 0;
+		if(PlayerInfo[playerid][pAP] > 1) PlayerInfo[playerid][pAP] = 0;
+		if(PlayerInfo[playerid][pSecurity] > 1) PlayerInfo[playerid][pSecurity] = 0;
+		SendClientMessage(playerid, COLOR_WHITE, "SERVER: This account is disabled!");
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
@@ -330,13 +333,10 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
-<<<<<<< HEAD
+		PlayerInfo[playerid][pBugReportTimeout] = 0;
 		PlayerInfo[playerid][pNewbieTogged] = 0;
 		PlayerInfo[playerid][pVIPTogged] = 0;
 		PlayerInfo[playerid][pFamedTogged] = 0;
-=======
-		PlayerInfo[playerid][pBugReportTimeout] = 0;
->>>>>>> a851b7a3ed27497d77073e644d2344f8e5639eff
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 10; i++)
 		{
@@ -950,5 +950,9 @@ public OnPlayerLoad(playerid)
 		PlayerTextDrawShow(playerid, AccountRestrictionEx[playerid]);
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]); //Used for filterscripts
+	
+	new szQuery[128];
+	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
 	return 1;
 }

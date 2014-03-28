@@ -3186,13 +3186,13 @@ stock g_mysql_SaveAccount(playerid)
 
 	for(new x = 0; x < 12; x++)
 	{
-		format(szForLoop, sizeof(szForLoop), "szWeapon%d", x);
+		format(szForLoop, sizeof(szForLoop), "Gun%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
 	}
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NewbieTogged", PlayerInfo[playerid][pNewbieTogged]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPTogged", PlayerInfo[playerid][pNewbieTogged]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pNewbieTogged]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPTogged", PlayerInfo[playerid][pVIPTogged]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pFamedTogged]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
 	
@@ -6110,12 +6110,12 @@ public OnGetLatestKills(playerid, giveplayerid)
 	return 1;
 }
 
-forward OnGetOKills(playerid);
-public OnGetOKills(playerid)
+forward OnGetOKills(playerid, giveplayername[]);
+public OnGetOKills(playerid, giveplayername[])
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new string[256], giveplayername[MAX_PLAYER_NAME], giveplayerid;
+		new string[256], giveplayerid;
 
 		new rows, fields;
 		cache_get_data(rows, fields, MainPipeline);
@@ -6123,7 +6123,6 @@ public OnGetOKills(playerid)
 		if(rows)
 		{
 			cache_get_field_content(0, "id", string, MainPipeline); giveplayerid = strval(string);
-			cache_get_field_content(0, "Username", giveplayername, MainPipeline, MAX_PLAYER_NAME);
 			format(string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
 			mysql_function_query(MainPipeline, string, true, "OnGetLatestOKills", "iis", playerid, giveplayerid, giveplayername);
 		}
@@ -8143,4 +8142,14 @@ public OnBugReport(playerid)
 	DeletePVar(playerid, "BugAnonymous");
 	DeletePVar(playerid, "BugListItem");
 	return 1;
+}
+
+forward CheckClientWatchlist(index);
+public CheckClientWatchlist(index)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0) PlayerInfo[index][pWatchlist] = 0;
+	else PlayerInfo[index][pWatchlist] = 1;
+	return true;
 }

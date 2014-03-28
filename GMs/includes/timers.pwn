@@ -2182,7 +2182,7 @@ task ServerMicrobeat[500]() {
 					fVehSpeed[i] = fCurrentSpeed;
 					fVehHealth[i] = fVehicleHealth;
 
-					if(fVehicleHealth < 350.0)
+					if(fVehicleHealth < 350.0 && GetVehicleModel(iVehicle) != 481 && GetVehicleModel(iVehicle) != 509 && GetVehicleModel(iVehicle) != 510)
 					{
 						SetVehicleHealth(iVehicle, 251.0);
 						GetVehicleParamsEx(iVehicle, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
