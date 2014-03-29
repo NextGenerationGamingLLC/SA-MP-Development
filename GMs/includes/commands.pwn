@@ -21756,7 +21756,7 @@ CMD:vstorage(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location %s", vstring, VehicleName[iModelID], szCarLocation);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s (spawned) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
@@ -21823,7 +21823,7 @@ CMD:trackcar(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
