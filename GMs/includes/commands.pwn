@@ -2173,9 +2173,9 @@ CMD:fix(playerid, params[])
 
   			if(IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0))
   			{
+				new engine,lights,alarm,doors,bonnet,boot,objective;
+				GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
 				if(!IsABike(closestcar) && !IsAPlane(closestcar)) {
-					new engine,lights,alarm,doors,bonnet,boot,objective;
-					GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
 					if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
@@ -2185,6 +2185,11 @@ CMD:fix(playerid, params[])
   				PlayerInfo[playerid][pMechTime] = gettime()+60;
    				SetVehicleHealth(closestcar, 1000.0);
 				Vehicle_Armor(closestcar);
+				if(GetVehicleModel(closestcar) == 481 && GetVehicleModel(closestcar) == 509 && GetVehicleModel(closestcar) == 510)
+				{
+					SetVehicleParamsEx(closestcar, VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
+					arr_Engine{closestcar} = 1;
+				}
     			format(string, sizeof(string), "* %s has repaired the vehicle.", GetPlayerNameEx(playerid));
     			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			}
@@ -6891,7 +6896,7 @@ CMD:help(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pDonateRank] == 5)
 	{
-		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP Moderator *** /vipparty /vto /vtoreset /vmute /vsuspend");
+		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP Moderator *** /vipparty /vto /vtoreset /vmute /vsuspend /vipm");
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** OTHER *** /cellphonehelp /carhelp /househelp /toyhelp /renthelp /jobhelp /animhelp /fishhelp /insurehelp");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** OTHER *** /mailhelp /businesshelp /voucherhelp /backpackhelp");
@@ -17764,6 +17769,7 @@ CMD:pay(playerid, params[])
 	else if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
 	}
+	else if((2 <= PlayerInfo[playerid][pAdmin] < 4) || (2 <= PlayerInfo[id][pAdmin] <= 4)) return 1;
 	else if(ProxDetectorS(5.0, playerid, id)) {
 		TransferStorage(id, -1, playerid, storageid, 1, amount, -1, -1);
 		OnPlayerStatsUpdate(playerid);
@@ -19712,7 +19718,7 @@ CMD:dvsiren(playerid, params[])
 				else if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 19294)
 				{
 					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 1899;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 1);
+					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 1899);
 					SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
 				}
 			}
@@ -20017,8 +20023,11 @@ CMD:dvtrackcar(playerid, params[])
 		for(new i; i < MAX_DYNAMIC_VEHICLES; i++) {
 			new iModelID = DynVehicleInfo[i][gv_iModel];
 			if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID) {
-				if(DynVehicleInfo[i][gv_iDisabled]) {
+				if(DynVehicleInfo[i][gv_iDisabled] == 1) {
 					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (repo'd)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]));
+				}
+				else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (Upkeep: $%s) (stored)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]));
 				}
 				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 					format(vstring, sizeof(vstring), "%s\n(%d) %s (Upkeep: $%s) (VID: %d)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
@@ -20033,8 +20042,11 @@ CMD:dvtrackcar(playerid, params[])
 		for(new i; i < MAX_DYNAMIC_VEHICLES; i++) {
 			new iModelID = DynVehicleInfo[i][gv_iModel];
 			if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_ifID] == iFamilyID) {
-				if(DynVehicleInfo[i][gv_iDisabled]) {
+				if(DynVehicleInfo[i][gv_iDisabled] == 1) {
 					format(vstring, sizeof(vstring), "%s\n(%d)%s (repo'd)", vstring, i, VehicleName[iModelID - 400]);
+				}
+				else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
+					format(vstring, sizeof(vstring), "%s\n(%d)%s (stored)", vstring, i, VehicleName[iModelID - 400]);
 				}
 				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 					format(vstring, sizeof(vstring), "%s\n(%d) %s (VID: %d)", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
@@ -20123,7 +20135,7 @@ CMD:gvbuyback(playerid, params[])
 		else if((0 <= strval(iVehicle) <= MAX_DYNAMIC_VEHICLES))
 		{
 			new iDvSlotID = strval(iVehicle);
-			if(DynVehicleInfo[iDvSlotID][gv_iDisabled] && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
+			if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1 && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
 			{
 				if(arrGroupData[iGroupID][g_iBudget] > floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2))
 				{
@@ -21716,14 +21728,14 @@ CMD:dvstorage(playerid, params[])
 					new iModelID = DynVehicleInfo[i][gv_iModel];
 					if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID)
 					{
-						if(DynVehicleInfo[i][gv_iDisabled]) {
-							format(vstring, sizeof(vstring), "%s\n(%d)%s (Disabled) [VehicleID : %d]", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
+						if(DynVehicleInfo[i][gv_iDisabled] == 1) {
+							format(vstring, sizeof(vstring), "%s\n(%d)%s (Disabled)", vstring, i, VehicleName[iModelID - 400]);
+						}
+						else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
+							format(vstring, sizeof(vstring), "%s\n(%d) %s (Stored)", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 						else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 							format(vstring, sizeof(vstring), "%s\n(%d) %s (Spawned) [VehicleID : %d]", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
-						}
-						else if(DynVehicleInfo[i][gv_iSpawnedID] == INVALID_VEHICLE_ID) {
-							format(vstring, sizeof(vstring), "%s\n(%d) %s (Stored)", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
 						}
 					}
 				}
@@ -22949,7 +22961,7 @@ CMD:probation(playerid, params[])
 
 CMD:changeuserpin(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337)
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 2)
 	{
         SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
         return 1;
@@ -25423,6 +25435,7 @@ CMD:giveweapon(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pGuns][ 6 ] != 33 && PlayerInfo[giveplayerid][pGuns][ 6 ] != 34)
 			{
+				if(PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away this weapon as you're Famed+!");
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have given away your rifle.");
 				format(string, sizeof(string), "* %s has given %s their rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -26239,7 +26252,7 @@ CMD:buddyinvite(playerid, params[])
 	if(days < daytime && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pBuddyInvites] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	PlayerInfo[giveplayerid][pDonateRank] = 1;
-	PlayerInfo[giveplayerid][pTempVIP] = 10800;
+	PlayerInfo[giveplayerid][pTempVIP] = 3;
 	PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 	format(string, sizeof(string), "You have invited %s to become a Bronze VIP for 3 hours.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -29664,6 +29677,30 @@ CMD:gangwarn(playerid, params[])
 	return 1;
 }
 
+CMD:gangban(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] >= 1)
+	{
+		new string[128], giveplayerid, reason[64];
+		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gangban [player] [reason]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be gang warned!");
+		if(PlayerInfo[giveplayerid][pGangWarn] >= 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already banned from gangs.");
+		format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
+		Log("logs/admin.log", string);
+		format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+		ABroadCast(COLOR_LIGHTRED, string, 2);
+		format(string, sizeof(string), "You have been banned from gangs by %s, reason: %s", GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
+		PlayerInfo[giveplayerid][pGangWarn] = 3;
+		PlayerInfo[giveplayerid][pFMember] = INVALID_FAMILY_ID;
+		PlayerInfo[giveplayerid][pRank] = 0;
+		PlayerInfo[giveplayerid][pModel] = NOOB_SKIN;
+		SetPlayerSkin(giveplayerid, NOOB_SKIN);
+	}
+	return 1;
+}
+
 CMD:gangunban(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] >= 1)
@@ -30851,7 +30888,7 @@ CMD:awiretransfer(playerid, params[])
 
 CMD:withdraw(playerid, params[])
 {
-	if(!IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 		return 1;
@@ -30884,7 +30921,7 @@ CMD:withdraw(playerid, params[])
 
 CMD:deposit(playerid, params[])
 {
-	if(!IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 		return 1;
@@ -30925,7 +30962,7 @@ CMD:deposit(playerid, params[])
 CMD:balance(playerid, params[])
 {
 	new string[128];
-	if(!IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 		return 1;
@@ -30943,7 +30980,7 @@ CMD:wiretransfer(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3!");
 		return 1;
 	}
-	if(!IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 		return 1;
@@ -40296,7 +40333,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pGangModerator] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /gangwarn /gangunban /fcreate /fdelete /twmenu /dvrespawn");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /gtedit /gtstatus /gtnear /tagperm /tagedit");
 	}
 	if (PlayerInfo[playerid][pShopTech] >= 1)
@@ -40305,7 +40342,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip" );
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /shopbusiness /shopbusinessname /brenewal");
 	}
-	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute");
+	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /vipm");
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
 	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -58613,7 +58650,7 @@ CMD:bsearch(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid) && ProxDetectorS(8.0, playerid, giveplayerid))
 		{
-			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!");
+			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot search yourself!");
 			if(PlayerInfo[giveplayerid][pBEquipped] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not wearing a backpack!");
 			new btype[8], weaponname[50];
 			switch(PlayerInfo[giveplayerid][pBackpack])
@@ -58677,6 +58714,8 @@ CMD:bsearch(playerid, params[])
 				}
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+			format(string, sizeof(string), "* %s has searched %s's backpack for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -58938,6 +58977,10 @@ CMD:bstore(playerid, params[])
 			RemovePlayerAttachedObject(playerid, 9);
 			PlayerInfo[playerid][pBEquipped] = 0;
 			PlayerInfo[playerid][pBStoredV] = PlayerVehicleInfo[playerid][pvid][pvSlotId];
+			format(string, sizeof(string), "* %s has stored a backpack in the trunk of their car.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "[TRUNK] %s(%s) stored their %s backpack in [SQLID:%d][SlotID:%d][ModelID:%d]", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, PlayerVehicleInfo[playerid][pvid][pvSlotId], pvid, PlayerVehicleInfo[playerid][pvid][pvModelId]);
+			Log("logs/backpack.log", string);
 		}
 		else if(strcmp(housecar, "house", true, strlen(housecar)) == 0)
 		{
@@ -58965,6 +59008,10 @@ CMD:bstore(playerid, params[])
 				RemovePlayerAttachedObject(playerid, 9);
 				PlayerInfo[playerid][pBEquipped] = 0;
 				PlayerInfo[playerid][pBStoredH] = HouseInfo[hid][hSQLId];
+				format(string, sizeof(string), "* %s has stored a backpack in their house.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				format(string, sizeof(string), "[HOUSE] %s(%s) stored his %s backpack in [HouseID:%d]", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, hid);
+				Log("logs/backpack.log", string);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
 		}
@@ -59087,5 +59134,46 @@ CMD:bugreport(playerid, params[])
 {
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
 		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://devcp.ng-gaming.net and post a bug report there.", "Close", "");
-	return ShowBugReportMainMenu(playerid);
+	new query[128];
+	format(query, sizeof(query), "SELECT * from `devcpBans` where `user` = %d AND `bugs` = 1", GetPlayerSQLId(playerid));
+	return mysql_function_query(MainPipeline, query, true, "CheckBugReportBans", "ii", playerid, 1);
+}
+
+CMD:togvipm(playerid, params[])
+{
+	if(PlayerInfo[playerid][pDonateRank] < 5 && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(GetPVarInt(playerid, "vStaffChat") == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled VIP staff chat.");
+		return SetPVarInt(playerid, "vStaffChat", 0);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled VIP staff chat.");
+		return SetPVarInt(playerid, "vStaffChat", 1);
+	}
+}
+
+CMD:vipm(playerid, params[])
+{
+	if(PlayerInfo[playerid][pDonateRank] < 5 && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(GetPVarInt(playerid, "vStaffChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have VIP staff chat disabled - /togvipm to enable it.");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vipm [text]");
+	new szMessage[128];
+	if(PlayerInfo[playerid][pDonateRank] >= 5) format(szMessage, sizeof(szMessage), "* VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pShopTech] >= 3) format(szMessage, sizeof(szMessage), "* DoCR %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
+	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if((PlayerInfo[playerid][pDonateRank] >= 5 || PlayerInfo[playerid][pShopTech] >= 3 || PlayerInfo[playerid][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
+			{
+				SendClientMessageEx(i, 0xe9a9f3FF, szMessage);
+			}
+		}
+	}
+	return 1;
 }

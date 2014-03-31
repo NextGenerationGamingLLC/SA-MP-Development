@@ -80,7 +80,7 @@ enum eJurisdictionData {
 
 enum eGroupVehData {
 	gv_iSQLID,
-	gv_iDisabled, // is equal to 1 when a car has been despawned due to a group not being able to afford it
+	gv_iDisabled, // is equal to 1 when a car has been despawned due to a group not being able to afford it | 2 for dvstorage
 	gv_iSpawnedID, // In-game spawned ID of vehicle
 	gv_igID, // ID of group (faction) (0 if unrestricted - for civilian use)
 	gv_igDivID, // ID of division restriction (0 if unrestricted)

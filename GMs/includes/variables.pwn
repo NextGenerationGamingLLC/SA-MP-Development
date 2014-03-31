@@ -1223,7 +1223,14 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19422, 0, "Black Headphones"},
 {19423, 0, "Red Headphones"},
 {19424, 0, "Blue Headphones"},
-{19351, 0, "moustache2"}
+{19351, 0, "moustache2"},
+{19520, 0, "pilotHat01"},
+{19521, 0, "policehat01"},
+{19516, 0, "Hair1_nc"},
+{19517, 0, "Hair2_nc"},
+{19518, 0, "Hair3_nc"},
+{19519, 0, "Hair5_nc"},
+{19488, 0, "HatBowler6"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1541,7 +1548,14 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19331, 0, "Firefigher Helmet"},
 {2045, 0, "Spiked Club"},
 {19320, 0, "Pumpkin Toy"},
-{19351, 0, "moustache2"}
+{19351, 0, "moustache2"},
+{19520, 0, "pilotHat01"},
+{19521, 0, "policehat01"},
+{19516, 0, "Hair1_nc"},
+{19517, 0, "Hair2_nc"},
+{19518, 0, "Hair3_nc"},
+{19519, 0, "Hair5_nc"},
+{19488, 0, "HatBowler6"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

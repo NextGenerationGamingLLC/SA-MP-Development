@@ -7050,7 +7050,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new caridstr[6], carid;
 		strmid(caridstr, inputtext, stpos+1, fpos);
 		carid = strval(caridstr);
-		if(DynVehicleInfo[carid][gv_iSpawnedID] != INVALID_VEHICLE_ID)
+		if(DynVehicleInfo[carid][gv_iSpawnedID] != INVALID_VEHICLE_ID && !DynVehicleInfo[carid][gv_iDisabled])
 		{
 			if((!IsVehicleOccupied(DynVehicleInfo[carid][gv_iSpawnedID]) || IsPlayerInVehicle(playerid, DynVehicleInfo[carid][gv_iSpawnedID])) && !IsVehicleInTow(DynVehicleInfo[carid][gv_iSpawnedID])) 
 			{
@@ -7065,6 +7065,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				DestroyVehicle(DynVehicleInfo[carid][gv_iSpawnedID]);
 				DynVeh[DynVehicleInfo[carid][gv_iSpawnedID]] = -1;
+				DynVehicleInfo[carid][gv_iDisabled] = 2;
 				DynVehicleInfo[carid][gv_iSpawnedID] = INVALID_VEHICLE_ID;
 				for(new i = 0; i != MAX_DV_OBJECTS; i++)
 				{
@@ -7081,7 +7082,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else 
 				return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle is currently occupied.");
 		}
+		else if(DynVehicleInfo[carid][gv_iDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "You can not spawn a repo'd vehicle. Please see /grepocars to buy it back.");
 		else {
+			DynVehicleInfo[carid][gv_iDisabled] = 0;
 			DynVeh_Spawn(carid);
 			new szstring[128];
 			format(szstring, sizeof(szstring), "You have spawned your dynamic group vehicle (%s)", VehicleName[DynVehicleInfo[carid][gv_iModel] - 400]);
@@ -7117,7 +7120,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
-		else if(DynVehicleInfo[carid][gv_iDisabled]) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a repo'd vehicle. Please see /grepocars to buy it back.");
+		else if(DynVehicleInfo[carid][gv_iDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a repo'd vehicle. Please see /grepocars to buy it back.");
+		else if(DynVehicleInfo[carid][gv_iDisabled] == 2) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a stored vehicle. Use /dvstorage to restore.");
 		else SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a non-existent vehicle.");
 	}
 	// --------------------------------------------------------------------------------------------------
@@ -19447,9 +19451,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if(listitem == 2) //Submit Anonymously?
 				{
-					SetPVarInt(playerid, "BugStep", 3);
-					SetPVarInt(playerid, "BugListItem", 2);
-					return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
+					new query[128];
+					format(query, sizeof(query), "SELECT * from `devcpBans` where `user` = %d AND `anon` = 1", GetPlayerSQLId(playerid));
+					return mysql_function_query(MainPipeline, query, true, "CheckBugReportBans", "ii", playerid, 2);
 				}
 				if(listitem == 3) //Submit
 				{

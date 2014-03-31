@@ -8134,7 +8134,10 @@ public OnBugReport(playerid)
 	GetPVarString(playerid, "BugSubject", bug, 40);
 	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
 	Log("logs/bugreport.log", string);
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", "Your bug report has been successfully submitted.\nIf you would like to add more information regarding the bug visit: http://devcp.ng-gaming.net", "Close", "");
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
+	"{FFFFFF}Your bug report has been successfully submitted.\n\
+	 We highly suggest adding more information regarding the bug by visiting: http://devcp.ng-gaming.net\n\
+	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
 	PlayerInfo[playerid][pBugReportTimeout] = gettime();
 	DeletePVar(playerid, "BugStep");
 	DeletePVar(playerid, "BugSubject");
@@ -8152,4 +8155,27 @@ public CheckClientWatchlist(index)
 	if(rows == 0) PlayerInfo[index][pWatchlist] = 0;
 	else PlayerInfo[index][pWatchlist] = 1;
 	return true;
+}
+
+forward CheckBugReportBans(playerid, check);
+public CheckBugReportBans(playerid, check)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0)
+	{
+		if(check == 1) ShowBugReportMainMenu(playerid);
+		if(check == 2)
+		{
+			SetPVarInt(playerid, "BugStep", 3);
+			SetPVarInt(playerid, "BugListItem", 2);
+			ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
+		}
+	}
+	else
+	{
+		if(check == 1) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
+		if(check == 2) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
+	}
+	return 1;
 }

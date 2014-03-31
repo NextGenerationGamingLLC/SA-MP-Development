@@ -942,6 +942,10 @@ public OnPlayerLoad(playerid)
 	{
 		SetPVarInt(playerid, "WatchdogChat", 1);
 	}
+	if(PlayerInfo[playerid][pDonateRank] >= 5)
+	{
+		SetPVarInt(playerid, "vStaffChat", 1);
+	}
 	
 	CreateAccountRestTextdraw(playerid);
 	if(PlayerInfo[playerid][pAccountRestricted] == 1)

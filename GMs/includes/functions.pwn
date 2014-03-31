@@ -2839,6 +2839,14 @@ PayDay(i) {
 					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:ShopNotice[i]);
 				}
 			}
+			if(PlayerInfo[i][pBuddyInvited] == 1 && --PlayerInfo[i][pTempVIP] <= 0)
+			{
+				PlayerInfo[i][pTempVIP] = 0;
+				PlayerInfo[i][pBuddyInvited] = 0;
+				PlayerInfo[i][pDonateRank] = 0;
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
+				SetPlayerToTeamColor(i);
+			}
 		}
 		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");
 	}
@@ -14098,7 +14106,7 @@ stock DynVeh_Spawn(iDvSlotID)
 		Log("logs/dvspawn.log", string);
 		return 1;
 	}
-    if(DynVehicleInfo[iDvSlotID][gv_iDisabled] == 1) return 1;
+    if(DynVehicleInfo[iDvSlotID][gv_iDisabled]) return 1;
     if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && tmpdv != -1) {
         new iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
         if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
@@ -22978,7 +22986,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 10800;
+						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
 						Log("logs/setvip.log", string);						
@@ -23632,7 +23640,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 10800;
+						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
 						Log("logs/setvip.log", string);						
@@ -24286,7 +24294,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 10800;
+						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
 						Log("logs/setvip.log", string);						
@@ -24940,7 +24948,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 10800;
+						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
 						Log("logs/setvip.log", string);						
@@ -25315,7 +25323,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					else
 					{
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 10800;
+						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "You have been invited to become a Level 1 VIP for 3 hours. Enjoy!", GetPlayerNameEx(giveplayerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
