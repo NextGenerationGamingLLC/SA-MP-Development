@@ -1155,7 +1155,7 @@ Vehicle_ResetData(iVehicleID) {
 		stationidv[iVehicleID][0] = 0;
 		TruckContents{iVehicleID} = 0;
 		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
-		VehicleFuel[iVehicleID] = 100.0;
+		//VehicleFuel[iVehicleID] = 100.0;
 		
 		//foreach(new i: Player)
 		for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -4062,6 +4062,8 @@ public IdiotSound(playerid)
 forward GasPumpSaleTimer(playerid, iBusinessID, iPumpID);
 public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 {
+
+
 
 	new
 		Float: fPumpAmount = FUEL_PUMP_RATE / 4,

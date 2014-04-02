@@ -5785,7 +5785,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
     		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
       		DeletePVar(playerid, "Siren");
 		}
-
+		
 		/*if(GettingSpectated[playerid] != INVALID_PLAYER_ID && PlayerInfo[GettingSpectated[playerid]][pAdmin] >= 2) {
 			new spectator = GettingSpectated[playerid];
 	        // Preventing possible buffer overflows with the arrays
@@ -5809,7 +5809,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PlayerTextDrawHide(playerid, _crTickets[playerid]);
 				DeletePVar(playerid, "_lastTicketWarning");
 			}
-
+			if(GetPVarInt(playerid, "Refueling")) SetPVarInt(playerid, "Refueling", -1);
 			SetPlayerWeaponsEx(playerid);
 		}
 		else if(oldstate == PLAYER_STATE_PASSENGER) SetPlayerWeaponsEx(playerid);

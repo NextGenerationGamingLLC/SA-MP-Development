@@ -2410,7 +2410,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 1: {
 							new myweapons[2], itemcount;
 							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
+							if(myweapons[0] > 0 && myweapons[0] != 9 && myweapons[0] != 4 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2428,7 +2428,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2459,7 +2459,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 2, 3: {
 							new myweapons[2], itemcount;
 							GetPlayerWeaponData(playerid, 1, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && myweapons[0] != 9 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
+							if(myweapons[0] > 0 && myweapons[0] != 9 && myweapons[0] != 4 && PlayerInfo[playerid][pGuns][1] == myweapons[0] && PlayerInfo[playerid][pAGuns][1] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2477,7 +2477,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
