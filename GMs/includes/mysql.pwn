@@ -651,6 +651,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "BStoredH", szResult, MainPipeline); PlayerInfo[extraid][pBStoredH] = strval(szResult);
 					cache_get_field_content(row,  "BStoredV", szResult, MainPipeline); PlayerInfo[extraid][pBStoredV] = strval(szResult);
 					cache_get_field_content(row,  "BRTimeout", szResult, MainPipeline); PlayerInfo[extraid][pBugReportTimeout] = strval(szResult);
+					
+					//because if we're saving it we may as well load it back in, RIGHT?  AM I RIGHT?  WHY DO WE LET THESE PEOPLE MODIFY OUR SCRIPT?
+					cache_get_field_content(row,  "NewbieTogged", szResult, MainPipeline); PlayerInfo[extraid][pNewbieTogged] = strval(szResult);
+					cache_get_field_content(row,  "VIPTogged", szResult, MainPipeline); PlayerInfo[extraid][pVIPTogged] = strval(szResult);
+					cache_get_field_content(row,  "FamedTogged", szResult, MainPipeline); PlayerInfo[extraid][pFamedTogged] = strval(szResult);
 					for(new i = 0; i < 10; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
