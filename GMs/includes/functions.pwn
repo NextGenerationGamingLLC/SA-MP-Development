@@ -21918,6 +21918,16 @@ public SpecUpdate(playerid)
 			SetPlayerVirtualWorld( playerid, GetPlayerVirtualWorld( Spectate[playerid] ) );
 		}	
 	}	
+	else if(Spectating[playerid] > 0 && GetPVarInt(playerid, "SpectatingWatch") != INVALID_PLAYER_ID)
+	{
+		for(new i = 0; i < 2; i++)
+		{
+			TogglePlayerSpectating(playerid, true);
+			PlayerSpectatePlayer( playerid, GetPVarInt(playerid, "SpectatingWatch") );
+			SetPlayerInterior( playerid, GetPlayerInterior( GetPVarInt(playerid, "SpectatingWatch") ) );
+			SetPlayerVirtualWorld( playerid, GetPlayerVirtualWorld( GetPVarInt(playerid, "SpectatingWatch") ) );
+		}	
+	}
 	return 1;
 }	
 

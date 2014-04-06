@@ -38826,7 +38826,7 @@ CMD:stopwatch(playerid, params[])
 		SetPVarInt(playerid, "StartedWatching", 0);
 		if(Spectating[playerid] > 0)
 		{
-			SetPVarInt(GettingSpectated[Spectate[playerid]], "BeingSpectated", 0);
+			SetPVarInt(GetPVarInt(playerid, "SpectatingWatch"), "BeingSpectated", 0);
 			GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 			Spectating[playerid] = 0;
 			SpecTime[playerid] = 0;
