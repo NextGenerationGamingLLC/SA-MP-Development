@@ -34645,7 +34645,7 @@ CMD:togtp(playerid, params[])
 
 CMD:spec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 3 && (!GetPVarType(playerid, "pWatchdogWatching") && PlayerInfo[playerid][pWatchdog] < 2))
+	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 3)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 		return 1;
@@ -34653,13 +34653,8 @@ CMD:spec(playerid, params[])
 
 	if(strcmp(params, "off", true) == 0)
 	{
-		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || (GetPVarType(playerid, "pWatchdogWatching") && PlayerInfo[playerid][pWatchdog] >= 2) && Spectating[playerid] > 0)
+		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 && Spectating[playerid] > 0)
 		{
-		    if(GetPVarType(playerid, "pWatchdogWatching"))
-			{
-			    SendClientMessage(playerid, COLOR_WHITE, "You have stopped DM Watching.");
-				DeletePVar(playerid, "pWatchdogWatching");
-			}
 			GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 			Spectating[playerid] = 0;
 			Spectate[playerid] = INVALID_PLAYER_ID;
@@ -34684,14 +34679,6 @@ CMD:spec(playerid, params[])
 	    {
 	        SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate other advisors");
 			return 1;
-		}
-		if(GetPVarType(playerid, "pWatchdogWatching") && (GetPVarInt(playerid, "pWatchdogWatching") != giveplayerid))
-		{
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You can only spectate people on the Watchlist!");
-		}
-		if((PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 1) && PlayerInfo[giveplayerid][pWatchlist] == 0)
-		{
-			return SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate players that are on the watchlist!");
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
@@ -38772,101 +38759,91 @@ CMD:vmute(playerid, params[])
 	return 1;
 }
 
-CMD:dmstrikereset(playerid, params[])
+CMD:nextwatch(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-	    new giveplayerid, string[128];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmstrikereset [player]");
-		if(IsPlayerConnected(giveplayerid))
-		{
-			SendClientMessage(playerid, COLOR_WHITE, "Resetting strikes..");
-			format(string, sizeof(string), "DELETE FROM dm_watchdog WHERE `id` = %d", GetPlayerSQLId(giveplayerid));
-			mysql_function_query(MainPipeline, string, false, "OnDMStrikeReset", "ii", playerid, giveplayerid);
-		}
+		if(GetPVarInt(playerid, "StartedWatching") == 0) return cmd_startwatch(playerid, params);
+		
+		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip player yet, it hasn't been 3 minutes.");
 	}
-	return 1;
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	}
+	return true;
 }
 
-CMD:dmrlookup(playerid, params[])
+CMD:watchspec(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 3)
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-	    new giveplayerid, string[128];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmrlookup [player]");
-		if(IsPlayerConnected(giveplayerid))
-		{
-			SendClientMessage(playerid, COLOR_WHITE, "Fetching data..");
-			format(string, sizeof(string), "SELECT d.timestamp, a.Username FROM dm_watchdog d LEFT JOIN \
-			accounts a ON a.id = d.id WHERE `reporter` = %d LIMIT 10", GetPlayerSQLId(giveplayerid));
-			mysql_function_query(MainPipeline, string, true, "OnDMRLookup", "ii", playerid, giveplayerid);
-		}
+		new giveplayerid;
+		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /watchspec [player]");
+		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot spectate yourself!");
+		if(PlayerInfo[giveplayerid][pWatchlist] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not on the watchlist!");
+		
+		SpectatePlayer(playerid, giveplayerid);
+		SendClientMessageEx(playerid, -1, "WATCHDOG: You have started watching.");
+		SetPVarInt(playerid, "SpectatingWatch", giveplayerid);
+		SetPVarInt(playerid, "StartedWatching", 1);
 	}
-	return 1;
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	}
+	return true;
+}		
+
+CMD:startwatch(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pWatchdog] >= 1)
+	{
+		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
+		
+		mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	}
+	return true;
 }
 
-CMD:dmtokens(playerid, params[])
+CMD:stopwatch(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 3)
+	if(PlayerInfo[playerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please use /spec to avoid issues.");
+	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-	    new giveplayerid, string[256];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmtokens [player]");
-		if(IsPlayerConnected(giveplayerid))
+		if(GetPVarInt(playerid, "StartedWatching") == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You aren't spectating anybody.");
+		
+		SetPVarInt(playerid, "StartedWatching", 0);
+		if(Spectating[playerid] > 0)
 		{
-			SendClientMessage(playerid, COLOR_WHITE, "Fetching data...");
-			format(string, sizeof(string), "SELECT d.timestamp, a.Username FROM dm_watchdog d LEFT JOIN \
-			accounts a ON a.id = d.reporter WHERE d.id = %d && (d.timestamp > %d || (d.superwatch = 1 && d.timestamp > %d))", GetPlayerSQLId(giveplayerid), (gettime()-259200), (gettime()-5184000));
-			mysql_function_query(MainPipeline, string, true, "OnDMTokenLookup", "ii", playerid, giveplayerid);
+			SetPVarInt(GettingSpectated[Spectate[playerid]], "BeingSpectated", 0);
+			GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
+			Spectating[playerid] = 0;
+			SpecTime[playerid] = 0;
+			Spectate[playerid] = INVALID_PLAYER_ID;
+			SetPVarInt(playerid, "SpecOff", 1 );
+			TogglePlayerSpectating(playerid, false);
+			SetCameraBehindPlayer(playerid);
+			SetPVarInt(playerid, "SpectatingWatch", INVALID_PLAYER_ID);
+			SendClientMessageEx(playerid, -1, "WATCHDOG: You have stopped watching.");
 		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You're not watching anybody.");
 	}
-	return 1;
-}
-
-
-CMD:dmwatchlist(playerid, params[])
-{
-    if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
+	else
 	{
-	    new string[256];
-	    SendClientMessage(playerid, COLOR_WHITE, "Fetching watchlist..");
-		format(string, sizeof(string), "SELECT DISTINCT a.Username, count(a.username) FROM dm_watchdog d LEFT JOIN \
-		accounts a ON a.id = d.id WHERE a.Online = %d && (d.timestamp > %d || (d.superwatch = 1 && d.timestamp > %d))\
-		GROUP BY a.Username HAVING Count(a.Username) >= 4", servernumber, (gettime()-259200), (gettime()-5184000));
-		mysql_function_query(MainPipeline, string, true, "OnDMWatchListLookup", "i", playerid);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	}
-	return 1;
-}
-
-CMD:dmwatch(playerid, params[])
-{
-	if(PlayerInfo[playerid][pWatchdog] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2)
-	{
-		if(GetPVarType(playerid, "pWatchdogWatching"))
-		{
-			SendClientMessage(playerid, COLOR_WHITE, "You have stopped DM Watching.");
-			DeletePVar(playerid, "pWatchdogWatching");
-			if(Spectating[playerid] > 0)
-			{
-				GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
-				Spectating[playerid] = 0;
-				SpecTime[playerid] = 0;
-				Spectate[playerid] = INVALID_PLAYER_ID;
-				SetPVarInt(playerid, "SpecOff", 1 );
-				TogglePlayerSpectating(playerid, false);
-				SetCameraBehindPlayer(playerid);
-			}
-		}
-		else
-		{
-			new string[300];
-			SendClientMessage(playerid, COLOR_WHITE, "Fetching watchlist..");
-			format(string, sizeof(string), "SELECT DISTINCT a.Username, count(a.username) FROM dm_watchdog d LEFT JOIN \
-			accounts a ON a.id = d.id WHERE a.Online = %d && (d.timestamp > %d || (d.superwatch = 1 && d.timestamp > %d))\
-			GROUP BY a.Username HAVING Count(a.Username) >= 4 ORDER BY rand() LIMIT 1", servernumber, (gettime()-259200), (gettime()-5184000));
-			mysql_function_query(MainPipeline, string, true, "OnDMWatch", "i", playerid);
-		}
-	}
-	return 1;
+	return true;
 }
 
 CMD:dmrmute(playerid, params[])
@@ -40253,11 +40230,11 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /dmwatch /dmalert /wd /watchlist /refer");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /startwatch /nextwatch /stopwatch /dmalert /wd /watchlist /refer");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /kick /ban /prison /n(un)mute /ad(un)mute /dmwatchlist /warn /spec /kills");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /watchspec /kick /ban /prison /n(un)mute /ad(un)mute /warn /kills");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
@@ -42106,30 +42083,27 @@ CMD:dmreport(playerid, params[])
 
 CMD:dmalert(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
-		return 1;
-	}
+	new escapedString[100], szQuery[256], reason[100];
+	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(!GetPVarType(playerid, "pWatchdogWatching")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(PlayerInfo[playerid][pRMuted] != 0)
-	{
-  		ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
-		return 1;
-	}
- 	if(GetPVarType(playerid, "HasReport")) {
-		SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
-	}
+	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
+	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /dmalert [details]");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+ 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
+	mysql_escape_string(reason, escapedString);
+	format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, refer, dmalert) VALUES ('%d', '%s', '%d', '0', '1')", GetPlayerSQLId(playerid), reason, GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")));
+	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	JustReported[playerid]=25;
-	new giveplayerid = GetPVarInt(playerid, "pWatchdogWatching");
+	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
 	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SetPVarInt(playerid, "AlertType", 1);
 	AlertTime[playerid] = 300;
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins.");
+	
+	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins & Watchdogs.");
 	return 1;
 }
 
@@ -58012,7 +57986,7 @@ CMD:watchlistadd(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put an administrator on the watchlist!");
 			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot put yourself on the watchlist!");
-			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify a amount of days (1 to 365 Days).");
+			if(days < 1 || days > 365) return SendClientMessageEx(playerid, COLOR_GRAD1, "Please specify an amount of days (1 to 365 Days).");
 			if(points < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Points Specified!");
 			if(PlayerInfo[giveplayerid][pWatchlist] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already on the watchlist!");
 			
@@ -58209,25 +58183,25 @@ CMD:wd(playerid, params[])
 
 CMD:refer(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
-		return 1;
-	}
-	new reason[128];
+	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
+	new reason[100], szQuery[256], escapedString[100];
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(!GetPVarType(playerid, "pWatchdogWatching")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(sscanf(params, "s{64}", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
+	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
+	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
 	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
  	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
+	mysql_escape_string(reason, escapedString);
+	format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, refer, dmalert) VALUES ('%d', '%s', '%d', '1', '0')", GetPlayerSQLId(playerid), reason, GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")));
+	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	JustReported[playerid] = 25;
-	new giveplayerid = GetPVarInt(playerid, "pWatchdogWatching");
+	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
 	format(string, sizeof(string), "{FF0000}(Watchdog Alert) %s (ID %d) | Details: %s{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid, reason);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(giveplayerid, "BeenAlerted", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins.");
+	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins & Watchdogs.");
 	return true;
 }
 

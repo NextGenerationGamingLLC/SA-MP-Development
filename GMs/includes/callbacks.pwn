@@ -2288,6 +2288,7 @@ public OnPlayerConnect(playerid)
 	SetPVarInt(playerid, "buyerVoucher", INVALID_PLAYER_ID);
 	SetPVarInt(playerid, "Undercover", 0);
 	SetPVarInt(playerid, "AlertedThisPlayer", INVALID_PLAYER_ID);
+	SetPVarInt(playerid, "SpectatingWatch", INVALID_PLAYER_ID);
 	
 	HackingMods[playerid] = 0;
 	pSpeed[playerid] = 0.0;

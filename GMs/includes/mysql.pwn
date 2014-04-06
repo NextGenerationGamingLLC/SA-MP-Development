@@ -651,8 +651,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "BStoredH", szResult, MainPipeline); PlayerInfo[extraid][pBStoredH] = strval(szResult);
 					cache_get_field_content(row,  "BStoredV", szResult, MainPipeline); PlayerInfo[extraid][pBStoredV] = strval(szResult);
 					cache_get_field_content(row,  "BRTimeout", szResult, MainPipeline); PlayerInfo[extraid][pBugReportTimeout] = strval(szResult);
-					
-					//because if we're saving it we may as well load it back in, RIGHT?  AM I RIGHT?  WHY DO WE LET THESE PEOPLE MODIFY OUR SCRIPT?
 					cache_get_field_content(row,  "NewbieTogged", szResult, MainPipeline); PlayerInfo[extraid][pNewbieTogged] = strval(szResult);
 					cache_get_field_content(row,  "VIPTogged", szResult, MainPipeline); PlayerInfo[extraid][pVIPTogged] = strval(szResult);
 					cache_get_field_content(row,  "FamedTogged", szResult, MainPipeline); PlayerInfo[extraid][pFamedTogged] = strval(szResult);
@@ -8081,7 +8079,7 @@ public FetchWatchlist(index)
 		}
 	}
 	
-	mysql_function_query(MainPipeline, "SELECT sqlid, point  FROM `nonrppoints` LEFT JOIN accounts on sqlid = accounts.id WHERE `active` = '1' AND accounts.`Online` = 1 ORDER BY `point` DESC LIMIT 15", true, "FetchWatchlist2", "i", index);
+	mysql_function_query(MainPipeline, "SELECT sqlid, point  FROM `nonrppoints` LEFT JOIN accounts on sqlid = accounts.id WHERE (`active` = '1' AND `manual` = '0') AND accounts.`Online` = 1 ORDER BY `point` DESC LIMIT 15", true, "FetchWatchlist2", "i", index);
 	return true;
 }
 
@@ -8183,4 +8181,38 @@ public CheckBugReportBans(playerid, check)
 		if(check == 2) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
 	}
 	return 1;
+}
+
+forward WatchWatchlist(index);
+public WatchWatchlist(index)
+{
+	new rows, fields, result;
+	cache_get_data(rows, fields, MainPipeline);
+	#pragma unused fields
+	for(new i = 0; i < rows; i++)
+	{
+		new szResult[32], sqlid;
+		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
+		
+		for(new x = 0; x < MAX_PLAYERS; x++)
+		{
+			// Is the player connected, does the SQLId matches the player & is he not being spectated?
+			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid && GetPVarInt(x, "BeingSpectated") == 0)
+			{
+				SpectatePlayer(index, x);
+				SetPVarInt(x, "BeingSpectated", 1);
+				SendClientMessageEx(index, -1, "WATCHDOG: You have started watching, you may skip to another player in 3 minutes (/nextwatch).");
+				SetPVarInt(index, "NextWatch", gettime()+180);
+				SetPVarInt(index, "SpectatingWatch", x);
+				SetPVarInt(index, "StartedWatching", 1);
+				result = 1;
+				break;
+			}
+		}
+	}
+	if(result == 0) 
+	{
+		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!, ");
+	}
+	return true;
 }
