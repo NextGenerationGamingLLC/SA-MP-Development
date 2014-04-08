@@ -591,6 +591,8 @@ native gpci(playerid, serial[], maxlen);
 
 #define			DIALOG_GROUP_GARAGERANGE			(3394)
 
+#define			DIALOG_GROUP_TACKLEACCESS			(3395)
+
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)
 #define         DIALOG_REPORTDM             (3540)

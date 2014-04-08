@@ -62,6 +62,7 @@ enum eGroupData {
 	g_iLockerCostType,
 	g_iCratesOrder,
 	g_iJCount,
+	g_iTackleAccess,
 	Float: g_fGaragePos[3],
 }
 

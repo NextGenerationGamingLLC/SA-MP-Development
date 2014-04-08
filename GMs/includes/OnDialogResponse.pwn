@@ -726,6 +726,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit the Garage Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_GARAGEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Please click on 'Confirm' to change the garage location to your current position.\n\nIf you do not wish to move it to your position, click on 'Cancel'.", "Cancel", "Confirm");
 				}
+				case 27: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group Tackle Access");
+					ShowPlayerDialog(playerid, DIALOG_GROUP_TACKLEACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DISBAND, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Are you absolutely sure you wish to {FF0000}disband this group?{FFFFFF}\n\n\
@@ -1468,6 +1480,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}	
+		case DIALOG_GROUP_TACKLEACCESS: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iTackleAccess] = INVALID_RANK;
+				default: arrGroupData[iGroupID][g_iTackleAccess] = listitem;
+			}
+
+			format(string, sizeof(string), "%s has set the minimum rank for tackle (/tackle) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTackleAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTackleAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			Log("logs/editgroup.log", string);
+
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
 		// END DYNAMIC GROUP CODE
 
 		case BIGEARS3: if(response) {

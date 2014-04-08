@@ -149,12 +149,12 @@ SaveGroup(iGroupID) {
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f'",
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d'",
 		szQuery,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]);
+		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess]);
 
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%i` = '%s'", szQuery, i, arrGroupRanks[iGroupID][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%iPay` = %i", szQuery, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -3893,7 +3893,7 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 	    {
 			if(rows == 0)
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameEx(playerid), nation);
+				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
 				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				SendClientMessageEx(playerid, COLOR_GREY, "You have been added to the nation's application queue. The nation's leader can now choose to accept or deny your application.");
 			}
@@ -3906,7 +3906,7 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 	    {
 			if(rows > 0)
 			{
-				format(query, sizeof(query), "UPDATE `nation_queue` SET `name` = '%s' WHERE `playerid` = %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+				format(query, sizeof(query), "UPDATE `nation_queue` SET `name` = '%s' WHERE `playerid` = %d", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid));
 				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
@@ -3926,13 +3926,13 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 	    {
 			if(rows == 0)
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 2)", GetPlayerSQLId(playerid), GetPlayerNameEx(playerid), nation);
+				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 2)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
 				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				PlayerInfo[playerid][pNation] = 1;
 			}
 			else
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameEx(playerid), nation);
+				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
 				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
@@ -6565,6 +6565,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "GarageZ", szResult, MainPipeline);
 			arrGroupData[iIndex][g_fGaragePos][2] = floatstr(szResult);
+			
+			cache_get_field_content(iIndex, "TackleAccess", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTackleAccess] = strval(szResult);
 
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);

@@ -3360,7 +3360,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Edit Lockers\n\
 		{EEEEEE}Edit Crate Delivery Position (current distance: %.0f)\n\
 		{EEEEEE}Locker Cost Type: %s\n\
-		{EEEEEE}Edit the Garage Position (current distance: %.0f)",
+		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
+		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)",
 		szDialog,
 		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
 		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
@@ -3370,7 +3371,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
 		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]],
-		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2])
+		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
+		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess]
 	);
 
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");

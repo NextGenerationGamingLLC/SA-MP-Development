@@ -47783,7 +47783,7 @@ CMD:tackle(playerid, params[])
 	#if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't tackle humans!");
 	#endif
-	if(IsACop(playerid))
+	if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTackleAccess])
 	{
 		if(GetPVarInt(playerid, "ReTackleCooldown") != 0 && gettime() < GetPVarInt(playerid, "ReTackleCooldown") + 30)
 		{
