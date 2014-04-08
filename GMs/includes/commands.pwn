@@ -47783,7 +47783,7 @@ CMD:tackle(playerid, params[])
 	#if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't tackle humans!");
 	#endif
-	if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTackleAccess])
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTackleAccess])
 	{
 		if(GetPVarInt(playerid, "ReTackleCooldown") != 0 && gettime() < GetPVarInt(playerid, "ReTackleCooldown") + 30)
 		{
@@ -47808,7 +47808,7 @@ CMD:tackle(playerid, params[])
 			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not Law Enforcement.");
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not allowed to use this command.");
 }
 
 CMD:tazer(playerid, params[])
