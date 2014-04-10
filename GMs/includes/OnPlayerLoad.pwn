@@ -958,5 +958,7 @@ public OnPlayerLoad(playerid)
 	new szQuery[128];
 	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
+	format(szQuery, sizeof(szQuery), "SELECT `id`, `Bug` FROM `bugs` WHERE `status` = '5' AND `ReportedBy` = '%d'", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
 	return 1;
 }

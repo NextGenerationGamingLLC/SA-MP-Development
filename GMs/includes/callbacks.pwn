@@ -329,7 +329,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	{
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
 			return DeletePVar(playerid, "ShopTP");
-		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), FREEZE_TIME);
+		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), 2500);
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
 		DeletePVar(playerid, "tmpX");
@@ -2675,17 +2675,21 @@ public OnPlayerDisconnect(playerid, reason)
 		KillTimer(FuckHacksVar[playerid][playerTimer]);
 		FuckHacksVar[playerid][playerTimer] = -1;
 	}
+	if(GetPVarInt(playerid, "SpectatingWatch") != INVALID_PLAYER_ID) SetPVarInt(GetPVarInt(playerid, "SpectatingWatch"), "BeingSpectated", 0);
 	//foreach(new i: Player) {
 	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{
 		if(IsPlayerConnected(i))
 		{	
 			if(Spectating[i] > 0 && Spectate[i] == playerid) {
+				SetPVarInt(i, "StartedWatching", 0);
 				SetPVarInt(i, "SpecOff", 1);
 				Spectating[i] = 0;
+				SpecTime[i] = 0;
 				Spectate[i] = INVALID_PLAYER_ID;
 				GettingSpectated[playerid] = INVALID_PLAYER_ID;
 				TogglePlayerSpectating(i, false);
+				SetCameraBehindPlayer(i);
 				SendClientMessageEx(i, COLOR_WHITE, "The player you were spectating has left the server.");
 			}
 			if(GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {

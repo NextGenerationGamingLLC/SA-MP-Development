@@ -11415,18 +11415,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 5)
 			{
-				if(GetPVarType(playerid, "pBoomBox"))
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sorry, this feature is for the MP3 Player or vehicles only.");
-				}
-				if(IsPlayerInAnyVehicle(playerid))
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "You must be using your MP3 to use this feature.");
-				}
-				else 
-				{
-					ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
-				}
+				ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
 			}
 			else if(listitem == 6)
 			{
@@ -11474,15 +11463,43 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			if(isnull(inputtext) || IsNumeric(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have not entered a valid URL.");
-			
-			PlayAudioStreamForPlayerEx(playerid, inputtext);
-			SetPVarInt(playerid, "MusicIRadio", 1);
-			format(string, sizeof(string), "You are now playing %s.", inputtext);
-			SendClientMessageEx(playerid, COLOR_GREEN, string);
+			if(IsPlayerInAnyVehicle(playerid))
+			{
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i) && GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
+					{
+						PlayAudioStreamForPlayerEx(i, inputtext);
+					}
+				}
+				format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", inputtext);
+				format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
+				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				DeletePVar(playerid, "pSelectGenre");
+				DeletePVar(playerid, "pSelectStation");
+			}
+			else if(GetPVarType(playerid, "pBoomBox"))
+			{
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i) && IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+					{
+						PlayAudioStreamForPlayerEx(i, inputtext, GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+					}
+				}
+				SetPVarString(playerid, "pBoomBoxStation", inputtext);
+			}
+			else
+			{
+				PlayAudioStreamForPlayerEx(playerid, inputtext);
+				SetPVarInt(playerid, "MusicIRadio", 1);
+				format(string, sizeof(string), "You are now playing %s", inputtext);
+				SendClientMessageEx(playerid, COLOR_GREEN, string);
+			}
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 		}
 	}		
 	else if(dialogid == GENRES)
@@ -11503,7 +11520,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 			DeletePVar(playerid, "pSelectGenre");
 		}
 	}
@@ -11541,7 +11558,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 		}
 		else
 		{
@@ -11624,7 +11641,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(strlen(inputtext) < 0 || strlen(inputtext) > 64)
 			{
-				ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+				ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 			}
 			else
 			{
@@ -11644,7 +11661,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 		}
 	}
 	else if(dialogid == STATIONSEARCHLIST)
@@ -11667,7 +11684,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
 		}
 	}
 	else if(dialogid == STATIONSEARCHLISTEN)
@@ -19531,6 +19548,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				mysql_function_query(MainPipeline, szResult, true, "OnBugReport", "i", playerid);
 			}
 		}
+	}
+	if(dialogid == DIALOG_WDREPORT)
+	{
+		if(!response || strlen(inputtext) < 30)
+		{
+			format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(GetPVarInt(playerid, "SpectatingWatch")));
+			return ShowPlayerDialog(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report", string, "Submit", "");
+		}
+		new szQuery[256];
+		format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, type, time) VALUES ('%d', '%s', '%d', '%d', UNIX_TIMESTAMP())", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(inputtext, MainPipeline), GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")), GetPVarInt(playerid, "WDReport"));
+		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		SendClientMessageEx(playerid, COLOR_GRAD4, inputtext);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Incident Report successfully submitted.");
 	}
 	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
 	{

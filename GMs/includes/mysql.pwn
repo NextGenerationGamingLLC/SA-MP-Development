@@ -8023,7 +8023,7 @@ stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
 	point,
 	expiration,
 	escapedstring,
-	issuerid,
+	GetPlayerSQLId(issuerid),
 	manual,
 	GetPlayerNameEx(issuerid));
 	
@@ -8200,7 +8200,7 @@ public WatchWatchlist(index)
 		for(new x = 0; x < MAX_PLAYERS; x++)
 		{
 			// Is the player connected, does the SQLId matches the player & is he not being spectated?
-			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid && GetPVarInt(x, "BeingSpectated") == 0)
+			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid && gPlayerLogged{x} == 1 && PlayerInfo[x][pJailTime] == 0 && GetPVarInt(x, "BeingSpectated") == 0)
 			{
 				SpectatePlayer(index, x);
 				SetPVarInt(x, "BeingSpectated", 1);
@@ -8212,10 +8212,30 @@ public WatchWatchlist(index)
 				break;
 			}
 		}
+		if(result) break;
 	}
 	if(result == 0) 
 	{
 		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!, ");
 	}
 	return true;
+}
+
+forward CheckPendingBugReports(playerid);
+public CheckPendingBugReports(playerid)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0) return 1;
+	new string[256], szResult[41];
+	format(string, sizeof(string), "{BFC0C2}You have {4A8BC2}%d{BFC0C2} bug report(s) pending your response.", rows);
+	strcat(string, "\nPlease follow up with the bug reports listed below and provide as many details as you can.\n{4A8BC2}BugID\tBug{BFC0C2}");
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_field_content(i, "id", szResult, MainPipeline);
+		format(string, sizeof(string), "%s\n%s\t", string, szResult);
+		cache_get_field_content(i, "Bug", szResult, MainPipeline);
+		format(string, sizeof(string), "%s%s", string, szResult);
+	}
+	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
 }

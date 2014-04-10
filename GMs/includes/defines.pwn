@@ -868,6 +868,7 @@ native gpci(playerid, serial[], maxlen);
 
 #define 		DIALOG_NONRPACTION			(5081)
 #define			DIALOG_WATCHLIST			(5082)
+#define			DIALOG_WDREPORT				(5083)
 
 #define 		DIALOG_BACKPACKS			(5085)
 #define 		DIALOG_OBACKPACK			(5086)

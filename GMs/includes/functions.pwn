@@ -22468,6 +22468,10 @@ stock ShowPlayerDynamicGiftBox(playerid)
 		format(string, sizeof(string), "%s\n{00FF61}Credits", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Credits", string);
+	if(dgPriorityAd[0] == 1)
+		format(string, sizeof(string), "%s\n{00FF61}Priority Ad", string);
+	else
+		format(string, sizeof(string), "%s\n{F2070B}Priority Ad", string);
 	if(dgHealthNArmor[0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Health & Armor", string);
 	else

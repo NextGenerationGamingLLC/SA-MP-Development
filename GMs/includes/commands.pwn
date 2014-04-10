@@ -1515,7 +1515,7 @@ CMD:setboombox(playerid, params[])
 {
 	if(GetPVarType(playerid, "pBoomBox"))
 	{
-		ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nTurn radio off","Select", "Close");
+		ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
     }
 	else
 	{
@@ -32930,7 +32930,7 @@ CMD:ddowner(playerid, params[])
 
 CMD:ddpass(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 
 	new string[128],
 		doorid,
@@ -37449,7 +37449,7 @@ CMD:sendtoid(playerid, params[])
 			GetPlayerPos(targetplayerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[targetplayerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);
-
+			DeletePVar(giveplayerid, "BusinessesID");
 			if (GetPlayerState(giveplayerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(giveplayerid);
@@ -37509,7 +37509,7 @@ CMD:gethere(playerid, params[])
 			GetPlayerPos(playerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[playerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);
-
+			DeletePVar(giveplayerid, "BusinessesID");
 			if (GetPlayerState(giveplayerid) == 2)
 			{
 				fVehSpeed[giveplayerid] = 0.0;
@@ -39553,6 +39553,11 @@ CMD:newb(playerid, params[])
 		ReportCount[playerid]++;
 		ReportHourCount[playerid]++;
 		AddCAReportToken(playerid); // Advisor Tokens
+	}
+	if(PlayerInfo[playerid][pWatchdog] >= 1)
+	{
+		NewbieTimer[playerid] = gettime()+30;
+		format(string, sizeof(string), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 	}
 	if(PlayerInfo[playerid][pAdmin] == 1)
 	{
@@ -42083,28 +42088,24 @@ CMD:dmreport(playerid, params[])
 
 CMD:dmalert(playerid, params[])
 {
-	new escapedString[100], szQuery[256], reason[100];
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /dmalert [details]");
 	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
- 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
-	mysql_escape_string(reason, escapedString);
-	format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, refer, dmalert) VALUES ('%d', '%s', '%d', '0', '1')", GetPlayerSQLId(playerid), reason, GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")));
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
 	JustReported[playerid]=25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
-	format(string, sizeof(string), "{FF0000}(dmalert) %s (ID %d) is deathmatching.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
+	format(string, sizeof(string), "{FF0000}(DM Alert) %s (ID %d) is deathmatching.{FFFF91}", GetPlayerNameEx(giveplayerid), giveplayerid);
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SetPVarInt(playerid, "AlertType", 1);
 	AlertTime[playerid] = 300;
-	
 	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins & Watchdogs.");
-	return 1;
+	SetPVarInt(playerid, "WDReport", 1);
+	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
+	return ShowPlayerDialog(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - DM Alert", string, "Submit", "");
 }
 
 CMD:report(playerid, params[])
@@ -42853,16 +42854,7 @@ CMD:leaveshop(playerid, params[]) {
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
 			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do this at this time!.");
 		if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 60 seconds, you will not be teleported to your previous location.");
-		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), FREEZE_TIME);
-		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
-		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
-		TogglePlayerControllable(playerid, 1);
-		DeletePVar(playerid, "tmpX");
-		DeletePVar(playerid, "tmpY");
-		DeletePVar(playerid, "tmpZ");
-		DeletePVar(playerid, "tmpInt");
-		DeletePVar(playerid, "tmpVW");
-		DeletePVar(playerid, "ShopTP");
+		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), 2500);
 	}
 	return 1;
 }
@@ -43166,10 +43158,10 @@ CMD:sellcredits(playerid, params[])
 	    SetPVarInt(Player, "CreditsSeller", playerid);
 	    SetPVarInt(playerid, "CreditsSeller", Player);
 
-	    format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits-TransactionFee), number_format(Amount), number_format(TransactionFee));
+	    format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
 	    SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
-	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits-TransactionFee), number_format(TransactionFee), number_format(Credits));
+	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
 	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
 	}
 	return 1;
@@ -58184,15 +58176,12 @@ CMD:wd(playerid, params[])
 CMD:refer(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
-	new reason[100], szQuery[256], escapedString[100];
+	new reason[100];
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
 	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
 	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
  	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
-	mysql_escape_string(reason, escapedString);
-	format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, refer, dmalert) VALUES ('%d', '%s', '%d', '1', '0')", GetPlayerSQLId(playerid), reason, GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")));
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	JustReported[playerid] = 25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
 	new string[128];
@@ -58202,7 +58191,9 @@ CMD:refer(playerid, params[])
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins & Watchdogs.");
-	return true;
+	SetPVarInt(playerid, "WDReport", 2);
+	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
+	return ShowPlayerDialog(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - Refer", string, "Submit", "");
 }
 
 CMD:viewassets(playerid, params[])
@@ -59145,7 +59136,7 @@ CMD:vipm(playerid, params[])
 		{
 			if((PlayerInfo[playerid][pDonateRank] >= 5 || PlayerInfo[playerid][pShopTech] >= 3 || PlayerInfo[playerid][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
 			{
-				SendClientMessageEx(i, 0xe9a9f3FF, szMessage);
+				SendClientMessageEx(i, 0xff0066FF, szMessage);
 			}
 		}
 	}
