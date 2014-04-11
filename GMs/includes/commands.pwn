@@ -356,8 +356,8 @@ CMD:usekit(playerid, params[]) {
 		        format(string, sizeof(string), "{FF8000}** {C2A2DA}%s leans in to the trunk and takes out a Kevlar Vest & First Aid Kit.", GetPlayerNameEx(playerid));
             	SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the Vehicle Trunk.");
             	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				SetPlayerHealthEx(playerid, 100);
-				SetPlayerArmourEx(playerid, 100);
+				SetPlayerHealth(playerid, 100);
+				SetPlayerArmor(playerid, 100);
             	CrateVehicleLoad[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }
@@ -1483,8 +1483,8 @@ CMD:hhcheck(playerid, params[])
   			format(string, sizeof(string), "Checking %s for health hacks, please wait....", GetPlayerNameEx(giveplayerid));
 		    SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-			HHcheckFloats[giveplayerid][0] = GetClientHealth(giveplayerid);
-			HHcheckFloats[giveplayerid][1] = GetClientArmour(giveplayerid);
+			GetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+			GetPlayerArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 			GetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 			GetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
 			HHcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -1497,7 +1497,7 @@ CMD:hhcheck(playerid, params[])
 			SetPlayerCameraLookAt(giveplayerid, 785.1896,1692.6887,0);
             SetPlayerVirtualWorld(giveplayerid, 0);
 		    SetPlayerInterior(giveplayerid, 1);
-		    SetPlayerHealthEx(giveplayerid, 100);
+		    SetPlayerHealth(giveplayerid, 100);
 		    RemoveArmor(giveplayerid);
 			SetPlayerPos(giveplayerid, -1400.994873, 106.899650, 1032.273437);
 			SetPlayerFacingAngle(giveplayerid, 90.66);
@@ -1730,7 +1730,7 @@ CMD:sethp(playerid, params[])
 		if(IsPlayerConnected(playa)) {
 			if(playa != INVALID_PLAYER_ID)
 			{
-				SetPlayerHealthEx(playa, health);
+				SetPlayerHealth(playa, health);
 				format(string, sizeof(string), "You have set %s's health to %d.", GetPlayerNameEx(playa), health);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
@@ -1749,7 +1749,7 @@ CMD:setmyhp(playerid, params[])
         return 1;
     }
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1) {
-        SetPlayerHealthEx(playerid, health);
+        SetPlayerHealth(playerid, health);
         format(string, sizeof(string), "You have set your health to %d.", health);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -1773,7 +1773,7 @@ CMD:setarmor(playerid, params[])
 		{
             if(playa != INVALID_PLAYER_ID)
 			{
-                SetPlayerArmourEx(playa, health);
+                SetPlayerArmor(playa, health);
                 format(string, sizeof(string), "You have set %s's armor to %d.", GetPlayerNameEx(playa), health);
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
             }
@@ -1786,6 +1786,30 @@ CMD:setarmor(playerid, params[])
     return 1;
 }
 
+CMD:hackwarnings(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2) {
+		//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(GetPVarType(i, "ArmorWarning"))
+				{
+					new Float: armor, szMessage[128];
+					GetPlayerArmour(i, armor);
+					if(armor > CurrentArmor[i])
+					{
+						format(szMessage, sizeof(szMessage), "%s (ID: %i, Level: %d) - Armor Hacking - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], CurrentArmor[i], armor);
+						SendClientMessage(playerid, COLOR_WHITE, szMessage);
+					}
+				}
+			}	
+		}
+	}
+	return 1;
+}
+
 CMD:setmyarmor(playerid, params[])
 {
     new string[128], armor;
@@ -1796,7 +1820,7 @@ CMD:setmyarmor(playerid, params[])
     }
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
-        SetPlayerArmourEx(playerid, armor);
+        SetPlayerArmor(playerid, armor);
         format(string, sizeof(string), "You have set your armor to %d.", armor);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -1821,7 +1845,7 @@ CMD:setarmorall(playerid, params[])
 		{
 			if(IsPlayerConnected(i))
 			{
-				SetPlayerArmourEx(i, armor);
+				SetPlayerArmor(i, armor);
 			}	
         }
     }
@@ -2054,8 +2078,8 @@ CMD:bite(playerid, params[])
 			    			return 1;
 						}
 					}
-					hp = GetClientHealth(i);
-					SetPlayerHealthEx(i, hp - 30);
+					GetPlayerHealth(i, hp);
+					SetPlayerHealth(i, hp - 30);
 					SetPVarInt(i, "pZombieBit", 1);
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
@@ -2085,8 +2109,8 @@ CMD:bite(playerid, params[])
 				    if(IsPlayerInRangeOfPoint(i, 2, X, Y, Z))
 				    {
 						new Float:hp, string[128];
-						hp = GetClientHealth(i);
-						SetPlayerHealthEx(i, hp-20);
+						GetPlayerHealth(i, hp);
+						SetPlayerHealth(i, hp-20);
 						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						//SendAudioToRange(65, 100, X, Y, Z, 5);
@@ -4925,7 +4949,7 @@ CMD:mjail(playerid, params[]) {
 			SetPVarInt(iTargetID, "_rAppeal", gettime()+60);
 			SetPlayerInterior(iTargetID, 1);
 			PlayerInfo[iTargetID][pInt] = 1;
-        	SetPlayerHealthEx(iTargetID, 0x7FB00000);
+        	SetPlayerHealth(iTargetID, 0x7FB00000);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 			SetPlayerPos(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -5627,7 +5651,7 @@ CMD:togphone(playerid, params[])
 
 CMD:togstaff(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pDonateRank] == 5 || PlayerInfo[playerid][pWatchdog] == 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pDonateRank] == 5 || PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		if (!advisorchat[playerid])
 		{
@@ -5724,8 +5748,8 @@ CMD:joinevent(playerid, params[]) {
 		    }
 		    ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			EventFloats[playerid][4] = GetClientHealth(playerid);
-			EventFloats[playerid][5] = GetClientArmour(playerid);
+			GetPlayerHealth(playerid, EventFloats[playerid][4]);
+			GetPlayerArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -5760,8 +5784,8 @@ CMD:joinevent(playerid, params[]) {
 			SetPVarInt( playerid, "EventToken", 1 );
 			ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			EventFloats[playerid][4] = GetClientHealth(playerid);
-			EventFloats[playerid][5] = GetClientArmour(playerid);
+			GetPlayerHealth(playerid, EventFloats[playerid][4]);
+			GetPlayerArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -5779,9 +5803,9 @@ CMD:joinevent(playerid, params[]) {
 				Player_StreamPrep(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ], FREEZE_TIME);
 			}
 			
-			SetPlayerHealthEx( playerid, EventKernel[ EventHealth ] );
+			SetPlayerHealth( playerid, EventKernel[ EventHealth ] );
 			if(EventKernel[EventArmor] > 0) {
-				SetPlayerArmourEx( playerid, EventKernel[ EventArmor ]);
+				SetPlayerArmor( playerid, EventKernel[ EventArmor ]);
 			}
 			//if(PlayerInfo[playerid][pBEquipped]) PlayerInfo[playerid][pBEquipped] = 0;
 			for(new x;x<MAX_PLAYERTOYS;x++) {
@@ -10289,8 +10313,8 @@ CMD:accept(playerid, params[])
                     if(IsPlayerInRangeOfPoint(playerid,20.0,758.98, -60.32, 1000.78) || IsPlayerInRangeOfPoint(BoxOffer[playerid],20.0,758.98, -60.32, 1000.78)) {
                         ResetPlayerWeapons(playerid);
                         ResetPlayerWeapons(BoxOffer[playerid]);
-                        SetPlayerHealthEx(playerid, mypoints);
-                        SetPlayerHealthEx(BoxOffer[playerid], points);
+                        SetPlayerHealth(playerid, mypoints);
+                        SetPlayerHealth(BoxOffer[playerid], points);
                         SetPlayerInterior(playerid, 7); SetPlayerInterior(BoxOffer[playerid], 7);
                         SetPlayerPos(playerid, 768.94, -70.87, 1001.56); SetPlayerFacingAngle(playerid, 131.8632);
                         SetPlayerPos(BoxOffer[playerid], 764.35, -66.48, 1001.56); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -10329,8 +10353,8 @@ CMD:accept(playerid, params[])
                     }
                     ResetPlayerWeapons(playerid);
                     ResetPlayerWeapons(BoxOffer[playerid]);
-                    SetPlayerHealthEx(playerid, mypoints);
-                    SetPlayerHealthEx(BoxOffer[playerid], points);
+                    SetPlayerHealth(playerid, mypoints);
+                    SetPlayerHealth(BoxOffer[playerid], points);
                     SetPlayerInterior(playerid, 5); SetPlayerInterior(BoxOffer[playerid], 5);
                     SetPlayerPos(playerid, 762.9852,2.4439,1001.5942); SetPlayerFacingAngle(playerid, 131.8632);
                     SetPlayerPos(BoxOffer[playerid], 758.7064,-1.8038,1001.5942); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -10649,7 +10673,7 @@ CMD:accept(playerid, params[])
                     if(IsPlayerConnected(GuardOffer[playerid])) {
                         if(ProxDetectorS(6.0, playerid, GuardOffer[playerid])) {
                             new Float:armour;
-                            armour = GetClientArmour(playerid);
+                            GetPlayerArmour(playerid, armour);
                             if(armour >= 50) {
                                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You already have a vest!");
                                 return 1;
@@ -10666,7 +10690,7 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            SetPlayerArmourEx(playerid, 50);
+                            SetPlayerArmor(playerid, 50);
                             GetPlayerName(GuardOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
                             format(szMessage, sizeof(szMessage), "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
@@ -11770,13 +11794,13 @@ CMD:accept(playerid, params[])
                                     new Float:health;
                                     new level = PlayerInfo[SexOffer[playerid]][pSexSkill];
                                     if(level >= 0 && level <= 50) {
-                                        health = GetClientHealth(playerid);
+                                        GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 90) {
-                                                SetPlayerHealthEx(playerid, 100);
+                                                SetPlayerHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealthEx(playerid, health + 10.0);
+                                                SetPlayerHealth(playerid, health + 10.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD1));
@@ -11790,13 +11814,13 @@ CMD:accept(playerid, params[])
                                         else if(STD1[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 10 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 51 && level <= 100) {
-                                        health = GetClientHealth(playerid);
+                                        GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 80) {
-                                                SetPlayerHealthEx(playerid, 100);
+                                                SetPlayerHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealthEx(playerid, health + 20.0);
+                                                SetPlayerHealth(playerid, health + 20.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD2));
@@ -11808,13 +11832,13 @@ CMD:accept(playerid, params[])
                                         else if(STD2[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 20 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 101 && level <= 200) {
-                                        health = GetClientHealth(playerid);
+                                        GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 70) {
-                                                SetPlayerHealthEx(playerid, 100);
+                                                SetPlayerHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealthEx(playerid, health + 30.0);
+                                                SetPlayerHealth(playerid, health + 30.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD3));
@@ -11826,13 +11850,13 @@ CMD:accept(playerid, params[])
                                         else if(STD3[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 30 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 201 && level <= 400) {
-                                        health = GetClientHealth(playerid);
+                                        GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 60) {
-                                                SetPlayerHealthEx(playerid, 100);
+                                                SetPlayerHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealthEx(playerid, health + 40.0);
+                                                SetPlayerHealth(playerid, health + 40.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD4));
@@ -11844,12 +11868,12 @@ CMD:accept(playerid, params[])
                                         else if(STD4[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 40 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 401) {
-                                        health = GetClientHealth(playerid);
+                                        GetPlayerHealth(playerid, health);
                                         if(health > 50) {
-                                            SetPlayerHealthEx(playerid, 100);
+                                            SetPlayerHealth(playerid, 100);
                                         }
                                         else {
-                                            SetPlayerHealthEx(playerid, health + 50.0);
+                                            SetPlayerHealth(playerid, health + 50.0);
                                         }
                                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your sex skill level was high enough to give them a lot of health and no STD.");
                                         SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* The whore's sex skill level was high enough to give you a lot of health and no STD.");
@@ -12799,8 +12823,8 @@ CMD:window(playerid, params[])
 
             GetPlayerPos(playerid, fSpecPos[0], fSpecPos[1], fSpecPos[2]);
             GetPlayerFacingAngle(playerid, fSpecPos[3]);
-            fSpecPos[4] = GetClientHealth(playerid);
-            fSpecPos[5] = GetClientArmour(playerid);
+            GetPlayerHealth(playerid, fSpecPos[4]);
+            GetPlayerArmour(playerid, fSpecPos[5]);
 
             SetPVarFloat(playerid, "air_Xpos", fSpecPos[0]);
             SetPVarFloat(playerid, "air_Ypos", fSpecPos[1]);
@@ -13846,7 +13870,7 @@ CMD:exit(playerid, params[])
             SetPlayerPos(playerid,200.2569,1869.5732,13.1470);
         }
         else {
-            SetPlayerHealthEx(playerid, 0);
+            SetPlayerHealth(playerid, 0);
             SendClientMessageEx(playerid, COLOR_WHITE, "You can not escape admin prison!");
         }
 
@@ -14181,10 +14205,12 @@ CMD:eventstaff(playerid, params[])
 					PlayerInfo[playerid][pAGuns][GetWeaponSlot(38)] = 38;
 					GivePlayerValidWeapon(playerid, 38, 60000);
 					EventKernel[EventStaff][i] = playerid;
-					health = GetClientHealth(playerid);
+					GetPlayerHealth(playerid,health);
 					SetPVarFloat(playerid, "pPreGodHealth", health);
-					armor = GetClientArmour(playerid);
+					GetPlayerArmour(playerid,armor);
 					SetPVarFloat(playerid, "pPreGodArmor", armor);
+					SetPlayerHealth(playerid, 0x7FB00000);
+					SetPlayerArmor(playerid, 0x7FB00000);
 					SetPVarInt(playerid, "eventStaff", 1);
 					return SendClientMessageEx( playerid, COLOR_WHITE, "You have joined the event staff." );
 				}
@@ -14244,9 +14270,9 @@ CMD:quitevent(playerid, params[])
         EventLastInt[playerid] = 0;
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealthEx(playerid,health);
+		SetPlayerHealth(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
-		SetPlayerArmourEx(playerid, armor);
+		SetPlayerArmor(playerid, armor);
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
 		DeletePVar(playerid, "eventStaff");
@@ -14268,9 +14294,9 @@ CMD:quitevent(playerid, params[])
         			SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
         			SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
         			SetPlayerInterior(playerid,EventLastInt[playerid]);
-        			SetPlayerHealthEx(playerid, EventFloats[playerid][4]);
+        			SetPlayerHealth(playerid, EventFloats[playerid][4]);
         			if(EventFloats[playerid][5] > 0) {
-        				SetPlayerArmourEx(playerid, EventFloats[playerid][5]);
+        				SetPlayerArmor(playerid, EventFloats[playerid][5]);
         			}
         			Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
         			RemovePlayerWeapon(playerid, 38);
@@ -14292,9 +14318,9 @@ CMD:quitevent(playerid, params[])
       	SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
        	SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
        	SetPlayerInterior(playerid,EventLastInt[playerid]);
-       	SetPlayerHealthEx(playerid, EventFloats[playerid][4]);
+       	SetPlayerHealth(playerid, EventFloats[playerid][4]);
        	if(EventFloats[playerid][5] > 0) {
-       		SetPlayerArmourEx(playerid, EventFloats[playerid][5]);
+       		SetPlayerArmor(playerid, EventFloats[playerid][5]);
        	}
        	Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
        	if(EventKernel[EventType] == 4)
@@ -14310,11 +14336,11 @@ CMD:quitevent(playerid, params[])
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
 		if(health > 0) {
-			SetPlayerHealthEx(playerid,health);
+			SetPlayerHealth(playerid,health);
 		}
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmourEx(playerid, armor);
+			SetPlayerArmor(playerid, armor);
 		}	
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
@@ -14420,9 +14446,9 @@ CMD:denyevent(playerid, params[])
                 SetPlayerVirtualWorld(EventKernel[EventStaff][i], EventLastVW[EventKernel[EventStaff][i]]);
                 SetPlayerFacingAngle(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][0]);
                 SetPlayerInterior(EventKernel[EventStaff][i],EventLastInt[EventKernel[EventStaff][i]]);
-                SetPlayerHealthEx(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
+                SetPlayerHealth(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
                 if(EventFloats[EventKernel[EventStaff][i]][5] > 0) {
-                	SetPlayerArmourEx(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
+                	SetPlayerArmor(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
                 }
                 for(new d = 0; d < 6; d++) {
                     EventFloats[EventKernel[EventStaff][i]][d] = 0.0;
@@ -14509,18 +14535,32 @@ CMD:approveevent(playerid, params[])
 CMD:god(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	
-	if(GetPVarInt(playerid, "pGodMode") == 0)
 	{
-		SetPVarInt(playerid, "pGodMode", 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled God Mode!");
-	}
-	else
-	{
-		DeletePVar(playerid, "pGodMode");
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled God Mode!");
-	}
-	return true;
+		new Float:health, Float:armor;
+	    if(GetPVarType(playerid, "pGodMode"))
+	    {
+			health = GetPVarFloat(playerid, "pPreGodHealth");
+			SetPlayerHealth(playerid,health);
+			armor = GetPVarFloat(playerid, "pPreGodArmor");
+			SetPlayerArmor(playerid, armor);
+			DeletePVar(playerid, "pGodMode");
+			DeletePVar(playerid, "pPreGodHealth");
+			DeletePVar(playerid, "pPreGodArmor");
+			SendClientMessage(playerid, COLOR_WHITE, "God mode disabled");
+		}
+		else
+		{
+			GetPlayerHealth(playerid,health);
+			SetPVarFloat(playerid, "pPreGodHealth", health);
+			GetPlayerArmour(playerid,armor);
+			SetPVarFloat(playerid, "pPreGodArmor", armor);
+		    SetPlayerHealth(playerid, 0x7FB00000);
+		    SetPlayerArmor(playerid, 0x7FB00000);
+		    SetPVarInt(playerid, "pGodMode", 1);
+		    SendClientMessage(playerid, COLOR_WHITE, "God mode enabled");
+		}
+    }
+	return 1;
 }
 
 CMD:damagecheck(playerid, params[])
@@ -14571,7 +14611,7 @@ CMD:healnear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerHealthEx(i, 100);
+					SetPlayerHealth(i, 100);
 					count++;
 				}
 			}	
@@ -14598,7 +14638,7 @@ CMD:armornear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerArmourEx(i, 100);
+					SetPlayerArmor(i, 100);
 					count++;
 				}
 			}	
@@ -15259,7 +15299,7 @@ CMD:kos(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15425,7 +15465,7 @@ CMD:skos(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15577,7 +15617,7 @@ CMD:pg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15688,7 +15728,7 @@ CMD:spg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15782,7 +15822,7 @@ CMD:mg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -15876,7 +15916,7 @@ CMD:smg(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16025,7 +16065,7 @@ CMD:nonrp(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16163,7 +16203,7 @@ CMD:snonrp(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16283,7 +16323,7 @@ CMD:dm(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16409,7 +16449,7 @@ CMD:sdm(playerid, params[])
 			strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			PhoneOnline[giveplayerid] = 1;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pInt] = 1;
 			new rand = random(sizeof(OOCPrisonSpawns));
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -16987,8 +17027,8 @@ CMD:jarrest(playerid, params[])
 				ClearAnimations(suspect);
 				if(PlayerCuffed[suspect] == 2)
 				{
-					SetPlayerHealthEx(suspect, GetPVarFloat(suspect, "cuffhealth"));
-					SetPlayerArmourEx(suspect, GetPVarFloat(suspect, "cuffarmor"));
+					SetPlayerHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
+					SetPlayerArmor(suspect, GetPVarFloat(suspect, "cuffarmor"));
 					DeletePVar(suspect, "cuffhealth");
 					DeletePVar(suspect, "PlayerCuffed");
 				}
@@ -21768,7 +21808,7 @@ CMD:vstorage(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location %s", vstring, VehicleName[iModelID], szCarLocation);
+					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s (spawned) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
@@ -21835,7 +21875,7 @@ CMD:trackcar(playerid, params[])
 					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
 				}
 				else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 			}
@@ -23388,7 +23428,7 @@ CMD:deliverpt(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
                             return 1;
                         }
-                        SetPlayerHealthEx(giveplayerid, 100);
+                        SetPlayerHealth(giveplayerid, 100);
                         if(GetPVarType(giveplayerid, "STD"))
 						{
 							DeletePVar(giveplayerid, "STD");
@@ -23585,9 +23625,9 @@ CMD:triage(playerid, params[])
     	    if (ProxDetectorS(5.0, playerid, giveplayerid))
 			{
 	    	    new Float: health;
-	    	    health = GetClientHealth(giveplayerid);
-	    	    if(health >= 85) SetPlayerHealthEx(giveplayerid, 100);
-				else SetPlayerHealthEx(giveplayerid, health+15.0);
+	    	    GetPlayerHealth(giveplayerid, health);
+	    	    if(health >= 85) SetPlayerHealth(giveplayerid, 100);
+				else SetPlayerHealth(giveplayerid, health+15.0);
 	    	    format(string, sizeof(string), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	    ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[playerid][pTriageTime] = 120;
@@ -25068,7 +25108,7 @@ CMD:revive(playerid, params[])
 
 				KillEMSQueue(giveplayerid);
    				ClearAnimations(giveplayerid);
-   				SetPlayerHealthEx(giveplayerid, 100);
+   				SetPlayerHealth(giveplayerid, 100);
 			}
 			else
 			{
@@ -25104,13 +25144,13 @@ CMD:revivenear(playerid, params[])
 				{
 					if(ProxDetectorS(radius, playerid, i))
 					{
-						SetPlayerHealthEx(i, 100);
+						SetPlayerHealth(i, 100);
 						count++;
 					}
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
 					KillEMSQueue(i);
 					ClearAnimations(i);
-					SetPlayerHealthEx(i, 100);
+					SetPlayerHealth(i, 100);
 					format(string, sizeof(string), "AdmCmd: %s has been revived by %s", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
@@ -25173,7 +25213,7 @@ CMD:giveweapon(playerid, params[])
 		return 1;
 	}
 	new Float:health;
-	health = GetClientHealth(playerid);
+	GetPlayerHealth(playerid, health);
 	if (health < 80)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give weapons if your health is below 80!");
@@ -28426,7 +28466,7 @@ CMD:trunkput(playerid, params[])
 	if(GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 510)  return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
 
 	new Float: Health;
-	Health = GetClientHealth(playerid);
+	GetPlayerHealth(playerid, Health);
 	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons in a car when your health lower than 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
@@ -30098,7 +30138,7 @@ CMD:order(playerid, params[])
 				}
 				if(GetPlayerCash(playerid) >= 500)
 				{
-					SetPlayerHealthEx(playerid, 100);
+					SetPlayerHealth(playerid, 100);
 					GivePlayerCash(playerid, -500);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a firstaid!");
 					return 1;
@@ -30258,7 +30298,7 @@ CMD:order(playerid, params[])
 				}
 				if(GetPlayerCash(playerid) >= 6000)
 				{
-					SetPlayerArmourEx(playerid, 99);
+					SetPlayerArmor(playerid, 99);
 					GivePlayerCash(playerid, -6000);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a kevlar vest!");
 					return 1;
@@ -34541,7 +34581,7 @@ CMD:heal(playerid, params[])
 
 				if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"You are not near them!");
 				new Float:tempheal;
-				tempheal = GetClientHealth(giveplayerid);
+				GetPlayerHealth(giveplayerid,tempheal);
 				if(tempheal >= 100.0)
 				{
 					SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
@@ -34553,7 +34593,7 @@ CMD:heal(playerid, params[])
 				GivePlayerCash(playerid, price / 2);
 				Tax += price / 2;
 				GivePlayerCash(giveplayerid, -price);
-				SetPlayerHealthEx(giveplayerid, 100);
+				SetPlayerHealth(giveplayerid, 100);
 				PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 				PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
 				format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
@@ -35036,7 +35076,7 @@ CMD:prison(playerid, params[])
 			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			SetPlayerWantedLevel(giveplayerid, 0);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			SetPVarInt(giveplayerid, "_rAppeal", gettime()+60);			format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON] %s", reason);
 			format(PlayerInfo[giveplayerid][pPrisonedBy], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
@@ -35482,7 +35522,7 @@ CMD:release(playerid, params[])
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealthEx(giveplayerid, 100);
+				SetPlayerHealth(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -35531,7 +35571,7 @@ CMD:sprison(playerid, params[])
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			SetPlayerWantedLevel(giveplayerid, 0);
 			SetPlayerToTeamColor(giveplayerid);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			PhoneOnline[giveplayerid] = 1;
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][SPRISON] %s", reason);
@@ -35755,7 +35795,7 @@ CMD:sjail(playerid, params[])
 			PhoneOnline[giveplayerid] = 1;
 			PlayerInfo[giveplayerid][pJailTime] = minutes*60;
 			SetPlayerInterior(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			SetPlayerFacingAngle(giveplayerid, 0);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			SetPlayerPos(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -35818,7 +35858,7 @@ CMD:jail(playerid, params[])
 			SetPlayerInterior(giveplayerid, 1);
 			SetPlayerFacingAngle(giveplayerid, 0);
 			TogglePlayerControllable(giveplayerid, 1);
-			SetPlayerHealthEx(giveplayerid, 0x7FB00000);
+			SetPlayerHealth(giveplayerid, 0x7FB00000);
 			new rand = random(sizeof(OOCPrisonSpawns));
 			SetPlayerPos(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 			Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -37018,9 +37058,9 @@ CMD:endevent(playerid, params[])
 						EventLastInt[i] = 0;
 						RemovePlayerWeapon(i, 38);
 						health = GetPVarFloat(i, "pPreGodHealth");
-						SetPlayerHealthEx(i,health);
+						SetPlayerHealth(i,health);
 						armor = GetPVarFloat(i, "pPreGodArmor");
-						SetPlayerArmourEx(i, armor);
+						SetPlayerArmor(i, armor);
 						DeletePVar(i, "pPreGodHealth");
 						DeletePVar(i, "pPreGodArmor");
 						SetPVarInt(i, "eventStaff", 0);
@@ -37046,9 +37086,9 @@ CMD:endevent(playerid, params[])
 						SetPlayerVirtualWorld(i, EventLastVW[i]);
 						SetPlayerFacingAngle(i, EventFloats[i][0]);
 						SetPlayerInterior(i,EventLastInt[i]);
-						SetPlayerHealthEx(i, EventFloats[i][4]);
+						SetPlayerHealth(i, EventFloats[i][4]);
 						if(EventFloats[i][5] > 0) {
-							SetPlayerArmourEx(i, EventFloats[i][5]);
+							SetPlayerArmor(i, EventFloats[i][5]);
 						}
 						for(new d = 0; d < 6; d++)
 						{
@@ -37261,10 +37301,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
+								SetPlayerHealth( i, EventKernel[ EventHealth ] );
 							}	
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
+								SetPlayerArmor( i, EventKernel[ EventArmor ]);
 							}
 							GivePlayerEventWeapons( i );
 						}
@@ -37273,10 +37313,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
+								SetPlayerHealth( i, EventKernel[ EventHealth ] );
 							}
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
+								SetPlayerArmor( i, EventKernel[ EventArmor ]);
 							}	
 							GivePlayerEventWeapons( i );
 						}
@@ -37285,7 +37325,7 @@ CMD:beginevent(playerid, params[])
 							if(zombiemade == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
-								SetPlayerHealthEx(playerid, 30);
+								SetPlayerHealth(playerid, 30);
 								RemoveArmor(playerid);
 								SetPlayerSkin(playerid, 134);
 								SetPlayerColor(playerid, 0x0BC43600);
@@ -37298,10 +37338,10 @@ CMD:beginevent(playerid, params[])
 								//GivePlayerEventWeapons( i );
 								SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
 								if(GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerHealthEx( i, EventKernel[ EventHealth ] );
+									SetPlayerHealth( i, EventKernel[ EventHealth ] );
 								}	
 								if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerArmourEx( i, EventKernel[ EventArmor ]);
+									SetPlayerArmor( i, EventKernel[ EventArmor ]);
 								}
 								GivePlayerEventWeapons( i );
 							}
@@ -38526,8 +38566,8 @@ CMD:slap(playerid, params[])
 			return 1;
 		}
 		else {
-		    shealth = GetClientHealth(giveplayerid);
-			SetPlayerHealthEx(giveplayerid, shealth-5);
+		    GetPlayerHealth(giveplayerid, shealth);
+			SetPlayerHealth(giveplayerid, shealth-5);
 			GetPlayerPos(giveplayerid, posx, posy, posz);
 			SetPlayerPos(giveplayerid, posx, posy, posz+5);
 			PlayerPlaySound(giveplayerid, 1130, posx, posy, posz+5);
@@ -38768,7 +38808,7 @@ CMD:nextwatch(playerid, params[])
 		
 		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip player yet, it hasn't been 3 minutes.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip a player yet, it hasn't been 3 minutes.");
 	}
 	else
 	{
@@ -38806,8 +38846,9 @@ CMD:startwatch(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
-		
-		mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip a player yet, it hasn't been 3 minutes.");
 	}
 	else
 	{
@@ -40833,7 +40874,7 @@ CMD:fstoregun(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You can not store weapons from a vehicle!");
 	new Float:health;
-	health = GetClientHealth(playerid);
+	GetPlayerHealth(playerid, health);
 	if (health < 80) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not store weapons if your health is below 80!");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || GetPlayerState(playerid) == 7) 
 		return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
@@ -44711,10 +44752,12 @@ CMD:accepthelp(playerid, params[])
 			SetPlayerPos(playerid, x, y+2, z);
 			SetPlayerVirtualWorld(playerid, vw);
 			SetPlayerInterior(playerid, i);
-			health = GetClientHealth(playerid);
+			GetPlayerHealth(playerid,health);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
-			armor = GetClientArmour(playerid);
+			GetPlayerArmour(playerid,armor);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);
+			SetPlayerHealth(playerid, 0x7FB00000);
+		    SetPlayerArmor(playerid, 0x7FB00000);
 		    SetPVarInt(playerid, "pGodMode", 1);
 			if(i > 0 || vw > 0) Player_StreamPrep(playerid, x, y, z, FREEZE_TIME);
 			HelpingNewbie[playerid] = Player;
@@ -44740,10 +44783,10 @@ CMD:finishhelp(playerid, params[])
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "AdvisorLastInt"));
 		DeletePVar(playerid, "pGodMode");
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealthEx(playerid,health);
+		SetPlayerHealth(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmourEx(playerid,armor);
+			SetPlayerArmor(playerid,armor);
 		}
 		else
 		{
@@ -48027,8 +48070,8 @@ CMD:cuff(playerid, params[])
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 0);
 					ClearAnimations(giveplayerid);
-					health = GetClientHealth(giveplayerid);
-					armor = GetClientArmour(giveplayerid);
+					GetPlayerHealth(giveplayerid, health);
+					GetPlayerArmour(giveplayerid, armor);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
 					SetPVarFloat(giveplayerid, "cuffarmor",armor);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
@@ -48102,8 +48145,8 @@ CMD:uncuff(playerid, params[])
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
-                    SetPlayerHealthEx(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
-                    SetPlayerArmourEx(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
+                    SetPlayerHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
+                    SetPlayerArmor(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
                     DeletePVar(giveplayerid, "cuffhealth");
 					DeletePVar(giveplayerid, "PlayerCuffed");
 				}
@@ -48708,7 +48751,7 @@ CMD:cancel(playerid, params[])
 	{
 		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
 			new Float:health;
-			health = GetClientHealth(playerid);
+			GetPlayerHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if (hpint >=  80)
 			{
@@ -49462,7 +49505,7 @@ CMD:usepot(playerid, params[])
 
 	if(storageid == 0 && PlayerInfo[playerid][pPot] > 1 || (storageid > 0) && StorageInfo[playerid][storageid-1][sPot] > 1)
 	{
-		health = GetClientHealth(playerid);
+		GetPlayerHealth(playerid, health);
 		healthint = floatround(health, floatround_round);
 		if(healthint >= 100 )
 		{
@@ -49477,11 +49520,11 @@ CMD:usepot(playerid, params[])
 		}
 		if(healthint > 80)
 		{
-			SetPlayerHealthEx(playerid, 100);
+			SetPlayerHealth(playerid, 100);
 		}
 		else
 		{
-			SetPlayerHealthEx(playerid, health + 20.0);
+			SetPlayerHealth(playerid, health + 20.0);
 		}
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of pot!");
 		format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
@@ -49546,7 +49589,7 @@ CMD:usecrack(playerid, params[])
 		return 1;
 	}
 	new Float:armour;
-	armour = GetClientArmour(playerid);
+	GetPlayerArmour(playerid, armour);
 	if(armour >= 100)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -49588,7 +49631,7 @@ CMD:usecrack(playerid, params[])
 			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
 		}
 		new string[128], Float:PlayersArmour;
-		PlayersArmour = GetClientArmour(playerid);
+		GetPlayerArmour(playerid, PlayersArmour);
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of crack!");
 		format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -49598,15 +49641,23 @@ CMD:usecrack(playerid, params[])
 		} else {
 			StorageInfo[playerid][storageid-1][sCrack] -= 2;
 		}
+		if(CurrentArmor[playerid] < PlayersArmour && GetPVarInt(playerid, "IsInArena") == 0)
+	    {
+	    	format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
+			ABroadCast( COLOR_YELLOW, string, 2 );
+			format(string, sizeof(string), "%s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
+			Log("logs/hack.log", string);
+	        return 1;
+	    }
 		UsedCrack[playerid] = 1;
 		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
 		if(PlayersArmour > 90)
 		{
-			SetPlayerArmourEx(playerid, 100);
+			SetPlayerArmor(playerid, 100);
 		}
 		else
 		{
-			SetPlayerArmourEx(playerid, PlayersArmour + 10.0);
+			SetPlayerArmor(playerid, PlayersArmour + 10.0);
 		}
 		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
 		switch(GetPVarInt(playerid, "STD")) {
@@ -51138,7 +51189,7 @@ CMD:docarrest(playerid, params[])
 			PlayerCuffedTime[suspect] = 0;
 			PlayerInfo[suspect][pVW] = 0;
 			SetPlayerVirtualWorld(suspect, 0);
-			SetPlayerHealthEx(suspect, 100);
+			SetPlayerHealth(suspect, 100);
 			strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
 			SetPlayerToTeamColor(suspect);
@@ -54567,8 +54618,8 @@ CMD:qs(playerid, params[]) return cmd_quickstats(playerid, params);
 CMD:quickstats(playerid, params[])
 {
 	new string[128], Float: health, Float: armor;
-	health = GetClientHealth(playerid);
-	armor = GetClientArmour(playerid);
+	GetPlayerHealth(playerid, health);
+	GetPlayerArmour(playerid, armor);
 	
 	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
@@ -54778,8 +54829,8 @@ CMD:endhunger(playerid, params[])
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
-					SetPlayerHealthEx(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmourEx(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -54839,8 +54890,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54868,8 +54919,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54898,8 +54949,8 @@ CMD:leavehunger(playerid, params[])
 					format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 							
-					SetPlayerHealthEx(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmourEx(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -54941,8 +54992,8 @@ CMD:leavehunger(playerid, params[])
 		}
 		else if(hgPlayerCount > 3 || hgPlayerCount == 1)
 		{
-			SetPlayerHealthEx(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmourEx(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -54994,11 +55045,11 @@ CMD:joinhunger(playerid, params[])
 	new rand = random(sizeof(hgRandomSpawn));
 	SetPlayerPos(playerid, hgRandomSpawn[rand][0], hgRandomSpawn[rand][1], hgRandomSpawn[rand][2]);
 	
-	HungerPlayerInfo[playerid][hgLastHealth] = GetClientHealth(playerid);
-	SetPlayerHealthEx(playerid, 9999.9);
+	GetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+	SetPlayerHealth(playerid, 9999.9);
 	
-	HungerPlayerInfo[playerid][hgLastArmour] = GetClientArmour(playerid);
-	SetPlayerArmourEx(playerid, 0);
+	GetPlayerArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+	SetPlayerArmour(playerid, 0);
 	
 	HungerPlayerInfo[playerid][hgLastVW] = GetPlayerVirtualWorld(playerid);
 	SetPlayerVirtualWorld(playerid, 2039);
@@ -55072,8 +55123,8 @@ CMD:openbackpack(playerid, params[])
 			if(HungerBackpackInfo[backpack][hgBackpackType] == 1)
 			{
 				new Float: exarmor;
-				exarmor = GetClientArmour(playerid);
-				SetPlayerArmourEx(playerid, exarmor+15);
+				GetPlayerArmour(playerid, exarmor);
+				SetPlayerArmor(playerid, exarmor+15);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 15 percent armor.");
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -55133,7 +55184,7 @@ CMD:openbackpack(playerid, params[])
 			}
 			else if(HungerBackpackInfo[backpack][hgBackpackType] == 4)
 			{
-				SetPlayerHealthEx(playerid, 100.0);
+				SetPlayerHealth(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 100 percent health.");\
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -57847,7 +57898,7 @@ CMD:srelease(playerid, params[])
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealthEx(giveplayerid, 100);
+				SetPlayerHealth(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -57895,7 +57946,7 @@ CMD:sgcheck(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sgcheck [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	new Float:health;
-	health = GetClientHealth(giveplayerid);
+	GetPlayerHealth(giveplayerid, health);
 	if(health < 1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is currently dead.");
 	if(SGcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently being checked for using sprunk guard!");
 	if(HHcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently being checked for health hacks!");
@@ -57907,8 +57958,8 @@ CMD:sgcheck(playerid, params[])
    	ABroadCast(COLOR_YELLOW, string, 2);
   	format(string, sizeof(string), "Checking %s for sprunk guard, please wait....", GetPlayerNameEx(giveplayerid));
     SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	SGcheckFloats[giveplayerid][0] = GetClientHealth(giveplayerid);
-	SGcheckFloats[giveplayerid][1] = GetClientArmour(giveplayerid);
+	GetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+	GetPlayerArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 	GetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 	GetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
 	SGcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -57936,7 +57987,7 @@ CMD:relog(playerid, params[])
 	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player has not logged in.");
 	
 	OnPlayerDisconnect(giveplayerid, 4);
-	SetPlayerArmourEx(giveplayerid, 0);
+	SetPlayerArmor(giveplayerid, 0);
 	ResetPlayerWeapons(giveplayerid);
 	OnPlayerConnect(giveplayerid);
 	format(string, sizeof(string), "You have relogged %s.", GetPlayerNameEx(giveplayerid));
@@ -58905,7 +58956,7 @@ CMD:bstore(playerid, params[])
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new Float: Health;
-		Health = GetClientHealth(playerid);
+		GetPlayerHealth(playerid, Health);
 		if(Health < 50.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store a backpack in a house/car when your health lower than 80.");
 		
 		new string[128], housecar[6];

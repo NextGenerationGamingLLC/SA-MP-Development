@@ -212,14 +212,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							format(string, sizeof(string), "* %s %s takes a badge and a gun from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						SetPlayerHealthEx(playerid, 100.0);
+						SetPlayerHealth(playerid, 100.0);
 						if(IsAMedic(playerid))
 						{
 							Medics += 1;
 						}
 						if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 						{
-							SetPlayerArmourEx(playerid, 100);
+							SetPlayerArmor(playerid, 100);
 							arrGroupData[iGroupID][g_iLockerStock] -= 1;
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -230,7 +230,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(arrGroupData[iGroupID][g_iLockerCostType] != 0)
 						{
-							SetPlayerArmourEx(playerid, 100.0);
+							SetPlayerArmor(playerid, 100.0);
 						}
 						else
 						{
@@ -249,7 +249,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							Medics -= 1;
 						}
-						SetPlayerHealthEx(playerid, 100.0);
+						SetPlayerHealth(playerid, 100.0);
 						RemoveArmor(playerid);
 						PlayerInfo[playerid][pDuty] = 0;
 						SetPlayerToTeamColor(playerid);
@@ -344,8 +344,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 					{
-						SetPlayerArmourEx(playerid, 100);
-						SetPlayerHealthEx(playerid, 100.0);
+						SetPlayerArmor(playerid, 100);
+						SetPlayerHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
 						new str[128], file[32];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -358,8 +358,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(arrGroupData[iGroupID][g_iBudget] > 2500)
 						{
-							SetPlayerArmourEx(playerid, 100);
-							SetPlayerHealthEx(playerid, 100.0);
+							SetPlayerArmor(playerid, 100);
+							SetPlayerHealth(playerid, 100.0);
 							arrGroupData[iGroupID][g_iBudget] -= 2500;
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -374,8 +374,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(GetPlayerCash(playerid) > 2500)
 						{
-							SetPlayerArmourEx(playerid, 100);
-							SetPlayerHealthEx(playerid, 100.0);
+							SetPlayerArmor(playerid, 100);
+							SetPlayerHealth(playerid, 100.0);
 							GivePlayerCash(playerid, -2500);
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -2853,7 +2853,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessage(playerid, COLOR_GRAD2, string);
 			}
 			else {
-				SetPlayerHealthEx(playerid, 100.0);
+				SetPlayerHealth(playerid, 100.0);
 				PlayerInfo[playerid][pHunger] += 83;
 				if (PlayerInfo[playerid][pFitness] >= 5)
 					PlayerInfo[playerid][pFitness] -= 5;
@@ -5363,8 +5363,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarFloat(playerid, "pbOldY", oldY);
 						SetPVarFloat(playerid, "pbOldZ", oldZ);
 
-						oldHealth = GetClientHealth(playerid);
-						oldArmor = GetClientArmour(playerid);
+						GetPlayerHealth(playerid,oldHealth);
+						GetPlayerArmour(playerid,oldArmor);
 						SetPVarInt(playerid, "pbOldInt", GetPlayerInterior(playerid));
 						SetPVarInt(playerid, "pbOldVW", GetPlayerVirtualWorld(playerid));
 						SetPVarFloat(playerid, "pbOldHealth", oldHealth);
@@ -6345,7 +6345,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PaintBallArena[arenaid][pbTeamBlue]--;
 					PaintBallArena[arenaid][pbTeamRed]++;
 					PlayerInfo[playerid][pPaintTeam] = 1;
-					SetPlayerHealthEx(playerid, 0);
+					SetPlayerHealth(playerid, 0);
 				}
 				case 1: // Blue
 				{
@@ -6375,7 +6375,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PaintBallArena[arenaid][pbTeamRed]--;
 					PaintBallArena[arenaid][pbTeamBlue]++;
 					PlayerInfo[playerid][pPaintTeam] = 2;
-					SetPlayerHealthEx(playerid, 0);
+					SetPlayerHealth(playerid, 0);
 				}
 			}
 		}
@@ -7035,7 +7035,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
 							}
 							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-								format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+								format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
 							}
 							else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
 						}
@@ -8025,7 +8025,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			health = GetClientHealth(playerid);
+			GetPlayerHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
@@ -8033,14 +8033,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			else {
-				SetPlayerHealthEx(playerid, 100);
+				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
 			new Float:armour;
-			armour = GetClientArmour(playerid);
+			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -8053,7 +8053,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				GivePlayerCash(playerid, -10000);
-				SetPlayerArmourEx(playerid, 100);
+				SetPlayerArmor(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You paid $10000 for a kevlar vest.");
 			}
 		}
@@ -8073,7 +8073,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			health = GetClientHealth(playerid);
+			GetPlayerHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
@@ -8081,14 +8081,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			else {
-				SetPlayerHealthEx(playerid, 100);
+				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
 			new Float:armour;
-			armour = GetClientArmour(playerid);
+			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -8101,7 +8101,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				GivePlayerCash(playerid, -5000);
-				SetPlayerArmourEx(playerid, 100);
+				SetPlayerArmor(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You paid $5000 for a kevlar vest.");
 			}
 		}
@@ -8121,7 +8121,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			health = GetClientHealth(playerid);
+			GetPlayerHealth(playerid, health);
 			new hpint = floatround(health, floatround_round);
 			if(hpint >= 100)
 			{
@@ -8129,21 +8129,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			else {
-				SetPlayerHealthEx(playerid, 100);
+				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have used a first aid kit, you now have 100.0 HP.");
 			}
 		}
 		if(listitem == 1)
 		{
 			new Float:armour;
-			armour = GetClientArmour(playerid);
+			GetPlayerArmour(playerid, armour);
 			if(armour >= 100)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
 				return 1;
 			}
 			else {
-				SetPlayerArmourEx(playerid, 100);
+				SetPlayerArmor(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have received a Kevlar Vest free of charge.");
 			}
 		}
@@ -8196,7 +8196,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(listitem == 0)
 			{
 				new Float:health;
-				health = GetClientHealth(playerid);
+				GetPlayerHealth(playerid, health);
 				new hpint = floatround( health, floatround_round );
 				if( hpint >= 100 )
 				{
@@ -8204,13 +8204,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 
-				SetPlayerHealthEx(playerid, 100);
+				SetPlayerHealth(playerid, 100);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have used a first aid kit, you now have 100.0 HP.");
 			}
 			if(listitem == 1)
 			{
 				new Float:armour;
-				armour = GetClientArmour(playerid);
+				GetPlayerArmour(playerid, armour);
 				if(armour >= 100)
 				{
 					SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -8224,7 +8224,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 					GivePlayerCash(playerid, -15000);
-					SetPlayerArmourEx(playerid, 100);
+					SetPlayerArmor(playerid, 100);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You paid $15000 for a kevlar vest.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 2)
@@ -8235,12 +8235,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 					GivePlayerCash(playerid, -10000);
-					SetPlayerArmourEx(playerid, 100);
+					SetPlayerArmor(playerid, 100);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You paid $10000 for a kevlar vest.");
 				}
 				if(PlayerInfo[playerid][pDonateRank] >= 3)
 				{
-					SetPlayerArmourEx(playerid, 100);
+					SetPlayerArmor(playerid, 100);
 					SetPVarInt(playerid, "Armor", 1);
 				}
 			}
@@ -8501,7 +8501,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pHungerDeathTimer] = 0;
 
 				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-				SetPlayerHealthEx(playerid, 100.0);
+				SetPlayerHealth(playerid, 100.0);
 			}
 		}
 		for (new i; i <= 13; i++)
@@ -8978,7 +8978,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerColor(playerid, TEAM_BLUE_COLOR);
 					SetPlayerSkin(playerid, 280);
 					PlayerInfo[playerid][pModel] = 280;
-					SetPlayerArmourEx(playerid, 100.0);
+					SetPlayerArmor(playerid, 100.0);
 					GivePlayerValidWeapon(playerid, 24, 99999);
 					GivePlayerValidWeapon(playerid, 41, 99999);
 					GivePlayerValidWeapon(playerid, 3, 99999);
@@ -8993,7 +8993,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerColor(playerid, TEAM_HIT_COLOR);
 					SetPlayerSkin(playerid, 46);
 					PlayerInfo[playerid][pModel] = 46;
-					SetPlayerArmourEx(playerid, 0.0);
+					SetPlayerArmor(playerid, 0.0);
 					ResetPlayerWeaponsEx(playerid);
 					OnDuty[playerid] = 0;
 					PlayerInfo[playerid][pDuty] = 0;
@@ -9006,7 +9006,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					format(string, sizeof(string), "* Officer %s takes a badge and a gun from their locker.", sendername);
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetPlayerArmourEx(playerid, 100.0);
+					SetPlayerArmor(playerid, 100.0);
 					GivePlayerValidWeapon(playerid, 24, 99999);
 					GivePlayerValidWeapon(playerid, 29, 99999);
 					OnDuty[playerid] = 1;
@@ -9017,7 +9017,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerName(playerid, sendername, sizeof(sendername));
 					format(string, sizeof(string), "* Officer %s places their badge and gun in their locker.", sendername);
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					SetPlayerArmourEx(playerid, 0.0);
+					SetPlayerArmor(playerid, 0.0);
 					ResetPlayerWeaponsEx(playerid);
 					OnDuty[playerid] = 0;
 					PlayerInfo[playerid][pDuty] = 0;
@@ -10010,7 +10010,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerCuffedTime[suspect] = 0;
 					PlayerInfo[suspect][pVW] = 0;
 					SetPlayerVirtualWorld(suspect, 0);
-					SetPlayerHealthEx(suspect, 100);
+					SetPlayerHealth(suspect, 100);
 					strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
 					SetPlayerToTeamColor(suspect);

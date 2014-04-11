@@ -932,7 +932,7 @@ new STD4[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 3};
 new Float:PlayerPos[MAX_PLAYERS][3];
 new lspddoor1;
 new lspddoor2;
-new Seatbelt[MAX_PLAYERS];
+new Seatbelt[MAX_PLAYERS], Float: CurrentArmor[MAX_PLAYERS];
 new SpikeStrips[MAX_SPIKES][Spikes];
 new Cones[MAX_CONES][Cone];
 new Flares[MAX_FLARES][Flare];
@@ -1148,8 +1148,6 @@ new dgMoney[4], dgRimKit[4], dgFirework[4], dgGVIP[4], dgGVIPEx[4], dgSVIP[4], d
 new bool: IsDynamicGiftBoxEnabled = false;
 
 new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
-
-new FuckHacksVar[MAX_PLAYERS][FuckHacksEnum];
 
 new Float:JoinCameraPosition[8][3] = {
 	{2211.1460, -1748.3909, 29.3744},
