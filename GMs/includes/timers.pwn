@@ -1233,19 +1233,30 @@ task ServerHeartbeat[1000]() {
 					}
 				}
 				if(GetPVarType(i, "TrackVehicleBurglary")) {
-					SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
-					new Float: carPos[3];
-					GetVehiclePos(PlayerVehicleInfo[Calls[GetPVarInt(i, "CallId")][CallFrom]][Calls[GetPVarInt(i, "CallId")][CallVehicleId]][pvId], carPos[0], carPos[1], carPos[2]);
-					if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2]) 
-						SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
-					if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
+					if(IsPlayerConnected(GetPVarInt(i, "CallId"))) {
+						SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
+						new Float: carPos[3];
+						GetVehiclePos(Calls[GetPVarInt(i, "CallId")][CallVehicleId], carPos[0], carPos[1], carPos[2]);
+						if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2]) 
+							SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
+						if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
+							DisablePlayerCheckpoint(i);
+							DeletePVar(i, "TrackVehicleBurglary");
+							DeletePVar(i, "CallId");
+							DeletePVar(i, "CarLastX");
+							DeletePVar(i, "CarLastY");
+							DeletePVar(i, "CarLastZ");
+							SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+						}
+					}
+					else {
 						DisablePlayerCheckpoint(i);
 						DeletePVar(i, "TrackVehicleBurglary");
 						DeletePVar(i, "CallId");
 						DeletePVar(i, "CarLastX");
 						DeletePVar(i, "CarLastY");
 						DeletePVar(i, "CarLastZ");
-						SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+						SendClientMessageEx(i, COLOR_PURPLE, "The caller has disconnected!");
 					}
 				}
 				if(CommandSpamTimes[i] != 0)

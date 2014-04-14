@@ -14216,7 +14216,7 @@ stock Group_NumToDialogHex(iValue)
 stock GivePlayerStoreItem(playerid, type, business, item, price)
 {
 	new string[256];
-	if(Businesses[business][bInventory] >= StoreItemCost[item][ItemValue]) Businesses[business][bInventory] -= StoreItemCost[item][ItemValue];
+	if(Businesses[business][bInventory] >= StoreItemCost[item-1][ItemValue]) Businesses[business][bInventory] -= StoreItemCost[item-1][ItemValue];
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
 	switch (item)
   	{
@@ -25987,6 +25987,7 @@ ClearCheckpoint(playerid) {
 
     DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
+	DeletePVar(playerid, "DeliveringVehicleTime");
     DeletePVar(playerid, "TrackCar");
 	DeletePVar(playerid, "Pizza");
 	DeletePVar(playerid, "Packages");

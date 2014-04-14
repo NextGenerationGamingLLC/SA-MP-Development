@@ -7987,7 +7987,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: Your alarm will now activate and alert you when someone tries to steal your car.");
 
-					format(string, sizeof(string), "[Large Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[39][sItemPrice]));
+					format(string, sizeof(string), "[Deluxe Car Alarm] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[39][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
 				}
 			}
@@ -8695,7 +8695,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
-		for (new i; i <= 13; i++)
+		for (new i; i <= sizeof(StoreItems); i++)
 		{
 			format(pvar,sizeof(pvar),"Business_MenuItem%d", i);
 			DeletePVar(playerid, pvar);
