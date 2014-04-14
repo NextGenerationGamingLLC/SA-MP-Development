@@ -4238,7 +4238,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		}
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]+RandAmount;
 		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unkown", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
-		SendClientMessageEx(ownerid, COLOR_YELLOW, szMessage);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));

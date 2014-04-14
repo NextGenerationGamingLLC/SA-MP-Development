@@ -1139,6 +1139,13 @@ task ServerHeartbeat[1000]() {
 							GetPlayerIp(GetPVarInt(i, "LockPickPlayer"), ip2, sizeof(ip2));
 							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId]), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
 							Log("logs/playervehicle.log", szMessage);
+							new Float: pX, Float: pY, Float: pZ;
+							GetPlayerPos(i, pX, pY, pZ);
+							SetPVarFloat(i, "tpDeliverVehX", pX);
+					 		SetPVarFloat(i, "tpDeliverVehY", pY);
+					  		SetPVarFloat(i, "tpDeliverVehZ", pZ);
+							SetPVarInt(i, "tpDeliverVehTimer", 80);
+							SetTimerEx("OtherTimerEx", 1000, false, "ii", i, TYPE_DELIVERVEHICLE);
 							DeletePVar(i, "AttemptingLockPick");
 							DeletePVar(i, "LockPickCountdown");
 							DeletePVar(i, "LockPickTotalTime");
@@ -1192,14 +1199,14 @@ task ServerHeartbeat[1000]() {
 							ClearAnimations(i);
 							SetPlayerSkin(i, GetPlayerSkin(i));
 							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-							while (wslot < 3 && PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot])
+							while (wslot < 3 && !PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot])
 								wslot++;
 							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 							GetPlayerIp(i, ip, sizeof(ip));
 							GetPlayerIp(GetPVarInt(i, "LockPickPlayer"), ip2, sizeof(ip2));
 							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId]), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot], GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
 							Log("logs/playervehicle.log", szMessage);
-							if(wslot != 3) {
+							if(wslot < 3) {
 								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot]));
 								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
 								GivePlayerValidWeapon(i, PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot], 60000);

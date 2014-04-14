@@ -13199,7 +13199,7 @@ CMD:enter(playerid, params[])
                 SetCameraBehindPlayer(playerid);
             }
 			if(DDoorsInfo[i][ddCustomInterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ], FREEZE_TIME);
-            return 1;
+            break;
         }
     }
     for(new i = 0; i < sizeof(FamilyInfo); i++) {
@@ -13211,7 +13211,7 @@ CMD:enter(playerid, params[])
             SetPlayerPos(playerid,FamilyInfo[i][FamilyExit][0],FamilyInfo[i][FamilyExit][1],FamilyInfo[i][FamilyExit][2]);
             SetPlayerFacingAngle(playerid,FamilyInfo[i][FamilyExit][3]);
 			if(FamilyInfo[i][FamilyCustomMap]) Player_StreamPrep(playerid, FamilyInfo[i][FamilyExit][0],FamilyInfo[i][FamilyExit][1],FamilyInfo[i][FamilyExit][2], FREEZE_TIME);
-            return 1;
+            break;
         }
     }
     for(new i = 0; i < sizeof(HouseInfo); i++) {
@@ -13229,7 +13229,7 @@ CMD:enter(playerid, params[])
 				if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
             }
             else GameTextForPlayer(playerid, "~r~Locked", 5000, 1);
-            return 1;
+            break;
         }
     }
 
@@ -13278,7 +13278,7 @@ CMD:enter(playerid, params[])
 				}
 			}
 			else GameTextForPlayer(playerid, "~r~Closed", 5000, 1);
-			return 1;
+			break;
         }
     }
 
@@ -13513,6 +13513,15 @@ CMD:enter(playerid, params[])
 		SetPlayerVirtualWorld(playerid, cCar);
 		InsidePlane[playerid] = cCar;
 		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle, or /window to look outside.");
+	}
+	if(GetPVarType(playerid, "tpDeliverVehTimer") > 0)
+	{
+		SetPVarInt(playerid, "tpJustEntered", 1);
+		new Float: playerPos[3];
+		GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
+		SetPVarFloat(playerid, "tpDeliverVehX", playerPos[0]);
+		SetPVarFloat(playerid, "tpDeliverVehY", playerPos[1]);
+		SetPVarFloat(playerid, "tpDeliverVehZ", playerPos[2]);
 	}
     return 1;
 }
@@ -31574,7 +31583,7 @@ CMD:acceptcall(playerid, params[])
 		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
 		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
 		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't accept your own call!");
-		if((Calls[callid][Type] == 0 && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
+		if(((Calls[callid][Type] == 0 || Calls[callid][Type] == 4) && !IsACop(playerid)) || (Calls[callid][Type] == 1 && !IsAMedic(playerid)) || (Calls[callid][Type] == 2 && !IsACop(playerid)) || (Calls[callid][Type] == 3 && !IsACop(playerid) && !IsATowman(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
 		if(!IsPlayerConnected(Calls[callid][CallFrom]))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
@@ -31587,15 +31596,19 @@ CMD:acceptcall(playerid, params[])
 			if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][MainZone], true) == 0)
 			{
 				new Float: carPos[3], targetid = Calls[callid][CallFrom], targetslot = GetPlayerVehicle(Calls[callid][CallFrom], Calls[callid][CallVehicleId]);
-				if(Calls[callid][CallVehicleId] != INVALID_VEHICLE_ID) {
+				if(Calls[callid][CallVehicleId] != INVALID_VEHICLE_ID && Calls[callid][Type] == 4) {
 					switch(PlayerVehicleInfo[targetid][targetslot][pvAlarm]) {
 						case 1: {
-							
+							new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+							Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
+							Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
+							format(string, sizeof(string), "This %s(%d) is located in %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
+							SendClientMessageEx(playerid, COLOR_YELLOW, string);
 						}
 						case 2: {
 							if(PlayerVehicleInfo[targetid][targetslot][pvAlarmTriggered]) {
 								
-								if(PlayerVehicleInfo[targetid][targetslot][pvId] > INVALID_PLAYER_VEHICLE_ID)
+								if(PlayerVehicleInfo[targetid][targetslot][pvId] != INVALID_PLAYER_VEHICLE_ID)
 								{
 									GetVehiclePos(PlayerVehicleInfo[targetid][targetslot][pvId], carPos[0], carPos[1], carPos[2]);
 									if(CheckPointCheck(playerid))

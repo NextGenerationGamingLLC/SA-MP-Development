@@ -67,6 +67,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		TYPE_TPPIZZARUNTIMER 		13
 #define 		TYPE_PIZZATIMER 			14
 #define 		TYPE_CRATETIMER 			15
+#define 		TYPE_DELIVERVEHICLE			16
 
 			/*  ---------------- MISC ----------------- */
 #define 		RED_FLAG_OBJ 				1580

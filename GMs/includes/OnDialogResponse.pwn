@@ -207,8 +207,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
 					format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					strcpy(string, "Suspected Vehicle Burglary");
-					SendCallToQueue(playerid, inputtext, zone, mainzone, 4);
+					format(string, sizeof(string), "Suspected Vehicle Burglary, %s(%d)", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]), PlayerVehicleInfo[playerid][listitem][pvId]);
+					SendCallToQueue(playerid, string, zone, mainzone, 4, PlayerVehicleInfo[playerid][listitem][pvId]);
 					SetPVarInt(playerid, "Has911Call", 1);
 					SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
 					SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");
@@ -233,7 +233,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
 				SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				format(string, sizeof(string), "Suspected Vehicle Burglary, %s(%d)", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]), PlayerVehicleInfo[playerid][listitem][pvId]);
-				SendCallToQueue(playerid, string, zone, mainzone, 4);
+				SendCallToQueue(playerid, string, zone, mainzone, 4, PlayerVehicleInfo[playerid][listitem][pvId]);
 				SetPVarInt(playerid, "Has911Call", 1);
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");

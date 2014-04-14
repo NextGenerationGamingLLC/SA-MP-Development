@@ -3401,7 +3401,7 @@ stock SaveBusiness(id)
 	Businesses[id][bIntPos][0],	Businesses[id][bIntPos][1], Businesses[id][bIntPos][2], Businesses[id][bIntPos][3],
 	Businesses[id][bInt], Businesses[id][bCustomExterior], Businesses[id][bCustomInterior], Businesses[id][bGrade], Businesses[id][bVW], Businesses[id][bSupplyPos][0],Businesses[id][bSupplyPos][1], Businesses[id][bSupplyPos][2]);
 
-	for (new i; i < 17; i++) format(query, sizeof(query), "%s`Item%dPrice` = %d, ", query, i+1, Businesses[id][bItemPrices][i]);
+	for (new i; i < sizeof(StoreItems); i++) format(query, sizeof(query), "%s`Item%dPrice` = %d, ", query, i+1, Businesses[id][bItemPrices][i]);
 	for (new i; i < 5; i++)	format(query, sizeof(query), "%s`Rank%dPay` = %d, ", query, i, Businesses[id][bRankPay][i], id);
 	for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) format(query, sizeof(query), "%s `GasPump%dPosX` = %f, `GasPump%dPosY` = %f, `GasPump%dPosZ` = %f, `GasPump%dAngle` = %f, `GasPump%dModel` = %d, `GasPump%dCapacity` = %f, `GasPump%dGas` = %f, ", query, i+1, Businesses[id][GasPumpPosX][i],	i+1, Businesses[id][GasPumpPosY][i], i+1, Businesses[id][GasPumpPosZ][i], i+1, Businesses[id][GasPumpAngle][i], i+1, 1646,i+1, Businesses[id][GasPumpCapacity],	i+1, Businesses[id][GasPumpGallons]);
 
@@ -7037,7 +7037,7 @@ public BusinessesLoadQueryFinish()
 				
 				if(Businesses[i][GasPumpPosX][j] != 0.0) CreateDynamicGasPump(_, i, j);
 
-				for (new z; z <= 17; z++)
+				for (new z; z <= sizeof(StoreItems); z++)
 				{
 			    	new col[12];
 					format(col, sizeof(col), "Item%dPrice", z + 1);
@@ -7079,7 +7079,7 @@ public BusinessesLoadQueryFinish()
 		}
 		else
 		{
-			for (new j; j <= 17; j++)
+			for (new j; j <= sizeof(StoreItems); j++)
 			{
 			    new col[12];
 				format(col, sizeof(col), "Item%dPrice", j + 1);

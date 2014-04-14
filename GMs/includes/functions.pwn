@@ -3503,6 +3503,7 @@ public InitiateGamemode()
 	LoadElevatorStuff();
 	LoadFamilies();
 	LoadPoints();
+	ClearCalls();
 	//LoadHelp();
 	Misc_Load();
 	InitPokerTables();
@@ -6025,6 +6026,47 @@ public OtherTimerEx(playerid, type)
 				    DeletePVar(playerid, "tpForkliftY");
 				    DeletePVar(playerid, "tpForkliftZ");
 				}
+			}
+		}
+		case TYPE_DELIVERVEHICLE: 
+		{
+			if(GetPVarType(playerid, "tpDeliverVehTimer") > 0 && GetPVarType(playerid, "DeliveringVehicleTime") > 0)
+			{
+				new Float: pX = GetPVarFloat(playerid, "tpDeliverVehX"), Float: pY = GetPVarFloat(playerid, "tpDeliverVehY"), Float: pZ = GetPVarFloat(playerid, "tpDeliverVehZ");
+				if(GetPlayerDistanceFromPoint(playerid, pX, pY, pZ) > 500)
+				{
+					if(GetPVarType(playerid, "tpJustEntered") == 0)
+					{
+						new string[128];
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(%d) may be TP hacking while delivering a lock picked vehicle.", GetPlayerNameEx(playerid), playerid);
+						ABroadCast(COLOR_YELLOW, string, 2);
+						SetPVarInt(playerid, "tpDeliverVehTimer", GetPVarInt(playerid, "tpDeliverVehTimer")+15);
+					}
+					else
+					{
+						DeletePVar(playerid, "tpJustEntered");
+					}
+				}
+				GetPlayerPos(playerid, pX, pY, pZ);
+				SetPVarFloat(playerid, "tpDeliverVehX", pX);
+				SetPVarFloat(playerid, "tpDeliverVehY", pY);
+				SetPVarFloat(playerid, "tpDeliverVehZ", pZ);
+				SetPVarInt(playerid, "tpDeliverVehTimer", GetPVarInt(playerid, "tpDeliverVehTimer")-1);
+				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_DELIVERVEHICLE);
+				if(GetPVarInt(playerid, "tpDeliverVehTimer") == 0)
+				{
+					DeletePVar(playerid, "tpDeliverVehTimer");
+					DeletePVar(playerid, "tpDeliverVehX");
+					DeletePVar(playerid, "tpDeliverVehY");
+					DeletePVar(playerid, "tpDeliverVehZ");
+				}
+			}
+			else
+			{
+				DeletePVar(playerid, "tpDeliverVehTimer");
+				DeletePVar(playerid, "tpDeliverVehX");
+				DeletePVar(playerid, "tpDeliverVehY");
+				DeletePVar(playerid, "tpDeliverVehZ");
 			}
 		}
 	}
