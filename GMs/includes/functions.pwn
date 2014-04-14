@@ -25919,24 +25919,6 @@ stock GetVehicleRelativePos(vehicleid, &Float:x, &Float:y, &Float:z, Float:xoff=
     */
 }
 
-
-/* stock GetXYNextToVehicle(vehicleid, &Float:x, &Float:y, Float:distance, leftright = 0) // 0 = left 1 = right
-{
-    new
-        Float:a;
-    GetVehiclePos( vehicleid, x, y, a );
-    GetVehicleZAngle( vehicleid, a );
-	if(leftright == 0) {
-		x += ( distance * floatsin( -a+90, degrees ));
-		y += ( distance * floatcos( -a+90, degrees ));
-	}
-	else {
-		x += ( distance * floatsin( -a-90, degrees ));
-		y += ( distance * floatcos( -a-90, degrees ));
-	}
-   
-} */
-
 TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
 {
 	new szMessage[128], szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
