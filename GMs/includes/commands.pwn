@@ -2808,22 +2808,7 @@ CMD:joinarena(playerid, params[])
 
 CMD:killcheckpoint(playerid, params[])
 {
-	TaxiAccepted[playerid] = INVALID_PLAYER_ID;
-	EMSAccepted[playerid] = INVALID_PLAYER_ID;
-	BusAccepted[playerid] = INVALID_PLAYER_ID;
-	MedicAccepted[playerid] = INVALID_PLAYER_ID;
-	MechanicCallTime[playerid] = 0;
-
-
-    DeletePVar(playerid, "DV_TrackCar");
-    DeletePVar(playerid, "TrackCar");
-    DisablePlayerCheckpoint(playerid);
-	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
- 	TaxiCallTime[playerid] = 0;
-  	BusCallTime[playerid] = 0;
-  	DeletePVar(playerid, "Pizza");
-	DeletePVar(playerid, "Packages");
-	DeletePVar(playerid, "hFind");
+	ClearCheckpoint(playerid);
 	SendClientMessageEx(playerid,COLOR_WHITE,"All current checkpoints, trackers and accepted fares have been reset.");
 	return 1;
 }
@@ -7147,7 +7132,7 @@ CMD:car(playerid, params[])
 	{
 		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		{
-			new vehicleid = GetPlayerVehicleID(playerid);
+			new vehicleid = GetPlayerVehicleID(playerid), slot = GetPlayerVehicle(playerid, vehicleid);
 			new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
 			GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 			if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
@@ -7156,6 +7141,7 @@ CMD:car(playerid, params[])
 			if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
 			else strcpy(lightstatus, "ON", 3);
 			if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+			else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
 			else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
@@ -9606,7 +9592,7 @@ CMD:accept(playerid, params[])
 			    return 1;
 			}
 
-			if(item == ITEM_ILOCK || item == ITEM_ALOCK || item == ITEM_ELOCK)
+			if(item == ITEM_ILOCK || item == ITEM_SCALARM || item == ITEM_ELOCK)
    			{
       			if(Businesses[business][bInventory] >= StoreItemCost[item][ItemValue])
 	        	{
@@ -9700,7 +9686,9 @@ CMD:accept(playerid, params[])
    							if(!vehicleSpawnCountCheck(playerid)) {
 								return SendClientMessage(playerid, COLOR_GRAD2, "You have too many vehicles spawned - store one first.");
 							}
-
+							if(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvBeingPickLocked])
+								return SendClientMessage(playerid, COLOR_GRAD2, "There was an error while trying to sell this vehicle.");
+							
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(VehicleOffer[playerid], ipex, sizeof(ipex));
@@ -9744,12 +9732,17 @@ CMD:accept(playerid, params[])
                             PlayerVehicleInfo[playerid][playervehicleid][pvPark] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPark];
                             PlayerVehicleInfo[playerid][playervehicleid][pvVW] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvVW];
                             PlayerVehicleInfo[playerid][playervehicleid][pvInt] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvInt];
+							PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarm];
+							PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocksLeft];
 							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = 0;
 							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = 0;
 							PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 							PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 							PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
                             PlayerVehicleInfo[playerid][playervehicleid][pvSpawned] = 1;
+							PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
+							PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[playerid][playervehicleid][pvLastLockPickedBy] = 0;
                             VehicleSpawned[playerid]++;
                             for(new m = 0; m < MAX_MODS; m++) {
                                 PlayerVehicleInfo[playerid][playervehicleid][pvMods][m] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvMods][m];
@@ -9769,6 +9762,7 @@ CMD:accept(playerid, params[])
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosZ] = 0.0;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPosAngle] = 0.0;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLock] = 0;
+							PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 0;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLocked] = 0;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPaintJob] = -1;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvColor1] = 0;
@@ -9784,6 +9778,10 @@ CMD:accept(playerid, params[])
 							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvWeapons][2] = 0;
 							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvPlate] = 0;
 							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvTicket] = 0;
+							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarm] = 0;
+							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvAlarmTriggered] = 0;
+							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvLastLockPickedBy] = 0;
                             VehicleSpawned[VehicleOffer[playerid]]--;
                             for(new m = 0; m < MAX_MODS; m++) {
                                 PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvMods][m] = 0;
@@ -11673,6 +11671,16 @@ CMD:accept(playerid, params[])
 									SaveHouse(PlayerInfo[playerid][pPhousekey3]);
 									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
 								}		
+							}
+							case 18:
+							{
+								PlayerInfo[playerid][pToolBox] += 25;
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /pickveh(icle) in any car to attempt to lock pick it.");
+							}
+							case 19:
+							{
+								PlayerInfo[playerid][pCrowBar] += 1;
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cranktrunk in any car that you already lock picked to attempt to open the trunk.");
 							}
                         }
                         format(szMessage, sizeof(szMessage), "   You have given %s, a %s.", GetPlayerNameEx(playerid),weaponname);
@@ -17911,7 +17919,7 @@ CMD:skill(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "| 3: Whore											  	 						 8: Boxer");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drugs Dealer										  9: Fishing");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 5: Drug Smuggler								10: Shipment Contractor");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Treasure Hunter");
+		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Treasure Hunter							12: Vehicle Lock Picking");
 		return 1;
 	}
 	else switch(strval(params)) {
@@ -18013,6 +18021,15 @@ CMD:skill(playerid, params[])
 			else if(level >=150 && level <= 299) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 3"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 300 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=300 && level <= 599) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 4"), format(string, sizeof(string), "You need to find treasure %d times to level up.", 600 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=600) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunting Skill Level = 5");
+		}
+		case 12: //Lock Picking
+		{
+		    new level = PlayerInfo[playerid][pCarLockPickSkill], string[61];
+            if(level >=0 && level <= 49) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 1"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 50 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+            else if(level >= 50 && level <= 124) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 2"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 125 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=125 && level <= 224) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 3"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 225 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=225 && level <= 349) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 4"), format(string, sizeof(string), "You need successfully lock pick %d more cars to level up.", 350 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=350) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 5");
 		}
 		default:
 		{
@@ -24164,6 +24181,10 @@ CMD:pvlock(playerid, params[])
 			{
                 if(PlayerVehicleInfo[ownerid][d][pvLock] > 0)
 				{
+					if(PlayerVehicleInfo[ownerid][d][pvLocksLeft] <= 0) {
+						SendClientMessageEx(playerid, COLOR_GREY, "The lock has been damaged as result of a lock pick!");
+						return 1;
+					}
                     if(PlayerVehicleInfo[ownerid][d][pvLocked] == 0)
 					{
                         GameTextForPlayer(playerid,"~r~Vehicle Locked!",5000,6);
@@ -24184,7 +24205,7 @@ CMD:pvlock(playerid, params[])
                 else
 				{
                     SendClientMessageEx(playerid, COLOR_GREY, " You don't have a lock system installed on this vehicle.");
-                    return 1;
+					return 1;
                 }
             }
         }
@@ -24194,6 +24215,10 @@ CMD:pvlock(playerid, params[])
         if(PlayerVehicleInfo[playerid][d][pvId] != INVALID_PLAYER_VEHICLE_ID) GetVehiclePos(PlayerVehicleInfo[playerid][d][pvId], x, y, z);
         if(IsPlayerInRangeOfPoint(playerid, 3.0, x, y, z))
 		{
+			if(PlayerVehicleInfo[playerid][d][pvLocksLeft] <= 0) {
+				SendClientMessageEx(playerid, COLOR_GREY, "The lock has been damaged as result of a lock pick, please buy a new one!");
+				return 1;
+			}
             if(PlayerVehicleInfo[playerid][d][pvLock] > 0 && PlayerVehicleInfo[playerid][d][pvLocked] == 0)
 			{
                 GameTextForPlayer(playerid,"~r~Vehicle Locked!",5000,6);
@@ -31156,7 +31181,8 @@ CMD:call(playerid, params[])
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
 		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 		else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
-		else ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing", "Select", "End Call");
+		else 
+			ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)", "Select", "End Call");
 		return 1;
 	}
 	if(phonenumb == PlayerInfo[playerid][pPnumber])
@@ -31440,7 +31466,7 @@ CMD:calls(playerid, params[])
 	{
 		new string[128];
 		SendClientMessageEx(playerid, COLOR_DBLUE, "____________________ 911 CALLS ____________________");
-		for(new i = 999; i >= 0; i--)
+		for(new i = 999; i >= 0; i--) // Why in hell would we run 4 unnecessary loops here?
 		{
 			if(Calls[i][BeingUsed] == 1)
 			{
@@ -31453,11 +31479,31 @@ CMD:calls(playerid, params[])
 							format(string, sizeof(string), "[EMERGENCY] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							SendClientMessageEx(playerid, COLOR_RED, string);
 						}
+						else if(Calls[i][Type] == 1 && IsAMedic(playerid))
+						{
+							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
+						else if(Calls[i][Type] == 2 && IsACop(playerid))
+						{
+							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
+						else if(Calls[i][Type] == 3 && (IsACop(playerid) || IsATowman(playerid)))
+						{
+							format(string, sizeof(string), "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
+						else if(Calls[i][Type] == 4 && IsACop(playerid))
+						{
+							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
 					}
 				}
 			}
 		}
-		for(new i = 999; i >= 0; i--)
+		/* for(new i = 999; i >= 0; i--)
 		{
 			if(Calls[i][BeingUsed] == 1)
 			{
@@ -31507,7 +31553,7 @@ CMD:calls(playerid, params[])
 					}
 				}
 			}
-		}
+		} */
 		SendClientMessageEx(playerid, COLOR_DBLUE, "___________________________________________________");
 	}
 	return 1;
@@ -31540,6 +31586,47 @@ CMD:acceptcall(playerid, params[])
 		{
 			if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][MainZone], true) == 0)
 			{
+				new Float: carPos[3], targetid = Calls[callid][CallFrom], targetslot = GetPlayerVehicle(Calls[callid][CallFrom], Calls[callid][CallVehicleId]);
+				if(Calls[callid][CallVehicleId] != INVALID_VEHICLE_ID) {
+					switch(PlayerVehicleInfo[targetid][targetslot][pvAlarm]) {
+						case 1: {
+							
+						}
+						case 2: {
+							if(PlayerVehicleInfo[targetid][targetslot][pvAlarmTriggered]) {
+								
+								if(PlayerVehicleInfo[targetid][targetslot][pvId] > INVALID_PLAYER_VEHICLE_ID)
+								{
+									GetVehiclePos(PlayerVehicleInfo[targetid][targetslot][pvId], carPos[0], carPos[1], carPos[2]);
+									if(CheckPointCheck(playerid))
+									{
+										return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+									}
+									else
+									{
+										new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+										Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
+										Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
+										format(string, sizeof(string), "This %s(%d) is located in %s(%s).", GetVehicleName(Calls[callid][CallVehicleId]), zone, mainzone);
+										SendClientMessageEx(playerid, COLOR_YELLOW, string);
+										
+										SetPVarFloat(playerid, "CarLastX", carPos[0]);
+										SetPVarFloat(playerid, "CarLastY", carPos[1]);
+										SetPVarFloat(playerid, "CarLastZ", carPos[2]);
+										SetPVarInt(playerid, "TrackVehicleBurglary", 120);
+										SetPVarInt(playerid, "CallId", callid);
+										SetPlayerCheckpoint(playerid, carPos[0], carPos[1], carPos[2], 15.0);
+										SendClientMessageEx(playerid, COLOR_WHITE, "Hint: Make your way to the checkpoint to find the vehicle(Will only last 2 minutes)!");
+									}
+								}
+								else if(PlayerVehicleInfo[targetid][targetslot][pvImpounded]) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track an impounded vehicle.");
+								else if(PlayerVehicleInfo[targetid][targetslot][pvDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a disabled vehicle.");
+								else if(PlayerVehicleInfo[targetid][targetslot][pvSpawned] == 0) SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a stored vehicle.");
+								else SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a non-existent vehicle.");
+							}
+						}
+					}
+				}
 				//foreach(new i: Player)
 				for(new i = 0; i < MAX_PLAYERS; ++i)
 				{
@@ -31567,6 +31654,8 @@ CMD:acceptcall(playerid, params[])
 				SetPlayerAttachedObject(Calls[callid][CallFrom], 8, 330, 6);
 				SetPlayerSpecialAction(Calls[callid][CallFrom], SPECIAL_ACTION_USECELLPHONE);
 				PlayerInfo[playerid][pCallsAccepted]++;
+				
+				
 				Calls[callid][RespondingID] = playerid;
 				Calls[callid][BeingUsed] = 0;
 				Calls[callid][TimeToExpire] = 0;
@@ -35890,6 +35979,7 @@ CMD:setstat(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Jack Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time |59 Tool Box |60 Crowbar");
 			return 1;
 		}
 
@@ -36034,7 +36124,7 @@ CMD:setstat(playerid, params[])
 				}
 			case 27:
 				{
-					SetPVarInt(playerid, "Packages", amount);
+					SetPVarInt(giveplayerid, "Packages", amount);
 					format(string, sizeof(string), "   %s's Materials Packages have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
 				}
 			case 28:
@@ -36170,13 +36260,13 @@ CMD:setstat(playerid, params[])
 					if (amount <= 0)
 					{
 						amount = 1;
-						PlayerInfo[playerid][pHungerTimer] = 1799;
+						PlayerInfo[giveplayerid][pHungerTimer] = 1799;
 					} else if (amount > 100)
 					{
 						amount = 100;
 					}
 
-					PlayerInfo[playerid][pHungerDeathTimer] = 0;
+					PlayerInfo[giveplayerid][pHungerDeathTimer] = 0;
 
 					PlayerInfo[giveplayerid][pHunger] = amount;
 					format(string, sizeof(string), "   %s's Hunger has been set to %i.", GetPlayerNameEx(giveplayerid), amount);
@@ -36197,6 +36287,31 @@ CMD:setstat(playerid, params[])
 				{
 					PlayerInfo[giveplayerid][pRimMod] = amount;
 					format(string, sizeof(string), "   %s's Rim Kits have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+				}
+			case 56:
+				{
+					PlayerInfo[giveplayerid][pCarLockPickSkill] = amount;
+					format(string, sizeof(string), "   %s's Car Lock Pick Skill have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+				}
+			case 57:
+				{
+					PlayerInfo[giveplayerid][pLockPickVehCount] = amount;
+					format(string, sizeof(string), "   %s's Lock Pick Vehicle Count have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+				}
+			case 58:
+				{
+					PlayerInfo[giveplayerid][pLockPickTime] = amount;
+					format(string, sizeof(string), "   %s's Lock Pick Vehicle Time have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+				}
+			case 59:
+				{
+					PlayerInfo[giveplayerid][pToolBox] = amount;
+					format(string, sizeof(string), "   %s's Tool Box usages have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+				}
+			case 60:
+				{
+					PlayerInfo[giveplayerid][pCrowBar] = amount;
+					format(string, sizeof(string), "   %s's Crowbar usages have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
 				}
 
 			default:
@@ -36223,13 +36338,16 @@ CMD:setmystat(playerid, params[])
 		if(sscanf(params, "dd", statcode, amount))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |6 PhoneNumber |7 RespectPoints");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|8 HouseKey |11 FMember |12 Det |13 Lawyer |14 Fixer |16 Jack |17 Drug");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|18 Sex |19 Box |20 Arms |24 Fishing |25 Job |26 Rank |27 Packages |28 Crates");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "|29 Smuggler |30 Empty |31 Warnings |32 Screwdriver |33 Age |34 Sex |35 NMute 36| AdMute 37| Faction");
+			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 FMember |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time");
 			return 1;
 		}
-
+		
 		switch (statcode)
 		{
 		case 1:
@@ -36253,15 +36371,29 @@ CMD:setmystat(playerid, params[])
 				PlayerInfo[playerid][pModel] = amount;
 				format(string, sizeof(string), "   %s's Model has been set %d.", GetPlayerNameEx(playerid), amount);
 			}
+		case 5:
+			{
+				PlayerInfo[playerid][pAccount] = amount;
+				format(string, sizeof(string), "   %s's Bank Account has been set to $%d.", GetPlayerNameEx(playerid), amount);
+			}
 		case 6:
 			{
-				new query[128];
-				SetPVarInt(playerid, "WantedPh", amount);
-				SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
-				SetPVarInt(playerid, "PhChangeCost", 50000);
-				format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
-				mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 3);
-				return 1;
+				if(amount == 0)
+				{
+					PlayerInfo[playerid][pPnumber] = amount;
+					format(string, sizeof(string), "   %s had their phone removed", GetPlayerNameEx(playerid));
+				}
+				else
+				{
+					new query[128];
+					SetPVarInt(playerid, "WantedPh", amount);
+					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
+					SetPVarInt(playerid, "PhChangeCost", 50000);
+					SetPVarInt(playerid, "PhChangerId", playerid);
+					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
+					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 4);
+					return 1;
+				}
 			}
 		case 7:
 			{
@@ -36270,7 +36402,18 @@ CMD:setmystat(playerid, params[])
 			}
 		case 8:
 			{
-				SendClientMessageEx(playerid,COLOR_RED,"House keys cannot be set directly."); return 1;
+				PlayerInfo[playerid][pPhousekey] = amount;
+				format(string, sizeof(string), "   %s's House 1 has been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 9:
+			{
+				PlayerInfo[playerid][pPhousekey2] = amount;
+				format(string, sizeof(string), "   %s's House 2 has been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 10:
+			{
+				PlayerInfo[playerid][pPhousekey3] = amount;
+				format(string, sizeof(string), "   %s's House 3 has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 11:
 			{
@@ -36312,6 +36455,21 @@ CMD:setmystat(playerid, params[])
 				PlayerInfo[playerid][pArmsSkill] = amount;
 				format(string, sizeof(string), "   %s's Arms Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
+		case 21:
+			{
+				PlayerInfo[playerid][pMats] = amount;
+				format(string, sizeof(string), "   %s's Materials have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 22:
+			{
+				PlayerInfo[playerid][pPot] = amount;
+				format(string, sizeof(string), "   %s's Pot has been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 23:
+			{
+				PlayerInfo[playerid][pCrack] = amount;
+				format(string, sizeof(string), "   %s's Crack has been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
 		case 24:
 			{
 				PlayerInfo[playerid][pFishSkill] = amount;
@@ -36342,6 +36500,11 @@ CMD:setmystat(playerid, params[])
 				PlayerInfo[playerid][pSmugSkill] = amount;
 				format(string, sizeof(string), "   %s's Smuggler Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
+		case 30:
+			{
+				PlayerInfo[playerid][pInsurance] = amount;
+				format(string, sizeof(string), "   %s's Insurance has been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
 		case 31:
 			{
 				PlayerInfo[playerid][pWarns] = amount;
@@ -36354,13 +36517,13 @@ CMD:setmystat(playerid, params[])
 			}
 		/*case 33:
 			{
-				PlayerInfo[playerid][pAge] = amount;
+				PlayerInfo[playerid][pBirthDate] = amount;
 				format(string, sizeof(string), "   %s's Age has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}*/
 		case 34:
 			{
 				PlayerInfo[playerid][pSex] = amount;
-				format(string, sizeof(string), "   %s's Sex has been set to %d.", GetPlayerNameEx(playerid), amount);
+				format(string, sizeof(string), "   %s's Gender has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 35:
 			{
@@ -36377,6 +36540,143 @@ CMD:setmystat(playerid, params[])
 				PlayerInfo[playerid][pMember] = amount;
 				format(string, sizeof(string), "   %s's Faction has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
+		case 38:
+			{
+				if(PlayerInfo[playerid][pConnectHours] >= 2) {
+					PlayerInfo[playerid][pWRestricted] = amount;
+					format(string, sizeof(string), "   %s's Weapon Restricted Time has been set to %d.", GetPlayerNameEx(playerid), amount);
+				}
+				else {
+					return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set this on a person who has under 2 playing hours.");
+				}
+			}
+		case 39:
+			{
+				PlayerInfo[playerid][pGangWarn] = amount;
+				format(string, sizeof(string), "   %s's Gang Warns have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 40:
+			{
+				PlayerInfo[playerid][pRMutedTotal] = amount;
+				format(string, sizeof(string), "   %s's Report Mutes have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 41:
+			{
+				PlayerInfo[playerid][pRewardHours] = amount;
+				format(string, sizeof(string), "   %s's Reward Playing Hours have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 42:
+			{
+				PlayerInfo[playerid][pConnectHours] = amount;
+				format(string, sizeof(string), "   %s's Playing Hours have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 43:
+			{
+				PlayerInfo[playerid][pGoldBoxTokens] = amount;
+				format(string, sizeof(string), "   %s's Box Tokens have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 44:
+			{
+				PlayerInfo[playerid][pRewardDrawChance] = amount;
+				format(string, sizeof(string), "   %s's Computer Drawings have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 45:
+			{
+				PlayerInfo[playerid][pPaper] = amount;
+				format(string, sizeof(string), "   %s's Papers have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 46:
+			{
+				if (amount < 0 || amount >= MAX_BUSINESSES) return 1;
+				PlayerInfo[playerid][pBusiness] = amount;
+				format(string, sizeof(string), "   %s's Business have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 47:
+			{
+				if (amount < 0 || amount > 5) return 1;
+				PlayerInfo[playerid][pBusinessRank] = amount;
+				format(string, sizeof(string), "   %s's Business Rank have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 48:
+			{
+				PlayerInfo[playerid][pSpraycan] = amount;
+				format(string, sizeof(string), "   %s's Spraycans have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 49:
+			{
+				PlayerInfo[playerid][pHeroin] = amount;
+				format(string, sizeof(string), "   %s's Heroin have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 50:
+			{
+				PlayerInfo[playerid][pRawOpium] = amount;
+				format(string, sizeof(string), "   %s's raw opium have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+		case 51:
+			{
+				PlayerInfo[playerid][pSyringes] = amount;
+				format(string, sizeof(string), "   %s's Syringes have been set to %d.", GetPlayerNameEx(playerid), amount);
+			}
+
+		case 52:
+			{
+				if (amount <= 0)
+				{
+					amount = 1;
+					PlayerInfo[playerid][pHungerTimer] = 1799;
+				} else if (amount > 100)
+				{
+					amount = 100;
+				}
+
+				PlayerInfo[playerid][pHungerDeathTimer] = 0;
+
+				PlayerInfo[playerid][pHunger] = amount;
+				format(string, sizeof(string), "   %s's Hunger has been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+
+		case 53:
+			{
+				PlayerInfo[playerid][pFitness] = amount;
+				format(string, sizeof(string), "   %s's Fitness has been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+
+		case 54:
+			{
+				PlayerInfo[playerid][pTrickortreat] = amount;
+				format(string, sizeof(string), "   %s's Event Tokens have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 55:
+			{
+				PlayerInfo[playerid][pRimMod] = amount;
+				format(string, sizeof(string), "   %s's Rim Kits have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 56:
+			{
+				PlayerInfo[playerid][pCarLockPickSkill] = amount;
+				format(string, sizeof(string), "   %s's Car Lock Pick Skill have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 57:
+			{
+				PlayerInfo[playerid][pLockPickVehCount] = amount;
+				format(string, sizeof(string), "   %s's Lock Pick Vehicle Count have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 58:
+			{
+				PlayerInfo[playerid][pLockPickTime] = amount;
+				format(string, sizeof(string), "   %s's Lock Pick Vehicle Time have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 59:
+			{
+				PlayerInfo[playerid][pToolBox] = amount;
+				format(string, sizeof(string), "   %s's Tool Box usages have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+		case 60:
+			{
+				PlayerInfo[playerid][pCrowBar] = amount;
+				format(string, sizeof(string), "   %s's Crowbar usages have been set to %i.", GetPlayerNameEx(playerid), amount);
+			}
+
 		default:
 			{
 				format(string, sizeof(string), "   Invalid stat code.", amount);
@@ -42813,8 +43113,8 @@ CMD:miscshop(playerid, params[])
 			format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 			number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
 			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks", 
-			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
+			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
+			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
 			ShowPlayerDialog(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 		}
 		else
@@ -47161,15 +47461,16 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1000)	 smslog(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "wristwatch(500)	 surveillance(8000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8000)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "firstaid(1000)	 camera(250)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1000)	 camera(250)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8000)	     receiver(5000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "gps(1000)          bugsweep(10000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1000)          bugsweep(10000)");
 		//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)        mailbox(15000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "metaldetector(12500) syringe(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50000)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12500) syringe(500)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50000)		toolbox(15000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(10000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -47432,6 +47733,32 @@ CMD:craft(playerid, params[])
 				return 1;
 			}
 		}
+		else if(strcmp(choice,"toolbox",true) == 0)
+		{
+			if(PlayerInfo[playerid][pMats] >= 15000)
+			{
+				price = 15000;
+				weapon = 18;
+			}
+			else
+			{
+				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"crowbar",true) == 0)
+		{
+			if(PlayerInfo[playerid][pMats] >= 10000)
+			{
+				price = 10000;
+				weapon = 19;
+			}
+			else
+			{
+				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
+				return 1;
+			}
+		}
 		else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid Craft name!"); return 1; }
 		if (ProxDetectorS(5.0, playerid, giveplayerid))
 		{
@@ -47592,6 +47919,16 @@ CMD:craft(playerid, params[])
 							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
 						}	
 						else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
+					}
+				case 18:
+					{
+						PlayerInfo[playerid][pToolBox] += 25;
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /pickveh(icle) in any car to attempt to lock pick it.");
+					}
+				case 19:
+					{
+						PlayerInfo[playerid][pCrowBar] += 1;
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cranktrunk in any car that you already lock picked to attempt to open the trunk.");
 					}
 				}
 				format(string, sizeof(string), "   You have given yourself a %s.", choice);
@@ -59190,6 +59527,161 @@ CMD:vipm(playerid, params[])
 				SendClientMessageEx(i, 0xff0066FF, szMessage);
 			}
 		}
+	}
+	return 1;
+}
+
+CMD:pickvehicle(playerid, params[])
+{
+	return cmd_pickveh(playerid, params);
+}
+
+CMD:pickveh(playerid, params[])
+{
+	new szMessage[150], Float: vehSize[3], Float: Pos[3], Float:a;
+
+	if(gettime() < PlayerInfo[playerid][pLockPickTime]) {
+		format(szMessage, sizeof(szMessage), "You must wait %s in order to attempt another lock pick.", ConvertTimeS(PlayerInfo[playerid][pLockPickTime] - gettime()));
+		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	}
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are already attempting a lockpick, please wait.");
+	if(GetPVarType(playerid, "DeliveringVehicleTime")) return SendClientMessageEx(playerid, COLOR_WHITE, "Deliver the vehicle you lock picked first or wait some time.");
+	if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
+	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
+	
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
+		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		
+		
+	new vehicleid = GetClosestCar(playerid);
+	/* for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
+		if(PlayerVehicleInfo[playerid][d][pvId] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that you own."); */
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
+	GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
+	if(IsPlayerInRangeOfPoint(playerid, 1.0, Pos[0], Pos[1], Pos[2])) {
+		for(new i = 0; i < MAX_PLAYERS; ++i) {
+			if(IsPlayerConnected(i)) {
+				new v = GetPlayerVehicle(i, vehicleid);
+				if(v != -1) {
+					if(PlayerVehicleInfo[i][v][pvLock] == 0 || PlayerVehicleInfo[i][v][pvLocksLeft] <= 0)
+						return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that don't have a lock.");
+					if(PlayerVehicleInfo[i][v][pvAllowedPlayerId] == playerid)
+						return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that you have the keys of them.");
+					new status, waittime, vipperk, randskill = random(100);
+					switch(PlayerInfo[playerid][pDonateRank]) {
+						case 1: vipperk = 5;
+						case 2: vipperk = 10;
+						case 3, 4, 5: vipperk = 15;
+					}
+					switch(PlayerInfo[playerid][pCarLockPickSkill]) {
+						case 0 .. 49: if(0 <= randskill < (25+vipperk)) waittime = 180, status = 1; //Success
+						case 50 .. 124: if(0 <= randskill < (35+vipperk)) waittime = 170, status = 1; //Success
+						case 125 .. 224: if(0 <= randskill < (45+vipperk)) waittime = 160, status = 1; //Success
+						case 225 .. 349: if(0 <= randskill < (55+vipperk)) waittime = 150, status = 1; //Success
+						default: if(0 <= randskill < (65+vipperk)) waittime = 130, status = 1; //Success
+					}
+					format(szMessage, sizeof(szMessage), "* %s attempts to pick lock a nearby vehicle.", GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
+					if(--PlayerInfo[playerid][pToolBox] <= 0) SendClientMessageEx(playerid, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+					if(status) {
+						SetPVarInt(playerid, "AttemptingLockPick", 1);
+						SetPVarInt(playerid, "LockPickCountdown", waittime);
+						SetPVarInt(playerid, "LockPickTotalTime", waittime);
+						SetPVarInt(playerid, "LockPickVehicle", vehicleid);
+						SetPVarInt(playerid, "LockPickPlayer", i);
+						
+						PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
+						PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;
+						format(szMessage, sizeof(szMessage), "(( You start to pick lock this vehicle, attempting to break into it(Wait %s). ))", ConvertTimeS(waittime));
+						SendClientMessageEx(playerid, COLOR_PURPLE, szMessage);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail lock picking the vehicle.");
+						GetVehicleZAngle(vehicleid, a);
+						SetPlayerFacingAngle(playerid, a-90);
+						ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+						GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
+						SetPVarFloat(playerid, "LockPickPosX", Pos[0]), SetPVarFloat(playerid, "LockPickPosY", Pos[1]), SetPVarFloat(playerid, "LockPickPosZ", Pos[2]);
+						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+						GetPlayerIp(playerid, ip, sizeof(ip));
+						GetPlayerIp(i, ip2, sizeof(ip2));
+						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
+						Log("logs/playervehicle.log", szMessage);
+					}
+					else {
+						SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
+					}
+					break;
+				}
+			}
+		}
+	}
+	else {
+		GetPlayerPos(playerid, vehSize[0], vehSize[1], vehSize[2]);
+		printf("VehicleId: %d VehX: %.1f VehY: %.1f VehZ: %.1f PlayerX: %.1f PlayerY: %.1f PlayerZ: %.1f", vehicleid, Pos[0], Pos[1], Pos[2], vehSize[0], vehSize[1], vehSize[2]);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be next to the drivers door in order to lock pick it.");
+	}
+	return 1;
+}
+
+CMD:cracktrunk(playerid, params[])
+{
+	new szMessage[150], Float: x, Float: y, Float: z, Float: vehSize[3];
+
+	if(gettime() < PlayerInfo[playerid][pLockPickTime]) {
+		format(szMessage, sizeof(szMessage), "You must wait %s in order to attempt another crack trunk.", ConvertTimeS(PlayerInfo[playerid][pLockPickTime] - gettime()));
+		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	}
+	//if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
+	if(!PlayerInfo[playerid][pCrowBar]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Crow Bar in order to crack this trunk, get one from a Craftsman.");
+	//if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
+	
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
+		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+		
+		
+	new vehicleid = GetClosestCar(playerid);
+	
+	GetPosBehindVehicle(vehicleid, x, y, z, 1.0);
+	if(IsPlayerInRangeOfPoint(playerid, 1.0, x, y, z) && GetPVarInt(playerid, "LockPickVehicle") == vehicleid) {
+		if(GetPVarType(playerid, "AttemptingCrackTrunk")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are already attempting to crack a trunk, please wait for the trunk to be opened.");
+		if(!GetPVarType(playerid, "DeliveringVehicleTime")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't open this trunk yet.");
+		new status, randskill = random(100);
+		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
+			case 0 .. 49: if(0 <= randskill < 25) status = 1; //Success
+			case 50 .. 124: if(0 <= randskill < 35) status = 1; //Success
+			case 125 .. 224: if(0 <= randskill < 45)status = 1; //Success
+			case 225 .. 349: if(0 <= randskill < 55) status = 1; //Success
+			default: if(0 <= randskill < 65) status = 1; //Success
+		}
+		format(szMessage, sizeof(szMessage), "* %s attempts to force a vehicle trunk.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
+		if(status) {
+			SetPVarInt(playerid, "AttemptingCrackTrunk", 1);
+			SetPVarInt(playerid, "CrackTrunkCountdown", 60);
+			
+			SendClientMessageEx(playerid, COLOR_PURPLE, "(( You start to crack this vehicle's trunk, attempting to break into it(Wait 1 minute) ))");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail cracking this vehicle trunk.");
+			GetVehicleZAngle(vehicleid, z);
+			SetPlayerFacingAngle(playerid, z);
+			ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+			GetPlayerPos(playerid, x, y, z);
+			SetPVarFloat(playerid, "LockPickPosX", x), SetPVarFloat(playerid, "LockPickPosY", y), SetPVarFloat(playerid, "LockPickPosZ", z);
+			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
+			GetPlayerIp(playerid, ip, sizeof(ip));
+			GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2);
+			Log("logs/playervehicle.log", szMessage);
+		}
+		else {
+			SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
+		}
+	}
+	else {
+		GetPlayerPos(playerid, vehSize[0], vehSize[1], vehSize[2]);
+		printf("VehicleId: %d VehX: %.1f VehY: %.1f VehZ: %.1f PlayerX: %.1f PlayerY: %.1f PlayerZ: %.1f", vehicleid, x, y, z, vehSize[0], vehSize[1], vehSize[2]);
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be at the back of the car that you lock picked.");
 	}
 	return 1;
 }

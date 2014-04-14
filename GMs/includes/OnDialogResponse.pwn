@@ -196,6 +196,50 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	switch(dialogid)
 	{
+		case DIALOG_911PICKLOCK: if(response)
+		{
+			new Float: carPos[3];
+			if(PlayerVehicleInfo[playerid][listitem][pvId] > INVALID_PLAYER_VEHICLE_ID) {
+				if(PlayerVehicleInfo[playerid][listitem][pvAlarmTriggered]) {
+					GetVehiclePos(PlayerVehicleInfo[playerid][listitem][pvId], carPos[0], carPos[1], carPos[2]);
+					new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+					Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
+					Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
+					format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					strcpy(string, "Suspected Vehicle Burglary");
+					SendCallToQueue(playerid, inputtext, zone, mainzone, 4);
+					SetPVarInt(playerid, "Has911Call", 1);
+					SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
+					SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");
+				}
+				else {
+					SetPVarInt(playerid, "ConfirmReport", listitem);
+					ShowPlayerDialog(playerid, DIALOG_911PICKLOCK2, DIALOG_STYLE_MSGBOX, "{FFFB00}Warning - Confirmation Required", "Are you sure you want to report this Vehicle Burglary?\nYour alarm has not yet been triggered for this vehicle.\nPlease have in mind that it is a Vehicle Burglary {FF8400}In Progress", "Confirm", "Cancel");
+				}
+			}
+			else if(PlayerVehicleInfo[playerid][listitem][pvImpounded]) SendClientMessageEx(playerid, COLOR_WHITE, "You can not report an impounded vehicle. If you wish to reclaim it, do so at the DMV in Dillimore.");
+			else if(PlayerVehicleInfo[playerid][listitem][pvDisabled] == 1) SendClientMessageEx(playerid, COLOR_WHITE, "You can not report a disabled vehicle. It is disabled due to your VIP level (vehicle restrictions).");
+			else if(PlayerVehicleInfo[playerid][listitem][pvSpawned] == 0) SendClientMessageEx(playerid, COLOR_WHITE, "You can not report a stored vehicle. Use /vstorage to spawn it.");
+			else SendClientMessageEx(playerid, COLOR_WHITE, "You can not track a non-existent vehicle.");
+		}
+		case DIALOG_911PICKLOCK2: {
+			if(response) {
+				new Float: carPos[3];
+				GetVehiclePos(PlayerVehicleInfo[playerid][listitem][pvId], carPos[0], carPos[1], carPos[2]);
+				new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+				Get3DZone(carPos[0], carPos[1], carPos[2], zone, sizeof(zone));
+				Get2DMainZone(carPos[0], carPos[1], mainzone, sizeof(mainzone));
+				format(string, sizeof(string), "Your vehicle is located in %s(%s).", zone, mainzone);
+				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				format(string, sizeof(string), "Suspected Vehicle Burglary, %s(%d)", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]), PlayerVehicleInfo[playerid][listitem][pvId]);
+				SendCallToQueue(playerid, string, zone, mainzone, 4);
+				SetPVarInt(playerid, "Has911Call", 1);
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");
+			}
+			DeletePVar(playerid, "ConfirmReport");
+		}
 		// BEGIN DYNAMIC GROUP CODE
 		case G_LOCKER_MAIN: if(response)
 		{
@@ -1612,6 +1656,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerVehicleInfo[playerid][i][pvPosZ] = 0.0;
 					PlayerVehicleInfo[playerid][i][pvPosAngle] = 0.0;
 					PlayerVehicleInfo[playerid][i][pvLock] = 0;
+					PlayerVehicleInfo[playerid][i][pvLocksLeft] = 0;
 					PlayerVehicleInfo[playerid][i][pvLocked] = 0;
 					PlayerVehicleInfo[playerid][i][pvPaintJob] = -1;
 					PlayerVehicleInfo[playerid][i][pvColor1] = 0;
@@ -1626,6 +1671,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerVehicleInfo[playerid][i][pvSpawned] = 0;
 					PlayerVehicleInfo[playerid][i][pvVW] = 0;
 					PlayerVehicleInfo[playerid][i][pvInt] = 0;
+					PlayerVehicleInfo[playerid][i][pvAlarm] = 0;
+					PlayerVehicleInfo[playerid][i][pvAlarmTriggered] = 0;
+					PlayerVehicleInfo[playerid][i][pvBeingPickLocked] = 0;
 					DeletePVar(playerid, "vDel");
 
 					new query[128];
@@ -2455,7 +2503,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if((myweapons[0] > 0 || (myweapons[0] == 23 && pTazer{playerid} == 0)) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2504,7 +2552,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if((myweapons[0] > 0 || (myweapons[0] == 23 && pTazer{playerid} == 0)) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -6960,6 +7008,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		PlayerVehicleInfo[giveplayerid][listitem][pvPosZ] = 0.0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvPosAngle] = 0.0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvLock] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvLocksLeft] = 0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvLocked] = 0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvPaintJob] = -1;
 		PlayerVehicleInfo[giveplayerid][listitem][pvColor1] = 0;
@@ -7859,21 +7908,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
-						SetPVarInt(playerid, "lockmenu", 0);
+						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					if(PlayerVehicleInfo[playerid][pvid][pvLock] == 1)
+					if(PlayerVehicleInfo[playerid][pvid][pvAlarm] == 1)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
-						SetPVarInt(playerid, "lockmenu", 0);
+						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					format(string, sizeof(string), "   You have purchased an alarm lock!");
-					SendClientMessageEx(playerid, COLOR_GRAD4, string);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
-					PlayerVehicleInfo[playerid][pvid][pvLock] = 1;
+					SendClientMessageEx(playerid, COLOR_GRAD4, "	You have purchased a standard car alarm!");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: Your alarm will now activate and alert you when someone tries to steal your car.");
+					PlayerVehicleInfo[playerid][pvid][pvAlarm] = 1;
 					g_mysql_SaveVehicle(playerid, pvid);
-					SetPVarInt(playerid, "lockmenu", 0);
+					DeletePVar(playerid, "lockmenu");
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -7904,6 +7952,45 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 			}
+			else if(GetPVarInt(playerid, "lockmenu") == 4)
+			{
+				new pvid;
+				if (IsNumeric(inputtext))
+				{
+					pvid = strval(inputtext)-1;
+					if(PlayerVehicleInfo[playerid][pvid][pvId] == INVALID_PLAYER_VEHICLE_ID)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You don't have a vehicle in this slot.");
+						DeletePVar(playerid, "lockmenu");
+						return 1;
+					}
+					if(PlayerVehicleInfo[playerid][pvid][pvAlarm] == 2)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
+						DeletePVar(playerid, "lockmenu");
+						return 1;
+					}
+					PlayerVehicleInfo[playerid][pvid][pvAlarm] = 2;
+					g_mysql_SaveVehicle(playerid, pvid);
+					DeletePVar(playerid, "lockmenu");
+					GivePlayerCredits(playerid, -ShopItems[39][sItemPrice], 1);
+					printf("Price39: %d", ShopItems[39][sItemPrice]);
+
+					AmountSold[39]++;
+					AmountMade[39] += ShopItems[39][sItemPrice];
+
+					new szQuery[128];
+					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold39` = '%d', `AmountMade39` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[39], AmountMade[39]);
+					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					
+					format(string, sizeof(string), "You have purchased a Deluxe Alarm Lock for %s credits.", number_format(ShopItems[39][sItemPrice]));
+					SendClientMessageEx(playerid, COLOR_CYAN, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: Your alarm will now activate and alert you when someone tries to steal your car.");
+
+					format(string, sizeof(string), "[Large Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[39][sItemPrice]));
+					Log("logs/credits.log", string), print(string);
+				}
+			}
 			else if(GetPVarInt(playerid, "lockmenu") == 2)
 			{
 				new pvid;
@@ -7928,8 +8015,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid, COLOR_GRAD4, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
 					PlayerVehicleInfo[playerid][pvid][pvLock] = 2;
+					PlayerVehicleInfo[playerid][pvid][pvLocksLeft] = 5;
 					g_mysql_SaveVehicle(playerid, pvid);
-					SetPVarInt(playerid, "lockmenu", 0);
+					DeletePVar(playerid, "lockmenu");
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -7984,8 +8072,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid, COLOR_GRAD4, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
 					PlayerVehicleInfo[playerid][pvid][pvLock] = 3;
+					PlayerVehicleInfo[playerid][pvid][pvLocksLeft] = 5;
 					g_mysql_SaveVehicle(playerid, pvid);
-					SetPVarInt(playerid, "lockmenu", 0);
+					DeletePVar(playerid, "lockmenu");
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -8588,7 +8677,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				format(pvar, sizeof(pvar), "Business_MenuItem%d", listitem);
-				if(iItem == ITEM_ILOCK || iItem == ITEM_ALOCK || iItem == ITEM_ELOCK)
+				if(iItem == ITEM_ILOCK || iItem == ITEM_SCALARM || iItem == ITEM_ELOCK)
 				{
 					if(Businesses[iBusiness][bInventory] >= StoreItemCost[iItem-1][ItemValue])
 					{
@@ -12082,6 +12171,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1: ShowPlayerDialog(playerid, DIALOG_911MEDICAL, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe your medical emergency.", "Enter", "End Call");
 				case 2: ShowPlayerDialog(playerid, DIALOG_911POLICE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require police assistance.", "Enter", "End Call");
 				case 3: ShowPlayerDialog(playerid, DIALOG_911TOWING, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require towing services.", "Enter", "End Call");
+				case 4: {
+					new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
+					new szCarLocation[MAX_ZONE_NAME];
+					for(new i, iModelID; i < icount; i++) 
+					{
+						if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0)
+						{
+							Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
+							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
+								format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
+							}
+							else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
+								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
+							}
+							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
+								format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+							}
+							else {
+								if(PlayerVehicleInfo[playerid][i][pvAlarmTriggered]) format(vstring, sizeof(vstring), "%s\n%s (alarm triggered) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+								else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+							}
+						}
+					}
+					ShowPlayerDialog(playerid, DIALOG_911PICKLOCK, DIALOG_STYLE_LIST, "Vehicle Burglary Report", vstring, "Track", "Cancel");
+				}
 			}
 		}
 	}
@@ -14965,9 +15079,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Teamspeak User Channel (Credits: %s)\n\
 				Small Backpack (Credits: %s)\n\
 				Medium Backpack (Credits: %s)\n\
-				Large Backpack (Credits: %s)", 
+				Large Backpack (Credits: %s)\n\
+				Deluxe Car Alarm (Credits: %s)", 
 				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]));
+				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 			}
 			else
@@ -15022,6 +15137,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 36: item = "Small Backpack";
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
+				case 39: item = "Deluxe Car Alarm";
 			}
 			format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
 			ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
@@ -15076,6 +15192,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 36: item = "Small Backpack";
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
+				case 39: item = "Deluxe Car Alarm";
 			}
 
 			if(isnull(inputtext) || Prices <= 0) {
@@ -15142,9 +15259,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Teamspeak User Channel (Credits: %s)\n\
 		Small Backpack (Credits: %s)\n\
 		Medium Backpack (Credits: %s)\n\
-		Large Backpack (Credits: %s)", 
+		Large Backpack (Credits: %s)\n\
+		Deluxe Car Alarm (Credits: %s)", 
 		szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]));
+		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]));
 		ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
@@ -15193,6 +15311,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 36: item = "Small Backpack";
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
+				case 39: item = "Deluxe Car Alarm";
 			}
 			if(GetPVarInt(playerid, "EditingPriceValue") == 0)
 				SetPVarInt(playerid, "EditingPriceValue", 999999);
@@ -15367,6 +15486,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(bdialog, sizeof(bdialog), "Small Backpack (Credits: {FFD700}%s{A9C4E4})\nMedium Backpack (Credits: {FFD700}%s{A9C4E4})\nLarge Backpack (Credits: {FFD700}%s{A9C4E4})",
 				number_format(ShopItems[36][sItemPrice]), number_format(ShopItems[37][sItemPrice]), number_format(ShopItems[38][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_BACKPACKS, DIALOG_STYLE_LIST, "Misc Shop", bdialog, "Select", "Cancel");
+			}
+			case 12:
+			{
+				SetPVarInt(playerid, "MiscShop", 18);
+				format(string, sizeof(string), "Item: Deluxe Car Alarm\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[39][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[39][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Misc Shop", string, "Purchase", "Cancel");
 			}
 		}
 	}
@@ -15834,6 +15959,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "[Large Backpack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[38][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 18) // Deluxe Car Alarm
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[39][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			if(GetPlayerVehicleCount(playerid) != 0)
+			{
+				SetPVarInt(playerid, "lockmenu", 4);
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+			}
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
 	    DeletePVar(playerid, "MiscShop");
 	}

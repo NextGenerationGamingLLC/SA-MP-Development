@@ -416,7 +416,8 @@ enum callinfo
  	TimeToExpire,
 	BeingUsed,
 	CallExpireTimer,
-	ReplyTimerr
+	ReplyTimerr,
+	CallVehicleId
 }
 
 enum reportinfo
@@ -1074,7 +1075,12 @@ enum pInfo
 	pBugReportTimeout,
 	pNewbieTogged,
 	pVIPTogged,
-	pFamedTogged
+	pFamedTogged,
+	pToolBox,
+	pCrowBar,
+	pCarLockPickSkill,
+	pLockPickVehCount,
+	pLockPickTime
 };
 
 enum pvInfo
@@ -1113,7 +1119,13 @@ enum pvInfo
 	Float:pvCrashX,
 	Float:pvCrashY,
 	Float:pvCrashZ,
-	Float:pvCrashAngle
+	Float:pvCrashAngle,
+	pvAlarm,
+	pvAlarmTriggered,
+	pvBeingPickLocked,
+	pvBeingPickLockedBy,
+	pvLastLockPickedBy[MAX_PLAYER_NAME],
+	pvLocksLeft
 };
 
 enum ptInfo

@@ -112,7 +112,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		INVALID_CALL_ID 			-1
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
-#define 		MAX_ITEMS 					(39)
+#define 		MAX_ITEMS 					(40)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001
@@ -247,7 +247,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		ITEM_PAPERS 						15
 #define 		ITEM_ILOCK                      	16
 #define 		ITEM_ELOCK                      	17
-#define 		ITEM_ALOCK                      	18
+#define 		ITEM_SCALARM                      	18
 #define 		FUEL_PUMP_RATE 						0.1 // Gallons per second
 #define 		BIZ_PENALTY 						0.2
 
@@ -804,7 +804,9 @@ native gpci(playerid, serial[], maxlen);
 #define         DIALOG_911EMERGENCY 	    (4945)
 #define         DIALOG_911MEDICAL	 	    (4950)
 #define         DIALOG_911POLICE	 	    (4955)
-#define         DIALOG_911TOWING	 	    (4960)
+#define         DIALOG_911TOWING			(4960)
+#define         DIALOG_911PICKLOCK			(4961)
+#define         DIALOG_911PICKLOCK2			(4962)
 
 #define         DIALOG_SELLCREDITS          (4965)
 #define         DIALOG_RIMMOD               (4970)

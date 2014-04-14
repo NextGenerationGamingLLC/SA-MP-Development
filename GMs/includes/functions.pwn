@@ -50,6 +50,8 @@ CheckPointCheck(iTargetID)  {
 	if(GetPVarType(iTargetID, "hFind") > 0 || GetPVarType(iTargetID, "TrackCar") > 0 || GetPVarType(iTargetID, "DV_TrackCar") > 0 || GetPVarType(iTargetID, "Packages") > 0 || TaxiAccepted[iTargetID] != INVALID_PLAYER_ID || EMSAccepted[iTargetID] != INVALID_PLAYER_ID || BusAccepted[iTargetID] != INVALID_PLAYER_ID || gPlayerCheckpointStatus[iTargetID] != CHECKPOINT_NONE || MedicAccepted[iTargetID] != INVALID_PLAYER_ID || MechanicCallTime[iTargetID] >= 1) {
 		return 1;
 	}
+	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0) 
+		return 1;
 	return 0;
 }
 
@@ -14284,7 +14286,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		    }
 			else return SendClientMessageEx(playerid, COLOR_GREY, "You still have unused papers, please use them before getting more papers.");
 		}
-		case ITEM_ALOCK:
+		case ITEM_SCALARM:
 		{
 			if(GetPlayerVehicleCount(playerid) != 0)
 			{
@@ -14337,6 +14339,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		}
 		default:
 		{
+			printf("Error %d ITEM", item);
 		    return 0;
 		}
 	}
@@ -17379,7 +17382,13 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 0;
         PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+		PlayerVehicleInfo[playerid][playervehicleid][pvLastLockPickedBy] = 0;
 		VehicleFuel[PlayerVehicleInfo[playerid][playervehicleid][pvId]] = 0.0;
 	    PlayerVehicleInfo[playerid][playervehicleid][pvId] = INVALID_PLAYER_VEHICLE_ID;
 	    if(PlayerVehicleInfo[playerid][playervehicleid][pvAllowedPlayerId] != INVALID_PLAYER_ID)
@@ -17398,8 +17407,9 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 	}
 }
 
-stock LoadPlayerVehicles(playerid) {
+stock LoadPlayerVehicles(playerid, logoff = 0) {
 	for(new v = 0; v < MAX_PLAYERVEHICLES; v++) {
+		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0 && logoff == 0) continue;
 		if(vehicleSpawnCountCheck(playerid)) {
 			if(PlayerVehicleInfo[playerid][v][pvModelId] >= 400) {
 				if(PlayerVehicleInfo[playerid][v][pvSpawned] && !PlayerVehicleInfo[playerid][v][pvDisabled] && !PlayerVehicleInfo[playerid][v][pvImpounded]) {
@@ -17450,9 +17460,33 @@ stock LoadPlayerVehicles(playerid) {
 	return 1;
 }
 
-stock UnloadPlayerVehicles(playerid) {
+stock UnloadPlayerVehicles(playerid, logoff = 0) {
 	for(new v = 0; v < MAX_PLAYERVEHICLES; v++) if(PlayerVehicleInfo[playerid][v][pvId] != INVALID_PLAYER_VEHICLE_ID && !PlayerVehicleInfo[playerid][v][pvImpounded] && PlayerVehicleInfo[playerid][v][pvSpawned]) {
+		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0 && logoff == 0) continue;
 		PlayerCars--;
+		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
+			new szMessage[150];
+			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has unloaded it.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
+			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+			GetPlayerIp(playerid, ip, sizeof(ip));
+			GetPlayerIp(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], ip2, sizeof(ip2));
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) unloaded his %s(VID:%d Slot %d) while being lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), ip2);
+			Log("logs/playervehicle.log", szMessage);
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "DeliveringVehicleTime");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "AttemptingLockPick");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickCountdown");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickTotalTime");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosX");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosY");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosZ");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickVehicle");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPlayer");
+			ClearCheckpoint(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
+			
+			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
+			PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+		}
 		if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
 		DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
 		PlayerVehicleInfo[playerid][v][pvId] = INVALID_PLAYER_VEHICLE_ID;
@@ -18512,7 +18546,12 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 0;
         PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLocked] = 0;
+		
 		for(new m = 0; m < MAX_MODS; m++)
 	    {
 	    	PlayerVehicleInfo[playerid][playervehicleid][pvMods][m] = 0;
@@ -19157,18 +19196,21 @@ stock ConvertTimeS(seconds)
 	}
 	if(seconds > 3600)
 	{
- 		if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s, %d hours", string, floatround((seconds/3600), floatround_floor));
-   		else format(string, sizeof(string), "%s, %d hour", string, floatround((seconds/3600), floatround_floor));
+		if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
+ 		if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s%d hours", string, floatround((seconds/3600), floatround_floor));
+   		else format(string, sizeof(string), "%s%d hour", string, floatround((seconds/3600), floatround_floor));
 		seconds=seconds-((floatround((seconds/3600), floatround_floor))*3600);
 	}
 	if(seconds > 60)
 	{
- 		if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s, %d minutes", string, floatround((seconds/60), floatround_floor));
-   		else format(string, sizeof(string), "%s, %d minute", string, floatround((seconds/60), floatround_floor));
+		if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
+ 		if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s%d minutes", string, floatround((seconds/60), floatround_floor));
+   		else format(string, sizeof(string), "%s%d minute", string, floatround((seconds/60), floatround_floor));
 		seconds=seconds-((floatround((seconds/60), floatround_floor))*60);
 	}
-	if(seconds > 1) format(string, sizeof(string), "%s, %d seconds", string, seconds);
-	else format(string, sizeof(string), "%s, %d seconds", string, seconds);
+	if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
+	if(seconds > 1) format(string, sizeof(string), "%s%d seconds", string, seconds);
+	else if(seconds != 0) format(string, sizeof(string), "%s%d second", string, seconds);
 	return string;
 }
 
@@ -19705,7 +19747,7 @@ stock DisplayStampDialog(playerid)
 }
 
 
-stock SendCallToQueue(callfrom, description[], area[], mainzone[], type)
+stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicleid = INVALID_VEHICLE_ID)
 {
     new bool:breakingloop = false, newid = INVALID_CALL_ID, string[128];
 
@@ -19732,7 +19774,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type)
 					{
 						if(strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], area, true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], mainzone, true) == 0)
 						{
-							if(type == 0 && IsACop(i))
+							if((type == 0 || type == 4) && IsACop(i))
 							{
 								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
@@ -19763,7 +19805,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type)
 						}
 					}
 				}
-			}	
+			}
      	}
      	SetPVarInt(callfrom, "Has911Call", 1);
 		strmid(Calls[newid][Area], area, 0, strlen(area), 28);
@@ -19774,12 +19816,13 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type)
 		Calls[newid][TimeToExpire] = 0;
 		Calls[newid][HasBeenUsed] = 1;
 		Calls[newid][BeingUsed] = 1;
+		Calls[newid][CallVehicleId] = vehicleid;
 		Calls[newid][CallExpireTimer] = SetTimerEx("CallTimer", 60000, 0, "d", newid);
     }
     else
     {
         ClearCalls();
-        SendCallToQueue(callfrom, description, area, mainzone, type);
+        SendCallToQueue(callfrom, description, area, mainzone, type, vehicleid);
     }
 }
 
@@ -19797,6 +19840,7 @@ stock ClearCalls()
         Calls[i][TimeToExpire] = 0;
         Calls[i][HasBeenUsed] = 0;
         Calls[i][BeingUsed] = 0;
+		Calls[i][CallVehicleId] = INVALID_VEHICLE_ID;
 	}
 	return 1;
 }
@@ -25855,4 +25899,76 @@ ShowBugReportMainMenu(playerid)
 	if(strlen(bugdesc) > 35) strmid(bugdesc, bugdesc, 0, 35, 35), format(bugdesc, 41, "%s [...]", bugdesc);
 	format(string, sizeof(string), "Subject: %s\nDetails: %s\nSubmit Anonymously?: %s\nSubmit", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
 	return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
+}
+
+stock GetVehicleRelativePos(vehicleid, &Float:x, &Float:y, &Float:z, Float:xoff=0.0, Float:yoff=0.0, Float:zoff=0.0)
+{
+    new Float:rot;
+    GetVehicleZAngle(vehicleid, rot);
+    rot = 360 - rot;    // Making the vehicle rotation compatible with pawns sin/cos
+	GetVehiclePos(vehicleid, x, y, z);
+    
+    x = floatsin(rot,degrees) * yoff + floatcos(rot,degrees) * xoff + x;
+    y = floatcos(rot,degrees) * yoff - floatsin(rot,degrees) * xoff + y;
+    z = zoff + z;
+
+    /*
+       where xoff/yoff/zoff are the offsets relative to the vehicle
+       x/y/z then are the coordinates of the point with the given offset to the vehicle
+       xoff = 1.0 would e.g. point to the right side of the vehicle, -1.0 to the left, etc.
+    */
+}
+
+
+/* stock GetXYNextToVehicle(vehicleid, &Float:x, &Float:y, Float:distance, leftright = 0) // 0 = left 1 = right
+{
+    new
+        Float:a;
+    GetVehiclePos( vehicleid, x, y, a );
+    GetVehicleZAngle( vehicleid, a );
+	if(leftright == 0) {
+		x += ( distance * floatsin( -a+90, degrees ));
+		y += ( distance * floatcos( -a+90, degrees ));
+	}
+	else {
+		x += ( distance * floatsin( -a-90, degrees ));
+		y += ( distance * floatcos( -a-90, degrees ));
+	}
+   
+} */
+
+TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
+{
+	new szMessage[128], szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
+	if(PlayerVehicleInfo[ownerid][slot][pvAlarm] > 0) {
+		ProxDetector(30.0, triggerid, "(( A vehicle alarm has been triggered. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+		Get3DZone(CarPos[0], CarPos[1], CarPos[2], szCarLocation, sizeof(szCarLocation));
+		format(szMessage, sizeof(szMessage), "SMS: Your %s(%d)'s Alarm at %s has been triggered, report it on /call 911, sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
+		SendClientMessageEx(ownerid, COLOR_YELLOW, szMessage);
+		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 1;
+		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+		SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
+	}
+}
+
+ClearCheckpoint(playerid) {
+	TaxiAccepted[playerid] = INVALID_PLAYER_ID;
+	EMSAccepted[playerid] = INVALID_PLAYER_ID;
+	BusAccepted[playerid] = INVALID_PLAYER_ID;
+	MedicAccepted[playerid] = INVALID_PLAYER_ID;
+	MechanicCallTime[playerid] = 0;
+	TaxiCallTime[playerid] = 0;
+  	BusCallTime[playerid] = 0;
+
+    DeletePVar(playerid, "DV_TrackCar");
+	DeletePVar(playerid, "TrackVehicleBurglary");
+    DeletePVar(playerid, "TrackCar");
+	DeletePVar(playerid, "Pizza");
+	DeletePVar(playerid, "Packages");
+	DeletePVar(playerid, "hFind");
+	
+    DisablePlayerCheckpoint(playerid);
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+ 	return;
 }

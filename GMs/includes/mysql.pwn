@@ -660,6 +660,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 						cache_get_field_content(row,  szField, szResult, MainPipeline);
 						PlayerInfo[extraid][pBItems][i] = strval(szResult);
 					}
+					cache_get_field_content(row,  "ToolBox", szResult, MainPipeline); PlayerInfo[extraid][pToolBox] = strval(szResult);
+					cache_get_field_content(row,  "CrowBar", szResult, MainPipeline); PlayerInfo[extraid][pCrowBar] = strval(szResult);
+					cache_get_field_content(row,  "CarLockPickSkill", szResult, MainPipeline); PlayerInfo[extraid][pCarLockPickSkill] = strval(szResult);
+					cache_get_field_content(row,  "LockPickVehCount", szResult, MainPipeline); PlayerInfo[extraid][pLockPickVehCount] = strval(szResult);
+					cache_get_field_content(row,  "LockPickTime", szResult, MainPipeline); PlayerInfo[extraid][pLockPickTime] = strval(szResult);
 					
 					GetPartnerName(extraid);
 					IsEmailPending(extraid, PlayerInfo[extraid][pId], PlayerInfo[extraid][pEmail]);
@@ -975,6 +980,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 						
 						cache_get_field_content(i,  "pvCrashAngle", szResult, MainPipeline);
 						PlayerVehicleInfo[extraid][i][pvCrashAngle] = floatstr(szResult);
+						
+						cache_get_field_content(i,  "pvAlarm", szResult, MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvAlarm] = strval(szResult);
+						
+						cache_get_field_content(i,  "pvLastLockPickedBy", szResult, MainPipeline, MAX_PLAYER_NAME);
+						format(PlayerVehicleInfo[extraid][i][pvLastLockPickedBy], MAX_PLAYER_NAME, "%s", szResult, MainPipeline);
+						
+						cache_get_field_content(i,  "pvLocksLeft", szResult, MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvLocksLeft] = strval(szResult);
 						
 						new szLog[128];
 						format(szLog, sizeof(szLog), "[VEHICLELOAD] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerVehicleInfo[extraid][i][pvModelId], PlayerVehicleInfo[extraid][i][pvSlotId]);
@@ -1514,7 +1528,10 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	format(query, sizeof(query), "%s `pvCrashY` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashY]);
 	format(query, sizeof(query), "%s `pvCrashZ` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashZ]);
 	format(query, sizeof(query), "%s `pvCrashAngle` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashAngle]);
-
+	format(query, sizeof(query), "%s `pvAlarm` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
+	format(query, sizeof(query), "%s `pvLastLockPickedBy` = '%s',", query, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy], MainPipeline));
+	format(query, sizeof(query), "%s `pvLocksLeft` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);
+	
 	for(new m = 0; m < MAX_MODS; m++)
 	{
 		if(m == MAX_MODS-1)
@@ -2859,6 +2876,7 @@ stock MySQLUpdateFinish(query[], sqlplayerid)
 		new whereclause[32];
 		format(whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
+		printf("Query size 2048 Query Length %d", strlen(query));
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		format(query, 2048, "UPDATE `accounts` SET ");
 	}
@@ -3198,6 +3216,14 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pFamedTogged]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
+	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ToolBox", PlayerInfo[playerid][pToolBox]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CrowBar", PlayerInfo[playerid][pCrowBar]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarLockPickSkill", PlayerInfo[playerid][pCarLockPickSkill]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickVehCount", PlayerInfo[playerid][pLockPickVehCount]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickTime", PlayerInfo[playerid][pLockPickTime]);
+	
+	
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -6323,8 +6349,8 @@ public OnPinCheck2(index)
 							format(szDialog, sizeof(szDialog), "Poker Table (Credits: {FFD700}%s{A9C4E4})\nBoombox (Credits: {FFD700}%s{A9C4E4})\n100 Paintball Tokens (Credits: {FFD700}%s{A9C4E4})\nEXP Token (Credits: {FFD700}%s{A9C4E4})\nFireworks x5 (Credits: {FFD700}%s{A9C4E4})\nCustom License Plate (Credits: {FFD700}%s{A9C4E4})",
 							number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]), number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), 
 							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
-							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks", 
-							szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]));
+							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
+							szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
 							ShowPlayerDialog(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 						}
 						case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");
