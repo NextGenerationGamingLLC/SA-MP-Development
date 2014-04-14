@@ -59057,6 +59057,7 @@ CMD:bopen(playerid, params[])
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"   You can not open a backpack while in jail or prison!");
 		if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't open your backpack whilst in Hospital.");
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be wearing your backpack.");
+		if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this since your account is restricted.");
 		new string[122];
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s lays down and opens a backpack.", GetPlayerNameEx(playerid));

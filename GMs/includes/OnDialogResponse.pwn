@@ -2455,7 +2455,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if(myweapons[0] > 0 && pTazer{playerid} == 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -2504,7 +2504,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								itemcount++;
 							}
 							GetPlayerWeaponData(playerid, 2, myweapons[0], myweapons[1]);
-							if(myweapons[0] > 0 && (myweapons[0] == 23 && pTazer{playerid} == 0) && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
+							if(myweapons[0] > 0 && pTazer{playerid} == 0 && PlayerInfo[playerid][pGuns][2] == myweapons[0] && PlayerInfo[playerid][pAGuns][2] == 0)
 							{
 								GetWeaponName(myweapons[0], weapname, sizeof(weapname));
 								format(szDialog, sizeof(szDialog), "%s%s (%d)\n", szDialog, weapname, myweapons[0]);
@@ -8475,15 +8475,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if (strcmp("Full Meal", RestaurantItems[iItem]) == 0) // full meal
 				{
 					switch(PlayerInfo[playerid][pBackpack]) {
-						case 1: if(PlayerInfo[playerid][pBItems][0] < 1) {
+						case 1: if(PlayerInfo[playerid][pBItems][0] < 1 && PlayerInfo[playerid][pBEquipped]) {
 							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
 							return 1;
 						}
-						case 2: if(PlayerInfo[playerid][pBItems][0] < 3) {
+						case 2: if(PlayerInfo[playerid][pBItems][0] < 3 && PlayerInfo[playerid][pBEquipped]) {
 							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
 							return 1;
 						}
-						case 3: if(PlayerInfo[playerid][pBItems][0] < 5) {
+						case 3: if(PlayerInfo[playerid][pBItems][0] < 5 && PlayerInfo[playerid][pBEquipped]) {
 							ShowPlayerDialog(playerid, DIALOG_BMEALSTORE, DIALOG_STYLE_MSGBOX, "Eat or Store", "You can store this full meal inside your backpack or you can eat it right now", "Store", "Eat");
 							return 1;
 						}
