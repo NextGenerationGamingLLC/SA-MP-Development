@@ -1495,3 +1495,14 @@ enum DYNAMIC_BUSINESS_INFO
 	bRankName[MAX_DYNAMIC_BUSINESS_RANKS],
 	bRankPay[MAX_DYNAMIC_BUSINESS_RANKS]
 }
+
+/* Server Side Health WIP
+enum AC
+{
+	Float: acHealth,
+	Float: acArmour,
+	acState,
+	acTimer
+}
+new AntiCheat[MAX_PLAYERS][AC];
+*/

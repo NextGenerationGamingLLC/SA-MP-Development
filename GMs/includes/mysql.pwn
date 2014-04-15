@@ -662,7 +662,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					
 					GetPartnerName(extraid);
-					IsEmailPending(extraid, PlayerInfo[extraid][pId], PlayerInfo[extraid][pEmail]);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{

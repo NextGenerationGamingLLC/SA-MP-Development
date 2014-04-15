@@ -34,6 +34,8 @@
  
  			/*  ---------------- Enable the Windows/Android Application ----------------- */
 //#define SOCKET_ENABLED
+			/*  ---------------- SERVER SIDE HEALH ---------------- */
+//#define ANTICHEAT_ENABLED - Only uncomment this if you want to enable SSH
 			/*  ---------------- SERVER PLATFORM ---------------- */
 //#define _WIN32
 #define _LINUX

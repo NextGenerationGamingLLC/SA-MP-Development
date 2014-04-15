@@ -3373,7 +3373,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			new email[256];
 			mysql_escape_string(inputtext, email);
-			InvalidEmailCheck(playerid, email);
 		}
 		else
 		{

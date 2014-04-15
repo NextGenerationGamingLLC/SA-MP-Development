@@ -4412,46 +4412,6 @@ public ShowPlayerBeaconForCops(playerid)
 	return 1;
 }
 
-/*forward SyncTurfWarsMiniMap();
-public SyncTurfWarsMiniMap()
-{
-    foreach(new i: Player)
-	{
-	    if(turfWarsMiniMap[i] == 1)
-	    {
-	        if(GetPlayerTurfWarsZone(i) == -1)
-	        {
-	     		SetPlayerToTeamColor(i);
-	       		turfWarsMiniMap[i] = 0;
-			}
-		}
-	}
-
-	foreach(new i: Player)
-	{
-	    if(PlayerInfo[i][pFMember] < INVALID_FAMILY_ID)
-	    {
-	    	new turf = GetPlayerTurfWarsZone(i);
-	    	if(TurfWars[turf][twActive] == 1)
-	    	{
-				foreach(new x: Player)
-				{
-					if(PlayerInfo[x][pFMember] < INVALID_FAMILY_ID)
-					{
-					    if(GetPlayerTurfWarsZone(x) == turf)
-					    {
-							SetPlayerMarkerForPlayer(i, x, COLOR_RED);
-		 					turfWarsMiniMap[i] = 1;
-		 					turfWarsMiniMap[x] = 1;
-						}
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}*/
-
 forward HidePlayerBeaconForCops(playerid);
 public HidePlayerBeaconForCops(playerid)
 {
@@ -6635,14 +6595,6 @@ public ReportTimer(reportid)
 	    if(Reports[reportid][TimeToExpire] >= 0)
 	    {
 	        Reports[reportid][TimeToExpire]++;
-	      /*  if(Reports[reportid][TimeToExpire] == 0)
-	        {
-	            SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_GRAD2, "Your report has expired. You can attempt to report again if you wish.");
-	            SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_GRAD2, "But its recommended you seek additonal help on the forums (www.ng-gaming.net/forums)");
-	            Reports[reportid][BeingUsed] = 0;
-	            Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
-	            return 1;
-	        } */
   			Reports[reportid][ReportExpireTimer] = SetTimerEx("ReportTimer", 60000, 0, "d", reportid);
 		}
 	}
@@ -8302,9 +8254,6 @@ public WateringStation(playerid)
 forward FinishMaintenance();
 public FinishMaintenance()
 {
-
-	//ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Carrier...", 1);
-    //SaveCarrier();
     ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
 	SaveHouses();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);
@@ -8358,16 +8307,10 @@ stock IsRefuelableVehicle(vehicleid)
 	switch (modelid)
 	{
 		case 481, 509, 510: return 0; // Bikes
-		//case 457, 530: return 0; // Electric (Caddy, Forklift)
 	}
 	return 1;
 }
 
-
-// tire1 = rear right  (bike rear)
-// tyre2 = front right (bike front)
-// tyre3 = rear left
-// tyre4 = front left
 stock SetVehicleTireState(vehicleid, tire1, tire2, tire3, tire4)
 {
     new panels, doors, Lights, tires;
@@ -8409,11 +8352,10 @@ stock ClearHouse(houseid) {
 	HouseInfo[houseid][hCrack] = 0;
 	HouseInfo[houseid][hMaterials] = 0;
 	HouseInfo[houseid][hHeroin] = 0;
-	HouseInfo[houseid][hWeapons][0] = 0;
-	HouseInfo[houseid][hWeapons][1] = 0;
-	HouseInfo[houseid][hWeapons][2] = 0;
-	HouseInfo[houseid][hWeapons][3] = 0;
-	HouseInfo[houseid][hWeapons][4] = 0;
+	for(new i = 0; i < 5; i++)
+	{
+		HouseInfo[houseid][hWeapons][i] = 0;
+	}
 	HouseInfo[houseid][hGLUpgrade] = 1;
 	HouseInfo[houseid][hClosetX] = 0.0;
 	HouseInfo[houseid][hClosetY] = 0.0;
@@ -8480,27 +8422,21 @@ stock ClearFamily(family)
 	format(string, sizeof(string), "Godfather");
 	strmid(FamilyRankInfo[family][6], string, 0, strlen(string), 30);
 	format(string, sizeof(string), "None");
-	strmid(FamilyDivisionInfo[family][0], string, 0, 16, 30);
-	strmid(FamilyDivisionInfo[family][1], string, 0, 16, 30);
-	strmid(FamilyDivisionInfo[family][2], string, 0, 16, 30);
-	strmid(FamilyDivisionInfo[family][3], string, 0, 16, 30);
-	strmid(FamilyDivisionInfo[family][4], string, 0, 16, 30);
+	for(new i = 0; i < 5; i++)
+	{
+		strmid(FamilyDivisionInfo[family][i], string, 0, 16, 30);
+	}
 	FamilyInfo[family][FamilyColor] = 0;
 	FamilyInfo[family][FamilyTurfTokens] = 24;
 	FamilyInfo[family][FamilyMembers] = 0;
-	FamilyInfo[family][FamilySpawn][0] = 0.0;
-	FamilyInfo[family][FamilySpawn][1] = 0.0;
-	FamilyInfo[family][FamilySpawn][2] = 0.0;
-	FamilyInfo[family][FamilySpawn][3] = 0.0;
-    FamilyInfo[family][FamilyGuns][0] = 0;
-    FamilyInfo[family][FamilyGuns][2] = 0;
-    FamilyInfo[family][FamilyGuns][3] = 0;
-    FamilyInfo[family][FamilyGuns][4] = 0;
-    FamilyInfo[family][FamilyGuns][5] = 0;
-    FamilyInfo[family][FamilyGuns][6] = 0;
-    FamilyInfo[family][FamilyGuns][7] = 0;
-	FamilyInfo[family][FamilyGuns][8] = 0;
-	FamilyInfo[family][FamilyGuns][9] = 0;
+	for(new i = 0; i < 4; i++)
+	{
+		FamilyInfo[family][FamilySpawn][i] = 0.0;
+	}
+	for(new i = 0; i < 10; i++)
+	{
+		FamilyInfo[family][FamilyGuns][i] = 0;
+	}
 	FamilyInfo[family][FamilyCash] = 0;
 	FamilyInfo[family][FamilyMats] = 0;
 	FamilyInfo[family][FamilyHeroin] = 0;
@@ -21903,26 +21839,25 @@ public ResetVariables()
 forward ResetNews();
 public ResetNews()
 {
-	News[hTaken1] = 0; News[hTaken2] = 0; News[hTaken3] = 0; News[hTaken4] = 0; News[hTaken5] = 0;
-	strcat(News[hAdd1], "Nothing");
-	strcat(News[hAdd2], "Nothing");
-	strcat(News[hAdd3], "Nothing");
-	strcat(News[hAdd4], "Nothing");
-	strcat(News[hAdd5], "Nothing");
-	strcat(News[hContact1], "No-one");
-	strcat(News[hContact2], "No-one");
-	strcat(News[hContact3], "No-one");
-	strcat(News[hContact4], "No-one");
-	strcat(News[hContact5], "No-one");
+	News[hTaken1] = 0; News[hTaken2] = 0; News[hTaken3] = 0; News[hTaken4] = 0; News[hTaken5] = 0; new string[32];
+	for(new i = 0; i < 6; i++)
+	{
+		format(string, sizeof(string), "News[hAdd%d]", i);
+		strcat(string, "Nothing");
+		format(string, sizeof(string), "News[hContact%d]", i);
+		strcat(string, "No-one");
+	}
 	print("Resetting news...");
-	return 1;
+	return true;
 }
 
 forward SpecUpdate(playerid);
 public SpecUpdate(playerid)
 {
-	if(Spectating[playerid] > 0 && Spectate[playerid] != INVALID_PLAYER_ID) {	
-		for(new i = 0; i < 2; i++) {
+	if(Spectating[playerid] > 0 && Spectate[playerid] != INVALID_PLAYER_ID)
+	{	
+		for(new i = 0; i < 2; i++)
+		{
 			TogglePlayerSpectating(playerid, true);
 			PlayerSpectatePlayer( playerid, Spectate[playerid] );
 			SetPlayerInterior( playerid, GetPlayerInterior( Spectate[playerid] ) );
@@ -21965,23 +21900,7 @@ stock ShowVouchers(playerid, targetid)
 	}
 	return 1;
 }	
-/*
-forward HackingTimer(playerid);
-public HackingTimer(playerid)
-{
-	new string[128];
-	pSpeed[playerid] = GetPlayerSpeed(playerid);
-	
-	if(pSpeed[playerid] >= 25.0 && PlayerInfo[playerid][pAdmin] < 2 && !InsideTut{playerid})
-	{
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s may possibly be Fly Hacking.", GetPlayerNameEx(playerid));
-		ABroadCast(COLOR_YELLOW, string, 2);
-	}	
-	
-	SetTimerEx("HackingTimer", 5000, 0, "i", playerid);
-	return 1;
-}
-*/
+
 stock SpectatePlayer(playerid, giveplayerid)
 {
 	if(IsPlayerConnected(giveplayerid)) {
@@ -22318,8 +22237,6 @@ stock ShowLoginDialogs(playerid, index)
 	{
 		case 0: ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
 		case 1: ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
-		//case 2: ShowPlayerDialog(playerid, NULLEMAIL, DIALOG_STYLE_INPUT, "{3399FF}E-mail Registration", "{FFFFFF}Please enter a valid e-mail address to associate with your account.", "Submit", "Skip");
-		//case 3: ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_MSGBOX, "Email Verification", "Your email address is currently pending verification. Please check your email inbox.\n\nThe authorization code will automatically expire after one hour.", "Close", "");
 		case 4: ShowPlayerDialog(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Notice", pMOTD, "Dismiss", "");
 		case 5:
 		{
@@ -22333,87 +22250,6 @@ stock ShowLoginDialogs(playerid, index)
 			PlayerInfo[playerid][pReceivedCredits] = 0;
 		}
 	}
-}
-
-// The hell is this lol? - Akatony
-stock InvalidEmailCheck(playerid, email[])
-{
-	new string[128];
-	if(GetPVarInt(playerid, "NullEmail") == 1)
-	{
-		SetPVarString(playerid, "pTmpEmail", email);
-		format(string, sizeof(string), "%s/checks/email.php?check=2&email=%s&id=%d", SAMP_WEB, email, GetPlayerSQLId(playerid));
-		HTTP(playerid, HTTP_GET, string, "", "OnInvalidEmailCheck");
-	}
-	else if(GetPVarInt(playerid, "NullEmail") == 2)
-	{
-		format(string, sizeof(string), "%s/checks/email.php?check=3&email=%s&id=%d", SAMP_WEB, email, GetPlayerSQLId(playerid));
-		HTTP(playerid, HTTP_GET, string, "", "OnInvalidEmailCheck");
-		DeletePVar(playerid, "pTmpEmail");
-	}
-	else if(GetPVarInt(playerid, "NullEmail") == 3)
-	{
-		ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_MSGBOX, "Email Verification", "Your email address is currently pending verification. Please check your email inbox.\n\nThe authorization code will automatically expire after one hour.", "Close", "");
-	}
-	else
-	{
-		SetPVarString(playerid, "pTmpEmail", email);
-		format(string, sizeof(string), "%s/checks/email.php?check=1&email=%s&id=%d", SAMP_WEB, email, GetPlayerSQLId(playerid));
-		HTTP(playerid, HTTP_GET, string, "", "OnInvalidEmailCheck");
-	}
-	return 1;
-}
-
-forward OnInvalidEmailCheck(playerid, response_code, data[]);
-public OnInvalidEmailCheck(playerid, response_code, data[])
-{
-	new result = strval(data);
-	if(result == 0)
-	{
-		SetPVarInt(playerid, "NullEmail", 1);
-		ShowLoginDialogs(playerid, 2);
-	}
-	else if(result == 1) ShowPlayerDialog(playerid, NULLEMAIL, DIALOG_STYLE_INPUT, "{3399FF}E-mail Registration", "{FFFFFF}Please enter a valid e-mail address to associate with your account.", "Submit", "Skip");
-	else if(result == 2)
-	{
-		new tmpEmail[128];
-		GetPVarString(playerid, "pTmpEmail", tmpEmail, sizeof(tmpEmail));
-		SetPVarInt(playerid, "NullEmail", 2);
-		InvalidEmailCheck(playerid, tmpEmail);
-	}
-	else if(result == 3)
-	{
-		DeletePVar(playerid, "NullEmail");
-		ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_MSGBOX, "Email Verification", "An authorization code has been sent to your email address.\n\nThe code will automatically expire after one hour.", "Close", "");
-	}
-	else if(result == 4)
-	{
-		DeletePVar(playerid, "NullEmail");
-		DeletePVar(playerid, "pTmpEmail");
-		return 1;
-	}
-	return 1;
-}
-
-stock IsEmailPending(playerid, SQLid, email[])
-{
-	new query[128];
-	format(query, sizeof(query), "SELECT NULL FROM `cp_cache_email` WHERE `user_id` = %d", SQLid);
-	return mysql_function_query(MainPipeline, query, false, "OnIsEmailPending", "is", playerid, email);
-}
-
-forward OnIsEmailPending(playerid, email[]);
-public OnIsEmailPending(playerid, email[])
-{
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	if(rows > 0)
-	{
-		SetPVarInt(playerid, "NullEmail", 3);
-		ShowLoginDialogs(playerid, 3);
-	}
-	else InvalidEmailCheck(playerid, email);
-	return 1;
 }
 
 stock ShowPlayerDynamicGiftBox(playerid)
@@ -25856,3 +25692,126 @@ ShowBugReportMainMenu(playerid)
 	format(string, sizeof(string), "Subject: %s\nDetails: %s\nSubmit Anonymously?: %s\nSubmit", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
 	return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
 }
+
+/* Server Side Health WIP
+forward SyncPlayerAC(playerid);
+public SyncPlayerAC(playerid)
+{
+	#if defined ANTICHEAT_ENABLED
+		if(playerTabbed[playerid] != 0) return AntiCheat[playerid][Timer] = SetTimerEx("SyncPlayerAC", 1000, 0, "i", playerid);
+	
+		new Float: health, healthex, Float: armour, armourex, serverarmour, serverhealth;
+		
+		if(PlayerInfo[playerid][State] == 1)
+		{	
+			GetPlayerHealth(playerid, health);
+			GetPlayerArmour(playerid, armour);
+			
+			healthex = floatround(health, floatround_round);
+			armourex = floatround(armour, floatround_round);
+			
+			serverhealth = floatround(AntiCheat[playerid][acHealth], floatround_round);
+			serverarmour = floatround(AntiCheat[playerid][acArmour], floatround_round);
+			
+			if(healthex != serverhealth)
+			{
+				SetPlayerHealth(playerid, AntiCheat[playerid][acHealth]);
+			}
+			
+			if(armourex != serverarmour)
+			{
+				SetPlayerArmour(playerid, AntiCheat[playerid][acArmour]);
+			}
+		}
+		return AntiCheat[playerid][Timer] = SetTimerEx("SyncPlayerAC", 1000, 0, "i", playerid);
+	#else
+		printf("ANTICHEAT ERROR: Player ID: %d tried to sync while the UAC is disabled.", playerid);
+	#endif
+	return true;
+}
+
+Float: GetPlayerHealthEx(playerid, special = 0)
+
+	new Float: health;
+	#if defined ANTICHEAT_ENABLED
+		if(special == 1)
+		{
+			GetPlayerHealth(playerid, health);
+			return Float: health;
+		}
+		else
+		{
+			return Float: AntiCheat[playerid][acHealth];
+		}
+	}
+	#else
+		GetPlayerHealth(playerid, health);
+		return Float: health;
+	#endif
+}
+
+Float: GetPlayerArmourEx(playerid, special = 0)
+
+	new Float: armour;
+	#if defined ANTICHEAT_ENABLED
+		if(special == 1)
+		{
+			GetPlayerArmour(playerid, armour);
+			return Float: armour;
+		}
+		else
+		{
+			return Float: AntiCheat[playerid][acArmour];
+		}
+	}
+	#else
+		GetPlayerHealth(playerid, armour);
+		return Float: armour;
+	#endif
+}
+
+stock SetPlayerHealthEx(playerid, Float: amount)
+{
+	#if defined ANTICHEAT_ENABLED
+		AntiCheat[playerid][acHealth] = amount;
+	#endif
+	return SetPlayerHealth(playerid, Float: amount);
+}
+
+stock SetPlayerArmor(playerid, Float: amount)
+{
+	#if defined ANTICHEAT_ENABLED
+		AntiCheat[playerid][acArmour] = amount;
+	#else
+		CurrentArmor[playerid] = floatround(amount, floatround_ceil);
+	#endif
+	return SetPlayerArmour(playerid, Float: amount);
+}
+
+stock RemoveArmor(playerid)
+{
+	DeletePVar(playerid, "ArmorWarning");
+	return SetPlayerArmor(playerid, 0.0);
+}
+
+#if defined _ALS_SetPlayerHealth
+	#undef SetPlayerHealth
+#else
+	#define _ALS_SetPlayerHealth
+#endif
+#define SetPlayerHealth SetPlayerHealthEx
+
+#if defined _ALS_GetPlayerHealth
+	#undef GetPlayerHealth
+#else
+	#define _ALS_GetPlayerHealth
+#endif
+#define GetPlayerHealth GetPlayerHealthEx
+
+#if defined _ALS_GetPlayerArmour
+	#undef GetPlayerArmour
+#else
+	#define _ALS_GetPlayerArmour
+#endif
+#define GetPlayerArmour GetPlayerArmourEx
+*/
