@@ -1613,7 +1613,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		DeletePVar(playerid, "LockPickPosY");
 		DeletePVar(playerid, "LockPickPosZ");
 		DeletePVar(playerid, "LockPickPosZ");
-		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPVarInt(playerid, "LockPickVehicle")][pvAlarmTriggered] = 0;
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetVehicleName(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvAlarmTriggered] = 0;
 		DeletePVar(playerid, "LockPickVehicle");
 		DeletePVar(playerid, "LockPickPlayer");
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage while picking this lock, you have failed this lock pick.");
@@ -4228,7 +4228,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	if(GetPVarType(playerid,"DeliveringVehicleTime"))
 	{
 		new szMessage[128];
-		new RandAmount, ownerid = GetPVarInt(playerid, "LockPickPlayer"), slot = GetPlayerVehicle(ownerid, GetPVarInt(playerid, "LockPickVehicle"));
+		new RandAmount, ownerid = GetPVarInt(playerid, "LockPickPlayer"), slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
 		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
 			case 0 .. 49: RandAmount = Random(10000, 13000);
 			case 50 .. 124: RandAmount = Random(13000, 16000);

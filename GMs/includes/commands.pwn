@@ -18337,7 +18337,10 @@ CMD:useheroin(playerid, params[])
 
     if(gettime()-GetPVarInt(playerid, "HeroinLastUsed") < 300)
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use heroin once every 5 minutes.");
-
+	
+	if(GetPVarType(playerid, "AttemptingLockPick")) 
+		return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
+	
     if(GetPVarInt(playerid, "Injured") != 1) {
 		new szMessage[128];
 
@@ -48763,6 +48766,9 @@ CMD:hfind(playerid, params[])
 		{
 			new	iTargetID;
 
+			if(CheckPointCheck(playerid)) {
+				return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command as of this moment!");
+			}
 			if(sscanf(params, "u", iTargetID)) {
 				return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hfind [player]");
 			}
@@ -49811,6 +49817,7 @@ CMD:usepot(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
@@ -49923,6 +49930,7 @@ CMD:usecrack(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
@@ -59401,6 +59409,7 @@ CMD:bopen(playerid, params[])
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
+		if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
 		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 		if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
@@ -59643,10 +59652,10 @@ CMD:cracktrunk(playerid, params[])
 {
 	new szMessage[150], Float: x, Float: y, Float: z, Float: vehSize[3];
 
-	if(gettime() < PlayerInfo[playerid][pLockPickTime]) {
+	/* if(gettime() < PlayerInfo[playerid][pLockPickTime]) {
 		format(szMessage, sizeof(szMessage), "You must wait %s in order to attempt another crack trunk.", ConvertTimeS(PlayerInfo[playerid][pLockPickTime] - gettime()));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-	}
+	} */
 	//if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
 	if(!PlayerInfo[playerid][pCrowBar]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Crow Bar in order to crack this trunk, get one from a Craftsman.");
 	//if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");

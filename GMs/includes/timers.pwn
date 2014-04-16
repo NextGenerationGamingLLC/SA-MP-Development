@@ -1199,19 +1199,19 @@ task ServerHeartbeat[1000]() {
 							ClearAnimations(i);
 							SetPlayerSkin(i, GetPlayerSkin(i));
 							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-							while (wslot < 3 && !PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot])
+							while (wslot < PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade] && PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot] == 0)
 								wslot++;
-							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-							GetPlayerIp(i, ip, sizeof(ip));
-							GetPlayerIp(GetPVarInt(i, "LockPickPlayer"), ip2, sizeof(ip2));
-							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId]), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot], GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
-							Log("logs/playervehicle.log", szMessage);
-							if(wslot < 3) {
+							if(wslot != PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade]) {
 								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot]));
 								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
 								GivePlayerValidWeapon(i, PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot], 60000);
 								PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot] = 0;
 								g_mysql_SaveVehicle(GetPVarInt(i, "LockPickPlayer"), slot);
+								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+								GetPlayerIp(i, ip, sizeof(ip));
+								GetPlayerIp(GetPVarInt(i, "LockPickPlayer"), ip2, sizeof(ip2));
+								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId]), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot], GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
+								Log("logs/playervehicle.log", szMessage);
 							}
 							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 							

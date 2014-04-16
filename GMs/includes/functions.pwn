@@ -18844,6 +18844,8 @@ stock ShowInventory(playerid,targetid)
 		Wristwatch: %d\n\
 		Surveillance: %d\n\
 		Tire: %d\n\
+		Tool Box Usages: %d\n\
+		Crowbar: %d\n\
 		%s",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
@@ -18873,6 +18875,8 @@ stock ShowInventory(playerid,targetid)
 		PlayerInfo[targetid][pWristwatch],
 		PlayerInfo[targetid][pSurveillance],
 		PlayerInfo[targetid][pTire],
+		PlayerInfo[targetid][pToolBox],
+		PlayerInfo[targetid][pCrowBar],
 		pvtstring);
 		ShowPlayerDialog(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
