@@ -5072,7 +5072,7 @@ public TazerTimer(playerid)
 	return 1;
 }
 
-forward IslandThreatElim();
+/*forward IslandThreatElim();
 public IslandThreatElim()
 {
 	MoveDynamicObject(IslandGate, -1083.90002441,4289.70019531,14.10000038, 2);
@@ -5090,7 +5090,7 @@ public IslandThreatElim()
 		}	
     }
 	return 1;
-}
+}*/
 
 forward firstaid5(playerid);
 public firstaid5(playerid)

@@ -387,7 +387,8 @@ CMD:usekit(playerid, params[]) {
 }
 
 CMD:crates(playerid, params[]) {
-	if(IsACop(playerid))
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
 	{
 	    new string[128], zone[64];
 	    format(string, sizeof(string), "List of Crates to be delivered (MAX IN PRODUCTION: %d):", MAXCRATES);
@@ -989,11 +990,6 @@ CMD:loadforklift(playerid, params[]) {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "The San Andreas Government cannot afford this crate");
 		                return 1;
 		            }
-		            if(IslandGateStatus)
-		            {
-		                SendClientMessageEx(playerid, COLOR_GRAD2, "Crates have ceased production due to the lockdown of the island.");
-		                return 1;
-		            }
 		            if(LoadForkliftStatus)
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "A Crate is already being loaded.");
@@ -1119,7 +1115,20 @@ CMD:cratelimit(playerid, params[]) {
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		format(string, sizeof(string), "** %s has restricted weapon crate production to %d", GetPlayerNameEx(playerid), moneys);
-		SendGroupMessage(1, DEPTRADIO, string);
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				iGroupID = PlayerInfo[i][pMember];
+				if( (0 <= iGroupID < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iCrateIsland] )
+				{
+					if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
+					{
+						SendClientMessageEx(i, DEPTRADIO, string);
+					}
+				}
+			}	
+		}
 	}
 	else
 	{
@@ -1157,7 +1166,7 @@ CMD:announcetakeoff(playerid, params[]) {
 		format(callsign, sizeof(callsign), "SANAN%d", vehicleid);
 	    Get3DZone(X, Y, Z,zone, sizeof(zone));
  		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-	    if((IslandGateStatus == 0 || !IsInRangeOfPoint(-1105.8833,4428.3745,4.4000, X, Y, Z, 800.0)) && (engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
+	    if(!IsInRangeOfPoint(-1105.8833,4428.3745,4.4000, X, Y, Z, 800.0) && (engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 	    {
 			if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 			{
@@ -1273,7 +1282,7 @@ CMD:cgun(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_GRAD2, " Only the SAAS has the authority to do this! ");
 	}
 	return 1;
-}*/
+}
 
 CMD:alockdown(playerid, params[]) {
     if(PlayerInfo[playerid][pAdmin] >= 4)
@@ -1310,7 +1319,7 @@ CMD:alockdown(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_GRAD3, " You're not authorised to use this command! ");
 	}
 	return 1;
-}
+}*/
 
 CMD:areloadpb(playerid, params[])
 {
@@ -11717,6 +11726,8 @@ CMD:accept(playerid, params[])
                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
                         format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  (PlayerInfo[HitToGet[playerid]][pHeadValue] / 4) * 2);
                         SendGroupMessage(2, COLOR_YELLOW, szMessage);
+						SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 60 seconds for the final go ahead from the Agency.");
+						SetPVarInt(playerid, "HitCooldown", 60);
                         GoChase[playerid] = HitToGet[playerid];
                         GetChased[HitToGet[playerid]] = playerid;
                         GotHit[HitToGet[playerid]] = 1;
@@ -23790,7 +23801,7 @@ CMD:vticket(playerid, params[])
 
 CMD:vcheck(playerid, params[])
 {
-    if(IsACop(playerid) || IsATowman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
+    if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
 	{
         new carid = GetPlayerVehicleID(playerid);
         new closestcar = GetClosestCar(playerid, carid);
@@ -23816,7 +23827,7 @@ CMD:vcheck(playerid, params[])
             }
             if(dynveh != -1)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0)
+			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
@@ -23854,7 +23865,7 @@ CMD:vcheck(playerid, params[])
             }
             if(dynveh != -1)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0)
+			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
@@ -30083,292 +30094,9 @@ CMD:order(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 4.0, -71.419654846191,1360.4097900391,1080.2185058594) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657))
 		{
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
-			new Hitman[32], skin = -1;
-			if(sscanf(params, "s[32]D", Hitman, skin))
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /order [name]");
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Rank 1: Knife ($800), SDPistol ($1000), Shotgun ($1500), Skin ($2500), Desert Eagle ($5000), MP5 ($2500), Kevlar Vest ($6000), firstaid ($500)");
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Rank 2: Rifle ($3000), AK47 ($10,000), M4 ($12,000)");
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Rank 3: SPAS-12 ($35,000), Sniper ($35,000)");
-				SendClientMessageEx(playerid, COLOR_GRAD2, " Rank 4: C4 ($50,000)");
-				return 1;
-			}
-			else if(strcmp(Hitman,"skin",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1) {
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that!");
-				}
-				else if(IsInvalidSkin(skin)) {
-					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /order skin [skin ID]");
-				}
-				else if(GetPlayerCash(playerid) >= 2500) {
-					SetPlayerSkin(playerid, skin);
-					PlayerInfo[playerid][pModel] = skin;
-					GivePlayerCash(playerid, -2500);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"You have purchased a skin!");
-				}
-				else SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that!");
-			}
-			else if(strcmp(Hitman,"Knife",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 800)
-				{
-					GivePlayerValidWeapon(playerid, 4, 3);
-					GivePlayerCash(playerid, -800);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a knife!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"firstaid",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 500)
-				{
-					SetPlayerHealth(playerid, 100);
-					GivePlayerCash(playerid, -500);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a firstaid!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"SDPistol",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 1000)
-				{
-					GivePlayerValidWeapon(playerid, 23, 99999);
-					GivePlayerCash(playerid, -1000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a silenced pistol!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Shotgun",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 1500)
-				{
-					GivePlayerValidWeapon(playerid, 25, 99999);
-					GivePlayerCash(playerid, -1500);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a shotgun!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Deagle",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) > 5000)
-				{
-					GivePlayerValidWeapon(playerid, 24, 99999);
-					GivePlayerCash(playerid, -5000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a Desert Eagle!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"MP5",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, " You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 2500)
-				{
-					GivePlayerValidWeapon(playerid, 29, 99999);
-					GivePlayerCash(playerid, -2500);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased an MP5!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Rifle",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 2)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 3000)
-				{
-					GivePlayerValidWeapon(playerid, 33, 99999);
-					GivePlayerCash(playerid, -3000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a rifle!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"AK47",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 2)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "   you are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 10000)
-				{
-					GivePlayerValidWeapon(playerid, 30, 99999);
-					GivePlayerCash(playerid, -10000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased an AK-47!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"M4",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 2)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 12000)
-				{
-					GivePlayerValidWeapon(playerid, 31, 99999);
-					GivePlayerCash(playerid, -12000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased an M4!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Vest",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 6000)
-				{
-					SetPlayerArmor(playerid, 99);
-					GivePlayerCash(playerid, -6000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a kevlar vest!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Spas12",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 3)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 35000)
-				{
-					GivePlayerValidWeapon(playerid, 27, 99999);
-					GivePlayerCash(playerid, -35000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a SPAS-12!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"Sniper",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 3)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 35000)
-				{
-					GivePlayerValidWeapon(playerid, 34, 99999);
-					GivePlayerCash(playerid, -35000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased a sniper rifle!");
-					return 1;
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
-			else if(strcmp(Hitman,"C4",true) == 0)
-			{
-				if(PlayerInfo[playerid][pRank] < 4)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "Yyou are not the required rank for that weapon!");
-					return 1;
-				}
-				if(GetPlayerCash(playerid) >= 50000)
-				{
-					PlayerInfo[playerid][pC4Get] = 1;
-					PlayerInfo[playerid][pBombs]++;
-					GivePlayerCash(playerid, -50000);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased one block of C4!");
-				}
-				else
-				{
-					SendClientMessageEx(playerid, COLOR_GREY,"   You can't afford that package!");
-					return 1;
-				}
-			}
+			new string[128];
+			format(string, sizeof(string), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
+			ShowPlayerDialog(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", string, "Order", "Cancel");
 		}
 		else
 		{
@@ -40641,7 +40369,7 @@ CMD:droplicense(playerid, params[])
 
 CMD:families(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || IsAHitman(playerid))
 	{
 
 		new
@@ -41605,7 +41333,7 @@ CMD:fdelete(playerid, params[])
 
 CMD:ram(playerid, params[])
 {
-	if(IsACop(playerid) || IsAMedic(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid))
 	{
 		if(GetPVarInt(playerid, "IsInArena") >= 0)
 		{
@@ -45757,36 +45485,55 @@ CMD:hbadge(playerid, params[])
 	return 1;
 }
 
+CMD:execute(playerid, params[])
+{
+	if(IsAHitman(playerid))
+	{
+		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
+			if(GetPVarInt(playerid, "KillShotCooldown") != 0 && gettime() < GetPVarInt(playerid, "KillShotCooldown") + 300) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 minutes between execution shots.");
+			
+			SetPVarInt(playerid, "ExecutionMode", 1);
+			SendClientMessageEx(playerid, COLOR_GRAD2, " You have loaded a Hollow point round.  Aim for the Head when executing your target. ");
+			SetPVarInt(playerid, "KillShotCooldown", gettime());
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
+	}
+	return 1;
+}
+
 CMD:profile(playerid, params[])
 {
 	if(IsAHitman(playerid))
 	{
-		new string[128], giveplayerid;
+		new string[600], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /profile [player]");
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-		    new f2text[42];
+		    new f2text[42], str2[64];
 
 			if(PlayerInfo[giveplayerid][pFMember] < INVALID_FAMILY_ID)
 			{
 				format(f2text, sizeof(f2text), "%s", FamilyInfo[PlayerInfo[giveplayerid][pFMember]][FamilyName]);
 			} else f2text = "None";
 
-			SendClientMessageEx(playerid, COLOR_WHITE, "Profile Information:");
-			format(string, sizeof(string), "Name: %s", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
-			format(string, sizeof(string), "Date of Birth: %s", PlayerInfo[giveplayerid][pBirthDate]);
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			if(0 <= PlayerInfo[giveplayerid][pMember] < MAX_GROUPS)
 			{
-				format(string, sizeof(string), "Organisation: %s", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				format(str2, sizeof(str2), "%s", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName]);
 			}
-			format(string, sizeof(string), "Family: %s", f2text);
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
-			format(string, sizeof(string), "Bounty: $%d", PlayerInfo[giveplayerid][pHeadValue]);
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			else str2 = "None";
+			
+			
+			
+			format(string, sizeof(string), 
+			"{FF6347}Name: {BFC0C2}%s\n\
+			{FF6347}Date of Birth: {BFC0C2}%s\n\
+			{FF6347}Phone Number: {BFC0C2}%d\n\n\
+			{FF6347}Organization: {BFC0C2}%s\n\
+			{FF6347}Family: {BFC0C2}%s\n\
+			{FF6347}Bounty: {BFC0C2}$%d\n\
+			{FF6347}Bounty Reason: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, f2text, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
+			ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Target Profile", string, "OK", "");
 		}
 	}
 	return 1;
@@ -48760,6 +48507,7 @@ CMD:cancel(playerid, params[])
 				GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
 				GotHit[GoChase[playerid]] = 0;
 				GoChase[playerid] = INVALID_PLAYER_ID;
+				DeletePVar(playerid, "HitCooldown");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
 		
@@ -51506,7 +51254,7 @@ CMD:deport(playerid, params[])
    		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deport [player]");
 		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the giveplayerid.");
+		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the deportee.");
 		else if(PlayerInfo[playerid][pNation] == 0 && PlayerInfo[giveplayerid][pNation] == 0) SendClientMessageEx(playerid, COLOR_GREY, "You can't deport a citizen of San Andreas!");
 		else
 		{
@@ -51694,7 +51442,7 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirstAid & Kevlar\nMedkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nMedkit & Vest Kit") : ("")));
+					    format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
 					}

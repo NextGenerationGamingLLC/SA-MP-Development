@@ -671,44 +671,7 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 
 public OnPlayerPressButton(playerid, buttonid)
 {
-	if(buttonid == lockdownbutton)
-	{
-		new iGroupID = PlayerInfo[playerid][pMember];
-	    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
-	    {
-			new string[128];
-			if(IslandGateStatus == 0)
-			{
-			    MoveDynamicObject(IslandGate, -1083.90002441,4289.70019531,7.59999990, 0.3);
-			    //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{
-						if(IsPlayerInRangeOfPoint(i, 500, -1083.90002441,4289.70019531,7.59999990))
-						{
-							SendClientMessageEx(i, COLOR_YELLOW, " UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
-							PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
-						}
-					}	
-			    }
-				format(string, sizeof(string), "** %s has initiated a lockdown sequence at the San Andreas Military Island. **", GetPlayerNameEx(playerid));
-				SendFamilyMessage(iGroupID, DEPTRADIO, string);
-				IslandGateStatus = gettime();
-				IslandThreatElimTimer = SetTimer("IslandThreatElim", 1800000, 0);
-			}
-			else
-			{
-			    KillTimer(IslandThreatElimTimer);
-		    	IslandThreatElim();
-			}
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, " Only the SAAS has the authority to do this! ");
-		}
-		return 1;
-	}
+
 	if(buttonid == FBILobbyLeftBTN[0] || buttonid == FBILobbyLeftBTN[1])
 	{
 	    if(IsACop(playerid))
@@ -1751,11 +1714,34 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	return 1;
 }
 
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
+	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
+	{
+		if(hittype != BULLET_HIT_TYPE_PLAYER && hitid != GoChase[playerid])
+		{
+			SetPVarInt(playerid, "ExecutionMode", 0);
+			SendClientMessage(playerid, COLOR_RED, "You missed the target, wait 5 minutes before re-loading a HP Round.");
+			SetPVarInt(playerid, "KillShotCooldown", gettime());
+		}
+	}
+	return 1;
+}
+
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
 
+	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
+	{
+		if(damagedid == GoChase[playerid])
+		{
+			SetPlayerHealth(damagedid, 0);
+			SetPVarInt(playerid, "ExecutionMode", 0);
+			SetPVarInt(playerid, "KillShotCooldown", gettime());
+		}
+	}
     if(pTazer{playerid} == 1)
 	{
 	    if(weaponid !=  23) {
@@ -3818,7 +3804,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	{
 		if(IsPlayerConnected(killerid))
 		{
-			if(GoChase[killerid] == playerid)
+			if(GoChase[killerid] == playerid && GetPVarInt(killerid, "HitCooldown") <= 0)
 			{
 				new szMessage[64 + MAX_PLAYER_NAME];
 				new takemoney = floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
@@ -5421,7 +5407,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
  	    {
 			if(GoChase[playerid] != INVALID_PLAYER_ID)
 			{
-			    if(IsPlayerInRangeOfPoint(GoChase[playerid], 12.0, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")))
+			    if(IsPlayerInRangeOfPoint(GoChase[playerid], 8.0, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")))
 			    {
 			        if(PlayerInfo[GoChase[playerid]][pHeadValue] >= 1)
 					{
@@ -6073,8 +6059,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
-				format(string, sizeof(string), "You need to be in %s to drive this vehicle.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				if(arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_iGroupType] != 2)
+				{
+					format(string, sizeof(string), "You need to be in %s to drive this vehicle.", arrGroupData[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				}
 			}
 			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID])
 			{

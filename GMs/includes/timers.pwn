@@ -555,6 +555,17 @@ task MoneyUpdate[1000]()
 				{
 					SetPVarInt(i, "InRangeBackup", GetPVarInt(i, "InRangeBackup")-1);
 				}
+				if(GetPVarInt(i, "HitCooldown") > 0)
+				{
+					new string[128];
+					SetPVarInt(i, "HitCooldown", GetPVarInt(i, "HitCooldown")-1);
+					format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d seconds until approval", GetPVarInt(i, "HitCooldown"));
+					GameTextForPlayer(i, string, 1100, 3);
+					if(GetPVarInt(i, "HitCooldown") == 0)
+					{
+						GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Contract Approved.", 5000, 3);
+					}
+				}
 				if(GetPVarType(i, "IsTackled"))
 				{
 					new copcount, string[128];

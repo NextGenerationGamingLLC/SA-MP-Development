@@ -555,7 +555,6 @@ public LoadStreamerDynamicButtons()
 	SANewsStudio = CreateButton(625.50000000,-13.60000038,1108.50000000,270.00000000); //object(sec_keypad) (1)
 	SANewsPrivateOPP = CreateButton(626.13519287,-0.08516422,1108.61315918,0); //object(sec_keypad) (4)
 	
-	lockdownbutton = CreateButton(-1121.70, 4290.41, 4.88, 180.00);
 	print("[Streamer] Dynamic Buttons has been loaded.");
 	
 	return 1;
@@ -565,7 +564,6 @@ forward LoadStreamerDynamicObjects();
 public LoadStreamerDynamicObjects()
 {
     CrateLoad = CreateDynamicObject(964,-2114.1, -1723.5, 11984.5, 0, 0, 337.994, .worldid = 0, .interiorid = 1, .streamdistance = 200); //object(cj_metal_crate) (1)
-	IslandGate = CreateDynamicObject(16773,-1083.90002441,4289.70019531,14.10000038,0.00000000,0.00000000,0.00000000, .streamdistance = 400); //object(door_savhangr1) (5)
 
 	new VIPLogo = CreateDynamicObject(19353, 1803.89, -1593.99, 14.05,   0.00, 0.00, 312.26);
 	SetDynamicObjectMaterialText(VIPLogo, 0, "{842787}VIP LOUNGE", 90, "Impact", 56, 1, 0xFFFFFFFF, 0, 1);

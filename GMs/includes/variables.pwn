@@ -528,7 +528,7 @@ new backhatch;
 new Carrier[17];
 new CarrierS[6];
 new CrateLoad;
-new MAXCRATES, lockdownbutton;
+new MAXCRATES;
 new AdminWarning;
 
 new Price[MAX_ITEMS];
@@ -545,7 +545,7 @@ new CrateInfo[20][crateInfo];
 
 new Train[3];
 
-new IslandThreatElimTimer;
+//new IslandThreatElimTimer;
 
 new prisonactive;
 
@@ -857,8 +857,6 @@ new TruckerVehicles[37];
 new PizzaVehicles[12];
 new VIPVehicles[50];
 new FamedVehicles[39];
-new IslandGate;
-new IslandGateStatus;
 new LoadForkliftStatus;
 new Homes[MAX_PLAYERS];
 new Locator[MAX_PLAYERS];
