@@ -59576,8 +59576,8 @@ CMD:pickveh(playerid, params[])
 		
 		
 	new vehicleid = GetClosestCar(playerid);
-	/* for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
-		if(PlayerVehicleInfo[playerid][d][pvId] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that you own."); */
+	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
+		if(PlayerVehicleInfo[playerid][d][pvId] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that you own.");
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
 	GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);

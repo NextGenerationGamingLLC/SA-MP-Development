@@ -17502,12 +17502,26 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 	return 1;
 }
 
-stock UnloadPlayerVehicles(playerid, logoff = 0) {
+stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 	for(new v = 0; v < MAX_PLAYERVEHICLES; v++) if(PlayerVehicleInfo[playerid][v][pvId] != INVALID_PLAYER_VEHICLE_ID && !PlayerVehicleInfo[playerid][v][pvImpounded] && PlayerVehicleInfo[playerid][v][pvSpawned]) {
 		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0 && logoff == 0) continue;
+		if(IsVehicleInTow(PlayerVehicleInfo[playerid][v][pvId]))
+		{
+			DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
+			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
+			SetVehiclePos(PlayerVehicleInfo[playerid][v][pvId], 0, 0, 0); // Attempted desync fix
+		}
 		PlayerCars--;
 		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
 			new szMessage[150];
+			if(logoff == 1) {
+				switch(reason){
+					case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+					case 1: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+					case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				}
+				SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
+			}
 			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has unloaded it.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
@@ -17532,12 +17546,14 @@ stock UnloadPlayerVehicles(playerid, logoff = 0) {
 		if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
 		DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
 		PlayerVehicleInfo[playerid][v][pvId] = INVALID_PLAYER_VEHICLE_ID;
+		PlayerVehicleInfo[playerid][v][pvSpawned] = 0;
 		if(PlayerVehicleInfo[playerid][v][pvAllowedPlayerId] != INVALID_PLAYER_ID)
 		{
 			PlayerInfo[PlayerVehicleInfo[playerid][v][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[PlayerVehicleInfo[playerid][v][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
 			PlayerVehicleInfo[playerid][v][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 		}
+		g_mysql_SaveVehicle(playerid, v);
     }
 	VehicleSpawned[playerid] = 0;
 }
@@ -18583,9 +18599,6 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvVW] = VW;
 		PlayerVehicleInfo[playerid][playervehicleid][pvInt] = Int;
 		PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][0] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][1] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvWeapons][2] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 0;
@@ -18843,10 +18856,7 @@ stock ShowInventory(playerid,targetid)
 		SMSLog: %d\n\
 		Wristwatch: %d\n\
 		Surveillance: %d\n\
-		Tire: %d\n\
-		Tool Box Usages: %d\n\
-		Crowbar: %d\n\
-		%s",
+		Tire: %d",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
 		number_format(PlayerInfo[targetid][pAccount]),
@@ -18874,7 +18884,12 @@ stock ShowInventory(playerid,targetid)
 		PlayerInfo[targetid][pSmslog],
 		PlayerInfo[targetid][pWristwatch],
 		PlayerInfo[targetid][pSurveillance],
-		PlayerInfo[targetid][pTire],
+		PlayerInfo[targetid][pTire]);
+		format(resultline, sizeof(resultline),"%s\n\
+		Tool Box Usages: %d\n\
+		Crowbar: %d\n\
+		%s",
+		resultline,
 		PlayerInfo[targetid][pToolBox],
 		PlayerInfo[targetid][pCrowBar],
 		pvtstring);
@@ -25991,7 +26006,13 @@ ClearCheckpoint(playerid) {
 
     DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
-	DeletePVar(playerid, "DeliveringVehicleTime");
+	if(GetPVarType(playerid, "DeliveringVehicleTime")) {
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+		DeletePVar(playerid, "DeliveringVehicleTime");
+		DeletePVar(playerid, "LockPickVehicle");
+		DeletePVar(playerid, "LockPickPlayer");
+	}
     DeletePVar(playerid, "TrackCar");
 	DeletePVar(playerid, "Pizza");
 	DeletePVar(playerid, "Packages");

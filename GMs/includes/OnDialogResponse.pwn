@@ -6889,7 +6889,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new
 				iVehicleID = PlayerVehicleInfo[playerid][listitem][pvId];
 
-			if((!IsVehicleOccupied(iVehicleID) || IsPlayerInVehicle(playerid, iVehicleID)) && !IsVehicleInTow(iVehicleID)) {
+			if((!IsVehicleOccupied(iVehicleID) || IsPlayerInVehicle(playerid, iVehicleID)) && !IsVehicleInTow(iVehicleID) && !PlayerVehicleInfo[playerid][listitem][pvBeingPickLocked]) {
 
 				new
 					Float: vehiclehealth;
@@ -7018,6 +7018,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		PlayerVehicleInfo[giveplayerid][listitem][pvPark] = 0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvVW] = 0;
 		PlayerVehicleInfo[giveplayerid][listitem][pvInt] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvAlarm] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvAlarmTriggered] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[giveplayerid][listitem][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+		PlayerVehicleInfo[giveplayerid][listitem][pvLastLockPickedBy] = 0;
 		if(PlayerVehicleInfo[giveplayerid][listitem][pvSpawned])
 		{
 			PlayerVehicleInfo[giveplayerid][iVehicleID][pvSpawned] = 0;
@@ -7938,9 +7943,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					}
-					format(string,sizeof(string),"%s (IP: %s) has bought a Alarm Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
+					format(string,sizeof(string),"%s (IP: %s) has bought a Standard Car Alarm in %s (%d) for $%s.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
-					format(string,sizeof(string),"* You have purchased a Alarm Lock from %s for $%s.", Businesses[iBusiness][bName], number_format(cost));
+					format(string,sizeof(string),"* You have purchased a Standard Car Alarm from %s for $%s.", Businesses[iBusiness][bName], number_format(cost));
 					SendClientMessage(playerid, COLOR_GRAD2, string);
 					new playersold = GetPVarInt(playerid, "playersold");
 					if(playersold)
@@ -7966,7 +7971,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					if(PlayerVehicleInfo[playerid][pvid][pvAlarm] == 2)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed & working on this vehicle.");
 						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
@@ -7983,7 +7988,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold39` = '%d', `AmountMade39` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[39], AmountMade[39]);
 					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 					
-					format(string, sizeof(string), "You have purchased a Deluxe Alarm Lock for %s credits.", number_format(ShopItems[39][sItemPrice]));
+					format(string, sizeof(string), "You have purchased a Deluxe Car Alarm for %s credits.", number_format(ShopItems[39][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: Your alarm will now activate and alert you when someone tries to steal your car.");
 
@@ -8003,10 +8008,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarInt(playerid, "lockmenu", 0);
 						return 1;
 					}
-					if(PlayerVehicleInfo[playerid][pvid][pvLock] == 2)
+					if(PlayerVehicleInfo[playerid][pvid][pvLocksLeft] > 0 && PlayerVehicleInfo[playerid][pvid][pvLock] == 2)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
-						SetPVarInt(playerid, "lockmenu", 0);
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed & working on this vehicle.");
+						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
 					if(IsABike(PlayerVehicleInfo[playerid][pvid][pvId]))
@@ -8060,10 +8065,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarInt(playerid, "lockmenu", 0);
 						return 1;
 					}
-					if(PlayerVehicleInfo[playerid][pvid][pvLock] == 3)
+					if(PlayerVehicleInfo[playerid][pvid][pvLocksLeft] > 0 && PlayerVehicleInfo[playerid][pvid][pvLock] == 3)
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed on this vehicle.");
-						SetPVarInt(playerid, "lockmenu", 0);
+						SendClientMessageEx(playerid, COLOR_GRAD4, "ERROR: You already have this item installed & working on this vehicle.");
+						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
 					if(IsABike(PlayerVehicleInfo[playerid][pvid][pvId]))

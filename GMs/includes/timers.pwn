@@ -193,6 +193,7 @@ task SyncUp[60000]()
 					--PlayerCars;
 					VehicleSpawned[GetPVarInt(i, "LockPickPlayer")]--;
 					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvAlarmTriggered] = 0;
 					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvSpawned] = 0;
 					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
@@ -1100,18 +1101,20 @@ task ServerHeartbeat[1000]() {
 					ClearCrimes(i);
 				}
 				if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")), szMessage[115];
-					if(IsPlayerInRangeOfPoint(i, 0.5, GetPVarFloat(i, "LockPickPosX"), GetPVarFloat(i, "LockPickPosY"), GetPVarFloat(i, "LockPickPosZ")) && !IsPlayerInAnyVehicle(i)) {
+					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")), szMessage[115], Float: vehSize[3], Float: Pos[3], vehicleid = GetPVarInt(i, "LockPickVehicle");
+					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
+					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
+					GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
+					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
 						SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
 						if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil)) && !PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvAlarmTriggered]) {
-							TriggerVehicleAlarm(i, GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+							TriggerVehicleAlarm(i, GetPVarInt(i, "LockPickPlayer"), vehicleid);
 						}
 						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
 							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvLocked] = 0;
 							UnLockPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvLock]);
 							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 2;
 							if(--PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvLock]) {
-								//PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvLock] = 0;
 								SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
 							}
 							if(++PlayerInfo[i][pLockPickVehCount] > 4) {
@@ -1120,8 +1123,8 @@ task ServerHeartbeat[1000]() {
 							}
 							ClearCheckpoint(i);
 							new engine, lights, alarm, doors, bonnet, boot, objective;
-							GetVehicleParamsEx(GetPVarInt(i, "LockPickVehicle"),engine,lights,alarm,doors,bonnet,boot,objective);
-							SetVehicleParamsEx(GetPVarInt(i, "LockPickVehicle"),engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
+							GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+							SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
 							SendClientMessageEx(i, COLOR_YELLOW, "You have successfully picked this vehicle lock, you may now deliver this to the checkpoint mark to get money.");
 							if(PlayerInfo[i][pToolBox] > 0) SendClientMessageEx(i, COLOR_CYAN, "Optionally, you may try to open the trunk to see what's inside (/cracktrunk).");
 							PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
@@ -1137,7 +1140,7 @@ task ServerHeartbeat[1000]() {
 							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 							GetPlayerIp(i, ip, sizeof(ip));
 							GetPlayerIp(GetPVarInt(i, "LockPickPlayer"), ip2, sizeof(ip2));
-							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId]), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
+							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvId], slot, GetPlayerNameEx(GetPVarInt(i, "LockPickPlayer")), ip2);
 							Log("logs/playervehicle.log", szMessage);
 							new Float: pX, Float: pY, Float: pZ;
 							GetPlayerPos(i, pX, pY, pZ);
@@ -1199,8 +1202,11 @@ task ServerHeartbeat[1000]() {
 							ClearAnimations(i);
 							SetPlayerSkin(i, GetPlayerSkin(i));
 							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-							while (wslot < PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade] && PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot] == 0)
+							while (wslot < PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade]) {
+								if(wslot >= PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade] || PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot] == 0)
+									break;
 								wslot++;
+							}
 							if(wslot != PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWepUpgrade]) {
 								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvWeapons][wslot]));
 								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
