@@ -1726,7 +1726,7 @@ task ServerHeartbeat[1000]() {
 				}
 				UpdateSpeedCamerasForPlayer(i);
 			}
-			if (PlayerInfo[i][pAdmin] < 2 || HelpingNewbie[i] != INVALID_PLAYER_ID)
+			if ((PlayerInfo[i][pAdmin] < 2 && PlayerInfo[i][pWatchdog] < 2) || HelpingNewbie[i] != INVALID_PLAYER_ID)
 			{
 				if (PlayerInfo[i][pHospital] == 0 && GetPVarInt(i, "Injured") != 1 && GetPVarInt(i, "IsFrozen") == 0 && GetPVarInt(i, "PlayerCuffed") == 0)
 				{
@@ -2254,7 +2254,7 @@ task VehicleUpdate[60000]() {
 	    GetVehicleParamsEx(v,engine,lights,alarm,doors,bonnet,boot,objective);
 	    if(engine == VEHICLE_PARAMS_ON) {
 			if(arr_Engine{v} == 0) SetVehicleParamsEx(v,VEHICLE_PARAMS_OFF,lights,alarm,doors,bonnet,boot,objective);
-			else if(!IsVIPcar(v) && !IsFamedVeh(v) && !IsATruckerCar(v) && VehicleFuel[v] > 0.0) {
+			else if(!IsVIPcar(v) && !IsFamedVeh(v) && VehicleFuel[v] > 0.0) {
 				VehicleFuel[v] -= 1.0;
 				if(VehicleFuel[v] <= 0.0) SetVehicleParamsEx(v,VEHICLE_PARAMS_OFF,lights,alarm,doors,bonnet,boot,objective);
 			}

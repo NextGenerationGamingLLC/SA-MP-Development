@@ -13,18 +13,19 @@
 							Next Generation Gaming, LLC
 				(created by Next Generation Gaming Development Team)
 
-				Current Developers:						
+				Current Developers:
 								**** Director of Support Operations: 
-								     Carlos
+									 Dawson
 								
 								***  Director of SA:MP Development: 
-									 Miguel (s0nic)								     
+									 Miguel (s0nic)
 								
-								**   Development Staff: 	
+								**   Development Staff:
 									 Akatony
 									 Brendan
 									 Donuts
-
+									 Austin
+									 Dom
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -75,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.101"
+#define SERVER_GM_TEXT "NG:RP v3.0.102"
 
 
 

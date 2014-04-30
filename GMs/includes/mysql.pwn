@@ -1706,7 +1706,7 @@ stock AddBan(Admin, Player, Reason[])
 stock SystemBan(Player, Reason[])
 {
 	new string[150];
-    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', 'System')", GetPlayerIpEx(Player), Reason);
+    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', 'System')", GetPlayerIpEx(Player), g_mysql_ReturnEscaped(Reason, MainPipeline));
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
@@ -1715,7 +1715,7 @@ stock SystemBan(Player, Reason[])
 stock MySQLBan(userid,ip[],reason[],status,admin[])
 {
 	new string[200];
-    format(string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%s', NOW(), '%d','%s')", userid,ip,reason,status,admin);
+    format(string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%s', NOW(), '%d','%s')", userid,ip,g_mysql_ReturnEscaped(reason, MainPipeline),status,admin);
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
@@ -2465,7 +2465,7 @@ stock LoadHouse(houseid)
 {
 	new string[128];
 	printf("[LoadHouse] Loading HouseID %d's data from database...", houseid);
-	format(string, sizeof(string), "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id WHERE `id` = %d", houseid+1); // Array starts at zero, MySQL starts at one.
+	format(string, sizeof(string), "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id WHERE h.id = %d", houseid+1); // Array starts at zero, MySQL starts at one.
 	mysql_function_query(MainPipeline, string, true, "OnLoadHouse", "i", houseid);
 }
 
@@ -8113,20 +8113,21 @@ public FetchWatchlist2(index, input[])
 	return true;
 }
 
-forward OnSetVMute(playerid);
-public OnSetVMute(playerid)
+forward OnSetVMute(playerid, task);
+public OnSetVMute(playerid, task)
 {
 	new string[128], tmpName[MAX_PLAYER_NAME];
 	GetPVarString(playerid, "OnSetVMute", tmpName, sizeof(tmpName));
 	DeletePVar(playerid, "OnSetVMute");
 	if(cache_affected_rows(MainPipeline))
 	{
-		format(string, sizeof(string), "AdmCmd: %s has offline vip muted %s.", GetPlayerNameEx(playerid), tmpName);
+		format(string, sizeof(string), "AdmCmd: %s has offline vip %s %s.", GetPlayerNameEx(playerid), (task==1)?("muted"):("unmuted"), tmpName);
+		Log("logs/mute.log", string);
 		ABroadCast(COLOR_LIGHTRED, string, 3);
 	}
 	else
 	{
-		format(string, sizeof(string), "Could not vip mute %s..", tmpName);
+		format(string, sizeof(string), "Could not vip %s %s..", (task==1)?("mute"):("unmute"), tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	}
 	return 1;

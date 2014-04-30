@@ -2135,6 +2135,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
 					}
 					case 2: { // Guns
+						if(PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pAccountRestricted]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this option while being restricted.");
 						new szDialog[130], weapname[20], itemcount;
 						for(new i = 6; i < 10; i++)
 						{

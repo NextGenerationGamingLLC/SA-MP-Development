@@ -11436,7 +11436,7 @@ stock HospitalSpawn(playerid)
 						{
 							SetPlayerVirtualWorld(playerid, 0);
 							SetPlayerInterior(playerid, 1);
-							SetPlayerPos(playerid, 2785.553955, 2394.641845, 1240.531127);
+							Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
 							SetPlayerFacingAngle(playerid, 266.41);	
 							SetCameraBehindPlayer(playerid);
 							TogglePlayerControllable(playerid, 1);	
@@ -11447,7 +11447,7 @@ stock HospitalSpawn(playerid)
 						{
 							SetPlayerVirtualWorld(playerid, 2);
 							SetPlayerInterior(playerid, 1);
-							SetPlayerPos(playerid, 2785.553955, 2394.641845, 1240.531127);
+							Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
 							SetPlayerFacingAngle(playerid, 266.41);	
 							SetCameraBehindPlayer(playerid);
 							TogglePlayerControllable(playerid, 1);		
@@ -11470,7 +11470,7 @@ stock HospitalSpawn(playerid)
 				}
 				else
 				{
-					SetPlayerPos(playerid, 2785.553955, 2394.641845, 1240.531127);
+					Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
 					SetPlayerFacingAngle(playerid, 266.41);
 					SetPlayerInterior(playerid, 1);
 					SetCameraBehindPlayer(playerid);
@@ -15016,19 +15016,22 @@ stock SaveHouses()
 
 stock RehashHouse(houseid)
 {
-	DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
 	HouseInfo[houseid][hSQLId] = -1;
 	HouseInfo[houseid][hOwned] = 0;
 	HouseInfo[houseid][hLevel] = 0;
+	HouseInfo[houseid][hCustomInterior] = 0;
+	HouseInfo[houseid][hOwnerID] = -1;
+	format(HouseInfo[houseid][hOwnerName], 128, "Nobody");
 	HouseInfo[houseid][hExteriorX] = 0.0;
 	HouseInfo[houseid][hExteriorY] = 0.0;
 	HouseInfo[houseid][hExteriorZ] = 0.0;
 	HouseInfo[houseid][hExteriorR] = 0.0;
+	HouseInfo[houseid][hExteriorA] = 0.0;
 	HouseInfo[houseid][hInteriorX] = 0.0;
 	HouseInfo[houseid][hInteriorY] = 0.0;
 	HouseInfo[houseid][hInteriorZ] = 0.0;
 	HouseInfo[houseid][hInteriorR] = 0.0;
+	HouseInfo[houseid][hInteriorA] = 0.0;
 	HouseInfo[houseid][hExtIW] = 0;
 	HouseInfo[houseid][hExtVW] = 0;
 	HouseInfo[houseid][hIntIW] = 0;
@@ -15041,24 +15044,27 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hPot] = 0;
 	HouseInfo[houseid][hCrack] = 0;
 	HouseInfo[houseid][hMaterials] = 0;
+	HouseInfo[houseid][hHeroin] = 0;
 	HouseInfo[houseid][hWeapons][0] = 0;
 	HouseInfo[houseid][hWeapons][1] = 0;
 	HouseInfo[houseid][hWeapons][2] = 0;
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
 	HouseInfo[houseid][hGLUpgrade] = 0;
-	HouseInfo[houseid][hCustomInterior] = 0;
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
 	HouseInfo[houseid][hCustomExterior] = 0;
-	HouseInfo[houseid][hExteriorA] = 0;
-	HouseInfo[houseid][hInteriorA] = 0;
 	HouseInfo[houseid][hMailX] = 0.0;
 	HouseInfo[houseid][hMailY] = 0.0;
 	HouseInfo[houseid][hMailZ] = 0.0;
 	HouseInfo[houseid][hMailA] = 0.0;
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(Text3D:HouseInfo[houseid][hClosetTextID]);
+	HouseInfo[houseid][hMailType] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hMailObjectId])) DestroyDynamicObject(HouseInfo[houseid][hMailObjectId]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hMailTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hMailTextID]);
 	HouseInfo[houseid][hClosetX] = 0.0;
 	HouseInfo[houseid][hClosetY] = 0.0;
 	HouseInfo[houseid][hClosetZ] = 0.0;
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
 	LoadHouse(houseid);
 }
 
@@ -16884,7 +16890,7 @@ stock SendJobMessage(job, color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (GetPVarInt(i, "MechanicDuty") == 1 || GetPVarInt(i, "LawyerDuty") == 1))) {
+			if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && GetPVarInt(i, "LawyerDuty") == 1))) {
 				SendClientMessageEx(i, color, string);
 			}	
 		}
@@ -17019,18 +17025,11 @@ stock SendAdvisorMessage(color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pDonateRank] == 5 || PlayerInfo[i][pWatchdog] == 1) && advisorchat[i])
+			if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pDonateRank] == 5 || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
 			{
 				SendClientMessageEx(i, color, string);
 			}
-			else
-			{
-				if(PlayerInfo[i][pAdmin] >= 1 && advisorchat[i])
-				{
-					SendClientMessageEx(i, color, string);
-				}
-			}
-		}	
+		}
 	}
 }
 
@@ -21559,17 +21558,6 @@ stock StaffAccountCheck(playerid, ip[])
 stock GetStaffRank(playerid)
 {
 	new string[43];
-
-	if(PlayerInfo[playerid][pHelper] > 0)
-	{
-		switch(PlayerInfo[playerid][pHelper])
-		{
-			case 1: format(string, sizeof(string), "{6495ED}Helper{FFFFFF}");
-			case 2: format(string, sizeof(string), "{00FFFF}Community Advisor{FFFFFF}");
-			case 3: format(string, sizeof(string), "{00FFFF}Senior Advisor{FFFFFF}");
-			case 4: format(string, sizeof(string), "{00FFFF}Chief Advisor{FFFFFF}");
-		}
-	}
 	if(PlayerInfo[playerid][pWatchdog] > 0)
 	{
 		switch(PlayerInfo[playerid][pWatchdog])
@@ -21580,6 +21568,18 @@ stock GetStaffRank(playerid)
 			case 4: format(string, sizeof(string), "{2267F0}Director of RP Improvement{FFFFFF}");
 		}
 	}
+	
+	if(PlayerInfo[playerid][pHelper] > 0)
+	{
+		switch(PlayerInfo[playerid][pHelper])
+		{
+			case 1: format(string, sizeof(string), "{6495ED}Helper{FFFFFF}");
+			case 2: format(string, sizeof(string), "{00FFFF}Community Advisor{FFFFFF}");
+			case 3: format(string, sizeof(string), "{00FFFF}Senior Advisor{FFFFFF}");
+			case 4: format(string, sizeof(string), "{00FFFF}Chief Advisor{FFFFFF}");
+		}
+	}
+
 	if(PlayerInfo[playerid][pAdmin] == 1)
 	{
 		switch(PlayerInfo[playerid][pSMod])
@@ -21907,6 +21907,7 @@ stock SpectatePlayer(playerid, giveplayerid)
 		if( InsideTut{giveplayerid} >= 1 ) {
 			SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: This person is in the tutorial. Please consider this before assuming that they're air-breaking.");
 		}
+		if(PlayerInfo[giveplayerid][pAccountRestricted]) SendClientMessageEx(playerid, COLOR_WHITE, "NOTE: This person has their account restricted. Please consider this before assuming that they're health hacking.");
 		if(Spectating[playerid] == 0) {
 			new Float: pPositions[3];
 			GetPlayerPos(playerid, pPositions[0], pPositions[1], pPositions[2]);

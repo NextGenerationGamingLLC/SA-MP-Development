@@ -1134,6 +1134,7 @@ new Float:shop_vertices[] = {
 	2929.0,-1490.0,
 	2905.0,-1588.0
 };
+new restarting;
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 

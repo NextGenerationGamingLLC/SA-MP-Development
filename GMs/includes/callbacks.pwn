@@ -1627,7 +1627,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	{
 	    new Float: multiply;
 
-	    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pJailTime] > 0 || HelpingNewbie[playerid] != INVALID_PLAYER_ID || GetPVarInt(playerid, "eventStaff") >= 1) return 1;
+	    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2 || PlayerInfo[playerid][pJailTime] > 0 || HelpingNewbie[playerid] != INVALID_PLAYER_ID || GetPVarInt(playerid, "eventStaff") >= 1) return 1;
 		
 		if(hgActive == 1 && HungerPlayerInfo[playerid][hgInEvent] == 1) return 1;
 		
@@ -1768,7 +1768,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		}
 		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
 		{
-		    if(PlayerInfo[damagedid][pAdmin] >= 2 && PlayerInfo[damagedid][pTogReports] != 1)
+		    if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1)
 			{
 			    SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tazed!");
 			    new Float:hp;
@@ -5701,7 +5701,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 			if(IsPlayerConnected(i))
 			{		
-				if(PlayerInfo[i][pAdmin] >= 2 || GetPVarType(i, "pWatchdogWatching")) {
+				if(PlayerInfo[i][pAdmin] >= 2 || GetPVarType(i, "StartedWatching")) {
 					if(Spectating[i] > 0 && Spectate[i] == playerid) {
 						if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
 							TogglePlayerSpectating(i, true);
@@ -6260,7 +6260,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting commands right now.");
 		return 0;
 	}
-	/* Will be fixed ASAP
+
 	if(++CommandSpamTimes[playerid] >= 5 && PlayerInfo[playerid][pAdmin] < 1337) {
 		CommandSpamTimes[playerid] = 0;
 		CommandSpamUnmute[playerid] = 10;
@@ -6268,7 +6268,6 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
 		return 0;
 	}
-	*/
 
 	if(strfind(cmdtext, "|") != -1 || strfind(cmdtext, "\n") != -1 || strfind(cmdtext, "\r") != -1) {
 	    SendClientMessageEx(playerid, COLOR_GREY, "You cannot use non-standard characters in commands.");

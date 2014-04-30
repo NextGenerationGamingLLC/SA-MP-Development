@@ -696,6 +696,7 @@ public OnPlayerLoad(playerid)
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR, CAMOTD);
 		if(PlayerInfo[playerid][pHelper] >= 2) {
 			SetPVarInt(playerid, "AdvisorDuty", 1);
+			SetPVarInt(playerid, "CAChat", 1);
 			++Advisors;
 		}
 	}
