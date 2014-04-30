@@ -9815,7 +9815,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the %s Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Judicial), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pMember], month, day, year);
 			Log(file, str);
-			format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the %s Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Judicial), arrGroupData[iGroupID][g_szGroupName]);
+			format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the %s Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Group), arrGroupData[iGroupID][g_szGroupName]);
 			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 			Log(file, str);
 			for(new z; z < MAX_GROUPS; z++)

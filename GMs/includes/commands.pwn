@@ -11773,8 +11773,8 @@ CMD:accept(playerid, params[])
                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
                         format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  (PlayerInfo[HitToGet[playerid]][pHeadValue] / 4) * 2);
                         SendGroupMessage(2, COLOR_YELLOW, szMessage);
-						SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 60 seconds for the final go ahead from the Agency.");
-						SetPVarInt(playerid, "HitCooldown", 60);
+						SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 30 seconds for the final go ahead from the Agency.");
+						SetPVarInt(playerid, "HitCooldown", 30);
                         GoChase[playerid] = HitToGet[playerid];
                         GetChased[HitToGet[playerid]] = playerid;
                         GotHit[HitToGet[playerid]] = 1;
