@@ -59624,13 +59624,12 @@ CMD:pickveh(playerid, params[])
 						GetVehicleZAngle(vehicleid, a);
 						SetPlayerFacingAngle(playerid, a-90);
 						ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
-						GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-						SetPVarFloat(playerid, "LockPickPosX", Pos[0]), SetPVarFloat(playerid, "LockPickPosY", Pos[1]), SetPVarFloat(playerid, "LockPickPosZ", Pos[2]);
 						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 						GetPlayerIp(playerid, ip, sizeof(ip));
 						GetPlayerIp(i, ip2, sizeof(ip2));
 						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
 						Log("logs/playervehicle.log", szMessage);
+						SetPVarInt(playerid, "LockPickAnimId", GetPlayerAnimationIndex(playerid));
 					}
 					else {
 						SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
@@ -59650,7 +59649,7 @@ CMD:pickveh(playerid, params[])
 
 CMD:cracktrunk(playerid, params[])
 {
-	new szMessage[150], Float: x, Float: y, Float: z, Float: vehSize[3];
+	new szMessage[150], Float: x, Float: y, Float: z;
 
 	/* if(gettime() < PlayerInfo[playerid][pLockPickTime]) {
 		format(szMessage, sizeof(szMessage), "You must wait %s in order to attempt another crack trunk.", ConvertTimeS(PlayerInfo[playerid][pLockPickTime] - gettime()));
@@ -59690,8 +59689,6 @@ CMD:cracktrunk(playerid, params[])
 			GetVehicleZAngle(vehicleid, z);
 			SetPlayerFacingAngle(playerid, z);
 			ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
-			GetPlayerPos(playerid, x, y, z);
-			SetPVarFloat(playerid, "LockPickPosX", x), SetPVarFloat(playerid, "LockPickPosY", y), SetPVarFloat(playerid, "LockPickPosZ", z);
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
@@ -59703,8 +59700,6 @@ CMD:cracktrunk(playerid, params[])
 		}
 	}
 	else {
-		GetPlayerPos(playerid, vehSize[0], vehSize[1], vehSize[2]);
-		printf("VehicleId: %d VehX: %.1f VehY: %.1f VehZ: %.1f PlayerX: %.1f PlayerY: %.1f PlayerZ: %.1f", vehicleid, x, y, z, vehSize[0], vehSize[1], vehSize[2]);
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be at the back of the car that you lock picked.");
 	}
 	return 1;

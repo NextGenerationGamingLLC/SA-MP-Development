@@ -2843,22 +2843,24 @@ public OnPlayerDisconnect(playerid, reason)
 			}
 		}
 		if(GetPVarType(playerid, "DeliveringVehicleTime")) {
-			new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
+			new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle")),
+				ownerid = GetPVarInt(playerid, "LockPickPlayer");
 			--PlayerCars;
-			VehicleSpawned[GetPVarInt(playerid, "LockPickPlayer")]--;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvAlarmTriggered] = 0;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvSpawned] = 0;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
+			VehicleSpawned[ownerid]--;
+			PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+			PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
+			PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
+			PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
 			DestroyVehicle(GetPVarInt(playerid, "LockPickVehicle"));
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
-			g_mysql_SaveVehicle(GetPVarInt(playerid, "LockPickPlayer"), slot);
+			PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
+			g_mysql_SaveVehicle(ownerid, slot);
 			DisablePlayerCheckpoint(playerid);
 		}
 		if(GetPVarType(playerid, "AttemptingLockPick")) {
-			new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+			new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle")),
+				ownerid = GetPVarInt(playerid, "LockPickPlayer");
+			PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+			PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		}
 		if(GetPVarType(playerid, "Gas_TrailerID"))
 		{
@@ -4202,7 +4204,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			default: RandAmount = Random(27000, 33000);
 		}
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]+RandAmount;
-		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unkown", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
+		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
@@ -4213,6 +4215,8 @@ public OnPlayerEnterCheckpoint(playerid)
 		--PlayerCars;
 		VehicleSpawned[ownerid]--;
 		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
+		PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
 		PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
 		DestroyVehicle(GetPVarInt(playerid, "LockPickVehicle"));

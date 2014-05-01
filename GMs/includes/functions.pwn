@@ -17505,25 +17505,16 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 	for(new v = 0; v < MAX_PLAYERVEHICLES; v++) if(PlayerVehicleInfo[playerid][v][pvId] != INVALID_PLAYER_VEHICLE_ID && !PlayerVehicleInfo[playerid][v][pvImpounded] && PlayerVehicleInfo[playerid][v][pvSpawned]) {
 		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0 && logoff == 0) continue;
-		if(IsVehicleInTow(PlayerVehicleInfo[playerid][v][pvId]))
-		{
-			DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
-			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
-			SetVehiclePos(PlayerVehicleInfo[playerid][v][pvId], 0, 0, 0); // Attempted desync fix
-		}
-		PlayerCars--;
-		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
+		else if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
 			new szMessage[150];
-			if(logoff == 1) {
-				switch(reason){
-					case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-					case 1: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-					case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-				}
-				SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
+			switch(reason){
+				case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 1: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 			}
-			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has unloaded it.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
+			/* format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has unloaded it.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage); */
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], ip2, sizeof(ip2));
@@ -17543,6 +17534,13 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
 			PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		}
+		if(IsVehicleInTow(PlayerVehicleInfo[playerid][v][pvId]) && logoff == 1)
+		{
+			DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
+			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
+			SetVehiclePos(PlayerVehicleInfo[playerid][v][pvId], 0, 0, 0); // Attempted desync fix
+		}
+		PlayerCars--;
 		if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
 		DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
 		PlayerVehicleInfo[playerid][v][pvId] = INVALID_PLAYER_VEHICLE_ID;
