@@ -1716,6 +1716,10 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
+    /*new szString[144];
+    format(szString, sizeof(szString), "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
+    SendClientMessage(playerid, -1, szString);*/
+	
 	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
 	{
 		if(hittype != BULLET_HIT_TYPE_PLAYER && hitid != GoChase[playerid])
@@ -1728,6 +1732,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	return 1;
 }
 
+
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if (damagedid == INVALID_PLAYER_ID) return 1;
@@ -1735,11 +1740,17 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
 	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
 	{
-		if(damagedid == GoChase[playerid])
+		if(damagedid == GoChase[playerid] && bodypart == BODY_PART_HEAD)
 		{
 			SetPlayerHealth(damagedid, 0);
 			SetPVarInt(playerid, "ExecutionMode", 0);
 			SetPVarInt(playerid, "KillShotCooldown", gettime());
+		}
+		else
+		{
+			SetPVarInt(playerid, "ExecutionMode", 0);
+			SendClientMessage(playerid, COLOR_RED, "You missed the target, wait 5 minutes before re-loading a HP Round.");
+			SetPVarInt(playerid, "KillShotCooldown", gettime());		
 		}
 	}
     if(pTazer{playerid} == 1)
@@ -3813,6 +3824,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
 				SendGroupMessage(2, COLOR_YELLOW, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
+				PlayerInfo[giveplayerid][pContractDetail][0] = 0;
    				ResetPlayerWeaponsEx(playerid);
 				// SpawnPlayer(playerid);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
@@ -3836,6 +3848,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			SendGroupMessage(2, COLOR_YELLOW, szMessage);
 			GivePlayerCash(playerid, -takemoney);
 		   	format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%d, removing the contract on your head.",takemoney);
+			PlayerInfo[giveplayerid][pContractDetail][0] = 0;
 			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
 			PlayerInfo[killerid][pHeadValue] = 0;
 			PlayerInfo[playerid][pFHits] += 1;

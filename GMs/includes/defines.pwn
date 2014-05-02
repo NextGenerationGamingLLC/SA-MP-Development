@@ -134,6 +134,16 @@ native gpci(playerid, serial[], maxlen);
 #define 		zombiemode
 #define 		event_chancegambler
 
+#define			BODY_PART_TORSO		3
+#define			BODY_PART_GROIN		4
+#define			BODY_PART_LEFT_ARM	5
+#define			BODY_PART_RIGHT_ARM	6
+#define			BODY_PART_LEFT_LEG	7
+#define			BODY_PART_RIGHT_LEG	8
+#define			BODY_PART_HEAD		9
+
+
+
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
     strcat((%0[0] = '\0', %0), %1, %2)*/

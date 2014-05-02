@@ -45561,6 +45561,15 @@ CMD:execute(playerid, params[])
 	return 1;
 }
 
+CMD:resetheadshot(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		return SetPVarInt(playerid, "KillShotCooldown", gettime()-300);
+	}
+	return 1;
+}
+
 CMD:profile(playerid, params[])
 {
 	if(IsAHitman(playerid))
