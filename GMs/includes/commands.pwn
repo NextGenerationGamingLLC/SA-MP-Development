@@ -59629,7 +59629,6 @@ CMD:pickveh(playerid, params[])
 						GetPlayerIp(i, ip2, sizeof(ip2));
 						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
 						Log("logs/playervehicle.log", szMessage);
-						SetPVarInt(playerid, "LockPickAnimId", GetPlayerAnimationIndex(playerid));
 					}
 					else {
 						SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
@@ -59645,6 +59644,13 @@ CMD:pickveh(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be next to the drivers door in order to lock pick it.");
 	}
 	return 1;
+}
+
+CMD:getanimid(playerid, params[])
+{
+	new szMessage[50];
+	format(szMessage, sizeof(szMessage), "Animation index: $d", GetPlayerAnimationIndex(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMessage);
 }
 
 CMD:cracktrunk(playerid, params[])
