@@ -1506,3 +1506,47 @@ enum AC
 }
 new AntiCheat[MAX_PLAYERS][AC];
 */
+
+/* Dynamic Gift Box Stuff
+Note: dgGVIP = 7 Days | dgGVIPEx = 1 Month
+Example: 
+	dgVar[dgMoney][0] = Is it enabled? 
+	dgVar[dgMoney][1] = Quantity of gift available
+	dgVar[dgMoney][2] = Quantity of money the player will receive
+	dgVar[dgMoney][3] = Rarity Category of Item (Common, Less Common, Rare, Super Rare)
+*/
+enum dgItems
+{
+	dgMoney,
+	dgRimKit,
+	dgFirework,
+	dgGVIP,
+	dgGVIPEx,
+	dgSVIP,
+	dgSVIPEx,
+	dgCarSlot,
+	dgToySlot,
+	dgArmor,
+	dgFirstaid,
+	dgDDFlag,
+	dgGateFlag,
+	dgCredits,
+	dgPriorityAd,
+	dgHealthNArmor,
+	dgGiftReset,
+	dgMaterial,
+	dgWarning,
+	dgPot,
+	dgCrack,
+	dgPaintballToken,
+	dgVIPToken,
+	dgRespectPoint,
+	dgCarVoucher,
+	dgBuddyInvite,
+	dgLaser,
+	dgCustomToy,
+	dgAdmuteReset,
+	dgNewbieMuteReset,
+	dgRestrictedCarVoucher,
+	dgPlatinumVIPVoucher
+};

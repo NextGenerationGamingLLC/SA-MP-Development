@@ -1211,69 +1211,69 @@ public OnQueryFinish(resultid, extraid, handleid)
 				for(new array = 0; array < 4; array++)
 				{
 					format(arraystring, sizeof(arraystring), "dgMoney%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgMoney[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgMoney][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRimKit%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgRimKit[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRimKit][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgFirework%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgFirework[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgFirework][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGVIP%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgGVIP[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGVIP][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgSVIP%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgSVIP[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgSVIP][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGVIPEx%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgGVIPEx[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGVIPEx][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgSVIPEx%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgSVIPEx[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgSVIPEx][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCarSlot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCarSlot[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCarSlot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgToySlot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgToySlot[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgToySlot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgArmor%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgArmor[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgArmor][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgFirstaid%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgFirstaid[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgFirstaid][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgDDFlag%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgDDFlag[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgDDFlag][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGateFlag%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgGateFlag[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGateFlag][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCredits%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCredits[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCredits][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPriorityAd%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgPriorityAd[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPriorityAd][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgHealthNArmor%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgHealthNArmor[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgHealthNArmor][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGiftReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgGiftReset[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGiftReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgMaterial%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgMaterial[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgMaterial][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgWarning%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgWarning[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgWarning][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgPot[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCrack%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCrack[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCrack][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPaintballToken%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgPaintballToken[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPaintballToken][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgVIPToken%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVIPToken[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgVIPToken][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRespectPoint%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgRespectPoint[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRespectPoint][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCarVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCarVoucher[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCarVoucher][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgBuddyInvite%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgBuddyInvite[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgBuddyInvite][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgLaser%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgLaser[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgLaser][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCustomToy%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgCustomToy[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCustomToy][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgAdmuteReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgAdmuteReset[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgAdmuteReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgNewbieMuteReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgNewbieMuteReset[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgNewbieMuteReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRestrictedCarVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgRestrictedCarVoucher[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRestrictedCarVoucher][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPlatinumVIPVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgPlatinumVIPVoucher[array] = strval(szResult);
+					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPlatinumVIPVoucher][array] = strval(szResult);
 				}
 				break;
 			}
@@ -3512,7 +3512,7 @@ public AddingBan(index, type)
     		    	new string[150], reason[64];
     		    	GetPVarString(index, "BanningReason", reason, sizeof(reason));
 
-		    	    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", GetPlayerIpEx(GetPVarInt(index, "BanningPlayer")), reason, GetPlayerNameEx(index));
+		    	    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", GetPlayerIpEx(GetPVarInt(index, "BanningPlayer")), g_mysql_ReturnEscaped(reason, MainPipeline), GetPlayerNameEx(index));
 					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					DeletePVar(index, "BanningPlayer");
@@ -7884,46 +7884,45 @@ stock SaveDynamicGiftBox()
 	for(new i = 0; i < 4; i++)
 	{
 		if(i == 0)
-			format(query, sizeof(query), "UPDATE `giftbox` SET `dgMoney%d` = '%d',", i, dgMoney[i]);
+			format(query, sizeof(query), "UPDATE `giftbox` SET `dgMoney%d` = '%d',", i, dgVar[dgMoney][i]);
 		else
-			format(query, sizeof(query), "%s `dgMoney%d` = '%d',", query, i, dgMoney[i]);
+			format(query, sizeof(query), "%s `dgMoney%d` = '%d',", query, i, dgVar[dgMoney][i]);
 			
-		format(query, sizeof(query), "%s `dgRimKit%d` = '%d',", query, i, dgRimKit[i]);
-		format(query, sizeof(query), "%s `dgFirework%d` = '%d',", query, i, dgFirework[i]);
-		format(query, sizeof(query), "%s `dgGVIP%d` = '%d',", query, i, dgGVIP[i]);
-		format(query, sizeof(query), "%s `dgSVIP%d` = '%d',", query, i, dgSVIP[i]);
-		format(query, sizeof(query), "%s `dgGVIPEx%d` = '%d',", query, i, dgGVIPEx[i]);
-		format(query, sizeof(query), "%s `dgSVIPEx%d` = '%d',", query, i, dgSVIPEx[i]);
-		format(query, sizeof(query), "%s `dgCarSlot%d` = '%d',", query, i, dgCarSlot[i]);
-		format(query, sizeof(query), "%s `dgToySlot%d` = '%d',", query, i, dgToySlot[i]);
-		format(query, sizeof(query), "%s `dgArmor%d` = '%d',", query, i, dgArmor[i]);
-		format(query, sizeof(query), "%s `dgFirstaid%d` = '%d',", query, i, dgFirstaid[i]);
-		format(query, sizeof(query), "%s `dgDDFlag%d` = '%d',", query, i, dgDDFlag[i]);
-		format(query, sizeof(query), "%s `dgGateFlag%d` = '%d',", query, i, dgGateFlag[i]);
-		format(query, sizeof(query), "%s `dgCredits%d` = '%d',", query, i, dgCredits[i]);
-		format(query, sizeof(query), "%s `dgPriorityAd%d` = '%d',", query, i, dgPriorityAd[i]);
-		format(query, sizeof(query), "%s `dgHealthNArmor%d` = '%d',", query, i, dgHealthNArmor[i]);
-		format(query, sizeof(query), "%s `dgGiftReset%d` = '%d',", query, i, dgGiftReset[i]);
-		format(query, sizeof(query), "%s `dgMaterial%d` = '%d',", query, i, dgMaterial[i]);
-		format(query, sizeof(query), "%s `dgWarning%d` = '%d',", query, i, dgWarning[i]);
-		format(query, sizeof(query), "%s `dgPot%d` = '%d',", query, i, dgPot[i]);
-		format(query, sizeof(query), "%s `dgCrack%d` = '%d',", query, i, dgCrack[i]);
-		format(query, sizeof(query), "%s `dgPaintballToken%d` = '%d',", query, i, dgPaintballToken[i]);
-		format(query, sizeof(query), "%s `dgVIPToken%d` = '%d',", query, i, dgVIPToken[i]);
-		format(query, sizeof(query), "%s `dgRespectPoint%d` = '%d',", query, i, dgRespectPoint[i]);
-		format(query, sizeof(query), "%s `dgCarVoucher%d` = '%d',", query, i, dgCarVoucher[i]);
-		format(query, sizeof(query), "%s `dgBuddyInvite%d` = '%d',", query, i, dgBuddyInvite[i]);
-		format(query, sizeof(query), "%s `dgLaser%d` = '%d',", query, i, dgLaser[i]);
-		format(query, sizeof(query), "%s `dgCustomToy%d` = '%d',", query, i, dgCustomToy[i]);
-		format(query, sizeof(query), "%s `dgAdmuteReset%d` = '%d',", query, i, dgAdmuteReset[i]);
-		format(query, sizeof(query), "%s `dgNewbieMuteReset%d` = '%d',", query, i, dgNewbieMuteReset[i]);
+		format(query, sizeof(query), "%s `dgRimKit%d` = '%d',", query, i, dgVar[dgRimKit][i]);
+		format(query, sizeof(query), "%s `dgFirework%d` = '%d',", query, i, dgVar[dgFirework][i]);
+		format(query, sizeof(query), "%s `dgGVIP%d` = '%d',", query, i, dgVar[dgGVIP][i]);
+		format(query, sizeof(query), "%s `dgSVIP%d` = '%d',", query, i, dgVar[dgSVIP][i]);
+		format(query, sizeof(query), "%s `dgGVIPEx%d` = '%d',", query, i, dgVar[dgGVIPEx][i]);
+		format(query, sizeof(query), "%s `dgSVIPEx%d` = '%d',", query, i, dgVar[dgSVIPEx][i]);
+		format(query, sizeof(query), "%s `dgCarSlot%d` = '%d',", query, i, dgVar[dgCarSlot][i]);
+		format(query, sizeof(query), "%s `dgToySlot%d` = '%d',", query, i, dgVar[dgToySlot][i]);
+		format(query, sizeof(query), "%s `dgArmor%d` = '%d',", query, i, dgVar[dgArmor][i]);
+		format(query, sizeof(query), "%s `dgFirstaid%d` = '%d',", query, i, dgVar[dgFirstaid][i]);
+		format(query, sizeof(query), "%s `dgDDFlag%d` = '%d',", query, i, dgVar[dgDDFlag][i]);
+		format(query, sizeof(query), "%s `dgGateFlag%d` = '%d',", query, i, dgVar[dgGateFlag][i]);
+		format(query, sizeof(query), "%s `dgCredits%d` = '%d',", query, i, dgVar[dgCredits][i]);
+		format(query, sizeof(query), "%s `dgPriorityAd%d` = '%d',", query, i, dgVar[dgPriorityAd][i]);
+		format(query, sizeof(query), "%s `dgHealthNArmor%d` = '%d',", query, i, dgVar[dgHealthNArmor][i]);
+		format(query, sizeof(query), "%s `dgGiftReset%d` = '%d',", query, i, dgVar[dgGiftReset][i]);
+		format(query, sizeof(query), "%s `dgMaterial%d` = '%d',", query, i, dgVar[dgMaterial][i]);
+		format(query, sizeof(query), "%s `dgWarning%d` = '%d',", query, i, dgVar[dgWarning][i]);
+		format(query, sizeof(query), "%s `dgPot%d` = '%d',", query, i, dgVar[dgPot][i]);
+		format(query, sizeof(query), "%s `dgCrack%d` = '%d',", query, i, dgVar[dgCrack][i]);
+		format(query, sizeof(query), "%s `dgPaintballToken%d` = '%d',", query, i, dgVar[dgPaintballToken][i]);
+		format(query, sizeof(query), "%s `dgVIPToken%d` = '%d',", query, i, dgVar[dgVIPToken][i]);
+		format(query, sizeof(query), "%s `dgRespectPoint%d` = '%d',", query, i, dgVar[dgRespectPoint][i]);
+		format(query, sizeof(query), "%s `dgCarVoucher%d` = '%d',", query, i, dgVar[dgCarVoucher][i]);
+		format(query, sizeof(query), "%s `dgBuddyInvite%d` = '%d',", query, i, dgVar[dgBuddyInvite][i]);
+		format(query, sizeof(query), "%s `dgLaser%d` = '%d',", query, i, dgVar[dgLaser][i]);
+		format(query, sizeof(query), "%s `dgCustomToy%d` = '%d',", query, i, dgVar[dgCustomToy][i]);
+		format(query, sizeof(query), "%s `dgAdmuteReset%d` = '%d',", query, i, dgVar[dgAdmuteReset][i]);
+		format(query, sizeof(query), "%s `dgNewbieMuteReset%d` = '%d',", query, i, dgVar[dgNewbieMuteReset][i]);
 		
 		if(i == 3)
-			format(query, sizeof(query), "%s `dgRestrictedCarVoucher%d` = '%d'", query, i, dgRestrictedCarVoucher[i]);
+			format(query, sizeof(query), "%s `dgRestrictedCarVoucher%d` = '%d'", query, i, dgVar[dgRestrictedCarVoucher][i]);
 		else
-			format(query, sizeof(query), "%s `dgPlatinumVIPVoucher%d` = '%d',", query, i, dgPlatinumVIPVoucher[i]);
+			format(query, sizeof(query), "%s `dgPlatinumVIPVoucher%d` = '%d',", query, i, dgVar[dgPlatinumVIPVoucher][i]);
 	}
-
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 

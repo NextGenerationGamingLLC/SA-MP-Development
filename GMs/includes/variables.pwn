@@ -1139,11 +1139,8 @@ new restarting;
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
 // Dynamic Gift Box Stuff
-// Note: dgGVIP = 7 Days | dgGVIPEx = 1 Month
-// Example: dgMoney[0] = Is it enabled? || dgMoney[1] = Quantity of gift available || dgMoney[2] = Quantity of money the player will receive || dgMoney[3] = Rarity Category of Item (Common, Less Common, Rare, Super Rare)
-new dgMoney[4], dgRimKit[4], dgFirework[4], dgGVIP[4], dgGVIPEx[4], dgSVIP[4], dgSVIPEx[4], dgCarSlot[4], dgToySlot[4], dgArmor[4], dgFirstaid[4], dgDDFlag[4], dgGateFlag[4], dgCredits[4], dgPriorityAd[4], dgHealthNArmor[4], dgGiftReset[4], dgMaterial[4], dgWarning[4], dgPot[4], dgCrack[4], dgPaintballToken[4], dgVIPToken[4],
-	dgRespectPoint[4], dgCarVoucher[4], dgBuddyInvite[4], dgLaser[4], dgCustomToy[4], dgAdmuteReset[4], dgNewbieMuteReset[4], dgRestrictedCarVoucher[4], dgPlatinumVIPVoucher[4];
-
+new dgVar[dgItems][4];
+new dgAmount, dgTimer = -1, dgTimerTime;
 new bool: IsDynamicGiftBoxEnabled = false;
 
 new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	

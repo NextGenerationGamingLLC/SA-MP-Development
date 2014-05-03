@@ -19035,263 +19035,168 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
+			if(PlayerInfo[playerid][pAdmin] < 99999 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 			switch(listitem) 
 			{
 				case 1:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgMoney[0], dgMoney[1], dgMoney[2], GetDynamicGiftBoxType(dgMoney[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Money", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgMoney][0], dgVar[dgMoney][1], dgVar[dgMoney][2], GetDynamicGiftBoxType(dgVar[dgMoney][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Money", string, "Back", "");
 				}
 				case 2:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgRimKit[0], dgRimKit[1], dgRimKit[2], GetDynamicGiftBoxType(dgRimKit[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Rimkit", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgRimKit][0], dgVar[dgRimKit][1], dgVar[dgRimKit][2], GetDynamicGiftBoxType(dgVar[dgRimKit][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Rimkit", string, "Back", "");
 				}
 				case 3:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgFirework[0], dgFirework[1], dgFirework[2], GetDynamicGiftBoxType(dgFirework[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Firework", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgFirework][0], dgVar[dgFirework][1], dgVar[dgFirework][2], GetDynamicGiftBoxType(dgVar[dgFirework][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Firework", string, "Back", "");
 				}
 				case 4:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgGVIP[0], dgGVIP[1], dgGVIP[2], GetDynamicGiftBoxType(dgGVIP[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 7 Day GVIP", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgGVIP][0], dgVar[dgGVIP][1], dgVar[dgGVIP][2], GetDynamicGiftBoxType(dgVar[dgGVIP][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 7 Day GVIP", string, "Back", "");
 				}
 				case 5:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgGVIPEx[0], dgGVIPEx[1], dgGVIPEx[2], GetDynamicGiftBoxType(dgGVIPEx[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 Month GVIP", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgGVIPEx][0], dgVar[dgGVIPEx][1], dgVar[dgGVIPEx][2], GetDynamicGiftBoxType(dgVar[dgGVIPEx][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 Month GVIP", string, "Back", "");
 				}
 				case 6:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgSVIP[0], dgSVIP[1], dgSVIP[2], GetDynamicGiftBoxType(dgSVIP[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 Day SVIP", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgSVIP][0], dgVar[dgSVIP][1], dgVar[dgSVIP][2], GetDynamicGiftBoxType(dgVar[dgSVIP][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 7 Day SVIP", string, "Back", "");
 				}
 				case 7:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgSVIPEx[0], dgSVIPEx[1], dgSVIPEx[2], GetDynamicGiftBoxType(dgSVIPEx[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 Month SVIP", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgSVIPEx][0], dgVar[dgSVIPEx][1], dgVar[dgSVIPEx][2], GetDynamicGiftBoxType(dgVar[dgSVIPEx][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 Month SVIP", string, "Back", "");
 				}
 				case 8:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgCarSlot[0], dgCarSlot[1], dgCarSlot[2], GetDynamicGiftBoxType(dgCarSlot[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Car Slot", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgCarSlot][0], dgVar[dgCarSlot][1], dgVar[dgCarSlot][2], GetDynamicGiftBoxType(dgVar[dgCarSlot][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Car Slot", string, "Back", "");
 				}
 				case 9:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgToySlot[0], dgToySlot[1], dgToySlot[2], GetDynamicGiftBoxType(dgToySlot[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Toy Slot", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgToySlot][0], dgVar[dgToySlot][1], dgVar[dgToySlot][2], GetDynamicGiftBoxType(dgVar[dgToySlot][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Toy Slot", string, "Back", "");
 				}
 				case 10:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgArmor[0], dgArmor[1], dgArmor[2], GetDynamicGiftBoxType(dgArmor[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Armor", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgArmor][0], dgVar[dgArmor][1], dgVar[dgArmor][2], GetDynamicGiftBoxType(dgVar[dgArmor][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Armor", string, "Back", "");
 				}
 				case 11:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgFirstaid[0], dgFirstaid[1], dgFirstaid[2], GetDynamicGiftBoxType(dgFirstaid[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Firstaid", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgFirstaid][0], dgVar[dgFirstaid][1], dgVar[dgFirstaid][2], GetDynamicGiftBoxType(dgVar[dgFirstaid][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Firstaid", string, "Back", "");
 				}
 				case 12:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgDDFlag[0], dgDDFlag[1], dgDDFlag[2], GetDynamicGiftBoxType(dgDDFlag[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Dynamic Door Flag", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgDDFlag][0], dgVar[dgDDFlag][1], dgVar[dgDDFlag][2], GetDynamicGiftBoxType(dgVar[dgDDFlag][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Dynamic Door Flag", string, "Back", "");
 				}
 				case 13:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgGateFlag[0], dgGateFlag[1], dgGateFlag[2], GetDynamicGiftBoxType(dgGateFlag[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Dynamic Gate Flag", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgGateFlag][0], dgVar[dgGateFlag][1], dgVar[dgGateFlag][2], GetDynamicGiftBoxType(dgVar[dgGateFlag][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Dynamic Gate Flag", string, "Back", "");
 				}
 				case 14:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgCredits[0], dgCredits[1], dgCredits[2], GetDynamicGiftBoxType(dgCredits[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Credits", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgCredits][0], dgVar[dgCredits][1], dgVar[dgCredits][2], GetDynamicGiftBoxType(dgVar[dgCredits][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Credits", string, "Back", "");
 				}
 				case 15:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgPriorityAd[0], dgPriorityAd[1], dgPriorityAd[2], GetDynamicGiftBoxType(dgPriorityAd[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Priority Advertisement", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPriorityAd][0], dgVar[dgPriorityAd][1], dgVar[dgPriorityAd][2], GetDynamicGiftBoxType(dgVar[dgPriorityAd][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Priority Advertisement", string, "Back", "");
 				}
 				case 16:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgHealthNArmor[0], dgHealthNArmor[1], dgHealthNArmor[2], GetDynamicGiftBoxType(dgHealthNArmor[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Health & Armor", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgHealthNArmor][0], dgVar[dgHealthNArmor][1], dgVar[dgHealthNArmor][2], GetDynamicGiftBoxType(dgVar[dgHealthNArmor][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Health & Armor", string, "Back", "");
 				}
 				case 17:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgGiftReset[0], dgGiftReset[1], dgGiftReset[2], GetDynamicGiftBoxType(dgGiftReset[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Gift Reset", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgGiftReset][0], dgVar[dgGiftReset][1], dgVar[dgGiftReset][2], GetDynamicGiftBoxType(dgVar[dgGiftReset][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Gift Reset", string, "Back", "");
 				}
 				case 18:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgMaterial[0], dgMaterial[1], dgMaterial[2], GetDynamicGiftBoxType(dgMaterial[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Material", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgMaterial][0], dgVar[dgMaterial][1], dgVar[dgMaterial][2], GetDynamicGiftBoxType(dgVar[dgMaterial][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Material", string, "Back", "");
 				}
 				case 19:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgWarning[0], dgWarning[1], dgWarning[2], GetDynamicGiftBoxType(dgWarning[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Warning", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgWarning][0], dgVar[dgWarning][1], dgVar[dgWarning][2], GetDynamicGiftBoxType(dgVar[dgWarning][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Warning", string, "Back", "");
 				}
 				case 20:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgPot[0], dgPot[1], dgPot[2], GetDynamicGiftBoxType(dgPot[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Pot", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPot][0], dgVar[dgPot][1], dgVar[dgPot][2], GetDynamicGiftBoxType(dgVar[dgPot][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Pot", string, "Back", "");
 				}
 				case 21:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgCrack[0], dgCrack[1], dgCrack[2], GetDynamicGiftBoxType(dgCrack[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Crack", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgCrack][0], dgVar[dgCrack][1], dgVar[dgCrack][2], GetDynamicGiftBoxType(dgVar[dgCrack][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Crack", string, "Back", "");
 				}
 				case 22:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgPaintballToken[0], dgPaintballToken[1], dgPaintballToken[2], GetDynamicGiftBoxType(dgPaintballToken[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Paintball Token", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPaintballToken][0], dgVar[dgPaintballToken][1], dgVar[dgPaintballToken][2], GetDynamicGiftBoxType(dgVar[dgPaintballToken][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Paintball Token", string, "Back", "");
 				}
 				case 23:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVIPToken[0], dgVIPToken[1], dgVIPToken[2], GetDynamicGiftBoxType(dgVIPToken[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - VIP Token", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgVIPToken][0], dgVar[dgVIPToken][1], dgVar[dgVIPToken][2], GetDynamicGiftBoxType(dgVar[dgVIPToken][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - VIP Token", string, "Back", "");
 				}
 				case 24:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgRespectPoint[0], dgRespectPoint[1], dgRespectPoint[2], GetDynamicGiftBoxType(dgRespectPoint[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Respect Point", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgRespectPoint][0], dgVar[dgRespectPoint][1], dgVar[dgRespectPoint][2], GetDynamicGiftBoxType(dgVar[dgRespectPoint][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Respect Point", string, "Back", "");
 				}
 				case 25:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgCarVoucher[0], dgCarVoucher[1], dgCarVoucher[2], GetDynamicGiftBoxType(dgCarVoucher[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Car Voucher", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgCarVoucher][0], dgVar[dgCarVoucher][1], dgVar[dgCarVoucher][2], GetDynamicGiftBoxType(dgVar[dgCarVoucher][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Car Voucher", string, "Back", "");
 				}	
 				case 26:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgBuddyInvite[0], dgBuddyInvite[1], dgBuddyInvite[2], GetDynamicGiftBoxType(dgBuddyInvite[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Buddy Invite", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgBuddyInvite][0], dgVar[dgBuddyInvite][1], dgVar[dgBuddyInvite][2], GetDynamicGiftBoxType(dgVar[dgBuddyInvite][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Buddy Invite", string, "Back", "");
 				}	
 				case 27:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgLaser[0], dgLaser[1], dgLaser[2], GetDynamicGiftBoxType(dgLaser[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Laser", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgLaser][0], dgVar[dgLaser][1], dgVar[dgLaser][2], GetDynamicGiftBoxType(dgVar[dgLaser][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Laser", string, "Back", "");
 				}	
 				case 28:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nToy ID: %d\nGift Type: %s", dgCustomToy[0], dgCustomToy[1], dgCustomToy[2], GetDynamicGiftBoxType(dgCustomToy[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Custom Toy", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nToy ID: %d\nGift Type: %s", dgVar[dgCustomToy][0], dgVar[dgCustomToy][1], dgVar[dgCustomToy][2], GetDynamicGiftBoxType(dgVar[dgCustomToy][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Custom Toy", string, "Back", "");
 				}	
 				case 29:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgAdmuteReset[0], dgAdmuteReset[1], dgAdmuteReset[2], GetDynamicGiftBoxType(dgAdmuteReset[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Advertisement Mute Reset", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgAdmuteReset][0], dgVar[dgAdmuteReset][1], dgVar[dgAdmuteReset][2], GetDynamicGiftBoxType(dgVar[dgAdmuteReset][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Advertisement Mute Reset", string, "Back", "");
 				}
 				case 30:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgNewbieMuteReset[0], dgNewbieMuteReset[1], dgNewbieMuteReset[2], GetDynamicGiftBoxType(dgNewbieMuteReset[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Newbie Mute Reset", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgNewbieMuteReset][0], dgVar[dgNewbieMuteReset][1], dgVar[dgNewbieMuteReset][2], GetDynamicGiftBoxType(dgVar[dgNewbieMuteReset][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Newbie Mute Reset", string, "Back", "");
 				}
 				case 31:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgRestrictedCarVoucher[0], dgRestrictedCarVoucher[1], dgRestrictedCarVoucher[2], GetDynamicGiftBoxType(dgRestrictedCarVoucher[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Restricted Car Voucher", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgRestrictedCarVoucher][0], dgVar[dgRestrictedCarVoucher][1], dgVar[dgRestrictedCarVoucher][2], GetDynamicGiftBoxType(dgVar[dgRestrictedCarVoucher][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Restricted Car Voucher", string, "Back", "");
 				}
 				case 32:
 				{
-					if(PlayerInfo[playerid][pAdmin] != 99999) return true;
-					
-					new szString[128];
-					format(szString, sizeof(szString), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgPlatinumVIPVoucher[0], dgPlatinumVIPVoucher[1], dgPlatinumVIPVoucher[2], GetDynamicGiftBoxType(dgPlatinumVIPVoucher[3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Platinum VIP Voucher", szString, "Back", "");
+					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPlatinumVIPVoucher][0], dgVar[dgPlatinumVIPVoucher][1], dgVar[dgPlatinumVIPVoucher][2], GetDynamicGiftBoxType(dgVar[dgPlatinumVIPVoucher][3]));
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Platinum VIP Voucher", string, "Back", "");
 				}
 				default: return true;
 			}
@@ -19780,6 +19685,58 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		SendClientMessageEx(playerid, COLOR_GRAD4, inputtext);
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Incident Report successfully submitted.");
+	}
+	if(dialogid == DIALOG_DGRAUTORESET)
+	{
+		if(!response && GetPVarType(playerid, "dgInputSel")) return cmd_dgedit(playerid, "autoreset");
+		if(response)
+		{
+			if(listitem == 0)
+			{
+				SetPVarInt(playerid, "dgInputSel", 1);
+				return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Timer", "Please enter a interval in minutes of when you want the giftbox to be automatically reset.", "Submit", "Close");
+			}
+			if(listitem == 1)
+			{
+				SetPVarInt(playerid, "dgInputSel", 2);
+				return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Amount", "Please enter a amount to be added to empty items when the giftbox is automatically reset.", "Submit", "Close");
+			}
+			if(listitem == 2)
+			{
+				if(dgTimer != -1)
+				{
+					KillTimer(dgTimer);
+					dgTimer = -1;
+					SendClientMessage(playerid, -1, "You have successfully disabled the auto reset feature.");
+				}
+				else
+				{
+					if(!dynamicgift) return SendClientMessageEx(playerid, -1, "Giftbox has not been placed!");
+					if(IsDynamicGiftBoxEnabled == false) return SendClientMessageEx(playerid, -1, "Dynamic Giftbox is currently disabled! /togdynamicgift to enable.");
+					if(dgTimerTime <= 0 || dgAmount <= 0) return SendClientMessageEx(playerid, -1, "Invalid Settings!");
+					dgTimer = SetTimer("DG_AutoReset", dgTimerTime*60000, true);
+					format(string, sizeof(string), "You have enabled the auto reset feature. Settings: Timer: %d minute(s) | Amount: %d", dgTimerTime, dgAmount);
+					SendClientMessageEx(playerid, -1, string);
+				}
+			}
+			if(GetPVarInt(playerid, "dgInputSel") == 1)
+			{
+				new _time;
+				if(sscanf(inputtext, "d", _time) || _time <= 0) return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Timer", "Please enter a interval in minutes of when you want the giftbox to be automatically reset.", "Submit", "Close");
+				dgTimerTime = _time;
+				format(string, sizeof(string), "You have set the auto reset timer to: %d minute(s).", dgTimerTime);
+				SendClientMessageEx(playerid, -1, string);
+			}
+			if(GetPVarInt(playerid, "dgInputSel") == 2)
+			{
+				new _amount;
+				if(sscanf(inputtext, "d", _amount) || _amount <= 0) return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_INPUT, "Dynamic Giftbox Auto Reset - Amount", "Please enter a amount to be added to empty items when the giftbox is automatically reset.", "Submit", "Close");
+				dgAmount = _amount;
+				format(string, sizeof(string), "You have set the auto reset amount to: %d.", dgAmount);
+				SendClientMessageEx(playerid, -1, string);
+			}
+			return cmd_dgedit(playerid, "autoreset");
+		}
 	}
 	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
 	{

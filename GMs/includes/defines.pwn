@@ -896,11 +896,13 @@ native gpci(playerid, serial[], maxlen);
 
 #define			DIALOG_BUGREPORT 			(6000)
 
-#define			DIALOG_ORDER_HMA1					(6001)
-#define			DIALOG_ORDER_HMAWPS					(6002)
-#define			DIALOG_ORDER_HMASKIN				(6003)
-#define			DIALOG_PROFILE_HMA					(6005)
-#define			MSG_NOMONEY							("You do not have enough money for this")
+#define			DIALOG_ORDER_HMA1			(6001)
+#define			DIALOG_ORDER_HMAWPS			(6002)
+#define			DIALOG_ORDER_HMASKIN		(6003)
+#define			DIALOG_PROFILE_HMA			(6005)
+#define			MSG_NOMONEY					("You do not have enough money for this")
+
+#define 		DIALOG_DGRAUTORESET			(6006)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

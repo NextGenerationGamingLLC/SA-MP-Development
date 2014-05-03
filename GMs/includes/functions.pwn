@@ -22258,131 +22258,131 @@ stock ShowPlayerDynamicGiftBox(playerid)
 	new string[1024];
 	
 	format(string, sizeof(string), "{1B7A3C}Giftbox Settings{FFFFFF}");
-	if(dgMoney[0] == 1)
+	if(dgVar[dgMoney][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Money", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Money", string);
-	if(dgRimKit[0] == 1)
+	if(dgVar[dgRimKit][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Rimkit", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Rimkit", string);
-	if(dgFirework[0] == 1)
+	if(dgVar[dgFirework][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Firework", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Firework", string);
-	if(dgGVIP[0] == 1)
+	if(dgVar[dgGVIP][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}7 Days Gold VIP", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}7 Days Gold VIP", string);
-	if(dgGVIPEx[0] == 1)
+	if(dgVar[dgGVIPEx][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}1 Month Gold VIP", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}1 Month Gold VIP", string);
-	if(dgSVIP[0] == 1)
+	if(dgVar[dgSVIP][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}7 Days Silver VIP", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}7 Days Silver VIP", string);
-	if(dgSVIPEx[0] == 1)
+	if(dgVar[dgSVIPEx][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}1 Month Silver VIP", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}1 Month Silver VIP", string);
-	if(dgCarSlot[0] == 1)
+	if(dgVar[dgCarSlot][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Car Slot", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Car Slot", string);
-	if(dgToySlot[0] == 1)
+	if(dgVar[dgToySlot][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Toy Slot", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Toy Slot", string);
-	if(dgArmor[0] == 1)
+	if(dgVar[dgArmor][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Full Armor", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Full Armor", string);
-	if(dgFirstaid[0] == 1)
+	if(dgVar[dgFirstaid][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Firstaid", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Firstaid", string);
-	if(dgDDFlag[0] == 1)
+	if(dgVar[dgDDFlag][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Dynamic Door Flag", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Dynamic Door Flag", string);
-	if(dgGateFlag[0] == 1)
+	if(dgVar[dgGateFlag][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Dynamic Gate Flag", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Dynamic Gate Flag", string);
-	if(dgCredits[0] == 1)
+	if(dgVar[dgCredits][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Credits", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Credits", string);
-	if(dgPriorityAd[0] == 1)
+	if(dgVar[dgPriorityAd][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Priority Ad", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Priority Ad", string);
-	if(dgHealthNArmor[0] == 1)
+	if(dgVar[dgHealthNArmor][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Health & Armor", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Health & Armor", string);
-	if(dgGiftReset[0] == 1)
+	if(dgVar[dgGiftReset][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Gift Reset", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Gift Reset", string);
-	if(dgMaterial[0] == 1)
+	if(dgVar[dgMaterial][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Material", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Material", string);
-	if(dgWarning[0] == 1)
+	if(dgVar[dgWarning][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Warning", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Warning", string);
-	if(dgPot[0] == 1)
+	if(dgVar[dgPot][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Pot", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Pot", string);
-	if(dgCrack[0] == 1)
+	if(dgVar[dgCrack][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Crack", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Crack", string);
-	if(dgPaintballToken[0] == 1)
+	if(dgVar[dgPaintballToken][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Paintball Token", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Paintball Token", string);
-	if(dgVIPToken[0] == 1)
+	if(dgVar[dgVIPToken][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}VIP Token", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}VIP Token", string);
-	if(dgRespectPoint[0] == 1)
+	if(dgVar[dgRespectPoint][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Respect Point", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Respect Point", string);
-	if(dgCarVoucher[0] == 1)
+	if(dgVar[dgCarVoucher][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Car Voucher", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Car Voucher", string);
-	if(dgBuddyInvite[0] == 1)
+	if(dgVar[dgBuddyInvite][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Buddy Invite", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Buddy Invite", string);
-	if(dgLaser[0] == 1)
+	if(dgVar[dgLaser][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Laser", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Laser", string);
-	if(dgCustomToy[0] == 1)
+	if(dgVar[dgCustomToy][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Custom Toy", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Custom Toy", string);
-	if(dgAdmuteReset[0] == 1)
+	if(dgVar[dgAdmuteReset][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Advertisement Mute Reset", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Advertisement Mute Reset", string);
-	if(dgNewbieMuteReset[0] == 1)
+	if(dgVar[dgNewbieMuteReset][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Newbie Mute Reset", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Newbie Mute Reset", string);
-	if(dgRestrictedCarVoucher[0] == 1)
+	if(dgVar[dgRestrictedCarVoucher][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Restricted Car Voucher", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Restricted Car Voucher", string);
-	if(dgPlatinumVIPVoucher[0] == 1)
+	if(dgVar[dgPlatinumVIPVoucher][0] == 1)
 		format(string, sizeof(string), "%s\n{00FF61}Platinum VIP Voucher", string);
 	else
 		format(string, sizeof(string), "%s\n{F2070B}Platinum VIP Voucher", string);
@@ -22426,258 +22426,258 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					printf("cat 1 %d", randy);
 					if(randy == 0)
 					{
-						if(dgMoney[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCash(giveplayerid, dgMoney[2]);
-						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgMoney[2]));
+						GivePlayerCash(giveplayerid, dgVar[dgMoney][2]);
+						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgVar[dgMoney][2]));
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgMoney[2]));
+						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMoney[1]--;
+						dgVar[dgMoney][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 1)
 					{
-						if(dgRimKit[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pRimMod] += dgRimKit[2];
-						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgRimKit[2]);
+						PlayerInfo[giveplayerid][pRimMod] += dgVar[dgRimKit][2];
+						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgVar[dgRimKit][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRimKit[2]);
+						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRimKit[1]--;
+						dgVar[dgRimKit][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 2)
 					{
-						if(dgFirework[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirework] += dgFirework[2];
-						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgFirework[2]);
+						PlayerInfo[giveplayerid][pFirework] += dgVar[dgFirework][2];
+						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgVar[dgFirework][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirework[2]);
+						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirework[1]--;
+						dgVar[dgFirework][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 3)
 					{
-						if(dgGVIP[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGVIPExVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP Voucher(s)!", dgGVIP[2]);
+						PlayerInfo[giveplayerid][pGVIPExVoucher] += dgVar[dgGVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP Voucher(s)!", dgVar[dgGVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIP[1]--;
+						dgVar[dgGVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 4)
 					{
-						if(dgGVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGVIPVoucher] += dgGVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgGVIPEx[2]);
+						PlayerInfo[giveplayerid][pGVIPVoucher] += dgVar[dgGVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgVar[dgGVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIPEx[1]--;
+						dgVar[dgGVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 
 					if(randy == 5)
 					{
-						if(dgSVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pSVIPExVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP Voucher (s)!", dgSVIP[2]);
+						PlayerInfo[giveplayerid][pSVIPExVoucher] += dgVar[dgSVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP Voucher (s)!", dgVar[dgSVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIP[1]--;
+						dgVar[dgSVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 6)
 					{
-						if(dgSVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pSVIPVoucher] += dgSVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgSVIPEx[2]);
+						PlayerInfo[giveplayerid][pSVIPVoucher] += dgVar[dgSVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgVar[dgSVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIPEx[1]--;
+						dgVar[dgSVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 7)
 					{
-						if(dgCarSlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehicleSlot] += dgCarSlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgCarSlot[2]);
+						PlayerInfo[giveplayerid][pVehicleSlot] += dgVar[dgCarSlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgVar[dgCarSlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarSlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarSlot[1]--;
+						dgVar[dgCarSlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 8)
 					{
-						if(dgToySlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgToySlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pToySlot] += dgToySlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgToySlot[2]);
+						PlayerInfo[giveplayerid][pToySlot] += dgVar[dgToySlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgVar[dgToySlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgToySlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgToySlot[1]--;
+						dgVar[dgToySlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 9)
 					{
-						if(dgArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
 						GetPlayerArmour(giveplayerid, armor);
 						
-						if(armor+dgArmor[2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
+						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgArmor[2]);
-						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgArmor[2]);
+						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgArmor[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgArmor[1]--;
+						dgVar[dgArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 10)
 					{
-						if(dgFirstaid[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirstaid] += dgFirstaid[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgFirstaid[2]);
+						PlayerInfo[giveplayerid][pFirstaid] += dgVar[dgFirstaid][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgVar[dgFirstaid][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirstaid[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirstaid[1]--;
+						dgVar[dgFirstaid][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 11)
 					{
-						if(dgDDFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Door");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgDDFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgDDFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgDDFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgDDFlag[1]--;
+						dgVar[dgDDFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 12)
 					{
-						if(dgGateFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Gate Gate");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Gate Flag(s)!", dgGateFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Gate Flag(s)!", dgVar[dgGateFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGateFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGateFlag[1]--;
+						dgVar[dgGateFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 13)
 					{
-						if(dgCredits[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCredits(giveplayerid, dgCredits[2], 1);
-						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgCredits[2]);
+						GivePlayerCredits(giveplayerid, dgVar[dgCredits][2], 1);
+						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgVar[dgCredits][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCredits[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCredits[1]--;
+						dgVar[dgCredits][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 14)
 					{
-						if(dgPriorityAd[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pAdvertVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgPriorityAd[2]);
+						PlayerInfo[giveplayerid][pAdvertVoucher] += dgVar[dgPriorityAd][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgVar[dgPriorityAd][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPriorityAd[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPriorityAd[1]--;
+						dgVar[dgPriorityAd][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 15)
 					{
-						if(dgHealthNArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						SetPlayerHealth(giveplayerid, 100.0);
 						SetPlayerArmor(giveplayerid, 100);
@@ -22685,168 +22685,168 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgHealthNArmor[1]--;
+						dgVar[dgHealthNArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 16)
 					{
-						if(dgGiftReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGiftVoucher] += dgGiftReset[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgGiftReset[2]);
+						PlayerInfo[giveplayerid][pGiftVoucher] += dgVar[dgGiftReset][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgVar[dgGiftReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGiftReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGiftReset[1]--;
+						dgVar[dgGiftReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 17)
 					{
-						if(dgMaterial[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pMats] += dgMaterial[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgMaterial[2]);
+						PlayerInfo[giveplayerid][pMats] += dgVar[dgMaterial][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgVar[dgMaterial][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgMaterial[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMaterial[1]--;
+						dgVar[dgMaterial][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 18)
 					{
-						if(dgWarning[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						if(dgWarning[2] > 3 || dgWarning[2] < 0)
+						if(dgVar[dgWarning][2] > 3 || dgVar[dgWarning][2] < 0)
 						{						
 							if(PlayerInfo[giveplayerid][pWarns] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 							
-							PlayerInfo[giveplayerid][pWarns] -= dgWarning[2];
+							PlayerInfo[giveplayerid][pWarns] -= dgVar[dgWarning][2];
 						}
 						else
 							return GiftPlayer(playerid, giveplayerid, 1);
 							
-						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgWarning[2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgVar[dgWarning][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgWarning[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgWarning[1]--;
+						dgVar[dgWarning][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 19)
 					{
-						if(dgPot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgPot[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgPot[2]);
+						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPot[1]--;
+						dgVar[dgPot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 20)
 					{
-						if(dgCrack[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgCrack[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgCrack[2]);
+						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCrack[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCrack[1]--;
+						dgVar[dgCrack][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 21)
 					{
-						if(dgPaintballToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPaintTokens] += dgPaintballToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgPaintballToken[2]);
+						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPaintballToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPaintballToken[1]--;
+						dgVar[dgPaintballToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 22)
 					{
-						if(dgVIPToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pTokens] += dgVIPToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVIPToken[2]);
+						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVIPToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgVIPToken[1]--;
+						dgVar[dgVIPToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 23)
 					{
-						if(dgRespectPoint[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pExp] += dgRespectPoint[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgRespectPoint[2]);
+						PlayerInfo[giveplayerid][pExp] += dgVar[dgRespectPoint][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgVar[dgRespectPoint][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRespectPoint[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRespectPoint[1]--;
+						dgVar[dgRespectPoint][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 24)
 					{
-						if(dgCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehVoucher] += dgCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgCarVoucher[2]);
+						PlayerInfo[giveplayerid][pVehVoucher] += dgVar[dgCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgVar[dgCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarVoucher[1]--;
+						dgVar[dgCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 25)
 					{
-						if(dgBuddyInvite[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
@@ -22859,16 +22859,16 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgBuddyInvite[1]--;
+						dgVar[dgBuddyInvite][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 26)
 					{
-						if(dgLaser[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
@@ -22927,23 +22927,23 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgLaser[1]--;
+						dgVar[dgLaser][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 27)
 					{
-						if(dgCustomToy[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
 						{
 							if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
 							{
-								PlayerToyInfo[giveplayerid][v][ptModelID] = dgCustomToy[2];
+								PlayerToyInfo[giveplayerid][v][ptModelID] = dgVar[dgCustomToy][2];
 								PlayerToyInfo[giveplayerid][v][ptBone] = 1;
 								PlayerToyInfo[giveplayerid][v][ptPosX] = 0.0;
 								PlayerToyInfo[giveplayerid][v][ptPosY] = 0.0;
@@ -22968,7 +22968,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							{
 								if(PlayerToyInfo[giveplayerid][i][ptModelID] == 0)
 								{
-									PlayerToyInfo[giveplayerid][i][ptModelID] = dgCustomToy[2];
+									PlayerToyInfo[giveplayerid][i][ptModelID] = dgVar[dgCustomToy][2];
 									PlayerToyInfo[giveplayerid][i][ptBone] = 6;
 									PlayerToyInfo[giveplayerid][i][ptPosX] = 0.0;
 									PlayerToyInfo[giveplayerid][i][ptPosY] = 0.0;
@@ -22995,75 +22995,75 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCustomToy[1]--;
+						dgVar[dgCustomToy][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 28)
 					{
-						if(dgAdmuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pADMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pADMuteTotal] -= dgAdmuteReset[2];
+						PlayerInfo[giveplayerid][pADMuteTotal] -= dgVar[dgAdmuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgAdmuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgVar[dgAdmuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgAdmuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgAdmuteReset[1]--;
+						dgVar[dgAdmuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 29)
 					{
-						if(dgNewbieMuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pNMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pNMuteTotal] -= dgNewbieMuteReset[2];
+						PlayerInfo[giveplayerid][pNMuteTotal] -= dgVar[dgNewbieMuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgVar[dgNewbieMuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgNewbieMuteReset[1]--;
+						dgVar[dgNewbieMuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 30)
 					{
-						if(dgRestrictedCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCarVoucher] += dgRestrictedCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgRestrictedCarVoucher[2]);
+						PlayerInfo[giveplayerid][pCarVoucher] += dgVar[dgRestrictedCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgVar[dgRestrictedCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRestrictedCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRestrictedCarVoucher[1]--;
+						dgVar[dgRestrictedCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 31)
 					{
-						if(dgPlatinumVIPVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPVIPVoucher] += dgPlatinumVIPVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgPlatinumVIPVoucher[2]);
+						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPlatinumVIPVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPlatinumVIPVoucher[1]--;
+						dgVar[dgPlatinumVIPVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23076,262 +23076,258 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 
 					if(randy == 0)
 					{
-						if(dgMoney[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCash(giveplayerid, dgMoney[2]);
-						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgMoney[2]));
+						GivePlayerCash(giveplayerid, dgVar[dgMoney][2]);
+						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgVar[dgMoney][2]));
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgMoney[2]));
+						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMoney[1]--;
+						dgVar[dgMoney][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 1)
 					{
-						if(dgRimKit[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pRimMod] += dgRimKit[2];
-						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgRimKit[2]);
+						PlayerInfo[giveplayerid][pRimMod] += dgVar[dgRimKit][2];
+						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgVar[dgRimKit][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRimKit[2]);
+						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRimKit[1]--;
+						dgVar[dgRimKit][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 2)
 					{
-						if(dgFirework[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirework] += dgFirework[2];
-						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgFirework[2]);
+						PlayerInfo[giveplayerid][pFirework] += dgVar[dgFirework][2];
+						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgVar[dgFirework][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirework[2]);
+						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirework[1]--;
+						dgVar[dgFirework][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 3)
 					{
-						if(dgGVIP[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Gold VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP(s)!", dgGVIP[2]);
+						PlayerInfo[giveplayerid][pGVIPExVoucher] += dgVar[dgGVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP Voucher(s)!", dgVar[dgGVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIP[1]--;
+						dgVar[dgGVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 4)
 					{
-						if(dgGVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGVIPVoucher] += dgGVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgGVIPEx[2]);
+						PlayerInfo[giveplayerid][pGVIPVoucher] += dgVar[dgGVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgVar[dgGVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIPEx[1]--;
+						dgVar[dgGVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 5)
 					{
-						if(dgSVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Silver VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP(s)!", dgSVIP[2]);
+						PlayerInfo[giveplayerid][pSVIPExVoucher] += dgVar[dgSVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP Voucher (s)!", dgVar[dgSVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIP[1]--;
+						dgVar[dgSVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 6)
 					{
-						if(dgSVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pSVIPVoucher] += dgSVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgSVIPEx[2]);
+						PlayerInfo[giveplayerid][pSVIPVoucher] += dgVar[dgSVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgVar[dgSVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIPEx[1]--;
+						dgVar[dgSVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 7)
 					{
-						if(dgCarSlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehicleSlot] += dgCarSlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgCarSlot[2]);
+						PlayerInfo[giveplayerid][pVehicleSlot] += dgVar[dgCarSlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgVar[dgCarSlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarSlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarSlot[1]--;
+						dgVar[dgCarSlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 8)
 					{
-						if(dgToySlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgToySlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pToySlot] += dgToySlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgToySlot[2]);
+						PlayerInfo[giveplayerid][pToySlot] += dgVar[dgToySlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgVar[dgToySlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgToySlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgToySlot[1]--;
+						dgVar[dgToySlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 9)
 					{
-						if(dgArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
 						GetPlayerArmour(giveplayerid, armor);
 						
-						if(armor+dgArmor[2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
+						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgArmor[2]);
-						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgArmor[2]);
+						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgArmor[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgArmor[1]--;
+						dgVar[dgArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 10)
 					{
-						if(dgFirstaid[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirstaid] += dgFirstaid[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgFirstaid[2]);
+						PlayerInfo[giveplayerid][pFirstaid] += dgVar[dgFirstaid][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgVar[dgFirstaid][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirstaid[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirstaid[1]--;
+						dgVar[dgFirstaid][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 11)
 					{
-						if(dgDDFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Door");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgDDFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgDDFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgDDFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgDDFlag[1]--;
+						dgVar[dgDDFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 12)
 					{
-						if(dgGateFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Gate");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgGateFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgGateFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGateFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGateFlag[1]--;
+						dgVar[dgGateFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 13)
 					{
-						if(dgCredits[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCredits(giveplayerid, dgCredits[2], 1);
-						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgCredits[2]);
+						GivePlayerCredits(giveplayerid, dgVar[dgCredits][2], 1);
+						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgVar[dgCredits][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCredits[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCredits[1]--;
+						dgVar[dgCredits][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 14)
 					{
-						if(dgPriorityAd[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pAdvertVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgPriorityAd[2]);
+						PlayerInfo[giveplayerid][pAdvertVoucher] += dgVar[dgPriorityAd][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgVar[dgPriorityAd][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPriorityAd[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPriorityAd[1]--;
+						dgVar[dgPriorityAd][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 15)
 					{
-						if(dgHealthNArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						SetPlayerHealth(giveplayerid, 100.0);
 						SetPlayerArmor(giveplayerid, 100);
@@ -23339,168 +23335,168 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgHealthNArmor[1]--;
+						dgVar[dgHealthNArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 16)
 					{
-						if(dgGiftReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGiftVoucher] += dgGiftReset[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgGiftReset[2]);
+						PlayerInfo[giveplayerid][pGiftVoucher] += dgVar[dgGiftReset][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgVar[dgGiftReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGiftReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGiftReset[1]--;
+						dgVar[dgGiftReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 17)
 					{
-						if(dgMaterial[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pMats] += dgMaterial[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgMaterial[2]);
+						PlayerInfo[giveplayerid][pMats] += dgVar[dgMaterial][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgVar[dgMaterial][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgMaterial[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMaterial[1]--;
+						dgVar[dgMaterial][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 18)
 					{
-						if(dgWarning[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						if(dgWarning[2] > 3 || dgWarning[2] < 0)
+						if(dgVar[dgWarning][2] > 3 || dgVar[dgWarning][2] < 0)
 						{						
 							if(PlayerInfo[giveplayerid][pWarns] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 							
-							PlayerInfo[giveplayerid][pWarns] -= dgWarning[2];
+							PlayerInfo[giveplayerid][pWarns] -= dgVar[dgWarning][2];
 						}
 						else
 							return GiftPlayer(playerid, giveplayerid, 1);
 							
-						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgWarning[2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgVar[dgWarning][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgWarning[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgWarning[1]--;
+						dgVar[dgWarning][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 19)
 					{
-						if(dgPot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgPot[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgPot[2]);
+						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPot[1]--;
+						dgVar[dgPot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 20)
 					{
-						if(dgCrack[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgCrack[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgCrack[2]);
+						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCrack[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCrack[1]--;
+						dgVar[dgCrack][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 21)
 					{
-						if(dgPaintballToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPaintTokens] += dgPaintballToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgPaintballToken[2]);
+						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPaintballToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPaintballToken[1]--;
+						dgVar[dgPaintballToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 22)
 					{
-						if(dgVIPToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pTokens] += dgVIPToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVIPToken[2]);
+						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVIPToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgVIPToken[1]--;
+						dgVar[dgVIPToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 23)
 					{
-						if(dgRespectPoint[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pExp] += dgRespectPoint[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgRespectPoint[2]);
+						PlayerInfo[giveplayerid][pExp] += dgVar[dgRespectPoint][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgVar[dgRespectPoint][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRespectPoint[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRespectPoint[1]--;
+						dgVar[dgRespectPoint][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 24)
 					{
-						if(dgCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehVoucher] += dgCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgCarVoucher[2]);
+						PlayerInfo[giveplayerid][pVehVoucher] += dgVar[dgCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgVar[dgCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarVoucher[1]--;
+						dgVar[dgCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 25)
 					{
-						if(dgBuddyInvite[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
@@ -23513,16 +23509,16 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgBuddyInvite[1]--;
+						dgVar[dgBuddyInvite][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 26)
 					{
-						if(dgLaser[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
@@ -23581,23 +23577,23 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgLaser[1]--;
+						dgVar[dgLaser][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 27)
 					{
-						if(dgCustomToy[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
 						{
 							if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
 							{
-								PlayerToyInfo[giveplayerid][v][ptModelID] = dgCustomToy[2];
+								PlayerToyInfo[giveplayerid][v][ptModelID] = dgVar[dgCustomToy][2];
 								PlayerToyInfo[giveplayerid][v][ptBone] = 1;
 								PlayerToyInfo[giveplayerid][v][ptPosX] = 0.0;
 								PlayerToyInfo[giveplayerid][v][ptPosY] = 0.0;
@@ -23622,7 +23618,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							{
 								if(PlayerToyInfo[giveplayerid][i][ptModelID] == 0)
 								{
-									PlayerToyInfo[giveplayerid][i][ptModelID] = dgCustomToy[2];
+									PlayerToyInfo[giveplayerid][i][ptModelID] = dgVar[dgCustomToy][2];
 									PlayerToyInfo[giveplayerid][i][ptBone] = 6;
 									PlayerToyInfo[giveplayerid][i][ptPosX] = 0.0;
 									PlayerToyInfo[giveplayerid][i][ptPosY] = 0.0;
@@ -23649,75 +23645,75 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCustomToy[1]--;
+						dgVar[dgCustomToy][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 28)
 					{
-						if(dgAdmuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pADMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pADMuteTotal] -= dgAdmuteReset[2];
+						PlayerInfo[giveplayerid][pADMuteTotal] -= dgVar[dgAdmuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgAdmuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgVar[dgAdmuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgAdmuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgAdmuteReset[1]--;
+						dgVar[dgAdmuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 29)
 					{
-						if(dgNewbieMuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pNMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pNMuteTotal] -= dgNewbieMuteReset[2];
+						PlayerInfo[giveplayerid][pNMuteTotal] -= dgVar[dgNewbieMuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgVar[dgNewbieMuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgNewbieMuteReset[1]--;
+						dgVar[dgNewbieMuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 30)
 					{
-						if(dgRestrictedCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCarVoucher] += dgRestrictedCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgRestrictedCarVoucher[2]);
+						PlayerInfo[giveplayerid][pCarVoucher] += dgVar[dgRestrictedCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgVar[dgRestrictedCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRestrictedCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRestrictedCarVoucher[1]--;
+						dgVar[dgRestrictedCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 31)
 					{
-						if(dgPlatinumVIPVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPVIPVoucher] += dgPlatinumVIPVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgPlatinumVIPVoucher[2]);
+						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPlatinumVIPVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPlatinumVIPVoucher[1]--;
+						dgVar[dgPlatinumVIPVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23730,262 +23726,258 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 
 					if(randy == 0)
 					{
-						if(dgMoney[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCash(giveplayerid, dgMoney[2]);
-						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgMoney[2]));
+						GivePlayerCash(giveplayerid, dgVar[dgMoney][2]);
+						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgVar[dgMoney][2]));
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgMoney[2]));
+						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMoney[1]--;
+						dgVar[dgMoney][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 1)
 					{
-						if(dgRimKit[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pRimMod] += dgRimKit[2];
-						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgRimKit[2]);
+						PlayerInfo[giveplayerid][pRimMod] += dgVar[dgRimKit][2];
+						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgVar[dgRimKit][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRimKit[2]);
+						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRimKit[1]--;
+						dgVar[dgRimKit][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 2)
 					{
-						if(dgFirework[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirework] += dgFirework[2];
-						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgFirework[2]);
+						PlayerInfo[giveplayerid][pFirework] += dgVar[dgFirework][2];
+						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgVar[dgFirework][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirework[2]);
+						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirework[1]--;
+						dgVar[dgFirework][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 3)
 					{
-						if(dgGVIP[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Gold VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP(s)!", dgGVIP[2]);
+						PlayerInfo[giveplayerid][pGVIPExVoucher] += dgVar[dgGVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP Voucher(s)!", dgVar[dgGVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIP[1]--;
+						dgVar[dgGVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 4)
 					{
-						if(dgGVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGVIPVoucher] += dgGVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgGVIPEx[2]);
+						PlayerInfo[giveplayerid][pGVIPVoucher] += dgVar[dgGVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgVar[dgGVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIPEx[1]--;
+						dgVar[dgGVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 5)
 					{
-						if(dgSVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Silver VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP(s)!", dgSVIP[2]);
+						PlayerInfo[giveplayerid][pSVIPExVoucher] += dgVar[dgSVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP Voucher (s)!", dgVar[dgSVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIP[1]--;
+						dgVar[dgSVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 6)
 					{
-						if(dgSVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pSVIPVoucher] += dgSVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgSVIPEx[2]);
+						PlayerInfo[giveplayerid][pSVIPVoucher] += dgVar[dgSVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgVar[dgSVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIPEx[1]--;
+						dgVar[dgSVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 7)
 					{
-						if(dgCarSlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehicleSlot] += dgCarSlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgCarSlot[2]);
+						PlayerInfo[giveplayerid][pVehicleSlot] += dgVar[dgCarSlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgVar[dgCarSlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarSlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarSlot[1]--;
+						dgVar[dgCarSlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 8)
 					{
-						if(dgToySlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgToySlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pToySlot] += dgToySlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgToySlot[2]);
+						PlayerInfo[giveplayerid][pToySlot] += dgVar[dgToySlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgVar[dgToySlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgToySlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgToySlot[1]--;
+						dgVar[dgToySlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 9)
 					{
-						if(dgArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
 						GetPlayerArmour(giveplayerid, armor);
 						
-						if(armor+dgArmor[2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
+						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgArmor[2]);
-						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgArmor[2]);
+						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgArmor[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgArmor[1]--;
+						dgVar[dgArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 10)
 					{
-						if(dgFirstaid[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirstaid] += dgFirstaid[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgFirstaid[2]);
+						PlayerInfo[giveplayerid][pFirstaid] += dgVar[dgFirstaid][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgVar[dgFirstaid][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirstaid[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirstaid[1]--;
+						dgVar[dgFirstaid][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 11)
 					{
-						if(dgDDFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Door");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgDDFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgDDFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgDDFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgDDFlag[1]--;
+						dgVar[dgDDFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 12)
 					{
-						if(dgGateFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Gate");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgGateFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgGateFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGateFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGateFlag[1]--;
+						dgVar[dgGateFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 13)
 					{
-						if(dgCredits[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCredits(giveplayerid, dgCredits[2], 1);
-						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgCredits[2]);
+						GivePlayerCredits(giveplayerid, dgVar[dgCredits][2], 1);
+						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgVar[dgCredits][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCredits[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCredits[1]--;
+						dgVar[dgCredits][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 14)
 					{
-						if(dgPriorityAd[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pAdvertVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgPriorityAd[2]);
+						PlayerInfo[giveplayerid][pAdvertVoucher] += dgVar[dgPriorityAd][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgVar[dgPriorityAd][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPriorityAd[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPriorityAd[1]--;
+						dgVar[dgPriorityAd][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 15)
 					{
-						if(dgHealthNArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						SetPlayerHealth(giveplayerid, 100.0);
 						SetPlayerArmor(giveplayerid, 100);
@@ -23993,168 +23985,168 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgHealthNArmor[1]--;
+						dgVar[dgHealthNArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 16)
 					{
-						if(dgGiftReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGiftVoucher] += dgGiftReset[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgGiftReset[2]);
+						PlayerInfo[giveplayerid][pGiftVoucher] += dgVar[dgGiftReset][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgVar[dgGiftReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGiftReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGiftReset[1]--;
+						dgVar[dgGiftReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 17)
 					{
-						if(dgMaterial[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pMats] += dgMaterial[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgMaterial[2]);
+						PlayerInfo[giveplayerid][pMats] += dgVar[dgMaterial][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgVar[dgMaterial][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgMaterial[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMaterial[1]--;
+						dgVar[dgMaterial][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 18)
 					{
-						if(dgWarning[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						if(dgWarning[2] > 3 || dgWarning[2] < 0)
+						if(dgVar[dgWarning][2] > 3 || dgVar[dgWarning][2] < 0)
 						{						
 							if(PlayerInfo[giveplayerid][pWarns] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 							
-							PlayerInfo[giveplayerid][pWarns] -= dgWarning[2];
+							PlayerInfo[giveplayerid][pWarns] -= dgVar[dgWarning][2];
 						}
 						else
 							return GiftPlayer(playerid, giveplayerid, 1);
 							
-						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgWarning[2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgVar[dgWarning][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgWarning[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgWarning[1]--;
+						dgVar[dgWarning][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 19)
 					{
-						if(dgPot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgPot[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgPot[2]);
+						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPot[1]--;
+						dgVar[dgPot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 20)
 					{
-						if(dgCrack[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgCrack[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgCrack[2]);
+						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCrack[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCrack[1]--;
+						dgVar[dgCrack][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 21)
 					{
-						if(dgPaintballToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPaintTokens] += dgPaintballToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgPaintballToken[2]);
+						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPaintballToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPaintballToken[1]--;
+						dgVar[dgPaintballToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 22)
 					{
-						if(dgVIPToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pTokens] += dgVIPToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVIPToken[2]);
+						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVIPToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgVIPToken[1]--;
+						dgVar[dgVIPToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 23)
 					{
-						if(dgRespectPoint[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pExp] += dgRespectPoint[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgRespectPoint[2]);
+						PlayerInfo[giveplayerid][pExp] += dgVar[dgRespectPoint][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgVar[dgRespectPoint][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRespectPoint[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRespectPoint[1]--;
+						dgVar[dgRespectPoint][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 24)
 					{
-						if(dgCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehVoucher] += dgCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgCarVoucher[2]);
+						PlayerInfo[giveplayerid][pVehVoucher] += dgVar[dgCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgVar[dgCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarVoucher[1]--;
+						dgVar[dgCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 25)
 					{
-						if(dgBuddyInvite[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
@@ -24167,16 +24159,16 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgBuddyInvite[1]--;
+						dgVar[dgBuddyInvite][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 26)
 					{
-						if(dgLaser[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
@@ -24235,23 +24227,23 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgLaser[1]--;
+						dgVar[dgLaser][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 27)
 					{
-						if(dgCustomToy[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
 						{
 							if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
 							{
-								PlayerToyInfo[giveplayerid][v][ptModelID] = dgCustomToy[2];
+								PlayerToyInfo[giveplayerid][v][ptModelID] = dgVar[dgCustomToy][2];
 								PlayerToyInfo[giveplayerid][v][ptBone] = 1;
 								PlayerToyInfo[giveplayerid][v][ptPosX] = 0.0;
 								PlayerToyInfo[giveplayerid][v][ptPosY] = 0.0;
@@ -24276,7 +24268,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							{
 								if(PlayerToyInfo[giveplayerid][i][ptModelID] == 0)
 								{
-									PlayerToyInfo[giveplayerid][i][ptModelID] = dgCustomToy[2];
+									PlayerToyInfo[giveplayerid][i][ptModelID] = dgVar[dgCustomToy][2];
 									PlayerToyInfo[giveplayerid][i][ptBone] = 6;
 									PlayerToyInfo[giveplayerid][i][ptPosX] = 0.0;
 									PlayerToyInfo[giveplayerid][i][ptPosY] = 0.0;
@@ -24303,75 +24295,75 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCustomToy[1]--;
+						dgVar[dgCustomToy][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 28)
 					{
-						if(dgAdmuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pADMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pADMuteTotal] -= dgAdmuteReset[2];
+						PlayerInfo[giveplayerid][pADMuteTotal] -= dgVar[dgAdmuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgAdmuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgVar[dgAdmuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgAdmuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgAdmuteReset[1]--;
+						dgVar[dgAdmuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 29)
 					{
-						if(dgNewbieMuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pNMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pNMuteTotal] -= dgNewbieMuteReset[2];
+						PlayerInfo[giveplayerid][pNMuteTotal] -= dgVar[dgNewbieMuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgVar[dgNewbieMuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgNewbieMuteReset[1]--;
+						dgVar[dgNewbieMuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 30)
 					{
-						if(dgRestrictedCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCarVoucher] += dgRestrictedCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgRestrictedCarVoucher[2]);
+						PlayerInfo[giveplayerid][pCarVoucher] += dgVar[dgRestrictedCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgVar[dgRestrictedCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRestrictedCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRestrictedCarVoucher[1]--;
+						dgVar[dgRestrictedCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 31)
 					{
-						if(dgPlatinumVIPVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPVIPVoucher] += dgPlatinumVIPVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgPlatinumVIPVoucher[2]);
+						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPlatinumVIPVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPlatinumVIPVoucher[1]--;
+						dgVar[dgPlatinumVIPVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24384,262 +24376,258 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 
 					if(randy == 0)
 					{
-						if(dgMoney[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMoney[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMoney][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCash(giveplayerid, dgMoney[2]);
-						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgMoney[2]));
+						GivePlayerCash(giveplayerid, dgVar[dgMoney][2]);
+						format(string, sizeof(string), "Congratulations, you have won $%s!", number_format(dgVar[dgMoney][2]));
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgMoney[2]));
+						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMoney[1]--;
+						dgVar[dgMoney][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 1)
 					{
-						if(dgRimKit[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRimKit[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRimKit][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pRimMod] += dgRimKit[2];
-						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgRimKit[2]);
+						PlayerInfo[giveplayerid][pRimMod] += dgVar[dgRimKit][2];
+						format(string, sizeof(string), "Congratulations, you have won %d rimkit(s)!", dgVar[dgRimKit][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRimKit[2]);
+						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRimKit[1]--;
+						dgVar[dgRimKit][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 2)
 					{
-						if(dgFirework[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirework[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirework][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirework] += dgFirework[2];
-						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgFirework[2]);
+						PlayerInfo[giveplayerid][pFirework] += dgVar[dgFirework][2];
+						format(string, sizeof(string), "Congratulations, you have won %d firework(s)!", dgVar[dgFirework][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirework[2]);
+						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirework[1]--;
+						dgVar[dgFirework][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 3)
 					{
-						if(dgGVIP[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Gold VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP(s)!", dgGVIP[2]);
+						PlayerInfo[giveplayerid][pGVIPExVoucher] += dgVar[dgGVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Gold VIP Voucher(s)!", dgVar[dgGVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIP[1]--;
+						dgVar[dgGVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 4)
 					{
-						if(dgGVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGVIPEx[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGVIPEx][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGVIPVoucher] += dgGVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgGVIPEx[2]);
+						PlayerInfo[giveplayerid][pGVIPVoucher] += dgVar[dgGVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Gold VIP Voucher(s)!", dgVar[dgGVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGVIPEx[1]--;
+						dgVar[dgGVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 5)
 					{
-						if(dgSVIP[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIP[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIP][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 7 Day Silver VIP");
-						
-						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP(s)!", dgSVIP[2]);
+						PlayerInfo[giveplayerid][pSVIPExVoucher] += dgVar[dgSVIP][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Seven day Silver VIP Voucher (s)!", dgVar[dgSVIP][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIP[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIP[1]--;
+						dgVar[dgSVIP][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 6)
 					{
-						if(dgSVIPEx[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgSVIPEx[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgSVIPEx][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pSVIPVoucher] += dgSVIPEx[2];
-						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgSVIPEx[2]);
+						PlayerInfo[giveplayerid][pSVIPVoucher] += dgVar[dgSVIPEx][2];
+						format(string, sizeof(string), "Congratulations, you have won %d One Month Silver VIP Voucher(s)!", dgVar[dgSVIPEx][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgSVIPEx[2]);
+						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgSVIPEx[1]--;
+						dgVar[dgSVIPEx][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 7)
 					{
-						if(dgCarSlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehicleSlot] += dgCarSlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgCarSlot[2]);
+						PlayerInfo[giveplayerid][pVehicleSlot] += dgVar[dgCarSlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Car Slot(s)!", dgVar[dgCarSlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarSlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarSlot[1]--;
+						dgVar[dgCarSlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 8)
 					{
-						if(dgToySlot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarSlot[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgToySlot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarSlot][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pToySlot] += dgToySlot[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgToySlot[2]);
+						PlayerInfo[giveplayerid][pToySlot] += dgVar[dgToySlot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Toy Slot(s)!", dgVar[dgToySlot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgToySlot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgToySlot[1]--;
+						dgVar[dgToySlot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 9)
 					{
-						if(dgArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgArmor[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgArmor][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
 						GetPlayerArmour(giveplayerid, armor);
 						
-						if(armor+dgArmor[2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
+						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgArmor[2]);
-						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgArmor[2]);
+						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgArmor[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgArmor[1]--;
+						dgVar[dgArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 10)
 					{
-						if(dgFirstaid[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgFirstaid[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgFirstaid][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pFirstaid] += dgFirstaid[2];
-						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgFirstaid[2]);
+						PlayerInfo[giveplayerid][pFirstaid] += dgVar[dgFirstaid][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Firstaid(s)!", dgVar[dgFirstaid][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgFirstaid[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgFirstaid[1]--;
+						dgVar[dgFirstaid][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 11)
 					{
-						if(dgDDFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgDDFlag[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgDDFlag][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Door");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgDDFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgDDFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgDDFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgDDFlag[1]--;
+						dgVar[dgDDFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 12)
 					{
-						if(dgGateFlag[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGateFlag[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGateFlag][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						AddFlag(giveplayerid, INVALID_PLAYER_ID, "Dynamic Gift Box: 1 Dynamic Gate");
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgGateFlag[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Dynamic Door Flag(s)!", dgVar[dgGateFlag][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note: This prize may take up to 48 hours to be rewarded..");
-						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGateFlag[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGateFlag[1]--;
+						dgVar[dgGateFlag][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 13)
 					{
-						if(dgCredits[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCredits[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCredits][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						GivePlayerCredits(giveplayerid, dgCredits[2], 1);
-						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgCredits[2]);
+						GivePlayerCredits(giveplayerid, dgVar[dgCredits][2], 1);
+						format(string, sizeof(string), "Congratulations, you have won %d Credit(s)!", dgVar[dgCredits][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCredits[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCredits[1]--;
+						dgVar[dgCredits][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 14)
 					{
-						if(dgPriorityAd[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPriorityAd[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPriorityAd][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pAdvertVoucher]++;
-						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgPriorityAd[2]);
+						PlayerInfo[giveplayerid][pAdvertVoucher] += dgVar[dgPriorityAd][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Priority Advertisement Voucher(s)!", dgVar[dgPriorityAd][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPriorityAd[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPriorityAd[1]--;
+						dgVar[dgPriorityAd][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 15)
 					{
-						if(dgHealthNArmor[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgHealthNArmor[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgHealthNArmor][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						SetPlayerHealth(giveplayerid, 100.0);
 						SetPlayerArmor(giveplayerid, 100);
@@ -24647,168 +24635,168 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgHealthNArmor[1]--;
+						dgVar[dgHealthNArmor][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 16)
 					{
-						if(dgGiftReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgGiftReset[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgGiftReset][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pGiftVoucher] += dgGiftReset[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgGiftReset[2]);
+						PlayerInfo[giveplayerid][pGiftVoucher] += dgVar[dgGiftReset][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Gift Reset Voucher(s)!", dgVar[dgGiftReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgGiftReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgGiftReset[1]--;
+						dgVar[dgGiftReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 17)
 					{
-						if(dgMaterial[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgMaterial[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgMaterial][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pMats] += dgMaterial[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgMaterial[2]);
+						PlayerInfo[giveplayerid][pMats] += dgVar[dgMaterial][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Material(s)!", dgVar[dgMaterial][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgMaterial[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgMaterial[1]--;
+						dgVar[dgMaterial][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 18)
 					{
-						if(dgWarning[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgWarning[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgWarning][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						if(dgWarning[2] > 3 || dgWarning[2] < 0)
+						if(dgVar[dgWarning][2] > 3 || dgVar[dgWarning][2] < 0)
 						{						
 							if(PlayerInfo[giveplayerid][pWarns] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 							
-							PlayerInfo[giveplayerid][pWarns] -= dgWarning[2];
+							PlayerInfo[giveplayerid][pWarns] -= dgVar[dgWarning][2];
 						}
 						else
 							return GiftPlayer(playerid, giveplayerid, 1);
 							
-						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgWarning[2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d Warning(s) Removal!", dgVar[dgWarning][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgWarning[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgWarning[1]--;
+						dgVar[dgWarning][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 19)
 					{
-						if(dgPot[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPot[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPot][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgPot[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgPot[2]);
+						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPot[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPot[1]--;
+						dgVar[dgPot][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 20)
 					{
-						if(dgCrack[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCrack[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCrack][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgCrack[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgCrack[2]);
+						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCrack[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCrack[1]--;
+						dgVar[dgCrack][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 21)
 					{
-						if(dgPaintballToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPaintballToken[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPaintballToken][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPaintTokens] += dgPaintballToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgPaintballToken[2]);
+						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPaintballToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPaintballToken[1]--;
+						dgVar[dgPaintballToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 22)
 					{
-						if(dgVIPToken[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgVIPToken[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgVIPToken][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pTokens] += dgVIPToken[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVIPToken[2]);
+						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVIPToken[2]);
+						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgVIPToken[1]--;
+						dgVar[dgVIPToken][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 23)
 					{
-						if(dgRespectPoint[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRespectPoint[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRespectPoint][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pExp] += dgRespectPoint[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgRespectPoint[2]);
+						PlayerInfo[giveplayerid][pExp] += dgVar[dgRespectPoint][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Respect Point(s)!", dgVar[dgRespectPoint][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRespectPoint[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRespectPoint[1]--;
+						dgVar[dgRespectPoint][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 24)
 					{
-						if(dgCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCarVoucher[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCarVoucher][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pVehVoucher] += dgCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgCarVoucher[2]);
+						PlayerInfo[giveplayerid][pVehVoucher] += dgVar[dgCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Car Voucher(s)!", dgVar[dgCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCarVoucher[1]--;
+						dgVar[dgCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 25)
 					{
-						if(dgBuddyInvite[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgBuddyInvite[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgBuddyInvite][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
@@ -24821,16 +24809,16 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgBuddyInvite[1]--;
+						dgVar[dgBuddyInvite][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 26)
 					{
-						if(dgLaser[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgLaser[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgLaser][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
@@ -24889,23 +24877,23 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgLaser[1]--;
+						dgVar[dgLaser][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 27)
 					{
-						if(dgCustomToy[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgCustomToy[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgCustomToy][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
 						{
 							if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
 							{
-								PlayerToyInfo[giveplayerid][v][ptModelID] = dgCustomToy[2];
+								PlayerToyInfo[giveplayerid][v][ptModelID] = dgVar[dgCustomToy][2];
 								PlayerToyInfo[giveplayerid][v][ptBone] = 1;
 								PlayerToyInfo[giveplayerid][v][ptPosX] = 0.0;
 								PlayerToyInfo[giveplayerid][v][ptPosY] = 0.0;
@@ -24930,7 +24918,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							{
 								if(PlayerToyInfo[giveplayerid][i][ptModelID] == 0)
 								{
-									PlayerToyInfo[giveplayerid][i][ptModelID] = dgCustomToy[2];
+									PlayerToyInfo[giveplayerid][i][ptModelID] = dgVar[dgCustomToy][2];
 									PlayerToyInfo[giveplayerid][i][ptBone] = 6;
 									PlayerToyInfo[giveplayerid][i][ptPosX] = 0.0;
 									PlayerToyInfo[giveplayerid][i][ptPosY] = 0.0;
@@ -24957,75 +24945,75 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgCustomToy[1]--;
+						dgVar[dgCustomToy][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 28)
 					{
-						if(dgAdmuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgAdmuteReset[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgAdmuteReset][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pADMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pADMuteTotal] -= dgAdmuteReset[2];
+						PlayerInfo[giveplayerid][pADMuteTotal] -= dgVar[dgAdmuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgAdmuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Admute Reset(s)!", dgVar[dgAdmuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgAdmuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgAdmuteReset[1]--;
+						dgVar[dgAdmuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 29)
 					{
-						if(dgNewbieMuteReset[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgNewbieMuteReset[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgNewbieMuteReset][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						if(PlayerInfo[giveplayerid][pNMuteTotal] == 0) return GiftPlayer(playerid, giveplayerid, 1);									
 					
-						PlayerInfo[giveplayerid][pNMuteTotal] -= dgNewbieMuteReset[2];
+						PlayerInfo[giveplayerid][pNMuteTotal] -= dgVar[dgNewbieMuteReset][2];
 						
-						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "Congratulations, you have won %d Newbie Mute Reset(s)!", dgVar[dgNewbieMuteReset][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgNewbieMuteReset[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgNewbieMuteReset[1]--;
+						dgVar[dgNewbieMuteReset][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 30)
 					{
-						if(dgRestrictedCarVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgRestrictedCarVoucher[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgRestrictedCarVoucher][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCarVoucher] += dgRestrictedCarVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgRestrictedCarVoucher[2]);
+						PlayerInfo[giveplayerid][pCarVoucher] += dgVar[dgRestrictedCarVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Restricted Car Voucher(s)!", dgVar[dgRestrictedCarVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgRestrictedCarVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgRestrictedCarVoucher[1]--;
+						dgVar[dgRestrictedCarVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
 					
 					if(randy == 31)
 					{
-						if(dgPlatinumVIPVoucher[1] == value) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
-						if(dgPlatinumVIPVoucher[3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(dgVar[dgPlatinumVIPVoucher][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPVIPVoucher] += dgPlatinumVIPVoucher[2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgPlatinumVIPVoucher[2]);
+						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
+						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgPlatinumVIPVoucher[2]);
+						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-						dgPlatinumVIPVoucher[1]--;
+						dgVar[dgPlatinumVIPVoucher][1]--;
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25816,3 +25804,15 @@ stock RemoveArmor(playerid)
 #endif
 #define GetPlayerArmour GetPlayerArmourEx
 */
+
+forward DG_AutoReset();
+public DG_AutoReset()
+{
+	for(new i = 0; i < sizeof(dgVar); i++)
+	{
+		if(dgVar[dgItems:i][0] == 1 && dgVar[dgItems:i][1] == 0)
+		{
+			dgVar[dgItems:i][1] += dgAmount;
+		}
+	}
+}

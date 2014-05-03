@@ -20363,7 +20363,7 @@ CMD:dvstatus(playerid, params[])
 		return 1;
 	}
 	iDvSlotID = DynVeh[vehicleid];
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 	    if(iDvSlotID != -1)
 	    {
@@ -20388,7 +20388,7 @@ CMD:dvstatus(playerid, params[])
 
 CMD:dvcreate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		new
 				iVehicle,
@@ -20513,7 +20513,7 @@ CMD:dvrespawn(playerid, params[])
 
 CMD:dvedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		new vehicleid, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot)) {
@@ -20727,7 +20727,7 @@ CMD:dvedit(playerid, params[])
 
 CMD:dveditslot(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		new iDvSlotID, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
@@ -20940,7 +20940,7 @@ CMD:dveditslot(playerid, params[])
 
 CMD:dvplate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		new vehicleid, plate[32];
         if(sscanf(params, "ds[32]", vehicleid, plate))
@@ -34036,12 +34036,12 @@ CMD:tlnext(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available text label...");
 		for(new x = 0;x<MAX_3DLABELS;x++)
 		{
-			if(strcmp(TxtLabels[x][tlText], "None", true) == 0)
-		    {
-		        new string[128];
-		        format(string, sizeof(string), "%d is available to use.", x);
-		        SendClientMessageEx(playerid, COLOR_WHITE, string);
-		        break;
+			if(TxtLabels[x][tlPosX] == 0)
+			{
+				new string[128];
+				format(string, sizeof(string), "%d is available to use.", x);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				break;
 			}
 		}
 	}
@@ -39105,7 +39105,7 @@ CMD:warn(playerid, params[])
 			ABroadCast(COLOR_LIGHTRED, string, 2);
 			if(PlayerInfo[playerid][pWatchdog] >= 2)
 			{
-				for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTRED, string);
+				for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1 && PlayerInfo[i][pAdmin] < 2) SendClientMessageEx(i, COLOR_LIGHTRED, string);
 			}
 			format(string, sizeof(string), "AdmCmd: %s(%d) was warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
@@ -40072,11 +40072,11 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** RP SPECIALIST *** /watchdogs /restrictaccount /unrestrictaccount /togwd");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** RP SPECIALIST *** /watchdogs /restrictaccount /unrestrictaccount /togwd /makewatchdog");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 4)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /makewatchdog /watchlistadd /watchlistremove /wdwhitelist");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /watchlistadd /watchlistremove /wdwhitelist");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
@@ -40155,6 +40155,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm");
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn");
+	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoFM *** /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
 	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
@@ -55501,1697 +55502,106 @@ CMD:togfireworks(playerid, params[])
 // Dynamic Giftbox
 CMD:dgedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
+	if(PlayerInfo[playerid][pAdmin] < 99999 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	new string[128], choice[32], type, amount, var;
+	if(strcmp(params, "autoreset", true) == 0)
 	{
-		new string[128], choice[32], type, amount;
-		if(sscanf(params, "s[32]dD", choice, type, amount))
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dgedit [choice] [type] [value]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: Money, RimKit, Firework, 7DayGVIP, 1MonthGVIP, 7DaySVIP, 1MonthSVIP, CarSlot, ToySlot");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: FullArmor, Firstaid, DDFlag, GateFlag, Credits, PriorityAd, HealthNArmor, Giftreset, Material");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: Warning, Pot, Crack, PaintballToken, VIPToken, RespectPoint, CarVoucher, BuddyInvite, Laser");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: CustomToy, AdmuteReset, NewbieMuteReset, RestrictedCarVoucher, PlatVIPVoucher");
-			return SendClientMessageEx(playerid, COLOR_RED, "Available Types: 0 = Enable/Disable | 1 = Quantity available | 2 = Quantity Given | 3 = Category");
-		}
-		
-		if(type < 0 || type > 3) 
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Type!");
-			return SendClientMessageEx(playerid, COLOR_RED, "Available Type: 0 = Enable/Disable | 1 = Quantity available | 2 = Quantity Given | 3 = Category");
-		}
-		
-		if(amount < 0)
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot choose an amount below 0!");
-		
-		if(strcmp(choice, "money", true) == 0)
-		{			
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to $%s.", number_format(amount));
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgMoney[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);		
-		}
-		else if(strcmp(choice, "rimkit", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgRimKit[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "firework", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgFirework[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "7daygvip", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgGVIP[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "1monthgvip", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgGVIPEx[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "7daysvip", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgSVIP[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "1monthsvip", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgSVIPEx[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "carslot", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgCarSlot[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "toyslot", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgToySlot[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "fullarmor", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgArmor[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "firstaid", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgFirstaid[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "ddflag", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgDDFlag[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "gateflag", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgGateFlag[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "credits", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgCredits[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "priorityad", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgPriorityAd[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "healthnarmor", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgHealthNArmor[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "giftreset", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgGiftReset[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "material", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgMaterial[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "warning", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgWarning[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "pot", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgPot[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "crack", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgCrack[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "paintballtoken", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgPaintballToken[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "viptoken", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgVIPToken[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "respectpoint", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgRespectPoint[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "carvoucher", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgCarVoucher[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "buddyinvite", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgBuddyInvite[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "laser", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgLaser[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "customtoy", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgCustomToy[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "admutereset", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgAdmuteReset[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "newbiemutereset", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgNewbieMuteReset[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "restrictedcarvoucher", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgRestrictedCarVoucher[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else if(strcmp(choice, "platvipvoucher", true) == 0)
-		{
-			// Prepare the proper and approriate string
-			switch(type)
-			{
-				case 0:
-				{
-					// Little check to make sure they're not inserting invalid values
-					if(amount < 0 || amount > 1)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
-						
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have disabled the gift.");
-						case 1: format(string, sizeof(string), "You have enabled the gift.");
-						default: return true;
-					}
-				}
-				case 1:
-				{
-					format(string, sizeof(string), "You have set the gift quantity to %d.", amount);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "You have set the gift amount to %d.", amount);
-				}
-				case 3:
-				{
-					if(amount < 0 || amount > 3)
-						return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
-					
-					switch(amount)
-					{
-						case 0: format(string, sizeof(string), "You have set the category to Common.");
-						case 1: format(string, sizeof(string), "You have set the category to Less Common.");
-						case 2: format(string, sizeof(string), "You have set the category to Rare.");
-						case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
-						default: return true;
-					}
-				}
-				default: return true;
-			}
-			
-			// Set the data to the variable
-			dgPlatinumVIPVoucher[type] = amount;
-			
-			// Save the GiftBox Stuff
-			SaveDynamicGiftBox();
-			
-			// Send the client message
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
-		else 
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Choice!");
+		DeletePVar(playerid, "dgInputSel");
+		format(string, sizeof(string), "Timer: %d min(s)\nAmount: %d\n%s", dgTimerTime, dgAmount, (dgTimer != -1)?("{FF0606}Disable"):("{00ff00}Enable"));
+		return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_LIST, "Dynamic Giftbox Auto Reset - Select to modify", string, "Select", "Close");
 	}
-	else
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not an Executive Administrator!");
+	if(sscanf(params, "s[32]dD", choice, type, amount))
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dgedit [choice] [type] [value]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: Money, RimKit, Firework, 7DayGVIP, 1MonthGVIP, 7DaySVIP, 1MonthSVIP, CarSlot, ToySlot");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: FullArmor, Firstaid, DDFlag, GateFlag, Credits, PriorityAd, HealthNArmor, Giftreset, Material");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: Warning, Pot, Crack, PaintballToken, VIPToken, RespectPoint, CarVoucher, BuddyInvite, Laser");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: CustomToy, AdmuteReset, NewbieMuteReset, RestrictedCarVoucher, PlatVIPVoucher");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: AutoReset");
+		return SendClientMessageEx(playerid, COLOR_RED, "Available Types: 0 = Enable/Disable | 1 = Quantity available | 2 = Quantity Given | 3 = Category");
+	}
+	if(type < 0 || type > 3) 
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Type!");
+		return SendClientMessageEx(playerid, COLOR_RED, "Available Type: 0 = Enable/Disable | 1 = Quantity available | 2 = Quantity Given | 3 = Category");
+	}
+	if(amount < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot choose an amount below 0!");
+	if(strcmp(choice, "money", true) == 0) var = dgMoney;
+	else if(strcmp(choice, "rimkit", true) == 0) var = dgRimKit;
+	else if(strcmp(choice, "firework", true) == 0) var = dgFirework;
+	else if(strcmp(choice, "7daygvip", true) == 0) var = dgGVIP;
+	else if(strcmp(choice, "1monthgvip", true) == 0) var = dgGVIPEx;
+	else if(strcmp(choice, "7daysvip", true) == 0) var = dgSVIPEx;
+	else if(strcmp(choice, "1monthsvip", true) == 0) var = dgSVIP;
+	else if(strcmp(choice, "carslot", true) == 0) var = dgCarSlot;
+	else if(strcmp(choice, "toyslot", true) == 0) var = dgToySlot;
+	else if(strcmp(choice, "fullarmor", true) == 0) var = dgArmor;
+	else if(strcmp(choice, "firstaid", true) == 0) var = dgFirstaid;
+	else if(strcmp(choice, "ddflag", true) == 0) var = dgDDFlag;
+	else if(strcmp(choice, "gateflag", true) == 0) var = dgGateFlag;
+	else if(strcmp(choice, "credits", true) == 0) var = dgCredits;
+	else if(strcmp(choice, "priorityad", true) == 0) var = dgPriorityAd;
+	else if(strcmp(choice, "healthnarmor", true) == 0) var = dgHealthNArmor;
+	else if(strcmp(choice, "giftreset", true) == 0) var = dgGiftReset;
+	else if(strcmp(choice, "material", true) == 0) var = dgMaterial;
+	else if(strcmp(choice, "warning", true) == 0) var = dgWarning;
+	else if(strcmp(choice, "pot", true) == 0) var = dgPot;
+	else if(strcmp(choice, "crack", true) == 0) var = dgCrack;
+	else if(strcmp(choice, "paintballtoken", true) == 0) var = dgPaintballToken;
+	else if(strcmp(choice, "viptoken", true) == 0) var = dgVIPToken;
+	else if(strcmp(choice, "respectpoint", true) == 0) var = dgRespectPoint;
+	else if(strcmp(choice, "carvoucher", true) == 0) var = dgCarVoucher;
+	else if(strcmp(choice, "buddyinvite", true) == 0) var = dgBuddyInvite;
+	else if(strcmp(choice, "laser", true) == 0) var = dgLaser;
+	else if(strcmp(choice, "customtoy", true) == 0) var = dgCustomToy;
+	else if(strcmp(choice, "admutereset", true) == 0) var = dgAdmuteReset;
+	else if(strcmp(choice, "newbiemutereset", true) == 0) var = dgNewbieMuteReset;
+	else if(strcmp(choice, "restrictedcarvoucher", true) == 0) var = dgRestrictedCarVoucher;
+	else if(strcmp(choice, "platvipvoucher", true) == 0) var = dgPlatinumVIPVoucher;
+	else if(strcmp(choice, "autoreset", true) == 0) return cmd_dgedit(playerid, "autoreset");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Choice!");
+	// Prepare the proper and approriate string
+	switch(type)
+	{
+		case 0:
+		{
+			// Little check to make sure they're not inserting invalid values
+			if(amount < 0 || amount > 1) return SendClientMessage(playerid, COLOR_RED, "0 = Disabled | 1 - Enabled");
+			switch(amount)
+			{
+				case 0: format(string, sizeof(string), "You have disabled the gift.");
+				case 1: format(string, sizeof(string), "You have enabled the gift.");
+				default: return true;
+			}
+		}
+		case 1:
+		{
+			format(string, sizeof(string), "You have set the gift quantity to %s.", number_format(amount));
+		}
+		case 2:
+		{
+			format(string, sizeof(string), "You have set the gift amount to %s.", number_format(amount));
+		}
+		case 3:
+		{
+			if(amount < 0 || amount > 3) return SendClientMessageEx(playerid, COLOR_RED, "0 = Common | 1 = Less Common | 2 = Rare | 3 = Super Rare");
+			switch(amount)
+			{
+				case 0: format(string, sizeof(string), "You have set the category to Common.");
+				case 1: format(string, sizeof(string), "You have set the category to Less Common.");
+				case 2: format(string, sizeof(string), "You have set the category to Rare.");
+				case 3: format(string, sizeof(string), "You have set the category to Super Rare.");
+				default: return true;
+			}
+		}
+		default: return true;
+	}
+	// Set the data to the variable
+	dgVar[dgItems:var][type] = amount;
+	// Save the GiftBox Stuff
+	SaveDynamicGiftBox();
+	// Send the client message
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	return true;
 }
 
@@ -58130,7 +56540,7 @@ CMD:watchlist(playerid, params[])
 }
 
 CMD:makewatchdog(playerid, params[])  {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pWatchdog] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pWatchdog] >= 3) {
 
 		new
 			ivalue,
