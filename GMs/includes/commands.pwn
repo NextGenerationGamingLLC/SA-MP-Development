@@ -59649,8 +59649,9 @@ CMD:pickveh(playerid, params[])
 CMD:getanimid(playerid, params[])
 {
 	new szMessage[50];
-	format(szMessage, sizeof(szMessage), "Animation index: $d", GetPlayerAnimationIndex(playerid));
+	format(szMessage, sizeof(szMessage), "Animation index: %d", GetPlayerAnimationIndex(playerid));
 	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMessage);
+	return 1;
 }
 
 CMD:cracktrunk(playerid, params[])

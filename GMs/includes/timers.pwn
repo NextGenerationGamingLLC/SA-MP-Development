@@ -1113,7 +1113,7 @@ task ServerHeartbeat[1000]() {
 					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
 					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
 					GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
-					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i) /* && GetPlayerAnimationIndex(i) == GetPVarInt(i, "LockPickAnimId") */) {
+					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
 						SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
 						if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
 							TriggerVehicleAlarm(i, ownerid, vehicleid);
@@ -1178,6 +1178,16 @@ task ServerHeartbeat[1000]() {
 							/* DeletePVar(i, "LockPickVehicle");
 							DeletePVar(i, "LockPickPlayer"); */
 						}
+						if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.9), floatround_ceil)) && GetPlayerAnimationIndex(i) != 368) {
+							SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+							DeletePVar(i, "AttemptingLockPick");
+							DeletePVar(i, "LockPickCountdown");
+							DeletePVar(i, "LockPickTotalTime");
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+							DeletePVar(i, "LockPickVehicle");
+							DeletePVar(i, "LockPickPlayer");
+						}
 					}
 					else {
 						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
@@ -1212,7 +1222,7 @@ task ServerHeartbeat[1000]() {
 							SetPlayerSkin(i, GetPlayerSkin(i));
 							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
 							while (wslot < PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) {
-								if(wslot >= PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1 || PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] != 0)
+								if(wslot >= PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1 || PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] != 0 && PlayerInfo[i][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])] != PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])
 									break;
 								wslot++;
 							}
@@ -1231,6 +1241,11 @@ task ServerHeartbeat[1000]() {
 							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 							
 							
+							DeletePVar(i, "AttemptingCrackTrunk");
+							DeletePVar(i, "CrackTrunkCountdown");
+						}
+						if(GetPlayerAnimationIndex(i) != 368 && GetPVarInt(i, "CrackTrunkCountdown") <= 50) {
+							SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 							DeletePVar(i, "AttemptingCrackTrunk");
 							DeletePVar(i, "CrackTrunkCountdown");
 						}

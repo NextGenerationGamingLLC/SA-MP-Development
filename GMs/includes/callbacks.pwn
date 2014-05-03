@@ -2309,7 +2309,7 @@ public OnPlayerConnect(playerid)
 		PlayerVehicleInfo[playerid][i][pvBeingPickLocked] = 0;
 		PlayerVehicleInfo[playerid][i][pvAlarmTriggered] = 0;
 		PlayerVehicleInfo[playerid][i][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-		PlayerVehicleInfo[playerid][v][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+		PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 	}
 	
 	for(new i = 0; i < MAX_PLAYERTOYS; i++) {
