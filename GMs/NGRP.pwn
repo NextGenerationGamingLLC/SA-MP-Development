@@ -82,9 +82,9 @@
 
 
 #include <a_samp>
-#include <a_mysql>	
+#include <a_mysql>
 #include <streamer>
-#include <yom_buttons>	
+#include <yom_buttons>
 #include <ZCMD>
 #include <sscanf2>
 #include <crashdetect>

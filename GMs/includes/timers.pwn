@@ -183,6 +183,32 @@ task SyncUp[60000]()
 	{
 		if(IsPlayerConnected(i))
 		{
+			if(GetPVarType(i, "DeliveringVehicleTime")) {
+				new Float: x,
+					Float: y,
+					Float: z,
+					int = GetPlayerInterior(i),
+					slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
+					ownerid = GetPVarInt(i, "LockPickPlayer");
+				GetVehiclePos(GetPVarInt(i, "LockPickVehicle"), x, y, z);
+				if(GetPVarInt(i, "DeliveringVehicleTime") < gettime() || !IsPlayerInRangeOfPoint(i, 50.0, x, y, z) && int == 0) {
+					SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
+					--PlayerCars;
+					VehicleSpawned[ownerid]--;
+					PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+					PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+					PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
+					PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
+					PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
+					DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+					PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
+					g_mysql_SaveVehicle(ownerid, slot);
+					DisablePlayerCheckpoint(i);
+					DeletePVar(i, "DeliveringVehicleTime");
+					DeletePVar(i, "LockPickVehicle");
+					DeletePVar(i, "LockPickPlayer");
+				}
+			}
 			if(GetPVarType(i, "RentedVehicle"))
 			{
 				if(GetPVarInt(i, "RentedHours") > 0)
@@ -1088,8 +1114,186 @@ task ServerHeartbeat[1000]() {
 					SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 					ClearCrimes(i);
 				}
-			}
-			if(playerTabbed[i] == 0) {
+				if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
+					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
+						szMessage[115],
+						Float: vehSize[3],
+						Float: Pos[3],
+						vehicleid = GetPVarInt(i, "LockPickVehicle"),
+						ownerid = GetPVarInt(i, "LockPickPlayer");
+					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
+					GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
+					GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
+					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
+						SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
+						if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
+							TriggerVehicleAlarm(i, ownerid, vehicleid);
+						}
+						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
+							PlayerVehicleInfo[ownerid][slot][pvLocked] = 0;
+							UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
+							PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
+							if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
+								SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+							}
+							if(++PlayerInfo[i][pLockPickVehCount] > 4) {
+								PlayerInfo[i][pLockPickTime] = gettime() + 21600;
+								PlayerInfo[i][pLockPickVehCount] = 0;
+							}
+							ClearCheckpoint(i);
+							new engine, lights, alarm, doors, bonnet, boot, objective;
+							GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+							SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
+							SendClientMessageEx(i, COLOR_YELLOW, "You have successfully picked this vehicle lock, you may now deliver this to the checkpoint mark to get money.");
+							if(PlayerInfo[i][pToolBox] > 0) SendClientMessageEx(i, COLOR_CYAN, "Optionally, you may try to open the trunk to see what's inside (/cracktrunk).");
+							PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
+							ClearAnimations(i);
+							SetPlayerSkin(i, GetPlayerSkin(i));
+							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+							new rand = random(sizeof(lpRandomLocations));
+							while(IsPlayerInRangeOfPoint(i, 1000.0, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2])) 
+								rand = random(sizeof(lpRandomLocations));
+							SetPlayerCheckpoint(i, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2], 8.0);
+							SetPVarInt(i, "DeliveringVehicleTime", gettime()+900);
+							strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
+							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+							GetPlayerIp(i, ip, sizeof(ip));
+							GetPlayerIp(ownerid, ip2, sizeof(ip2));
+							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2);
+							Log("logs/playervehicle.log", szMessage);
+							new Float: pX, Float: pY, Float: pZ;
+							GetPlayerPos(i, pX, pY, pZ);
+							SetPVarFloat(i, "tpDeliverVehX", pX);
+					 		SetPVarFloat(i, "tpDeliverVehY", pY);
+					  		SetPVarFloat(i, "tpDeliverVehZ", pZ);
+							SetPVarInt(i, "tpDeliverVehTimer", 80);
+							SetTimerEx("OtherTimerEx", 1000, false, "ii", i, TYPE_DELIVERVEHICLE);
+							DeletePVar(i, "AttemptingLockPick");
+							DeletePVar(i, "LockPickCountdown");
+							DeletePVar(i, "LockPickTotalTime");
+							
+							PlayerInfo[i][pCarLockPickSkill]++;
+							if(PlayerInfo[i][pDoubleEXP] > 0) {
+								format(szMessage, sizeof(szMessage), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
+								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
+								PlayerInfo[i][pCarLockPickSkill] += 2;
+							}
+							else ++PlayerInfo[i][pCarLockPickSkill];
+
+							switch(PlayerInfo[i][pCarLockPickSkill]) {
+								case 50: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 2, you will get more rewards & time will be reduced.");
+								case 125: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 3, you will get more rewards & time will be reduced.");
+								case 225: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 4, you will get more rewards & time will be reduced.");
+								case 350: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 5, you will get more rewards & time will be reduced.");
+							}
+							/* DeletePVar(i, "LockPickVehicle");
+							DeletePVar(i, "LockPickPlayer"); */
+						}
+						if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.9), floatround_ceil)) && GetPlayerAnimationIndex(i) != 368) {
+							SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+							DeletePVar(i, "AttemptingLockPick");
+							DeletePVar(i, "LockPickCountdown");
+							DeletePVar(i, "LockPickTotalTime");
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+							DeletePVar(i, "LockPickVehicle");
+							DeletePVar(i, "LockPickPlayer");
+						}
+					}
+					else {
+						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						DeletePVar(i, "AttemptingLockPick");
+						DeletePVar(i, "LockPickCountdown");
+						DeletePVar(i, "LockPickTotalTime");
+						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						DeletePVar(i, "LockPickVehicle");
+						DeletePVar(i, "LockPickPlayer");
+					}
+				}
+				if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
+					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
+						szMessage[115], 
+						wslot, 
+						vehicleid = GetPVarInt(i, "LockPickVehicle"),
+						ownerid = GetPVarInt(i, "LockPickPlayer"),
+						Float: Pos[3];
+	
+					GetPosBehindVehicle(vehicleid, Pos[0], Pos[1], Pos[2], 1.0);
+					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
+						SetPVarInt(i, "CrackTrunkCountdown", GetPVarInt(i, "CrackTrunkCountdown")-1);
+						if(GetPVarInt(i, "CrackTrunkCountdown") <= 0) {
+							
+							SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
+							PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
+							new engine, lights, alarm, doors, bonnet, boot, objective;
+							GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+							SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
+							ClearAnimations(i);
+							SetPlayerSkin(i, GetPlayerSkin(i));
+							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+							while (wslot < PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) {
+								if(wslot >= PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1 || PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] != 0 && PlayerInfo[i][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])] != PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])
+									break;
+								wslot++;
+							}
+							if(wslot != PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) {
+								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
+								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
+								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 60000);
+								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
+								g_mysql_SaveVehicle(ownerid, slot);
+								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+								GetPlayerIp(i, ip, sizeof(ip));
+								GetPlayerIp(ownerid, ip2, sizeof(ip2));
+								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+								Log("logs/playervehicle.log", szMessage);
+							}
+							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+							
+							
+							DeletePVar(i, "AttemptingCrackTrunk");
+							DeletePVar(i, "CrackTrunkCountdown");
+						}
+						if(GetPlayerAnimationIndex(i) != 368 && GetPVarInt(i, "CrackTrunkCountdown") <= 50) {
+							SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+							DeletePVar(i, "AttemptingCrackTrunk");
+							DeletePVar(i, "CrackTrunkCountdown");
+						}
+					}
+					else {
+						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						DeletePVar(i, "AttemptingCrackTrunk");
+						DeletePVar(i, "CrackTrunkCountdown");
+					}
+				}
+				if(GetPVarType(i, "TrackVehicleBurglary")) {
+					if(IsPlayerConnected(GetPVarInt(i, "CallId"))) {
+						SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
+						new Float: carPos[3];
+						GetVehiclePos(Calls[GetPVarInt(i, "CallId")][CallVehicleId], carPos[0], carPos[1], carPos[2]);
+						if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2]) 
+							SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
+						if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
+							DisablePlayerCheckpoint(i);
+							DeletePVar(i, "TrackVehicleBurglary");
+							DeletePVar(i, "CallId");
+							DeletePVar(i, "CarLastX");
+							DeletePVar(i, "CarLastY");
+							DeletePVar(i, "CarLastZ");
+							SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+						}
+					}
+					else {
+						DisablePlayerCheckpoint(i);
+						DeletePVar(i, "TrackVehicleBurglary");
+						DeletePVar(i, "CallId");
+						DeletePVar(i, "CarLastX");
+						DeletePVar(i, "CarLastY");
+						DeletePVar(i, "CarLastZ");
+						SendClientMessageEx(i, COLOR_PURPLE, "The caller has disconnected!");
+					}
+				}
 				if(CommandSpamTimes[i] != 0)
 				{
 					CommandSpamTimes[i]--;

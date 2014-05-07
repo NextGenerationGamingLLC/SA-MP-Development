@@ -157,7 +157,7 @@ new StoreItemCost[][StoreItemCostEnum] =
 	{1},
 	{25},
 	{80},
-	{10}
+	{28}
 };
 
 new const StoreItems[][] =
@@ -179,7 +179,7 @@ new const StoreItems[][] =
 	"Papers",
 	"Industrial Lock",
 	"Electrical Lock",
-	"Alarm Lock"
+	"Standard Car Alarm"
 };
 
 new PokerTable[MAX_POKERTABLES][pkrInfo];
@@ -982,7 +982,7 @@ SSCANF:storeitem(string[])
 	if (!strcmp(string, "paper", true)) return ITEM_PAPERS;
 	if (!strcmp(string, "industriallock", true)) return ITEM_ILOCK;
 	if (!strcmp(string, "elock", true)) return ITEM_ELOCK;
-	if (!strcmp(string, "alarmlock", true)) return ITEM_ALOCK;
+	if (!strcmp(string, "standardcaralarm", true)) return ITEM_SCALARM;
 	return INVALID_STORE_ITEM;
 }
 
@@ -2396,3 +2396,28 @@ stock GetPlayerMainZone(playerid, zone[], len)
 	}
 	return 0;
 }
+
+stock Get2DMainZone(Float:x, Float:y, zone[], len)
+{
+ 	for(new i = 0; i != sizeof(gMainZones); i++ )
+ 	{
+		if(x >= gMainZones[i][SAZONE_AREA][0] && x <= gMainZones[i][SAZONE_AREA][3] && y >= gMainZones[i][SAZONE_AREA][1] && y <= gMainZones[i][SAZONE_AREA][4])
+		{
+		    return format(zone, len, gMainZones[i][SAZONE_NAME], 0);
+		}
+	}
+	return 0;
+}
+
+new Float:lpRandomLocations[10][3] = {
+	{2867.5901,2573.4387,10.8203},
+	{-1552.5514,119.2396,3.2238},
+	{1743.3508,720.1166,10.8154},
+	{2616.8364,-2226.5535,13.3828},
+	{-1582.0787,1274.2910,6.8461},
+	{-1512.6736,1274.1342,6.8469},
+	{-1731.8909,1525.9912,6.8558},
+	{-1731.6244,1503.1536,6.8568},
+	{-2712.7786,216.4535,3.9102},
+	{-2404.3477,-39.8431,34.9892}
+};

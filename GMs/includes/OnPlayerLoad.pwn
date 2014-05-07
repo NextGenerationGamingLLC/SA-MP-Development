@@ -111,6 +111,12 @@ public OnPlayerLoad(playerid)
 			PlayerVehicleInfo[playerid][v][pvPlate] = 0;
 			PlayerVehicleInfo[playerid][v][pvVW] = 0;
 			PlayerVehicleInfo[playerid][v][pvInt] = 0;
+			PlayerVehicleInfo[playerid][v][pvPlate] = 0;
+			PlayerVehicleInfo[playerid][v][pvAlarm] = 0;
+			PlayerVehicleInfo[playerid][v][pvLocksLeft] = 5;
+			PlayerVehicleInfo[playerid][v][pvAlarmTriggered] = 0;
+			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
+			PlayerVehicleInfo[playerid][v][pvLastLockPickedBy] = 0;
 			ListItemTrackId[playerid][v] = -1;
 			for(new m = 0; m < MAX_MODS; m++)
 			{
@@ -333,10 +339,15 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
-		PlayerInfo[playerid][pBugReportTimeout] = 0;
 		PlayerInfo[playerid][pNewbieTogged] = 0;
 		PlayerInfo[playerid][pVIPTogged] = 0;
 		PlayerInfo[playerid][pFamedTogged] = 0;
+		PlayerInfo[playerid][pBugReportTimeout] = 0;
+		PlayerInfo[playerid][pToolBox] = 0;
+		PlayerInfo[playerid][pCrowBar] = 0;
+		PlayerInfo[playerid][pCarLockPickSkill] = 0;
+		PlayerInfo[playerid][pLockPickVehCount] = 0;
+		PlayerInfo[playerid][pLockPickTime] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 10; i++)
 		{
