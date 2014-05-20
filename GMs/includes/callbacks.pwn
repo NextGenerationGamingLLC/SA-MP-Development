@@ -1593,7 +1593,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		{
 			SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 30 seconds.");
 			ShowPlayerDialog(playerid, -1, 0, "", "", "", "");
-			SetPVarInt(playerid, "BackpackDisabled", 30);
+			SetPVarInt(playerid, "BackpackDisabled", 180);
 			DeletePVar(playerid, "BackpackOpen");
 		}
 	}
@@ -4712,7 +4712,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		return 1;
 	}
 	// Pizza Delivery
-	if(GetPVarInt(playerid, "Pizza") > 0 && IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorX], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorY], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtVW])
+	if(GetPVarInt(playerid, "Pizza") > 0 && GetPVarInt(playerid, "pizzaTimer") > 0 && IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorX], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorY], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtVW])
 	{
 	    new string[128];
 		if (GetPVarInt(playerid, "tpPizzaTimer") != 0)
@@ -4727,6 +4727,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		GivePlayerCash(playerid, floatround((GetPVarInt(playerid, "pizzaTimer") * 70), floatround_round));
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		DeletePVar(playerid, "Pizza");
+		DeletePVar(playerid, "pizzaTimer");
 		DisablePlayerCheckpoint(playerid);
 
 	}

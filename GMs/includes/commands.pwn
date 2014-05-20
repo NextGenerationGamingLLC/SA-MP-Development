@@ -54973,7 +54973,7 @@ CMD:createbackpack(playerid, params[])
 			AddNewBackpack(id);
 			
 			new string[128];
-			format(string, sizeof(string), "You have successfully created a Hunger Games Backpack {FF0000}(Type: %s){FFFFFF}.", GetBackpackName(id));
+			format(string, sizeof(string), "You have successfully created a Hunger Games Backpack {FF0000}(Type: %s){FFFFFF}.", GetHungerBackpackName(id));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
 		else
@@ -57227,7 +57227,7 @@ CMD:listbitems(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			new sent;
-			for (new i = 6; i < 10; i++)
+			for (new i = 6; i < 11; i++)
 			{
 				if(PlayerInfo[giveplayerid][pBItems][i] > 0)
 				{
@@ -57310,7 +57310,7 @@ CMD:bsearch(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			new sent;
-			for (new i = 6; i < 10; i++)
+			for (new i = 6; i < 11; i++)
 			{
 				if(PlayerInfo[giveplayerid][pBItems][i] > 0)
 				{
@@ -57421,10 +57421,10 @@ CMD:bremove(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "* Officer %s has taken away %s's weapons from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				PlayerInfo[giveplayerid][pBItems][6] = 0;
-				PlayerInfo[giveplayerid][pBItems][7] = 0;
-				PlayerInfo[giveplayerid][pBItems][8] = 0;
-				PlayerInfo[giveplayerid][pBItems][9] = 0;
+				for(new i = 6; i < 11; i++)
+				{
+					PlayerInfo[giveplayerid][pBItems][i] = 0;
+				}
 			}
 		}
 		else
@@ -57659,25 +57659,10 @@ CMD:bopen(playerid, params[])
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s lays down and opens a backpack.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-		if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-		switch(PlayerInfo[playerid][pBackpack])
-		{
-			case 1: 
-			{
-				ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-			}
-			case 2: 
-			{
-				ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-			}
-			case 3: 
-			{
-				ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-			}
-		}
 		SetPVarInt(playerid, "BackpackProt", 1);
 		SetPVarInt(playerid, "BackpackOpen", 1);
+		
+		ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	}
 	return 1;
 }

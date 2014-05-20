@@ -2608,25 +2608,9 @@ timer FinishMedKit[5000](playerid)
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Med Kit.");
-		SetPVarInt(playerid, "BackpackDisabled", 30);
+		SetPVarInt(playerid, "BackpackDisabled", 60);
 	}
-	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-	switch(PlayerInfo[playerid][pBackpack])
-	{
-		case 1: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-		}
-		case 2: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-		}
-		case 3: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-		}
-	}
+	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	DeletePVar(playerid, "BackpackMedKit");
 	return 1;
 }
@@ -2660,25 +2644,9 @@ timer FinishMeal[5000](playerid)
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Full Meal.");
-		SetPVarInt(playerid, "BackpackDisabled", 30);
+		SetPVarInt(playerid, "BackpackDisabled", 120);
 	}
-	format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-	if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-	switch(PlayerInfo[playerid][pBackpack])
-	{
-		case 1: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-		}
-		case 2: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-		}
-		case 3: 
-		{
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-		}
-	}
+	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	DeletePVar(playerid, "BackpackMeal");
 	return 1;
 }

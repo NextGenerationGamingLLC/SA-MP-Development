@@ -349,7 +349,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pLockPickVehCount] = 0;
 		PlayerInfo[playerid][pLockPickTime] = 0;
 		PlayerInfo[playerid][pReg] = 1;
-		for(new i = 0; i < 10; i++)
+		for(new i = 0; i < 11; i++)
 		{
 			PlayerInfo[playerid][pBItems][i] = 0;
 		}
