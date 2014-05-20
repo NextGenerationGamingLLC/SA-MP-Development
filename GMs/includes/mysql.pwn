@@ -654,7 +654,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "NewbieTogged", szResult, MainPipeline); PlayerInfo[extraid][pNewbieTogged] = strval(szResult);
 					cache_get_field_content(row,  "VIPTogged", szResult, MainPipeline); PlayerInfo[extraid][pVIPTogged] = strval(szResult);
 					cache_get_field_content(row,  "FamedTogged", szResult, MainPipeline); PlayerInfo[extraid][pFamedTogged] = strval(szResult);
-					for(new i = 0; i < 10; i++)
+					for(new i = 0; i < 11; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
 						cache_get_field_content(row,  szField, szResult, MainPipeline);
@@ -3198,7 +3198,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
 	// Seriously, please save some lines! - Akatony
 	new szForLoop[16];
-	for(new x = 0; x < 10; x++)
+	for(new x = 0; x < 11; x++)
 	{	
 		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
@@ -7608,7 +7608,7 @@ public OnLoadHGBackpacks()
 		HungerBackpackInfo[index][hgActiveEx] = 1;
 		
 		HungerBackpackInfo[index][hgBackpackPickupId] = CreateDynamicPickup(371, 23, HungerBackpackInfo[index][hgBackpackPos][0], HungerBackpackInfo[index][hgBackpackPos][1], HungerBackpackInfo[index][hgBackpackPos][2], 2039);
-		format(string, sizeof(string), "Hunger Games Backpack\nType: %s\n{FF0000}(ID: %d){FFFFFF}", GetBackpackName(index), index);
+		format(string, sizeof(string), "Hunger Games Backpack\nType: %s\n{FF0000}(ID: %d){FFFFFF}", GetHungerBackpackName(index), index);
 		HungerBackpackInfo[index][hgBackpack3DText] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, HungerBackpackInfo[index][hgBackpackPos][0], HungerBackpackInfo[index][hgBackpackPos][1], HungerBackpackInfo[index][hgBackpackPos][2]+1, 20.0, .worldid = 2039, .interiorid = 0);
 		
 		index++;

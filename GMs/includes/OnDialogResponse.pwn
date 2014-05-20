@@ -2155,73 +2155,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				switch(listitem) {
 					case 0: { // Food
 						if(PlayerInfo[playerid][pBItems][0] > 0) {
-							ShowPlayerDialog(playerid, DIALOG_BFOOD, DIALOG_STYLE_MSGBOX, "Confirm meal", "Are you sure you want to use this meal now?", "Confirm", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BFOOD, "- {02B0F5}Confirm meal use");
 						}
 						else {
-							format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-							if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-							switch(PlayerInfo[playerid][pBackpack])
-							{
-								case 1: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items - You don't have meals", string, "Select", "Cancel");
-								}
-								case 2: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items - You don't have meals", string, "Select", "Cancel");
-								}
-								case 3: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items - You don't have meals", string, "Select", "Cancel");
-								}
-							}
+							ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You don't have any meals");
 						}
 					}
 					case 1: { // Narcotics
-						new szDialog[130];
-						format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
-						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 					}
 					case 2: { // Guns
 						if(PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pAccountRestricted]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this option while being restricted.");
-						new szDialog[130], weapname[20], itemcount;
-						for(new i = 6; i < 10; i++)
-						{
-							if(PlayerInfo[playerid][pBItems][i] > 0)
-							{
-								GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-								format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-								format(string, sizeof(string), "ListItem%dSId", itemcount);
-								SetPVarInt(playerid, string, i);
-								itemcount++;
-							}
-						}
-						SetPVarInt(playerid, "DepositGunId", itemcount);
-						strcat(szDialog, "Deposit a weapon");
-						ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+						ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 					}
 					case 3: { // Med Kits
 						if(PlayerInfo[playerid][pBItems][5] > 0) {
-							ShowPlayerDialog(playerid, DIALOG_BMEDKIT, DIALOG_STYLE_MSGBOX, "Confirm", "Are you sure you want to use this Medical & Kevlar Vest kit now?", "Confirm", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BMEDKIT, "- {02B0F5}Confirm med kit use");
 						}
 						else {
-							format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-							if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-							switch(PlayerInfo[playerid][pBackpack])
-							{
-								case 1: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items - You don't have med kits", string, "Select", "Cancel");
-								}
-								case 2: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items - You don't have med kits", string, "Select", "Cancel");
-								}
-								case 3: 
-								{
-									ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items - You don't have med kits", string, "Select", "Cancel");
-								}
-							}
+							ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You don't have any med kits");
 						}
 					}
 				}
@@ -2234,7 +2186,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_BFOOD: {
 			if(response) {
 				if(GetPVarInt(playerid, "BackpackMeal") == 1) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a meal.");
+					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a meal.");
 				}
 				else 
 				{
@@ -2247,46 +2199,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			else {
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
-				{
-					case 1: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-					}
-				}
+				ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 			}
 		}
 		case DIALOG_BMEDKIT: {
 			if(response && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))) {
 				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
-					format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-					if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-					switch(PlayerInfo[playerid][pBackpack])
-					{
-						case 1: 
-						{
-							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-						}
-						case 2: 
-						{
-							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-						}
-						case 3: 
-						{
-							ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-						}
-					}
+					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a med kit.");
 				}
 				else 
 				{
@@ -2299,78 +2218,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			else {
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
-				{
-					case 1: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-					}
-				}
+				ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 			}
 		}
 		case DIALOG_BNARCOTICS: {
 			if(response) {
-				switch(listitem) {
-					case 0: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
-					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
-					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
-					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][listitem+1], GetBackpackNarcoticsGrams(playerid));
-				}
 				SetPVarInt(playerid, "pbitemindex", listitem+1);
-				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, string, "Withdraw\nDeposit", "Select", "Cancel");
+				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS2, "");
 			}
 			else {
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
-				{
-					case 1: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-					}
-				}
+				ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 			}
 		}
 		case DIALOG_BNARCOTICS2: {
 			if(response) {
-				new pbi = GetPVarInt(playerid, "pbitemindex");
-				switch(pbi) {
-					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-					case 4: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				}
-				if(listitem) {
-					SetPVarInt(playerid, "bnwd", 1);
-					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "Enter the amount to deposit           ", "Select", "Cancel");
-				}
-				else {
-					SetPVarInt(playerid, "bnwd", 0);
-					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "Enter the amount to withdraw          ", "Select", "Cancel");
-				}
+				SetPVarInt(playerid, "bnwd", listitem);
+				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "");
 			}
 			else {
-				new szDialog[130];
-				format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
-				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 			}
 		}
 		case DIALOG_BNARCOTICS3: {
@@ -2379,54 +2245,42 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				new pbi = GetPVarInt(playerid, "pbitemindex");	
 				switch(pbi) {
-					case 1: {
-						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-						TypeName = "Pot";
-					}
-					case 2: {
-						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-						TypeName = "Crack";
-					}
-					case 3: {
-						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-						TypeName = "Heroin";
-					}
-					case 4: {
-						format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-						TypeName = "Opium";
-					}
+					case 1: TypeName = "Pot";
+					case 2: TypeName = "Crack";
+					case 3: TypeName = "Heroin";
+					case 4: TypeName = "Opium";
 				}
 				if(GetPVarInt(playerid, "bnwd")) {
 					new namount, maxgrams, dInfo[135];
-					if(sscanf(inputtext, "d", namount)) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nEnter the amount to deposit", "Select", "Cancel");
-					if(namount < 1) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1\nEnter the amount to deposit", "Select", "Cancel");
+					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
+					if(namount < 1) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
 					switch(PlayerInfo[playerid][pBackpack]) {
-						case 1: maxgrams = 30;
-						case 2: maxgrams = 50;
-						case 3: maxgrams = 80;
+						case 1: maxgrams = 40;
+						case 2: maxgrams = 100;
+						case 3: maxgrams = 250;
 					}
 					if(namount > (maxgrams-GetBackpackNarcoticsGrams(playerid))) 
 					{
 						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you can only store %d grams{A9C4E4}\nGrams available to store left {FFF600}%d{A9C4E4}\nEnter the amount to deposit", maxgrams, maxgrams-GetBackpackNarcoticsGrams(playerid));
-						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, dInfo, "Select", "Cancel");
+						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
 						return 1;
 					}
 					switch(pbi) {
 						case 1: { 
 							if(PlayerInfo[playerid][pPot] >= namount) PlayerInfo[playerid][pPot] -= namount;
-							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
 						}	
 						case 2: { 
 							if(PlayerInfo[playerid][pCrack] >= namount) PlayerInfo[playerid][pCrack] -= namount;
-							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
 						}
 						case 3: { 
 							if(PlayerInfo[playerid][pHeroin] >= namount) PlayerInfo[playerid][pHeroin] -= namount;
-							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
 						}
 						case 4: { 
 							if(PlayerInfo[playerid][pRawOpium] >= namount) PlayerInfo[playerid][pRawOpium] -= namount;
-							else return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams\nEnter the amount to deposit", "Select", "Cancel");
+							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
 						}
 					}
 					PlayerInfo[playerid][pBItems][pbi] += namount;
@@ -2436,18 +2290,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					format(string, sizeof(string), "[DRUGS] %s (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", string);
-					new szDialog[130];
-					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
-					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
 				else {
 					new namount, dInfo[135];
-					if(sscanf(inputtext, "d", namount)) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nEnter the amount to deposit", "Select", "Cancel");
-					if(namount < 1) return ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1\nEnter the amount to deposit", "Select", "Cancel");
+					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
+					if(namount < 1) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
 					if(namount > PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")]) 
 					{
 						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], TypeName, namount);
-						ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, string, dInfo, "Select", "Cancel");
+						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
 						return 1;
 					}
 					PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")] -= namount;
@@ -2463,19 +2315,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					format(string, sizeof(string), "[DRUGS] %s (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", string);
-					new szDialog[130];
-					format(szDialog, sizeof(szDialog), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
-					ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, "Select a narcotic", szDialog, "Select", "Cancel");
+					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
 			}
 			else {
-				switch(GetPVarInt(playerid, "pbitemindex")) {
-					case 1: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
-					case 2: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
-					case 3: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
-					case 4: format(string, sizeof(string), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], GetBackpackNarcoticsGrams(playerid));
-				}
-				ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, string, "Withdraw\nDeposit", "Select", "Cancel");
+				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS2, "");
 			}
 		}
 		case DIALOG_BGUNS: {
@@ -2514,22 +2358,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {
-								itemcount = 0;
-								strdel(szDialog, 0, strlen(szDialog));
-								for(new i = 6; i < 10; i++)
-								{
-									if(PlayerInfo[playerid][pBItems][i] > 0)
-									{
-										GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-										format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-										format(string, sizeof(string), "ListItem%dSId", itemcount);
-										SetPVarInt(playerid, string, i);
-										itemcount++;
-									}
-								}
-								SetPVarInt(playerid, "DepositGunId", itemcount);
-								strcat(szDialog, "Deposit a weapon");
-								ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - NO GUNS TO STORE", szDialog, "Select", "Cancel");
+								ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon - No guns to store");
 							}
 						}
 						case 2, 3: {
@@ -2599,22 +2428,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {
-								itemcount = 0;
-								strdel(szDialog, 0, strlen(szDialog));
-								for(new i = 6; i < 10; i++)
-								{
-									if(PlayerInfo[playerid][pBItems][i] > 0)
-									{
-										GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-										format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-										format(string, sizeof(string), "ListItem%dSId", itemcount);
-										SetPVarInt(playerid, string, i);
-										itemcount++;
-									}
-								}
-								SetPVarInt(playerid, "DepositGunId", itemcount);
-								strcat(szDialog, "Deposit a weapon");
-								ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - NO GUNS TO STORE", szDialog, "Select", "Cancel");
+								ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon - No guns to store");
 							}
 						}
 					}	
@@ -2638,69 +2452,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string, sizeof(string), "[WEAPONS] %s (IP:%s) withdrawn a %s(%d) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, PlayerInfo[playerid][pBItems][slot], PlayerInfo[playerid][pBackpack]);
 						Log("logs/backpack.log", string);
 						PlayerInfo[playerid][pBItems][slot] = 0;
-						new itemcount = 0;
-						for(new i = 6; i < 10; i++)
-						{
-							if(PlayerInfo[playerid][pBItems][i] > 0)
-							{
-								GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-								format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-								format(string, sizeof(string), "ListItem%dSId", itemcount);
-								SetPVarInt(playerid, string, i);
-								itemcount++;
-							}
-						}
-						SetPVarInt(playerid, "DepositGunId", itemcount);
-						strcat(szDialog, "Deposit a weapon");
-						ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+						ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 						return 1;
 					}
 				}
 			}
 			else {
-				format(string, sizeof(string), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-				if(PlayerInfo[playerid][pBItems][5] != 0) format(string, sizeof(string), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",string, PlayerInfo[playerid][pBItems][5]);
-				switch(PlayerInfo[playerid][pBackpack])
-				{
-					case 1: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Small Backpack Items", string, "Select", "Cancel");
-					}
-					case 2: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Medium Backpack Items", string, "Select", "Cancel");
-					}
-					case 3: 
-					{
-						ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, "Large Backpack Items", string, "Select", "Cancel");
-					}
-				}
+				ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 			}
 		}
 		case DIALOG_BGUNS2: {
 			if(response) {
-				new szDialog[130], handguns, primguns, wbid, weapname[20], slot, itemcount;
-				for(new i = 6; i < 10; i++) {
-					if(PlayerInfo[playerid][pBItems][i] > 0)
-					{
+				new handguns, primguns, wbid, weapname[20], slot;
+				for(new i = 6; i < 11; i++) {
+					if(PlayerInfo[playerid][pBItems][i] > 0) {
 						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;
 						else if(IsWeaponPrimary(PlayerInfo[playerid][pBItems][i])) primguns++;
-						GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-						format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-						format(string, sizeof(string), "ListItem%dSId", itemcount);
-						SetPVarInt(playerid, string, i);
-						itemcount++;
 					}
 				}
 				switch(PlayerInfo[playerid][pBackpack]) {
 					case 1: {
 						format(string, sizeof(string), "ListItem%dWId", listitem);
 						wbid = GetPVarInt(playerid, string);
-						if(handguns > 0 || primguns > 0 || IsWeaponPrimary(wbid)) {
-								
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 1 handgun", szDialog, "Select", "Cancel");
+						if(handguns > 1 || primguns > 0 || IsWeaponPrimary(wbid)) {
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns");
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
@@ -2717,50 +2492,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							GetPlayerIp(playerid, ip, sizeof(ip));
 							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
 							Log("logs/backpack.log", string);
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 							return 1;
 						}
 						else {
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon ERROR");
 						}
 					}
 					case 2: {
 						format(string, sizeof(string), "ListItem%dWId", listitem);
 						wbid = GetPVarInt(playerid, string);
-						if((handguns >= 2) || (IsWeaponPrimary(wbid) && primguns >= 1) || (handguns >= 1 && primguns >= 1)) {
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 2 handguns or 1 handgun and 1 primary", szDialog, "Select", "Cancel");
+						if((handguns >= 2 && IsWeaponHandgun(wbid)) || (IsWeaponPrimary(wbid) && primguns >= 1) || (handguns >= 2 && primguns >= 1)) {
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns and 1 primary");
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
@@ -2777,50 +2520,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							GetPlayerIp(playerid, ip, sizeof(ip));
 							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
 							Log("logs/backpack.log", string);
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 							return 1;
 						}
 						else {
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- Select a weapon ERROR");
 						}
 					}
 					case 3: {
 						format(string, sizeof(string), "ListItem%dWId", listitem);
 						wbid = GetPVarInt(playerid, string);
-						if((handguns >= 2 && primguns >= 2) || (primguns >= 2 && IsWeaponPrimary(wbid)) || (handguns >= 2 && IsWeaponHandgun(wbid))) {
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "You can only carry 2 handguns and 2 primary", szDialog, "Select", "Cancel");
+						if((handguns >= 2 && primguns >= 3) || (primguns >= 3 && IsWeaponPrimary(wbid)) || (handguns >= 2 && IsWeaponHandgun(wbid))) {
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- You can only carry 2 handguns and 3 primary");
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
@@ -2837,62 +2548,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							GetPlayerIp(playerid, ip, sizeof(ip));
 							format(string, sizeof(string), "[WEAPONS] %s (IP:%s) deposited a %s(%d) in slot %d [BACKPACK %d]", GetPlayerNameEx(playerid), ip, weapname, wbid, slot, PlayerInfo[playerid][pBackpack]);
 							Log("logs/backpack.log", string);
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- Select a weapon");
 							return 1;
 						}
 						else {
-							itemcount = 0;
-							strdel(szDialog, 0, strlen(szDialog));
-							for(new i = 6; i < 10; i++)
-							{
-								if(PlayerInfo[playerid][pBItems][i] > 0)
-								{
-									GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-									format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-									format(string, sizeof(string), "ListItem%dSId", itemcount);
-									SetPVarInt(playerid, string, i);
-									itemcount++;
-								}
-							}
-							SetPVarInt(playerid, "DepositGunId", itemcount);
-							strcat(szDialog, "Deposit a weapon");
-							ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon - ERROR", szDialog, "Select", "Cancel");
+							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- Select a weapon ERROR");
 						}
 					}
 				}
 			}
 			else {
-				new itemcount, szDialog[130], weapname[20];
-				strdel(szDialog, 0, strlen(szDialog));
-				for(new i = 6; i < 10; i++)
-				{
-					if(PlayerInfo[playerid][pBItems][i] > 0)
-					{
-						GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-						format(szDialog, sizeof(szDialog), "%s%s (%i)\n", szDialog, weapname, i);
-						format(string, sizeof(string), "ListItem%dSId", itemcount);
-						SetPVarInt(playerid, string, i);
-						itemcount++;
-					}
-				}
-				SetPVarInt(playerid, "DepositGunId", itemcount);
-				strcat(szDialog, "Deposit a weapon");
-				ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, "Select a weapon", szDialog, "Select", "Cancel");
+				ShowBackpackMenu(playerid, DIALOG_BGUNS, "- Select a weapon");
 			}
 		}
 		case DIALOG_BMEALSTORE: {
