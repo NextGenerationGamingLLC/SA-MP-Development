@@ -866,6 +866,7 @@ new CallCost[MAX_PLAYERS];
 new LockStatus[MAX_VEHICLES char];
 new arr_Engine[MAX_VEHICLES char];
 new arr_Towing[MAX_PLAYERS];
+new WheelClamp[MAX_VEHICLES char];
 
 new
 	g_arrQueryHandle[MAX_PLAYERS char],
@@ -1118,6 +1119,9 @@ new RFLInfo[MAX_RFLTEAMS][rflinfo];
 //new HelpInfo[TOTAL_COMMANDS][cmdInfo];
 new GangTags[MAX_GANGTAGS][GANG_TAG_INFO];
 new fireworktog = 1;
+
+// Vehicle Lock Pick Timer Textdraw
+new PlayerText:VLPTextDraws[MAX_PLAYERS][4];
 
 new PlayerText:ShopNotice[MAX_PLAYERS];
 new ShopReminder = 1;

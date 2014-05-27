@@ -64,6 +64,7 @@ enum eGroupData {
 	g_iJCount,
 	g_iTackleAccess,
 	Float: g_fGaragePos[3],
+	g_iWheelClamps
 }
 
 enum eLockerData {

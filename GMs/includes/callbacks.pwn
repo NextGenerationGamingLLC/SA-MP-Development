@@ -1576,11 +1576,27 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		DeletePVar(playerid, "LockPickPosY");
 		DeletePVar(playerid, "LockPickPosZ");
 		DeletePVar(playerid, "LockPickPosZ");
+		DestroyVLPTextDraws(playerid);
 		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvAlarmTriggered] = 0;
 		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvBeingPickLocked] = 0;
 		DeletePVar(playerid, "LockPickVehicle");
 		DeletePVar(playerid, "LockPickPlayer");
-		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage while picking this lock, you have failed this lock pick.");
+		new failMessage[42 + MAX_PLAYER_NAME];
+		format(failMessage, sizeof(failMessage), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+		SendClientMessageEx(playerid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
+		SendClientMessageEx(playerid, COLOR_RED, failMessage);
+		SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+	}
+	if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
+		DeletePVar(playerid, "AttemptingCrackTrunk");
+		DeletePVar(playerid, "CrackTrunkCountdown");
+		DestroyVLPTextDraws(playerid);
+		ClearAnimations(playerid, 1);
+		new failMessage[42 + MAX_PLAYER_NAME];
+		format(failMessage, sizeof(failMessage), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+		SendClientMessageEx(playerid, COLOR_RED, "(( You failed to crack this vehicle's trunk because you took damage. ))");
+		SendClientMessageEx(playerid, COLOR_RED, failMessage);
+		SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
 	}
 	if(GetPVarInt(playerid, "commitSuicide") == 1)
 	{

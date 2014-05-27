@@ -7049,6 +7049,8 @@ CMD:car(playerid, params[])
 		new engine,lights,alarm,doors,bonnet,boot,objective,vehicleid;
 		vehicleid = GetPlayerVehicleID(playerid);
 		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
+		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( This vehicle has a wheel camp on its front tire, you will not be able to drive away with it. ))");
+
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 		if(engine == VEHICLE_PARAMS_ON)
 		{
@@ -11730,12 +11732,12 @@ CMD:accept(playerid, params[])
 							}
 							case 18:
 							{
-								PlayerInfo[playerid][pToolBox] += 25;
+								PlayerInfo[playerid][pToolBox] += 15;
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /pickveh(icle) in any car to attempt to lock pick it.");
 							}
 							case 19:
 							{
-								PlayerInfo[playerid][pCrowBar] += 1;
+								PlayerInfo[playerid][pCrowBar] += 25;
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cranktrunk in any car that you already lock picked to attempt to open the trunk.");
 							}
                         }
@@ -14107,7 +14109,7 @@ CMD:savechars(playerid, params[])
     if (PlayerInfo[playerid][pAdmin] >= 4) {
         SaveEventPoints();
         mysql_SaveCrates();
-        SendClientMessageEx(playerid, COLOR_YELLOW, "All Crates Saved sucessfully.");
+        SendClientMessageEx(playerid, COLOR_YELLOW, "All Crates Saved successfully.");
         SaveAllAccountsUpdate();
 		//g_mysql_DumpAccounts();
         SendClientMessageEx(playerid, COLOR_YELLOW, "Update Process Started - Wait for Account Saving Finish Confirmation.");
@@ -25014,7 +25016,7 @@ CMD:blowup(playerid, params[])
 		{
 			if(IsPlayerConnected(giveplayerid))
 			{
-				format(string, sizeof(string), "You have successfuly exploded %s (ID: %d).",GetPlayerNameEx(giveplayerid),giveplayerid);
+				format(string, sizeof(string), "You have successfully exploded %s (ID: %d).",GetPlayerNameEx(giveplayerid),giveplayerid);
 				SendClientMessageEx(playerid,COLOR_GRAD2,string);
 				new Float:boomx, Float:boomy, Float:boomz;
 				GetPlayerPos(giveplayerid,boomx, boomy, boomz);
@@ -36647,7 +36649,7 @@ CMD:seteventpos(playerid, params[])
 			GetPlayerPos(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ]);
 			EventKernel[EventInterior] = GetPlayerInterior(playerid);
 			EventKernel[EventWorld] = GetPlayerVirtualWorld(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event position, type /seteventinfo to change the event properties.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event position, type /seteventinfo to change the event properties.");
 			EventKernel[EventJoinStaff] = 1;
 			format(string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has started an event, type /eventstaff if you want to be in the event staff.", GetPlayerNameEx(playerid) );
 			ABroadCast(COLOR_YELLOW, string, 1);
@@ -36677,27 +36679,27 @@ CMD:seteventtype(playerid, params[])
 			if(strcmp(params,"dm",true) == 0)
 			{
 				EventKernel[ EventType ] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to DM.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to DM.");
 			}
 			else if(strcmp(params,"tdm",true) == 0)
 			{
 				EventKernel[ EventType ] = 2;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to TDM.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to TDM.");
 			}
 			else if(strcmp(params,"race",true) == 0)
 			{
 				EventKernel[ EventType ] = 3;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to Race.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to Race.");
 			}
 			else if(strcmp(params,"infection",true) == 0)
 			{
 				EventKernel[ EventType ] = 4;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to infection.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to infection.");
 			}
 			else if(strcmp(params,"none",true) == 0)
 			{
 				EventKernel[ EventType ] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to None.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to None.");
 			}
 		}
 	}
@@ -36764,7 +36766,7 @@ CMD:editevent(playerid, params[])
 					return 1;
 				}
 				strmid(EventKernel[EventInfo], opstring, 0, strlen(opstring), 64);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event join text.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event join text.");
 			}
 			else if(strcmp(choice, "health", true) == 0)
 			{
@@ -36782,7 +36784,7 @@ CMD:editevent(playerid, params[])
 				new Float: health;
 				health = floatstr(opstring);
 				EventKernel[EventHealth] = health;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event health.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event health.");
 			}
 			else if(strcmp(choice, "armor", true) == 0)
 			{
@@ -36801,7 +36803,7 @@ CMD:editevent(playerid, params[])
 				armor = floatstr(opstring);
 				if(armor == 100) armor = 99;
 				EventKernel[EventArmor] = armor;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event armor.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event armor.");
 			}
 			else if(strcmp(choice, "team1skin", true) == 0)
 			{
@@ -36820,7 +36822,7 @@ CMD:editevent(playerid, params[])
 				new skin;
 				skin = strval(opstring);
 				EventKernel[EventTeamSkin][0] = skin;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event team 1 skin.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 skin.");
 			}
 			else if(strcmp(choice, "team2skin", true) == 0)
 			{
@@ -36839,7 +36841,7 @@ CMD:editevent(playerid, params[])
 				new skin;
 				skin = strval(opstring);
 				EventKernel[EventTeamSkin][1] = skin;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event team 2 skin.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 skin.");
 			}
 			else if(strcmp(choice, "team1color", true) == 0)
 			{
@@ -36857,7 +36859,7 @@ CMD:editevent(playerid, params[])
 					return 1;
 				}
 				EventKernel[EventTeamColor][0] = GetColorCode(opstring);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event team 1 color.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 color.");
 			}
 			else if(strcmp(choice, "team2color", true) == 0)
 			{
@@ -36875,7 +36877,7 @@ CMD:editevent(playerid, params[])
 					return 1;
 				}
 				EventKernel[EventTeamColor][1] = GetColorCode(opstring);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event team 2 color.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 color.");
 			}
 			else if(strcmp(choice, "team1spawn", true) == 0)
 			{
@@ -36885,7 +36887,7 @@ CMD:editevent(playerid, params[])
 					return 1;
 				}
 				GetPlayerPos(playerid, EventKernel[ EventTeamPosX1 ], EventKernel[ EventTeamPosY1 ], EventKernel[ EventTeamPosZ1 ] );
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted team 1's spawn position.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 1's spawn position.");
 			}
 			else if(strcmp(choice, "team2spawn", true) == 0)
 			{
@@ -36895,7 +36897,7 @@ CMD:editevent(playerid, params[])
 					return 1;
 				}
 				GetPlayerPos(playerid, EventKernel[ EventTeamPosX2 ], EventKernel[ EventTeamPosY2 ], EventKernel[ EventTeamPosZ2 ]);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted team 2's spawn position.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 2's spawn position.");
 			}
 			else if(strcmp(choice, "limit", true) == 0)
 			{
@@ -36911,7 +36913,7 @@ CMD:editevent(playerid, params[])
 				limit = strval(opstring);
 				if(limit < 0 || limit > 120) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event limit higher than 120 or below 0");
 				EventKernel[EventLimit] = limit;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the players in event limit.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the players in event limit.");
 			}
 			else if(strcmp(choice, "hours", true) == 0)
 			{
@@ -36931,7 +36933,7 @@ CMD:editevent(playerid, params[])
 				if(hours < 0 || hours > 5) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event hours higher than 5 or below 0");
 				seconds = hours*3600;
 				EventKernel[EventTime] = seconds;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event hours that the event will be active for, timer will start once you fully start the event.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event hours that the event will be active for, timer will start once you fully start the event.");
                 SendClientMessageEx(playerid, COLOR_GREY, "NOTE: If you set the event hours to 0 the event will finish once the last racer goes into the last checkpoint.");
 				if(hours != 0)
 					SendClientMessageEx(playerid, COLOR_YELLOW, "The feature players in event limit(/editevent limit) is now disabled since you changed the hours more than 0.");
@@ -36981,7 +36983,7 @@ CMD:editevent(playerid, params[])
 				weapon = strval(opstring);
 				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
 				EventKernel[EventWeapons][0] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event gun 1.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 1.");
 			}
 			else if(strcmp(choice, "gun2", true) == 0)
 			{
@@ -37001,7 +37003,7 @@ CMD:editevent(playerid, params[])
 				weapon = strval(opstring);
 				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
 				EventKernel[EventWeapons][1] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event gun 2.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 2.");
 			}
 			else if(strcmp(choice, "gun3", true) == 0)
 			{
@@ -37021,7 +37023,7 @@ CMD:editevent(playerid, params[])
 				weapon = strval(opstring);
 				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
 				EventKernel[EventWeapons][2] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event gun 3.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 3.");
 			}
 			else if(strcmp(choice, "gun4", true) == 0)
 			{
@@ -37041,7 +37043,7 @@ CMD:editevent(playerid, params[])
 				weapon = strval(opstring);
 				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
 				EventKernel[EventWeapons][3] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event gun 4.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 4.");
 			}
 			else if(strcmp(choice, "gun5", true) == 0)
 			{
@@ -37061,7 +37063,7 @@ CMD:editevent(playerid, params[])
 				weapon = strval(opstring);
 				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
 				EventKernel[EventWeapons][4] = weapon;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event gun 5.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 5.");
 			}
 			else if(strcmp(choice, "custominterior", true) == 0)
 			{
@@ -37095,12 +37097,12 @@ CMD:seteventviponly(playerid, params[])
 			if(strcmp(params,"0",true) == 0)
 			{
 				EventKernel[ VipOnly ] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to not VIP Only.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to not VIP Only.");
 			}
 			else if(strcmp(params,"1",true) == 0)
 			{
 				EventKernel[ VipOnly ] = 1;
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have sucessfully adjusted the event type to VIP Only.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to VIP Only.");
 			}
 
 		}
@@ -47293,17 +47295,17 @@ CMD:craft(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1000)	 smslog(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8000)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1000)	 camera(250)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8000)	     receiver(5000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1000)          bugsweep(10000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
 		//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12500) syringe(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50000)		toolbox(15000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(10000)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -47315,15 +47317,17 @@ CMD:craft(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1000)	 smslog(2000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "wristwatch(500)	 surveillance(8000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "firstaid(1000)	 camera(250)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8000)	     receiver(5000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "gps(1000)          bugsweep(10000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          mailbox(15000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "metaldetector(12500) syringe(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
+			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 			return 1;
@@ -47568,9 +47572,9 @@ CMD:craft(playerid, params[])
 		}
 		else if(strcmp(choice,"toolbox",true) == 0)
 		{
-			if(PlayerInfo[playerid][pMats] >= 15000)
+			if(PlayerInfo[playerid][pMats] >= 12000)
 			{
-				price = 15000;
+				price = 12000;
 				weapon = 18;
 			}
 			else
@@ -47581,9 +47585,9 @@ CMD:craft(playerid, params[])
 		}
 		else if(strcmp(choice,"crowbar",true) == 0)
 		{
-			if(PlayerInfo[playerid][pMats] >= 10000)
+			if(PlayerInfo[playerid][pMats] >= 7000)
 			{
-				price = 10000;
+				price = 7000;
 				weapon = 19;
 			}
 			else
@@ -47755,12 +47759,12 @@ CMD:craft(playerid, params[])
 					}
 				case 18:
 					{
-						PlayerInfo[playerid][pToolBox] += 25;
+						PlayerInfo[playerid][pToolBox] += 15;
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /pickveh(icle) in any car to attempt to lock pick it.");
 					}
 				case 19:
 					{
-						PlayerInfo[playerid][pCrowBar] += 1;
+						PlayerInfo[playerid][pCrowBar] += 25;
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cranktrunk in any car that you already lock picked to attempt to open the trunk.");
 					}
 				}
@@ -57858,6 +57862,8 @@ CMD:pickveh(playerid, params[])
 		
 		
 	new vehicleid = GetClosestCar(playerid);
+	if(IsAPlane(vehicleid) || IsWeaponizedVehicle(GetVehicleModel(vehicleid)) || IsABike(vehicleid))
+		return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't pick lock this vehicle. ))");
 	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 		if(PlayerVehicleInfo[playerid][d][pvId] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that you own.");
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
@@ -57890,7 +57896,6 @@ CMD:pickveh(playerid, params[])
 					format(szMessage, sizeof(szMessage), "* %s attempts to pick lock a nearby vehicle.", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
-					if(--PlayerInfo[playerid][pToolBox] <= 0) SendClientMessageEx(playerid, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
 					if(status) {
 						SetPVarInt(playerid, "AttemptingLockPick", 1);
 						SetPVarInt(playerid, "LockPickCountdown", waittime);
@@ -57900,9 +57905,9 @@ CMD:pickveh(playerid, params[])
 						
 						PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
 						PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;
-						format(szMessage, sizeof(szMessage), "(( You start to pick lock this vehicle, attempting to break into it(Wait %s). ))", ConvertTimeS(waittime));
-						SendClientMessageEx(playerid, COLOR_PURPLE, szMessage);
+						SendClientMessageEx(playerid, COLOR_PURPLE, "(( You've successfully managed to start pick locking this vehicle, you are now attempting to break into it. ))");
 						SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail lock picking the vehicle.");
+						ShowVLPTextDraws(playerid, vehicleid);
 						GetVehicleZAngle(vehicleid, a);
 						SetPlayerFacingAngle(playerid, a-90);
 						ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
@@ -57921,21 +57926,10 @@ CMD:pickveh(playerid, params[])
 		}
 	}
 	else {
-		GetPlayerPos(playerid, vehSize[0], vehSize[1], vehSize[2]);
-		printf("VehicleId: %d VehX: %.1f VehY: %.1f VehZ: %.1f PlayerX: %.1f PlayerY: %.1f PlayerZ: %.1f", vehicleid, Pos[0], Pos[1], Pos[2], vehSize[0], vehSize[1], vehSize[2]);
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be next to the drivers door in order to lock pick it.");
 	}
 	return 1;
 }
-
-CMD:getanimid(playerid, params[])
-{
-	new szMessage[50];
-	format(szMessage, sizeof(szMessage), "Animation index: %d", GetPlayerAnimationIndex(playerid));
-	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMessage);
-	return 1;
-}
-
 CMD:cracktrunk(playerid, params[])
 {
 	new szMessage[150], Float: x, Float: y, Float: z;
@@ -57944,9 +57938,9 @@ CMD:cracktrunk(playerid, params[])
 		format(szMessage, sizeof(szMessage), "You must wait %s in order to attempt another crack trunk.", ConvertTimeS(PlayerInfo[playerid][pLockPickTime] - gettime()));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 	} */
-	//if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
+	if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
 	if(!PlayerInfo[playerid][pCrowBar]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Crow Bar in order to crack this trunk, get one from a Craftsman.");
-	//if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
+	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
 	
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
@@ -57966,15 +57960,16 @@ CMD:cracktrunk(playerid, params[])
 			case 225 .. 349: if(0 <= randskill < 55) status = 1; //Success
 			default: if(0 <= randskill < 65) status = 1; //Success
 		}
-		format(szMessage, sizeof(szMessage), "* %s attempts to force a vehicle trunk.", GetPlayerNameEx(playerid));
+		format(szMessage, sizeof(szMessage), "* %s is attempting to crack the vehicle's trunk with his crowbar.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
 		if(status) {
 			SetPVarInt(playerid, "AttemptingCrackTrunk", 1);
 			SetPVarInt(playerid, "CrackTrunkCountdown", 60);
 			
-			SendClientMessageEx(playerid, COLOR_PURPLE, "(( You start to crack this vehicle's trunk, attempting to break into it(Wait 1 minute) ))");
+			SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now cracking this vehicle's trunk with your crowbar, please wait ))");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail cracking this vehicle trunk.");
+			ShowVLPTextDraws(playerid, vehicleid, 1);
 			GetVehicleZAngle(vehicleid, z);
 			SetPlayerFacingAngle(playerid, z);
 			ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
@@ -57985,11 +57980,72 @@ CMD:cracktrunk(playerid, params[])
 			Log("logs/playervehicle.log", szMessage);
 		}
 		else {
-			SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
+			SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to crack this vehicle's trunk failed! Try again or move on. ))");
 		}
 	}
 	else {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be at the back of the car that you lock picked.");
 	}
+	return 1;
+}
+
+CMD:stoplockpick(playerid, params[])
+{
+	if(GetPVarType(playerid, "AttemptingLockPick")) {
+		new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
+		DeletePVar(playerid, "AttemptingLockPick");
+		DeletePVar(playerid, "LockPickCountdown");
+		DeletePVar(playerid, "LockPickTotalTime");
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+		DeletePVar(playerid, "LockPickVehicle");
+		DeletePVar(playerid, "LockPickPlayer");
+		DestroyVLPTextDraws(playerid);
+		ClearAnimations(playerid, 1);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
+	}
+	return 1;
+}
+
+CMD:stopcracking(playerid, params[])
+{
+	if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
+		DeletePVar(playerid, "AttemptingCrackTrunk");
+		DeletePVar(playerid, "CrackTrunkCountdown");
+		DestroyVLPTextDraws(playerid);
+		ClearAnimations(playerid, 1);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
+	}
+	return 1;
+}
+
+CMD:wheelclamp(playerid, params[])
+{
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
+		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 5.0),
+			szMessage[24 + 51 + MAX_PLAYER_NAME];
+		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5) {
+			if(IsAPlane(vehicleid) || IsWeaponizedVehicle(GetVehicleModel(vehicleid)) || IsABike(vehicleid))
+				return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't place wheel clamps on this vehicle. ))");
+			if(WheelClamp{vehicleid}) {
+				WheelClamp{vehicleid} = 0;
+				format(szMessage, sizeof(szMessage), "* %s has removed a Wheel Clamp from the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You have removed the Wheel Clamp from this vehicle's front tire. ))");
+			}
+			else {
+				SetPVarInt(playerid, "wheelclampvehicle", vehicleid);
+				SetPVarInt(playerid, "wheelclampcountdown", 10);
+				format(szMessage, sizeof(szMessage), "* %s is attempting to place a Wheel Clamp in the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now placing a Wheel Clamp in the vehicle's front tire, please wait. ))");
+			}
+			
+		} 
+		else
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are not near any car.");
+	}
+	else
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command.");
 	return 1;
 }

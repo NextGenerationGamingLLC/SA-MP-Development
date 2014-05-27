@@ -1153,6 +1153,7 @@ Vehicle_ResetData(iVehicleID) {
 		Vehicle_Armor(iVehicleID);
 		LockStatus{iVehicleID} = 0;
 		VehicleStatus{iVehicleID} = 0;
+		WheelClamp{iVehicleID} = 0;
 		arr_Engine{iVehicleID} = 0;
 		stationidv[iVehicleID][0] = 0;
 		TruckContents{iVehicleID} = 0;
@@ -3318,43 +3319,50 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Allegiance:{FFFFFF} %s\n\
 		{BBBBBB}Jurisdiction\n\
 		{BBBBBB}Duty colour: {%s}(edit)\n\
-		{BBBBBB}Radio colour: {%s}(edit)\n",
+		{BBBBBB}Radio colour: {%s}(edit)\n\
+		{BBBBBB}Radio access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Department radio access:{FFFFFF} %s (rank %i)\n",
 		arrGroupData[iGroupID][g_szGroupName],
 		Group_ReturnType(arrGroupData[iGroupID][g_iGroupType]),
 		Group_ReturnAllegiance(arrGroupData[iGroupID][g_iAllegiance]),
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]),
-		Group_NumToDialogHex(arrGroupData[iGroupID][g_hRadioColour])
+		Group_NumToDialogHex(arrGroupData[iGroupID][g_hRadioColour]),
+		(arrGroupData[iGroupID][g_iRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iRadioAccess],
+		(arrGroupData[iGroupID][g_iDeptRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDeptRadioAccess]
 	);
 
 	format(szDialog, sizeof(szDialog), "%s\
-		{BBBBBB}Radio access:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Department radio access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Int radio access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Bug access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Government announcement:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Free name change:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Spike Strips:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Barricades:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Cones:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n",
+		{BBBBBB}Barricades:{FFFFFF} %s (rank %i)\n",
 		szDialog,
-		(arrGroupData[iGroupID][g_iRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iRadioAccess],
-		(arrGroupData[iGroupID][g_iDeptRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDeptRadioAccess],
 		(arrGroupData[iGroupID][g_iIntRadioAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iIntRadioAccess],
 		(arrGroupData[iGroupID][g_iBugAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBugAccess],
 		(arrGroupData[iGroupID][g_iGovAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iGovAccess],
 		(arrGroupData[iGroupID][g_iFreeNameChange] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFreeNameChange],
 		(arrGroupData[iGroupID][g_iSpikeStrips] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iSpikeStrips],
-		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarricades],
+		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarricades]
+	);
+	
+	format(szDialog, sizeof(szDialog), "%s\
+		{BBBBBB}Cones:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
+		{EEEEEE}Edit Locker Stock (%i)\n",
+		szDialog,
 		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCones],
-		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares]
+		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares],
+		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
+		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
+		arrGroupData[iGroupID][g_iLockerStock]
 	);
 
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
-		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Locker Stock (%i)\n\
 		{EEEEEE}Edit Locker Weapons (%i defined)\n\
 		{EEEEEE}Edit Payments\n\
 		{EEEEEE}Edit Divisions (%i defined)\n\
@@ -3363,18 +3371,17 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Edit Crate Delivery Position (current distance: %.0f)\n\
 		{EEEEEE}Locker Cost Type: %s\n\
 		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
-		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)",
+		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
+		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)",
 		szDialog,
-		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
-		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_iLockerStock],
 		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS),
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
 		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]],
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
-		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess]
+		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
+		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps]
 	);
 
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
@@ -17444,17 +17451,26 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new szMessage[150];
 			switch(reason){
 				case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-				case 1: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 1:	format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 				case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 			}
 			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
-			/* format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has unloaded it.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage); */
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, "(( You will not be rewarded for this vehicle, but you’ve not lost durability of your tool box ))");
+			if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] == 2) {
+				PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pToolBox]++;
+				if(gettime() < PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime]) PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime] = 0;
+				else --PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickVehCount];
+			}
+			else if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] == 1) {
+				if(--PlayerVehicleInfo[playerid][v][pvLocksLeft] <= 0 && PlayerVehicleInfo[playerid][v][pvLock])
+					SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+			}
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], ip2, sizeof(ip2));
 			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) unloaded his %s(VID:%d Slot %d) while being lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), ip2);
 			Log("logs/playervehicle.log", szMessage);
+			DestroyVLPTextDraws(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "DeliveringVehicleTime");
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "AttemptingLockPick");
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickCountdown");
@@ -17465,6 +17481,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickVehicle");
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPlayer");
 			ClearCheckpoint(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
+			ClearAnimations(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], 1);
 			
 			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
 			PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
@@ -19179,32 +19196,52 @@ stock SetPlayerArmorEx(playerid, Float:armour)
 }*/
 
 
-stock ConvertTimeS(seconds)
+stock ConvertTimeS(seconds, TYPE = 0)
 {
-	new string[64];
-    if(seconds > 86400)
-	{
- 		if(floatround((seconds/86400), floatround_floor) > 1) format(string, sizeof(string), "%d days", floatround((seconds/86400), floatround_floor));
-		else format(string, sizeof(string), "%d day", floatround((seconds/86400), floatround_floor));
-		seconds=seconds-((floatround((seconds/86400), floatround_floor))*86400);
-	}
-	if(seconds > 3600)
-	{
+	new string[64], minutes;
+	if(TYPE == 0) {
+		if(seconds > 86400)
+		{
+			if(floatround((seconds/86400), floatround_floor) > 1) format(string, sizeof(string), "%d days", floatround((seconds/86400), floatround_floor));
+			else format(string, sizeof(string), "%d day", floatround((seconds/86400), floatround_floor));
+			seconds=seconds-((floatround((seconds/86400), floatround_floor))*86400);
+		}
+		if(seconds > 3600)
+		{
+			if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
+			if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s%d hours", string, floatround((seconds/3600), floatround_floor));
+			else format(string, sizeof(string), "%s%d hour", string, floatround((seconds/3600), floatround_floor));
+			seconds=seconds-((floatround((seconds/3600), floatround_floor))*3600);
+		}
+		if(seconds > 60)
+		{
+			if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
+			if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s%d minutes", string, floatround((seconds/60), floatround_floor));
+			else format(string, sizeof(string), "%s%d minute", string, floatround((seconds/60), floatround_floor));
+			seconds=seconds-((floatround((seconds/60), floatround_floor))*60);
+		}
 		if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
- 		if(floatround((seconds/3600), floatround_floor) > 1) format(string, sizeof(string), "%s%d hours", string, floatround((seconds/3600), floatround_floor));
-   		else format(string, sizeof(string), "%s%d hour", string, floatround((seconds/3600), floatround_floor));
-		seconds=seconds-((floatround((seconds/3600), floatround_floor))*3600);
+		if(seconds > 1) format(string, sizeof(string), "%s%d seconds", string, seconds);
+		else if(seconds != 0) format(string, sizeof(string), "%s%d second", string, seconds);
 	}
-	if(seconds > 60)
-	{
-		if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
- 		if(floatround((seconds/60), floatround_floor) > 1) format(string, sizeof(string), "%s%d minutes", string, floatround((seconds/60), floatround_floor));
-   		else format(string, sizeof(string), "%s%d minute", string, floatround((seconds/60), floatround_floor));
-		seconds=seconds-((floatround((seconds/60), floatround_floor))*60);
+	else {
+		if(seconds > 60)
+		{
+			minutes = floatround((seconds/60), floatround_floor);
+			if(minutes > 9) format(string, sizeof(string), "%d", minutes);
+			else format(string, sizeof(string), "0%d", minutes);
+			seconds = seconds - (minutes * 60);
+		}
+		if(minutes > 0) {
+			if(seconds > 9) format(string, sizeof(string), "%s:%d", string, seconds);
+			else format(string, sizeof(string), "%s:0%d", string, seconds);
+		}
+		else {
+			if(seconds > 9) format(string, sizeof(string), "00:%d", seconds);
+			else format(string, sizeof(string), "00:0%d", seconds);
+		}
+		
 	}
-	if(strlen(string) > 0) format(string, sizeof(string), "%s, ", string);
-	if(seconds > 1) format(string, sizeof(string), "%s%d seconds", string, seconds);
-	else if(seconds != 0) format(string, sizeof(string), "%s%d second", string, seconds);
 	return string;
 }
 
@@ -26015,7 +26052,7 @@ TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
 		ProxDetector(30.0, triggerid, "(( A vehicle alarm has been triggered. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
 		Get3DZone(CarPos[0], CarPos[1], CarPos[2], szCarLocation, sizeof(szCarLocation));
-		format(szMessage, sizeof(szMessage), "SMS: Your %s(%d)'s Alarm at %s has been triggered, report it on /call 911, sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
+		format(szMessage, sizeof(szMessage), "SMS: Your %s(%d)'s Alarm at %s has been triggered, call 911, Sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
 		SendClientMessageEx(ownerid, COLOR_YELLOW, szMessage);
 		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 1;
 		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
@@ -26049,4 +26086,62 @@ ClearCheckpoint(playerid) {
     DisablePlayerCheckpoint(playerid);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
  	return;
+}
+
+ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {
+	CreateVLPTextDraws(playerid);
+	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
+	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+	Get3DZone(CarPos[0], CarPos[1], CarPos[2], tdCarLocation, sizeof(tdCarLocation));
+	format(tdMessage, sizeof(tdMessage), "%s", tdCarLocation);
+	PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][1], tdMessage);
+	switch(TYPE) {
+		case 0: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to lock pick vehicle");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "LockPickCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 1: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to crack the trunk");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "CrackTrunkCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 2: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Deliver Vehicle");
+			format(tdMessage, sizeof(tdMessage), "00:%d", GetPVarInt(playerid, "DeliveringVehicleTime"));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+	}
+	for(new i = 0; i < 4; i++)
+		PlayerTextDrawShow(playerid, VLPTextDraws[playerid][i]);
+}
+
+UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {
+	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
+	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+	Get3DZone(CarPos[0], CarPos[1], CarPos[2], tdCarLocation, sizeof(tdCarLocation));
+	format(tdMessage, sizeof(tdMessage), "%s Robbery", tdCarLocation);
+	PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], tdMessage);
+	switch(TYPE) {
+		case 0: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to lock pick vehicle");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "LockPickCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 1: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to crack the trunk");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "CrackTrunkCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 2: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Deliver Vehicle");
+			format(tdMessage, sizeof(tdMessage), "00:%d", GetPVarInt(playerid, "DeliveringVehicleTime"));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+	}
+}
+
+DestroyVLPTextDraws(playerid) {
+	for(new i = 0; i < 4; i++)
+		PlayerTextDrawDestroy(playerid, VLPTextDraws[playerid][i]);
 }
