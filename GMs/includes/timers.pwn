@@ -1321,11 +1321,11 @@ task ServerHeartbeat[1000]() {
 					else if(GetPVarInt(i, "wheelclampcountdown") <= 0) {
 						WheelClamp{vehicleid} = 1;
 						arr_Engine{vehicleid} = 0;
-						GetVehicleParamsEx(iVehicle, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
-						if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(iVehicle,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+						GetVehicleParamsEx(vehicleid, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+						if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
 						DeletePVar(i, "wheelclampvehicle");
 						DeletePVar(i, "wheelclampcountdown");
-						format(szMessage, sizeof(szMessage), "* %s has attached a Wheel Clamp on the %s’s front tire.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
+						format(szMessage, sizeof(szMessage), "* %s has attached a Wheel Clamp on the %s's front tire.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
 						ProxDetector(30.0, i, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					}
 				}
@@ -2051,7 +2051,7 @@ task ServerHeartbeat[1000]() {
 										SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
 										GetPlayerHealth(ii, health);
-										GetPlayerHealth(ii, armour);
+										GetPlayerArmour(ii, armour);
 										SetPVarFloat(ii, "_BoxingCacheHP", health);
 										SetPVarFloat(ii, "_BoxingCacheArmour", armour);
 
@@ -2100,7 +2100,7 @@ task ServerHeartbeat[1000]() {
 										SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
 										GetPlayerHealth(ii, health);
-										GetPlayerHealth(ii, armour);
+										GetPlayerArmour(ii, armour);
 										SetPVarFloat(ii, "_BoxingCacheHP", health);
 										SetPVarFloat(ii, "_BoxingCacheArmour", armour);
 

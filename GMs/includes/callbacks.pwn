@@ -3661,7 +3661,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 	    DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
 	    SetPVarInt(playerid, "MovingStretcher", -1);
 	}
-
+	if(GetPVarInt(playerid, "DraggingPlayer") != INVALID_PLAYER_ID)
+	{
+		DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
+		SetPVarInt(playerid, "DraggingPlayer", INVALID_PLAYER_ID);
+	}
 	if(IsPlayerConnected(Mobile[playerid]))
 	{
 		new
@@ -5492,7 +5496,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
  	    {
 			if(GoChase[playerid] != INVALID_PLAYER_ID)
 			{
-			    if(IsPlayerInRangeOfPoint(GoChase[playerid], 8.0, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")))
+			    if(IsPlayerInRangeOfPoint(GoChase[playerid], 12.0, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")))
 			    {
 			        if(PlayerInfo[GoChase[playerid]][pHeadValue] >= 1)
 					{

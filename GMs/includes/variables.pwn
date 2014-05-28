@@ -1139,6 +1139,7 @@ new Float:shop_vertices[] = {
 	2905.0,-1588.0
 };
 new restarting;
+new PassComplexCheck;
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
@@ -1228,7 +1229,13 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19517, 0, "Hair2_nc"},
 {19518, 0, "Hair3_nc"},
 {19519, 0, "Hair5_nc"},
-{19488, 0, "HatBowler6"}
+{19488, 0, "HatBowler6"},
+{19308, 0, "Taxi01"},
+{19309, 0, "Taxi02"},
+{19310, 0, "Taxi03"},
+{19311, 0, "Taxi04"},
+{2590, 0, "Scythe"},
+{347, 0, "Silenced Pistol"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1553,7 +1560,13 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19517, 0, "Hair2_nc"},
 {19518, 0, "Hair3_nc"},
 {19519, 0, "Hair5_nc"},
-{19488, 0, "HatBowler6"}
+{19488, 0, "HatBowler6"},
+{19308, 0, "Taxi01"},
+{19309, 0, "Taxi02"},
+{19310, 0, "Taxi03"},
+{19311, 0, "Taxi04"},
+{2590, 0, "Scythe"},
+{347, 0, "Silenced Pistol"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

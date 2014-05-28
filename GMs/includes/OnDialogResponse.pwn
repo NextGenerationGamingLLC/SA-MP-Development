@@ -40,7 +40,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	// Crash Bug Fix
 	if(strfind(inputtext, "%", true) != -1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Invalid Character, please try again.");
+		if(dialogid == MAINMENU) ShowMainMenuDialog(playerid, 1);
+		if(dialogid == MAINMENU2) ShowMainMenuDialog(playerid, 2);
+		if(dialogid == DIALOG_CHANGEPASS2) ShowLoginDialogs(playerid, 0);
+		SendClientMessage(playerid, COLOR_GREY, "Invalid Character, please try again.");
 		return 1;
 	}
 
@@ -6242,7 +6245,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(dialogid == MAINMENU)
 		{
-			if(!isnull(inputtext) && strlen(inputtext) < 64)
+			if(!isnull(inputtext) && strlen(inputtext) <= 64)
 			{
 				SetPVarString(playerid, "PassAuth", inputtext);
 				g_mysql_AccountLoginCheck(playerid);
@@ -6254,11 +6257,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(dialogid == MAINMENU2)
 		{
-			if(!isnull(inputtext) && strlen(inputtext) < 64)
+			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowMainMenuDialog(playerid, 2);
+			if(!isnull(inputtext) && strlen(inputtext) <= 64)
 			{
 				SetPVarString(playerid, "PassAuth", inputtext);
 				g_mysql_CreateAccount(playerid, inputtext);
 			}
+			else ShowMainMenuDialog(playerid, 2);
 		}
 		return 1;
 	}
@@ -7192,14 +7197,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_CHANGEPASS2)
 	{
+		if(!response || strlen(inputtext) == 0) return ShowLoginDialogs(playerid, 0);
 		if(response)
 		{
-			if( strlen( inputtext ) >= 64 || strlen(inputtext) == 0)
+			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowLoginDialogs(playerid, 0);
+			if(strlen(inputtext) > 64)
 			{
-				ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
-				return SendClientMessageEx( playerid, COLOR_GREY, "You can't select a password that's above 64 characters." );
+				ShowLoginDialogs(playerid, 0);
+				return SendClientMessageEx(playerid, COLOR_GREY, "You can't select a password that's above 64 characters.");
 			}
-
 			new
 				szBuffer[129],
 				szQuery[256];
@@ -7214,44 +7220,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else if(pMOTD[0] && GetPVarInt(playerid, "ViewedPMOTD") != 1) ShowLoginDialogs(playerid, 4);
 			else if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
 		}
-		else
-		{
-			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
-		}
 	}
 	else if( dialogid == DIALOG_CHANGEPASS )
 	{
 		if(!response || strlen(inputtext) == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your password." );
-		if( strlen( inputtext ) >= 64 )
+		if(response)
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a password that's above 64 characters." );
-		}
-		else
-		{
-			if( strlen( inputtext ) >= 1 )
-			{
-				if(!response)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your password." );
-				}
-				else
-				{
-					new
-						szBuffer[129],
-						szQuery[256];
+			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter a new password for your account.\n\n\
+				- You can't select a password that's below 8 or above 64 characters\n\
+				- Your password must contain a combination of letters, numbers and special characters.\n\
+				- Invalid Character: %", "Change", "Exit" );
+			if(strlen(inputtext) > 64) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't select a password that's above 64 characters.");
 
-					WP_Hash(szBuffer, sizeof(szBuffer), inputtext);
-					SetPVarString(playerid, "PassChange", inputtext);
+			new
+				szBuffer[129],
+				szQuery[256];
 
-					format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s' WHERE `id` = '%i'", szBuffer, PlayerInfo[playerid][pId]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
-				}
-			}
-			else
-			{
-				SendClientMessageEx( playerid, COLOR_WHITE, "Your password must be longer than 1 character." );
-			}
+			WP_Hash(szBuffer, sizeof(szBuffer), inputtext);
+			SetPVarString(playerid, "PassChange", inputtext);
+
+			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s' WHERE `id` = '%i'", szBuffer, PlayerInfo[playerid][pId]);
+			mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 		}
 	}
 	else if( dialogid == DIALOG_NAMECHANGE )
@@ -7717,6 +7707,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "   You have purchased an electronic lock!");
 					SendClientMessageEx(playerid, COLOR_GRAD4, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
+					UnLockPlayerVehicle(playerid, PlayerVehicleInfo[playerid][pvid][pvId], PlayerVehicleInfo[playerid][pvid][pvLock]);
 					PlayerVehicleInfo[playerid][pvid][pvLock] = 2;
 					PlayerVehicleInfo[playerid][pvid][pvLocksLeft] = 5;
 					g_mysql_SaveVehicle(playerid, pvid);
@@ -8398,7 +8389,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
-		for (new i; i <= sizeof(StoreItems); i++)
+		for (new i; i < sizeof(StoreItems); i++)
 		{
 			format(pvar,sizeof(pvar),"Business_MenuItem%d", i);
 			DeletePVar(playerid, pvar);
@@ -13419,7 +13410,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s %s (IP: %s) has set the %s price to $%s in %s (%d)", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), StoreItems[item], number_format(iPrice), Businesses[iBusiness][bName], iBusiness);
 			new szDialog[912];
-			for (new i = 0; i <= sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)));
+			for (new i = 0; i < sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)));
 			ShowPlayerDialog(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "OK", "Cancel");
 			Log("logs/business.log", string);
 		}
@@ -13691,23 +13682,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new level = PlayerInfo[playerid][pTruckSkill];
 				if(level >= 0 && level <= 50)
 				{
-					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 pot, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 25 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 pot, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 100 materials)", "Select", "Cancel");
 				}
 				else if(level >= 51 && level <= 100)
 				{
-					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 pot, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 50 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 pot, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 200 materials)", "Select", "Cancel");
 				}
 				else if(level >= 101 && level <= 200)
 				{
-					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 pot, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 100 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 pot, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 400 materials)", "Select", "Cancel");
 				}
 				else if(level >= 201 && level <= 400)
 				{
-					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 pot, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 150 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 pot, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 600 materials)", "Select", "Cancel");
 				}
 				else if(level >= 401)
 				{
-					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 pot, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 200 materials)", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 pot, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 1000 materials)", "Select", "Cancel");
 				}
 			}
 		}
@@ -17984,7 +17975,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					DeletePVar(playerid, "WhoIsThis");
 					return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 				}
-				
+				if(!IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at NGG's shop to redeem this voucher.");
 				ShowModelSelectionMenu(playerid, CarList3, "Car Shop");
 			}
 			if(listitem == 5) // Gift Reset Voucher
@@ -18223,11 +18214,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(GetPVarInt(playerid, "voucherdialog") == 1) // Car Voucher
 			{
-				if(GetPlayerInterior(playerid) != 0) 
+				if(GetPlayerInterior(playerid) != 0 || !IsPlayerInDynamicArea(playerid, NGGShop)) 
 				{
 					DeletePVar(playerid, "voucherdialog");
 					DeletePVar(playerid, "WhoIsThis");
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this while being inside an interior.");
+					if(GetPlayerInterior(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this while being inside an interior.");
+					if(!IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at NGG's shop to redeem this voucher.");
 				}
 				else
 				{
@@ -19095,7 +19087,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_RED, "You have restricted this player account.");
 			PlayerTextDrawShow(GetPVarInt(playerid, "PendingAction4"), AccountRestriction[GetPVarInt(playerid, "PendingAction4")]);
 			PlayerTextDrawShow(GetPVarInt(playerid, "PendingAction4"), AccountRestrictionEx[GetPVarInt(playerid, "PendingAction4")]);
-			format(string, sizeof(string), "%s has restricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "PendingAction4")));
+			format(string, sizeof(string), "%s has restricted %s(%d) account", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "PendingAction4")), GetPlayerSQLId(GetPVarInt(playerid, "PendingAction4")));
 			Log("logs/restrictaccount.log", string);
 			return DeletePVar(playerid, "PendingAction4");
 		}

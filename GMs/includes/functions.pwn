@@ -2500,6 +2500,7 @@ ShowCasinoGamesMenu(playerid, dialogid)
 }
 
 PayDay(i) {
+	if(!gPlayerLogged{i}) return 1;
 	new
 		string[128],
 		interest,
@@ -2858,6 +2859,7 @@ PayDay(i) {
 	{
 		SendClientMessageEx(i, COLOR_YELLOW, "You have unread items in your mailbox");
 	}
+	return 1;
 }
 
 CreateGate(gateid) {
@@ -8504,6 +8506,9 @@ stock ClearFamily(family)
 	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyEntranceText] );
 	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyExitText] );
 	DestroyDynamicPickup( FamilyInfo[family][FamilyPickup] );
+	new query[60];
+	format(query, sizeof(query), "UPDATE `accounts` SET `FMember` = 255 WHERE `FMember` = %d", family);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	SaveFamilies();
 	return 1;
 }
@@ -8801,6 +8806,9 @@ stock ShowMainMenuDialog(playerid, frame)
 		{
 			format(titlestring, sizeof(titlestring), "{3399FF}Register - %s", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "{FFFFFF}Welcome to Next Generation Roleplay, %s.\n\n{FFFFFF}You may {AA3333}register {FFFFFF}an account by entering a desired password here:", GetPlayerNameEx(playerid));
+			if(PassComplexCheck) strcat(string, "\n\n- You can't select a password that's below 8 or above 64 characters\n\
+			- Your password must contain a combination of letters, numbers and special characters.\n\
+			- Invalid Character: %");
 			ShowPlayerDialog(playerid,MAINMENU2,DIALOG_STYLE_PASSWORD,titlestring,string,"Register","Exit");
 		}
 		case 3:
@@ -8816,6 +8824,7 @@ stock ShowMainMenuDialog(playerid, frame)
 			ShowPlayerDialog(playerid,MAINMENU3,DIALOG_STYLE_MSGBOX,titlestring,string,"Exit","");
 		}
 	}
+	return 1;
 }
 
 stock SafeLogin(playerid, type)
@@ -22376,7 +22385,14 @@ stock ShowLoginDialogs(playerid, index)
 	new string[128];
 	switch(index)
 	{
-		case 0: ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
+		case 0:
+		{
+			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.", "Change", "Exit" );
+			if(PassComplexCheck) ShowPlayerDialog(playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_INPUT, "Password Change Required!", "Please enter a new password for your account.\n\n\
+			- You can't select a password that's below 8 or above 64 characters\n\
+			- Your password must contain a combination of letters, numbers and special characters.\n\
+			- Invalid Character: %", "Change", "Exit" );
+		}
 		case 1: ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
 		case 4: ShowPlayerDialog(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Notice", pMOTD, "Dismiss", "");
 		case 5:
@@ -22391,6 +22407,7 @@ stock ShowLoginDialogs(playerid, index)
 			PlayerInfo[playerid][pReceivedCredits] = 0;
 		}
 	}
+	return 1;
 }
 
 stock ShowPlayerDynamicGiftBox(playerid)
@@ -26144,4 +26161,22 @@ UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {
 DestroyVLPTextDraws(playerid) {
 	for(new i = 0; i < 4; i++)
 		PlayerTextDrawDestroy(playerid, VLPTextDraws[playerid][i]);
+}
+
+CheckPasswordComplexity(const password[])
+{
+	if(!(8 <= strlen(password) <= 64)) return 0;
+	new i = 0, containsletters, containsnumbers, containsspecial;
+	while(password[i] != '\0')
+	{
+		if('a' <= password[i] <= 'z') containsletters = 1;
+		else if('A' <= password[i] <= 'Z') containsletters = 1;
+		else if('0' <= password[i] <= '9') containsnumbers = 1;
+		// !"#$%&'()*+,-./ :;<=>?@[\]^_`  {|}~
+		else if(33 <= password[i] <= 47 || 58 <= password[i] <= 64 || 91 <= password[i] <= 96 || 123 <= password[i] <= 126) containsspecial = 1;
+		if(containsletters && containsnumbers && containsspecial) break;
+		i++;
+	}
+	if(!containsletters || !containsnumbers || !containsspecial) return 0;
+	return 1;
 }

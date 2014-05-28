@@ -356,6 +356,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "GarageVW", szResult, MainPipeline); GarageVW = strval(szResult);
 				cache_get_field_content(i, "PumpkinStock", szResult, MainPipeline); PumpkinStock = strval(szResult);
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
+				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
 				break;
 			}
 		}
@@ -547,6 +548,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Warrants", PlayerInfo[extraid][pWarrant], MainPipeline, 128);
 					cache_get_field_content(row,  "JudgeJailTime", szResult, MainPipeline); PlayerInfo[extraid][pJudgeJailTime] = strval(szResult);
 					cache_get_field_content(row,  "JudgeJailType", szResult, MainPipeline); PlayerInfo[extraid][pJudgeJailType] = strval(szResult);
+					cache_get_field_content(row,  "BeingSentenced", szResult, MainPipeline); PlayerInfo[extraid][pBeingSentenced] = strval(szResult);
 					cache_get_field_content(row,  "ProbationTime", szResult, MainPipeline); PlayerInfo[extraid][pProbationTime] = strval(szResult);
 					cache_get_field_content(row,  "DMKills", szResult, MainPipeline); PlayerInfo[extraid][pDMKills] = strval(szResult);
 					cache_get_field_content(row,  "Order", szResult, MainPipeline); PlayerInfo[extraid][pOrder] = strval(szResult);
@@ -783,6 +785,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					return 1;
 				}
+				if(PassComplexCheck && CheckPasswordComplexity(szBuffer) != 1) ShowLoginDialogs(extraid, 0);
 				DeletePVar(extraid, "PassAuth");
 				break;
 			}
@@ -1608,7 +1611,7 @@ stock g_mysql_NewToy(playerid, slotid)
 // Description: Loads the MOTDs from the MySQL Database.
 stock g_mysql_LoadMOTD()
 {
-	mysql_function_query(MainPipeline, "SELECT `gMOTD`,`aMOTD`,`vMOTD`,`cMOTD`,`pMOTD`,`ShopTechPay`,`GiftCode`,`GiftCodeBypass`,`TotalCitizens`,`TRCitizens`,`SecurityCode`,`ShopClosed`,`RimMod`,`CarVoucher`,`PVIPVoucher`, `GarageVW`, `PumpkinStock`, `HalloweenShop` FROM `misc`", true, "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
+	mysql_function_query(MainPipeline, "SELECT `gMOTD`,`aMOTD`,`vMOTD`,`cMOTD`,`pMOTD`,`ShopTechPay`,`GiftCode`,`GiftCodeBypass`,`TotalCitizens`,`TRCitizens`,`SecurityCode`,`ShopClosed`,`RimMod`,`CarVoucher`,`PVIPVoucher`, `GarageVW`, `PumpkinStock`, `HalloweenShop`, `PassComplexCheck` FROM `misc`", true, "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock g_mysql_LoadSales()
@@ -1656,7 +1659,8 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `PVIPVoucher` = '%d',", query, PVIPVoucher);
 	format(query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
 	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
-	format(query, sizeof(query), "%s `HalloweenShop` = '%d'", query, HalloweenShop);
+	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
+	format(query, sizeof(query), "%s `PassComplexCheck` = '%d'", query, PassComplexCheck);
 
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
@@ -4195,7 +4199,7 @@ public CheckSales2(index)
 			Small Backpack: %d | Total Credits: %s\n\
 			Medium Backpack: %d | Total Credits: %s\n\
 			Large Backpack: %d | Total Credits: %s\n", 
-			Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]));
+			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]));
 			
 			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s\nTotal Amount of Credits spent: %s", szDialog, Solds[21], number_format(Amount[21]),
 			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]+Amount[35]+Amount[36]+Amount[37]+Amount[38]));
@@ -7038,7 +7042,7 @@ public BusinessesLoadQueryFinish()
 				
 				if(Businesses[i][GasPumpPosX][j] != 0.0) CreateDynamicGasPump(_, i, j);
 
-				for (new z; z <= sizeof(StoreItems); z++)
+				for (new z; z < sizeof(StoreItems); z++)
 				{
 			    	new col[12];
 					format(col, sizeof(col), "Item%dPrice", z + 1);
@@ -7080,7 +7084,7 @@ public BusinessesLoadQueryFinish()
 		}
 		else
 		{
-			for (new j; j <= sizeof(StoreItems); j++)
+			for (new j; j < sizeof(StoreItems); j++)
 			{
 			    new col[12];
 				format(col, sizeof(col), "Item%dPrice", j + 1);
