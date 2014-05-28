@@ -2875,7 +2875,6 @@ stock MySQLUpdateFinish(query[], sqlplayerid)
 		new whereclause[32];
 		format(whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
-		printf("Query size 2048 Query Length %d", strlen(query));
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		format(query, 2048, "UPDATE `accounts` SET ");
 	}

@@ -17451,11 +17451,11 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new szMessage[150];
 			switch(reason){
 				case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
-				case 1:	format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged to avoid.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 1:	format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged off.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 				case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
 			}
 			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
-			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, "(( You will not be rewarded for this vehicle, but you’ve not lost durability of your tool box ))");
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, "(( You will not be rewarded for this vehicle, but you've not lost durability of your tool box ))");
 			if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] == 2) {
 				PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pToolBox]++;
 				if(gettime() < PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime]) PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime] = 0;
