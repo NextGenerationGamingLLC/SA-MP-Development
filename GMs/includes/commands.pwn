@@ -57992,7 +57992,7 @@ CMD:wheelclamp(playerid, params[])
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 5.0),
 			szMessage[24 + 51 + MAX_PLAYER_NAME];
-		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5) {
+		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5 && IsPlayerInAnyVehicle(playerid)) {
 			if(IsAPlane(vehicleid) || IsWeaponizedVehicle(GetVehicleModel(vehicleid)) || IsABike(vehicleid) || IsABoat(vehicleid))
 				return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't place wheel clamps on this vehicle. ))");
 			if(WheelClamp{vehicleid}) {
