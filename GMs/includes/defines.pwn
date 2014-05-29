@@ -131,6 +131,7 @@ native gpci(playerid, serial[], maxlen);
 #define			MAX_DYNAMIC_BUSINESSES		(200)
 #define			MAX_DYNAMIC_BUSINESS_NAME	(32)
 #define			MAX_DYNAMIC_BUSINESS_RANKS	(6)
+#define			MAX_RF_WARNS				(3)
 //#define 		SHOPAUTOMATED
 #define 		zombiemode
 #define 		event_chancegambler

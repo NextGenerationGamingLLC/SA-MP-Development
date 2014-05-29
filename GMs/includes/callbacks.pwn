@@ -1749,7 +1749,10 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     /*new szString[144];
     format(szString, sizeof(szString), "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
     SendClientMessage(playerid, -1, szString);*/
-	
+	if(weaponid == 24 || weaponid == 25 || weaponid == 26 || weaponid == 31)
+	{
+		++PlayerShots[playerid];
+	}
 	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
 	{
 		if(hittype != BULLET_HIT_TYPE_PLAYER && hitid != GoChase[playerid])
@@ -2581,6 +2584,7 @@ public OnPlayerConnect(playerid)
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}
 	SpecTime[playerid] = 0;
+	PlayerShots[playerid] = 0;
 
 	// These need to be reset to prevent some bugs (DO NOT REMOVE)
 	PlayerInfo[playerid][pModel] = 0;

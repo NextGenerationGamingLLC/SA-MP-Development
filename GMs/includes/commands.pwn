@@ -16361,9 +16361,9 @@ CMD:dm(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: DM", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: Deathmatching", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 				if(fine > 0) {
 					format(string, sizeof(string), "You have been fined $%s (10 percent of your total wealth).", number_format(fine));
@@ -16386,9 +16386,9 @@ CMD:dm(playerid, params[])
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
 			ResetPlayerWeaponsEx(giveplayerid);
-			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: DM ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s(%d) has been prisoned by %s, reason: Deathmatching ", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "AdmCmd: %s has been prisoned by %s, reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
@@ -20472,6 +20472,7 @@ CMD:dvrespawnall(playerid, params[])
 	return 1;
 }
 
+CMD:freedvrespawn(playerid, params[]) return cmd_dvrespawn(playerid, "1");
 CMD:dvrespawn(playerid, params[])
 {
 	new szString[128],
@@ -20489,7 +20490,7 @@ CMD:dvrespawn(playerid, params[])
 			    {
 					if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
 					{	
-						DynVeh_Spawn(i);
+						if(strval(params) == 1) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
 					}	
 			    }
 			}
@@ -20517,7 +20518,7 @@ CMD:dvrespawn(playerid, params[])
 		        {
 					if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
 					{
-						DynVeh_Spawn(i);
+						if(strval(params) == 1) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
 					}	
 		        }
 		    }
@@ -28893,6 +28894,7 @@ CMD:storegun(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
+		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		new string[128], weaponchoice[32], slot;
 		if(sscanf(params, "s[32]d", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /storegun [weapon] [slot]");
 
@@ -58001,7 +58003,7 @@ CMD:stopcracking(playerid, params[])
 
 CMD:wheelclamp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWheelClamps]) {
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 5.0),
 			szMessage[24 + 51 + MAX_PLAYER_NAME];
 		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5 && IsPlayerInAnyVehicle(playerid)) {

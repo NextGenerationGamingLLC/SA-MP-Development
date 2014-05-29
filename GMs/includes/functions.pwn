@@ -3537,6 +3537,7 @@ public InitiateGamemode()
 	SetTimer("WarmupLock", 15000, 0);
 	SetTimer("MailDeliveryTimer", 60000, 1);
 	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
+	SetTimer("Anti_Rapidfire", 1000, true);
 	
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates
@@ -14074,7 +14075,7 @@ stock ShowEditMenu(playerid)
 	return 1;
 }
 
-stock DynVeh_Spawn(iDvSlotID)
+stock DynVeh_Spawn(iDvSlotID, free = 0)
 {
 	if(!(0 <= iDvSlotID < MAX_DYNAMIC_VEHICLES)) return 1;
 	new string[128];
@@ -14101,50 +14102,52 @@ stock DynVeh_Spawn(iDvSlotID)
 			}
 		}
 	}
-    if(!(400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612)) {
+	if(!(400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612)) {
 		format(string, sizeof(string), "Invalid Vehicle Model ID for DV Slot %d", iDvSlotID);
 		Log("logs/dvspawn.log", string);
 		return 1;
 	}
-    if(DynVehicleInfo[iDvSlotID][gv_iDisabled]) return 1;
-    if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && tmpdv != -1) {
-        new iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
-        if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
-        {
-            if(arrGroupData[iGroupID][g_iBudget] >= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2))
-            {
-                arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2);
-                new str[128], file[32];
-                format(str, sizeof(str), "Vehicle Slot ID %d RTB fee cost $%d to %s's budget fund.", iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2), arrGroupData[iGroupID][g_szGroupName]);
-                new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, str);
-            }
-            else
-            {
-                DynVehicleInfo[iDvSlotID][gv_iDisabled] = 1;
-                return 1;
-            }
-        }
+	if(DynVehicleInfo[iDvSlotID][gv_iDisabled]) return 1;
+	if(free == 0)
+	{
+		if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && tmpdv != -1) {
+			new iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
+			if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+			{
+				if(arrGroupData[iGroupID][g_iBudget] >= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2))
+				{
+					arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2);
+					new str[128], file[32];
+					format(str, sizeof(str), "Vehicle Slot ID %d RTB fee cost $%d to %s's budget fund.", iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2), arrGroupData[iGroupID][g_szGroupName]);
+					new month, day, year;
+					getdate(year,month,day);
+					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+					Log(file, str);
+				}
+				else
+				{
+					DynVehicleInfo[iDvSlotID][gv_iDisabled] = 1;
+					return 1;
+				}
+			}
+		}
 	}
 	DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = CreateVehicle(DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2], VEHICLE_RESPAWN);
 	DynVeh_Save(iDvSlotID);
 	format(string, sizeof(string), "Vehicle ID %d spawned for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
 	Log("logs/dvspawn.log", string);
 	SetVehicleHealth(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
-    SetVehicleVirtualWorld(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iVW]);
-    LinkVehicleToInterior(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iInt]);
-    VehicleFuel[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = DynVehicleInfo[iDvSlotID][gv_fFuel];
-    DynVeh[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = iDvSlotID;
+	SetVehicleVirtualWorld(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iVW]);
+	LinkVehicleToInterior(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iInt]);
+	VehicleFuel[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = DynVehicleInfo[iDvSlotID][gv_fFuel];
+	DynVeh[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = iDvSlotID;
 	for(new i = 0; i != MAX_DV_OBJECTS; i++)
 	{
-	    if(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != INVALID_OBJECT_ID && DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != 0)
-	    {
-	        DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] = CreateDynamicObject(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i],0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-	        AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][i], DynVehicleInfo[iDvSlotID][gv_fObjectY][i], DynVehicleInfo[iDvSlotID][gv_fObjectZ][i], DynVehicleInfo[iDvSlotID][gv_fObjectRX][i], DynVehicleInfo[iDvSlotID][gv_fObjectRY][i], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
-
-	    }
+		if(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != INVALID_OBJECT_ID && DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != 0)
+		{
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] = CreateDynamicObject(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i],0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][i], DynVehicleInfo[iDvSlotID][gv_fObjectY][i], DynVehicleInfo[iDvSlotID][gv_fObjectZ][i], DynVehicleInfo[iDvSlotID][gv_fObjectRX][i], DynVehicleInfo[iDvSlotID][gv_fObjectRY][i], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
+		}
 	}
 	if(!isnull(DynVehicleInfo[iDvSlotID][gv_iPlate])) {
 		SetVehicleNumberPlate(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iPlate]);
@@ -26178,5 +26181,40 @@ CheckPasswordComplexity(const password[])
 		i++;
 	}
 	if(!containsletters || !containsnumbers || !containsspecial) return 0;
+	return 1;
+}
+
+//Dom
+forward Anti_Rapidfire();
+public Anti_Rapidfire()
+{
+	new string[128];
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		new weaponid = GetPlayerWeapon(i);
+		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 31 && PlayerShots[i] > 14))
+		{
+			format(string, sizeof(string), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
+			Log("logs/rapid.log", string);
+
+			SetPVarInt(i, "MaxRFWarn", GetPVarInt(i, "MaxRFWarn")+1);
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be rapidfire hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
+			ABroadCast(COLOR_YELLOW, string, 2);
+			if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
+			{
+				format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Rapidfire Hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
+				ABroadCast(COLOR_LIGHTRED, string, 2);
+				DeletePVar(i, "MaxRFWarn");
+				format(string, sizeof(string), "AdmCmd: %s (IP:%s) was banned, reason: Rapidfire Hacking.", GetPlayerNameEx(i), GetPlayerIpEx(i));
+				PlayerInfo[i][pBanned] = 3;
+				Log("logs/ban.log", string);
+				SystemBan(i, "[System] (Rapidfire Hacking)");
+				MySQLBan(GetPlayerSQLId(i), GetPlayerIpEx(i), "Rapidfire Hacking", 1, "System");
+				Kick(i);
+				TotalAutoBan++;
+			}
+		}
+		PlayerShots[i] = 0;
+	}
 	return 1;
 }

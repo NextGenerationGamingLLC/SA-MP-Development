@@ -1140,6 +1140,7 @@ new Float:shop_vertices[] = {
 };
 new restarting;
 new PassComplexCheck;
+new PlayerShots[MAX_PLAYERS];
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
