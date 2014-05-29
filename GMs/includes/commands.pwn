@@ -6727,7 +6727,7 @@ CMD:help(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits");
 
 	switch(PlayerInfo[playerid][pJob])
@@ -6810,7 +6810,7 @@ CMD:help(playerid, params[])
                     format(string, sizeof(string), "*** %s ***  /cratelimit /viewcrateorders", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all) /wheelclamps", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 
 			}
@@ -22171,6 +22171,7 @@ CMD:park(playerid, params[])
 			new d = PlayerInfo[playerid][pVehicleKeys];
 			if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[ownerid][d][pvId]))
 			{
+				if(PlayerVehicleInfo[ownerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot park this vehicle at the moment.");
 			    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
 				new Float:x, Float:y, Float:z, Float:health;
 				GetVehicleHealth(PlayerVehicleInfo[ownerid][d][pvId], health);
@@ -22188,6 +22189,7 @@ CMD:park(playerid, params[])
 	{
 		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
 		{
+			if(PlayerVehicleInfo[playerid][d][pvBeingPickLocked] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot park this vehicle at the moment.");
 			new Float:x, Float:y, Float:z, Float:health;
 			GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], health);
             if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in the driver seat.");
@@ -24086,7 +24088,7 @@ CMD:sellmycar(playerid, params[])
             }
             if(health < 500) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to sell it.");
 
-            new string[128], giveplayerid, price;
+            new string[144], giveplayerid, price, alarmstring[9], lockstring[11];
 			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmycar [player] [price]");
 
             if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0 and less than 1,000,000,000.");
@@ -24128,10 +24130,20 @@ CMD:sellmycar(playerid, params[])
                 VehicleOffer[giveplayerid] = playerid;
                 VehicleId[giveplayerid] = d;
                 VehiclePrice[giveplayerid] = price;
-                format(string, sizeof(string), "* You offered %s to buy this %s for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), number_format(price));
+				switch(PlayerVehicleInfo[playerid][d][pvAlarm]) {
+					case 1: alarmstring = "Standard";
+					case 2: alarmstring = "Deluxe";
+					default: alarmstring = "no";
+				}
+				switch(PlayerVehicleInfo[playerid][d][pvLock]) {
+					case 2: lockstring = "Electronic";
+					case 3: lockstring = "Industrial";
+					default: lockstring = "no";
+				}
+                format(string, sizeof(string), "* You offered %s to buy this %s with %s Alarm & %s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, lockstring, number_format(price));
                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-                format(string, sizeof(string), "* %s has offered you their %s (VID: %d) for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], number_format(price));
-                SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "* %s has offered you their %s (VID: %d) with %s Alarm & %s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, lockstring, number_format(price));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				DeletePVar(playerid, "confirmvehsell");
                 return 1;
             }
@@ -57873,7 +57885,7 @@ CMD:pickveh(playerid, params[])
 						
 						PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
 						PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;
-						SendClientMessageEx(playerid, COLOR_PURPLE, "(( You've successfully managed to start pick locking this vehicle, you are now attempting to break into it. ))");
+						SendClientMessageEx(playerid, COLOR_PURPLE, "(( You've successfully managed to start pick locking this vehicle, you are now attempting to break into it. /stoplockpick ))");
 						SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail lock picking the vehicle.");
 						ShowVLPTextDraws(playerid, vehicleid);
 						GetVehicleZAngle(vehicleid, a);
@@ -57935,7 +57947,7 @@ CMD:cracktrunk(playerid, params[])
 			SetPVarInt(playerid, "AttemptingCrackTrunk", 1);
 			SetPVarInt(playerid, "CrackTrunkCountdown", 60);
 			
-			SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now cracking this vehicle's trunk with your crowbar, please wait ))");
+			SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now cracking this vehicle's trunk with your crowbar, please wait. /stopcracking ))");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail cracking this vehicle trunk.");
 			ShowVLPTextDraws(playerid, vehicleid, 1);
 			GetVehicleZAngle(vehicleid, z);

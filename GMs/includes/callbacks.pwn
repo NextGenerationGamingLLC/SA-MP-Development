@@ -1607,7 +1607,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		DeletePVar(playerid, "BackpackProt");
 		if(GetPVarInt(playerid, "BackpackOpen") == 1)
 		{
-			SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 30 seconds.");
+			SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 3 minutes.");
 			ShowPlayerDialog(playerid, -1, 0, "", "", "", "");
 			SetPVarInt(playerid, "BackpackDisabled", 180);
 			DeletePVar(playerid, "BackpackOpen");
