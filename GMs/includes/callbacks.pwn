@@ -1586,6 +1586,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		SendClientMessageEx(playerid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
 		SendClientMessageEx(playerid, COLOR_RED, failMessage);
 		SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+		ClearAnimations(playerid, 1);
 	}
 	if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
 		DeletePVar(playerid, "AttemptingCrackTrunk");
@@ -5844,7 +5845,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				PlayerTextDrawHide(playerid, _crTickets[playerid]);
 				DeletePVar(playerid, "_lastTicketWarning");
 			}
-			if(GetPVarInt(playerid, "Refueling")) SetPVarInt(playerid, "Refueling", -1);
 			SetPlayerWeaponsEx(playerid);
 		}
 		else if(oldstate == PLAYER_STATE_PASSENGER) SetPlayerWeaponsEx(playerid);
@@ -6353,13 +6353,16 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting commands right now.");
 		return 0;
 	}
-
-	if(++CommandSpamTimes[playerid] >= 5 && PlayerInfo[playerid][pAdmin] < 1337) {
-		CommandSpamTimes[playerid] = 0;
-		CommandSpamUnmute[playerid] = 10;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "You have been muted automatically for spamming. Please wait 10 seconds and try again.");
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
-		return 0;
+	
+	if(PlayerInfo[playerid][pAdmin] < 1337)
+	{
+		if(++CommandSpamTimes[playerid] >= 5) {
+			CommandSpamTimes[playerid] = 0;
+			CommandSpamUnmute[playerid] = 10;
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been muted automatically for spamming. Please wait 10 seconds and try again.");
+			SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_FLOODPROTECTION);
+			return 0;
+		}
 	}
 
 	if(strfind(cmdtext, "|") != -1 || strfind(cmdtext, "\n") != -1 || strfind(cmdtext, "\r") != -1) {

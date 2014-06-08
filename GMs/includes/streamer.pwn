@@ -276,6 +276,7 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, -864.3550,1536.9703,22.5870, -1); // Bartender Job (TR)
 	CreateDynamicPickup(1239, 23, 757.3734,5.7227,1000.7012, -1); // Train Pos
 	CreateDynamicPickup(1239, 23, 758.43,-78.0,1000.65, -1); // Train Pos (MALL GYM)
+	CreateDynamicPickup(1239, 23, 2903.371826, -2254.517333, 7.244657, -1); // Train Pos (New GYM)
 	CreateDynamicPickup(1239, 23, 293.6505,188.3670,1007.1719, -1); //FBI
 	CreateDynamicPickup(1239, 23, 2354.2808,-1169.2959,28.0066, -1); //Drug Smuggler
 	CreateDynamicPickup(1240, 23, 1179.4012451172,-1331.5632324219,2423.0461425781, -1);// /healme//Old Healme: 2103.4998,2824.2568,-16.1672

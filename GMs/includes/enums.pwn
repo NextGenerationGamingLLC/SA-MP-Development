@@ -1081,7 +1081,9 @@ enum pInfo
 	pCrowBar,
 	pCarLockPickSkill,
 	pLockPickVehCount,
-	pLockPickTime
+	pLockPickTime,
+	pSEC,
+	pBM
 };
 
 enum pvInfo

@@ -667,6 +667,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "CarLockPickSkill", szResult, MainPipeline); PlayerInfo[extraid][pCarLockPickSkill] = strval(szResult);
 					cache_get_field_content(row,  "LockPickVehCount", szResult, MainPipeline); PlayerInfo[extraid][pLockPickVehCount] = strval(szResult);
 					cache_get_field_content(row,  "LockPickTime", szResult, MainPipeline); PlayerInfo[extraid][pLockPickTime] = strval(szResult);
+					cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
+					cache_get_field_content(row,  "BM", szResult, MainPipeline); PlayerInfo[extraid][pBM] = strval(szResult);
 					
 					GetPartnerName(extraid);
 
@@ -3224,6 +3226,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CarLockPickSkill", PlayerInfo[playerid][pCarLockPickSkill]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickVehCount", PlayerInfo[playerid][pLockPickVehCount]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickTime", PlayerInfo[playerid][pLockPickTime]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SEC", PlayerInfo[playerid][pSEC]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BM", PlayerInfo[playerid][pBM]);
 	
 	
 	
@@ -4358,6 +4362,26 @@ public AddCallToken(playerid)
 	return 1;
 }
 
+forward AddWDToken(playerid);
+public AddWDToken(playerid)
+{
+	new
+		sz_playerName[MAX_PLAYER_NAME],
+		i_timestamp[3],
+		tdate[11],
+		thour[9],
+		query[128];
+
+	GetPlayerName(playerid, sz_playerName, MAX_PLAYER_NAME);
+	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+	format(thour, sizeof(thour), "%02d:00:00", hour);
+
+	format(query, sizeof(query), "SELECT NULL FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+	mysql_function_query(MainPipeline, query, true, "QueryTokenFinish", "ii", playerid, 4);
+	return 1;
+}
+
 forward QueryTokenFinish(playerid, type);
 public QueryTokenFinish(playerid, type)
 {
@@ -4408,6 +4432,19 @@ public QueryTokenFinish(playerid, type)
 				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
+		case 4:
+		{
+			if(rows == 0)
+			{
+				format(string, sizeof(string), "INSERT INTO `tokens_wd` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			}
+			else
+			{
+				format(string, sizeof(string), "UPDATE `tokens_wd` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			}
+		}
 	}
 	return 1;
 }
@@ -4441,6 +4478,22 @@ public GetHourRequestCount(userid, thour[], tdate[])
 {
 	new string[128];
 	format(string, sizeof(string), "SELECT `count` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
+	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 1);
+}
+
+forward GetWDCount(userid, tdate[]);
+public GetWDCount(userid, tdate[])
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
+	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 0);
+}
+
+forward GetWDHourCount(userid, thour[], tdate[]);
+public GetWDHourCount(userid, thour[], tdate[])
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT `count` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
 	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 1);
 }
 
@@ -5382,6 +5435,36 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
 			}
+		}		
+		case 4:
+		{
+			cache_get_field_content(0, "SUM(count)", sResult, MainPipeline); tcount = strval(sResult);
+			if(tcount > 0)
+			{
+				format(string, sizeof(string), "%s watched {%06x}%d {%06x}people on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+			}
+			else
+			{
+				format(string, sizeof(string), "%s did not watch anyone on %s.", giveplayername, tdate);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			}
+		}
+		case 5:
+		{
+			if(rows > 0)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
+				for(new i; i < rows; i++)
+				{
+					cache_get_field_content(i, "count", sResult, MainPipeline); new hcount = strval(sResult);
+					cache_get_field_content(i, "hour", hhour, MainPipeline, sizeof(hhour));
+					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
+					chour = strval(hhour);
+					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
+			}
 		}
 	}
 	return 1;
@@ -5414,6 +5497,15 @@ public QueryUsernameCheck(playerid, tdate[], type)
 				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 2);
 				format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
 				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 3);
+			}
+			case 2:
+			{
+				cache_get_field_content(0, "id", sResult, MainPipeline); giveplayerid = strval(sResult);
+				cache_get_field_content(0, "Username", sResult, MainPipeline, sizeof(sResult));
+				format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
+				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 4);
+				format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
+				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 5);
 			}
 		}
 	}
@@ -8239,6 +8331,9 @@ public WatchWatchlist(index)
 				SetPVarInt(index, "NextWatch", gettime()+180);
 				SetPVarInt(index, "SpectatingWatch", x);
 				SetPVarInt(index, "StartedWatching", 1);
+				ReportCount[index]++;
+				ReportHourCount[index]++;
+				AddWDToken(index);
 				result = 1;
 				break;
 			}

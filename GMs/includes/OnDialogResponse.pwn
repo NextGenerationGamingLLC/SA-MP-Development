@@ -8857,6 +8857,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPlayerColor(playerid,COLOR_WHITE);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your color has been set to White!");
 			}
+			if(listitem == 9)
+			{
+				SetPlayerColor(playerid,TEAM_APRISON_COLOR);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Your color has been set to OOC Prisoner Orange!");
+			}
 		}
 	}
 	if(dialogid == FAQMENU)

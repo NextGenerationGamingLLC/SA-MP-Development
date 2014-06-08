@@ -18563,7 +18563,7 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvTicket] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPlate] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvLock] = 0;
-		PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 0;
+		PlayerVehicleInfo[playerid][playervehicleid][pvLocksLeft] = 5;
         PlayerVehicleInfo[playerid][playervehicleid][pvLocked] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
@@ -18674,7 +18674,7 @@ stock ShowStats(playerid,targetid)
 			default: insur = "None";
 		}
 		new staffrank[64];
-		if(PlayerInfo[targetid][pHelper] > 0 || PlayerInfo[targetid][pWatchdog] > 0 || PlayerInfo[targetid][pAdmin] == 1 || (PlayerInfo[targetid][pAdmin] > 1 && PlayerInfo[playerid][pAdmin] <= PlayerInfo[targetid][pAdmin])) format(staffrank, sizeof(staffrank), "%s", GetStaffRank(targetid));
+		if(PlayerInfo[targetid][pHelper] > 0 || PlayerInfo[targetid][pWatchdog] > 0 || PlayerInfo[targetid][pSEC] > 0 || PlayerInfo[targetid][pAdmin] == 1 || (PlayerInfo[targetid][pAdmin] > 1 && PlayerInfo[playerid][pAdmin] <= PlayerInfo[targetid][pAdmin])) format(staffrank, sizeof(staffrank), "%s", GetStaffRank(targetid));
 		else staffrank = "";
 		new drank[64];
 		if(PlayerInfo[targetid][pDonateRank] > 0)
@@ -21710,6 +21710,17 @@ stock StaffAccountCheck(playerid, ip[])
 stock GetStaffRank(playerid)
 {
 	new string[43];
+	if(PlayerInfo[playerid][pSEC] > 0)
+	{
+		switch(PlayerInfo[playerid][pSEC])
+		{
+			case 1: format(string, sizeof(string), "{00FA9A}Regular Coordinator{FFFFFF}");
+			case 2: format(string, sizeof(string), "{00FA9A}Senior Coordinator{FFFFFF}");
+			case 3: format(string, sizeof(string), "{00FA9A}Assistant Chairman{FFFFFF}");
+			case 4: format(string, sizeof(string), "{00FA9A}Deputy Chairman{FFFFFF}");
+			case 5: format(string, sizeof(string), "{00FA9A}Chairman{FFFFFF}");
+		}
+	}
 	if(PlayerInfo[playerid][pWatchdog] > 0)
 	{
 		switch(PlayerInfo[playerid][pWatchdog])

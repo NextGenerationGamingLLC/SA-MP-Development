@@ -348,6 +348,8 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pCarLockPickSkill] = 0;
 		PlayerInfo[playerid][pLockPickVehCount] = 0;
 		PlayerInfo[playerid][pLockPickTime] = 0;
+		PlayerInfo[playerid][pSEC] = 0;
+		PlayerInfo[playerid][pBM] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 11; i++)
 		{
@@ -626,7 +628,7 @@ public OnPlayerLoad(playerid)
 		}
 	}
 	
-	for(new i = 0; i < sizeof(GateInfo); i++)
+	/*for(new i = 0; i < sizeof(GateInfo); i++)
 	{
 		if(GateInfo[i][gAutomate] == 1)
 		{
@@ -637,7 +639,7 @@ public OnPlayerLoad(playerid)
 			else if(GateInfo[i][gAllegiance] == 0 && GateInfo[i][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[i][gGroupType]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
 			else if(GateInfo[i][gAllegiance] == 0 && GateInfo[i][gGroupType] == 0 && GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
 		}
-	}
+	}*/
 	
 	// Create the player necessary textdraws
 	CreatePlayerTextDraws(playerid);
@@ -675,6 +677,16 @@ public OnPlayerLoad(playerid)
 		format(thour, sizeof(thour), "%02d:00:00", hour);
 		GetRequestCount(playerid, tdate);
 		GetHourRequestCount(playerid, thour, tdate);
+	}
+	
+	if(PlayerInfo[playerid][pWatchdog] > 0)
+	{
+		new tdate[11], thour[9], i_timestamp[3];
+		getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+		format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+		format(thour, sizeof(thour), "%02d:00:00", hour);
+		GetWDCount(playerid, tdate);
+		GetWDHourCount(playerid, thour, tdate);
 	}
 
 	if(PlayerInfo[playerid][pWarns] >= 3)
@@ -958,7 +970,7 @@ public OnPlayerLoad(playerid)
 	{
 		SetPVarInt(playerid, "vStaffChat", 1);
 	}
-	
+	if(PlayerInfo[playerid][pSEC] >= 1) SetPVarInt(playerid, "SECChat", 1);
 	CreateAccountRestTextdraw(playerid);
 	if(PlayerInfo[playerid][pAccountRestricted] == 1)
 	{

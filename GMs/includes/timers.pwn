@@ -1313,7 +1313,7 @@ task ServerHeartbeat[1000]() {
 						szMessage[24 + 51 + MAX_PLAYER_NAME],
 						arrVehParams[7];
 					GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
-					if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || IsPlayerInAnyVehicle(i)) {
+					if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || !IsPlayerInAnyVehicle(i)) {
 						DeletePVar(i, "wheelclampvehicle");
 						DeletePVar(i, "wheelclampcountdown");
 						SendClientMessageEx(i, COLOR_PURPLE, "(( You failed placing the Wheel Clamp in the vehicle's front tire. ))");
