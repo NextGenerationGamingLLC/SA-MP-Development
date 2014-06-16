@@ -8365,3 +8365,34 @@ public CheckPendingBugReports(playerid)
 	}
 	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
 }
+
+forward CheckTrunkContents(playerid);
+public CheckTrunkContents(playerid)
+{
+	new rows, fields, TrunkWeaps[3];
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0) return 1;
+	new string[189];
+	cache_get_field_content(0, "pvWeapon0", TrunkWeaps[0], MainPipeline, 128);
+	cache_get_field_content(0, "pvWeapon1", TrunkWeaps[1], MainPipeline, 128);
+	cache_get_field_content(0, "pvWeapon2", TrunkWeaps[2], MainPipeline, 128);
+	new
+		i = 0;
+	while (i < 3 &&  TrunkWeaps[i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] !=  TrunkWeaps[i])
+	{
+		i++;
+	}
+	if (i == 3) return SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+	else {
+		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 60000);
+		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0', WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME], vehicleid = GetPVarInt(playerid, "LockPickVehicle");
+		GetPlayerIp(playerid, ip, sizeof(ip)), GetPVarString(playerid, "LockPickPlayerName", ownername, sizeof(ownername));
+		format(string, sizeof(string), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully cracked the trunk of a %s(VID:%d SQLId %d Weapon ID: %d) owned by %s(Offline, SQLId:%d)", GetPlayerNameEx(playerid), ip, GetVehicleName(vehicleid), GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicleSQLId"), TrunkWeaps[i], ownername, GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		Log("logs/playervehicle.log", string);
+	}
+	return 1;
+}
