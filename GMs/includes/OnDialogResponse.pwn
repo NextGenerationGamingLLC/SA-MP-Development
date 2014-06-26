@@ -6604,6 +6604,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if (GetPVarInt(playerid, "Refueling") == PlayerVehicleInfo[playerid][listitem][pvId])
 					SendClientMessageEx(playerid, COLOR_WHITE, "You can not store a vehicle while it is being refueled.");
+				else if (WheelClamp{PlayerVehicleInfo[playerid][listitem][pvId]})
+					SendClientMessageEx(playerid, COLOR_WHITE, "You can not store this vehicle at this moment.");
 				else {
 					--PlayerCars;
 					VehicleSpawned[playerid]--;
