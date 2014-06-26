@@ -193,7 +193,6 @@ NationSel_HandleNationSelection(playerid)
 		SetPlayerVirtualWorld(playerid, 0);
 		if(NATION_SAN_ANDREAS == PlayerNationSelection[playerid])
 		{
-			PlayerInfo[playerid][pNation] = 1;
 			switch(random(2))
 			{
 				case 0:
@@ -17423,8 +17422,7 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 					VehicleFuel[carcreated] = PlayerVehicleInfo[playerid][v][pvFuel];
 
 					if(PlayerVehicleInfo[playerid][v][pvLocked]) {
-						if(PlayerVehicleInfo[playerid][v][pvLocksLeft]) LockPlayerVehicle(playerid, carcreated, PlayerVehicleInfo[playerid][v][pvLock]);
-						else PlayerVehicleInfo[playerid][v][pvLocked] = 0;
+						LockPlayerVehicle(playerid, carcreated, PlayerVehicleInfo[playerid][v][pvLock]);
 					}
 					LoadPlayerVehicleMods(playerid, v);
 
@@ -17461,8 +17459,44 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 	for(new v = 0; v < MAX_PLAYERVEHICLES; v++) if(PlayerVehicleInfo[playerid][v][pvId] != INVALID_PLAYER_VEHICLE_ID && !PlayerVehicleInfo[playerid][v][pvImpounded] && PlayerVehicleInfo[playerid][v][pvSpawned]) {
 		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0 && logoff == 0) continue;
-		if(WheelClamp{PlayerVehicleInfo[playerid][v][pvId]} && logoff == 1) {
-			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
+		else if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
+			new szMessage[150];
+			switch(reason){
+				case 0: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has timed out.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 1:	format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has logged off.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+				case 2: format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has been kicked/banned.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]));
+			}
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, szMessage);
+			SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_YELLOW, "(( You will not be rewarded for this vehicle, but you've not lost durability of your tool box ))");
+			if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] == 2) {
+				PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pToolBox]++;
+				if(gettime() < PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime]) PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickTime] = 0;
+				else --PlayerInfo[PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]][pLockPickVehCount];
+			}
+			else if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] == 1) {
+				if(--PlayerVehicleInfo[playerid][v][pvLocksLeft] <= 0 && PlayerVehicleInfo[playerid][v][pvLock])
+					SendClientMessageEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+			}
+			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+			GetPlayerIp(playerid, ip, sizeof(ip));
+			GetPlayerIp(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], ip2, sizeof(ip2));
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) unloaded his %s(VID:%d Slot %d) while being lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), ip2);
+			Log("logs/playervehicle.log", szMessage);
+			DestroyVLPTextDraws(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "DeliveringVehicleTime");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "AttemptingLockPick");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickCountdown");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickTotalTime");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosX");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosY");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPosZ");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickVehicle");
+			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "LockPickPlayer");
+			ClearCheckpoint(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
+			ClearAnimations(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], 1);
+			
+			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
+			PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		}
 		if(IsVehicleInTow(PlayerVehicleInfo[playerid][v][pvId]) && logoff == 1)
 		{
@@ -17470,34 +17504,9 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
 			SetVehiclePos(PlayerVehicleInfo[playerid][v][pvId], 0, 0, 0); // Attempted desync fix
 		}
-		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
-			new extraid = PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy];
-			SetPVarInt(extraid, "LockPickVehicleSQLId", PlayerVehicleInfo[playerid][v][pvSlotId]);
-			SetPVarInt(extraid, "LockPickPlayerSQLId", GetPlayerSQLId(playerid));
-			SetPVarString(extraid, "LockPickPlayerName", GetPlayerNameEx(playerid));
-			new szMessage[150], rsMessage[20];
-			switch(reason){
-				case 0: rsMessage = "timed out";
-				case 1:	rsMessage = "logged off";
-				case 2: rsMessage = "been kicked/banned";
-			}
-			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), rsMessage);
-			SendClientMessageEx(extraid, COLOR_YELLOW, szMessage);
-			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-			GetPlayerIp(playerid, ip, sizeof(ip));
-			GetPlayerIp(extraid, ip2, sizeof(ip2));
-			SendClientMessageEx(extraid, COLOR_YELLOW, "(( The vehicle will de-spawn once you complete or fail the deliver. ))");
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2);
-			Log("logs/playervehicle.log", szMessage);
-			DeletePVar(extraid, "LockPickPlayer");
-			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
-			PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-		}
-		else {
-			if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
-			DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
-		}
 		PlayerCars--;
+		if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
+		DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
 		PlayerVehicleInfo[playerid][v][pvId] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerVehicleInfo[playerid][v][pvSpawned] = 0;
 		if(PlayerVehicleInfo[playerid][v][pvAllowedPlayerId] != INVALID_PLAYER_ID)
@@ -19145,17 +19154,6 @@ stock UpdateSpeedCamerasForPlayer(p)
 					new vehicleid = GetPlayerVehicleID(p);
 					if(!IsAPlane(vehicleid) && !IsAHelicopter(vehicleid) && GetVehicleModel(vehicleid) != 481 && GetVehicleModel(vehicleid) != 509 && GetVehicleModel(vehicleid) != 510)
 					{
-						if(GetPVarType(p, "LockPickPlayerSQLId") && GetPVarInt(p, "LockPickVehicle") == vehicleid) {
-							new string[128], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
-							format(string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = (`pvTicket`+%d), WHERE `id` = '%d'", Amount, GetPVarInt(p, "LockPickVehicleSQLId"));
-							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
-							PlayerInfo[p][pTicketTime] = 60;
-							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
-							SendClientMessageEx(p, COLOR_WHITE, string);
-							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
-							PlayerTextDrawShow(p, _vhudFlash[p]);
-							SetTimerEx("TurnOffFlash", 500, 0, "i", p);
-						}
 					    //foreach(new i: Player)
 						for(new i = 0; i < MAX_PLAYERS; ++i)
 						{
@@ -26105,20 +26103,8 @@ ClearCheckpoint(playerid) {
     DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
 	if(GetPVarType(playerid, "DeliveringVehicleTime")) {
-		if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
-			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			DeletePVar(playerid, "LockPickVehicleSQLId");
-			DeletePVar(playerid, "LockPickPlayerSQLId");
-			DeletePVar(playerid, "LockPickPlayerName");
-			DestroyVehicle(GetPVarInt(playerid, "LockPickVehicle"));
-		}
-		else {
-			new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-			PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-		}
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvBeingPickLocked] = 0;
+		PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"))][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		DeletePVar(playerid, "DeliveringVehicleTime");
 		DeletePVar(playerid, "LockPickVehicle");
 		DeletePVar(playerid, "LockPickPlayer");
@@ -26242,28 +26228,4 @@ public Anti_Rapidfire()
 		PlayerShots[i] = 0;
 	}
 	return 1;
-}
-
-stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
-{
-	new
-		i = 0;
-	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && PlayerVehicleInfo[ownerid][slot][pvWeapons][i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] != PlayerVehicleInfo[ownerid][slot][pvWeapons][i])
-	{
-		i++;
-	}
-	if (i == (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1)) return -1;
-	return i;
-}
-
-stock FindPlayerVehicleWithSQLId(ownerid, sqlid)
-{
-	new
-		i = 0;
-	while (i < MAX_PLAYERVEHICLES && PlayerVehicleInfo[ownerid][i][pvSlotId] != sqlid)
-	{
-		i++;
-	}
-	if (i == MAX_PLAYERVEHICLES) return -1;
-	return i;
 }
