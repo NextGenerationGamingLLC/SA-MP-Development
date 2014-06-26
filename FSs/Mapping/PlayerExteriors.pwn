@@ -144,6 +144,26 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1673, -2097.84302, 249.00481, 34.91090,   180.00000, 0.00000, 0.00000);
 	new DTSign = CreateDynamicObject(19479, -2087.8354, 248.7682, 39.3881, 0.0000, 0.0000, -90.1791);
 	SetDynamicObjectMaterialText(DTSign, 0, "DONAHUE TOWER", 120, "Times New Roman", 24, 1, 0xFFFFFFFF, 0, 1);
+	CreateDynamicObject(19393, -2036.47083, 224.52940, 62.05530,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(19364, -2037.99646, 226.04430, 62.05530,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19364, -2037.99646, 229.24899, 62.05530,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19364, -2034.95435, 226.04430, 62.05530,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19364, -2034.93896, 229.23630, 62.05530,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19364, -2036.45874, 230.76469, 62.05530,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(19362, -2036.46948, 224.58929, 63.85040,   0.00000, 90.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19362, -2036.46948, 227.80119, 63.85040,   0.00000, 90.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19362, -2036.46948, 229.48170, 63.84040,   0.00000, 90.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(1565, -2036.50403, 223.71910, 63.72010,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(1564, -2036.50208, 223.72250, 63.70140,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(2949, -2037.22424, 224.51930, 60.30210,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(3934, -2051.11328, 225.25020, 60.29370,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(3934, -2039.29309, 193.37022, 60.29092,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(3934, -2051.11328, 193.37019, 60.29170,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(19281,  -2036.50403, 223.71910, 63.72010,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
+	new DFCExit = CreateDynamicObject(2714, -2062.80737, 238.58321, 1005.76123,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
+	SetDynamicObjectMaterial(DFCExit, 0, 14506, "imy_motel", "Ah_exit", 0);
+	new DFCRoof = CreateDynamicObject(2714, -2062.75732, 198.62910, 1005.76123, 0.00000, 0.00000, 180.00000, .interiorid = 6, .worldid = 2117, .streamdistance = 50);
+	SetDynamicObjectMaterial(DFCRoof, 0, 14506, "imy_motel", "mp_motel_roof", 0);
 	
 	//Farva's House (SF - Exterior)
 	CreateDynamic3DTextLabel("Donahue Residence",0x880000AA,-1458.66638184,-1286.29614258,101.0,12.0);

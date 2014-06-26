@@ -1728,7 +1728,7 @@ stock AddBan(Admin, Player, Reason[])
 
 stock SystemBan(Player, Reason[])
 {
-	new string[150];
+	new string[256];
     format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', 'System')", GetPlayerIpEx(Player), g_mysql_ReturnEscaped(Reason, MainPipeline));
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
@@ -1737,7 +1737,7 @@ stock SystemBan(Player, Reason[])
 
 stock MySQLBan(userid,ip[],reason[],status,admin[])
 {
-	new string[200];
+	new string[256];
     format(string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%s', NOW(), '%d','%s')", userid,ip,g_mysql_ReturnEscaped(reason, MainPipeline),status,admin);
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
@@ -1753,7 +1753,7 @@ stock AddCrime(cop, suspect, crime[])
 	else iAllegiance = 1;
 	format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(GetPlayerNameEx(cop), MainPipeline), g_mysql_ReturnEscaped(crime, MainPipeline), iAllegiance);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	format(query, sizeof(query), "MDC: %s added crime %s to %s.", GetPlayerNameEx(cop), crime, GetPlayerNameEx(suspect));
+	format(query, sizeof(query), "MDC: %s(%d) added crime %s to %s(%d).", GetPlayerNameEx(cop), GetPlayerSQLId(cop), crime, GetPlayerNameEx(suspect), GetPlayerSQLId(suspect));
 	Log("logs/crime.log", query);
 	return 1;
 }
@@ -3481,7 +3481,7 @@ public OnPhoneNumberCheck(index, extraid)
 				else
 				{
 					PlayerInfo[index][pPnumber] = GetPVarInt(index, "WantedPh");
-					format(string, sizeof(string), "   %s's Phone Number has been set to %d.", GetPlayerNameEx(index), GetPVarInt(index, "WantedPh"));
+					format(string, sizeof(string), "   %s's(%d) Phone Number has been set to %d.", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPVarInt(index, "WantedPh"));
 
 					format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(index));
 					Log("logs/undercover.log", string);
@@ -3504,7 +3504,7 @@ public OnPhoneNumberCheck(index, extraid)
 					else
 					{
 						PlayerInfo[index][pPnumber] = GetPVarInt(index, "WantedPh");
-						format(string, sizeof(string), "   %s's Phone Number has been set to %d.", GetPlayerNameEx(index), GetPVarInt(index, "WantedPh"));
+						format(string, sizeof(string), "   %s's(%d) Phone Number has been set to %d.", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPVarInt(index, "WantedPh"));
 
 						format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(GetPVarInt(index, "PhChangerId")));
 						Log("logs/stats.log", string);
@@ -4020,7 +4020,7 @@ public NationAppFinish(playerid, queryid)
 								format(query, sizeof(query), "UPDATE `accounts` SET `Nation` = 1 WHERE `id` = %d", UserID);
 								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 							}
-							format(string, sizeof(string), "%s has approved %s's application for Tierra Robada citizenship", GetPlayerNameEx(playerid), sResult);
+							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for Tierra Robada citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
 						}
 					}
 					Log("logs/gov.log", string);
@@ -5313,7 +5313,7 @@ public OnPlayerChangePass(index)
 		format(szMessage, sizeof(szMessage), "You have changed your password to '%s'.", szBuffer);
 		SendClientMessageEx(index, COLOR_YELLOW, szMessage);
 
-		format(szMessage, sizeof(szMessage), "%s (IP: %s) has changed their password.", GetPlayerNameEx(index), PlayerInfo[index][pIP]);
+		format(szMessage, sizeof(szMessage), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), GetPlayerSQLId(index), PlayerInfo[index][pIP]);
 		Log("logs/password.log", szMessage);
 		DeletePVar(index, "PassChange");
 
@@ -5547,13 +5547,12 @@ public OnBanIP(index)
 {
 	if(IsPlayerConnected(index))
 	{
-	    new rows, fields;
-	    new string[128], ip[32], sqlid[5], id;
-    	cache_get_data(rows, fields, MainPipeline);
-
-    	if(rows)
-    	{
-			cache_get_field_content(0, "id", sqlid, MainPipeline); id = strval(sqlid);
+		new rows, fields;
+		new string[128], ip[32], id;
+		cache_get_data(rows, fields, MainPipeline);
+		if(rows)
+		{
+			id = cache_get_field_content_int(0, "id", MainPipeline);
 			cache_get_field_content(0, "IP", ip, MainPipeline, 16);
 
 			MySQLBan(id, ip, "Offline Banned (/banaccount)", 1, GetPlayerNameEx(index));
@@ -5732,7 +5731,17 @@ public OnSetName(index, extraid)
 						SaveDynamicDoor(i);
 					}
 				}
-
+				
+				for(new i; i < MAX_GARAGES; i++)
+				{
+					if(GarageInfo[i][gar_Owner] == GetPlayerSQLId(extraid))
+					{
+						format(GarageInfo[i][gar_OwnerName], MAX_PLAYER_NAME, "%s", tmpName);
+						CreateGarage(i);
+						SaveGarage(i);
+					}
+				}
+				
 				if(Homes[extraid] > 0)
 				{
 					for(new i; i < MAX_HOUSES; i++)
@@ -5829,6 +5838,16 @@ public OnApproveName(index, extraid)
 					SaveDynamicDoor(i);
 				}
 			}
+			
+			for(new i; i < MAX_GARAGES; i++)
+			{
+				if(GarageInfo[i][gar_Owner] == GetPlayerSQLId(extraid))
+				{
+					format(GarageInfo[i][gar_OwnerName], MAX_PLAYER_NAME, "%s", newname);
+					CreateGarage(i);
+					SaveGarage(i);
+				}
+			}
 
 			if(Homes[extraid] > 0)
 			{
@@ -5852,7 +5871,7 @@ public OnApproveName(index, extraid)
 
 			if(PlayerInfo[extraid][pDonateRank] >= 1)
 			{
-				format(string, sizeof(string), "[VIP NAMECHANGES] %s has changed their name to %s.", GetPlayerNameEx(extraid), newname);
+				format(string, sizeof(string), "[VIP NAMECHANGES] %s(%d) has changed their name to %s.", GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), newname);
 				Log("logs/vipnamechanges.log", string);
 			}
 
@@ -5880,7 +5899,7 @@ public OnApproveName(index, extraid)
 					    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
 					    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
 					    SendClientMessage(index, COLOR_REALRED, string);
-					    format(string, sizeof(string), "Error changing %s's name to %s", GetPlayerNameExt(extraid), newname);
+					    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 					    Log("logs/stats.log", string);
 					    return 1;
 					}
@@ -5911,7 +5930,7 @@ public OnApproveName(index, extraid)
 					    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
 					    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
 					    SendClientMessage(index, COLOR_REALRED, string);
-					    format(string, sizeof(string), "Error changing %s's name to %s", GetPlayerNameExt(extraid), newname);
+					    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 					    Log("logs/stats.log", string);
 					    return 1;
 					}
@@ -5944,7 +5963,7 @@ public OnApproveName(index, extraid)
 						    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
 						    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
 						    SendClientMessage(index, COLOR_REALRED, string);
-						    format(string, sizeof(string), "Error changing %s's name to %s", GetPlayerNameExt(extraid), newname);
+						    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 						    Log("logs/stats.log", string);
 						    return 1;
 						}
@@ -5982,7 +6001,7 @@ public OnApproveName(index, extraid)
 						    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
 						    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
 						    SendClientMessage(index, COLOR_REALRED, string);
-						    format(string, sizeof(string), "Error changing %s's name to %s", GetPlayerNameExt(extraid), newname);
+						    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
 						    Log("logs/stats.log", string);
 						    return 1;
 						}
@@ -6041,7 +6060,7 @@ public OnIPCheck(index)
 				cache_get_field_content(0, "IP", ip, MainPipeline, 16);
 				format(string, sizeof(string), "%s's IP: %s", name, ip);
 				SendClientMessageEx(index, COLOR_WHITE, string);
-				format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(index), name);
+				format(string, sizeof(string), "%s has offline IP Checked %s", GetPlayerNameEx(index), name);
 				if(AdminLvL >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
 				return 1;
 			}
@@ -6082,12 +6101,12 @@ public OnProcessOrderCheck(index, extraid)
 		if(rows)
 		{
 			SendClientMessageEx(index, COLOR_WHITE, "This order has previously been processed, therefore it did not count toward your pay.");
-			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), giveplayerip);
+			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), giveplayerip);
 			Log("logs/shoporders.log", string);
 		}
 		else
 		{
-			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), giveplayerip);
+			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(%d)(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), giveplayerip);
 			Log("logs/shopconfirmedorders.log", string);
 			PlayerInfo[index][pShopTechOrders]++;
 
@@ -6754,7 +6773,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			SendClientMessageEx(iExtraID, COLOR_WHITE, string);
 			format(string, sizeof(string), "You have been group-banned, by %s.", GetPlayerNameEx(iExtraID));
 			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "Administrator %s has group-banned %s from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
+			format(string, sizeof(string), "Administrator %s has group-banned %s(%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
 			Log("logs/group.log", string);
 			PlayerInfo[otherplayer][pMember] = INVALID_GROUP_ID;
 			PlayerInfo[otherplayer][pLeader] = INVALID_GROUP_ID;
@@ -6780,7 +6799,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				SendClientMessageEx(iExtraID, COLOR_WHITE, string);
 				format(string, sizeof(string), "You have been group-unbanned from %s, by %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
 				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "Administrator %s has group-unbanned %s from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
+				format(string, sizeof(string), "Administrator %s has group-unbanned %s(%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[group][g_szGroupName], group);
 				Log("logs/group.log", string);
 			}
 			else
@@ -6797,7 +6816,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				if(strval(szResult) == PlayerInfo[iExtraID][pMember]) {
 					cache_get_field_content(0, "Rank", szResult, MainPipeline);
 					if(PlayerInfo[iExtraID][pRank] > strval(szResult) || PlayerInfo[iExtraID][pRank] >= Group_GetMaxRank(PlayerInfo[iExtraID][pMember])) {
-						cache_get_field_content(0, "ID", szResult, MainPipeline);
+						cache_get_field_content(0, "id", szResult, MainPipeline);
 						format(szResult, sizeof szResult, "UPDATE `accounts` SET `Model` = "#NOOB_SKIN", `Member` = "#INVALID_GROUP_ID", `Rank` = "#INVALID_RANK", `Leader` = "#INVALID_GROUP_ID", `Division` = -1 WHERE `id` = %i", strval(szResult));
 						mysql_function_query(MainPipeline, szResult, true, "Group_QueryFinish", "ii", GROUP_QUERY_UNINVITE, iExtraID);
 					}
@@ -7231,7 +7250,7 @@ public ReturnMoney(index)
 			format(string, sizeof(string), "You have placed a bid of %i on %s.", GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 			SendClientMessageEx(index, COLOR_WHITE, string);
 
-			format(string, sizeof(string), "%s (IP:%s) has placed a bid of %i on %s(%i)", GetPlayerNameEx(index), GetPlayerIpEx(index), GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
+			format(string, sizeof(string), "%s(%d) (IP:%s) has placed a bid of %i on %s(%i)", GetPlayerNameEx(index), GetPlayerSQLId(index), GetPlayerIpEx(index), GetPVarInt(index, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", string);
 
 			SaveAuction(AuctionItem);
@@ -7273,7 +7292,7 @@ public CheckAccounts(playerid)
 		    format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: Moderator %s has logged into the server with s0beit installed.", GetPlayerNameEx(playerid));
    			ABroadCast(COLOR_YELLOW, szString, 2);
 
-    		format(szString, sizeof(szString), "Admin %s (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+    		format(szString, sizeof(szString), "Admin %s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
      		Log("logs/sobeit.log", szString);
        		sobeitCheckvar[playerid] = 1;
      		sobeitCheckIsDone[playerid] = 1;
@@ -7285,7 +7304,7 @@ public CheckAccounts(playerid)
 			mysql_function_query(MainPipeline, szString, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 		    SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
-   			format(szString, sizeof(szString), "%s (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+   			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
    			Log("logs/sobeit.log", szString);
             sobeitCheckvar[playerid] = 1;
      		sobeitCheckIsDone[playerid] = 1;
@@ -7314,9 +7333,8 @@ public ReferralSecurity(playerid)
             ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
     	}
     	else {
-    	    format(szString, sizeof(szString), "[Referral] (New Account: %s (IP:%s)) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
+    	    format(szString, sizeof(szString), " %s(%d) (IP:%s) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
     	    Log("logs/referral.log", szString);
-            mysql_free_result(MainPipeline);
 			RegistrationStep[playerid] = 3;
 			SetPlayerVirtualWorld(playerid, 0);
 			ClearChatbox(playerid);
@@ -7746,7 +7764,7 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pGiftVoucher] += tmp[1];
 						format(string, sizeof(string), "You have been automatically issued %d gift reset voucher(s).", tmp[1]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d gift reset voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[1]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d gift reset voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[1]);
 						Log("logs/shoplog.log", string);
 					}
 					if(tmp[2] > 0)
@@ -7754,7 +7772,7 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pCarVoucher] += tmp[2];
 						format(string, sizeof(string), "You have been automatically issued %d restricted car voucher(s).", tmp[2]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d restricted car voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[2]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d restricted car voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[2]);
 						Log("logs/shoplog.log", string);
 					}
 					if(tmp[3] > 0)
@@ -7762,7 +7780,7 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pVehVoucher] += tmp[3];
 						format(string, sizeof(string), "You have been automatically issued %d car voucher(s).", tmp[3]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d car voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[3]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d car voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[3]);
 						Log("logs/shoplog.log", string);
 					}
 					if(tmp[4] > 0)
@@ -7770,7 +7788,7 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pSVIPVoucher] += tmp[4];
 						format(string, sizeof(string), "You have been automatically issued %d Silver VIP voucher(s).", tmp[4]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d Silver VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[4]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Silver VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[4]);
 						Log("logs/shoplog.log", string);
 					}
 					if(tmp[5] > 0)
@@ -7778,7 +7796,7 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pGVIPVoucher] += tmp[5];
 						format(string, sizeof(string), "You have been automatically issued %d Gold VIP voucher(s).", tmp[5]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d Gold VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[5]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Gold VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[5]);
 						Log("logs/shoplog.log", string);
 					}
 					if(tmp[6] > 0)
@@ -7786,15 +7804,15 @@ public ExecuteShopQueue(playerid, id)
 						PlayerInfo[playerid][pPVIPVoucher] += tmp[6];
 						format(string, sizeof(string), "You have been automatically issued %d Platinum VIP voucher(s).", tmp[6]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s was automatically issued %d Platinum VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), tmp[6]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Platinum VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[6]);
 						Log("logs/shoplog.log", string);
 					}
 					GivePlayerCredits(playerid, tmp[7], 1, 1);
-					format(string, sizeof(string), "%s | Credits: %d - 1", GetPlayerNameEx(playerid), tmp[7]);
+					format(string, sizeof(string), "%s(%d) | Credits: %d - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[7]);
 					Log("logs/shopdebug.log", string);
 					format(query, sizeof(query), "UPDATE `shop_orders` SET `status` = 1 WHERE `id` = %d", tmp[0]);
 					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-					format(string, sizeof(string), "%s | Status set to 1 - 1", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s(%d) | Status set to 1 - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
 					return SendClientMessageEx(playerid, COLOR_CYAN, "* Use /myvouchers to check and use your vouchers at any time!");
@@ -7812,15 +7830,15 @@ public ExecuteShopQueue(playerid, id)
 					cache_get_field_content(index, "credit_amount", result, ShopPipeline); tmp[1] = strval(result);
 					
 					GivePlayerCredits(playerid, tmp[1], 1);
-					format(string, sizeof(string), "%s | Credits: %d - 2", GetPlayerNameEx(playerid), tmp[1]);
+					format(string, sizeof(string), "%s(%d) | Credits: %d - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[1]);
 					Log("logs/shopdebug.log", string);
 					format(string, sizeof(string), "You have been automatically issued %s credit(s).", number_format(tmp[1]));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					format(string, sizeof(string), "[ID: %d] %s was automatically issued %s credit(s)", tmp[0], GetPlayerNameEx(playerid), number_format(tmp[1]));
+					format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %s credit(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(tmp[1]));
 					Log("logs/shoplog.log", string);
 					format(query, sizeof(query), "UPDATE `order_delivery_status` SET `status` = 1 WHERE `order_id` = %d", tmp[0]);
 					mysql_function_query(ShopPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-					format(string, sizeof(string), "%s | Status set to 1 - 2", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "%s(%d) | Status set to 1 - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
 					return 1;
@@ -8140,14 +8158,13 @@ stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
 	new szQuery[512], escapedstring[128];
 	mysql_real_escape_string(reason, escapedstring);
 	
-	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active, manual) VALUES ('%d', '%d', '%d', '%s', '%s', '1', '%d')",
+	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active, manual) VALUES ('%d', '%d', '%d', '%s', '%d', '1', '%d')",
 	GetPlayerSQLId(playerid),
 	point,
 	expiration,
 	escapedstring,
 	GetPlayerSQLId(issuerid),
-	manual,
-	GetPlayerNameEx(issuerid));
+	manual);
 	
 	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
@@ -8364,4 +8381,119 @@ public CheckPendingBugReports(playerid)
 		format(string, sizeof(string), "%s%s", string, szResult);
 	}
 	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
+}
+
+stock LoadGarages()
+{
+	printf("[LoadGarages] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `garages`", true, "OnLoadGarages", "");
+}
+
+forward OnLoadGarages();
+public OnLoadGarages()
+{
+	new i, rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	while(i < rows)
+	{
+		GarageInfo[i][gar_SQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		GarageInfo[i][gar_Owner] = cache_get_field_content_int(i, "Owner", MainPipeline);
+		cache_get_field_content(i, "OwnerName", GarageInfo[i][gar_OwnerName], MainPipeline, 24);
+		GarageInfo[i][gar_ExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
+		GarageInfo[i][gar_ExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
+		GarageInfo[i][gar_ExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
+		GarageInfo[i][gar_ExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
+		GarageInfo[i][gar_ExteriorVW] = cache_get_field_content_int(i, "ExteriorVW", MainPipeline);
+		GarageInfo[i][gar_ExteriorInt] = cache_get_field_content_int(i, "ExteriorInt", MainPipeline);
+		GarageInfo[i][gar_CustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
+		GarageInfo[i][gar_InteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
+		GarageInfo[i][gar_InteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
+		GarageInfo[i][gar_InteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
+		GarageInfo[i][gar_InteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
+		GarageInfo[i][gar_InteriorVW] = cache_get_field_content_int(i, "InteriorVW", MainPipeline);
+		cache_get_field_content(i, "Pass", GarageInfo[i][gar_Pass], MainPipeline, 24);
+		GarageInfo[i][gar_Locked] = cache_get_field_content_int(i, "Locked", MainPipeline);
+		if(GarageInfo[i][gar_ExteriorX] != 0.0) CreateGarage(i);
+		i++;
+	}
+	if(i > 0) printf("[LoadGarages] %d garages rehashed/loaded.", i);
+	else printf("[LoadGarages] Failed to load any garages.");
+	return 1;
+}
+
+stock SaveGarage(garageid)
+{
+	new string[512];
+	format(string, sizeof(string), "UPDATE `garages` SET \
+		`Owner`=%d, \
+		`OwnerName`='%s', \
+		`ExteriorX`=%f, \
+		`ExteriorY`=%f, \
+		`ExteriorZ`=%f, \
+		`ExteriorA`=%f, \
+		`ExteriorVW`=%d, \
+		`ExteriorInt`=%d, \
+		`CustomExterior`=%d, \
+		`InteriorX`=%f, \
+		`InteriorY`=%f, \
+		`InteriorZ`=%f, \
+		`InteriorA`=%f, \
+		`InteriorVW`=%d, \
+		`Pass`='%s', \
+		`Locked`=%d \
+		WHERE `id`=%d",
+		GarageInfo[garageid][gar_Owner],
+		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_OwnerName], MainPipeline),
+		GarageInfo[garageid][gar_ExteriorX],
+		GarageInfo[garageid][gar_ExteriorY],
+		GarageInfo[garageid][gar_ExteriorZ],
+		GarageInfo[garageid][gar_ExteriorA],
+		GarageInfo[garageid][gar_ExteriorVW],
+		GarageInfo[garageid][gar_ExteriorInt],
+		GarageInfo[garageid][gar_CustomExterior],
+		GarageInfo[garageid][gar_InteriorX],
+		GarageInfo[garageid][gar_InteriorY],
+		GarageInfo[garageid][gar_InteriorZ],
+		GarageInfo[garageid][gar_InteriorA],
+		GarageInfo[garageid][gar_InteriorVW],
+		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_Pass], MainPipeline),
+		GarageInfo[garageid][gar_Locked],
+		garageid
+	);
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock CreateGarage(garageid)
+{
+	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]);
+	if(GarageInfo[garageid][gar_ExteriorX] == 0.0) return 1;
+	new string[128];
+	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
+	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
+	return 1;
+}
+
+forward OnSetGarageOwner(playerid, garageid);
+public OnSetGarageOwner(playerid, garageid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		new rows, fields;
+		new string[128];
+		cache_get_data(rows, fields, MainPipeline);
+
+		if(rows)
+		{
+			GarageInfo[garageid][gar_Owner] = cache_get_field_content_int(0, "id", MainPipeline);
+			cache_get_field_content(0, "Username", GarageInfo[garageid][gar_OwnerName], MainPipeline, MAX_PLAYER_NAME);
+			format(string, sizeof(string), "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			CreateGarage(garageid);
+			SaveGarage(garageid);
+			format(string, sizeof(string), "%s has edited Garage ID: %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);
+			Log("logs/garage.log", string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
+	}
+	return 1;
 }

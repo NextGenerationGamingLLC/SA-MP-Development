@@ -123,7 +123,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 					new szMessage[128];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
-					format(szMessage, sizeof(szMessage), "%s may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
+					format(szMessage, sizeof(szMessage), "%s(%d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 					Log("logs/hack.log", szMessage);
 					HackingMods[playerid]++;
 					return 0;
@@ -136,7 +136,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 					PlayerInfo[playerid][pBanned] = 3;
 					new playerip[32];
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format(string, sizeof(string), "AdmCmd: %s (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), playerip);
+					format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip);
 					PlayerInfo[playerid][pBanned] = 3;
 					Log("logs/ban.log", string);
 					new ip[32];
@@ -159,7 +159,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 		{
 			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 			ABroadCast(COLOR_YELLOW, szMessage, 2);
-			format(szMessage, sizeof(szMessage), "%s may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
+			format(szMessage, sizeof(szMessage), "%s(%d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 			Log("logs/hack.log", szMessage);
 			HackingMods[playerid]++;
 			return 0;
@@ -172,7 +172,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), playerip);
+			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", string);
 			new ip[32];
@@ -329,6 +329,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	{
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
 			return DeletePVar(playerid, "ShopTP");
+		RemovePlayerFromVehicle(playerid);
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), 2500);
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "tmpInt"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "tmpVW"));
@@ -391,10 +392,10 @@ public OnPlayerUpdate(playerid)
 			{
 		        new srelay[256], Float:X, Float:Y, Float:Z;
 		        GetPlayerPos(playerid, X, Y, Z);
-				format(srelay, sizeof(srelay), "[mapteleport] %s %d (%0.2f, %0.2f, %0.2f -> %0.2f, %0.2f, %0.2f [%0.2f, %0.2f, %0.2f]) (%f, %f) (%d) (%d)", GetPlayerNameExt(playerid), playerid, \
+				format(srelay, sizeof(srelay), "[mapteleport] %s(%d) (%0.2f, %0.2f, %0.2f -> %0.2f, %0.2f, %0.2f [%0.2f, %0.2f, %0.2f]) (%f, %f)", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), \
 				acstruct[playerid][LastOnFootPosition][0], acstruct[playerid][LastOnFootPosition][1], acstruct[playerid][LastOnFootPosition][2], \
-				X, Y, Z, acstruct[playerid][maptp][0], acstruct[playerid][maptp][1], acstruct[playerid][maptp][2], \
-				disd, dis, GetPlayerState(playerid), (GetTickCount()-acstruct[playerid][maptplastclick]));
+				X, Y, Z, acstruct[playerid][maptp][0], acstruct[playerid][maptp][1], acstruct[playerid][maptp][2], disd, dis);
+				format(srelay, sizeof(srelay), "%s  (%d) (%d)", srelay, GetPlayerState(playerid), (GetTickCount()-acstruct[playerid][maptplastclick]));
 				Log("logs/hack.log", srelay);
 
 	            format( srelay, sizeof( srelay ), "{AA3333}AdmWarning{FFFF00}: %s has been banned, reason: TP Hacking", GetPlayerNameExt(playerid));
@@ -403,7 +404,7 @@ public OnPlayerUpdate(playerid)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( srelay, sizeof( srelay ), "%s (IP:%s) was banned, reason: TP Hacking", GetPlayerNameExt(playerid), playerip);
+				format( srelay, sizeof( srelay ), "%s(%d) (IP:%s) was banned, reason: TP Hacking", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), playerip);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", srelay);
 				SystemBan(playerid, "[System] (Teleport Hacking)");
@@ -1457,7 +1458,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			{	
 				if(!vehicleCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
 				if(!vehicleSpawnCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
-				
+				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a car voucher.");
 				new Float: arr_fPlayerPos[4], szLog[128], szString[128];
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
@@ -1466,12 +1467,14 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				PlayerInfo[playerid][pVehVoucher]--;
 				format(szString, sizeof(szString), "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
 				SendClientMessageEx(playerid, COLOR_CYAN, szString);
-				format(szLog, sizeof(szLog), "%s has used one of his car voucher(s) and has %d left.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pVehVoucher]);
+				format(szLog, sizeof(szLog), "%s(%d) has used one of his car voucher(s) and has %d left.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pVehVoucher]);
 				Log("logs/vouchers.log", szLog);
 				DeletePVar(playerid, "voucherdialog");
 				DeletePVar(playerid, "WhoIsThis");
-			}			
+			}
 		}
+		DeletePVar(playerid, "voucherdialog");
+		DeletePVar(playerid, "WhoIsThis");
 		DeletePVar(playerid, "RentaCar");
 	}
 	if(listid == CarList3)
@@ -1537,7 +1540,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					Businesses[iBusiness][bSafeBalance] += TaxSale(GetPVarInt(playerid, "SkinChangeCost"));
                     GivePlayerCash(playerid, -GetPVarInt(playerid, "SkinChangeCost"));
 
-					format(string, sizeof(string), "%s (IP: %s) has bought skin %d in %s (%d) for %d.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), modelid, Businesses[InBusiness(playerid)][bName],InBusiness(playerid),GetPVarInt(playerid, "SkinChangeCost"));
+					format(string, sizeof(string), "%s(%d) (IP: %s) has bought skin %d in %s (%d) for %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), modelid, Businesses[InBusiness(playerid)][bName],InBusiness(playerid),GetPVarInt(playerid, "SkinChangeCost"));
 					Log("logs/business.log", string);
 					DeletePVar(playerid, "SkinChangeCost");
 				}
@@ -3516,7 +3519,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 					SetPVarInt(i, "RconFailedLogin", logins);
 					if(GetPVarInt(i, "RconFailedLogin") >= 3)
 					{
-						format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned for excessive RCon failed logins", GetPlayerNameEx(i), pip);
+						format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned for excessive RCon failed logins", GetPlayerNameEx(i), GetPlayerSQLId(i), pip);
 						Log("logs/ban.log", string);
 						PlayerInfo[i][pBanned] = 1;
 						MySQLBan(GetPlayerSQLId(i),pip,"Excessive RCon Login Failures",1,"System");
@@ -3573,6 +3576,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				PlayerInfo[playerid][pBanned] = 3;
 				MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Tried to spoof kills", 1, "System");
 				SystemBan(playerid, "[System] (Tried to spoof kills)");
+				format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP] );
 				Log("logs/ban.log", string);
 				TotalAutoBan++;
 				Kick(playerid);
@@ -4235,7 +4239,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
 		GetPlayerIp(ownerid, ip2, sizeof(ip2));
-		format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) delivered a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[ownerid][slot][pvId]), PlayerVehicleInfo[ownerid][slot][pvId], slot, GetPlayerNameEx(ownerid), ip2);
+		format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) delivered a %s(VID:%d Slot %d) owned by %s(%d)(IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[ownerid][slot][pvId]), PlayerVehicleInfo[ownerid][slot][pvId], slot, GetPlayerNameEx(ownerid), GetPlayerSQLId(ownerid), ip2);
 		Log("logs/playervehicle.log", szMessage);
 		--PlayerCars;
 		VehicleSpawned[ownerid]--;
@@ -6354,6 +6358,17 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		return 0;
 	}
 	
+	if(GetPVarInt(playerid, "voucherdialog"))
+	{
+		if(GetPVarInt(playerid, "voucherdialog") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please finalize your voucher transaction."), 0;
+		new string[128];
+		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be attempting to exploit the voucher system. (CMD)", GetPlayerNameEx(playerid), playerid);
+		ABroadCast(COLOR_YELLOW, string, 2);
+		format(string,sizeof(string),"AdmWarning: %s(%d) (ID: %d) may be attempting to exploit the voucher system. (CMD)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid);
+		Log("logs/vouchers.log", string);
+		return 0;
+	}
+	
 	if(PlayerInfo[playerid][pAdmin] < 1337)
 	{
 		if(++CommandSpamTimes[playerid] >= 5) {
@@ -6384,7 +6399,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		new string[128];
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, cmdtext);
 		ABroadCast(COLOR_YELLOW, string, 2);
-		format(string,sizeof(string),"%s (ID: %d) may be server advertising: '%s'.", GetPlayerNameEx(playerid), playerid, cmdtext);
+		format(string,sizeof(string),"%s(%d) (IP: %s) may be server advertising: '%s'.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), cmdtext);
 		Log("logs/hack.log", string);
 		return 0;
 	}
@@ -6474,7 +6489,7 @@ public OnPlayerText(playerid, text[])
 	{
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be server advertising: '{AA3333}%s{FFFF00}'.", GetPlayerNameEx(playerid), playerid, text);
 		ABroadCast(COLOR_YELLOW, string, 2);
-		format(string,sizeof(string),"%s (ID: %d) may be server advertising: '%s'.", GetPlayerNameEx(playerid), playerid, text);
+		format(string,sizeof(string),"%s(%d) (IP: %s) may be server advertising: '%s'.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), text);
 		Log("logs/hack.log", string);
 		return 0;
 	}

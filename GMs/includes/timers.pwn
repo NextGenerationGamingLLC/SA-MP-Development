@@ -531,7 +531,7 @@ task MoneyUpdate[1000]()
 						SpawnKick[i] = 0;
 						new string[128];
 						SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
-						format(string, sizeof(string), " %s (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), i, GetPlayerIpEx(i));
+						format(string, sizeof(string), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
 						Log("logs/spawnafk.log", string);
 						SetTimerEx("KickEx", 1000, 0, "i", i);
 					}
@@ -1160,7 +1160,7 @@ task ServerHeartbeat[1000]() {
 							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 							GetPlayerIp(i, ip, sizeof(ip));
 							GetPlayerIp(ownerid, ip2, sizeof(ip2));
-							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2);
+							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2);
 							Log("logs/playervehicle.log", szMessage);
 							new Float: pX, Float: pY, Float: pZ;
 							GetPlayerPos(i, pX, pY, pZ);
@@ -1254,7 +1254,7 @@ task ServerHeartbeat[1000]() {
 								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 								GetPlayerIp(i, ip, sizeof(ip));
 								GetPlayerIp(ownerid, ip2, sizeof(ip2));
-								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
 								Log("logs/playervehicle.log", szMessage);
 							}
 							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
@@ -1313,7 +1313,7 @@ task ServerHeartbeat[1000]() {
 						szMessage[24 + 51 + MAX_PLAYER_NAME],
 						arrVehParams[7];
 					GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
-					if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || !IsPlayerInAnyVehicle(i)) {
+					if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || IsPlayerInAnyVehicle(i)) {
 						DeletePVar(i, "wheelclampvehicle");
 						DeletePVar(i, "wheelclampcountdown");
 						SendClientMessageEx(i, COLOR_PURPLE, "(( You failed placing the Wheel Clamp in the vehicle's front tire. ))");
@@ -2250,7 +2250,7 @@ task ServerHeartbeatTwo[1000]() {
 							new string[128];
 							format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (1)", GetPlayerNameEx(i), i, CurrentArmor[i], armor);
 							ABroadCast( COLOR_YELLOW, string, 2 );
-							format(string, sizeof(string), "%s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (1)", GetPlayerNameEx(i), i, CurrentArmor[i], armor);
+							format(string, sizeof(string), "%s(%d) (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (1)", GetPlayerNameEx(i), GetPlayerSQLId(i), i, CurrentArmor[i], armor);
 							Log("logs/hack.log", string);
 						}
 					}
@@ -2265,7 +2265,7 @@ task ServerHeartbeatTwo[1000]() {
 				new string[74 + MAX_PLAYER_NAME];
 				format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be jetpack hacking.", GetPlayerNameEx(i), i);
 				ABroadCast( COLOR_YELLOW, string, 2 );
-				format(string, sizeof(string), "%s (ID %d) may possibly be jetpack hacking.", GetPlayerNameEx(i), i);
+				format(string, sizeof(string), "%s(%d) (ID %d) may possibly be jetpack hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), i);
 				Log("logs/hack.log", string);
 			}
 
@@ -2637,7 +2637,7 @@ timer FinishMedKit[5000](playerid)
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
-		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
+		format(string, sizeof(string), "[MEDKIT] %s(%d) (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
 		Log("logs/backpack.log", string);
 	}
 	else
@@ -2673,7 +2673,7 @@ timer FinishMeal[5000](playerid)
 		
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
-		format(string, sizeof(string), "[MEDKIT] %s (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), ip, PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
+		format(string, sizeof(string), "[MEDKIT] %s(%d) (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
 		Log("logs/backpack.log", string);
 	}
 	else

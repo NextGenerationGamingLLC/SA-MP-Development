@@ -1565,3 +1565,25 @@ enum dgItems
 	dgRestrictedCarVoucher,
 	dgPlatinumVIPVoucher
 };
+
+enum garInfo
+{
+	gar_SQLId,
+	gar_Owner,
+	gar_OwnerName[24],
+	Float: gar_ExteriorX,
+	Float: gar_ExteriorY,
+	Float: gar_ExteriorZ,
+	Float: gar_ExteriorA,
+	gar_ExteriorVW,
+	gar_ExteriorInt,
+	gar_CustomExterior,
+	Float: gar_InteriorX,
+	Float: gar_InteriorY,
+	Float: gar_InteriorZ,
+	Float: gar_InteriorA,
+	gar_InteriorVW,
+	gar_Pass[24],
+	gar_Locked,
+	Text3D: gar_TextID
+};

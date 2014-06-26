@@ -310,7 +310,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				SystemBan(playerid, "[System] (Weapon Hacking)");
@@ -350,7 +350,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -376,7 +376,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -405,7 +405,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 					PlayerInfo[playerid][pBanned] = 3;
 					new playerip[32];
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 					PlayerInfo[playerid][pBanned] = 3;
 					Log("logs/ban.log", String);
 					new ip[32];
@@ -435,7 +435,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 					PlayerInfo[playerid][pBanned] = 3;
 					new playerip[32];
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 					PlayerInfo[playerid][pBanned] = 3;
 					Log("logs/ban.log", String);
 					new ip[32];
@@ -465,7 +465,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 					PlayerInfo[playerid][pBanned] = 3;
 					new playerip[32];
 					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 					PlayerInfo[playerid][pBanned] = 3;
 					Log("logs/ban.log", String);
 					new ip[32];
@@ -492,7 +492,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -518,7 +518,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -544,7 +544,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
                 new ip[32];
@@ -570,7 +570,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -596,7 +596,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -622,7 +622,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -648,7 +648,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -674,7 +674,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -700,7 +700,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -724,7 +724,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -747,7 +747,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -770,7 +770,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -793,7 +793,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			Log("logs/ban.log", String);
 			new ip[32];
 			GetPlayerIp(playerid,ip,sizeof(ip));
@@ -815,7 +815,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -842,7 +842,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -865,7 +865,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 			PlayerInfo[playerid][pBanned] = 3;
 			new playerip[32];
 			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 			PlayerInfo[playerid][pBanned] = 3;
 			Log("logs/ban.log", String);
 			new ip[32];
@@ -890,7 +890,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -916,7 +916,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				PlayerInfo[playerid][pBanned] = 3;
 				new playerip[32];
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( String, sizeof( String ), "AdmCmd: %s (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), playerip, WeaponName);
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
 				PlayerInfo[playerid][pBanned] = 3;
 				Log("logs/ban.log", String);
 				new ip[32];
@@ -2238,7 +2238,7 @@ JoinPokerTable(playerid, tableid)
 				SetPVarFloat(playerid, "pkrTableJoinZ", tmpPos[2]);
 
 				new string[128];
-				format(string, sizeof(string), "%s (IP:%s) has joined poker table (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), tableid);
+				format(string, sizeof(string), "%s(%d) (IP:%s) has joined poker table (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), tableid);
 				Log("logs/poker.log", string);
 
 				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
@@ -2275,7 +2275,7 @@ LeavePokerTable(playerid)
 	GivePlayerCash(playerid, GetPVarInt(playerid, "pkrChips"));
 
 	new string[128];
-	format(string, sizeof(string), "%s (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);
+	format(string, sizeof(string), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);
 	Log("logs/poker.log", string);
 
 	// De-occuply Slot
@@ -2864,12 +2864,14 @@ PayDay(i) {
 
 CreateGate(gateid) {
 	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
+	if(GateInfo[gateid][gPosX] == 0.0) return 1;
 	switch(GateInfo[gateid][gRenderHQ]) {
 		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);
 		case 2: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 150.0);
 		case 3: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 200.0);
 		default: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 60.0);
 	}
+	return 1;
 }
 
 IsAtTruckDeliveryPoint(playerid)
@@ -3485,7 +3487,7 @@ public InitiateGamemode()
 	LoadArrestPoints();
 	LoadImpoundPoints();
 	LoadRelayForLifeTeams();
-	
+	LoadGarages();
 		/*---[Shop Automation]---*/
 	
  	g_mysql_LoadSales();
@@ -3902,7 +3904,7 @@ public sobeitCheck(playerid)
 			mysql_function_query(MainPipeline, szString, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 			SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
-   			format(szString, sizeof(szString), "%s (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), IP);
+   			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), IP);
    			Log("logs/sobeit.log", szString);
    			IsPlayerFrozen[playerid] = 0;
     		SetTimerEx("KickEx", 1000, 0, "i", playerid);
@@ -4374,7 +4376,7 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 		}
 		new playerip[32];
 		GetPlayerIp(index, playerip, sizeof(playerip));
-		format(string, sizeof(string), "Shop order ID %d from %s(IP: %s) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), playerip);
+		format(string, sizeof(string), "Shop order ID %d from %s(%d)(IP: %s) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), GetPlayerSQLId(index), playerip);
 		Log("logs/shoporders.log", string);
 	}
 	else
@@ -6069,7 +6071,7 @@ public Player_StreamPrep(iPlayer, Float: fPosX, Float: fPosY, Float: fPosZ, iTim
 		}
 		case 1: {
 
-			if(GetPlayerState(iPlayer) == PLAYER_STATE_DRIVER)
+			if(GetPlayerState(iPlayer) == PLAYER_STATE_DRIVER && !GetPVarType(iPlayer, "ShopTP"))
 				SetVehiclePos(GetPlayerVehicleID(iPlayer), fPosX, fPosY, fPosZ + 2.0);
 
 			else
@@ -6084,7 +6086,7 @@ public Player_StreamPrep(iPlayer, Float: fPosX, Float: fPosY, Float: fPosZ, iTim
 			HideNoticeGUIFrame(iPlayer);
 			TogglePlayerControllable(iPlayer, true);
 
-			if(GetPlayerState(iPlayer) == PLAYER_STATE_DRIVER)
+			if(GetPlayerState(iPlayer) == PLAYER_STATE_DRIVER && !GetPVarType(iPlayer, "ShopTP"))
 				SetVehiclePos(GetPlayerVehicleID(iPlayer), fPosX, fPosY, fPosZ);
 
 			else
@@ -8312,6 +8314,8 @@ public FinishMaintenance()
 	SaveHouses();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);
 	SaveDynamicDoors();
+	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Garages...", 1);
+	SaveGarages();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Map Icons...", 1);
 	SaveDynamicMapIcons();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Gates...", 1);
@@ -10619,7 +10623,7 @@ stock ExecuteHackerAction( playerid, weaponid )
 
 	format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be weapon hacking (%s).", GetPlayerNameEx(playerid), playerid, WeaponName );
 	ABroadCast( COLOR_YELLOW, String, 2 );
-	format(String, sizeof(String), "%s (ID %d) may possibly be weapon hacking (%s)", GetPlayerNameEx(playerid), playerid, WeaponName);
+	format(String, sizeof(String), "%s(%d) (ID %d) may possibly be weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid, WeaponName);
 	Log("logs/hack.log", String);
 
 	return 1;
@@ -14350,7 +14354,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 	{
 		case 0:
 		{
-			format(string,sizeof(string),"%s (IP: %s) has bought a %s in %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), StoreItems[item-1], Businesses[business][bName], business, number_format(price));
+			format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), StoreItems[item-1], Businesses[business][bName], business, number_format(price));
 			Log("logs/business.log", string);
 			format(string,sizeof(string),"* You have purchased a %s from %s for $%s.", StoreItems[item-1], Businesses[business][bName], number_format(price));
 			SendClientMessage(playerid, COLOR_GRAD2, string);
@@ -14358,7 +14362,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		case 1:
 		{
 			new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
-			format(string, sizeof(string), "%s %s (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerIpEx(offerer), StoreItems[item], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), StoreItems[item], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
 			Log("logs/business.log", string);
 			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), StoreItems[item], number_format(price));
 			SendClientMessage(offerer, COLOR_GRAD2, string);
@@ -14696,7 +14700,7 @@ public SyncTime()
 							GiftPlayer(MAX_PLAYERS, i);
 							format(string, sizeof(string), "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(i));
 							SendClientMessageEx(i, COLOR_YELLOW, string);
-							format(string, sizeof(string), "%s has received a free gift for his birthday (%s) (Payday).", GetPlayerNameEx(i), PlayerInfo[i][pBirthDate]);
+							format(string, sizeof(string), "%s(%d) has received a free gift for his birthday (%s) (Payday).", GetPlayerNameEx(i), GetPlayerSQLId(i), PlayerInfo[i][pBirthDate]);
 							Log("logs/birthday.log", string);
 							SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: You will get x2 paycheck as a birthday gift today.");
 							OnPlayerStatsUpdate(i);
@@ -15043,9 +15047,10 @@ stock ReloadHouseText(houseid)
 
 stock ReloadHousePickup(houseid)
 {
-	new string[128];
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
+	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
+	new string[128];
 	if(HouseInfo[houseid][hOwned])
 	{
 		if(HouseInfo[houseid][hRentable])
@@ -15067,6 +15072,7 @@ stock ReloadHousePickup(houseid)
 		HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
 		HouseInfo[houseid][hPickupID] = CreateDynamicPickup(1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
 	}
+	return 1;
 }
 
 stock SaveHouses()
@@ -15199,6 +15205,9 @@ stock RehashDynamicDoors()
 
 stock CreateDynamicDoor(doorid)
 {
+	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+	if(DDoorsInfo[doorid][ddExteriorX] == 0.0) return 1;
 	new string[128];
 	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
 	else format(string, sizeof(string), "%s\nID: %d", DDoorsInfo[doorid][ddDescription], doorid);
@@ -15254,6 +15263,7 @@ stock CreateDynamicDoor(doorid)
 			DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1318, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);
 	    }
 	}
+	return 1;
 }
 
 stock LoadEventPoints() {
@@ -17251,7 +17261,7 @@ stock HigherBid(playerid)
 	  			GivePlayerCash(Player, Auctions[AuctionItem][Bid]);
 	    		SendClientMessageEx(Player, COLOR_WHITE, "Someone has outbid you, your money has been returned.");
 		    	new szMessage[128];
-		    	format(szMessage, sizeof(szMessage), "Amount of $%d has been returned to %s (IP:%s) for being outbid", Auctions[AuctionItem][Bid], GetPlayerNameEx(Player), GetPlayerIpEx(Player));
+		    	format(szMessage, sizeof(szMessage), "Amount of $%d has been returned to %s(%d) (IP:%s) for being outbid", Auctions[AuctionItem][Bid], GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player));
 				Log("logs/auction.log", szMessage);
 
                 GivePlayerCash(playerid, -GetPVarInt(playerid, "BidPlaced"));
@@ -17262,7 +17272,7 @@ stock HigherBid(playerid)
 				format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
-				format(szMessage, sizeof(szMessage), "%s (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
+				format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 				Log("logs/auction.log", szMessage);
 
 				SaveAuction(AuctionItem);
@@ -17290,7 +17300,7 @@ stock HigherBid(playerid)
 			format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
-			format(szMessage, sizeof(szMessage), "%s (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
+			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
 			Log("logs/auction.log", szMessage);
 
 			SaveAuction(AuctionItem);
@@ -17480,7 +17490,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], ip2, sizeof(ip2));
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) unloaded his %s(VID:%d Slot %d) while being lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), ip2);
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) unloaded his %s(VID:%d Slot %d) while being lock picked by %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), GetPlayerSQLId(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]), ip2);
 			Log("logs/playervehicle.log", szMessage);
 			DestroyVLPTextDraws(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy]);
 			DeletePVar(PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy], "DeliveringVehicleTime");
@@ -18484,7 +18494,7 @@ stock ini_GetString(szParse[], szValueName[], szDest[], iLength = sizeof(szDest)
 stock Log(sz_fileName[], sz_input[]) {
 
 	new
-		sz_logEntry[180],
+		sz_logEntry[256],
 		#if defined _LINUX
 		File: logfile,
 		#endif
@@ -19653,7 +19663,7 @@ stock StopRefueling(playerid, iBusinessID, iPumpID)
 
 	DeletePVar(playerid, "Refueling");
 
-	format(string,sizeof(string),"%s (IP: %s) has refueled their vehicle for $%d at %s (%d)",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid),iCost,Businesses[iBusinessID][bName], iBusinessID);
+	format(string,sizeof(string),"%s(%d) (IP: %s) has refueled their vehicle for $%d at %s (%d)",GetPlayerNameEx(playerid),GetPlayerSQLId(playerid),GetPlayerIpEx(playerid),iCost,Businesses[iBusinessID][bName], iBusinessID);
 	Log("logs/business.log", string);
 
 	return true;
@@ -20550,7 +20560,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given $%s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given $%s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20558,9 +20568,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given $%s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20610,7 +20620,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20618,9 +20628,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20670,7 +20680,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20678,9 +20688,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20734,7 +20744,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20742,9 +20752,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20818,7 +20828,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20826,9 +20836,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20881,7 +20891,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20889,9 +20899,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -20944,7 +20954,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -20952,9 +20962,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21007,7 +21017,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21015,9 +21025,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21086,7 +21096,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21094,9 +21104,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21149,7 +21159,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21157,9 +21167,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21212,7 +21222,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21220,9 +21230,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21275,7 +21285,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21283,9 +21293,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21352,7 +21362,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21360,9 +21370,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21415,7 +21425,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21423,9 +21433,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21478,7 +21488,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21486,9 +21496,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -21541,7 +21551,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/adminpay.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
 						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
@@ -21549,9 +21559,9 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 					}
 					else
 					{
-						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
 						Log("logs/pay.log", string);
-
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
 						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
 						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
 					}
@@ -22385,7 +22395,7 @@ public LoginCheck(playerid)
 	if(gPlayerLogged{playerid} == 0 && IsPlayerConnected(playerid))
 	{
 		new string[128];
-		format(string, sizeof(string), "%s [%s] has timed out of the login screen.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+		format(string, sizeof(string), "%s(%d) [%s] has timed out of the login screen.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/security.log", string);
 		SendClientMessage(playerid, COLOR_WHITE, "SERVER: Login timeout - you must login within 60 seconds!");
 		ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
@@ -22572,6 +22582,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 			SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Congratulations, you have won $20,000!");
 			format(string, sizeof(string), "* %s was just gifted $20,000, enjoy!", GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+			format(string, sizeof(string), "* %s(%d) was just gifted $20,000, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 			return true;
 		}
@@ -22607,6 +22618,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMoney][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(dgVar[dgMoney][2]));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22623,6 +22635,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRimKit][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRimKit][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22639,6 +22652,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirework][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirework][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22655,6 +22669,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22671,6 +22686,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22687,6 +22703,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22703,6 +22720,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22719,6 +22737,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarSlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarSlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22735,6 +22754,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgToySlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgToySlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22756,6 +22776,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgArmor][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22772,6 +22793,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirstaid][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirstaid][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22790,6 +22812,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgDDFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgDDFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22808,6 +22831,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGateFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGateFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22824,6 +22848,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCredits][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCredits][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22840,6 +22865,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPriorityAd][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPriorityAd][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22857,6 +22883,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgHealthNArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22873,6 +22900,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGiftReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGiftReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22889,6 +22917,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMaterial][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgMaterial][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22913,6 +22942,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgWarning][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgWarning][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22929,6 +22959,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22945,6 +22976,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22961,6 +22993,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPaintballToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPaintballToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22977,6 +23010,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgVIPToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgVIPToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -22993,6 +23027,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRespectPoint][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRespectPoint][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23009,6 +23044,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23023,8 +23059,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
 						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
-						Log("logs/setvip.log", string);						
+						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/setvip.log", string);
 					
 						format(string, sizeof(string), "Congratulations, you have won a Buddy Invite!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
@@ -23099,6 +23135,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgLaser][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23167,6 +23204,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCustomToy][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23185,6 +23223,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgAdmuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgAdmuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23203,6 +23242,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgNewbieMuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23219,6 +23259,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRestrictedCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23235,6 +23276,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23257,6 +23299,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMoney][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(dgVar[dgMoney][2]));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23273,6 +23316,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRimKit][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRimKit][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23289,6 +23333,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirework][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirework][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23305,6 +23350,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23321,6 +23367,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23337,6 +23384,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23353,6 +23401,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23369,6 +23418,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarSlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarSlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23385,6 +23435,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgToySlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgToySlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23406,6 +23457,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgArmor][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23422,6 +23474,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirstaid][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirstaid][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23440,6 +23493,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgDDFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgDDFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23458,6 +23512,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGateFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGateFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23474,6 +23529,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCredits][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCredits][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23490,6 +23546,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPriorityAd][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPriorityAd][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23507,6 +23564,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgHealthNArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23523,6 +23581,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGiftReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGiftReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23539,6 +23598,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMaterial][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgMaterial][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23563,6 +23623,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgWarning][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgWarning][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23579,6 +23640,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23595,6 +23657,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23611,6 +23674,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPaintballToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPaintballToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23627,6 +23691,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgVIPToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgVIPToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23643,6 +23708,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRespectPoint][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRespectPoint][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23659,6 +23725,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23673,8 +23740,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
 						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
-						Log("logs/setvip.log", string);						
+						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/setvip.log", string);
 					
 						format(string, sizeof(string), "Congratulations, you have won a Buddy Invite!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
@@ -23749,6 +23816,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgLaser][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23817,6 +23885,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCustomToy][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23835,6 +23904,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgAdmuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgAdmuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23853,6 +23923,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgNewbieMuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23869,6 +23940,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRestrictedCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23885,6 +23957,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23907,6 +23980,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMoney][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(dgVar[dgMoney][2]));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23923,6 +23997,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRimKit][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRimKit][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23939,6 +24014,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirework][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirework][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23955,6 +24031,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23971,6 +24048,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -23987,6 +24065,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24003,6 +24082,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24019,6 +24099,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarSlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarSlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24035,6 +24116,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgToySlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgToySlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24056,6 +24138,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgArmor][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24072,6 +24155,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirstaid][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirstaid][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24090,6 +24174,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgDDFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgDDFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24108,6 +24193,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGateFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGateFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24124,6 +24210,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCredits][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCredits][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24140,6 +24227,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPriorityAd][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPriorityAd][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24157,6 +24245,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgHealthNArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24173,6 +24262,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGiftReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGiftReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24189,6 +24279,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMaterial][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgMaterial][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24213,6 +24304,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgWarning][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgWarning][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24229,6 +24321,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24245,6 +24338,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24261,6 +24355,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPaintballToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPaintballToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24277,6 +24372,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgVIPToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgVIPToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24293,6 +24389,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRespectPoint][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRespectPoint][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24309,6 +24406,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24323,14 +24421,14 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
 						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
-						Log("logs/setvip.log", string);						
-					
+						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/setvip.log", string);					
 						format(string, sizeof(string), "Congratulations, you have won a Buddy Invite!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgBuddyInvite][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24399,6 +24497,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgLaser][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24467,6 +24566,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCustomToy][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24485,6 +24585,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgAdmuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgAdmuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24503,6 +24604,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgNewbieMuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24519,6 +24621,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRestrictedCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24535,6 +24638,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24557,6 +24661,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), number_format(dgVar[dgMoney][2]));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMoney][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted $%s, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(dgVar[dgMoney][2]));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24573,6 +24678,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRimKit][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRimKit][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d rimkit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRimKit][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24589,6 +24695,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirework][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirework][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d firework(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirework][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24605,6 +24712,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24621,6 +24729,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Gold VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24637,6 +24746,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIP][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIP][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Seven day Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIP][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24653,6 +24763,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgSVIPEx][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgSVIPEx][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d One Month Silver VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgSVIPEx][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24669,6 +24780,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarSlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarSlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarSlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24685,6 +24797,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgToySlot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgToySlot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Toy Slot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgToySlot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24706,6 +24819,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgArmor][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24722,6 +24836,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgFirstaid][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgFirstaid][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Firstaid(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgFirstaid][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24740,6 +24855,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgDDFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgDDFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Door Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgDDFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24758,6 +24874,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGateFlag][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGateFlag][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Dynamic Gate Flag(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGateFlag][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24774,6 +24891,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCredits][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCredits][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Credit(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCredits][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24790,6 +24908,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPriorityAd][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPriorityAd][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Priority Advertisement Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPriorityAd][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24807,6 +24926,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgHealthNArmor][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24823,6 +24943,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgGiftReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgGiftReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Gift Reset Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgGiftReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24839,6 +24960,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgMaterial][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgMaterial][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Material(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgMaterial][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24863,6 +24985,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgWarning][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgWarning][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Warning(s) Removal, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgWarning][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24879,6 +25002,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24895,6 +25019,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24911,6 +25036,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPaintballToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPaintballToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Paintball Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPaintballToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24927,6 +25053,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgVIPToken][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgVIPToken][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d VIP Token(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgVIPToken][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24943,6 +25070,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRespectPoint][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRespectPoint][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Respect Point(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRespectPoint][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24959,6 +25087,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -24973,14 +25102,15 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
 						PlayerInfo[giveplayerid][pTempVIP] = 3;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
-						format(string, sizeof(string), "BUDDY INVITE: %s has been invited to VIP by System", GetPlayerNameEx(giveplayerid));
-						Log("logs/setvip.log", string);						
+						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/setvip.log", string);
 					
 						format(string, sizeof(string), "Congratulations, you have won a Buddy Invite!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgBuddyInvite][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a BuddyInvite, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25049,6 +25179,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgLaser][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Laser, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25117,6 +25248,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCustomToy][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted a Custom Toy, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25135,6 +25267,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgAdmuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgAdmuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Admute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgAdmuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25153,6 +25286,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgNewbieMuteReset][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Newbie Mute Reset(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgNewbieMuteReset][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25169,6 +25303,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgRestrictedCarVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Restricted Car Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgRestrictedCarVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25185,6 +25320,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -25327,7 +25463,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					SendClientMessageEx(giveplayerid, COLOR_CYAN, " 1 Car Voucher has been added to your account.");
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note you may access your voucher(s) with /myvouchers");
 					
-					format(string, sizeof(string), "AdmCmd: %s was just gifted by the system and he won a free car", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a free car", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 					Log("logs/gifts.log", string);
 					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a free car.", GetPlayerNameEx(giveplayerid));
 					ABroadCast(COLOR_YELLOW, string, 4);
@@ -25350,7 +25486,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "You have been invited to become a Level 1 VIP for 3 hours. Enjoy!", GetPlayerNameEx(giveplayerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "BUDDY INVITE: %s has won a buddyinvite.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has won a buddyinvite.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/setvip.log", string);
 						format(string, sizeof(string), "* %s was just gifted 3 hours of VIP, enjoy!", GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
@@ -25439,14 +25575,15 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					SendClientMessageEx(giveplayerid, COLOR_CYAN, " 1 Silver VIP Voucher has been added to your account.");
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note you may access your voucher(s) with /myvouchers");
 					if(playerid == MAX_PLAYERS) {
-						format(string, sizeof(string), "AdmCmd: %s was just gifted by the system and he won one month of Silver VIP.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won one month of Silver VIP.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won one month of Silver VIP.", GetPlayerNameEx(giveplayerid));
 					}
 					else {
-						format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won one month of Silver VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won one month of Silver VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just gifted %s and he won one month of Silver VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					}
-					Log("logs/gifts.log", string);
 					ABroadCast(COLOR_YELLOW, string, 2);
 					format(string, sizeof(string), "* %s was just gifted one month of Silver VIP, enjoy!", GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
@@ -25454,7 +25591,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				else if(gift == 2)
 				{
 
-					format(string, sizeof(string), "AdmCmd: %s was just gifted by the system and he won a free house", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a free house", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 					Log("logs/gifts.log", string);
 					format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a free house.", GetPlayerNameEx(giveplayerid));
 					ABroadCast(COLOR_YELLOW, string, 2);
@@ -25478,14 +25615,15 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					GivePlayerCash(giveplayerid, 500000);
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won $500,000!");
 					if(playerid == MAX_PLAYERS) {
-						format(string, sizeof(string), "AdmCmd: %s was just gifted by the system and he won $500,000.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won $500,000.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won $500,000.", GetPlayerNameEx(giveplayerid));
 					}
 					else {
-						format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won $500,000.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won $500,000.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just gifted %s and he won $500,000.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					}
-					Log("logs/gifts.log", string);
 					ABroadCast(COLOR_YELLOW, string, 2);
 					format(string, sizeof(string), "* %s was just gifted $500,000, enjoy!", GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
@@ -25497,14 +25635,15 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					SendClientMessageEx(giveplayerid, COLOR_CYAN, " 1 Gold VIP Voucher has been added to your account.");
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note you may access your voucher(s) with /myvouchers");
 					if(playerid == MAX_PLAYERS) {
-						format(string, sizeof(string), "AdmCmd: %s was just gifted by the system and he won one month of Gold VIP.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won one month of Gold VIP.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won one month of Gold VIP.", GetPlayerNameEx(giveplayerid));
 					}
 					else {
-						format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won one month of Gold VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won one month of Gold VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+						Log("logs/gifts.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just gifted %s and he won one month of Gold VIP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					}
-					Log("logs/gifts.log", string);
 					ABroadCast(COLOR_YELLOW, string, 2);
 					format(string, sizeof(string), "* %s was just gifted one month of Gold VIP, enjoy!", GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
@@ -25522,10 +25661,10 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						g_mysql_SaveMOTD();
 
 						if(playerid == MAX_PLAYERS) {
-							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a rim modification kit. (%d left)", GetPlayerNameEx(giveplayerid), RimMod);
+							format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a rim modification kit. (%d left)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), RimMod);
 						}
 						else {
-							format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won a rim modification kit. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), RimMod);
+							format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won a rim modification kit. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), RimMod);
 						}
 
 						Log("logs/gifts.log", string);
@@ -25547,10 +25686,10 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						g_mysql_SaveMOTD();
 
 						if(playerid == MAX_PLAYERS) {
-							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a restricted car voucher. (%d left)", GetPlayerNameEx(giveplayerid), CarVoucher);
+							format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a restricted car voucher. (%d left)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), CarVoucher);
 						}
 						else {
-							format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won a restricted car voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), CarVoucher);
+							format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won a restricted car voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), CarVoucher);
 						}
 
 						Log("logs/gifts.log", string);
@@ -25578,11 +25717,11 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							
 							if(playerid == MAX_PLAYERS)
 							{
-								format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(giveplayerid), PVIPVoucher);
+								format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
 							}
 							else
 							{
-								format(string, sizeof(string), "AdmCmd: %s has just gifted %s and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), PVIPVoucher);
+								format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
 							}	
 						
 							Log("logs/gifts.log", string);
@@ -25663,7 +25802,7 @@ public LoginCheckEx(i)
 		{
 			if(pos[0] != JoinCameraPosition[x][0] && pos[1] != JoinCameraPosition[x][1] && pos[2] != JoinCameraPosition[x][2] && (count == 8))
 			{
-				format(string, sizeof(string), "%s [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerIpEx(i));
+				format(string, sizeof(string), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
 				Log("logs/security.log", string);
 				SendClientMessage(i, COLOR_WHITE, "SERVER: You have moved while being in the login screen!");
 				ShowPlayerDialog(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
@@ -25772,9 +25911,13 @@ stock GetFamedRankName(i)
 		{
 			format(string, sizeof(string), "Vice Famed Chairman");
 		}
-		default:
+		case 7: 
 		{
 			format(string, sizeof(string), "Famed Chairman");
+		}
+		default:
+		{
+			format(string, sizeof(string), "Unknown");
 		}
 	}
 	return string;
@@ -26216,7 +26359,7 @@ public Anti_Rapidfire()
 				format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Rapidfire Hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 				DeletePVar(i, "MaxRFWarn");
-				format(string, sizeof(string), "AdmCmd: %s (IP:%s) was banned, reason: Rapidfire Hacking.", GetPlayerNameEx(i), GetPlayerIpEx(i));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Rapidfire Hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
 				PlayerInfo[i][pBanned] = 3;
 				Log("logs/ban.log", string);
 				SystemBan(i, "[System] (Rapidfire Hacking)");
@@ -26226,6 +26369,15 @@ public Anti_Rapidfire()
 			}
 		}
 		PlayerShots[i] = 0;
+	}
+	return 1;
+}
+
+stock SaveGarages()
+{
+	for(new i = 0; i < MAX_GARAGES; i++)
+	{
+		SaveGarage(i);
 	}
 	return 1;
 }

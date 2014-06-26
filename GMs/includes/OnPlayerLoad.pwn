@@ -53,6 +53,7 @@ public OnPlayerLoad(playerid)
 		ABroadCast(COLOR_YELLOW, string, 2);
 		SendClientMessage(playerid, COLOR_RED, "Your account is banned! You can appeal this at http://www.ng-gaming.net/forums");
 		SystemBan(playerid, "[System] (Tried to login while banned)");
+		format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) tried to login whilst banned and has been auto-banned.", GetPlayerNameEx( playerid ), GetPVarInt(playerid, "pSQLID"), PlayerInfo[playerid][pIP] );
 		Log("logs/ban.log", string);
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
@@ -381,7 +382,7 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pVIPExpire] > 0 && (1 <= PlayerInfo[playerid][pDonateRank] <= 3) && (PlayerInfo[playerid][pVIPExpire] < gettime()) && PlayerInfo[playerid][pAdmin] < 2)
 	{
 	    PlayerInfo[playerid][pVIPSellable] = 0;
-	    format(string, sizeof(string), "[DEBUG] %s (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
+	    format(string, sizeof(string), "[DEBUG] %s(%d) (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
 	    Log("logs/vipremove.log", string);
 	}
 
@@ -395,7 +396,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
 		}
@@ -406,7 +407,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*5*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*5*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 500 credits.");
 		}
@@ -417,7 +418,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
 		}
@@ -428,7 +429,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*10*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*10*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 1000 credits.");
 		}
@@ -439,7 +440,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
 		}
@@ -450,7 +451,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*15*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*15*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 1500 credits.");
 		}
@@ -461,7 +462,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
 		}
@@ -472,7 +473,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*20*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*20*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 2000 credits.");
 		}
@@ -483,7 +484,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
 		}
@@ -494,7 +495,7 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pRefers]++;
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), CREDITS_AMOUNT_REFERRAL*25*PlayerInfo[playerid][pPendingRefReward]);
+			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*25*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 2500 credits.");
 		}
@@ -529,7 +530,7 @@ public OnPlayerLoad(playerid)
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	        SendClientMessageEx(playerid, COLOR_RED, "Your business has been removed as it has expired.");
-	        format(string, sizeof(string), "[BUSINESS EXPIRED] %s business id %i has been removed as it has expired.", GetPlayerNameEx(playerid), Business);
+	        format(string, sizeof(string), "[BUSINESS EXPIRED] %s(%d) business id %i has been removed as it has expired.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), Business);
 			Log("logs/shoplog.log", string);
 
 	    }
@@ -583,7 +584,7 @@ public OnPlayerLoad(playerid)
 		GetPlayerName(playerid, name, sizeof(name));
 		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has attempted to log in with Admin Level %d.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pAdmin]);
 		ABroadCast( COLOR_YELLOW, string, 4 );
-		format(string, sizeof(string), "%s has attempted to log in with Admin Level %d.", name, PlayerInfo[playerid][pAdmin]);
+		format(string, sizeof(string), "%s(%d) has attempted to log in with Admin Level %d.", name, GetPlayerSQLId(playerid), PlayerInfo[playerid][pAdmin]);
 		Log("logs/security.log", string);
 		PlayerInfo[playerid][pAdmin] = 0;
 	}
@@ -691,7 +692,7 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pWarns] >= 3)
 	{
-		format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (had 3 Warnings)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+		format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (had 3 Warnings)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 		Log("logs/ban.log", string);
 		format(string, sizeof(string), "AdmCmd: %s was banned (had 3 Warnings)", GetPlayerNameEx(playerid));
 		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -819,7 +820,7 @@ public OnPlayerLoad(playerid)
 			GiftPlayer(MAX_PLAYERS, playerid);
 			format(string, sizeof(string), "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(playerid));
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			format(string, sizeof(string), "%s has received a free gift for his birthday (%s) (OnPlayerLoad).", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBirthDate]);
+			format(string, sizeof(string), "%s(%d) has received a free gift for his birthday (%s) (OnPlayerLoad).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pBirthDate]);
 			Log("logs/birthday.log", string);
 			OnPlayerStatsUpdate(playerid);
 		}

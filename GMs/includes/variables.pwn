@@ -1141,6 +1141,7 @@ new Float:shop_vertices[] = {
 new restarting;
 new PassComplexCheck;
 new PlayerShots[MAX_PLAYERS];
+new GarageInfo[MAX_GARAGES][garInfo];
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
@@ -1236,7 +1237,12 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19310, 0, "Taxi03"},
 {19311, 0, "Taxi04"},
 {2590, 0, "Scythe"},
-{347, 0, "Silenced Pistol"}
+{347, 0, "Silenced Pistol"},
+{19330, 0, "Fire Hat01"},
+{19331, 0, "Fire Hat02"},
+{336, 0, "Baseball Bat"},
+{341, 0, "Chainsaw"},
+{2035, 0, "Rusty M4"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1567,7 +1573,12 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19310, 0, "Taxi03"},
 {19311, 0, "Taxi04"},
 {2590, 0, "Scythe"},
-{347, 0, "Silenced Pistol"}
+{347, 0, "Silenced Pistol"},
+{19330, 0, "Fire Hat01"},
+{19331, 0, "Fire Hat02"},
+{336, 0, "Baseball Bat"},
+{341, 0, "Chainsaw"},
+{2035, 0, "Rusty M4"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

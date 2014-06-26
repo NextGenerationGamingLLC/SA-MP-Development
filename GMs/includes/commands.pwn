@@ -1719,7 +1719,7 @@ CMD:jetpack(playerid, params[])
 				SetPlayerSpecialAction(plo, SPECIAL_ACTION_USEJETPACK);
 				format(string, sizeof(string), "AdmCmd: %s has received a jetpack from %s", GetPlayerNameEx(plo), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s (IP:%s) a Jetpack.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(plo), GetPlayerIpEx(plo));
+				format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s(%d) (IP:%s) a Jetpack.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(plo), GetPlayerSQLId(plo), GetPlayerIpEx(plo));
 				Log("logs/admingive.log", string);
 			}
 		}
@@ -2199,6 +2199,10 @@ CMD:fix(playerid, params[])
 		else if(GetPVarInt(playerid, "EventToken"))
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+		}
+		else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen"))
+		{
+			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		}
   		else
 		{
@@ -4192,7 +4196,7 @@ CMD:buyhouse(playerid, params[])
 					PlayerInfo[playerid][pVW] = HouseInfo[h][hIntVW];
 					SetPlayerVirtualWorld(playerid,HouseInfo[h][hIntVW]);
 					ReloadHouseText(h);
-					format(string,sizeof(string),"%s (IP: %s) has bought house ID %d for $%d.",GetPlayerNameEx(playerid),GetPlayerIpEx(playerid),h,HouseInfo[h][hValue]);
+					format(string,sizeof(string),"%s(%d) (IP: %s) has bought house ID %d for $%d.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid),h,HouseInfo[h][hValue]);
 					Log("logs/house.log", string);
 					if(HouseInfo[h][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[h][hInteriorX],HouseInfo[h][hInteriorY],HouseInfo[h][hInteriorZ], FREEZE_TIME);
 					return 1;
@@ -4481,7 +4485,7 @@ CMD:placemailbox(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: If you need to change the location of your mailbox, you can type /movemailbox" );
 
 	new szLog[128];
-	format(szLog, sizeof(szLog), "%s has placed a mailbox for their house (House ID: %d)", GetPlayerNameEx(playerid), h);
+	format(szLog, sizeof(szLog), "%s(%d) has placed a mailbox for their house (House ID: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), h);
 	Log("logs/house.log", szLog);
 
 	return 1;
@@ -4503,7 +4507,7 @@ CMD:destroymailbox(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have destroyed your mailbox.");
 
 	new szLog[128];
-	format(szLog, sizeof(szLog), "%s has destroyed their house mailbox (House ID: %d)", GetPlayerNameEx(playerid), h);
+	format(szLog, sizeof(szLog), "%s(%d) has destroyed their house mailbox (House ID: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), h);
 	Log("logs/house.log", szLog);
 
 	return 1;
@@ -4960,7 +4964,7 @@ CMD:mjail(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "AdmCmd: %s has been jailed by %s, reason: %s", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid), szReason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
 
-			format(szMessage, sizeof(szMessage), "AdmCmd: %s has been jailed by %s, reason: %s", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid), szReason);
+			format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) has been jailed by %s(%d), reason: %s", GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), szReason);
 			Log("logs/moderator.log", szMessage);
 
 			format(szMessage, sizeof(szMessage), "You have been jailed by Server Moderator %s for 20 minutes for violation of server rules.", GetPlayerNameEx(playerid));
@@ -5711,6 +5715,9 @@ CMD:joinevent(playerid, params[]) {
 	else if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || GetPVarInt(playerid, "Injured")) {
 		SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
 	}
+	else if(PlayerInfo[playerid][pAccountRestricted] != 0) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this while your account is restricted!");
+	}
 	else if(EventKernel[VipOnly] == 1 && PlayerInfo[playerid][pDonateRank] < 1) {
 		SendClientMessageEx(playerid, COLOR_GRAD2, "This event is restricted to VIP's only.");
 	}
@@ -6148,7 +6155,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6159,7 +6166,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL*5);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*5);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 500 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6170,7 +6177,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6181,7 +6188,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL*10);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*10);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1000 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6192,7 +6199,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6203,7 +6210,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL*15);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*15);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1500 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6214,7 +6221,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6225,7 +6232,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL*20);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*20);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2000 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6236,7 +6243,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -6247,7 +6254,7 @@ CMD:buylevel(playerid, params[])
 	            				PlayerInfo[szReferrer][pRefers] ++;
 								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
 								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-								format(szString, sizeof(szString), "%s has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), CREDITS_AMOUNT_REFERRAL*25);
+								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*25);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2500 credits.", GetPlayerNameEx(playerid));
 						        SendClientMessageEx(szReferrer, COLOR_LIGHTBLUE, string);
@@ -7012,7 +7019,7 @@ CMD:aobject(playerid, params[])
 		if(IsPlayerAttachedObjectSlotUsed(id, 8)) RemovePlayerAttachedObject(id, 8);
 		SetPlayerAttachedObject(id, 8, objectid, bone, offsetx, offsety, offsetz, rotx, roty, rotz, scalex, scaley, scalez);
 		new string[256];
-		format(string, sizeof(string), "%s has given %s object ID %d with /aobject", GetPlayerNameEx(playerid), GetPlayerNameEx(id), objectid);
+		format(string, sizeof(string), "%s has given %s(%d) object ID %d with /aobject", GetPlayerNameEx(playerid), GetPlayerNameEx(id), GetPlayerSQLId(id), objectid);
 		Log("logs/toys.log", string);
 	}
 	return 1;
@@ -9551,7 +9558,7 @@ CMD:accept(playerid, params[])
             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
             format(string, sizeof(string), "* %s has accepted your invitation and joined %s", GetPlayerNameEx(playerid),Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
             SendClientMessageEx(GetPVarInt(playerid, "Business_Inviter"), COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "%s has accepted %s's invite to join %s", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")), Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
+			format(string, sizeof(string), "%s(%d) has accepted %s's(%d) invite to join %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")), GetPlayerSQLId(GetPVarInt(playerid, "Business_Inviter")), Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
 			Log("logs/business.log", string);
    			DeletePVar(playerid, "Business_Inviter");
       		DeletePVar(playerid, "Business_Invited");
@@ -9603,7 +9610,7 @@ CMD:accept(playerid, params[])
             ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             GivePlayerValidWeapon(playerid,GetPVarInt(playerid, "Business_WeapType"),50000);
 
-			format(string, sizeof(string), "%s %s (IP: %s) has sold a %s to %s (IP: %s) for $%d in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerIpEx(offerer), Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "Business_WeapPrice"), Businesses[business][bName], business);
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s(%d) (IP: %s) for $%d in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "Business_WeapPrice"), Businesses[business][bName], business);
 			Log("logs/business.log", string);
 
   		    DeletePVar(playerid, "Business_WeapPrice");
@@ -9750,7 +9757,7 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(VehicleOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "[CAR] %s (IP: %s) has paid $%s to %s for the %s (IP: %s)", GetPlayerNameEx(playerid), ip, number_format(VehiclePrice[playerid]), GetPlayerNameEx(VehicleOffer[playerid]), GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), ipex);
+                            format(szMessage, sizeof(szMessage), "[CAR] %s(%d) (IP: %s) has paid $%s to %s(%d) for the %s (IP: %s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(VehiclePrice[playerid]), GetPlayerNameEx(VehicleOffer[playerid]), GetPlayerSQLId(VehicleOffer[playerid]), GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), ipex);
                             Log("logs/pay.log", szMessage);
                             GetPlayerName(VehicleOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
@@ -9926,7 +9933,7 @@ CMD:accept(playerid, params[])
                         new ip[32], ipex[32];
                         GetPlayerIp(HouseOffer[playerid], ip, sizeof(ip));
                         GetPlayerIp(playerid, ipex, sizeof(ipex));
-                        format(szMessage,sizeof(szMessage),"%s (IP: %s) has sold their house (ID %d) to %s (IP: %s) for $%s.", GetPlayerNameEx(HouseOffer[playerid]), ip, House[playerid], GetPlayerNameEx(playerid), ipex, number_format(HousePrice[playerid]));
+                        format(szMessage,sizeof(szMessage),"%s(%d) (IP: %s) has sold their house (ID %d) to %s(%d) (IP: %s) for $%s.", GetPlayerNameEx(HouseOffer[playerid]), GetPlayerSQLId(HouseOffer[playerid]), ip, House[playerid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipex, number_format(HousePrice[playerid]));
                         Log("logs/house.log", szMessage);
 
                         HouseOffer[playerid] = INVALID_PLAYER_ID;
@@ -10172,7 +10179,7 @@ CMD:accept(playerid, params[])
 					format(szMessage, sizeof szMessage, "%s accepted your group invite.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(iInviter, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s accepted %s %s's invite to join %s (%d).", GetPlayerNameEx(playerid), arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					format(szMessage, sizeof szMessage, "%s(%d) accepted %s %s's(%d) invite to join %s (%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), GetPlayerSQLId(iInviter), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					Log("logs/group.log", szMessage);
 
 					DeletePVar(playerid, "Group_Invite");
@@ -10862,7 +10869,7 @@ CMD:accept(playerid, params[])
      					new ip[32], ipex[32];
           				GetPlayerIp(playerid, ip, sizeof(ip));
               			GetPlayerIp(MatsOffer[playerid], ipex, sizeof(ipex));
-                 		format(szMessage, sizeof(szMessage), "[MATERIALS (%s)] %s (IP:%s) has paid $%s to %s (IP:%s)", number_format(MatsAmount[playerid]), GetPlayerNameEx(playerid), ip, number_format(MatsPrice[playerid]), GetPlayerNameEx(MatsOffer[playerid]), ipex);
+                 		format(szMessage, sizeof(szMessage), "[MATERIALS (%s)] %s(%d) (IP:%s) has paid $%s to %s(%d) (IP:%s)", number_format(MatsAmount[playerid]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(MatsPrice[playerid]), GetPlayerNameEx(MatsOffer[playerid]), GetPlayerSQLId(MatsOffer[playerid]), ipex);
                    		Log("logs/pay.log", szMessage);
 
          				format(szMessage, sizeof(szMessage), "* You bought %s materials for $%s from %s.", number_format(MatsAmount[playerid]), number_format(MatsPrice[playerid]), GetPlayerNameEx(MatsOffer[playerid]));
@@ -10971,7 +10978,7 @@ CMD:accept(playerid, params[])
 	                    PlayerInfo[GetPVarInt(playerid, "RimOffer")][pRimMod] -= GetPVarInt(playerid, "RimCount");
 	                    PlayerInfo[playerid][pRimMod] += GetPVarInt(playerid, "RimCount");
 
-                        format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) rim kits for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "RimCount"), number_format(GetPVarInt(playerid, "RimPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "RimOffer")), GetPlayerIpEx(GetPVarInt(playerid, "RimOffer")));
+                        format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) rim kits for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "RimCount"), number_format(GetPVarInt(playerid, "RimPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "RimOffer")), GetPlayerSQLId(GetPVarInt(playerid, "RimOffer")), GetPlayerIpEx(GetPVarInt(playerid, "RimOffer")));
 						Log("logs/pay.log", szMessage);
 
 						OnPlayerStatsUpdate(playerid);
@@ -11021,7 +11028,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Car Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pVehVoucher] += amount;
 						PlayerInfo[sellerid][pVehVoucher] -= amount;
@@ -11042,7 +11049,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Silver VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPVoucher] -= amount;
@@ -11063,7 +11070,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Gold VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPVoucher] -= amount;
@@ -11084,7 +11091,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Platinum VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Platinum VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Platinum VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pPVIPVoucher] += amount;
 						PlayerInfo[sellerid][pPVIPVoucher] -= amount;
@@ -11105,7 +11112,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Restricted Car Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Restricted Car Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Restricted Car Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pCarVoucher] += amount;
 						PlayerInfo[sellerid][pCarVoucher] -= amount;
@@ -11126,7 +11133,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d Priority Advertisement Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Priority Advertisement Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Priority Advertisement Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pAdvertVoucher] += amount;
 						PlayerInfo[sellerid][pAdvertVoucher] -= amount;
@@ -11147,7 +11154,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Silver VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Day Silver VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 7 Day Silver VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPExVoucher] -= amount;
@@ -11168,7 +11175,7 @@ CMD:accept(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "* %s has bought %d 7 Days Gold VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) 7 Days Gold VIP Voucher(s) for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 7 Days Gold VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPExVoucher] -= amount;
@@ -11208,7 +11215,7 @@ CMD:accept(playerid, params[])
 	                    PlayerInfo[GetPVarInt(playerid, "HeroinOffer")][pHeroin] -= GetPVarInt(playerid, "HeroinCount");
 	                    PlayerInfo[playerid][pHeroin] += GetPVarInt(playerid, "HeroinCount");
 
-                        format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) Heroin for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "HeroinPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "HeroinOffer")), GetPlayerIpEx(GetPVarInt(playerid, "HeroinOffer")));
+                        format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Heroin for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "HeroinPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "HeroinOffer")), GetPlayerSQLId(GetPVarInt(playerid, "HeroinOffer")), GetPlayerIpEx(GetPVarInt(playerid, "HeroinOffer")));
 						Log("logs/pay.log", szMessage);
 
 						OnPlayerStatsUpdate(playerid);
@@ -11256,7 +11263,7 @@ CMD:accept(playerid, params[])
 	                    PlayerInfo[GetPVarInt(playerid, "RawOpiumOffer")][pRawOpium] -= GetPVarInt(playerid, "RawOpiumCount");
 	                    PlayerInfo[playerid][pRawOpium] += GetPVarInt(playerid, "RawOpiumCount");
 
-	                    format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought (%d) grams of raw opium for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "RawOpiumPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "RawOpiumOffer")), GetPlayerIpEx(GetPVarInt(playerid, "RawOpiumOffer")));
+	                    format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) grams of raw opium for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "RawOpiumPrice")),  GetPlayerNameEx(GetPVarInt(playerid, "RawOpiumOffer")), GetPlayerSQLId(GetPVarInt(playerid, "RawOpiumOffer")), GetPlayerIpEx(GetPVarInt(playerid, "RawOpiumOffer")));
 						Log("logs/pay.log", szMessage);
 
 						OnPlayerStatsUpdate(playerid);
@@ -11521,7 +11528,7 @@ CMD:accept(playerid, params[])
                         new ip[32], ipex[32];
                         GetPlayerIp(playerid, ip, sizeof(ip));
                         GetPlayerIp(GunOffer[playerid], ipex, sizeof(ipex));
-                        format(szMessage, sizeof(szMessage), "[WEAPON DEAL] %s(IP:%s) has bought a %s from %s(IP:%s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(GunOffer[playerid]), ipex);
+                        format(szMessage, sizeof(szMessage), "[WEAPON DEAL] %s(%d) (IP:%s) has bought a %s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, weaponname, GetPlayerNameEx(GunOffer[playerid]), GetPlayerSQLId(GunOffer[playerid]), ipex);
                         Log("logs/sell.log", szMessage);
                         PlayerInfo[GunOffer[playerid]][pMats] -= GunMats[playerid];
 
@@ -11752,7 +11759,7 @@ CMD:accept(playerid, params[])
                         new ip[32], ipex[32];
                         GetPlayerIp(playerid, ip, sizeof(ip));
                         GetPlayerIp(CraftOffer[playerid], ipex, sizeof(ipex));
-                        format(szMessage, sizeof(szMessage), "[CRAFTSMAN DEAL] %s (IP: %s) has bought a %s from %s (IP: %s)", GetPlayerNameEx(playerid), ip, weaponname, GetPlayerNameEx(CraftOffer[playerid]), ipex);
+                        format(szMessage, sizeof(szMessage), "[CRAFTSMAN DEAL] %s(%d) (IP: %s) has bought a %s from %s(%d) (IP: %s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, weaponname, GetPlayerNameEx(CraftOffer[playerid]), GetPlayerSQLId(CraftOffer[playerid]), ipex);
                         Log("logs/sell.log", szMessage);
                         PlayerInfo[CraftOffer[playerid]][pMats] -= CraftMats[playerid];
                         PlayerInfo[CraftOffer[playerid]][pArmsSkill]++;
@@ -11820,12 +11827,13 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(SexOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "[SEX] %s (IP:%s) had sex with %s (IP:%s) for %d.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, SexPrice[playerid]);
+                            format(szMessage, sizeof(szMessage), "[SEX] %s(%d) (IP:%s) had sex with %s(%d) (IP:%s) for %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), GetPlayerSQLId(SexOffer[playerid]), ipex, SexPrice[playerid]);
                             Log("logs/sell.log", szMessage);
 
                             if(SexPrice[playerid] >= 25000 && (PlayerInfo[SexOffer[playerid]][pLevel] <= 3 || PlayerInfo[playerid][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s (IP:%s) had sex with %s (IP:%s) for $%s in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, number_format(SexPrice[playerid]));
+                                format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) had sex with %s(%d) (IP:%s) for $%s in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), GetPlayerSQLId(SexOffer[playerid]), ipex, number_format(SexPrice[playerid]));
                                 Log("logs/sell.log", szMessage);
+                                format(szMessage, sizeof(szMessage), "%s (IP:%s) had sex with %s (IP:%s) for $%s in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(SexOffer[playerid]), ipex, number_format(SexPrice[playerid]));
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -11992,7 +12000,7 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(RepairOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "%s(IP:%s) has repaired the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+                            format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
                             Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has repaired %s's vehicle.", GetPlayerNameEx(RepairOffer[playerid]), GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -12000,8 +12008,9 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
                             if(RepairPrice[playerid] >= 25000 && (PlayerInfo[RepairOffer[playerid]][pLevel] <= 3 || PlayerInfo[RepairOffer[playerid]][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s (IP:%s) has repaired %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
+                                format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has repaired %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), GetPlayerSQLId(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
                                 Log("logs/sell.log", szMessage);
+								format(szMessage, sizeof(szMessage), "%s (IP:%s) has repaired %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RepairOffer[playerid]), ipex, RepairPrice[playerid]);
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -12074,7 +12083,7 @@ CMD:accept(playerid, params[])
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(RefillOffer[playerid], ipex, sizeof(ipex));
-                            format(szMessage, sizeof(szMessage), "%s(IP:%s) has refilled the vehicle from %s(IP:%s) for $%d", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+                            format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refilled the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
 							Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", GetPlayerNameEx(RefillOffer[playerid]), GetPlayerNameEx(playerid));
                             ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -12095,8 +12104,9 @@ CMD:accept(playerid, params[])
 							}
 
                             if(RefillPrice[playerid] >= 30000 && (PlayerInfo[playerid][pLevel] <= 3 || PlayerInfo[RefillOffer[playerid]][pLevel] <= 3)) {
-                                format(szMessage, sizeof(szMessage), "%s (IP:%s) has refueled %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
+                                format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refueled %s(%d) (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
                                 Log("logs/sell.log", szMessage);
+								format(szMessage, sizeof(szMessage), "%s (IP:%s) has refueled %s (IP:%s) $%d in this session.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
@@ -12171,7 +12181,7 @@ CMD:accept(playerid, params[])
 						PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBItems][i] = 0;
 					}
 
-					format(szMessage, sizeof(szMessage), "%s (IP:%s) has bought %s Backpack for $%s from %s (IP:%s)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, number_format(GetPVarInt(playerid, "sellbackpackprice")),  GetPlayerNameEx(GetPVarInt(playerid, "sellbackpack")), GetPlayerIpEx(GetPVarInt(playerid, "sellbackpack")));
+					format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought %s Backpack for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), btype, number_format(GetPVarInt(playerid, "sellbackpackprice")),  GetPlayerNameEx(GetPVarInt(playerid, "sellbackpack")), GetPlayerSQLId(GetPVarInt(playerid, "sellbackpack")), GetPlayerIpEx(GetPVarInt(playerid, "sellbackpack")));
 					Log("logs/pay.log", szMessage);
 					Log("logs/backpack.log", szMessage);
 
@@ -13263,6 +13273,69 @@ CMD:enter(playerid, params[])
             break;
         }
     }
+	for(new i = 0; i < sizeof(GarageInfo); i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW])
+		{
+			if(GarageInfo[i][gar_Locked] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "This garage is currently locked.");
+			PlayerInfo[playerid][pVW] = GarageInfo[i][gar_InteriorVW];
+			SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_InteriorVW]);
+			SetPlayerInterior(playerid, 1);
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			{
+				SetVehiclePos(GetPlayerVehicleID(playerid), GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]);
+				SetVehicleZAngle(GetPlayerVehicleID(playerid), GarageInfo[i][gar_InteriorA]);
+				SetVehicleVirtualWorld(GetPlayerVehicleID(playerid), GarageInfo[i][gar_InteriorVW]);
+				LinkVehicleToInterior(GetPlayerVehicleID(playerid), 1);
+				if(GetPVarInt(playerid, "tpForkliftTimer") > 0)
+				{
+					SetPVarInt(playerid, "tpJustEntered", 1);
+					new Float: pX, Float: pY, Float: pZ;
+					GetPlayerPos(playerid, pX, pY, pZ);
+					SetPVarFloat(playerid, "tpForkliftX", pX);
+					SetPVarFloat(playerid, "tpForkliftY", pY);
+					SetPVarFloat(playerid, "tpForkliftZ", pZ);
+				}
+				if(DynVeh[GetPlayerVehicleID(playerid)] != -1)
+				{
+					new vw[1];
+					vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
+					if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+					{
+						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+					}
+					if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+					{
+						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+					}
+				}
+				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+				{
+					if(IsPlayerConnected(passenger))
+					{
+						if(passenger != playerid)
+						{
+							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
+							{
+								SetPlayerInterior(passenger, 1);
+								PlayerInfo[passenger][pInt] = 1;
+								PlayerInfo[passenger][pVW] = GarageInfo[i][gar_InteriorVW];
+								SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_InteriorVW]);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				SetPlayerPos(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]);
+				SetPlayerFacingAngle(playerid, GarageInfo[i][gar_InteriorA]);
+				SetCameraBehindPlayer(playerid);
+			}
+			Player_StreamPrep(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ], FREEZE_TIME);
+			break;
+		}
+	}
     for(new i = 0; i < sizeof(FamilyInfo); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3.0,FamilyInfo[i][FamilyEntrance][0], FamilyInfo[i][FamilyEntrance][1], FamilyInfo[i][FamilyEntrance][2])) {
             SetPlayerInterior(playerid,FamilyInfo[i][FamilyInterior]);
@@ -13689,6 +13762,69 @@ CMD:exit(playerid, params[])
             return 1;
         }
     }
+	for(new i = 0; i <  sizeof(GarageInfo); i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
+		{
+			SetPlayerInterior(playerid, GarageInfo[i][gar_ExteriorInt]);
+			PlayerInfo[playerid][pInt] = GarageInfo[i][gar_ExteriorInt];
+			SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_ExteriorVW]);
+			PlayerInfo[playerid][pVW] = GarageInfo[i][gar_ExteriorVW];
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			{
+				SetVehiclePos(GetPlayerVehicleID(playerid), GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]);
+				SetVehicleZAngle(GetPlayerVehicleID(playerid), GarageInfo[i][gar_ExteriorA]);
+				SetVehicleVirtualWorld(GetPlayerVehicleID(playerid), GarageInfo[i][gar_ExteriorVW]);
+				LinkVehicleToInterior(GetPlayerVehicleID(playerid), GarageInfo[i][gar_ExteriorInt]);
+				if(GetPVarInt(playerid, "tpForkliftTimer") > 0)
+				{
+					SetPVarInt(playerid, "tpJustEntered", 1);
+					new Float: pX, Float: pY, Float: pZ;
+					GetPlayerPos(playerid, pX, pY, pZ);
+					SetPVarFloat(playerid, "tpForkliftX", pX);
+					SetPVarFloat(playerid, "tpForkliftY", pY);
+					SetPVarFloat(playerid, "tpForkliftZ", pZ);
+				}
+				if(DynVeh[GetPlayerVehicleID(playerid)] != -1)
+				{
+					new vw[1];
+					vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
+					if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+					{
+						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+					}
+					if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+					{
+						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+					}
+				}
+				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+				{
+					if(IsPlayerConnected(passenger))
+					{
+						if(passenger != playerid)
+						{
+							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
+							{
+								SetPlayerInterior(passenger,GarageInfo[i][gar_ExteriorInt]);
+								PlayerInfo[passenger][pInt] = GarageInfo[i][gar_ExteriorInt];
+								PlayerInfo[passenger][pVW] = GarageInfo[i][gar_ExteriorVW];
+								SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_ExteriorVW]);
+							}
+						}
+					}
+				}
+			}
+			else 
+			{
+				SetPlayerPos(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]);
+				SetPlayerFacingAngle(playerid, GarageInfo[i][gar_ExteriorA]);
+				SetCameraBehindPlayer(playerid);
+			}
+			if(GarageInfo[i][gar_CustomExterior]) Player_StreamPrep(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ], FREEZE_TIME);
+			break;
+		}
+	}
     for(new i = 0; i < sizeof(FamilyInfo); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3.0,FamilyInfo[i][FamilyExit][0], FamilyInfo[i][FamilyExit][1], FamilyInfo[i][FamilyExit][2]) && PlayerInfo[playerid][pVW] == FamilyInfo[i][FamilyVirtualWorld]) {
             PlayerInfo[playerid][pInt] = 0;
@@ -15345,7 +15481,7 @@ CMD:kos(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/kos) by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/kos) by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15408,7 +15544,7 @@ CMD:kos(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15433,7 +15569,7 @@ CMD:kos(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					
@@ -15511,7 +15647,7 @@ CMD:skos(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/skos) by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/skos) by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -15574,7 +15710,7 @@ CMD:skos(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), ip);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by an Admin (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: KoS", GetPlayerNameEx(giveplayerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15599,7 +15735,7 @@ CMD:skos(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					
@@ -15667,7 +15803,7 @@ CMD:pg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/pg) by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/pg) by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15718,7 +15854,7 @@ CMD:pg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15778,7 +15914,7 @@ CMD:spg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/spg) by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/spg) by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -15829,7 +15965,7 @@ CMD:spg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), ip);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by an Admin (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: PG", GetPlayerNameEx(giveplayerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -15923,7 +16059,7 @@ CMD:mg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16017,7 +16153,7 @@ CMD:smg(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by an Admin (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), ip);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by an Admin (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by an Admin (Punished while restricted), reason: MG", GetPlayerNameEx(giveplayerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16075,7 +16211,7 @@ CMD:nonrp(playerid, params[])
 
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked (/nonrp) %s from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				format(string, sizeof(string), "Administrator %s has group-kicked (/nonrp) %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
 				Log("logs/group.log", string);
 				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
@@ -16115,7 +16251,7 @@ CMD:nonrp(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/nonrp) by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/nonrp) by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16213,7 +16349,7 @@ CMD:snonrp(playerid, params[])
 
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked (/snonrp) %s from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				format(string, sizeof(string), "Administrator %s has group-kicked (/snonrp) %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
 				Log("logs/group.log", string);
 				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
@@ -16253,7 +16389,7 @@ CMD:snonrp(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned (/snonrp) by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (/snonrp) by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -16369,7 +16505,7 @@ CMD:dm(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: Deathmatching", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -16439,7 +16575,7 @@ CMD:dm(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
 						
-						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 				}
@@ -16495,7 +16631,7 @@ CMD:sdm(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: DM", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid));
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: DM", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -16565,7 +16701,7 @@ CMD:sdm(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
 						
-						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 				}
@@ -16902,7 +17038,7 @@ CMD:reward(playerid, params[])
   		if(money < 1 || money > 50000) return SendClientMessageEx(playerid, COLOR_GRAD5, "Reward amount cannot be lower than $1 or higher than $50,000!");
     	new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
    		GetPlayerGroupInfo(playerid, rank, division, employer);
-	    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has just rewarded %s $%d.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), money);
+	    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s(%d) has just rewarded %s(%d) $%d.", rank, GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), money);
 	    ABroadCast(COLOR_YELLOW,string, 2);
 
 		format(string, sizeof(string), "AdmCmd: %s %s has just rewarded %s $%d", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), money);
@@ -18493,7 +18629,7 @@ CMD:plantopiumseeds(playerid, params[]) {
 				PlacePlant(i, GetPlayerSQLId(playerid), 2, 859, PlayerInfo[playerid][pDrugsSkill], xyz[0], xyz[1], xyz[2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 				SavePlant(i);
 				new string[128];
-				format(string, sizeof(string), "%s (IP:%s) has placed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i);
+				format(string, sizeof(string), "%s(%d) (IP:%s) has placed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 				Log("logs/plant.log", string);
 				format(szMessage, sizeof(szMessage), "* %s plants some opium.", GetPlayerNameEx(playerid));
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -18536,7 +18672,7 @@ CMD:plantpotseeds(playerid, params[]) {
                 PlacePlant(i, GetPlayerSQLId(playerid), 1, 19473, PlayerInfo[playerid][pDrugsSkill], xyz[0], xyz[1], xyz[2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
                 SavePlant(i);
                 new string[128];
-				format(string, sizeof(string), "%s (IP:%s) has placed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i);
+				format(string, sizeof(string), "%s(%d) (IP:%s) has placed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 				Log("logs/plant.log", string);
 				format(szMessage, sizeof(szMessage), "* %s plants some weed.", GetPlayerNameEx(playerid));
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -18680,7 +18816,7 @@ CMD:adestroyplant(playerid, params[]) {
 					format(szMessage, sizeof(szMessage), "Administrator %s has destroyed your plant.", GetPlayerNameEx(playerid), Plants[i][pGrowth]);
 					SendClientMessageEx(iTargetID, COLOR_GREY, szMessage);
                     new string[128];
-					format(string, sizeof(string), "%s (IP:%s) has destroyed %s (IP:%s) plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerIpEx(iTargetID), i);
+					format(string, sizeof(string), "%s (IP:%s) has destroyed %s(%d) (IP:%s) plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID), i);
 					Log("logs/plant.log", string);
                     PlayerInfo[iTargetID][pWeedObject] = 0;
                     DestroyPlant(i);
@@ -18726,7 +18862,7 @@ CMD:destroyplant(playerid, params[]) {
 									}
 								}	
 							}
-							format(szMessage, sizeof(szMessage), "%s (IP:%s) has destroyed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i);
+							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
 							SavePlant(i);
@@ -18750,7 +18886,7 @@ CMD:destroyplant(playerid, params[]) {
 									}
 								}	
 							}
-							format(szMessage, sizeof(szMessage), "%s (IP:%s) has destroyed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i);
+							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
 							SavePlant(i);
@@ -18844,7 +18980,7 @@ CMD:pickplant(playerid, params[])
 									}
 								}	
 							}
-							format(szMessage, sizeof(szMessage), "%s (IP:%s) has picked weed plant (%d) and recieved %d grams", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i, Plants[i][pGrowth]);
+							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked weed plant (%d) and recieved %d grams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Plants[i][pGrowth]);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pPot] += Plants[i][pGrowth];
 							DestroyPlant(i);
@@ -18878,7 +19014,7 @@ CMD:pickplant(playerid, params[])
 									}
 								}	
 							}
-							format(szMessage, sizeof(szMessage), "%s (IP:%s) has picked opium plant (%d) and recieved %d milligrams", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), i, Grams);
+							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked opium plant (%d) and recieved %d milligrams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Grams);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pRawOpium] += Grams;
 							DestroyPlant(i);
@@ -19100,7 +19236,7 @@ CMD:shopplate(playerid, params[])
 			SendClientMessage(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "(OrderID: %d) Plate: %s", orderid, plate);
 			SendClientMessage(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s set %s %s (Slot %d) plate to %s (order %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), GetVehicleName(carid), iVehIndex, plate, orderid);
+			format(string, sizeof(string), "%s set %s(%d) %s (Slot %d) plate to %s (order %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), GetPlayerSQLId(iTargetOwner), GetVehicleName(carid), iVehIndex, plate, orderid);
 			Log("logs/shoplog.log", string);
 		}
 		else
@@ -19158,7 +19294,7 @@ CMD:shopcar(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "You have successfully created a %s for %s (invoice %s).", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID), szInvoice);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
-			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s (invoice %s).", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), szInvoice);
+			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d) (invoice %s).", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szInvoice);
 			Log("logs/shoplog.log", szMessage);
 		}
 	}
@@ -19180,7 +19316,7 @@ CMD:destroypvehicle(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "An Administrator has deleted your %s.", GetVehicleName(vehicleid));
 		SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-		format(string, sizeof(string), "%s has destroyed %s's %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(vehicleid));
+		format(string, sizeof(string), "%s has destroyed %s's(%d) %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetVehicleName(vehicleid));
 		Log("logs/playervehicle.log", string);
 		DestroyPlayerVehicle(giveplayerid, playervehicleid);
 	}
@@ -19202,7 +19338,7 @@ CMD:shopcardel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "An Administrator has deleted your %s.", GetVehicleName(vehicleid));
 		SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-		format(string, sizeof(string), "[SHOPCARDEL] %s deleted vehicle ID %d - Invoice %s for %s", GetPlayerNameEx(playerid), playervehicleid, invoicenum, GetPlayerNameEx(giveplayerid));
+		format(string, sizeof(string), "[SHOPCARDEL] %s deleted vehicle ID %d - Invoice %s for %s(%d)", GetPlayerNameEx(playerid), playervehicleid, invoicenum, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 		Log("logs/shoplog.log", string);
 		DestroyPlayerVehicle(giveplayerid, playervehicleid);
 	}
@@ -20061,7 +20197,7 @@ CMD:gwithdraw(playerid, params[])
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
 		format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%d of the group money from their vault, reason: %s.",GetPlayerNameEx(playerid),amount,reason);
 		ABroadCast( COLOR_YELLOW, string, 2);
- 		format(string,sizeof(string),"%s has withdrawn $%s of the group money from %s's vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),arrGroupData[iGroupID][g_szGroupName],reason);
+ 		format(string,sizeof(string),"%s(%d) has withdrawn $%s of the group money from %s's vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),arrGroupData[iGroupID][g_szGroupName],reason);
 		Log("logs/rpspecial.log", string);
 	}
 	else
@@ -20104,7 +20240,7 @@ CMD:gdonate(playerid, params[])
 			format(string, sizeof(string), "%s, you have donated $%s to your agency's budget.",GetPlayerNameEx(playerid), number_format(moneys));
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			SendClientMessageEx(playerid, COLOR_GRAD1, string);
-			format(string, sizeof(string), "%s has donated $%s to %s's budget vault.",GetPlayerNameEx(playerid), number_format(moneys), arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s(%d) has donated $%s to %s's budget vault.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(moneys), arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/pay.log", string);
 			return 1;
 		}
@@ -21845,7 +21981,7 @@ CMD:quitgroup(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have quit your group, you are now a civilian again.");
 		new string[128];
-		format(string, sizeof(string), "%s has quit the %s as a rank %i", GetPlayerNameEx(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
+		format(string, sizeof(string), "%s(%d) has quit the %s as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
 		Log("logs/group.log", string);
 		PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
@@ -23251,7 +23387,7 @@ CMD:writecheck(playerid, params[])
 			new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
- 			format(string, sizeof(string), "[CHECK] %s (IP:%s) has paid $%s to %s (IP:%s)", GetPlayerNameEx(playerid), ip, number_format(monies), GetPlayerNameEx(giveplayerid), ipex);
+ 			format(string, sizeof(string), "[CHECK] %s(%d) (IP:%s) has paid $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(monies), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex);
   			Log("logs/pay.log", string);
 		}
   		else
@@ -24472,7 +24608,7 @@ CMD:createpvehicle(playerid, params[]) {
 
 			format(szMessage, sizeof(szMessage), "You have successfully created a %s for %s.", VehicleName[iModelID - 400], GetPlayerNameEx(iTargetID));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s.", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID));
+			format(szMessage, sizeof(szMessage), "%s created a %s (%i) for %s(%d)", GetPlayerNameEx(playerid), VehicleName[iModelID - 400], iModelID, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
 			Log("logs/playervehicle.log", szMessage);
 		}
 	}
@@ -24499,7 +24635,7 @@ CMD:shopvest(playerid, params[])
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, string);
 	format(string, sizeof(string), "You have given %s a police vest in slot %d", GetPlayerNameEx(giveplayerid), slot);
 	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, string);
-	format(string, sizeof(string), "[SHOPVEST] %s has given %s a police vest toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+	format(string, sizeof(string), "[SHOPVEST] %s has given %s(%d) a police vest toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 
 	g_mysql_SaveToys(giveplayerid, slot);
@@ -24602,7 +24738,7 @@ CMD:shoplaser(playerid, params[])
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTGREEN, string);
 	format(string, sizeof(string), "You have given %s a %s laser in slot %d", GetPlayerNameEx(giveplayerid), color, slot);
 	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, string);
-	format(string, sizeof(string), "[SHOPLASER] %s has given %s a laser toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+	format(string, sizeof(string), "[SHOPLASER] %s has given %s(%d) a laser toy - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 	Log("logs/shoplog.log", string);
 
 	g_mysql_SaveToys(giveplayerid, slot);
@@ -24634,7 +24770,7 @@ CMD:permaban(playerid, params[])
 			{
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(IP:%s) was permanently banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was permanently banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was permanently banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -24684,7 +24820,7 @@ CMD:banaccount(playerid, params[])
 		{
 			new playerip[32];
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s(IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 			Log("logs/ban.log", string);
 			SendClientMessageEx(playerid, COLOR_WHITE, "The person is online and has been banned!");
 			format(string, sizeof(string), "AdmCmd: %s was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -25084,7 +25220,7 @@ CMD:blowup(playerid, params[])
 				new Float:boomx, Float:boomy, Float:boomz;
 				GetPlayerPos(giveplayerid,boomx, boomy, boomz);
 				CreateExplosion(boomx, boomy , boomz, 7, 1);
-				format(string, sizeof(string), "AdmCmd: %s has exploded %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "AdmCmd: %s has exploded %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/admin.log", string);
 			}
 			else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -25117,7 +25253,7 @@ CMD:givenos(playerid, params[])
 			AddVehicleComponent(VehicleID, 1010); PlayerPlaySound(giveplayerid,1133,0.0,0.0,0.0);//NOS
 			format(string, sizeof(string), " Successfully added nos to %s's vehicle.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid,COLOR_GRAD1,string);
-			format(string, sizeof(string), "AdmCmd: %s has given nos to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "AdmCmd: %s has given nos to %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/admin.log", string);
 		}
 		else
@@ -25266,7 +25402,7 @@ CMD:revive(playerid, params[])
 				format(string, sizeof(string), " You have revived %s.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been revived by an Admin.");
-				format(string, sizeof(string), "AdmCmd: %s has been revived by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 
 				KillEMSQueue(giveplayerid);
@@ -25314,7 +25450,7 @@ CMD:revivenear(playerid, params[])
 					KillEMSQueue(i);
 					ClearAnimations(i);
 					SetPlayerHealth(i, 100);
-					format(string, sizeof(string), "AdmCmd: %s has been revived by %s", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
 			}	
@@ -25346,7 +25482,7 @@ CMD:forcedeath(playerid, params[])
 				KillEMSQueue(giveplayerid);
 				ResetPlayerWeaponsEx(giveplayerid);
 				SpawnPlayer(giveplayerid);
-				format(string, sizeof(string), "AdmCmd: %s has forced death %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "AdmCmd: %s has forced death %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/admin.log", string);
 			}
 			else
@@ -26461,7 +26597,7 @@ CMD:buddyinvite(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "You have been invited by %s to become a Bronze VIP for 3 hours. Enjoy!", GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "BUDDY INVITE: %s has invited %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "BUDDY INVITE: %s(%d) has invited %s(%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 	Log("logs/setvip.log", string);
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
 	{
@@ -27019,7 +27155,7 @@ CMD:ipcheck(playerid, params[])
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
 			format(string, sizeof(string), "(ID: %d) - (Name: %s) - (IP: %s)", giveplayerid, GetPlayerNameEx(giveplayerid), playerip);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has IP Checked %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s has IP Checked %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminipcheck.log", string); else Log("logs/ipcheck.log", string);
 			return 1;
 		}
@@ -27033,7 +27169,7 @@ CMD:ipcheck(playerid, params[])
 					if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
 				}
 			}
-			format(string, sizeof(string), "%s tried to IP check %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s tried to IP check %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/adminipcheck.log", string);
 		}
 	}
@@ -27370,7 +27506,7 @@ CMD:claimpoint(playerid, params[])
 				format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just found PointID %d, they are now pending a special prize.", GetPlayerNameEx(playerid), p);
 				ABroadCast(COLOR_YELLOW, string, 4);
 
-				format(string, sizeof(string), "AdmCmd: %s has just found PointID %d, Prize: %s", GetPlayerNameEx(playerid), p, EventPoints[p][epPrize]);
+				format(string, sizeof(string), "AdmCmd: %s(%d) has just found PointID %d, Prize: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), p, EventPoints[p][epPrize]);
 				Log("logs/gifts.log", string);
 
 				DestroyDynamicPickup(EventPoints[p][epObjectID]);
@@ -27731,7 +27867,7 @@ CMD:processorder(playerid, params[])
 				}
 				else
 				{
-					format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(playerid), playerip, orderid, GetPlayerNameEx(giveplayerid), giveplayerip);
+					format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(%d) (IP: %s).", GetPlayerNameEx(playerid), playerip, orderid, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), giveplayerip);
 					Log("logs/shoporders.log", string);
 				}
 
@@ -27780,7 +27916,7 @@ CMD:denyorder(playerid, params[])
 				GetPlayerIp(playerid, playerip, sizeof(playerip));
 				GetPlayerIp(giveplayerid, giveplayerip, sizeof(giveplayerip));
 
-				format(string, sizeof(string), "%s(IP: %s) has denied shop order ID %d from %s(IP: %s), reason: %s", GetPlayerNameEx(playerid), playerip, orderid, GetPlayerNameEx(giveplayerid), giveplayerip, reason);
+				format(string, sizeof(string), "%s(IP: %s) has denied shop order ID %d from %s(%d) (IP: %s), reason: %s", GetPlayerNameEx(playerid), playerip, orderid, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), giveplayerip, reason);
 				Log("logs/shoporders.log", string);
 
 				PlayerInfo[giveplayerid][pOrder] = 0;
@@ -27823,7 +27959,7 @@ CMD:cancelorder(playerid, params[])
 	    new orderid = PlayerInfo[playerid][pOrder];
 		new playerip[32];
 		GetPlayerIp(playerid, playerip, sizeof(playerip));
-		format(string, sizeof(string), "%s (IP: %s) canceled their shop order (ID %i).", GetPlayerNameEx(playerid), playerip, orderid);
+		format(string, sizeof(string), "%s(%d) (IP: %s) canceled their shop order (ID %i).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, orderid);
 		Log("logs/shoporders.log", string);
 
 		format(string, sizeof(string), "You have canceled your shop order (ID %i). If you wish to submit another order, type /shoporder.", orderid);
@@ -27984,7 +28120,7 @@ CMD:newgvip(playerid, params[])
 				PlayerInfo[iTargetID][pGVip] = 1;
 				LoadPlayerDisabledVehicles(iTargetID);
 				GetPlayerIp(iTargetID, szIP, sizeof(szIP));
-				format(szMessage, sizeof(szMessage), "[GVIP] %s has set %s's (IP:%s) VIP level to Gold (3). (VIPM - %d | OrderID - %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), szIP, PlayerInfo[iTargetID][pVIPM], iOrderID);
+				format(szMessage, sizeof(szMessage), "[GVIP] %s has set %s's(%d) (IP:%s) VIP level to Gold (3). (VIPM - %d | OrderID - %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szIP, PlayerInfo[iTargetID][pVIPM], iOrderID);
 				Log("logs/setvip.log", szMessage);
 			}
 		}
@@ -28038,7 +28174,7 @@ CMD:renewgvip(playerid, params[])
 			PlayerInfo[iTargetID][pTempVIP] = 0;
 			PlayerInfo[iTargetID][pBuddyInvited] = 0;
 			GetPlayerIp(iTargetID, szIP, sizeof(szIP));
-			format(szMessage, sizeof(szMessage), "[GVIP RENEWAL] %s has set %s's (IP:%s) VIP level to Gold (3). (VIPM - %d | OrderID - %d | Months: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), szIP, PlayerInfo[iTargetID][pVIPM], iOrderID, months);
+			format(szMessage, sizeof(szMessage), "[GVIP RENEWAL] %s has set %s's(%d) (IP:%s) VIP level to Gold (3). (VIPM - %d | OrderID - %d | Months: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), szIP, PlayerInfo[iTargetID][pVIPM], iOrderID, months);
 			Log("logs/setvip.log", szMessage);
 		}
 	}
@@ -28095,7 +28231,7 @@ CMD:setvip(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 					PlayerInfo[giveplayerid][pTokens] = 0;
 
-					format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to None (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to None (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
 					return 1;
 				}
@@ -28117,7 +28253,7 @@ CMD:setvip(playerid, params[])
 					format(string, sizeof(string), "Your VIP level has been set to Bronze by Admin %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 
-					format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to Bronze (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Bronze (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
 					return 1;
 				}
@@ -28139,7 +28275,7 @@ CMD:setvip(playerid, params[])
 					format(string, sizeof(string), "Your VIP level has been set to Silver by Admin %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 
-					format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to Silver (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Silver (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
 					return 1;
 				}
@@ -28167,7 +28303,7 @@ CMD:setvip(playerid, params[])
 						ABroadCast(COLOR_LIGHTRED,string, 1337);
 						format(string, sizeof(string), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to Gold (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+						format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Gold (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 						Log("logs/setvip.log", string);
 						return 1;
 					}
@@ -28193,7 +28329,7 @@ CMD:setvip(playerid, params[])
 					// Level 5 Arms Job - Platinum VIP
 					PlayerInfo[giveplayerid][pArmsSkill] = 401;
 
-					format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to Platinum (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Platinum (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
 					return 1;
 				}
@@ -28214,7 +28350,7 @@ CMD:setvip(playerid, params[])
 					format(string, sizeof(string), "Your VIP level has been set to Moderator by Admin %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 
-					format(string, sizeof(string), "AdmCmd: %s has set %s's (IP:%s) VIP level to Moderator (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), playerip, level, orderid);
+					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Moderator (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
 					return 1;
 				}
@@ -28252,7 +28388,7 @@ CMD:giftgvip(playerid, params[])
 			ABroadCast(COLOR_LIGHTRED,string, 1337);
 			format(string, sizeof(string), "Your VIP level has been set to Gold by Admin %s.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "AdmCmd: %s has gifted %s Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), days, reason);
+			format(string, sizeof(string), "AdmCmd: %s has gifted %s(%d) Gold VIP for %d days (%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), days, reason);
 			Log("logs/setvip.log", string);
 			return 1;
 		}
@@ -29626,6 +29762,7 @@ CMD:gov(playerid, params[])
 			format(string, sizeof(string), "** %s %s %s: %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
    			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Government News Announcement ___________|");
 			SendClientMessageToAllEx(arrGroupData[iGroupID][g_hDutyColour] * 256 + 255, string);
+			format(string, sizeof(string), "** %s %s %s(%d): %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), params);
 			Log("logs/gov.log", string);
 		} else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/gov)ernment [text]");
 	} else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
@@ -29641,7 +29778,7 @@ CMD:gmotd(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the group MOTD.");
 			SaveGroup(iGroupID);
 			new string[256];
-			format(string,sizeof(string),"%s has changed MOTD for %s to: %s", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName], params);
+			format(string,sizeof(string),"%s(%d) has changed MOTD for %s to: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[iGroupID][g_szGroupName], params);
 			Log("logs/group.log", string);
 		} else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gmotd [message]");
 	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
@@ -30004,7 +30141,7 @@ CMD:groupkick(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked %s from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				format(string, sizeof(string), "Administrator %s has group-kicked %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
 				Log("logs/group.log", string);
 				format(string, sizeof(string), "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
@@ -30541,7 +30678,7 @@ CMD:lockgate(playerid, params[])
 						GateInfo[i][gLocked] = 1;
 						format(string, sizeof(string), "* %s has locked the gate.", GetPlayerNameEx(playerid));
 						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-						format(string, sizeof(string), "%s has locked gate ID %d.", GetPlayerNameEx(playerid), i);
+						format(string, sizeof(string), "%s(%d) has locked gate ID %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), i);
 						Log("logs/gedit.log", string);
 					}
 					else
@@ -30560,7 +30697,7 @@ CMD:lockgate(playerid, params[])
 								}
 							}	
 						}*/
-						format(string, sizeof(string), "%s has locked gate ID %d.", GetPlayerNameEx(playerid), i);
+						format(string, sizeof(string), "%s(%d) has locked gate ID %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), i);
 						Log("logs/gedit.log", string);
 					}
 				}
@@ -30783,8 +30920,9 @@ CMD:awiretransfer(playerid, params[])
 				new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-				format(string, sizeof(string), "[ATM] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
+				format(string, sizeof(string), "[ATM] %s(%d) (IP:%s) has transferred $%s to %s(%d) (IP:%s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex);
 				if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
+				format(string, sizeof(string), "[ATM] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
 				if(amount >= 420000)
 				{
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
@@ -30944,8 +31082,9 @@ CMD:wiretransfer(playerid, params[])
 				new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-				format(string, sizeof(string), "[BANK] %s (IP:%s) has transferred $%s to %s (IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
+				format(string, sizeof(string), "[BANK] %s(%d) (IP:%s) has transferred $%s to %s(%d) (IP:%s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex);
 				if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
+				format(string, sizeof(string), "[BANK] %s (IP:%s) has transferred $%s to %s(IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
 				if(amount >= 500000)
 				{
 					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
@@ -30984,7 +31123,7 @@ CMD:asellhouse(playerid, params[])
 		HouseInfo[house][hLock] = 1;
 		new ip[32];
 		GetPlayerIp(playerid,ip,sizeof(ip));
-		format(string,sizeof(string),"Administrator %s (IP: %s) has admin-sold house ID %d (was owned by %s).", GetPlayerNameEx(playerid), ip, house, HouseInfo[house][hOwnerName]);
+		format(string,sizeof(string),"Administrator %s (IP: %s) has admin-sold house ID %d (was owned by %s(%d)).", GetPlayerNameEx(playerid), ip, house, HouseInfo[house][hOwnerName], HouseInfo[house][hOwnerID]);
 		Log("logs/house.log", string);
 		ClearHouse(house);
 		format( HouseInfo[house][hOwnerName], 128, "Nobody" );
@@ -33353,8 +33492,8 @@ CMD:ddedit(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				return 1;
 			}
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+			if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 			DDoorsInfo[doorid][ddDescription] = 0;
 			DDoorsInfo[doorid][ddCustomInterior] = 0;
 			DDoorsInfo[doorid][ddExteriorVW] = 0;
@@ -33370,8 +33509,13 @@ CMD:ddedit(playerid, params[])
 			DDoorsInfo[doorid][ddInteriorZ] = 0;
 			DDoorsInfo[doorid][ddInteriorA] = 0;
 			DDoorsInfo[doorid][ddCustomExterior] = 0;
+			DDoorsInfo[doorid][ddType] = 0;
+			DDoorsInfo[doorid][ddRank] = 0;
 			DDoorsInfo[doorid][ddVIP] = 0;
+			DDoorsInfo[doorid][ddFamed] = 0;
 			DDoorsInfo[doorid][ddDPC] = 0;
+			DDoorsInfo[doorid][ddAllegiance] = 0;
+			DDoorsInfo[doorid][ddGroupType] = 0;
 			DDoorsInfo[doorid][ddFamily] = 0;
 			DDoorsInfo[doorid][ddFaction] = 0;
 			DDoorsInfo[doorid][ddAdmin] = 0;
@@ -33640,7 +33784,7 @@ CMD:brenewal(playerid, params[])
 		    Businesses[iBusiness][bMonths] = 259200+gettime()+(2592000*months);
 			format(szMessage, sizeof(szMessage), "You have renewed business %i for %i months.", iBusiness, months);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-			format(szMessage, sizeof(szMessage), "[BUSINESS RENEWAL] %s has renewed BusinessID %i, Type %i, Months %i, OrderID %i", GetPlayerNameEx(playerid), iBusiness, iType, months, iOrderID);
+			format(szMessage, sizeof(szMessage), "[BUSINESS RENEWAL] %s(%d) has renewed BusinessID %i, Type %i, Months %i, OrderID %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iBusiness, iType, months, iOrderID);
 			Log("logs/shoplog.log", szMessage);
 			SaveBusiness(iBusiness);
 		}
@@ -33959,7 +34103,7 @@ CMD:shopbusinessname(playerid, params[])
 	OnPlayerStatsUpdate(ownername);
 	RefreshBusinessPickup(houseid);
 
-	format(string, sizeof(string), "[SHOPBUSINESS] %s modified Owner on Business %d to %s - Invoice %s", GetPlayerNameEx(playerid), houseid, GetPlayerNameEx(ownername), invoice);
+	format(string, sizeof(string), "[SHOPBUSINESS] %s modified Owner on Business %d to %s(%d) - Invoice %s", GetPlayerNameEx(playerid), houseid, GetPlayerNameEx(ownername), GetPlayerSQLId(ownername), invoice);
 	Log("logs/shoplog.log", string);
 	return 1;
 }
@@ -34339,7 +34483,7 @@ CMD:getrewardgift(playerid, params[]) {
 							SendClientMessageEx(playerid, COLOR_GRAD2, " Note you may access your voucher(s) with /myvouchers");
 							PlayerInfo[playerid][pVehVoucher]++;
 
-							format(szMessage, sizeof(szMessage), "AdmCmd: %s was just gifted by the system and he won one free car", GetPlayerNameEx(playerid));
+							format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) was just gifted by the system and he won one free car", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 							Log("logs/gifts.log", szMessage);
 							format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won one free car.", GetPlayerNameEx(playerid));
 							ABroadCast(COLOR_YELLOW, szMessage, 4);
@@ -34421,7 +34565,7 @@ CMD:getrewardgift(playerid, params[]) {
 						case 0:
 						{
 
-							format(szMessage, sizeof(szMessage), "AdmCmd: %s was just gifted by the system and he won a free house", GetPlayerNameEx(playerid));
+							format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) was just gifted by the system and he won a free house", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 							Log("logs/gifts.log", szMessage);
 							format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a free house.", GetPlayerNameEx(playerid));
 							ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -34441,7 +34585,7 @@ CMD:getrewardgift(playerid, params[]) {
 						default:
 						{
 
-							format(szMessage, sizeof(szMessage), "AdmCmd: %s was just gifted by the system and he won a set of neons", GetPlayerNameEx(playerid));
+							format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) was just gifted by the system and he won a set of neons", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 							Log("logs/gifts.log", szMessage);
 							format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a free set of neons.", GetPlayerNameEx(playerid));
 							ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -34464,7 +34608,7 @@ CMD:getrewardgift(playerid, params[]) {
 								RimMod--;
 								g_mysql_SaveMOTD();
 
-								format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a rim modification kit. (%d left)", GetPlayerNameEx(playerid), RimMod);
+								format(szMessage, sizeof(szMessage), "AdmWarning: %s(%d) was just gifted by the system and he won a rim modification kit. (%d left)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), RimMod);
 
 								Log("logs/gifts.log", szMessage);
 								format(szMessage, sizeof(szMessage), "* %s was just gifted a rim modification kit, enjoy! Only %d kits left.", GetPlayerNameEx(playerid), RimMod);
@@ -34483,7 +34627,7 @@ CMD:getrewardgift(playerid, params[]) {
 								CarVoucher--;
 								g_mysql_SaveMOTD();
 
-								format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s was just gifted by the system and he won a restricted car voucher. (%d left)", GetPlayerNameEx(playerid), CarVoucher);
+								format(szMessage, sizeof(szMessage), "AdmWarning: %s(%d) was just gifted by the system and he won a restricted car voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CarVoucher);
 
 								Log("logs/gifts.log", szMessage);
 								format(szMessage, sizeof(szMessage), "* %s was just gifted a restricted car voucher, enjoy! Only %d car vouchers left.", GetPlayerNameEx(playerid), CarVoucher);
@@ -34993,7 +35137,7 @@ CMD:rcabuse(playerid, params[]) {
 
 						new playerip[32];
 						GetPlayerIp(iTargetID, playerip, sizeof(playerip));
-						format(szMessage, sizeof(szMessage), "AdmCmd: %s(IP:%s) was banned by %s, reason: Abuse of faction vehicles", GetPlayerNameEx(iTargetID), playerip, GetPlayerNameEx(playerid));
+						format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: Abuse of faction vehicles", GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), playerip, GetPlayerNameEx(playerid));
 						Log("logs/ban.log", szMessage);
 						format(szMessage, sizeof(szMessage), "AdmCmd: %s was banned by %s, reason: Abuse of faction vehicles", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid));
 						SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
@@ -35055,7 +35199,7 @@ CMD:prison(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35080,7 +35224,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
 						
-						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 2) // RK
@@ -35093,7 +35237,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Revenge Killing.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
@@ -35106,7 +35250,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 4) // Car Ramming
@@ -35120,7 +35264,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Car Ramming.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 5) // OOC Hit
@@ -35133,7 +35277,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for OOC Contract.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 6) // Spamming
@@ -35146,7 +35290,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Spamming.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 7) // Gun Discharge Exploit
@@ -35159,7 +35303,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Gun Discharge Exploit.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 8) // Non-RP Name
@@ -35172,7 +35316,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non-RP Name.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 9) // Logging to avoid
@@ -35185,7 +35329,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Logging to avoid.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 10) // Car Surfing
@@ -35198,7 +35342,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Car Surfing.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 11) // Non RP Behavior
@@ -35211,7 +35355,7 @@ CMD:prison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non RP Behavior.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					
@@ -35549,7 +35693,7 @@ CMD:sprison(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -35574,7 +35718,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
 						
-						format(string, sizeof(string), "%s has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 2) // RK
@@ -35587,7 +35731,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Revenge Killing.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
@@ -35600,7 +35744,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
 						
-						format(string, sizeof(string), "%s has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 4) // Car Ramming
@@ -35613,7 +35757,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Car Ramming.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 5) // OOC Hit
@@ -35626,7 +35770,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for OOC Contract.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 6) // Spamming
@@ -35639,7 +35783,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Spamming.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 7) // Gun Discharge Exploit
@@ -35652,7 +35796,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Gun Discharge Exploit.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 8) // Non-RP Name
@@ -35665,7 +35809,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non-RP Name.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 9) // Logging to avoid
@@ -35678,7 +35822,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Logging to avoid.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 10) // Car Surfing
@@ -35691,7 +35835,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Car Surfing.");
 						
-						format(string, sizeof(string), "%s has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					else if(GetPVarInt(playerid, "PendingAction") == 11) // Non RP Behavior
@@ -35704,7 +35848,7 @@ CMD:sprison(playerid, params[])
 
 						SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non RP Behavior.");
 						
-						format(string, sizeof(string), "%s has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/nonrppoints.log", string);
 					}
 					
@@ -35862,28 +36006,28 @@ CMD:setstat(playerid, params[])
 			case 1:
 				{
 					PlayerInfo[giveplayerid][pLevel] = amount;
-					format(string, sizeof(string), "   %s's Level has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Level has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 					SetPlayerScore(giveplayerid, PlayerInfo[giveplayerid][pLevel]);
 				}
 			case 2:
 				{
 					PlayerInfo[giveplayerid][pSHealth] = amount;
-					format(string, sizeof(string), "   %s's ArmorUpgrade has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) ArmorUpgrade has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 3:
 				{
 					PlayerInfo[giveplayerid][gPupgrade] = amount;
-					format(string, sizeof(string), "   %s's Upgrade Points has been set %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Upgrade Points has been set %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 4:
 				{
 					PlayerInfo[giveplayerid][pModel] = amount;
-					format(string, sizeof(string), "   %s's Model has been set %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Model has been set %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 5:
 				{
 					PlayerInfo[giveplayerid][pAccount] = amount;
-					format(string, sizeof(string), "   %s's Bank Account has been set to $%d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Bank Account has been set to $%d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 6:
 				{
@@ -35907,153 +36051,153 @@ CMD:setstat(playerid, params[])
 			case 7:
 				{
 					PlayerInfo[giveplayerid][pExp] = amount;
-					format(string, sizeof(string), "   %s's Respect Points have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Respect Points have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 8:
 				{
 					PlayerInfo[giveplayerid][pPhousekey] = amount;
-					format(string, sizeof(string), "   %s's House 1 has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) House 1 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 9:
 				{
 					PlayerInfo[giveplayerid][pPhousekey2] = amount;
-					format(string, sizeof(string), "   %s's House 2 has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) House 2 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 10:
 				{
 					PlayerInfo[giveplayerid][pPhousekey3] = amount;
-					format(string, sizeof(string), "   %s's House 3 has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) House 3 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 11:
 				{
 					PlayerInfo[giveplayerid][pFMember] = amount;
-					format(string, sizeof(string), "   %s's Family Membership has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Family Membership has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 12:
 				{
 					PlayerInfo[giveplayerid][pDetSkill] = amount;
-					format(string, sizeof(string), "   %s's Detective Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Detective Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 13:
 				{
 					PlayerInfo[giveplayerid][pLawSkill] = amount;
-					format(string, sizeof(string), "   %s's Lawyer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Lawyer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 14:
 				{
 					PlayerInfo[giveplayerid][pMechSkill] = amount;
-					format(string, sizeof(string), "   %s's Car Mechanic Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Car Mechanic Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 17:
 				{
 					PlayerInfo[giveplayerid][pDrugsSkill] = amount;
-					format(string, sizeof(string), "   %s's Drug Dealer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Drug Dealer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 18:
 				{
 					PlayerInfo[giveplayerid][pSexSkill] = amount;
-					format(string, sizeof(string), "   %s's Sex Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Sex Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 19:
 				{
 					PlayerInfo[giveplayerid][pBoxSkill] = amount;
-					format(string, sizeof(string), "   %s's Box Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Box Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 20:
 				{
 					PlayerInfo[giveplayerid][pArmsSkill] = amount;
-					format(string, sizeof(string), "   %s's Arms Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Arms Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 21:
 				{
 					PlayerInfo[giveplayerid][pMats] = amount;
-					format(string, sizeof(string), "   %s's Materials have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Materials have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 22:
 				{
 					PlayerInfo[giveplayerid][pPot] = amount;
-					format(string, sizeof(string), "   %s's Pot has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Pot has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 23:
 				{
 					PlayerInfo[giveplayerid][pCrack] = amount;
-					format(string, sizeof(string), "   %s's Crack has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Crack has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 24:
 				{
 					PlayerInfo[giveplayerid][pFishSkill] = amount;
-					format(string, sizeof(string), "   %s's Fishing Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Fishing Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 25:
 				{
 					PlayerInfo[giveplayerid][pJob] = amount;
-					format(string, sizeof(string), "   %s's Job has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Job has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 26:
 				{
 					PlayerInfo[giveplayerid][pRank] = amount;
-					format(string, sizeof(string), "   %s's Rank has been to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Rank has been to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 27:
 				{
 					SetPVarInt(giveplayerid, "Packages", amount);
-					format(string, sizeof(string), "   %s's Materials Packages have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Materials Packages have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 28:
 				{
 					PlayerInfo[giveplayerid][pCrates] = amount;
-					format(string, sizeof(string), "   %s's Drug Crates have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Drug Crates have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 29:
 				{
 					PlayerInfo[giveplayerid][pSmugSkill] = amount;
-					format(string, sizeof(string), "   %s's Smuggler Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Smuggler Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 30:
 				{
 					PlayerInfo[giveplayerid][pInsurance] = amount;
-					format(string, sizeof(string), "   %s's Insurance has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Insurance has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 31:
 				{
 					PlayerInfo[giveplayerid][pWarns] = amount;
-					format(string, sizeof(string), "   %s's Warnings have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Warnings have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 32:
 				{
 					PlayerInfo[giveplayerid][pScrewdriver] = amount;
-					format(string, sizeof(string), "   %s's Screwdrivers have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Screwdrivers have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			/*case 33:
 				{
 					PlayerInfo[giveplayerid][pBirthDate] = amount;
-					format(string, sizeof(string), "   %s's Age has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Age has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}*/
 			case 34:
 				{
 					PlayerInfo[giveplayerid][pSex] = amount;
-					format(string, sizeof(string), "   %s's Gender has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Gender has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 35:
 				{
 					PlayerInfo[giveplayerid][pNMuteTotal] = amount;
-					format(string, sizeof(string), "   %s's Total Newbie Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Total Newbie Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 36:
 				{
 					PlayerInfo[giveplayerid][pADMuteTotal] = amount;
-					format(string, sizeof(string), "   %s's Total Ad Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Total Ad Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 37:
 				{
 					PlayerInfo[giveplayerid][pMember] = amount;
-					format(string, sizeof(string), "   %s's Faction has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Faction has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 38:
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] >= 2) {
 						PlayerInfo[giveplayerid][pWRestricted] = amount;
-						format(string, sizeof(string), "   %s's Weapon Restricted Time has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+						format(string, sizeof(string), "   %s's(%d) Weapon Restricted Time has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 					}
 					else {
 						return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set this on a person who has under 2 playing hours.");
@@ -36062,69 +36206,69 @@ CMD:setstat(playerid, params[])
 			case 39:
 				{
 					PlayerInfo[giveplayerid][pGangWarn] = amount;
-					format(string, sizeof(string), "   %s's Gang Warns have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Gang Warns have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 40:
 				{
 					PlayerInfo[giveplayerid][pRMutedTotal] = amount;
-					format(string, sizeof(string), "   %s's Report Mutes have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Report Mutes have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 41:
 				{
 					PlayerInfo[giveplayerid][pRewardHours] = amount;
-					format(string, sizeof(string), "   %s's Reward Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Reward Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 42:
 				{
 					PlayerInfo[giveplayerid][pConnectHours] = amount;
-					format(string, sizeof(string), "   %s's Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
             case 43:
 				{
 					PlayerInfo[giveplayerid][pGoldBoxTokens] = amount;
-					format(string, sizeof(string), "   %s's Box Tokens have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Box Tokens have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 44:
 				{
 					PlayerInfo[giveplayerid][pRewardDrawChance] = amount;
-					format(string, sizeof(string), "   %s's Computer Drawings have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Computer Drawings have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 45:
 				{
 					PlayerInfo[giveplayerid][pPaper] = amount;
-					format(string, sizeof(string), "   %s's Papers have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Papers have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 46:
 				{
 				    if (amount < 0 || amount >= MAX_BUSINESSES) return 1;
 					PlayerInfo[giveplayerid][pBusiness] = amount;
-					format(string, sizeof(string), "   %s's Business have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Business have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 47:
 				{
 				    if (amount < 0 || amount > 5) return 1;
 					PlayerInfo[giveplayerid][pBusinessRank] = amount;
-					format(string, sizeof(string), "   %s's Business Rank have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Business Rank have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 48:
 				{
                 	PlayerInfo[giveplayerid][pSpraycan] = amount;
-					format(string, sizeof(string), "   %s's Spraycans have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Spraycans have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 49:
 			    {
 			        PlayerInfo[giveplayerid][pHeroin] = amount;
-			        format(string, sizeof(string), "   %s's Heroin have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+			        format(string, sizeof(string), "   %s's(%d) Heroin have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			    }
 			case 50:
 				{
                 	PlayerInfo[giveplayerid][pRawOpium] = amount;
-					format(string, sizeof(string), "   %s's raw opium have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) raw opium have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
             case 51:
 				{
                 	PlayerInfo[giveplayerid][pSyringes] = amount;
-					format(string, sizeof(string), "   %s's Syringes have been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Syringes have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
 			case 52:
@@ -36141,49 +36285,49 @@ CMD:setstat(playerid, params[])
 					PlayerInfo[giveplayerid][pHungerDeathTimer] = 0;
 
 					PlayerInfo[giveplayerid][pHunger] = amount;
-					format(string, sizeof(string), "   %s's Hunger has been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Hunger has been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
 			case 53:
 				{
 					PlayerInfo[giveplayerid][pFitness] = amount;
-					format(string, sizeof(string), "   %s's Fitness has been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Fitness has been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
 			case 54:
 				{
 					PlayerInfo[giveplayerid][pTrickortreat] = amount;
-					format(string, sizeof(string), "   %s's Event Tokens have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Event Tokens have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 55:
 				{
 					PlayerInfo[giveplayerid][pRimMod] = amount;
-					format(string, sizeof(string), "   %s's Rim Kits have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Rim Kits have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 56:
 				{
 					PlayerInfo[giveplayerid][pCarLockPickSkill] = amount;
-					format(string, sizeof(string), "   %s's Car Lock Pick Skill have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Car Lock Pick Skill have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 57:
 				{
 					PlayerInfo[giveplayerid][pLockPickVehCount] = amount;
-					format(string, sizeof(string), "   %s's Lock Pick Vehicle Count have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Lock Pick Vehicle Count have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 58:
 				{
 					PlayerInfo[giveplayerid][pLockPickTime] = amount;
-					format(string, sizeof(string), "   %s's Lock Pick Vehicle Time have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Lock Pick Vehicle Time have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 59:
 				{
 					PlayerInfo[giveplayerid][pToolBox] = amount;
-					format(string, sizeof(string), "   %s's Tool Box usages have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Tool Box usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 60:
 				{
 					PlayerInfo[giveplayerid][pCrowBar] = amount;
-					format(string, sizeof(string), "   %s's Crowbar usages have been set to %i.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "   %s's(%d) Crowbar usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
 			default:
@@ -37905,7 +38049,7 @@ CMD:setmoney(playerid, params[])
 			GivePlayerCash(giveplayerid, money);
 			format(string, sizeof(string), "You have set %s's money to $%d !",GetPlayerNameEx(giveplayerid),money);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has set %s's to $%d (/setmoney)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid),money);
+			format(string, sizeof(string), "%s has set %s's(%d) to $%d (/setmoney)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), money);
 			Log("logs/stats.log", string);
 		}
 	}
@@ -37988,7 +38132,7 @@ CMD:settoken(playerid, params[])
 			format(string, sizeof(string), "VIP: Admin %s has set your tokens to %d.",GetPlayerNameEx(playerid),amount);
 			SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
 
-			format(string, sizeof(string), "%s has set %s's tokens to %d.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
+			format(string, sizeof(string), "%s has set %s's(%d) tokens to %d.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);
 
 		}
@@ -38015,7 +38159,7 @@ CMD:givetoken(playerid, params[])
 			format(string, sizeof(string), "VIP: Admin %s has given you %d tokens.",GetPlayerNameEx(playerid),amount);
 			SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
 
-			format(string, sizeof(string), "%s has given %s %d tokens.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
+			format(string, sizeof(string), "%s has given %s(%d) %d tokens.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			Log("logs/stats.log", string);
 
 		}
@@ -38040,7 +38184,7 @@ CMD:givemoney(playerid, params[])
 			GivePlayerCash(giveplayerid, money);
 			format(string, sizeof(string), "You have given %s $%s !",GetPlayerNameEx(giveplayerid), number_format(money));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has given %s $%s (/givemoney)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(money));
+			format(string, sizeof(string), "%s has given %s(%d) $%s (/givemoney)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(money));
 			Log("logs/stats.log", string);
 		}
 	}
@@ -38316,7 +38460,7 @@ CMD:shopexp(playerid, params[])
 
 	format(string, sizeof(string), "You have received %d Double EXP Token(s) from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPEXP] %s given %s, %d Double EXP Token(s) - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, invoice);
+	format(string, sizeof(string), "[SHOPEXP] %s given %s(%d), %d Double EXP Token(s) - Invoice %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
 	return 1;
@@ -38337,7 +38481,7 @@ CMD:shoptokens(playerid, params[])
 
 	format(string, sizeof(string), "You have received %d Paintball Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPTOKENS] %s given %s, %d Paintball Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d Paintball Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
 	return 1;
@@ -38358,7 +38502,7 @@ CMD:shopviptokens(playerid, params[])
 
 	format(string, sizeof(string), "You have received %d VIP Tokens from Shop Tech %s.", amount, GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPTOKENS] %s given %s, %d VIP Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "[SHOPTOKENS] %s given %s(%d), %d VIP Tokens - Invoice %s for %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
 	return 1;
@@ -38381,7 +38525,7 @@ CMD:shopboombox(playerid, params[])
 	    PlayerInfo[giveplayerid][pBoombox] = 0;
     	format(string, sizeof(string), "Your boombox has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "[SHOPBOOMBOX] %s has taken %s boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s has taken %s(%d) boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
 	}
@@ -38390,7 +38534,7 @@ CMD:shopboombox(playerid, params[])
 		PlayerInfo[giveplayerid][pBoombox] = 1;
     	format(string, sizeof(string), "You have been given a boombox from Shop Tech %s. ", GetPlayerNameEx(playerid));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "[SHOPBOOMBOX] %s has given %s a boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+		format(string, sizeof(string), "[SHOPBOOMBOX] %s has given %s(%d) a boombox - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
 	}
@@ -38414,7 +38558,7 @@ CMD:shoptable(playerid, params[])
 	    PlayerInfo[giveplayerid][pTable] = 0;
     	format(string, sizeof(string), "Your poker table has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has taken %s poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has taken %s(%d) poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
 	}
@@ -38423,7 +38567,7 @@ CMD:shoptable(playerid, params[])
 		PlayerInfo[giveplayerid][pTable] = 1;
     	format(string, sizeof(string), "You have been given a poker table from Shop Tech %s. ", GetPlayerNameEx(playerid));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has given %s a poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), invoice);
+		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has given %s(%d) a poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		Log("logs/shoplog.log", string);
 	}
@@ -38445,7 +38589,7 @@ CMD:shopfirework(playerid, params[])
 
 	format(string, sizeof(string), "You have received %d Fireworks from Shop Tech %s. ", amount, GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s %d Firework(s) - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "[SHOPFIREWORK] %s given %s(%d) %d Firework(s) - Invoice %s for %s. ", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount, invoice, GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	Log("logs/shoplog.log", string);
 	return 1;
@@ -38880,7 +39024,7 @@ CMD:hlban(playerid, params[])
 
 					format(string, sizeof(string), "You have been banned from helper channel by %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-					format(string, sizeof(string), "AdmCmd: %s was banned from /hl by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was banned from /hl by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
 				}
 				else
@@ -38907,7 +39051,7 @@ CMD:hlban(playerid, params[])
 
 					format(string, sizeof(string), "You have been unbanned from helper channel by %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-					format(string, sizeof(string), "AdmCmd: %s was unbanned from /hl by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was unbanned from /hl by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
 				}
 
@@ -38942,7 +39086,7 @@ CMD:vmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				format(string, sizeof(string), "You have been indefinitely muted from VIP Chat for abuse by %s. You may appeal this on the forums (admin complaint)", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-				format(string, sizeof(string), "AdmCmd: %s was blocked from /v by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
@@ -38956,7 +39100,7 @@ CMD:vmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				format(string, sizeof(string), "You have been re-allowed to use VIP Chat by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from /v by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /v by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 				Log("logs/mute.log", string);
 			}
 		}
@@ -39072,7 +39216,7 @@ CMD:dmrmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				format(string, sizeof(string), "You have been blocked from submitting /dmreports by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-				format(string, sizeof(string), "AdmCmd: %s was blocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
@@ -39083,7 +39227,7 @@ CMD:dmrmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				format(string, sizeof(string), "You have been re-allowed to submitting /dmreports again by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /dmreport by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
   }
@@ -39112,7 +39256,7 @@ CMD:rmute(playerid, params[])
 				format(string, sizeof(string), "You have been blocked from submitting /reports by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to submit reports until you are unblocked. To appeal this action contact devin@ng-gaming.net.");
-				format(string, sizeof(string), "AdmCmd: %s was blocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was blocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
 			else
@@ -39122,7 +39266,7 @@ CMD:rmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				format(string, sizeof(string), "You have been re-allowed to submitting /reports again by %s.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /report by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/mute.log", string);
 			}
 		}
@@ -39154,7 +39298,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "An admin warns you not to abuse /report.\n\nNote that future abuse of /report could result in a mute from /report or loss of that privilege altogether.");
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Report abuse warning", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s has given %s their first warning about report abuse, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s has given %s(%d) their first warning about report abuse, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/mute.log", string);
 
 			    }
@@ -39169,7 +39313,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the second time you have been blocked from reporting, you will not be able to use /report for 15 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
 			    }
 			    else if(PlayerInfo[giveplayerid][pRMutedTotal] == 2)
@@ -39183,7 +39327,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the third time you have been blocked from reporting, you will not be able to use /report for 30 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
 			    }
 			    else if(PlayerInfo[giveplayerid][pRMutedTotal] == 3)
@@ -39197,7 +39341,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fourth time you have been blocked from reporting, you will not be able to use /report for 45 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
 				}
 			    else if(PlayerInfo[giveplayerid][pRMutedTotal] == 4)
@@ -39211,7 +39355,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fifth time you have been blocked from reporting, you will not be able to use /report for 60 minutes.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
 				}
 			    else if(PlayerInfo[giveplayerid][pRMutedTotal] >= 5)
@@ -39225,7 +39369,7 @@ CMD:rto(playerid, params[])
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the sixth time you have been blocked from reporting, you will not be able to use /report for 5 hours.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
 				}
 
@@ -39269,7 +39413,7 @@ CMD:rtoreset(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been unblocked from submitting reports. You may now use the reporting system again.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Please accept our apologies for any error and inconvenience this may have caused.");
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
@@ -39309,7 +39453,7 @@ CMD:vto(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You will not be able to use VIP Chat for 15 minutes.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Note the future abuse of VIP Chat could result in loss of that privilege altogether or being banned from the server.");
-				format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from VIP Chat by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid),reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from VIP Chat by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
@@ -39347,7 +39491,7 @@ CMD:vtoreset(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been unblocked from using VIP Chat. You may now use the VIP Chat system again.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Please accept our apologies for any error and inconvenience this may have caused.");
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from VIP Chat by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid),reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from VIP Chat by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
@@ -39379,7 +39523,7 @@ CMD:kick(playerid, params[])
 			{
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s (IP:%s) was kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 				Log("logs/kick.log", string);
 				if(PlayerInfo[playerid][pAdmin] == 1) Log("logs/moderator.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -39415,7 +39559,7 @@ CMD:sban(playerid, params[])
 			}
 			new playerip[32];
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s (IP:%s) was silent banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 			Log("logs/ban.log", string);
 			format(string, sizeof(string), "AdmCmd: %s was silent banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			ABroadCast(COLOR_LIGHTRED,string,2);
@@ -39476,7 +39620,7 @@ CMD:warn(playerid, params[])
 			{
 				new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -39520,7 +39664,7 @@ CMD:swarn(playerid, params[])
 			{
 			    new ip[32];
 				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), ip, GetPlayerNameEx(playerid),reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid),reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -39597,7 +39741,7 @@ CMD:skick(playerid, params[])
 			{
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s (IP:%s) was silent kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 				Log("logs/kick.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was silent kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED,string,2);
@@ -39634,7 +39778,7 @@ CMD:ban(playerid, params[])
 			{
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
 				Log("logs/ban.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -40046,7 +40190,7 @@ CMD:nmute(playerid, params[])
 				{
 					new playerip[32];
 					GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-					format(string, sizeof(string), "AdmCmd: %s(IP:%s) was banned by %s, reason: Excessive newbie chat mutes", GetPlayerNameEx(giveplayerid),playerip,GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: Excessive newbie chat mutes", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip,GetPlayerNameEx(playerid));
 					Log("logs/ban.log", string);
 					format(string, sizeof(string), "AdmCmd: %s was banned, reason: Excessive newbie chat mutes.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -40159,7 +40303,7 @@ CMD:admute(playerid, params[])
 					{
 						new playerip[32];
 						GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-						format(string, sizeof(string), "AdmCmd: %s(IP:%s) was banned by %s, reason: Excessive advertisement mutes", GetPlayerNameEx(giveplayerid),playerip,GetPlayerNameEx(playerid));
+						format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: Excessive advertisement mutes", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip,GetPlayerNameEx(playerid));
 						Log("logs/ban.log", string);
 						format(string, sizeof(string), "AdmCmd: %s was banned, reason: Excessive advertisement mutes.", GetPlayerNameEx(giveplayerid));
 						SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -40298,7 +40442,7 @@ CMD:makemoderator(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "You have made %s a moderator.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "%s has been made a moderator by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "%s(%d) has been made a moderator by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/moderator.log", string);
 			}
 			else if(level == 2) {
@@ -40307,7 +40451,7 @@ CMD:makemoderator(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "You have made %s a senior moderator.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "%s has been made a senior moderator by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "%s(%d) has been made a senior moderator by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/moderator.log", string);
 			}
 		}
@@ -40342,7 +40486,7 @@ CMD:removemoderator(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "You took %s's moderator.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "%s moderator has been removed by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "%s(%d) moderator has been removed by %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
 				Log("logs/moderator.log", string);
 			}
 
@@ -40449,7 +40593,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** REPORTS *** /reports /ar /tr /sta /nao /st /post /dmr *** MOVEMENT *** /up /dn /fd /bk /lt /rt /fly");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** REPORTS *** /reports /ar /tr /sta /nao /st /post /dmr /ts *** MOVEMENT *** /up /dn /fd /bk /lt /rt /fly");
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /kick /ban /prison /freeze /unfreeze /slap /warn /admins /spec /levelones");
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
@@ -40593,7 +40737,7 @@ CMD:revokelicense(playerid, params[])
 					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' driver's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
-					format(string, sizeof(string), "%s has taken %s' driver's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "%s(%d) has taken %s'(%d) driver's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pCarLic] = 0;
 					return 1;
@@ -40609,7 +40753,7 @@ CMD:revokelicense(playerid, params[])
 					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' boater's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
-					format(string, sizeof(string), "%s has taken %s' boater's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "%s(%d) has taken %s'(%d) boater's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pBoatLic] = 0;
 					return 1;
@@ -40625,7 +40769,7 @@ CMD:revokelicense(playerid, params[])
 					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' pilot's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
-					format(string, sizeof(string), "%s has taken %s' pilot's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
+					format(string, sizeof(string), "%s(%d) has taken %s'(%s) pilot's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/licenses.log", string);
 					PlayerInfo[giveplayerid][pFlyLic] = 0;
 					return 1;
@@ -40670,7 +40814,7 @@ CMD:givelicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "Administrator %s has given you a driver's license.",GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given a driver's license to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "Administrator %s has given a driver's license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pCarLic] = 1;
 				return 1;
@@ -40686,7 +40830,7 @@ CMD:givelicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "Administrator %s has given you a boating license.",GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given a boating license to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "Administrator %s has given a boating license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pBoatLic] = 1;
 				return 1;
@@ -40702,7 +40846,7 @@ CMD:givelicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "Administrator %s has given you a pilot license.",GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given a pilot license to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "Administrator %s has given a pilot license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pFlyLic] = 1;
 				return 1;
@@ -40718,7 +40862,7 @@ CMD:givelicense(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "Administrator %s has given you a taxi license.",GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "Administrator %s has given a taxi license to %s.",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "Administrator %s has given a taxi license to %s(%d)",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 				Log("logs/licenses.log", string);
 				PlayerInfo[giveplayerid][pTaxiLicense] = 1;
 				return 1;
@@ -42065,6 +42209,7 @@ CMD:taxwithdraw(playerid, params[])
 			SendClientMessageEx( playerid, COLOR_WHITE, string );
 			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
+			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
 		}
 		else
@@ -42096,6 +42241,7 @@ CMD:taxwithdraw(playerid, params[])
 			SendClientMessageEx( playerid, COLOR_WHITE, string );
 			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the TR tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
+			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the TR tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
 		}
 		else
@@ -42908,6 +43054,43 @@ CMD:st(playerid, params[])
         DeletePVar(Reports[reportid][ReportFrom], "HasReport");
 		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
 		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
+		Reports[reportid][BeingUsed] = 0;
+		Reports[reportid][TimeToExpire] = 0;
+		strmid(Reports[reportid][Report], "None", 0, 4, 4);
+	}
+	return 1;
+}
+
+CMD:ts(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2)
+	{
+		new string[128], reportid;
+		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /ts [reportid]");
+		if(reportid < 0 || reportid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Report ID not below 0 or above 999!");
+		if(Reports[reportid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   That report ID is not being used!");
+		if(!IsPlayerConnected(Reports[reportid][ReportFrom]))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   The reporter has disconnected !");
+			Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
+			Reports[reportid][BeingUsed] = 0;
+			return 1;
+		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/ts this advertisement, you must accept it with /ar.");
+		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
+			if(AlertTime[Reports[reportid][ReportFrom]] != 0) AlertTime[Reports[reportid][ReportFrom]] = 0;
+		}
+		format(string, sizeof(string), "AdmCmd: %s has cleared report from %s (RID: %d) due to it needing to be handled on TeamSpeak", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]), reportid);
+		ABroadCast(COLOR_ORANGE, string, 2);
+		format(string, sizeof(string), "%s has reviewed your report and determined this report should be handled on TeamSpeak (Admin Assistance Channels)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
+        DeletePVar(Reports[reportid][ReportFrom], "HasReport");
+		DeletePVar(Reports[reportid][ReportFrom], "_rAutoM");
+		DeletePVar(Reports[reportid][ReportFrom], "_rRepID");
+		Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
 		Reports[reportid][BeingUsed] = 0;
 		Reports[reportid][TimeToExpire] = 0;
 		strmid(Reports[reportid][Report], "None", 0, 4, 4);
@@ -44715,7 +44898,7 @@ CMD:rhmute(playerid, params[])
 
 					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Help request abuse warning", "A Community Advisor has warned you not to abuse /requesthelp.\n\nNote that future abuse of /requesthelp could result in a mute from /requesthelp or loss of that privilege altogether.", "Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s has given %s their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) has given %s(%d) their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 					Log("logs/mute.log", string);
 
 			    }
@@ -44728,7 +44911,7 @@ CMD:rhmute(playerid, params[])
 
 					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the first time you have been blocked from requesting help, you will not be able to use /requesthelp for 30 minutes.\n\nTwo more mute will result in a total loss in privilege of the command.", "Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /requesthelp by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(d) was temporarily blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
 			    }
 			    else if(PlayerInfo[giveplayerid][pRHMutes] == 2)
@@ -44740,7 +44923,7 @@ CMD:rhmute(playerid, params[])
 
 					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the second time you have been blocked from requesting help, you will not be able to use /requesthelp for 1 hour and 30 minutes.\n\nOne more mute will result in a total loss in privilege of the command.", "Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was temporarily blocked from /requesthelp by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
 			    }
 				else if(PlayerInfo[giveplayerid][pRHMutes] == 3)
@@ -44751,7 +44934,7 @@ CMD:rhmute(playerid, params[])
 
 					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX, "Permanently blocked from /requesthelp", "You have been permanently blocked from using /requesthelp.\n\nYou will need to contact an Administrator via /report to appeal this.", "Next", "");
 
-					format(string, sizeof(string), "AdmCmd: %s was permanently blocked from /requesthelp by %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "AdmCmd: %s(%d) was permanently blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
 			    }
 				DeletePVar(giveplayerid, "COMMUNITY_ADVISOR_REQUEST");
@@ -44787,7 +44970,7 @@ CMD:rhmutereset(playerid, params[])
 				SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "You have been unblocked from requesting help. You may now use the help request system again.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "Please accept our apologies for any error and inconvenience this may have caused.");
-				format(string, sizeof(string), "AdmCmd: %s was unblocked from /requesthelp by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+				format(string, sizeof(string), "AdmCmd: %s(%d) was unblocked from /requesthelp by %s(%d), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), reason);
 				Log("logs/mute.log", string);
 			}
 			else
@@ -48712,7 +48895,7 @@ CMD:deletehit(playerid, params[])
 		if(PlayerInfo[giveplayerid][pHeadValue] >= 1 )
 		{
 			PlayerInfo[giveplayerid][pHeadValue] = 0;
-			format(string, sizeof(string), "<< %s has removed the contract on %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "<< %s(%d) has removed the contract on %s(%d) >>", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/contracts.log", string);
 			format(string, sizeof(string), "You have removed the contract which was on %s's head.", GetPlayerNameEx(giveplayerid) );
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -49890,7 +50073,7 @@ CMD:usecrack(playerid, params[])
 	    {
 	    	format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
 			ABroadCast( COLOR_YELLOW, string, 2 );
-			format(string, sizeof(string), "%s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
+			format(string, sizeof(string), "%s(%d) (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
 			Log("logs/hack.log", string);
 	        return 1;
 	    }
@@ -50592,7 +50775,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Sprunk Can(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s Sprunk Can(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					format(string, sizeof(string), "You have given %s %d Sprunk Can(s).", GetPlayerNameEx(giveplayerid), amount);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -50612,7 +50795,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Paintball Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s Paintball Token(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					format(string, sizeof(string), "You have given %s %d Paintball Token(s).", GetPlayerNameEx(giveplayerid), amount);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -50632,12 +50815,12 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s Gold Box Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s Gold Box Token(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
 
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d Gold Box Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s(%d) (IP:%s) %d Gold Box Token(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d Gold Box Token(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -50665,11 +50848,11 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s firework(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s(%d) (IP:%s) %d firework(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d firework(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -50697,11 +50880,11 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s opium seed(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s opium seed(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d opium seed(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s(%d) (IP:%s) %d opium seed(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d opium seed(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -50729,12 +50912,12 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s syringe(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s syringe(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
 
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d syringe(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s(%d) (IP:%s) %d syringe(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d syringe(s).", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -50762,11 +50945,11 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s milligram(s) of heroin.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s milligram(s) of heroin.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d milligram(s) of heroin.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s(%d) (IP:%s) %d milligram(s) of heroin.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d milligram(s) of heroin.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -50794,11 +50977,11 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(IP:%s) has given %s (IP:%s) %s milligram(s) of raw opium.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, number_format(amount));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %s milligram(s) of raw opium.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, number_format(amount));
 					Log("logs/pay.log", string);
 					if(PlayerInfo[playerid][pAdmin] >= 2)
 					{
-						format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d milligram(s) of raw opium.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
+						format(string, sizeof(string), "[Admin] %s(%d)(IP:%s) has given %s(%d)(IP:%s) %d milligram(s) of raw opium.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 						Log("logs/admingive.log", string);
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s(IP:%s) has given %s(IP:%s) %d milligram(s) of raw opium.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex, amount);
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -51895,7 +52078,7 @@ CMD:contract(playerid, params[])
 				SendGroupMessage(2, COLOR_YELLOW, string);
 				format(string, sizeof(string), "* You placed a contract on %s for $%d, details: %s.",GetPlayerNameEx(giveplayerid), moneys, detail);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "<< %s has placed a contract on %s for $%d, details: %s >>",GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),moneys,detail);
+				format(string, sizeof(string), "<< %s(%d) has placed a contract on %s(%d) for $%d, details: %s >>",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), moneys, detail);
 				Log("logs/contracts.log", string);
 				format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
 				ABroadCast(COLOR_YELLOW,string,4);
@@ -51998,7 +52181,7 @@ CMD:uninvite(playerid, params[]) {
 					format(szMessage, sizeof szMessage, "You have kicked %s out of the group.", GetPlayerNameEx(iTargetID));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s %s (rank %i) has uninvited %s (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), iRank, GetPlayerNameEx(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					format(szMessage, sizeof szMessage, "%s %s(%d) (rank %i) has uninvited %s(%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					Log("logs/group.log", szMessage);
 
 					PlayerInfo[iTargetID][pMember] = INVALID_GROUP_ID;
@@ -52153,7 +52336,7 @@ CMD:giverank(playerid, params[]) {
 					format(szMessage, sizeof szMessage, "You have %s %s to the rank of %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s %s (rank %i) has given %s rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					format(szMessage, sizeof szMessage, "%s %s(%d) (rank %i) has given %s(%d) rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					Log("logs/group.log", szMessage);
 
 					PlayerInfo[iTargetID][pRank] = iRank;
@@ -52259,7 +52442,7 @@ CMD:setdiv(playerid, params[]) {
 						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "You have kicked %s from their division.", GetPlayerNameEx(iTargetID));
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof szMessage, "%s %s has kicked %s out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+						format(szMessage, sizeof szMessage, "%s %s(%d) has kicked %s(%d) out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						Log("logs/group.log", szMessage);
 					}
 					else
@@ -52268,7 +52451,7 @@ CMD:setdiv(playerid, params[]) {
 						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof szMessage, "You have set %s to the %s division.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof szMessage, "%s %s has set %s's division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+						format(szMessage, sizeof szMessage, "%s %s(%d) has set %s's(%d) division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 						Log("logs/group.log", szMessage);
 					}
 					PlayerInfo[iTargetID][pDivision] = iDiv-1;
@@ -52492,7 +52675,7 @@ CMD:binvite(playerid, params[]) {
 					format(string, sizeof(string), "%s %s has offered you a job at %s - type /accept business", GetBusinessRankName(PlayerInfo[playerid][pBusinessRank]), GetPlayerNameEx(playerid), Businesses[iBusinessID][bName]);
 					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
 
-					format(string, sizeof(string), "%s has invited %s to join %s", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), Businesses[iBusinessID][bName]);
+					format(string, sizeof(string), "%s(%d) has invited %s(%d) to join %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), Businesses[iBusinessID][bName]);
 					Log("logs/business.log", string);
 
 				}
@@ -52531,7 +52714,7 @@ CMD:buninvite(playerid, params[]) {
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 					format(szMessage, sizeof(szMessage), "* You have been kicked from the business by %s %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-					format(szMessage, sizeof(szMessage), "%s uninvited %s from the %s as a rank %i.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), Businesses[PlayerInfo[iTargetID][pBusiness]][bName], iRank);
+					format(szMessage, sizeof(szMessage), "%s(%d) uninvited %s(%d) from the %s as a rank %i.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), Businesses[PlayerInfo[iTargetID][pBusiness]][bName], iRank);
 					Log("logs/business.log", szMessage);
 
 					PlayerInfo[iTargetID][pBusiness] = INVALID_BUSINESS_ID;
@@ -52611,7 +52794,7 @@ CMD:bgiverank(playerid, params[])
 	PlayerInfo[targetid][pBusinessRank] = rank;
 	format(string, sizeof(string), "* You have given %s rank %d.", GetPlayerNameEx(targetid), rank);
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "%s has given %s rank %i in %s", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), rank, Businesses[PlayerInfo[targetid][pBusiness]][bName]);
+	format(string, sizeof(string), "%s(%d) has given %s(%d) rank %i in %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), rank, Businesses[PlayerInfo[targetid][pBusiness]][bName]);
 	Log("logs/business.log", string);
 	return 1;
 }
@@ -52621,7 +52804,7 @@ CMD:resign(playerid, params[])
 	if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID)
 	{
 		new string[128];
-		format(string, sizeof(string), "%s has resigned from their business as a rank %i", GetPlayerNameEx(playerid), PlayerInfo[playerid][pBusinessRank]);
+		format(string, sizeof(string), "%s(%d) has resigned from their business as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pBusinessRank]);
 		Log("logs/business.log", string);
 		PlayerInfo[playerid][pBusiness] = INVALID_BUSINESS_ID;
 		PlayerInfo[playerid][pBusinessRank] = INVALID_RANK;
@@ -52668,7 +52851,7 @@ CMD:bsafe(playerid, params[])
 		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] -= Amount;
 		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string,sizeof(string),"%s (IP: %s) has withdrawn $%s from their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
+		    	format(string,sizeof(string),"%s(%d) (IP: %s) has withdrawn $%s from their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -52685,7 +52868,7 @@ CMD:bsafe(playerid, params[])
 		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] += Amount;
 		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string,sizeof(string),"%s (IP: %s) has deposited $%s into their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
+		    	format(string,sizeof(string),"%s(%d) (IP: %s) has deposited $%s into their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, -Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -53710,7 +53893,7 @@ CMD:cancelresupply(playerid, params[])
 		    Businesses[PlayerInfo[playerid][pBusiness]][bOrderState] = 4;
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
 			new string[128];
-			format(string, sizeof(string), "%s (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
+			format(string, sizeof(string), "%s(%d) (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
 			Log("logs/business.log", string);
 			format(string, sizeof(string), "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
 			return SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -53721,7 +53904,7 @@ CMD:cancelresupply(playerid, params[])
 		    Businesses[PlayerInfo[playerid][pBusiness]][bOrderState] = 4;
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
 			new string[128];
-			format(string, sizeof(string), "%s (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
+			format(string, sizeof(string), "%s(%d) (IP: %s) has cancelled the resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
 			Log("logs/business.log", string);
 			format(string, sizeof(string), "You have cancelled your resupply order! A refund of $%s has been given.", number_format(floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * (BUSINESS_ITEMS_COST * 0.8))));
 			return SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -53836,7 +54019,7 @@ CMD:employeepayset(playerid, params[])
     new string[128];
     format(string, sizeof(string), "You have set paycheck amount for rank %d (%s) to $%s", rank, GetBusinessRankName(rank), number_format(amount));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string,sizeof(string),"%s has changed paycheck of rank %d to $%s for business %d", GetPlayerNameEx(playerid), rank, number_format(amount), PlayerInfo[playerid][pBusiness]);
+	format(string,sizeof(string),"%s(%d) has changed paycheck of rank %d to $%s for business %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), rank, number_format(amount), PlayerInfo[playerid][pBusiness]);
 	Log("logs/business.log", string);
 
 	return 1;
@@ -54151,8 +54334,10 @@ CMD:setfamed(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s has set %s famed level to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), level);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 				SendFamedMessage(COLOR_LIGHTRED, string);
+				format(string, sizeof(string), "AdmCmd: %s(%d) has set %s(%d) famed level to %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), level);
 				Log("logs/setfamed.log", string);
-				format(string, sizeof(string), "Your famed level has been set to %s (%d) by %s.", GetFamedRankName(PlayerInfo[targetid][pFamed]), level, GetPlayerNameEx(playerid));
+				if(level == 0) format(string, sizeof(string), "Your famed level has been removed by %s.", GetPlayerNameEx(playerid));
+				else format(string, sizeof(string), "Your famed level has been set to %s (%d) by %s.", GetFamedRankName(PlayerInfo[targetid][pFamed]), level, GetPlayerNameEx(playerid));
 				SendClientMessageEx(targetid, COLOR_LIGHTBLUE, string);
 			}
 		}
@@ -54906,7 +55091,7 @@ CMD:givesprize(playerid, params[])
 			SendClientMessageEx(pID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have given %s %d car slot(s).", GetPlayerNameEx(pID), amount);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d free car slot(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerIpEx(pID), amount);
+			format(string, sizeof(string), "[Admin] %s(%d)(IP:%s) has given %s(%d)(IP:%s) %d free car slot(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerSQLId(pID), GetPlayerIpEx(pID), amount);
 			Log("logs/adminrewards.log", string);
 		}
 		else if(strcmp(choice, "toyslot", true) == 0)
@@ -54918,7 +55103,7 @@ CMD:givesprize(playerid, params[])
 			SendClientMessageEx(pID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have given %s %d toy slot(s).", GetPlayerNameEx(pID), amount);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d free toy slot(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerIpEx(pID), amount);
+			format(string, sizeof(string), "[Admin] %s(%d)(IP:%s) has given %s(%d)(IP:%s) %d free toy slot(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(pID), GetPlayerSQLId(pID), GetPlayerIpEx(pID), amount);
 			Log("logs/adminrewards.log", string);
 		}
 		else if(strcmp(choice, "carvoucher", true) == 0)
@@ -54930,7 +55115,7 @@ CMD:givesprize(playerid, params[])
 			SendClientMessageEx(pID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have given %s %d car voucher(s).", GetPlayerNameEx(pID), amount);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d free car voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerIpEx(pID), amount);
+			format(string, sizeof(string), "[Admin] %s(%d)(IP:%s) has given %s(%d)(IP:%s) %d free car voucher(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerSQLId(pID), GetPlayerIpEx(pID), amount);
 			Log("logs/adminrewards.log", string);
 		}
 		else if(strcmp(choice, "giftvoucher", true) == 0)
@@ -54942,7 +55127,7 @@ CMD:givesprize(playerid, params[])
 			SendClientMessageEx(pID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have given %s %d gift reset voucher(s).", GetPlayerNameEx(pID), amount);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "[Admin] %s(IP:%s) has given %s(IP:%s) %d free gift reset voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID), GetPlayerIpEx(pID), amount);
+			format(string, sizeof(string), "[Admin] %s(%d)(IP:%s) has given %s(%d)(IP:%s) %d free gift reset voucher(s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(pID),  GetPlayerSQLId(pID), GetPlayerIpEx(pID), amount);
 			Log("logs/adminrewards.log", string);
 		}
 		else
@@ -56698,7 +56883,7 @@ CMD:watchlistadd(playerid, params[])
 			format(string, sizeof(string), "You have manually added %s to the watchlist for %d days", GetPlayerNameEx(giveplayerid), days);
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
-			format(string, sizeof(string), "%s has added %s to the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s has added %s(%d) to the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
@@ -56726,7 +56911,7 @@ CMD:watchlistremove(playerid, params[])
 			format(string, sizeof(string), "You have removed %s from the watchlist.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
-			format(string, sizeof(string), "%s has removed %s from the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s has removed %s(%d) from the watchlist", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/watchlist.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
@@ -56797,7 +56982,7 @@ CMD:unrestrictaccount(playerid, params[])
 			PlayerTextDrawHide(giveplayerid, AccountRestriction[giveplayerid]);
 			PlayerTextDrawHide(giveplayerid, AccountRestrictionEx[giveplayerid]);
 			
-			format(string, sizeof(string), "%s has unrestricted %s account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "%s has unrestricted %s(%d) account", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			Log("logs/restrictaccount.log", string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -56976,9 +57161,18 @@ CMD:makewatchdog(playerid, params[])  {
 		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s the Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 		default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level watchdog.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 	}
+	ABroadCast(COLOR_LIGHTRED, szRank, 2);
+	switch(ivalue)
+	{
+		case 0: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has removed %s's(%d) watchdog rank.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 1: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Watchdog.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 2: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Senior Watchdog.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 3: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a RP Specialist.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) the Director of RP Improvement.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		default: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) an undefined level(%d) watchdog.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), ivalue);
+	}
 
 	PlayerInfo[iTargetID][pWatchdog] = ivalue;
-	ABroadCast(COLOR_LIGHTRED, szRank, 2);
 	Log("logs/makewatchdog.log", szRank);
 
 	switch(ivalue) {
@@ -57154,7 +57348,7 @@ CMD:shopbpack(playerid, params[]) {
 			
 			SendClientMessageEx(playertogive, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
-			format(szMessage, sizeof(szMessage), "%s created a %s Backpack (%i) for %s (OrderID: %d).", GetPlayerNameEx(playerid), TypeName, type, GetPlayerNameEx(playertogive), orderid);
+			format(szMessage, sizeof(szMessage), "%s created a %s Backpack (%i) for %s(%d) (OrderID: %d).", GetPlayerNameEx(playerid), TypeName, type, GetPlayerNameEx(playertogive), GetPlayerSQLId(playertogive), orderid);
 			Log("logs/shoplog.log", szMessage);
 		}
 	}
@@ -57639,7 +57833,7 @@ CMD:bstore(playerid, params[])
 			PlayerInfo[playerid][pBStoredV] = PlayerVehicleInfo[playerid][pvid][pvSlotId];
 			format(string, sizeof(string), "* %s has stored a backpack in the trunk of their car.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			format(string, sizeof(string), "[TRUNK] %s(%s) stored their %s backpack in [SQLID:%d][SlotID:%d][ModelID:%d]", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, PlayerVehicleInfo[playerid][pvid][pvSlotId], pvid, PlayerVehicleInfo[playerid][pvid][pvModelId]);
+			format(string, sizeof(string), "[TRUNK] %s(%d) (%s) stored their %s backpack in [SQLID:%d][SlotID:%d][ModelID:%d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), btype, PlayerVehicleInfo[playerid][pvid][pvSlotId], pvid, PlayerVehicleInfo[playerid][pvid][pvModelId]);
 			Log("logs/backpack.log", string);
 		}
 		else if(strcmp(housecar, "house", true, strlen(housecar)) == 0)
@@ -57670,7 +57864,7 @@ CMD:bstore(playerid, params[])
 				PlayerInfo[playerid][pBStoredH] = HouseInfo[hid][hSQLId];
 				format(string, sizeof(string), "* %s has stored a backpack in their house.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				format(string, sizeof(string), "[HOUSE] %s(%s) stored his %s backpack in [HouseID:%d]", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), btype, hid);
+				format(string, sizeof(string), "[HOUSE] %s(%d) (%s) stored his %s backpack in [HouseID:%d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), btype, hid);
 				Log("logs/backpack.log", string);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
@@ -57958,7 +58152,7 @@ CMD:pickveh(playerid, params[])
 						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 						GetPlayerIp(playerid, ip, sizeof(ip));
 						GetPlayerIp(i, ip2, sizeof(ip2));
-						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
+						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
 						Log("logs/playervehicle.log", szMessage);
 					}
 					else {
@@ -58020,7 +58214,7 @@ CMD:cracktrunk(playerid, params[])
 			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2);
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2);
 			Log("logs/playervehicle.log", szMessage);
 		}
 		else {
@@ -58108,7 +58302,7 @@ CMD:akick(playerid, params[])
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
-	format(string, sizeof(string), "AdmCmd: %s (IP:%s) was admin kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerIpEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+	format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was admin kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerIpEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	Log("logs/kick.log", string);
 	format(string, sizeof(string), "AdmCmd: %s was admin kicked by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	ABroadCast(COLOR_LIGHTRED, string, 2);
@@ -58171,13 +58365,13 @@ CMD:makesec(playerid, params[])
 	if(PlayerInfo[iTargetID][pSEC] == ivalue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this SEC coordinator level.");
 	new szRank[128];
 	switch(ivalue) {
-		case 0: format(szRank, sizeof(szRank), "AdmCmd: %s has removed %s's coordinator rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 1: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Regular Coordinator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 2: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Senior Coordinator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 3: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Assistant Chairman.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Deputy Chairman.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		case 5: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s the Chairman.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-		default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level SEC coordinator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		case 0: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has removed %s's(%d) coordinator rank.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 1: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Regular Coordinator.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 2: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Senior Coordinator.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 3: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Assistant Chairman.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 4: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) a Deputy Chairman.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		case 5: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) the Chairman.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+		default: format(szRank, sizeof(szRank), "AdmCmd: %s(%d) has made %s(%d) an undefined level(%d) SEC coordinator.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), ivalue);
 	}
 	PlayerInfo[iTargetID][pSEC] = ivalue;
 	Log("logs/makesec.log", szRank);
@@ -58254,6 +58448,394 @@ CMD:sec(playerid, params[])
 				SendClientMessageEx(i, 0x00FA9AFF, szMessage);
 			}
 		}
+	}
+	return 1;
+}
+
+CMD:changegaragepass(playerid, params[])
+{
+	new garagepass[24];
+	for(new i = 0; i < sizeof(GarageInfo); i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid,3.0,GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
+		{
+			if(sscanf(params, "s[24]", garagepass))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /changegaragepass [pass]");
+				SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the door set the password to 'none'.");
+				return 1;
+			}
+			if(GarageInfo[i][gar_Owner] == GetPlayerSQLId(playerid))
+			{
+				format(GarageInfo[i][gar_Pass], 24, "%s", garagepass);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
+				SaveGarage(i);
+			}
+			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot change the password on this lock.");
+		}
+	}
+	return 1;
+}
+
+CMD:lockgarage(playerid, params[])
+{
+	for(new i = 0; i < sizeof(GarageInfo); i++) 
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
+		{
+			if(GarageInfo[i][gar_Owner] == GetPlayerSQLId(playerid))
+			{
+				if(GarageInfo[i][gar_Locked] == 0)
+				{
+					GarageInfo[i][gar_Locked] = 1;
+					SendClientMessageEx(playerid, COLOR_WHITE, "This garage has been locked.");
+				}
+				else if(GarageInfo[i][gar_Locked] == 1)
+				{
+					GarageInfo[i][gar_Locked] = 0;
+					SendClientMessageEx(playerid, COLOR_GREY, "This garage has been unlocked.");
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot lock this garage.");
+		}
+	}
+	return 1;
+}
+
+CMD:garagepass(playerid, params[])
+{
+	for(new i = 0; i < sizeof(GarageInfo); i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW] || IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
+		{
+			if(strcmp(GarageInfo[i][gar_Pass], "None", true) == 0 || GarageInfo[i][gar_Pass] <= 1) return SendClientMessageEx(playerid, COLOR_GREY, "This garage isn't locked.");
+			ShowPlayerDialog(playerid, GARAGELOCK, DIALOG_STYLE_INPUT, "Garage Security", "Enter the password for this garage", "Login", "Cancel");
+			SetPVarInt(playerid, "Garage", i);
+			break;
+		}
+	}
+	return 1;
+}
+
+CMD:garageedit(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new option[128], garageid, value, string[128];
+	if(sscanf(params, "s[128]iD(0)", option, garageid, value))
+	{
+		SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /garageedit [option] [garageid] [value]");
+		SendClientMessage(playerid, COLOR_GRAD2, "Available Options: Exterior, CustomExterior, Size, VW, Delete");
+		return 1;
+	}
+	if(garageid >= MAX_GARAGES) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid Garage ID!");
+	if(strcmp(option, "exterior", true) == 0)
+	{
+		GetPlayerPos(playerid, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]);
+		GetPlayerFacingAngle(playerid, GarageInfo[garageid][gar_ExteriorA]);
+		GarageInfo[garageid][gar_ExteriorVW] = GetPlayerVirtualWorld(playerid);
+		GarageInfo[garageid][gar_ExteriorInt] = GetPlayerInterior(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
+		CreateGarage(garageid);
+		format(string, sizeof(string), "%s has edited Garage ID: %d's Exterior.", GetPlayerNameEx(playerid), garageid);
+		Log("logs/garage.log", string);
+	}
+	else if(strcmp(option, "customexterior", true) == 0)
+	{
+		if(GarageInfo[garageid][gar_CustomExterior] == 0)
+		{
+			GarageInfo[garageid][gar_CustomExterior] = 1;
+			SendClientMessageEx(playerid, COLOR_WHITE, "Garage set to custom exterior!");
+		}
+		else
+		{
+			GarageInfo[garageid][gar_CustomExterior] = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "Garage set to normal (not custom) exterior!");
+		}
+		format(string, sizeof(string), "%s has edited Garage ID: %d's CustomExterior.", GetPlayerNameEx(playerid), garageid);
+		Log("logs/garage.log", string);
+	}
+	else if(strcmp(option, "size", true) == 0)
+	{
+		if(!(1 <= value <= 4)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Valid Sizes: 1 = Small | 2 = Medium | 3 = Large | 4 = Extra Large");
+		new size[12];
+		if(value == 1)
+		{
+			GarageInfo[garageid][gar_InteriorX] = 1198.753051;
+			GarageInfo[garageid][gar_InteriorY] = 1591.710937;
+			GarageInfo[garageid][gar_InteriorZ] = 5290.287109;
+			GarageInfo[garageid][gar_InteriorA] = 360;
+			size = "Small";
+		}
+		if(value == 2)
+		{
+			GarageInfo[garageid][gar_InteriorX] = 1070.967651;
+			GarageInfo[garageid][gar_InteriorY] = 1582.612548;
+			GarageInfo[garageid][gar_InteriorZ] = 5290.239257;
+			GarageInfo[garageid][gar_InteriorA] = 270;
+			size = "Medium";
+		}
+		if(value == 3)
+		{
+			GarageInfo[garageid][gar_InteriorX] = 1193.128662;
+			GarageInfo[garageid][gar_InteriorY] = 1535.807128;
+			GarageInfo[garageid][gar_InteriorZ] = 5290.287109;
+			GarageInfo[garageid][gar_InteriorA] = 180;
+			size = "Large";
+		}
+		if(value == 4)
+		{
+			GarageInfo[garageid][gar_InteriorX] = 1103.262939;
+			GarageInfo[garageid][gar_InteriorY] = 1544.137695;
+			GarageInfo[garageid][gar_InteriorZ] = 5290.279296;
+			GarageInfo[garageid][gar_InteriorA] = 180;
+			size = "Extra Large";
+		}
+		format(string, sizeof(string), "Garage size set to %s", size);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "%s has edited Garage ID: %d's size to %s", GetPlayerNameEx(playerid), garageid, size);
+		Log("logs/garage.log", string);
+	}
+	else if(strcmp(option, "vw", true) == 0)
+	{
+		GarageInfo[garageid][gar_InteriorVW] = value;
+		format(string, sizeof(string), "Garage Interior VW set to %d", value);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "%s has edited Garage ID: %d's VW to %d", GetPlayerNameEx(playerid), garageid, value);
+		Log("logs/garage.log", string);
+	}
+	else if(strcmp(option, "delete", true) == 0)
+	{
+		format(string, sizeof(string), "%s has deleted Garage ID: %d was owned by %s(%d)", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);
+		Log("logs/garage.log", string);
+		format(string, sizeof(string), "You have successfully deleted Garage ID: %d was owned by %s", garageid, GarageInfo[garageid][gar_OwnerName]);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		GarageInfo[garageid][gar_Owner] = -1;
+		format(GarageInfo[garageid][gar_OwnerName], MAX_PLAYER_NAME, "Nobody");
+		GarageInfo[garageid][gar_ExteriorX] = 0.0;
+		GarageInfo[garageid][gar_ExteriorY] = 0.0;
+		GarageInfo[garageid][gar_ExteriorZ] = 0.0;
+		GarageInfo[garageid][gar_ExteriorA] = 0.0;
+		GarageInfo[garageid][gar_ExteriorVW] = 0;
+		GarageInfo[garageid][gar_ExteriorInt] = 0;
+		GarageInfo[garageid][gar_CustomExterior] = 0;
+		GarageInfo[garageid][gar_InteriorX] = 0.0;
+		GarageInfo[garageid][gar_InteriorY] = 0.0;
+		GarageInfo[garageid][gar_InteriorZ] = 0.0;
+		GarageInfo[garageid][gar_InteriorA] = 0.0;
+		GarageInfo[garageid][gar_InteriorVW] = 0;
+		format(GarageInfo[garageid][gar_Pass], MAX_PLAYER_NAME, "none");
+		GarageInfo[garageid][gar_Locked] = 0;
+		CreateGarage(garageid);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid option!");
+	SaveGarage(garageid);
+	return 1;
+}
+
+CMD:changeddtogarage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new doorid;
+	if(sscanf(params, "d", doorid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /changeddtogarage [doorid]");
+	if(doorid >= MAX_DDOORS) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid Door ID!");
+	if(DDoorsInfo[doorid][ddType] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "This door is not owned by a player, please confirm and modify door type if needed!");
+	new next, bool:available = false;
+	for(new i; i < MAX_GARAGES; i++)
+	{
+		if(GarageInfo[i][gar_ExteriorX] == 0.0)
+		{
+			available = true;
+			next = i;
+			break;
+		}
+	}
+	if(available == false) return SendClientMessageEx(playerid, COLOR_GRAD2, "No Garages available.");
+	new string[128];
+	GarageInfo[next][gar_Owner] = DDoorsInfo[doorid][ddOwner];
+	format(GarageInfo[next][gar_OwnerName], MAX_PLAYER_NAME, "%s", DDoorsInfo[doorid][ddOwnerName]);
+	GarageInfo[next][gar_ExteriorX] = DDoorsInfo[doorid][ddExteriorX];
+	GarageInfo[next][gar_ExteriorY] = DDoorsInfo[doorid][ddExteriorY];
+	GarageInfo[next][gar_ExteriorZ] = DDoorsInfo[doorid][ddExteriorZ];
+	GarageInfo[next][gar_ExteriorA] = DDoorsInfo[doorid][ddExteriorA];
+	GarageInfo[next][gar_ExteriorVW] = DDoorsInfo[doorid][ddExteriorVW];
+	GarageInfo[next][gar_ExteriorInt] = DDoorsInfo[doorid][ddExteriorInt];
+	GarageInfo[next][gar_CustomExterior] = DDoorsInfo[doorid][ddCustomExterior];
+	GarageInfo[next][gar_InteriorX] = DDoorsInfo[doorid][ddInteriorX];
+	GarageInfo[next][gar_InteriorY] = DDoorsInfo[doorid][ddInteriorY];
+	GarageInfo[next][gar_InteriorZ] = DDoorsInfo[doorid][ddInteriorZ];
+	GarageInfo[next][gar_InteriorA] = DDoorsInfo[doorid][ddInteriorA];
+	GarageInfo[next][gar_InteriorVW] = DDoorsInfo[doorid][ddInteriorVW];
+	format(GarageInfo[next][gar_Pass], 24, "%s", DDoorsInfo[doorid][ddPass]);
+	GarageInfo[next][gar_Locked] = DDoorsInfo[doorid][ddLocked];
+	format(string, sizeof(string), "Door ID %d has been transferred to Garage ID: %d by %s", doorid, next, GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	Log("logs/ddedit.log", string);
+	Log("logs/garage.log", string);
+	CreateGarage(next);
+	SaveGarage(next);
+	SendClientMessageEx(playerid, COLOR_GRAD2, "If garage has been successfully transferred delete the door. /ddedit delete");
+	return 1;
+}
+
+CMD:garageowner(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new playername[MAX_PLAYER_NAME], garageid, string[128];
+		if(sscanf(params, "ds[24]", garageid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /garageowner [garageid] [player name]");
+
+		new giveplayerid = ReturnUser(playername);
+		if(IsPlayerConnected(giveplayerid))
+		{
+			format(GarageInfo[garageid][gar_OwnerName], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(giveplayerid));
+			GarageInfo[garageid][gar_Owner] = GetPlayerSQLId(giveplayerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the owner of this garage.");
+			CreateGarage(garageid);
+			SaveGarage(garageid);
+			format(string, sizeof(string), "%s has edited Garage ID: %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), garageid, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+			Log("logs/garage.log", string);
+		}
+		else
+		{
+			format(string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", g_mysql_ReturnEscaped(playername, MainPipeline));
+			mysql_function_query(MainPipeline, string, true, "OnSetGarageOwner", "ii", playerid, garageid);
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	return 1;
+}
+
+CMD:agaragepass(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+
+	new string[128],
+		garageid,
+		garagepass[24];
+
+	if(sscanf(params, "ds[24]", garageid, garagepass)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /agaragepass [garageid] [pass]"), SendClientMessageEx(playerid, COLOR_WHITE, "To remove the password on the garage set the password to 'none' ");
+	format(GarageInfo[garageid][gar_Pass], 24, "%s", garagepass);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of that garage.");
+	SaveGarage(garageid);
+	format(string, sizeof(string), "%s has edited Garage ID: %d's password to %s.", GetPlayerNameEx(playerid), garageid, garagepass);
+	Log("logs/garage.log", string);
+	return 1;
+}
+
+CMD:garagenext(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new string[128];
+		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available garage...");
+		for(new x; x < MAX_GARAGES; x++)
+		{
+			if(GarageInfo[x][gar_ExteriorX] == 0.0)
+			{
+				format(string, sizeof(string), "%d is available to use.", x);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				break;
+			}
+		}
+	}
+	else
+	{
+	    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:goingarage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new string[48], garage;
+		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goingarage [garageid]");
+		if(garage < 0 || garage >= MAX_GARAGES)
+		{
+			format(string, sizeof(string), "Garage ID must be between 0 and %d.", MAX_GARAGES - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, string);
+		}
+		SetPlayerPos(playerid, GarageInfo[garage][gar_InteriorX], GarageInfo[garage][gar_InteriorY], GarageInfo[garage][gar_InteriorZ]);
+		SetPlayerFacingAngle(playerid, GarageInfo[garage][gar_InteriorA]);
+		SetPlayerInterior(playerid, 1);
+		PlayerInfo[playerid][pInt] = 1;
+		PlayerInfo[playerid][pVW] = GarageInfo[garage][gar_InteriorVW];
+		SetPlayerVirtualWorld(playerid, GarageInfo[garage][gar_InteriorVW]);
+		Player_StreamPrep(playerid, GarageInfo[garage][gar_InteriorX], GarageInfo[garage][gar_InteriorY], GarageInfo[garage][gar_InteriorZ], FREEZE_TIME);
+	}
+	return 1;
+}
+
+CMD:gotogarage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new string[48], garage;
+		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogarage [garageid]");
+		if(garage < 0 || garage >= MAX_GARAGES)
+		{
+			format(string, sizeof(string), "GarageID must be between 0 and %d.", MAX_GARAGES - 1);
+			return SendClientMessageEx(playerid, COLOR_GREY, string);
+		}
+		if(GarageInfo[garage][gar_ExteriorX] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD2, "No exterior is set for this garage");
+		SetPlayerInterior(playerid,GarageInfo[garage][gar_ExteriorInt]);
+		SetPlayerPos(playerid,GarageInfo[garage][gar_ExteriorX],GarageInfo[garage][gar_ExteriorY],GarageInfo[garage][gar_ExteriorZ]);
+		SetPlayerFacingAngle(playerid, GarageInfo[garage][gar_ExteriorA]);
+		PlayerInfo[playerid][pInt] = GarageInfo[garage][gar_ExteriorInt];
+		SetPlayerVirtualWorld(playerid, GarageInfo[garage][gar_ExteriorVW]);
+		PlayerInfo[playerid][pVW] = GarageInfo[garage][gar_ExteriorVW];
+		if(GarageInfo[garage][gar_CustomExterior]) Player_StreamPrep(playerid, GarageInfo[garage][gar_ExteriorX], GarageInfo[garage][gar_ExteriorY], GarageInfo[garage][gar_ExteriorZ], FREEZE_TIME);
+	}
+	return 1;
+}
+
+CMD:garagestatus(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	new garageid;
+	if(sscanf(params, "i", garageid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /garagestatus [garageid]");
+	new string[128];
+	format(string,sizeof(string),"|___________ Garage Status (ID: %d) ___________|", garageid);
+	SendClientMessageEx(playerid, COLOR_GREEN, string);
+	format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Locked: %d | Password: %s", GarageInfo[garageid][gar_CustomExterior], GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], GarageInfo[garageid][gar_InteriorVW], GarageInfo[garageid][gar_Locked], GarageInfo[garageid][gar_Pass]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	return 1;
+}
+
+CMD:garagenear(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	SendClientMessageEx(playerid, COLOR_RED, "* Listing all garages within 30 meters of you...");
+	new string[128];
+	for(new i; i < MAX_GARAGES; i++)
+	{
+		if(GarageInfo[i][gar_InteriorX] != 0.0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
+			{
+				format(string, sizeof(string), "(Interior) Garage ID %d | %f from you | Virtual World: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]), GarageInfo[i][gar_InteriorVW]);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
+			{
+				format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorVW], GarageInfo[i][gar_ExteriorInt]);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:garagehelp(playerid, params[])
+{
+	SendClientMessageEx(playerid, COLOR_GRAD2, "*** GARAGE *** /garagepass /lockgarage /changegaragepass");
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "*** GARAGE - Admin *** /garageedit /garageowner /agaragepass /garagenext /gotogarage /goingarage /garagenear /garagestatus /changeddtogarage");
 	}
 	return 1;
 }
