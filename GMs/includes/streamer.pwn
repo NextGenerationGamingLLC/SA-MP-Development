@@ -481,6 +481,8 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("HealthCare Shop\n/buyhealthcare", COLOR_YELLOW, 2946.8672, -1484.9561, 11.0000+0.6, 10.0);
 	
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
+	
+	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
 	print("[Streamer] Dynamic 3D Text Labels has been loaded.");
 	return 1;
 }
@@ -555,6 +557,44 @@ public LoadStreamerDynamicButtons()
 	SANewsOffice = CreateButton(614.58581543,17.78320312,1108.55004883,0); //object(sec_keypad) (3)
 	SANewsStudio = CreateButton(625.50000000,-13.60000038,1108.50000000,270.00000000); //object(sec_keypad) (1)
 	SANewsPrivateOPP = CreateButton(626.13519287,-0.08516422,1108.61315918,0); //object(sec_keypad) (4)
+	
+	//new doc buttons
+	DocButtons[0] = CreateButton(597.35022, 1495.02881, 6001.10938, 180.00);
+	DocButtons[1] = CreateButton(590.35669, 1484.88452, 6001.10938, 90.00);
+	DocButtons[2] = CreateButton(590.35199, 1481.74048, 6001.10938, 90.00);
+	DocButtons[3] = CreateButton(585.33081, 1478.44385, 6001.10938, 270.00);
+	DocButtons[4] = CreateButton(589.62848, 1495.06372, 6001.10938, 0.00);
+	DocButtons[5] = CreateButton(589.81085, 1487.91870, 6001.10938, 0.00);
+	DocButtons[6] = CreateButton(589.85394, 1475.79370, 6001.10938, 0.00);
+	DocButtons[7] = CreateButton(567.36774, 1475.78076, 6001.10938, 0.00);
+	DocButtons[8] = CreateButton(562.53558, 1475.25171, 6001.10938, 90.00);
+	DocButtons[9] = CreateButton(549.62268, 1475.17310, 5997.64258, 90.00);
+	DocButtons[10] = CreateButton(555.01172, 1475.77649, 5997.64258, 0.00);
+	DocButtons[11] = CreateButton(547.00482, 1498.27478, 5997.64258, 0.00);
+	DocButtons[12] = CreateButton(552.95190, 1471.67383, 5997.64258, 0.00);
+	DocButtons[13] = CreateButton(552.95190, 1462.20154, 5997.64258, 0.00);
+	DocButtons[14] = CreateButton(581.68353, 1492.52795, 6001.10938, 0.00);
+	DocButtons[15] = CreateButton(581.66846, 1495.06531, 6001.10938, 0.00);
+	DocButtons[16] = CreateButton(578.28308, 1471.08630, 6008.33350, 0.00);
+	DocButtons[17] = CreateButton(584.73883, 1475.85547, 6008.33350, 0.00);
+	DocButtons[18] = CreateButton(587.71490, 1475.85547, 6008.33350, 0.00);
+	DocButtons[19] = CreateButton(597.27667, 1492.54871, 6008.33350, 180.00);
+	DocButtons[20] = CreateButton(592.48859, 1495.47900, 6008.33350, 180.00);
+	DocButtons[21] = CreateButton(589.09015, 1495.47241, 6008.33350, 180.00);
+	DocButtons[22] = CreateButton(591.32568, 1486.47046, 6015.14746, 0.00);
+	DocButtons[23] = CreateButton(568.17041, 1455.06677, 6001.10938, 270.00);
+	DocButtons[24] = CreateButton(555.69672, 1466.10669, 6001.14990, 0.00);
+	DocButtons[25] = CreateButton(574.04047, 1454.24988, 6001.05078, 180.00);
+	DocButtons[26] = CreateButton(576.57416, 1449.88806, 6001.05078, 270.00);
+	DocButtons[27] = CreateButton(566.48718, 1429.47644, 6001.05078, 180.00);
+	DocButtons[28] = CreateButton(553.63123, 1429.40625, 6001.05078, 0.00);
+	
+	DocCPButton = CreateButton(568.29041, 1461.34607, 6008.45410, 90.00000);
+	
+	DocElevatorCall[0] = CreateButton(579.07770, 1488.00403, 6001.09277, 90.00000);
+	DocElevatorCall[1] = CreateButton(579.07770, 1488.00403, 6008.11475, 90.00000);
+	DocElevatorCall[2] = CreateButton(579.07770, 1488.00403, 6015.20801, 90.00000);
+	DocElevatorInside = CreateButton(578.91467, 1492.18884, 6001.04785, 270.00000);
 	
 	print("[Streamer] Dynamic Buttons has been loaded.");
 	
@@ -671,7 +711,7 @@ public LoadStreamerDynamicObjects()
 	ncontrolroomobjects[1] = CreateDynamicObject(3037,-759.52246094,2560.88574219,10024.79785156,0.00000000,0.00000000,355.98999023); //object(warehouse_door2b) (2)
 	ncontrolroomobjects[2] = CreateDynamicObject(3037,-755.53906250,2538.61035156,10025.02636719,0.00000000,0.00000000,85.99548340); //object(warehouse_door2b) (3)
 
-	CellGates[1] = CreateDynamicObject(10252,-2075.55273438,-191.64550781,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
+	/*CellGates[1] = CreateDynamicObject(10252,-2075.55273438,-191.64550781,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
  	CellGates[0] = CreateDynamicObject(10252,-2080.28613281,-193.01757812,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
     CellGates[2] = CreateDynamicObject(10252,-2068.00195312,-193.01757812,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
     CellGates[3] = CreateDynamicObject(10252,-2063.56738281,-191.64550781,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
@@ -695,8 +735,91 @@ public LoadStreamerDynamicObjects()
     BlastDoors[5] = CreateDynamicObject(2952,-2053.92187500,-205.46679688,977.75732422,0.00000000,0.00000000,0.00000000); //object(kmb_gimpdoor)(1)
     BlastDoors[10] = CreateDynamicObject(2952,-2053.92187500,-207.59570312,977.75732422,0.00000000,0.00000000,0.00000000); //object(kmb_gimpdoor)(1)
     BlastDoors[11] = CreateDynamicObject(2952,-2050.50097656,-205.82617188,984.02539062,0.00000000,0.00000000,90.00000000); //object(kmb_gimpdoor)(1)
-    BlastDoors[16] = CreateDynamicObject(1569, -2057.9, -144.905, 987.24 ,0, 0.00000000, 270.0);
+    BlastDoors[16] = CreateDynamicObject(1569, -2057.9, -144.905, 987.24 ,0, 0.00000000, 270.0);*/
+	
+	DocElevator = CreateDynamicObject(18755, 577.03979, 1490.21484, 6001.31250,   0.00000, 0.00000, -180.00000);
+	
+	DocInnerElevator[0] = CreateDynamicObject(18756, 577.04480, 1488.24072, 6001.29541,   0.00000, 0.00000, 180.00000);
+	DocInnerElevator[1] = CreateDynamicObject(18757, 577.04480, 1492.22827, 6001.29541,   0.00000, 0.00000, 180.00000);
+	
+	DocElevatorExt[0] = CreateDynamicObject(18756, 577.10480, 1488.24072, 6001.21533,   0.00000, 0.00000, 180.00000);
+	DocElevatorExt[1] = CreateDynamicObject(18757, 577.10480, 1492.22827, 6001.21533,   0.00000, 0.00000, 180.00000);
+	DocElevatorExt[2] = CreateDynamicObject(18756, 577.10480, 1488.24072, 6008.37744,   0.00000, 0.00000, 180.00000);
+	DocElevatorExt[3] = CreateDynamicObject(18757, 577.10480, 1492.22827, 6008.37744,   0.00000, 0.00000, 180.00000);
+	DocElevatorExt[4] = CreateDynamicObject(18756, 577.10480, 1488.24072, 6015.39063,   0.00000, 0.00000, 180.00000);
+	DocElevatorExt[5] = CreateDynamicObject(18757, 577.10480, 1492.22827, 6015.39063,   0.00000, 0.00000, 180.00000);
+	
+	DocAdmFloor1[0] = CreateDynamicObject(1495, 597.56000, 1494.96692, 5999.42773,   0.00000, 0.00000, 0.00000); // lobby gate
+	DocAdmFloor1[1] = CreateDynamicObject(1495, 587.84039, 1495.08362, 5999.40771,   0.00000, 0.00000, 0.00000);// security entrance 1
+	DocAdmFloor1[2] = CreateDynamicObject(1495, 590.28851, 1484.60571, 5999.42773,   0.00000, 0.00000, 270.00000); // lobby office to hallway
+	DocAdmFloor1[3] = CreateDynamicObject(1495, 590.30060, 1481.43665, 5999.42773,   0.00000, 0.00000, 270.00000); // rear room to first hallway
+	DocAdmFloor1[4] = CreateDynamicObject(1495, 579.84003, 1495.06958, 5999.42773,   0.00000, 0.00000, 0.00000); // visitor rooms
+	DocAdmFloor1[5] = CreateDynamicObject(1495, 585.3400, 1478.2000, 5999.42773,   0.00000, 0.00000, 270.00000); // elevator hallway to first hallway
+	DocAdmFloor1[6] = CreateDynamicObject(1495, 588.07373, 1475.81750, 5999.42773,   0.00000, 0.00000, 0.00000); // first hallway to parking elevator hallway
+	DocAdmFloor1[7] = CreateDynamicObject(1495, 565.61963, 1475.81018, 5999.42773,   0.00000, 0.00000, 0.00000); // door to hospital wing
+	DocAdmFloor1[8] = CreateDynamicObject(1569, 562.43921, 1473.47998, 5999.42676,   0.00000, 0.00000, 90.00000); // door to prison hallway
+	DocAdmFloor1[9] = CreateDynamicObject(1495, 587.85999, 1487.88196, 5999.40771,   0.00000, 0.00000, 0.00000); // security entrance 2
+	DocAdmFloor1[10] = CreateDynamicObject(1495, 579.83752, 1492.54773, 5999.40771,   0.00000, 0.00000, 0.00000); // visitor security
 
+	DocAdmFloor2[0] = CreateDynamicObject(1536, 585.09998, 1475.88965, 6006.48047,   0.00000, 0.00000, 0.00000); // control room hallway
+	DocAdmFloor2[1] = CreateDynamicObject(1536, 578.65002, 1471.09973, 6006.48047,   0.00000, 0.00000, 0.00000); // control room entrance
+	DocAdmFloor2[2] = CreateDynamicObject(1536, 587.15039, 1495.40857, 6006.48047,   0.00000, 0.00000, 0.00000); // interogation 1
+	DocAdmFloor2[3] = CreateDynamicObject(1536, 590.52771, 1495.39905, 6006.48047,   0.00000, 0.00000, 0.00000); // interogation 2
+	DocAdmFloor2[4] = CreateDynamicObject(1536, 588.08301, 1475.89587, 6006.48047,   0.00000, 0.00000, 0.00000); // court house - rear room
+	DocAdmFloor2[5] = CreateDynamicObject(1536, 597.62762, 1492.52954, 6006.48047,   0.00000, 0.00000, 0.00000); // court house room
+	DocAdmFloor2[6] = CreateDynamicObject(1536, 591.09857, 1486.54163, 6013.39307,   0.00000, 0.00000, 180.00000); // warden's office
+
+	DocCellRoomDoors[0] = CreateDynamicObject(1495, 553.22644, 1475.87146, 5995.95947,   0.00000, 0.00000, 0.00000); // messhall entrance
+	DocCellRoomDoors[1] = CreateDynamicObject(1495, 553.96301, 1466.10803, 5999.47119,   0.00000, 0.00000, 0.00000); // prison entrance door
+	DocCellRoomDoors[2] = CreateDynamicObject(1495, 568.22601, 1455.32703, 5999.47119,   0.00000, 0.00000, 90.00000); // gym entrance hallway
+	DocCellRoomDoors[3] = CreateDynamicObject(1495, 547.46350, 1498.26025, 5995.95947,   0.00000, 0.00000, 0.00000); // kitchen access door
+	DocCellRoomDoors[4] = CreateDynamicObject(1536, 549.62292, 1473.38794, 5995.95947,   0.00000, 0.00000, 90.00000); // court yard access
+	DocCellRoomDoors[5] = CreateDynamicObject(1536, 551.03003, 1471.72058, 5995.95947,   0.00000, 0.00000, 0.00000); //  hallway to isolation
+	DocCellRoomDoors[6] = CreateDynamicObject(1536, 551.03961, 1462.23999, 5995.95947,   0.00000, 0.00000, 0.00000); // isolation cells checkpoint
+	DocCellRoomDoors[7] = CreateDynamicObject(1495, 573.79968, 1454.22156, 5999.47168,   0.00000, 0.00000, 180.00000); // Gym hallway
+	DocCellRoomDoors[8] = CreateDynamicObject(1495, 576.60413, 1449.64075, 5999.47168,   0.00000, 0.00000, 270.00000); // Showers
+	DocCellRoomDoors[9] = CreateDynamicObject(1495, 566.11102, 1429.46960, 5999.47168,   0.00000, 0.00000, 180.00000); // Inside gym
+	DocCellRoomDoors[10] = CreateDynamicObject(1495, 553.28021, 1429.46667, 5999.47168,   0.00000, 0.00000, 180.00000); // Call-centre
+
+	DocCellsFloor1[0] = CreateDynamicObject(19302, 567.21069, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 1 - floor 1
+	DocCellsFloor1[1] = CreateDynamicObject(19302, 563.58539, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 2 - floor 1
+	DocCellsFloor1[2] = CreateDynamicObject(19302, 559.87738, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 3 - floor 1
+	DocCellsFloor1[3] = CreateDynamicObject(19302, 556.21832, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 4 - floor 1
+	DocCellsFloor1[4] = CreateDynamicObject(19302, 552.55121, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 5 - floor 1
+	DocCellsFloor1[5] = CreateDynamicObject(19302, 548.86353, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 6 - floor 1
+	DocCellsFloor1[6] = CreateDynamicObject(19302, 545.21039, 1445.86316, 6000.74609,   0.00000, 0.00000, 0.00000); // cell 7 - floor 1
+	DocCellsFloor1[7] = CreateDynamicObject(19302, 542.56842, 1446.81152, 6000.74609,   0.00000, 0.00000, 270.00000); // cell 8 - floor 1
+	DocCellsFloor1[8] = CreateDynamicObject(19302, 542.54321, 1450.46936, 6000.74609,   0.00000, 0.00000, 270.00000); // cell 9 - floor 1
+	DocCellsFloor1[9] = CreateDynamicObject(19302, 542.55432, 1454.13354, 6000.74609,   0.00000, 0.00000, 270.00000); // cell 10 - floor 1
+	DocCellsFloor1[10] = CreateDynamicObject(19302, 542.55432, 1457.79626, 6000.74609,   0.00000, 0.00000, 270.00000); // cell 11 - floor 1
+	DocCellsFloor1[11] = CreateDynamicObject(19302, 543.48657, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000); // cell 12 - floor 1
+	DocCellsFloor1[12] = CreateDynamicObject(19302, 547.16162, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000); // cell 13 - floor 1
+	DocCellsFloor1[13] = CreateDynamicObject(19302, 550.84277, 1462.28821, 6000.74609,   0.00000, 0.00000, 180.00000); // cell 14 - floor 1
+	DocCellsFloor1[14] = CreateDynamicObject(19302, 556.91632, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000); // cell 15 - floor 1
+	DocCellsFloor1[15] =  CreateDynamicObject(19302, 560.60620, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000);  // cell 16 - floor 1
+	DocCellsFloor2[0] = CreateDynamicObject(19302, 567.23071, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000); // cell 1 - floor 2
+	DocCellsFloor2[1] = CreateDynamicObject(19302, 563.58539, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000); // cell 1 - floor 2
+	DocCellsFloor2[2] = CreateDynamicObject(19302, 559.87738, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000);  // cell 2 - floor 2
+	DocCellsFloor2[3] = CreateDynamicObject(19302, 556.21832, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000);  // cell 3 - floor 2
+	DocCellsFloor2[4] = CreateDynamicObject(19302, 552.55121, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000);  // cell 4 - floor 2
+	DocCellsFloor2[5] = CreateDynamicObject(19302, 548.86353, 1445.88171, 6004.63135,   0.00000, 0.00000, 0.00000);  // cell 5 - floor 2
+	DocCellsFloor2[6] = CreateDynamicObject(19302, 545.21039, 1445.86316, 6004.63135,   0.00000, 0.00000, 0.00000);  // cell 6 - floor 2
+	DocCellsFloor2[7] = CreateDynamicObject(19302, 542.56842, 1446.81152, 6004.63135,   0.00000, 0.00000, 270.00000);  // cell 7 - floor 2
+	DocCellsFloor2[8] = CreateDynamicObject(19302, 542.54321, 1450.46936, 6004.63135,   0.00000, 0.00000, 270.00000);  // cell 8 - floor 2
+	DocCellsFloor2[9] = CreateDynamicObject(19302, 542.55432, 1454.13354, 6004.63135,   0.00000, 0.00000, 270.00000);  // cell 9 - floor 2
+	DocCellsFloor2[10] = CreateDynamicObject(19302, 542.55432, 1457.79626, 6004.63135,   0.00000, 0.00000, 270.00000);  // cell 10 - floor 2
+	DocCellsFloor2[11] = CreateDynamicObject(19302, 543.48657, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 11 - floor 2
+	DocCellsFloor2[12] = CreateDynamicObject(19302, 547.16162, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 12 - floor 2
+	DocCellsFloor2[13] = CreateDynamicObject(19302, 550.84277, 1462.28821, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 13 - floor 2
+	DocCellsFloor2[14] = CreateDynamicObject(19302, 556.91632, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 14 - floor 2
+	
+	DocIsolationCells[0] = CreateDynamicObject(1498, 562.73242, 1454.49622, 5995.95801,   0.00000, 0.00000, 90.0000); // isolation cell 1
+	DocIsolationCells[1] = CreateDynamicObject(1498, 562.73242, 1451.27612, 5995.95801,   0.00000, 0.00000, 90.00000); // isolation cell 2
+	DocIsolationCells[2] = CreateDynamicObject(1498, 560.25751, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 3
+	DocIsolationCells[3] = CreateDynamicObject(1498, 557.04352, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 4
+	DocIsolationCells[4] = CreateDynamicObject(1498, 553.84729, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 5
+	DocIsolationCells[5] = CreateDynamicObject(1498, 550.66852, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 6
+	
 	SFPDObject[0] =	CreateDynamicObject(976,-1636.02539062,701.49707031,19994.54101562,0.00000000,0.00000000,90.00000000, .interiorid = 3); //object(phils_compnd_gate) (1)
 	SFPDObject[1] =	CreateDynamicObject(976,-1635.99414062,696.53320312,19994.55078125,0.00000000,0.00000000,270.00000000, .interiorid = 3); //object(phils_compnd_gate) (2)
 	SFPDObject[2] =	CreateDynamicObject(1569,-1625.28808594,712.56250000,19994.85937500,0.00000000,0.00000000,179.99450684, .interiorid = 3); //object(adam_v_door) (2)

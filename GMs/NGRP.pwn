@@ -76,12 +76,14 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.118"
+#define SERVER_GM_TEXT "NG:RP v3.0.119"
 
 
 
 
 #include <a_samp>
+#undef  MAX_PLAYERS
+#define MAX_PLAYERS (700)
 #include <a_mysql>
 #include <streamer>
 #include <yom_buttons>

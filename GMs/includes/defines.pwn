@@ -47,8 +47,6 @@
 native WP_Hash(buffer[], len, const str[]);
 native gpci(playerid, serial[], maxlen);
 			/*  ---------------- SERVER DEFINES ----------------- */
-#undef 			MAX_PLAYERS
-#define 		MAX_PLAYERS					(700)
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
 #define			WEB_SERVER					"64.31.32.194"
@@ -133,6 +131,7 @@ native gpci(playerid, serial[], maxlen);
 #define			MAX_DYNAMIC_BUSINESS_NAME	(32)
 #define			MAX_DYNAMIC_BUSINESS_RANKS	(6)
 #define			MAX_RF_WARNS				(3)
+#define			MAX_JAIL_BOXINGS			(5)
 //#define 		SHOPAUTOMATED
 #define 		zombiemode
 #define 		event_chancegambler
@@ -609,6 +608,7 @@ native gpci(playerid, serial[], maxlen);
 
 #define			DIALOG_GROUP_TACKLEACCESS			(3395)
 #define			DIALOG_GROUP_WHEELCLAMPS			(3400)
+#define			DIALOG_GROUP_DOCACCESS				(3401)
 
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)
@@ -900,6 +900,16 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_BMEALSTORE			(5093)
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
+
+#define			DIALOG_DOC_ELEVATOR			(5500)
+#define			DIALOG_DOC_CP				(5550)
+#define			DIALOG_DOC_CP_SUB			(5551)
+#define			DIALOG_DOC_CP_C1F1			(5552)
+#define			DIALOG_DOC_CP_C1F2			(5553)
+#define			DIALOG_DOC_CP_AREA			(5554)
+#define			DIALOG_DOC_CP_ISOLATION		(5555)
+#define			DIALOG_DOC_INMATES			(5560)
+#define			DIALOG_LOAD_DETAINEES		(5565)
 
 #define			DIALOG_BUGREPORT 			(6000)
 

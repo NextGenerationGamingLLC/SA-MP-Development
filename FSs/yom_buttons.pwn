@@ -293,9 +293,9 @@ public FS_MoveButton(buttonid, Float:X, Float:Y, Float:Z, Float:Speed)
     {
         MoveDynamicObject(ButtonInfo[buttonid][ObjectID], X, Y, Z, Speed);
         ButtonInfo[buttonid][Moving] = true;
-		ButtonInfo[buttonid][Pos][0] = 99999.9;
-		ButtonInfo[buttonid][Pos][1] = 99999.9;
-		ButtonInfo[buttonid][Pos][2] = 99999.9;
+		ButtonInfo[buttonid][Pos][0] = X;
+		ButtonInfo[buttonid][Pos][1] = Y;
+		ButtonInfo[buttonid][Pos][2] = Z;
 	}
 }
 /*----------------------------------------------------------------------------*/

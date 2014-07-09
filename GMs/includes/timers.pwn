@@ -1091,7 +1091,7 @@ task ServerHeartbeat[1000]() {
 			if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
 			if(playerTabbed[i] == 0) {
 				if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0) {
-					if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1 || strfind(PlayerInfo[i][pPrisonReason], "[ISOLATE]", true) != -1) {
+					if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1) {
 						SetPlayerInterior(i, 0);
 						PlayerInfo[i][pInt] = 0;
 						SetPlayerVirtualWorld(i, 0);
@@ -1390,7 +1390,7 @@ task ServerHeartbeat[1000]() {
 					}
 				}*/
 
-				if(WantLawyer[i] >= 1)
+				/*if(WantLawyer[i] >= 1)
 				{
 					CallLawyer[i] = 111;
 					if(WantLawyer[i] == 1)
@@ -1412,7 +1412,7 @@ task ServerHeartbeat[1000]() {
 						WantLawyer[i] = 0;
 						CallLawyer[i] = 0;
 					}
-				}
+				}*/
 				if(PlayerDrunk[i] >= 5)
 				{
 					PlayerDrunkTime[i] += 1;
@@ -2425,14 +2425,14 @@ task ServerMicrobeat[500]() {
 
 					if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 					{
-						if(PlayerInfo[i][pAdmin] <= 1) switch(Seatbelt[i]) {
+						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
 							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
 							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 						}
 					}
 					else
 					{
-						if(PlayerInfo[i][pAdmin] <= 1) switch(Seatbelt[i]) {
+						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
 							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
 							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 						}
@@ -2463,14 +2463,14 @@ task ServerMicrobeat[500]() {
 					}
 					if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 					{
-						if(PlayerInfo[i][pAdmin] <= 1) switch(Seatbelt[i]) {
+						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
 							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
 							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 						}
 					}
 					else
 					{
-						if(PlayerInfo[i][pAdmin] <= 1) switch(Seatbelt[i]) {
+						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
 							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
 							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 						}

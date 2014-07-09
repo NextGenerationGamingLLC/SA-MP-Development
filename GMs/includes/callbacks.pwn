@@ -269,6 +269,12 @@ public OnDynamicObjectMoved(objectid)
 			}
 		}
 	}
+	if(objectid == DocElevator)
+	{
+		OpenInnerDoors(1);
+		OpenElevatorDoors(iDocElevatorLevel, 1);
+		bDocElevatorMoving = false;
+	}
 }
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
@@ -1137,6 +1143,332 @@ public OnPlayerPressButton(playerid, buttonid)
             SendClientMessageEx(playerid, COLOR_GREY, "Access denied.");
 		}
 	}
+	if (buttonid == DocButtons[0])
+	{
+		if(IsACop(playerid))
+		{
+			// lobby
+			OpenDocAdmDoor(0, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 0, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[1])
+	{
+		if(IsACop(playerid))
+		{
+			// lobby to hallway
+			OpenDocAdmDoor(2, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 2, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[2])
+	{
+		if(IsACop(playerid))
+		{
+			// rear room
+			OpenDocAdmDoor(3, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 3, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[3])
+	{
+		if(IsACop(playerid))
+		{
+			// elevator --> hallway
+			OpenDocAdmDoor(5, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 5, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[4])
+	{
+		if(IsACop(playerid))
+		{
+			// security checkpoint 1
+			OpenDocAdmDoor(1, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 1, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[5])
+	{
+		if(IsACop(playerid))
+		{
+			// security checkpoint 2
+			OpenDocAdmDoor(9, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 9, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[6])
+	{
+		if(IsACop(playerid))
+		{
+			// garage elevator
+			OpenDocAdmDoor(6, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 6, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[7])
+	{
+		if(IsACop(playerid))
+		{
+			// hospital
+			OpenDocAdmDoor(7, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 7, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[8])
+	{
+		if(IsACop(playerid))
+		{
+			// prison area access
+			OpenDocAdmDoor(8, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 8, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[9])
+	{
+		if(IsACop(playerid))
+		{
+			// yard access
+			OpenDocAreaDoors(4, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 4, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[10])
+	{
+		if(IsACop(playerid))
+		{
+			// messhall access
+			OpenDocAreaDoors(0, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 0, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[11])
+	{
+		if(IsACop(playerid))
+		{
+			// kitchen access
+			OpenDocAreaDoors(3, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 3, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[12])
+	{
+		if(IsACop(playerid))
+		{
+			// isolation checkpoint 1
+			OpenDocAreaDoors(5, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 5, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[13])
+	{
+		if(IsACop(playerid))
+		{
+			// isolation checkpoint 2
+			OpenDocAreaDoors(6, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 6, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[14])
+	{
+		if(IsACop(playerid))
+		{
+			// prisoner visitor security
+			OpenDocAdmDoor(10, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 10, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[15])
+	{
+		if(IsACop(playerid))
+		{
+			// prisoner visitor room
+			OpenDocAdmDoor(4, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 4, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[16])
+	{
+		if(IsACop(playerid))
+		{
+			// control room access
+			OpenDocAdmDoor(12, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 12, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[17])
+	{
+		if(IsACop(playerid))
+		{
+			// control room hallway
+			OpenDocAdmDoor(11, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 11, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[18])
+	{
+		if(IsACop(playerid))
+		{
+			// court rear room
+			OpenDocAdmDoor(15, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 15, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[19])
+	{
+		if(IsACop(playerid))
+		{
+			// court access
+			OpenDocAdmDoor(16, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 16, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[20])
+	{
+		if(IsACop(playerid))
+		{
+			// interogation room right
+			OpenDocAdmDoor(14, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 14, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[21])
+	{
+		if(IsACop(playerid))
+		{
+			// interogation room left
+			OpenDocAdmDoor(13, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 13, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[22])
+	{
+		if(IsACop(playerid))
+		{
+			// warden's office
+			OpenDocAdmDoor(17, 1);
+			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 17, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[23])
+	{
+		if(IsACop(playerid))
+		{
+			// gym access
+			OpenDocAreaDoors(2, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 2, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[24])
+	{
+		if(IsACop(playerid))
+		{
+			// prison access
+			OpenDocAreaDoors(1, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 1, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[25])
+	{
+		if(IsACop(playerid))
+		{
+			// prison hallway
+			OpenDocAreaDoors(7, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 7, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[26])
+	{
+		if(IsACop(playerid))
+		{
+			// showers
+			OpenDocAreaDoors(8, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 8, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[27])
+	{
+		if(IsACop(playerid))
+		{
+			// gym
+			OpenDocAreaDoors(9, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 9, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[28])
+	{
+		if(IsACop(playerid))
+		{
+			// phone room
+			OpenDocAreaDoors(10, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 10, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocElevatorCall[0])
+	{
+		CallDocElevator(playerid, 0);
+	}
+	if(buttonid == DocElevatorCall[1])
+	{
+		CallDocElevator(playerid, 1);
+	}
+	if(buttonid == DocElevatorCall[2])
+	{
+		CallDocElevator(playerid, 2);
+	}
+	if(buttonid == DocElevatorInside)
+	{
+		new string[128];
+		
+		if(bDocElevatorMoving == true) return SendClientMessageEx(playerid, COLOR_RED, "The elevator is currently moving so you are unable to use this.");
+		else if(IsACop(playerid) || IsAHitman(playerid))
+		{
+			if(iDocElevatorLevel == 0) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby{00FF00}(Current)\n{FFFFFF}Floor 2 - Court Rooms\nFloor 3 - Administration");
+			if(iDocElevatorLevel == 1) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms{00FF00}(Current)\n{FFFFFF}Floor 3 - Administration");
+			if(iDocElevatorLevel == 2) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms\nFloor 3 - Administration{00FF00}(Current)");
+		}
+		else
+		{
+			if(iDocElevatorLevel == 0) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby{00FF00}(Current)\n{FFFFFF}Floor 2 - Court Rooms");
+			if(iDocElevatorLevel == 1) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms{00FF00}(Current)");
+			if(iDocElevatorLevel == 2) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms\nFloor 3 - Administration{00FF00}(Current)");
+		}
+		
+		ShowPlayerDialog(playerid, DIALOG_DOC_ELEVATOR, DIALOG_STYLE_LIST, "Choose a floor", string, "Select", "Cancel");
+	}
+	if(buttonid == DocCPButton)
+	{
+		ShowDocPrisonControls(playerid, 0);
+	}
 	return false;
 }
 
@@ -1650,7 +1982,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		{	
 			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
 				new string[128];
-				format(string, sizeof(string), "Damagecheck on %s: Issuer: %s (%d) | Weapon: %s | Damage: %f", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), amount);
+				format(string, sizeof(string), "Damagecheck on %s: Issuer: %s (%d) | Weapon: %s | Damage: %f (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), amount);
 				SendClientMessageEx(i, COLOR_WHITE, string);
 			}
 		}	
@@ -1850,6 +2182,17 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			TazerTimeout[playerid] = 6;
 			SetTimerEx("TazerTimer",1000,false,"d",playerid);
 			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~5", 1500,3);
+		}
+	}
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+				new string[128];
+				format(string, sizeof(string), "Damagecheck on %s: Damaged: %s (%d) | Weapon: %s | Damage: %f (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount);
+				SendClientMessageEx(i, COLOR_WHITE, string);
+			}
 		}
 	}
 	return 1;
@@ -3060,9 +3403,10 @@ public OnPlayerDisconnect(playerid, reason)
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
-					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC] Left while cuffed [Timeout]", 128);
-					strcpy(PlayerInfo[playerid][pPrisonedBy], "System", 128);
-					PlayerInfo[playerid][pJailTime] += 60*60;
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] EBCF ((CWC))", 128);
+					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - CWC", 128);
+					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
+					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 				}
 			}
 			case 1:
@@ -3099,18 +3443,20 @@ public OnPlayerDisconnect(playerid, reason)
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
-					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC] Left while cuffed [Leaving]", 128);
-					strcpy(PlayerInfo[playerid][pPrisonedBy], "System", 128);
-					PlayerInfo[playerid][pJailTime] += 60*60;
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] EBCF ((LWC))", 128);
+					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWC", 128);
+					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
+					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
 				else if(GetPVarType(playerid, "IsTackled"))
 				{
-					strcpy(PlayerInfo[playerid][pPrisonReason], "[OOC] Left while tackled [Leaving]", 128);
-					strcpy(PlayerInfo[playerid][pPrisonedBy], "System", 128);
-					PlayerInfo[playerid][pJailTime] += 60*60;
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] EBCF ((LWT))", 128);
+					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWT", 128);
+					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
+					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -3619,6 +3965,50 @@ public OnPlayerDeath(playerid, killerid, reason)
 			new time = gettime();
 			SetPVarInt(playerid, "_BoxingFightOver", time + 8);
 			SetPVarInt(winner, "_BoxingFightOver", time + 1);
+		}
+		if(GetPVarInt(playerid, "_InJailBoxing") > 0)
+		{
+			new string[60 + MAX_PLAYER_NAME];
+			
+			if(killerid == GetPVarInt(playerid, "_JailBoxingChallenger"))
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the boxing fight. You may now leave the arena.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the boxing fight. You may now leave the arena.");
+				
+				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
+				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+				
+				PlayerInfo[playerid][pFitness] -= 10;
+				PlayerInfo[playerid][pHunger] -= 10;
+				PlayerInfo[killerid][pHunger] -= 10;
+				PlayerInfo[killerid][pFitness] += 10;
+				
+				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
+				RemoveFromJailBoxing(playerid);
+				RemoveFromJailBoxing(killerid);
+			}
+			else
+			{
+				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
+				RemoveFromJailBoxing(playerid);
+				RemoveFromJailBoxing(killerid);
+			}
+		}
+		if(GetPVarInt(playerid, "_InJailBrawl") != 0)
+		{
+			if(killerid == GetPVarInt(playerid, "_InJailBrawl") - 1)
+			{
+				PlayerInfo[playerid][pFitness] -= 5;
+				PlayerInfo[playerid][pHunger] -= 10;
+				PlayerInfo[killerid][pHunger] -= 10;
+				PlayerInfo[killerid][pFitness] += 5;
+				
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
+			}
+			DeletePVar(playerid, "_InJailBrawl");
+			DeletePVar(killerid, "_InJailBrawl");
+			DeletePVar(GetPVarInt(playerid, "_InJailBrawl") - 1, "_InJailBrawl");
 		}
 	    if (_vhudVisible[playerid] == 1)
 		{
@@ -5130,6 +5520,7 @@ public OnPlayerEnterCheckpoint(playerid)
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
+	if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED) ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,0,1,1,0,0);
 	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 	    new string[128];

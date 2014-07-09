@@ -351,6 +351,9 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pLockPickTime] = 0;
 		PlayerInfo[playerid][pSEC] = 0;
 		PlayerInfo[playerid][pBM] = 0;
+		PlayerInfo[playerid][pIsolated] = 0;
+		PlayerInfo[playerid][pWantedJailTime] = 0;
+		PlayerInfo[playerid][pWantedJailFine] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 11; i++)
 		{

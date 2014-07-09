@@ -3376,7 +3376,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Locker Cost Type: %s\n\
 		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
 		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)",
+		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
+		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)",
 		szDialog,
 		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS),
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
@@ -3385,7 +3386,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		lockercosttype[arrGroupData[iGroupID][g_iLockerCostType]],
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
 		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
-		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps]
+		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
+		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess]
 	);
 
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
@@ -11146,6 +11148,12 @@ stock IsARacer(playerid)
 	return 0;
 }
 
+stock IsADocGuard(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDoCAccess])) return 1;
+	return 0;
+}
+
 stock IsMDCPermitted(playerid)
 {
 	if(IsACop(playerid) || IsAJudge(playerid))
@@ -11998,33 +12006,32 @@ stock SetPlayerSpawn(playerid)
 		}
 		if(PlayerInfo[playerid][pJailTime] > 0)
 		{
-		    if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)
-		    {
-                PhoneOnline[playerid] = 1;
-				SetPlayerInterior(playerid, 10);
-				PlayerInfo[playerid][pInt] = 0;
+			if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)
+			{
+				PhoneOnline[playerid] = 1;
+				SetPlayerInterior(playerid, 1);
+				PlayerInfo[playerid][pInt] = 1;
+				SetPlayerVirtualWorld(playerid, 0);
+				PlayerInfo[playerid][pVW] = 0;
+				//SetPlayerSkin(playerid, 50); 
+				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
+				SetPlayerHealth(playerid, 100);
+				DeletePVar(playerid, "Injured");
+				DeletePVar(playerid, "ArrestPoint");
+				ResetPlayerWeaponsEx(playerid);
 				rand = random(sizeof(DocPrison));
-    			SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
-				SetPlayerSkin(playerid, 50);
-				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
-				SetPlayerHealth(playerid, 100);
-				DeletePVar(playerid, "Injured");
-				Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
+				if(PlayerInfo[playerid][pIsolated] > 0)
+				{
+					SetPlayerPos(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2]);
+					Player_StreamPrep(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2], FREEZE_TIME);
+				}
+				else
+				{
+					SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
+					Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
+				}
 				return 1;
-		    }
-		    else if(strfind(PlayerInfo[playerid][pPrisonReason], "[ISOLATE]", true) != -1)
-		    {
-		        PhoneOnline[playerid] = 1;
-				SetPlayerInterior(playerid, 10);
-				PlayerInfo[playerid][pInt] = 0;
-				SetPlayerPos(playerid, -2095.3391, -215.8563, 978.8315);
-				SetPlayerSkin(playerid, 50);
-				SetPlayerHealth(playerid, 100);
-				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
-				DeletePVar(playerid, "Injured");
-				Player_StreamPrep(playerid, -2095.3391, -215.8563, 978.8315, FREEZE_TIME);
-				return 1;
-		    }
+			}
 		    else
 		    {
 		        SetPlayerHealth(playerid, 0x7FB00000);
@@ -12878,6 +12885,19 @@ stock IsAtBar(playerid)
 		}
 	}
 	return 0;
+}
+
+GetArrestPointID(playerid) {
+	new a = -1;
+	for(new x = 0; x < MAX_ARRESTPOINTS; x++) 
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 8.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW])
+		{
+			a = x;
+			break;
+		}
+	}
+	return a;
 }
 
 stock IsAtArrestPoint(playerid, type)
@@ -14362,11 +14382,11 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		case 1:
 		{
 			new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
-			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), StoreItems[item], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), StoreItems[item-1], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
 			Log("logs/business.log", string);
-			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), StoreItems[item], number_format(price));
+			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(price));
 			SendClientMessage(offerer, COLOR_GRAD2, string);
-			format(string,sizeof(string),"* You have purchased the %s from %s for $%s.", StoreItems[item], GetPlayerNameEx(offerer), number_format(price));
+			format(string,sizeof(string),"* You have purchased the %s from %s for $%s.", StoreItems[item-1], GetPlayerNameEx(offerer), number_format(price));
 			SendClientMessage(playerid, COLOR_GRAD2, string);
 			DeletePVar(playerid, "Business_ItemType");
 			DeletePVar(playerid, "Business_ItemPrice");
@@ -25516,6 +25536,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							PlayerToyInfo[giveplayerid][v][ptTradable] = 1;
 							
 							g_mysql_NewToy(giveplayerid, v);
+							PlayerInfo[giveplayerid][pGiftTime] = 300;
 							return 1;
 						}
 					}
@@ -26346,7 +26367,7 @@ public Anti_Rapidfire()
 	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{
 		new weaponid = GetPlayerWeapon(i);
-		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 31 && PlayerShots[i] > 14))
+		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 31 && PlayerShots[i] > 20))
 		{
 			format(string, sizeof(string), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
 			Log("logs/rapid.log", string);
@@ -26356,7 +26377,7 @@ public Anti_Rapidfire()
 			ABroadCast(COLOR_YELLOW, string, 2);
 			if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
 			{
-				format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Rapidfire Hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
+				format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Rapidfire Hacking. %d/%d warnings", GetPlayerNameEx(i), GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 				DeletePVar(i, "MaxRFWarn");
 				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Rapidfire Hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
@@ -26378,6 +26399,869 @@ stock SaveGarages()
 	for(new i = 0; i < MAX_GARAGES; i++)
 	{
 		SaveGarage(i);
+	}
+	return 1;
+}
+
+forward ClearAnims(playerid);
+public ClearAnims(playerid)
+{
+	ClearAnimations(playerid);
+}
+
+DocIsolate(playerid, cellid)
+{
+	SetPlayerPos(playerid, DocIsolation[cellid][0], DocIsolation[cellid][1], DocIsolation[cellid][2]);
+	SetPlayerFacingAngle(playerid, 0);
+	Player_StreamPrep(playerid, DocIsolation[cellid][0], DocIsolation[cellid][1], DocIsolation[cellid][2], FREEZE_TIME);
+	
+	PlayerInfo[playerid][pIsolated] = cellid + 1;
+}
+
+ListDetainees(playerid)
+{
+	new szPrisoners[1028],
+		iCount = 0, 
+		temp[4];
+	
+	foreach(Player, i)
+	{
+		if(GetPVarInt(i, "ArrestPoint") == GetArrestPointID(playerid) + 1)
+		{
+			strcat(szPrisoners, "{3333CC}Prisoner:{FFFFFF}");
+			strcat(szPrisoners, "(");
+			valstr(temp, i);
+			strcat(szPrisoners, temp);
+			strcat(szPrisoners, ")");
+			strcat(szPrisoners, GetPlayerNameEx(i));
+			strcat(szPrisoners, "\n");
+			iCount++;
+		}
+	}
+	if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "No prisoners at this arrest point.");
+	return ShowPlayerDialog(playerid, DIALOG_LOAD_DETAINEES, DIALOG_STYLE_LIST, "Detainees List", szPrisoners, "Load", "Cancel");
+}
+
+LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
+{
+	SetPlayerVirtualWorld(iPrisonerID, iNewVW);
+	PlayerInfo[iPrisonerID][pVW] = iNewVW;
+	SetPlayerInterior(iPrisonerID, iNewIW);
+	PlayerInfo[iPrisonerID][pInt] = iNewIW;
+	PutPlayerInVehicle(iPrisonerID, iVehicleID, iVehicleSeat);
+	TogglePlayerControllable(iPrisonerID, 0);
+	DeletePVar(iPrisonerID, "ArrestPoint");
+	
+	SendClientMessageEx(iPrisonerID, COLOR_LIGHTBLUE, "You have been loaded into a prisoner transport bus by and will be transported to DOC");
+	ListDetainees(iLoadingID);
+}
+
+ShowDocPrisonControls(playerid, icontrolid)
+{
+	new string[1024];
+	
+	switch(icontrolid)
+	{
+		case 0:
+		{
+			// main dialog
+			format(string, sizeof(string), "Cell-block A\nIsolation Cells\nArea Doors\nLockdown");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Cancel");
+		}
+		case 1:
+		{
+			// sub-dialog 
+			format(string, sizeof(string), "Floor 1\nFloor 2\nAll Floor 1\nAll Floor 2");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+		}
+		case 2:
+		{
+			// floor 1
+			format(string, sizeof(string), "Cell 1 (%s)\n\
+			Cell 2 (%s)\n\
+			Cell 3 (%s)\n\
+			Cell 4 (%s)\n\
+			Cell 5 (%s)\n\
+			Cell 6 (%s)\n\
+			Cell 7 (%s)\n\
+			Cell 8 (%s)\n\
+			Cell 9 (%s)\n\
+			Cell 10 (%s)\n\
+			Cell 11 (%s)\n\
+			Cell 12 (%s)\n\
+			Cell 13 (%s)\n\
+			Cell 14 (%s)\n\
+			Cell 15 (%s)\n\
+			Cell 16 (%s)",
+			((bDocCellOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			);
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+		}
+		case 3:
+		{
+			// floor 2
+			format(string, sizeof(string), "Cell 1 (%s)\n\
+			Cell 2 (%s)\n\
+			Cell 3 (%s)\n\
+			Cell 4 (%s)\n\
+			Cell 5 (%s)\n\
+			Cell 6 (%s)\n\
+			Cell 7 (%s)\n\
+			Cell 8 (%s)\n\
+			Cell 9 (%s)\n\
+			Cell 10 (%s)\n\
+			Cell 11 (%s)\n\
+			Cell 12 (%s)\n\
+			Cell 13 (%s)\n\
+			Cell 14 (%s)\n\
+			Cell 15 (%s)",
+			((bDocCellOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[19] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[20] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[21] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[22] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[23] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[24] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[25] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[26] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[27] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[28] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[29] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocCellOpen[30] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			);
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+		}
+		case 4:
+		{
+			// area controls
+			format(string, sizeof(string), "Café (%s)\n\
+			Cell-block (%s)\n\
+			Cell-block Corridor (%s)\n\
+			Café Kitchen (%s)\n\
+			Courtyard Access (%s)\n\
+			Isolation Door 1 (%s)\n\
+			Isolation Door 2 (%s)\n\
+			Cell-block Hallway (%s)\n\
+			Showers (%s)\n\
+			Inside Gym (%s)\n\
+			Telephone Room (%s)\n\
+			Courtyard Door 1 (%s)\n\
+			Courtyard Door 2 (%s)", 
+			((bDocAreaOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			);
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+		}
+		case 5: 
+		{
+			// isolation controls
+			format(string, sizeof(string), "Isolation Cell 1 (%s)\n\
+			Isolation Cell 2 (%s)\n\
+			Isolation Cell 3 (%s)\n\
+			Isolation Cell 4 (%s)\n\
+			Isolation Cell 5 (%s)\n\
+			Isolation Cell 6 (%s)", 
+			((bDocIsolationOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			);
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_ISOLATION, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+		}
+	}
+	return 1;
+}
+
+DocLockdown(playerid)
+{
+	new szWarning[128];
+	
+	if(bDocLockdown == false)
+	{
+		
+		bDocLockdown = true;
+		for(new i = 0; i < 31; i++)
+		{
+			OpenDocCells(i, 0);
+		}
+		for(new i = 0; i < 13; i++)
+		{
+			OpenDocAreaDoors(i, 0);
+		}
+		format( szWarning, sizeof(szWarning), "ALERT: The Easter Basin Correctional Facility is now on Lockdown for an emergency (( %s ))", GetPlayerNameEx(playerid));
+		SendGroupMessage(1, COLOR_RED, szWarning);
+		//PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
+	}
+	else 
+	{
+		bDocLockdown = false;
+		format( szWarning, sizeof(szWarning), "ALERT: The Easter Basin Correctional Facility is no longer on lockdown (( %s ))", GetPlayerNameEx(playerid));
+		SendGroupMessage(1, COLOR_YELLOW, szWarning);
+		//StopAudioStreamForPlayer(i);
+	}
+}	
+
+GetClosestPrisonPhone(playerid)
+{
+	new returnval;
+	for(new i = 0; i < 5; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 2, JailPhonePos[i][0], JailPhonePos[i][1], JailPhonePos[i][2]))
+		{
+			returnval = i;
+			break;
+		}
+	}
+	return returnval;
+}
+
+IsPlayerInRangeOfJailPhone(playerid)
+{
+	for(new i = 0; i < 5; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 2, JailPhonePos[i][0], JailPhonePos[i][1], JailPhonePos[i][2]))
+		{
+			return true;
+		}
+	}
+	return 0;
+}
+
+forward OpenDocIsolationCells(cellid, open);
+public OpenDocIsolationCells(cellid, open)
+{	
+	switch(cellid)
+	{
+		case 0:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[0], 562.73242, 1454.49622, 5995.95801, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[0], 562.73242, 1454.49622 - 1.34, 5995.95801, 0.9);
+		}
+		case 1:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[1], 562.73242, 1451.27612, 5995.95801, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[1], 562.73242, 1451.27612 - 1.34, 5995.95801, 0.9);
+		}
+		case 2:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[2], 560.25751, 1450.35547, 5995.95801, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[2], 560.25751 - 1.34, 1450.35547, 5995.95801, 0.9);
+		}
+		case 3:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[3], 557.04352, 1450.35547, 5995.95801, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[3], 557.04352 - 1.34, 1450.35547, 5995.95801, 0.9);
+		}
+		case 4:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[4], 553.84729, 1450.35547, 5995.95801,   0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[4], 553.84729 - 1.34, 1450.35547, 5995.95801,   0.9);
+		}
+		case 5:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationCells[5], 550.66852, 1450.35547, 5995.95801, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationCells[5], 550.66852 - 1.34, 1450.35547, 5995.95801, 0.9);
+		}
+	}
+	if(open == 0) bDocIsolationOpen[cellid] = false;
+	else if(open == 1) bDocIsolationOpen[cellid] = true;
+}
+
+forward OpenDocAdmDoor(door, open);
+public OpenDocAdmDoor(door, open)
+{	
+	switch(door)
+	{
+		case 0:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[0], 597.56000, 1494.96692, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[0], 597.56000 - 1.34, 1494.96692, 5999.42773, 0.9);
+		}
+		case 1:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[1], 587.84039, 1495.08362, 5999.40771, 0.9);//
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[1], 587.84039 - 1.34, 1495.08362, 5999.40771, 0.9);//
+		}
+		case 2:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[2], 590.28851, 1484.60571, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[2], 590.28851, 1484.60571 + 1.34, 5999.42773, 0.9);
+		}
+		case 3:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[3], 590.30060, 1481.43665, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[3], 590.30060, 1481.43665 + 1.34, 5999.42773, 0.9);
+		}
+		case 4:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[4], 579.84003, 1495.06958, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[4], 579.84003 - 1.34, 1495.06958, 5999.42773, 0.9);
+		}
+		case 5:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[5], 585.3600, 1478.2000, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[5], 585.3600, 1478.2000 + 1.34, 5999.42773, 0.9);
+		}
+		case 6:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[6], 588.07373, 1475.81750, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[6], 588.07373 - 1.34, 1475.81750, 5999.42773, 0.9);
+		}
+		case 7:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[7], 565.61963, 1475.81018, 5999.42773, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[7], 565.61963 - 1.34, 1475.81018, 5999.42773, 0.9);
+		}
+		case 8:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[8], 562.43921, 1473.47998, 5999.42676, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[8], 562.43921, 1473.47998 - 1.34, 5999.42676, 0.9);
+		}
+		case 9:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[9], 587.85999, 1487.88196, 5999.40771, 0.9);//
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[9], 587.85999 - 1.34, 1487.88196, 5999.40771, 0.9);//
+		}
+		case 10:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor1[10], 579.83752, 1492.54773, 5999.40771, 0.9);//
+			if(open == 1) MoveDynamicObject(DocAdmFloor1[10], 579.83752 - 1.34, 1492.54773, 5999.40771, 0.9);//
+		}
+		case 11:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[0], 585.09998, 1475.88965, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[0], 585.09998 - 1.34, 1475.88965, 6006.48047, 0.9);
+		}
+		case 12:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[1], 578.65002, 1471.09973, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[1], 578.65002 - 1.34, 1471.09973, 6006.48047, 0.9);
+		}
+		case 13:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[2], 587.15039, 1495.40857, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[2], 587.15039 - 1.34, 1495.40857, 6006.48047, 0.9);
+		}
+		case 14:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[3], 590.52771, 1495.39905, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[3], 590.52771 - 1.34, 1495.39905, 6006.48047, 0.9);
+		} 
+		case 15:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[4], 588.08301, 1475.89587, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[4], 588.08301 - 1.34, 1475.89587, 6006.48047, 0.9);
+		}
+		case 16:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[5], 597.62762, 1492.52954, 6006.48047, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[5], 597.62762 - 1.34, 1492.52954, 6006.48047, 0.9);
+		}
+		case 17:
+		{
+			if(open == 0) MoveDynamicObject(DocAdmFloor2[6], 591.09857, 1486.54163, 6013.39307, 0.9);
+			if(open == 1) MoveDynamicObject(DocAdmFloor2[6], 591.09857 + 1.34, 1486.54163, 6013.39307, 0.9);
+		}
+	}
+}
+
+forward OpenDocAreaDoors(doorid, open);
+public OpenDocAreaDoors(doorid, open)
+{
+	switch(doorid)
+	{
+		case 0:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[0], 553.22644, 1475.87146, 5995.95947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[0], 553.22644 - 1.34, 1475.87146, 5995.95947, 0.9);
+		}
+		case 1:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[1], 553.96301, 1466.10803, 5999.47119, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[1], 553.96301 - 1.34, 1466.10803, 5999.47119, 0.9);
+		}
+		case 2:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[2], 568.22601, 1455.32703, 5999.47119, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[2], 568.22601, 1455.32703 - 1.34, 5999.47119, 0.9);
+		}
+		case 3:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[3], 547.46350, 1498.26025, 5995.95947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[3], 547.46350 - 1.34, 1498.26025, 5995.95947, 0.9);
+		}
+		case 4:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794, 5995.95947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794 - 1.34, 5995.95947, 0.9);
+		}
+		case 5:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 551.03003, 1471.72058, 5995.95947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 551.03003 - 1.34, 1471.72058, 5995.95947, 0.9);
+		}
+		case 6:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 551.03961, 1462.23999, 5995.95947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 551.03961 - 1.34, 1462.23999, 5995.95947, 0.9);
+		}
+		case 7:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[7], 573.79968, 1454.22156, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[7], 573.79968 + 1.34, 1454.22156, 5999.47168, 0.9);
+		}
+		case 8:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[8], 576.60413, 1449.64075, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[8], 576.60413, 1449.64075 + 1.34, 5999.47168, 0.9);
+		}
+		case 9:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[9], 566.11102, 1429.46960, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[9], 566.11102 + 1.34, 1429.46960, 5999.47168, 0.9);
+		}
+		case 10:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[10], 553.28021, 1429.46667, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[10], 553.28021 + 1.34, 1429.46667, 5999.47168, 0.9);
+		}
+	}
+	if(open == 0) bDocAreaOpen[doorid] = false;
+	else if(open == 1) bDocAreaOpen[doorid] = true;
+}
+
+OpenDocCells(cellid, open)
+{
+	switch(cellid)
+	{
+		case 0:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[0], 567.21069, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[0], 567.21069 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 1:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[1], 563.58539, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[1], 563.58539 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 2:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[2], 559.87738, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[2], 559.87738 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 3:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[3], 556.21832, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[3], 556.21832 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 4:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[4], 552.55121, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[4], 552.55121 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 5:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[5], 548.86353, 1445.88171, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[5], 548.86353 - 1.58, 1445.88171, 6000.74609, 0.9);
+		}
+		case 6:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[6], 545.21039, 1445.86316, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[6], 545.21039 - 1.58, 1445.86316, 6000.74609, 0.9);
+		}
+		case 7:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[7], 542.56842, 1446.81152, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[7], 542.56842, 1446.81152 + 1.58, 6000.74609, 0.9);
+		}
+		case 8:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[8], 542.54321, 1450.46936, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[8], 542.54321, 1450.46936  + 1.58, 6000.74609, 0.9);
+		}
+		case 9:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[9], 542.55432, 1454.13354, 6000.74609, 0.9);//
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[9], 542.55432, 1454.13354 + 1.58, 6000.74609, 0.9);//
+		}
+		case 10:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[10], 542.55432, 1457.79626, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[10], 542.55432, 1457.79626 + 1.58, 6000.74609, 0.9);
+		}
+		case 11:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[11], 543.48657, 1462.26819, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[11], 543.48657  + 1.58, 1462.26819, 6000.74609, 0.9);
+		}
+		case 12:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[12], 547.16162, 1462.26819, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[12], 547.16162 + 1.58, 1462.26819, 6000.74609, 0.9);
+		}
+		case 13:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[13], 550.84277, 1462.28821, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[13], 550.84277  + 1.58, 1462.28821, 6000.74609, 0.9);
+		}
+		case 14:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[14], 556.91632, 1462.26819, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[14], 556.91632  + 1.58, 1462.26819, 6000.74609, 0.9);
+		}
+		case 15:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor1[15], 560.60620, 1462.26819, 6000.74609, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor1[15],560.60620 + 1.58, 1462.26819, 6000.74609, 0.9);
+		}
+		case 16:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[0], 567.23071, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[0], 567.23071 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 17:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[1], 563.58539, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[1], 563.58539 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 18:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[2], 559.87738, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[2], 559.87738 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 19:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[3], 556.21832, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[3], 556.21832 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 20:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[4], 552.55121, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[4], 552.55121 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 21:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[5], 548.86353, 1445.88171, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[5], 548.86353 - 1.58, 1445.88171, 6004.63135, 0.9);
+		}
+		case 22:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[6], 545.21039, 1445.86316, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[6], 545.21039 - 1.58, 1445.86316, 6004.63135, 0.9);
+		}
+		case 23:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[7], 542.56842, 1446.81152, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[7], 542.56842, 1446.81152 + 1.58, 6004.63135, 0.9);
+		}
+		case 24:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[8], 542.54321, 1450.46936, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[8], 542.54321, 1450.46936 + 1.58, 6004.63135, 0.9);
+		}
+		case 25:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[9], 542.55432, 1454.13354, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[9], 542.55432, 1454.13354 + 1.58, 6004.63135, 0.9);
+		}
+		case 26:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[10], 542.55432, 1457.79626, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[10], 542.55432, 1457.79626 + 1.58, 6004.63135, 0.9);
+		}
+		case 27:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[11], 543.48657, 1462.26819, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[11], 543.48657 + 1.58, 1462.26819, 6004.63135, 0.9);
+		}
+		case 28:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[12], 547.16162, 1462.26819, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[12], 547.16162 + 1.58, 1462.26819, 6004.63135, 0.9);
+		}
+		case 29:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[13], 550.84277, 1462.28821, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[13], 550.84277 + 1.58, 1462.28821, 6004.63135, 0.9);
+		}
+		case 30:
+		{
+			if(open == 0) MoveDynamicObject(DocCellsFloor2[14], 556.91632, 1462.26819, 6004.63135, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellsFloor2[14], 556.91632 + 1.58, 1462.26819, 6004.63135, 0.9);
+		}
+	}
+	if(open == 0) bDocCellOpen[cellid] = false;
+	else if(open == 1) bDocCellOpen[cellid] = true;
+}
+
+forward MoveDocElevator(level);
+public MoveDocElevator(level)
+{
+	switch(level)
+	{
+		case 0:
+		{
+			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6001.3125, 0.5);
+			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6001.2954, 0.5);
+			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6001.2954, 0.5);
+			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6001.04785, 0.5);
+			iDocElevatorLevel = 0;
+			bDocElevatorMoving = true;
+		}
+		case 1:
+		{
+			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6008.3350, 0.5);
+			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6008.3179, 0.5);
+			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6008.3179, 0.5);
+			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6008.1504, 0.5);
+			iDocElevatorLevel = 1;
+			bDocElevatorMoving = true;
+		}
+		case 2:
+		{
+			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6015.3423, 0.5);
+			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6015.3105, 0.5);
+			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6015.3105, 0.5);
+			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6015.1641, 0.5);
+			iDocElevatorLevel = 2;
+			bDocElevatorMoving = true;
+		}
+	}
+	return 1;
+}
+
+forward OpenElevatorDoors(level, open);
+public OpenElevatorDoors(level, open)
+{
+	switch(level)
+	{
+		case 0:
+		{
+			if(open == 0)
+			{
+				MoveDynamicObject(DocElevatorExt[0], 577.10480, 1488.24072, 6001.21533, 0.9);
+				MoveDynamicObject(DocElevatorExt[1], 577.10480, 1492.22827, 6001.21533, 0.9);
+			}
+			if(open == 1)
+			{
+				MoveDynamicObject(DocElevatorExt[0], 577.10480, 1488.24072 - 1.74, 6001.21533, 0.9);
+				MoveDynamicObject(DocElevatorExt[1], 577.10480, 1492.22827 + 1.74, 6001.21533, 0.9);
+			}
+		}
+		case 1:
+		{
+			if(open == 0)
+			{
+				MoveDynamicObject(DocElevatorExt[2], 577.10480, 1488.24072, 6008.37744, 0.9);
+				MoveDynamicObject(DocElevatorExt[3], 577.10480, 1492.22827, 6008.37744, 0.9);
+			}
+			if(open == 1)
+			{
+				MoveDynamicObject(DocElevatorExt[2], 577.10480, 1488.24072 - 1.74, 6008.37744, 0.9);
+				MoveDynamicObject(DocElevatorExt[3], 577.10480, 1492.22827 + 1.74, 6008.37744, 0.9);
+			}
+		}
+		case 2:
+		{
+			if(open == 0)
+			{
+				MoveDynamicObject(DocElevatorExt[4], 577.10480, 1488.24072, 6015.39063, 0.9);
+				MoveDynamicObject(DocElevatorExt[5], 577.10480, 1492.22827, 6015.39063, 0.9);
+			}
+			if(open == 1)
+			{
+				MoveDynamicObject(DocElevatorExt[4], 577.10480, 1488.24072 - 1.74, 6015.39063, 0.9);
+				MoveDynamicObject(DocElevatorExt[5], 577.10480, 1492.22827 + 1.74, 6015.39063, 0.9);
+			}
+		}
+	}
+	return 1;
+}
+
+forward OpenInnerDoors(open);
+public OpenInnerDoors(open)
+{
+	switch(open)
+	{
+		case 0:
+		{
+			if(iDocElevatorLevel == 0)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6001.29541, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6001.29541, 0.9);
+			}
+			if(iDocElevatorLevel == 1)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6008.37744 + 0.08008, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6008.37744 + 0.08008, 0.9);
+			}
+			if(iDocElevatorLevel == 2)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6015.39063 + 0.08008, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6015.39063 + 0.08008, 0.9);
+			}
+		}
+		case 1:
+		{
+			if(iDocElevatorLevel == 0)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6001.29541, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6001.29541, 0.9);
+			}
+			if(iDocElevatorLevel == 1)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6008.37744 + 0.08008, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6008.37744 + 0.08008, 0.9);
+			}
+			if(iDocElevatorLevel == 2)
+			{
+				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6015.39063 + 0.08008, 0.9);
+				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6015.39063 + 0.08008, 0.9);
+			}
+		}
+	}
+	return 1;
+}
+
+CallDocElevator(playerid, level)
+{
+	if(bDocElevatorMoving == true) return SendClientMessageEx(playerid, COLOR_RED, "The elevator is currently moving so you are unable to call it.");
+	else if(level == iDocElevatorLevel)
+	{
+		OpenInnerDoors(1);
+		OpenElevatorDoors(level, 1);
+	}
+	else 
+	{
+		OpenInnerDoors(0);
+		OpenElevatorDoors(iDocElevatorLevel, 0);
+		SetTimerEx("MoveDocElevator", 5000, false, "i", level); 
+	}
+	
+	return 1;
+}
+
+GetClosestJailBoxingRing(iTargetID)
+{
+	new iClosest;
+	for(new i = 0; i < MAX_JAIL_BOXINGS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(iTargetID, 5, JailBoxingPos[i][0], JailBoxingPos[i][1], JailBoxingPos[i][2]))
+		{
+			iClosest = i;
+			break;
+		}
+	}
+	return iClosest;
+}
+
+IsPlayerAtJailBoxing(iTargetID)
+{
+	for(new i = 0; i < MAX_JAIL_BOXINGS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(iTargetID, 5, JailBoxingPos[i][0], JailBoxingPos[i][1], JailBoxingPos[i][2]))
+		{
+			return true;
+		}
+	}
+	return 0;
+}
+
+SetPlayerIntoJailBoxing(iTargetID)
+{
+	new index = GetClosestJailBoxingRing(iTargetID);
+	
+	if(arrJailBoxingData[index][bInProgress] == false && arrJailBoxingData[index][iParticipants] < 2)
+	{
+		SetPlayerPos(iTargetID, JailBoxingPos[index][0], JailBoxingPos[index][1], JailBoxingPos[index][2]);
+		arrJailBoxingData[index][iParticipants]++;
+		SetPVarInt(iTargetID, "_InJailBoxing", index + 1);
+		SendClientMessageEx(iTargetID, COLOR_WHITE, "You have joined the boxing queue.");
+		
+		if(arrJailBoxingData[index][iParticipants] == 2)
+		{
+			foreach(Player, i)
+			{
+				if(GetPVarInt(i, "_InJailBoxing") == index + 1 && i != iTargetID)
+				{
+					SetPVarInt(iTargetID, "_JailBoxingChallenger", i);
+					SetPVarInt(i, "_JailBoxingChallenger", iTargetID);
+					break;
+				}
+			}
+			arrJailBoxingData[index][iDocBoxingCountdown] = 4;
+			arrJailBoxingData[index][iDocCountDownTimer] = SetTimerEx("StartJailBoxing", 1000, true, "i", index);
+		}
+	}
+	else SendClientMessageEx(iTargetID, COLOR_WHITE, "You cannot join this arena at the moment.");
+}
+
+RemoveFromJailBoxing(iTargetID)
+{
+	arrJailBoxingData[GetPVarInt(iTargetID, "_InJailBoxing") - 1][iParticipants]--;
+	
+	//DeletePVar(GetPVarInt(iTargetID, "_JailBoxingChallenger"));
+	
+	DeletePVar(iTargetID, "_InJailBoxing");
+	DeletePVar(iTargetID, "_JailBoxingChallenger");
+}
+
+forward StartJailBoxing(iArenaID);
+public StartJailBoxing(iArenaID)
+{
+	new string[60 + MAX_PLAYER_NAME];
+	new iRangePoint;
+	
+	foreach(Player, i)
+	{
+		if(GetPVarInt(i, "_InJailBoxing") - 1 == iArenaID)
+		iRangePoint = i;
+		break;
+	}
+	
+	arrJailBoxingData[iArenaID][iDocBoxingCountdown]--;
+	if(arrJailBoxingData[iArenaID][iDocBoxingCountdown] == 0)
+	{
+		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] The bell rings **", iArenaID);
+		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+		arrJailBoxingData[iArenaID][bInProgress] = true;
+		KillTimer(arrJailBoxingData[iArenaID][iDocCountDownTimer]);
+		arrJailBoxingData[iArenaID][iDocBoxingCountdown] = 4;
+	}
+	else
+	{
+		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] %d seconds until start! **", iArenaID, arrJailBoxingData[iArenaID][iDocBoxingCountdown]);
+		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 	}
 	return 1;
 }

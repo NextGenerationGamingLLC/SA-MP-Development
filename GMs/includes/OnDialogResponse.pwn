@@ -797,6 +797,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Wheel Clamps Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_WHEELCLAMPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
+				case 29: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group DoC Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_DOCACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DISBAND, DIALOG_STYLE_MSGBOX, szTitle, "{FFFFFF}Are you absolutely sure you wish to {FF0000}disband this group?{FFFFFF}\n\n\
@@ -1572,6 +1584,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_DOCACCESS: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iDoCAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for DoC Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDoCAccess], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iDoCAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for DoC Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDoCAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDoCAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
 		// END DYNAMIC GROUP CODE
@@ -9634,7 +9665,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			new moneys = GetPVarInt(playerid, "Arrest_Price"), time = GetPVarInt(playerid, "Arrest_Time"),
-			bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = GetPVarInt(playerid, "Arrest_BailPrice"), 
+			//bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = GetPVarInt(playerid, "Arrest_BailPrice"), 
 			suspect = GetPVarInt(playerid, "Arrest_Suspect"), arresttype = GetPVarInt(playerid, "Arrest_Type"),
 			query[1100];
 			if(strlen(inputtext) < 30 || strlen(inputtext) > 128)
@@ -9645,12 +9676,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			switch(arresttype)
 			{
 				case 0, 1: { //arrest
-					if(bail && bailprice > 0)
+					/*if(bail && bailprice > 0)
 					{
 						format(string, sizeof(string), "You have been given the option to post bail.  Your bail is set at $%s. (/bail)", number_format(bailprice));
 						SendClientMessageEx(suspect, COLOR_RED, string);
 						JailPrice[suspect] = bailprice;
-					}
+					}*/
 					format(string, sizeof(string), "* You have sent %s to the Local PD Jail.", GetPlayerNameEx(suspect));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					GivePlayerCash(suspect, -moneys);
@@ -9694,10 +9725,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					ResetPlayerWeaponsEx(suspect);
-					SetPlayerInterior(suspect, 10);
-					new rand = random(sizeof(LSPDJailSpawns));
-					SetPlayerFacingAngle(suspect, LSPDJailSpawns[rand][3]);
-					SetPlayerPos(suspect, LSPDJailSpawns[rand][0], LSPDJailSpawns[rand][1], LSPDJailSpawns[rand][2]);
+					SetPlayerInterior(suspect, ArrestPoints[GetArrestPointID(playerid)][jailInt]);
+					//new rand = random(sizeof(LSPDJailSpawns));
+					//SetPlayerFacingAngle(suspect, LSPDJailSpawns[rand][3]);
+					//SetPlayerPos(suspect, LSPDJailSpawns[rand][0], LSPDJailSpawns[rand][1], LSPDJailSpawns[rand][2]);
+					switch(random(2)) {
+						case 0: {
+							SetPlayerPos(suspect, ArrestPoints[GetArrestPointID(playerid)][JailPos1][0], ArrestPoints[GetArrestPointID(playerid)][JailPos1][1], ArrestPoints[GetArrestPointID(playerid)][JailPos1][2]);
+							Player_StreamPrep(suspect, ArrestPoints[GetArrestPointID(playerid)][JailPos1][0], ArrestPoints[GetArrestPointID(playerid)][JailPos1][1], ArrestPoints[GetArrestPointID(playerid)][JailPos1][2], FREEZE_TIME);
+						}
+						case 1: {
+							SetPlayerPos(suspect, ArrestPoints[GetArrestPointID(playerid)][JailPos2][0], ArrestPoints[GetArrestPointID(playerid)][JailPos2][1], ArrestPoints[GetArrestPointID(playerid)][JailPos2][2]);
+							Player_StreamPrep(suspect, ArrestPoints[GetArrestPointID(playerid)][JailPos2][0], ArrestPoints[GetArrestPointID(playerid)][JailPos2][1], ArrestPoints[GetArrestPointID(playerid)][JailPos2][2], FREEZE_TIME);
+						}
+					}
+					SetPVarInt(suspect, "ArrestPoint", (GetArrestPointID(playerid) + 1));
 					if(PlayerInfo[suspect][pDonateRank] >= 2)
 					{
 						PlayerInfo[suspect][pJailTime] = ((time*60)*75)/100;
@@ -9720,12 +9762,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
 					PlayerCuffedTime[suspect] = 0;
-					PlayerInfo[suspect][pVW] = 0;
-					SetPlayerVirtualWorld(suspect, 0);
+					SetPlayerInterior(suspect, ArrestPoints[GetArrestPointID(playerid)][jailInt]);
+					PlayerInfo[suspect][pInt] = ArrestPoints[GetArrestPointID(playerid)][jailVW];
+					PlayerInfo[suspect][pVW] = ArrestPoints[GetArrestPointID(playerid)][jailVW];
+					SetPlayerVirtualWorld(suspect, ArrestPoints[GetArrestPointID(playerid)][jailVW]);
 					strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
-					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] Local Arrest", 128);
+					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF", 128);
 					SetPlayerToTeamColor(suspect);
-					Player_StreamPrep(suspect, LSPDJailSpawns[rand][0], LSPDJailSpawns[rand][1], LSPDJailSpawns[rand][2], FREEZE_TIME);
+					SetPlayerHealth(suspect, 100);
 				}
 				case 2: { // /docarrest
 					format(string, sizeof(string), "* You have sent %s to DoC.", GetPlayerNameEx(suspect));
@@ -9771,7 +9815,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					ResetPlayerWeaponsEx(suspect);
-					SetPlayerInterior(suspect, 10);
+					SetPlayerInterior(suspect, 1);
+					PlayerInfo[suspect][pInt] = 1;
 					new rand = random(sizeof(DocPrison));
 					SetPlayerFacingAngle(suspect, 0);
 					SetPlayerPos(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
@@ -9804,6 +9849,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
 					SetPlayerToTeamColor(suspect);
 					Player_StreamPrep(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
+					SetPlayerHealth(suspect, 100);
 				}
 			}
 			new iAllegiance;
@@ -9814,6 +9860,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else iAllegiance = 1;
 			format(query, sizeof(query), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%s', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline), iAllegiance);
 			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			format(query, sizeof(query), "You have arrested %s for %d minutes with a fine of $%s", GetPlayerNameEx(suspect), time, number_format(moneys));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, query);
+			PlayerInfo[suspect][pWantedJailFine] = 0;
+			PlayerInfo[suspect][pWantedJailTime] = 0;
+			DeletePVar(suspect, "jailcuffs");
 			DeletePVar(playerid, "Arrest_Price");
 			DeletePVar(playerid, "Arrest_Time");
 			DeletePVar(playerid, "Arrest_Bail");
@@ -12092,6 +12143,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[iTargetID][pWantedLevel] = 6;
 			}
 			SetPlayerWantedLevel(iTargetID, PlayerInfo[iTargetID][pWantedLevel]);
+			if(PlayerInfo[iTargetID][pConnectHours] < 32)
+			{
+				PlayerInfo[iTargetID][pWantedJailTime] += SuspectCrimeInfo[crimeid][2]/10;
+				PlayerInfo[iTargetID][pWantedJailFine] += SuspectCrimeInfo[crimeid][3]/10;
+			}
+			else
+			{
+				PlayerInfo[iTargetID][pWantedJailTime] += SuspectCrimeInfo[crimeid][2];
+				PlayerInfo[iTargetID][pWantedJailFine] += SuspectCrimeInfo[crimeid][3];
+			}
 			new szCountry[10], szCrime[128];
 			if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
 			{
@@ -19616,6 +19677,163 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
 		}
+	}
+	else if(dialogid == DIALOG_DOC_ELEVATOR)
+	{
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: CallDocElevator(playerid, 0);
+				case 1: CallDocElevator(playerid, 1);
+				case 2: CallDocElevator(playerid, 2);
+			}
+		}
+	}
+	if(dialogid == DIALOG_DOC_CP)
+	{
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: ShowDocPrisonControls(playerid, 1);
+				case 1: ShowDocPrisonControls(playerid, 5);
+				case 2: ShowDocPrisonControls(playerid, 4);
+				case 3: DocLockdown(playerid);
+			}
+		}
+	}
+	if(dialogid == DIALOG_DOC_CP_SUB)
+	{
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: // floor 1
+				{
+					ShowDocPrisonControls(playerid, 2);
+				}
+				case 1: // floor 2
+				{
+					ShowDocPrisonControls(playerid, 3);
+				}
+				case 2: // all floor 1
+				{
+					if(bDocCellsFloorOpen[0] == false)
+					{
+						for(new i = 0; i < 16; i++)
+						{
+							OpenDocCells(i, 1);
+						}
+						bDocCellsFloorOpen[0] = true;
+					}
+					else if(bDocCellsFloorOpen[0] == true)
+					{
+						for(new i = 0; i < 16; i++)
+						{
+							OpenDocCells(i, 0);
+						}
+						bDocCellsFloorOpen[0] = false;
+					}
+				}
+				case 3: // all floor 2
+				{
+					if(bDocCellsFloorOpen[1] == false)
+					{
+						for(new i = 16; i < 31; i++)
+						{
+							OpenDocCells(i, 1);
+						}
+						bDocCellsFloorOpen[1] = true;
+					}
+					else if(bDocCellsFloorOpen[1] == true)
+					{
+						for(new i = 16; i < 31; i++)
+						{
+							OpenDocCells(i, 0);
+						}
+						bDocCellsFloorOpen[1] = false;
+					}
+				}
+			}
+		}
+		else ShowDocPrisonControls(playerid, 0);
+	}
+	if(dialogid == DIALOG_DOC_CP_AREA)
+	{
+		if(response)
+		{
+			if(listitem == 11)
+			{
+				if(bDocAreaOpen[11] == false) bDocAreaOpen[11] = true;
+				else bDocAreaOpen[11] = false;
+			}
+			else if(listitem == 12)
+			{
+				if(bDocAreaOpen[12] == false) bDocAreaOpen[12] = true;
+				else bDocAreaOpen[12] = false;
+			}
+			else
+			{
+				if(bDocAreaOpen[listitem] == false) OpenDocAreaDoors(listitem, 1);
+				else OpenDocAreaDoors(listitem, 0);
+			}
+			ShowDocPrisonControls(playerid, 4);
+		}
+		else ShowDocPrisonControls(playerid, 0);
+	}
+	if(dialogid == DIALOG_DOC_CP_ISOLATION)
+	{
+		if(response)
+		{
+			if(bDocIsolationOpen[listitem] == false) OpenDocIsolationCells(listitem, 1);
+			else OpenDocIsolationCells(listitem, 0);
+			ShowDocPrisonControls(playerid, 5);
+		}
+		else ShowDocPrisonControls(playerid, 0);
+	}
+	if(dialogid == DIALOG_DOC_CP_C1F1)
+	{
+		if(response)
+		{
+			if(bDocCellOpen[listitem] == false) OpenDocCells(listitem, 1);
+			else OpenDocCells(listitem, 0);
+			ShowDocPrisonControls(playerid, 2);
+		}
+		else ShowDocPrisonControls(playerid, 1);
+	}
+	if(dialogid == DIALOG_DOC_CP_C1F2)
+	{
+		if(response)
+		{
+			if(bDocCellOpen[listitem + 16] == false) OpenDocCells(listitem + 16, 1);
+			else OpenDocCells(listitem + 16, 0);
+			ShowDocPrisonControls(playerid, 3);
+		}
+		else ShowDocPrisonControls(playerid, 1);
+	}
+	if(dialogid == DIALOG_LOAD_DETAINEES && response)
+	{
+		new stpos = strfind(inputtext, "(");
+	    new fpos = strfind(inputtext, ")");
+	    new prisoneridstr[4], prisonerid;
+	    strmid(prisoneridstr, inputtext, stpos+1, fpos);
+	    prisonerid = strval(prisoneridstr);
+		
+		new	getVW = GetPlayerVirtualWorld(playerid);
+		new	getIW = GetPlayerInterior(playerid);
+		new	getVeh = GetPlayerVehicleID(playerid);
+		new iVehicleSeat = 0;
+		
+		for(new i = 1; i < 9; i++)
+		{
+			if(IsSeatAvailable(getVeh, i))
+			{
+				iVehicleSeat = i;
+				break;
+			}
+		}
+		LoadPrisoner(playerid, prisonerid, getVeh, iVehicleSeat, getVW, getIW);
 	}
 	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
 	{

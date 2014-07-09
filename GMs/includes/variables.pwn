@@ -221,7 +221,7 @@ new BoatDropoffs[][CargoArrayData] =
 	{-1472.8782,689.3031,-0.7115}, // boat dropoff
 	{-1464.4757,1089.6381,-0.3583}, // boat dropoff
 	{-2957.4927,500.7650,-0.8111}, // boat dropoff
-	{-2325.0293,2320.5752,-0.3569}, // boat dropoff
+	{-2240.6965, 2439.7158, -0.5795}, // boat dropoff
 	{-2214.1277,2413.1074,-0.5795}, // boat dropoff
 	{-1448.7850,1506.3970,0.0910}, // boat dropoff
 	{-492.1511,617.2073,-0.4076}, // boat dropoff
@@ -1023,7 +1023,7 @@ new FishNames[22][20] = {
 {"Swordfish"}
 };
 
-new Float:DocPrison[12][3] = {
+/*new Float:DocPrison[12][3] = {
 {-2081.1941,-188.6734,991.536},
 {-2075.0042,-188.3738,991.5364},
 {-2069.1348,-188.3445,991.5364},
@@ -1036,7 +1036,90 @@ new Float:DocPrison[12][3] = {
 {-2074.9646,-210.1767,991.5364},
 {-2080.8003,-210.1505,991.5364},
 {-2086.3982,-209.9947,991.5364}
+};*/
+
+new Float:DocPrison[31][3] = {
+{566.6217,1443.9063,6000.4712},
+{563.4141,1443.9242,6000.4712},
+{559.0266,1444.2406,6000.4712},
+{555.1960,1444.0137,6000.4712},
+{552.1860,1444.0975,6000.4712},
+{547.9967,1444.0000,6000.4712},
+{544.1797,1444.0023,6000.4712},
+{540.1984,1447.7440,6000.4712},
+{540.9143,1450.7118,6000.4712}, 
+{540.6180,1454.5797,6000.4712},
+{540.9262,1458.6176,6000.4712},
+{543.5959,1463.9739,6000.4712},
+{547.4905,1464.4880,6000.4712},
+{550.9981,1464.4159,6000.4712},
+{556.9213,1464.2755,6000.4712},
+{560.2768,1465.3188,6000.4712}, 
+{557.8386,1464.3350,6004.3984},
+{550.2856,1464.7531,6004.3984},
+{547.6868,1465.1648,6004.3984}, 
+{543.0347,1464.5404,6004.3784},
+{540.6564,1458.0435,6004.3784},
+{540.8395,1454.0175,6004.3784},
+{541.1672,1450.7792,6004.3784}, 
+{540.0593,1446.8673,6004.3784},
+{544.9167,1443.7372,6004.3784},
+{548.1307,1444.8217,6004.3784},
+{551.9464,1443.7279,6004.3784},
+{555.7839,1443.8726,6004.3784},
+{558.9515,1444.0236,6004.3784},
+{563.0129,1444.1816,6004.3784},
+{567.4249,1443.5105,6004.3784}
 };
+
+new Float:DocIsolation[6][3] = {
+{551.7999,1448.4619,5996.9590},
+{554.1416,1448.5869,5996.9590}, 
+{558.3823,1448.1624,5996.9590},
+{561.4105,1448.8300,5996.9590},
+{564.4495,1451.6481,5996.9590},
+{564.4314,1455.7474,5996.9590}
+};
+
+new DocButtons[29];
+new DocCPButton;
+new DocElevatorCall[3];
+new DocElevatorInside;
+new DocCellsFloor1[16];
+new DocCellsFloor2[15];
+new DocIsolationCells[6];
+new DocCellRoomDoors[12];
+new DocAdmFloor1[12];
+new DocAdmFloor2[7];
+new DocInnerElevator[2];
+new DocElevator;
+new DocElevatorExt[6];
+new iDocElevatorLevel;
+new bool:bDocElevatorMoving = false;
+new bool:bDocCellOpen[31] = false;
+new bool:bDocAreaOpen[13] = false;
+new bool:bDocIsolationOpen[6] = false;
+new bool:bDocCellsFloorOpen[2] = false;
+new bool:bDocLockdown = false;
+new arrJailBoxingData[MAX_JAIL_BOXINGS][eJailBoxing];
+
+new Float:JailBoxingPos[MAX_JAIL_BOXINGS][3] = {
+{571.4730,1414.6787,6000.8008},
+{571.0892,1406.3739,6000.8008},
+{558.7887,1424.7054,6000.8008},
+{-2040.8381,-233.3212,36.2392},
+{-2061.5261,-234.1297,36.2392}
+};
+
+new Float:JailPhonePos[5][3] = {
+{551.50531, 1423.10657, 6000.12012},
+{547.87653, 1423.10657, 6000.12012},
+{545.87531, 1425.07288, 6000.12012},
+{547.10773, 1428.93091, 6000.12012},
+{549.79559, 1428.93091, 6000.12012}
+};
+
+new bool:bJailPhoneUse[5] = false;
 
 new Float:DMVRelease[4][3] = {
 {850.336,-583.911,18.250},
@@ -1061,14 +1144,36 @@ new Float:WarrantJail[2][3] = {
 {-302.5636,1871.3998,29.8929}
 }; */
 
-new Float:OOCPrisonSpawns[3][3] = {
+/*new Float:OOCPrisonSpawns[3][3] = {
 {-304.4369,1894.9891,29.8929},
 {-295.9042,1894.9121,29.8929},
 {-287.1133,1894.6259,29.8929}
+};*/
+new Float:OOCPrisonSpawns[20][3] = {
+{-1169.8495,2907.1541,9993.1318},
+{-1161.5973,2907.2935,9993.1318}, 
+{-1152.9495,2907.0779,9993.1318},
+{-1144.9945,2907.3643,9993.1318},
+{-1139.0138,2901.8857,9993.1318},
+{-1138.8224,2892.6199,9993.1318},
+{-1142.2539,2883.1189,9993.1318},
+{-1152.5369,2883.5552,9993.1318},
+{-1161.8630,2883.5474,9993.1318},
+{-1170.9556,2883.6836,9993.1318},
+{-1170.3447,2907.0898,9997.2959},
+{-1161.5493,2907.2043,9997.2959},
+{-1153.7791,2907.1799,9997.2959},
+{-1146.1752,2907.0950,9997.2959},
+{-1139.0394,2902.7466,9997.2959},
+{-1139.5280,2894.2209,9997.2959},
+{-1143.3251,2883.4856,9997.2959},
+{-1152.4774,2883.0095,9997.2959},
+{-1160.3843,2883.4739,9997.2959},
+{-1168.4708,2883.1897,9997.2959}
 };
 
 // X, Y, Z, Angle
-new Float:LSPDJailSpawns[8][4] = {
+/*new Float:LSPDJailSpawns[8][4] = {
 	{1501.5892, -1759.7926, 3285.2859, 181.9316},
 	{1501.6854, -1766.9313, 3285.2859, 2.5386},
 	{1498.8138, -1767.2649, 3285.2859, 5.0662},
@@ -1077,7 +1182,7 @@ new Float:LSPDJailSpawns[8][4] = {
 	{1495.0603, -1759.2269, 3285.2859, 176.2523},
 	{1492.2045, -1767.4205, 3285.2859, 356.3346},
 	{1491.8857, -1759.5046, 3285.2859, 188.8902}
-};
+};*/
 
 new Titel[pBoxingStats];
 
@@ -1242,7 +1347,13 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19331, 0, "Fire Hat02"},
 {336, 0, "Baseball Bat"},
 {341, 0, "Chainsaw"},
-{2035, 0, "Rusty M4"}
+{2035, 0, "Rusty M4"},
+{1000, 0, "Spoiler1"},
+{1001, 0, "Spoiler2"},
+{1002, 0, "Spoiler3"},
+{2036, 0, "Rusty Sniper Rifle"},
+{2044, 0, "Rusty MP5"},
+{367, 0, "Camera"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1578,7 +1689,13 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19331, 0, "Fire Hat02"},
 {336, 0, "Baseball Bat"},
 {341, 0, "Chainsaw"},
-{2035, 0, "Rusty M4"}
+{2035, 0, "Rusty M4"},
+{1000, 0, "Spoiler1"},
+{1001, 0, "Spoiler2"},
+{1002, 0, "Spoiler3"},
+{2036, 0, "Rusty Sniper Rifle"},
+{2044, 0, "Rusty MP5"},
+{367, 0, "Camera"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {
@@ -1863,35 +1980,35 @@ new SuspectCrimes[][] = {
 
 	// Category (0 = mis, 1 = fel), Stars(1 mis, 2 fel, 3 violent)
 new SuspectCrimeInfo[][] = {
-	{ 1, 3 }, //"2-1-2 Attempted Murder",
-	{ 1, 3 }, //"2-1-3 Aggravated assault",
-	{ 1, 3 }, //"2-1-5 Assault/Battery",
-	{ 1, 3 }, //"2-1-6 Kidnapping",
-	{ 1, 3 }, //"2-1-7 Terroristic Threats",
-	{ 1, 3 }, //"2-1-8 Armed Robbery",
-	{ 1, 2 }, //"2-1-11 Trespassing",
-	{ 1, 2 }, //"2-1-13 Aiding and abetting",
-	{ 1, 2 }, //"2-1-14 Grand Theft (Auto)",
-	{ 1, 2 }, //"2-1-19 Possession of an illegal firearm",
-	{ 1, 2 }, //"2-1-20 Possession of illegal substances",
-	{ 1, 2 }, //"2-1-21 Unlawful discharge of a firearm",
-	{ 1, 2 }, //"2-1-22 Unlawful brandishing of a firearm",
-	{ 1, 2 }, //"2-1-27 Evading",
-	{ 1, 2 }, //"2-1-28 Arms Trafficking",
-	{ 1, 2 }, //"2-1-32 Smuggling Illegal Goods",
-	{ 1, 3 }, //"2-1-36 Shooting from a Motor Vehicle",
-	{ 1, 2 }, //"2-1-39 Failure to provide identification",
-	{ 1, 2 }, //"2-1-45 Criminal Negligence",
-	{ 1, 3 }, //"2-1-47 Vehicular Assault",
-	{ 0, 1 }, //"3-1-1 Reckless Driving",
-	{ 0, 1 }, //"3-1-3 Possession/Use of NOS",
-	{ 0, 1 }, //"3-1-5 Street Racing",
-	{ 0, 1 }, //"3-1-7 Hit &amp; Run",
-	{ 0, 1 }, //"3-4-1 Obstruction of Justice",
-	{ 0, 1 }, //"3-4-3 Resisting an Arrest",
-	{ 0, 1 }, //"3-4-9 Disobeying Lawful Orders",
-	{ 0, 1 }, //"3-4-5 Vandalism",
-	{ 0, 1 } //"3-5-6 Consumption of Pot in Public"
+	{ 1, 3, 60, 60000 }, //"2-1-2 Attempted Murder",
+	{ 1, 3, 35, 35000 }, //"2-1-3 Aggravated assault",
+	{ 1, 3, 35, 35000 }, //"2-1-5 Assault/Battery",
+	{ 1, 3, 60, 60000 }, //"2-1-6 Kidnapping",
+	{ 1, 3, 45, 45000 }, //"2-1-7 Terroristic Threats",
+	{ 1, 3, 60, 60000 }, //"2-1-8 Armed Robbery",
+	{ 1, 2, 25, 10000 }, //"2-1-11 Trespassing",
+	{ 1, 2, 40, 40000 }, //"2-1-13 Aiding and abetting",
+	{ 1, 2, 40, 40000 }, //"2-1-14 Grand Theft (Auto)",
+	{ 1, 2, 30, 30000 }, //"2-1-19 Possession of an illegal firearm",
+	{ 1, 2, 30, 30000 }, //"2-1-20 Possession of illegal substances",
+	{ 1, 2, 30, 30000 }, //"2-1-21 Unlawful discharge of a firearm",
+	{ 1, 2, 25, 25000 }, //"2-1-22 Unlawful brandishing of a firearm",
+	{ 1, 2, 45, 45000 }, //"2-1-27 Evading",
+	{ 1, 2, 10, 10000 }, //"2-1-28 Arms Trafficking",
+	{ 1, 2, 15, 5000 }, //"2-1-32 Smuggling Illegal Goods",
+	{ 1, 3, 25, 25000 }, //"2-1-36 Shooting from a Motor Vehicle",
+	{ 1, 2, 10, 1000 }, //"2-1-39 Failure to provide identification",
+	{ 1, 2, 30, 30000 }, //"2-1-45 Criminal Negligence",
+	{ 1, 3, 15, 10000 }, //"2-1-47 Vehicular Assault",
+	{ 0, 1, 15, 10000 }, //"3-1-1 Reckless Driving",
+	{ 0, 1, 15, 10000 }, //"3-1-3 Possession/Use of NOS",
+	{ 0, 1, 30, 20000 }, //"3-1-5 Street Racing",
+	{ 0, 1, 20, 20000 }, //"3-1-7 Hit &amp; Run",
+	{ 0, 1, 15, 10000 }, //"3-4-1 Obstruction of Justice",
+	{ 0, 1, 30, 15000 }, //"3-4-3 Resisting an Arrest",
+	{ 0, 1, 15, 8000 }, //"3-4-9 Disobeying Lawful Orders",
+	{ 0, 1, 10, 5000 }, //"3-4-5 Vandalism",
+	{ 0, 1, 10, 5000 } //"3-5-6 Consumption of Pot in Public"
 };
 
 #if defined SHOPAUTOMATED

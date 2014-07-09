@@ -12987,133 +12987,98 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18766,-778.34320068,2553.58886719,10017.98828125,0.00000000,0.00000000,353.74548340); //object(inner) (1)
 
 	//NG-RP New Prison exterior at SF. DoC
-	CreateDynamicObject(3627,-2076.70434570,-112.13515472,36.88086700,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dckcanpy) (1)
-	CreateDynamicObject(1569,-2030.00000000,-101.08999634,34.16406250,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(adam_v_door) (1)
-	CreateDynamicObject(1569,-2027.00000000,-101.08984375,34.16406250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(adam_v_door) (2)
-	CreateDynamicObject(3117,-2028.50000000,-100.79980469,37.02455521,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(a51_ventcoverb) (1)
-	CreateDynamicObject(970,-2032.50000000,-165.83999634,38.79999924,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (1)
-	CreateDynamicObject(970,-2028.34997559,-165.83999634,38.79999924,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (2)
-	CreateDynamicObject(970,-2024.19921875,-165.83984375,38.79999924,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (3)
-	CreateDynamicObject(970,-2023.39001465,-165.83999634,38.79999924,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (4)
-	CreateDynamicObject(970,-2034.56994629,-163.74000549,38.79999924,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (5)
-	CreateDynamicObject(970,-2034.56994629,-159.57000732,38.79999924,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (6)
-	CreateDynamicObject(970,-2034.56933594,-155.46972656,38.79999924,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(fencesmallb) (7)
-	CreateDynamicObject(947,-2039.00000000,-204.93164062,36.52323532,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(bskballhub_lax01) (1)
-	CreateDynamicObject(14791,-2060.00000000,-217.00000000,36.36537170,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(a_vgsgymboxa) (1)
-	CreateDynamicObject(947,-2066.24389648,-205.30975342,36.52323532,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 100.0); //object(bskballhub_lax01) (1)
-	CreateDynamicObject(947,-2066.25000000,-195.07095337,36.53031540,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 100.0); //object(bskballhub_lax01) (1)
-	CreateDynamicObject(947,-2039.00000000,-195.00842285,36.52323532,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(bskballhub_lax01) (1)
-	CreateDynamicObject(2921,-2011.85241699,-100.01724243,49.00000000,0.00000000,0.00000000,336.25000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(2921,-2011.85241699,-100.01724243,49.00000000,0.00000000,0.00000000,336.25000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(1569,-2032.90002441,-153.70681763,34.56000137,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(adam_v_door) (3)
-	CreateDynamicObject(14791,-2045.00000000,-217.00000000,36.36537170,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(a_vgsgymboxa) (1)
-	CreateDynamicObject(2628,-2045.50000000,-183.00000000,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(gym_bench2) (1)
-	CreateDynamicObject(8661,-2058.71386719,-204.59765625,34.32739258,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 100.0); //object(gnhtelgrnd_lvs) (1)
-	CreateDynamicObject(8661,-2043.38671875,-204.51757812,34.32039261,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 100.0); //object(gnhtelgrnd_lvs) (2)
-	CreateDynamicObject(8673,-2058.65917969,-184.87109375,35.12765884,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(csrsfence03_lvs) (1)
-	CreateDynamicObject(8673,-2048.67773438,-184.87011719,35.12765884,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(csrsfence03_lvs) (2)
-	CreateDynamicObject(1946,-2042.62500000,-204.44433594,34.52619553,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(baskt_ball_hi) (1)
-	CreateDynamicObject(3264,-2057.99536133,-101.65443420,34.17179871,0.00000000,0.00000000,180.00000000, .interiorid = 0, .streamdistance = 100.0); //object(privatesign3) (1)
-	CreateDynamicObject(1411,-2054.30004883,-102.19999695,37.59999847,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (4)
-	CreateDynamicObject(1411,-2049.13964844,-102.19921875,37.59999847,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2043.96972656,-102.19921875,37.59999847,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (7)
-	CreateDynamicObject(13011,-2085.50000000,-144.34960938,35.15919876,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(cos_sbanksteps04) (1)
-	CreateDynamicObject(3928,-2090.04492188,-135.36816406,39.10160065,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(helipad) (1)
-	CreateDynamicObject(3928,-2089.93847656,-121.10644531,39.10160065,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(helipad) (2)
-	CreateDynamicObject(3934,-2082.90405273,-257.04226685,43.32582474,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(helipad01) (7)
-	CreateDynamicObject(2921,-2044.41210938,-154.59179688,49.62724304,0.00000000,0.00000000,339.99938965, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(2921,-2020.24291992,-154.71382141,49.65502167,0.00000000,0.00000000,80.00000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(2921,-2043.87719727,-100.07368469,49.35918808,0.00000000,0.00000000,260.00000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(1236,-2042.36376953,-156.25230408,34.98303986,0.00000000,0.00000000,180.00000000, .interiorid = 0, .streamdistance = 100.0); //object(rcyclbank01) (1)
-	CreateDynamicObject(1411,-2060.00000000,-102.19999695,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2065.15991211,-102.15692139,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2070.33007812,-102.19999695,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2075.50000000,-102.19999695,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2080.67504883,-102.19999695,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2085.84960938,-102.19921875,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2091.05224609,-102.23773193,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(1411,-2092.80859375,-102.23730469,41.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(dyn_mesh_1) (5)
-	CreateDynamicObject(2628,-2048.00000000,-183.00000000,34.32739258,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(gym_bench2) (1)
-	CreateDynamicObject(2628,-2050.50000000,-183.00000000,34.32739258,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(gym_bench2) (1)
-	CreateDynamicObject(2921,-2042.88623047,-247.19926453,44.09865952,0.00000000,0.00000000,325.00000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(2921,-2069.33203125,-177.81195068,45.58872604,0.00000000,0.00000000,245.00000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_cam) (1)
-	CreateDynamicObject(2612,-2059.40991211,-84.48632812,35.95511627,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(police_nb2) (1)
-	CreateDynamicObject(2008,-2058.85009766,-87.90000153,34.42031097,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(officedesk1) (1)
-	CreateDynamicObject(2174,-2056.29980469,-82.00000000,34.42031097,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(med_office4_desk_2) (1)
-	CreateDynamicObject(11631,-2055.79980469,-87.59960938,35.66621399,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(ranch_desk) (1)
-	CreateDynamicObject(1806,-2056.12988281,-86.39941406,34.42031097,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 100.0); //object(med_office_chair) (1)
-	CreateDynamicObject(1806,-2058.17187500,-87.00675201,34.42031097,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(med_office_chair) (2)
-	CreateDynamicObject(2915,-2052.54394531,-183.49804688,34.44855499,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 100.0); //object(kmb_dumbbell2) (1)
-	CreateDynamicObject(3934,-2068.99414062,-257.08886719,43.32582474,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(helipad01) (7)
-	CreateDynamicObject(3934,-2056.41992188,-257.37597656,43.32582474,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 100.0); //object(helipad01) (7)
-
-	//Objects to be set a medium/normal streamer distance:
-	CreateDynamicObject(987,-2021.23925781,-153.79980469,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (1)
-	CreateDynamicObject(987,-2021.23925781,-165.75000000,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (3)
-	CreateDynamicObject(987,-2021.23925781,-177.69921875,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2021.34960938,-189.79980469,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2033.26953125,-189.75976562,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2033.26953125,-201.71972656,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2033.27001953,-213.69000244,34.32031250,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2033.34997559,-225.72999573,34.32031250,0.00000000,0.00000000,180.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2045.29980469,-225.72949219,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2057.26953125,-225.72949219,34.32739258,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.29980469,-225.72949219,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.30004883,-201.72000122,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.29980469,-213.68945312,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.30004883,-177.69921875,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.30004883,-189.80000305,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.29980469,-165.75000000,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2057.26953125,-153.71972656,34.32031250,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2069.29980469,-153.71972656,34.32031250,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2045.30004883,-153.72000122,34.32031250,0.00000000,0.00000000,3.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(3864,-2069.29980469,-177.69921875,39.40000153,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (2)
-	CreateDynamicObject(3864,-2069.30004883,-153.72000122,39.40000153,0.00000000,0.00000000,130.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (4)
-	CreateDynamicObject(3864,-2069.29980469,-201.71972656,39.40000153,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (5)
-	CreateDynamicObject(3864,-2069.29980469,-225.72949219,39.40000153,0.00000000,0.00000000,229.99328613, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (7)
-	CreateDynamicObject(3864,-2051.29980469,-225.72949219,39.40000153,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (8)
-	CreateDynamicObject(3864,-2033.27001953,-225.72999573,39.40000153,0.00000000,0.00000000,300.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (10)
-	CreateDynamicObject(3864,-2033.26953125,-207.75000000,39.40000153,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (12)
-	CreateDynamicObject(3864,-2033.26953125,-189.75976562,39.40000153,0.00000000,0.00000000,299.99816895, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (13)
-	CreateDynamicObject(3864,-2021.23925781,-177.69921875,39.40000153,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (15)
-	CreateDynamicObject(987,-2056.80468750,-114.41796875,34.31858063,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2056.79003906,-138.29980469,34.32031250,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2056.79052734,-126.37812805,34.31867218,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(3872,-2051.29980469,-219.09960938,40.15000153,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(987,-2035.84997559,-119.00000000,34.24605179,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(987,-2035.84997559,-138.29980469,34.32739258,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(elecfence_bar) (4)
-	CreateDynamicObject(3819,-2058.72460938,-188.90879822,35.31806946,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(bleacher_sfsx) (1)
-	CreateDynamicObject(3819,-2046.04980469,-188.92871094,35.31806946,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(bleacher_sfsx) (2)
-	CreateDynamicObject(8650,-2053.90820312,-184.90917969,34.01068497,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(shbbyhswall06_lvs) (1)
-	CreateDynamicObject(3872,-2062.60009766,-201.71972656,40.15000153,0.00000000,0.00000000,180.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2062.59960938,-177.69921875,40.15000153,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2039.96679688,-207.75195312,40.18536377,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2028.00000000,-177.69921875,40.15000153,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2065.01416016,-220.61590576,40.19580460,0.00000000,0.00000000,230.00000000, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (7)
-	CreateDynamicObject(3872,-2036.62011719,-183.97363281,40.18740463,0.00000000,0.00000000,299.99816895, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (8)
-	CreateDynamicObject(3872,-2036.57812500,-219.89843750,40.19808578,0.00000000,0.00000000,299.49829102, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2065.03710938,-158.79296875,40.22748566,0.00000000,0.00000000,129.99023438, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3864,-2057.52343750,-102.57812500,38.67495728,0.00000000,0.00000000,229.99328613, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (7)
-	CreateDynamicObject(3864,-2057.56250000,-104.63867188,38.67495728,0.00000000,0.00000000,129.99572754, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodlight) (7)
-	CreateDynamicObject(3872,-2053.25195312,-97.45410156,39.47743988,0.00000000,0.00000000,229.98229980, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(3872,-2053.30859375,-109.84570312,39.47743988,0.00000000,0.00000000,129.98474121, .interiorid = 0, .streamdistance = 150.0); //object(ws_floodbeams) (1)
-	CreateDynamicObject(16770,-2021.48144531,-242.49511719,35.91794968,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(des_gunbldg01) (3)
-	CreateDynamicObject(8229,-2028.25000000,-260.50000000,37.02154160,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 150.0); //object(vgsbikeschl02) (1)
-	CreateDynamicObject(8229,-2028.44921875,-270.19921875,37.02154160,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 150.0); //object(vgsbikeschl02) (2)
-
-	//Objects set to be at a larger streaming distance (Main buildings and towers etc)
-	CreateDynamicObject(10610,-2030.00000000,-132.50000000,44.65999985,0.00000000,0.00000000,90.00000000, .interiorid = 0, .streamdistance = 300.0); //object(fedmint_sfs) (1)
-	CreateDynamicObject(3279,-2028.00000000,-194.50000000,34.32031250,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 300.0); //object(a51_spottower) (1)
-	CreateDynamicObject(3279,-2028.00000000,-230.50000000,34.32739258,0.00000000,0.00000000,2.99926758, .interiorid = 0, .streamdistance = 300.0); //object(a51_spottower) (1)
-	CreateDynamicObject(3279,-2073.39941406,-230.50000000,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 300.0); //object(a51_spottower) (1)
-	CreateDynamicObject(3279,-2075.00000000,-189.79980469,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 300.0); //object(a51_spottower) (1)
-	CreateDynamicObject(3279,-2075.00000000,-159.56933594,34.32031250,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 300.0); //object(a51_spottower) (1)
-	CreateDynamicObject(4199,-2090.00000000,-128.00000000,36.43278885,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 300.0); //object(garages1_lan) (1)
-	CreateDynamicObject(3095,-2090.12402344,-135.34179688,38.54623413,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 300.0); //object(a51_jetdoor) (1)
-	CreateDynamicObject(3095,-2090.07812500,-121.23632812,38.54623413,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 300.0); //object(a51_jetdoor) (2)
-	CreateDynamicObject(3881,-2056.80468750,-84.48632812,36.17187500,0.00000000,0.00000000,179.99450684, .interiorid = 0, .streamdistance = 300.0); //object(airsecbooth_sfse) (1)
-	CreateDynamicObject(13006,-2067.69921875,-257.19921875,34.32030869,0.00000000,0.00000000,270.00000000, .interiorid = 0, .streamdistance = 300.0); //object(sw_office1) (1)
-	CreateDynamicObject(3881,-2046.29980469,-252.00000000,45.17738724,0.00000000,0.00000000,0.00000000, .interiorid = 0, .streamdistance = 300.0); //object(airsecbooth_sfse) (2)
+	CreateDynamicObject(1569, -2030.00000, -101.51000, 33.90410,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1569, -2027.00000, -101.51000, 33.90410,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3117, -2028.50000, -100.79980, 37.02456,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(947, -2039.00000, -217.69250, 36.52320,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(14791, -2061.34668, -233.60638, 36.36537,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(947, -2066.04443, -217.69250, 36.52320,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(947, -2066.04443, -200.30800, 36.53030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(947, -2039.00000, -200.30800, 36.52320,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(14791, -2040.76904, -233.08795, 36.36537,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2051.51221, -203.87653, 34.32739,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2031.57104, -203.89510, 34.32040,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1946, -2042.62500, -204.44434, 34.52620,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3264, -2057.99536, -101.65443, 34.17180,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(2612, -2059.40991, -84.48633, 35.95512,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(2008, -2058.85010, -87.90000, 34.42031,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(2174, -2056.29980, -82.00000, 34.42031,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(11631, -2055.79980, -87.59961, 35.66621,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1806, -2056.12988, -86.39941, 34.42031,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1806, -2058.17188, -87.00675, 34.42031,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -155.06950, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -167.07401, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -179.07880, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -191.09039, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -203.11150, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2021.22070, -215.08990, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2069.26147, -263.10190, 34.32030,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2081.33008, -167.25970, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(10610, -2030.22278, -132.87590, 44.32000,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(3279, -2015.74390, -208.06003, 34.32031,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(3279, -2017.60547, -270.20691, 34.32739,   0.00000, 0.00000, 2.99927, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(3279, -2087.51904, -269.78763, 34.32031,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(3279, -2091.43945, -195.41191, 34.32031,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(3881, -2056.80469, -84.48633, 36.17188,   0.00000, 0.00000, 179.99451, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(10610, -2049.14917, -160.22681, 44.3000,   0.00000, 0.00000, -90.00000, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(10610, -2075.27954, -132.83189, 44.32000,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 300.0);
+	CreateDynamicObject(987, -2021.22070, -227.08549, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2031.57849, -163.90843, 34.32039,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2031.41565, -243.87601, 34.32040,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2051.38940, -243.87421, 34.32740,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2081.33008, -179.26500, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -191.22771, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -203.21510, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -215.16910, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -227.16859, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -239.12540, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -251.08440, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2081.33008, -263.05991, 34.32030,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2057.26709, -263.10190, 34.32030,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2045.26074, -263.10190, 34.32030,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2033.27954, -263.10190, 34.32030,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2021.28857, -263.10190, 34.32030,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2021.22070, -239.09700, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(987, -2021.22070, -251.06860, 34.32030,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 150.0);
+	CreateDynamicObject(8661, -2071.38037, -243.82857, 34.32739,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2071.31689, -203.85640, 34.32740,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8661, -2071.34253, -163.95705, 34.32739,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20105, -112.57996, 42.10569,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20105, -133.02040, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20105, -153.47321, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20105, -173.89310, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20105, -194.30200, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.20728, -214.70851, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.22583, -235.13866, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.24109, -255.60408, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2011.25024, -270.42139, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2021.24438, -280.86060, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2041.66418, -280.84680, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2062.11401, -280.85059, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2082.56055, -280.84680, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2086.26929, -280.83261, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.73633, -270.39651, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.73022, -249.93851, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -229.50771, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -209.03951, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -188.59171, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -168.12570, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -147.67860, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -127.23870, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2096.72070, -112.39570, 42.10570,   0.00000, 0.00000, 90.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(8673, -2086.25293, -102.38081, 42.10570,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3819, -2024.02454, -248.24689, 35.32092,   0.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3819, -2078.85864, -249.65306, 35.32090,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3819, -2058.05786, -260.08908, 35.32090,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(3819, -2038.59192, -260.14737, 35.32090,   0.00000, 0.00000, 270.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(987, -2035.10901, -102.49448, 33.83330,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 200.0);
+	CreateDynamicObject(987, -2054.55884, -102.46090, 33.83330,   0.00000, 0.00000, 180.00000, .interiorid = 0, .streamdistance = 200.0);
+	CreateDynamicObject(1411, -2077.10693, -165.32861, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1411, -2072.78882, -165.26216, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1411, -2069.25122, -165.32794, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1411, -2024.31543, -165.38976, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1411, -2028.10291, -165.43680, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
+	CreateDynamicObject(1411, -2032.12244, -165.34314, 37.92270,   90.00000, 0.00000, 0.00000, .interiorid = 0, .streamdistance = 100.0);
 
 	//Garages items
 	CreateObject(4032,-2054.00000000,-159.00000000,20.00000000,0.00000000,0.00000000,90.00000000); //object(carimp_lan) (1)
@@ -13123,359 +13088,1181 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3055,-2078.69921875,-202.65625000,16.26843262,0.00000000,0.00000000,0.00000000); //object(kmb_shutter) (1)
 
 	//Prison Interior
- 	CreateDynamicObject(14596,-2045.31054688,-149.37304688,980.50866699,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(paperchase_stairs)(1)
-    CreateDynamicObject(14602,-2065.04785156,-141.14062500,992.58288574,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(paperchase01)(1)
-    CreateDynamicObject(14598,-2065.18823242,-152.94328308,1002.77136230,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(paperchase_glass)(1)
-    CreateDynamicObject(9131,-2050.68090820,-144.20541382,988.35113525,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(2)
-    CreateDynamicObject(9131,-2050.67968750,-147.06250000,988.35113525,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2050.67724609,-147.06515503,989.49151611,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(4)
-    CreateDynamicObject(9131,-2050.68066406,-144.20507812,990.10113525,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(5)
-    CreateDynamicObject(9131,-2050.68041992,-145.56579590,990.33135986,90.00000000,180.00000000,180.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(6)
-    CreateDynamicObject(14412,-2065.75292969,-199.57714844,999.88018799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter_drugfloor)(1)
-    CreateDynamicObject(14408,-2063.84375000,-199.35937500,987.17529297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-floors04)(1)
-    CreateDynamicObject(14416,-2086.50024414,-192.71105957,991.50823975,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-stairs07)(2)
-    CreateDynamicObject(14410,-2039.59863281,-200.70817566,987.34832764,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-stairs03)(1)
-    CreateDynamicObject(14409,-2044.09704590,-202.51057434,980.99548340,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-stairs02)(2)
-    CreateDynamicObject(14407,-2076.37451172,-219.01786804,974.64343262,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-stairs01)(1)
-    CreateDynamicObject(14592,-2060.22167969,-127.35937500,988.33557129,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(mafcasloadbay02)(1)
-    CreateDynamicObject(9131,-2051.35766602,-146.69592285,982.54498291,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.01220703,-146.69726562,982.54498291,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.01293945,-146.69978333,983.66583252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.35888672,-146.70071411,983.66021729,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.36132812,-144.44053650,982.54498291,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.01611328,-144.44055176,982.54498291,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.01562500,-144.43801880,983.64727783,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.36157227,-144.43923950,983.64605713,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.36059570,-145.65827942,984.49127197,90.00000000,270.00000000,270.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(9131,-2051.02392578,-145.62313843,984.49249268,90.00000000,270.00000000,270.00000000, .interiorid = 10); //object(shbbyhswall13_lvs)(3)
-    CreateDynamicObject(1534,-2057.82324219,-185.34310913,979.54058838,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_win_pop2)(1)
-    CreateDynamicObject(1498,-2097.07812500,-209.11058044,994.69073486,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(gen_doorext03)(1)
-    CreateDynamicObject(1498,-2097.10693359,-206.09249878,994.69073486,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(gen_doorext03)(2)
-    CreateDynamicObject(1498,-2089.32495117,-113.25828552,981.38763428,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(gen_doorext03)(3)
-    CreateDynamicObject(1498,-2089.35424805,-110.24213409,981.38763428,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(gen_doorext03)(4)
-    CreateDynamicObject(1522,-2065.85375977,-126.48838043,987.20471191,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gen_doorshop3)(2)
-    CreateDynamicObject(2949,-2081.08959961,-151.85150146,987.22180176,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(kmb_lockeddoor)(1)
-    CreateDynamicObject(18045,-1829.48242188,-174.72363281,1000.00000000,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(mp_ammu01)(1)
-    CreateDynamicObject(14413,-2064.09692383,-192.86218262,983.87353516,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-column01)(1)
-    CreateDynamicObject(14432,-2081.00073242,-192.83885193,980.43896484,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter_light01)(1)
-    CreateDynamicObject(14459,-2070.50537109,-199.60104370,997.61474609,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-cage)(1)
-    CreateDynamicObject(14437,-2092.64892578,-222.00610352,979.82672119,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-bars)(1)
-    CreateDynamicObject(14440,-2072.21142578,-195.40541077,996.62176514,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter_grill)(1)
-    CreateDynamicObject(2633,-2059.98999023,-186.38119507,982.55419922,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(crack_walkway1)(1)
-    CreateDynamicObject(2633,-2055.86889648,-186.37879944,982.55297852,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(crack_walkway1)(2)
-    CreateDynamicObject(2949,-2054.14941406,-185.86488342,984.17987061,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_lockeddoor)(2)
-    CreateDynamicObject(2949,-2053.69580078,-187.34906006,984.17987061,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(kmb_lockeddoor)(3)
-    CreateDynamicObject(1498,-2094.41674805,-197.32952881,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gen_doorext03)(5)
-    CreateDynamicObject(1498,-2041.31982422,-193.36004639,990.52929688,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gen_doorext03)(7)
-    CreateDynamicObject(1508,-2078.38085938,-208.23535156,972.46588135,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(dyn_garage_door)(1)
-    CreateDynamicObject(10184,-2051.23999023,-112.26010132,983.93231201,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(sfcopdr)(1)
-    CreateDynamicObject(3089,-2080.51000000,-125.16000000,982.74000000,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(110)
-    CreateDynamicObject(3089,-2061.28344727,-143.22166443,982.75048828,0.00000000,0.00000000,107.66198730, .interiorid = 10); //object(ab_casdorlok)(3)
-    CreateDynamicObject(1523,-2059.37988281,-205.21972656,977.82000732,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(105)
-    CreateDynamicObject(1523,-2056.33984375,-205.15917969,977.82000732,0.00000000,0.00000000,179.99450684, .interiorid = 10); //convertffs(116)
-    CreateDynamicObject(18762,-2054.85961914,-205.05957031,978.76000977,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(117)
-    CreateDynamicObject(18762,-2054.33496094,-205.05761719,978.76000977,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(117)
-    CreateDynamicObject(18766,-2059.84863281,-190.55957031,981.75537109,90.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2059.84863281,-200.55859375,981.75537109,90.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2056.33691406,-200.55664062,981.75659180,90.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2056.33691406,-190.55957031,981.75415039,90.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2061.84960938,-182.59570312,981.47949219,0.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2059.84765625,-187.09570312,978.97875977,0.00000000,90.00000000,179.99450684, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2055.79589844,-187.09570312,978.97875977,0.00000000,90.00000000,179.99450684, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18762,-2057.45996094,-205.06054688,980.83325195,0.00000000,90.00000000,0.00000000, .interiorid = 10); //convertffs(117)
-    CreateDynamicObject(18766,-2061.84960938,-200.55957031,978.76000977,0.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(113)
-    CreateDynamicObject(18766,-2061.84960938,-190.55957031,978.76000977,0.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2061.84960938,-182.59570312,981.47949219,0.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18762,-2060.84960938,-205.05957031,978.76000977,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(114)
-    CreateDynamicObject(18762,-2059.84960938,-205.05957031,978.76000977,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(115)
-    CreateDynamicObject(18762,-2057.45996094,-205.06054688,980.83325195,0.00000000,90.00000000,0.00000000, .interiorid = 10); //convertffs(117)
-    CreateDynamicObject(18762,-2055.85839844,-205.05957031,978.76000977,0.00000000,0.00000000,0.00000000, .interiorid = 10); //convertffs(117)
-    CreateDynamicObject(18766,-2056.33691406,-190.55957031,981.75415039,90.00000000,0.00000000,270.00000000, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2055.79589844,-187.09570312,978.97875977,0.00000000,90.00000000,179.99450684, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(18766,-2059.84765625,-187.09570312,978.97875977,0.00000000,90.00000000,179.99450684, .interiorid = 10); //convertffs(112)
-    CreateDynamicObject(2341,-2060.84448242,-188.10899353,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_corner) (1)
-    CreateDynamicObject(2141,-2059.85375977,-188.10171509,977.83081055,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_kitch2_l) (1)
-    CreateDynamicObject(2134,-2060.84448242,-189.10537720,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_m) (1)
-    CreateDynamicObject(2419,-2058.47680664,-188.31311035,977.83081055,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_ff_worktop_2) (1)
-    CreateDynamicObject(2451,-2055.96484375,-188.28919983,977.83081055,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_ff_worktop_3) (1)
-    CreateDynamicObject(2132,-2060.83618164,-191.10446167,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_sink) (1)
-    CreateDynamicObject(2133,-2060.83618164,-192.10923767,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_r) (1)
-    CreateDynamicObject(2340,-2060.84448242,-193.09284973,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_washer) (1)
-    CreateDynamicObject(2131,-2060.84448242,-195.10832214,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_fridge) (1)
-    CreateDynamicObject(2339,-2060.84545898,-196.09951782,977.83081055,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_kitch2_cooker) (1)
-    CreateDynamicObject(14464,-2074.08740234,-187.56958008,987.09564209,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gs_cages)(1)
-    CreateDynamicObject(2930,-2039.70080566,-193.36303711,993.67736816,90.00000000,180.00000000,90.00000000, .interiorid = 10); //object(chinatgate)(1)
-    CreateDynamicObject(2930,-2092.79394531,-197.37368774,980.97985840,90.00000000,179.99450684,90.00000000, .interiorid = 10); //object(chinatgate)(2)
-    CreateDynamicObject(16501,-2077.92626953,-188.88218689,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(1)
-    CreateDynamicObject(16501,-2080.96752930,-190.23014832,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(2)
-    CreateDynamicObject(16501,-2071.79394531,-188.88218689,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(3)
-    CreateDynamicObject(16501,-2065.78613281,-188.88218689,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(4)
-    CreateDynamicObject(16501,-2059.78759766,-188.88218689,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(5)
-    CreateDynamicObject(16501,-2053.82958984,-188.88218689,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(6)
-    CreateDynamicObject(16501,-2053.81640625,-209.81152344,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(7)
-    CreateDynamicObject(16501,-2059.79248047,-209.81210327,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(8)
-    CreateDynamicObject(16501,-2065.75512695,-209.81210327,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(9)
-    CreateDynamicObject(16501,-2071.81250000,-209.81210327,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(10)
-    CreateDynamicObject(16501,-2077.79809570,-209.81210327,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(11)
-    CreateDynamicObject(16501,-2083.78637695,-209.81210327,992.13269043,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cn2_savgardr2_)(12)
-    CreateDynamicObject(16501,-2073.86938477,-190.23014832,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(13)
-    CreateDynamicObject(16501,-2066.76831055,-190.23014832,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(14)
-    CreateDynamicObject(16501,-2059.66967773,-190.23014832,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(15)
-    CreateDynamicObject(16501,-2052.56909180,-190.23014832,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(16)
-    CreateDynamicObject(16501,-2051.95507812,-208.46505737,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(17)
-    CreateDynamicObject(16501,-2059.05834961,-208.46505737,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(18)
-    CreateDynamicObject(16501,-2066.15991211,-208.46505737,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(19)
-    CreateDynamicObject(16501,-2073.26245117,-208.46505737,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(20)
-    CreateDynamicObject(16501,-2080.36596680,-208.46505737,994.42541504,0.00000000,270.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(21)
-    CreateDynamicObject(16501,-2087.46997070,-208.46505737,994.42541504,0.00000000,270.00000000,270.05200195, .interiorid = 10); //object(cn2_savgardr2_)(22)
-    CreateDynamicObject(16501,-2077.92309570,-192.32519531,992.13269043,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(10252,-2077.43164062,-191.64257812,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(4)
-    CreateDynamicObject(10252,-2078.41601562,-193.01757812,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(16501,-2065.78808594,-192.32519531,992.13269043,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(16501,-2054.11328125,-192.32519531,992.13269043,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(16501,-2083.25952148,-206.35942078,992.13269043,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(16501,-2071.76928711,-206.35942078,992.13269043,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(16501,-2059.76635742,-206.35942078,992.13269043,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(1800,-2078.82958984,-193.27354431,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(2)
-    CreateDynamicObject(1800,-2078.82910156,-193.27343750,991.37896729,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(3)
-    CreateDynamicObject(1800,-2077.34033203,-193.26983643,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(4)
-    CreateDynamicObject(1800,-2077.33984375,-193.26953125,991.37774658,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(5)
-    CreateDynamicObject(1800,-2066.67407227,-193.28482056,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(6)
-    CreateDynamicObject(1800,-2066.67382812,-193.28417969,991.38018799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(7)
-    CreateDynamicObject(1800,-2065.17626953,-193.30372620,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(8)
-    CreateDynamicObject(1800,-2065.17578125,-193.30371094,991.38018799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(9)
-    CreateDynamicObject(1800,-2054.71044922,-193.26652527,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(10)
-    CreateDynamicObject(1800,-2054.70996094,-193.26562500,991.38043213,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(11)
-    CreateDynamicObject(1800,-2053.22656250,-193.30523682,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(12)
-    CreateDynamicObject(1800,-2053.22656250,-193.30468750,991.38140869,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(13)
-    CreateDynamicObject(1800,-2059.16845703,-209.99995422,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(14)
-    CreateDynamicObject(1800,-2059.16796875,-209.99902344,991.37774658,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(15)
-    CreateDynamicObject(1800,-2060.69946289,-209.97970581,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(16)
-    CreateDynamicObject(1800,-2060.69921875,-209.97949219,991.37921143,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(17)
-    CreateDynamicObject(1800,-2071.16308594,-209.97123718,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(18)
-    CreateDynamicObject(1800,-2071.16308594,-209.97070312,991.37896729,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(19)
-    CreateDynamicObject(1800,-2072.71923828,-209.96096802,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(20)
-    CreateDynamicObject(1800,-2072.71875000,-209.96093750,991.37921143,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(21)
-    CreateDynamicObject(1800,-2083.15991211,-209.96875000,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(22)
-    CreateDynamicObject(1800,-2083.15917969,-209.96875000,991.37896729,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(23)
-    CreateDynamicObject(1800,-2084.75805664,-209.97569275,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(24)
-    CreateDynamicObject(1800,-2084.75781250,-209.97558594,991.37799072,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(low_bed_1)(25)
-    CreateDynamicObject(2514,-2085.08789062,-212.58831787,990.53643799,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(cj_toilet1)(1)
-    CreateDynamicObject(2514,-2082.45458984,-212.59231567,990.53643799,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_toilet1)(2)
-    CreateDynamicObject(2514,-2072.91625977,-212.58929443,990.53643799,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_toilet1)(3)
-    CreateDynamicObject(2514,-2070.68725586,-212.58380127,990.53643799,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_toilet1)(4)
-    CreateDynamicObject(2514,-2060.96582031,-212.59530640,990.53643799,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_toilet1)(5)
-    CreateDynamicObject(2514,-2058.47875977,-212.58404541,990.53643799,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_toilet1)(6)
-    CreateDynamicObject(2514,-2052.39575195,-186.10690308,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(7)
-    CreateDynamicObject(2514,-2055.01611328,-186.11209106,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(8)
-    CreateDynamicObject(2514,-2064.55029297,-186.11128235,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(9)
-    CreateDynamicObject(2514,-2066.56860352,-186.11537170,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(10)
-    CreateDynamicObject(2514,-2076.43090820,-186.11358643,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(11)
-    CreateDynamicObject(2514,-2078.56127930,-186.08920288,990.53643799,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_toilet1)(12)
-    CreateDynamicObject(2523,-2081.04541016,-186.11500549,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(1)
-    CreateDynamicObject(2523,-2075.03979492,-186.11347961,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(2)
-    CreateDynamicObject(2523,-2069.02758789,-186.11332703,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(3)
-    CreateDynamicObject(2523,-2063.04052734,-186.10652161,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(4)
-    CreateDynamicObject(2523,-2057.32250977,-186.10868835,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(5)
-    CreateDynamicObject(2523,-2051.16357422,-186.11489868,990.50958252,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_b_sink3)(6)
-    CreateDynamicObject(2523,-2055.91528320,-212.59437561,990.50958252,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(cj_b_sink3)(7)
-    CreateDynamicObject(2523,-2062.24023438,-212.58618164,990.50958252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_b_sink3)(8)
-    CreateDynamicObject(2523,-2068.18041992,-212.58779907,990.50958252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_b_sink3)(9)
-    CreateDynamicObject(2523,-2074.32373047,-212.58462524,990.50958252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_b_sink3)(10)
-    CreateDynamicObject(2523,-2079.82617188,-212.58503723,990.50958252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_b_sink3)(11)
-    CreateDynamicObject(2523,-2086.35351562,-212.58505249,990.50958252,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(cj_b_sink3)(12)
-    CreateDynamicObject(2949,-2049.45874023,-150.37785339,987.21569824,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_lockeddoor)(4)
-    CreateDynamicObject(3089,-2074.48974609,-143.37776184,982.75775146,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(ab_casdorlok)(2)
-    CreateDynamicObject(16501,-2090.76123047,-203.91860962,998.24475098,90.00000000,180.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(2607,-2038.54211426,-192.66709900,990.93212891,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(polce_desk2)(1)
-    CreateDynamicObject(1806,-2038.42126465,-191.62655640,990.53643799,0.00000000,0.00000000,166.00000000, .interiorid = 10); //object(med_office_chair)(1)
-    CreateDynamicObject(14772,-2037.82849121,-192.79356384,991.52856445,0.00000000,0.00000000,220.00000000, .interiorid = 10); //object(int3int_low_tv)(1)
-    CreateDynamicObject(2607,-2091.63208008,-196.67007446,978.22723389,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(polce_desk2)(2)
-    CreateDynamicObject(1806,-2091.76611328,-195.64573669,977.83154297,0.00000000,0.00000000,200.00000000, .interiorid = 10); //object(med_office_chair)(2)
-    CreateDynamicObject(14772,-2090.92236328,-196.78533936,978.82366943,0.00000000,0.00000000,226.00000000, .interiorid = 10); //object(int3int_low_tv)(2)
-    CreateDynamicObject(14433,-2072.18823242,-199.34754944,985.69067383,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter_gubbins)(1)
-    CreateDynamicObject(14438,-2072.16088867,-199.35993958,987.66650391,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-light04)(1)
-    CreateDynamicObject(14439,-2064.12084961,-199.43350220,997.98345947,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(carter-light12)(1)
-    CreateDynamicObject(2637,-2047.63549805,-210.33494568,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(1)
-    CreateDynamicObject(2637,-2049.69433594,-210.33728027,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(2)
-    CreateDynamicObject(2637,-2047.63879395,-206.42166138,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(3)
-    CreateDynamicObject(2637,-2049.68969727,-206.42192078,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(4)
-    CreateDynamicObject(2637,-2047.63867188,-202.36289978,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(5)
-    CreateDynamicObject(2637,-2049.64868164,-202.36410522,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(6)
-    CreateDynamicObject(2637,-2047.63671875,-198.12382507,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(7)
-    CreateDynamicObject(2637,-2049.67260742,-198.12287903,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(8)
-    CreateDynamicObject(2637,-2047.63586426,-194.41690063,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(9)
-    CreateDynamicObject(2637,-2049.64257812,-194.41685486,978.23626709,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_pizza_table2)(10)
-    CreateDynamicObject(3657,-2048.58129883,-193.03186035,978.34973145,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(airseata_las)(1)
-    CreateDynamicObject(3657,-2048.61718750,-196.79605103,978.34973145,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(airseata_las)(2)
-    CreateDynamicObject(3657,-2048.59887695,-200.99182129,978.34973145,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(airseata_las)(3)
-    CreateDynamicObject(3657,-2048.60180664,-205.10139465,978.34973145,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(airseata_las)(4)
-    CreateDynamicObject(3657,-2048.62426758,-209.12173462,978.34973145,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(airseata_las)(5)
-    CreateDynamicObject(3657,-2048.65429688,-211.60299683,978.34973145,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(airseata_las)(6)
-    CreateDynamicObject(3657,-2048.62402344,-207.61306763,978.34973145,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(airseata_las)(7)
-    CreateDynamicObject(3657,-2048.61303711,-203.62095642,978.34973145,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(airseata_las)(8)
-    CreateDynamicObject(3657,-2048.66528320,-199.37968445,978.34973145,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(airseata_las)(9)
-    CreateDynamicObject(3657,-2048.62841797,-195.59141541,978.34973145,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(airseata_las)(10)
-    CreateDynamicObject(1985,-2064.15087891,-208.17601013,981.11889648,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(punchbagnu)(2)
-    CreateDynamicObject(3675,-2064.16479492,-213.50009155,982.35778809,90.00000000,0.00000000,0.00000000, .interiorid = 10); //object(laxrf_refinerypipe)(1)
-    CreateDynamicObject(1985,-2064.15527344,-211.03140259,981.11889648,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(punchbagnu)(3)
-    CreateDynamicObject(946,-2076.57543945,-209.76219177,979.98443604,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(bskball_lax)(1)
-    CreateDynamicObject(946,-2076.64746094,-188.87245178,979.98199463,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(bskball_lax)(2)
-    CreateDynamicObject(3065,-2077.06958008,-190.81692505,977.96655273,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(bball_col)(1)
-    CreateDynamicObject(3065,-2075.33666992,-208.14353943,977.96655273,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(bball_col)(2)
-    CreateDynamicObject(2628,-2083.45019531,-192.52458191,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_bench2)(1)
-    CreateDynamicObject(2628,-2086.75708008,-192.48588562,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_bench2)(2)
-    CreateDynamicObject(2629,-2083.64428711,-206.35086060,977.83154297,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(gym_bench1)(1)
-    CreateDynamicObject(2629,-2086.64721680,-206.30204773,977.83154297,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(gym_bench1)(2)
-    CreateDynamicObject(2915,-2083.37792969,-211.71267700,978.05035400,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_dumbbell2)(1)
-    CreateDynamicObject(2915,-2086.44458008,-211.71987915,978.05157471,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_dumbbell2)(2)
-    CreateDynamicObject(2913,-2084.10083008,-206.89118958,978.81982422,0.00000000,90.00000000,0.00000000, .interiorid = 10); //object(kmb_bpress)(1)
-    CreateDynamicObject(2913,-2087.12402344,-206.84982300,978.81982422,0.00000000,90.00000000,0.00000000, .interiorid = 10); //object(kmb_bpress)(2)
-    CreateDynamicObject(2632,-2083.58276367,-210.04949951,977.87786865,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(gym_mat02)(1)
-    CreateDynamicObject(2632,-2086.64916992,-210.07333374,977.87786865,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(gym_mat02)(2)
-    CreateDynamicObject(2627,-2069.43701172,-192.25515747,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_treadmill)(1)
-    CreateDynamicObject(2627,-2066.97778320,-192.24678040,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_treadmill)(2)
-    CreateDynamicObject(2627,-2066.98999023,-188.32292175,977.83154297,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(gym_treadmill)(3)
-    CreateDynamicObject(2627,-2069.48315430,-188.33413696,977.83154297,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(gym_treadmill)(4)
-    CreateDynamicObject(2630,-2069.58984375,-206.39999390,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_bike)(1)
-    CreateDynamicObject(2630,-2066.80859375,-206.40502930,977.83154297,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(gym_bike)(2)
-    CreateDynamicObject(2630,-2069.56054688,-210.48619080,977.83154297,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(gym_bike)(3)
-    CreateDynamicObject(2630,-2066.78759766,-210.45848083,977.83154297,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(gym_bike)(4)
-    CreateDynamicObject(2596,-2054.43872070,-211.61898804,980.17840576,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sex_tv)(1)
-    CreateDynamicObject(1810,-2058.39965820,-211.89213562,977.83154297,0.00000000,0.00000000,100.00000000, .interiorid = 10); //object(cj_foldchair)(1)
-    CreateDynamicObject(1810,-2058.40795898,-210.70594788,977.83154297,0.00000000,0.00000000,81.99755859, .interiorid = 10); //object(cj_foldchair)(2)
-    CreateDynamicObject(1810,-2058.12353516,-209.71101379,977.83154297,0.00000000,0.00000000,77.99645996, .interiorid = 10); //object(cj_foldchair)(3)
-    CreateDynamicObject(1810,-2057.01098633,-210.42475891,977.83154297,0.00000000,0.00000000,79.99194336, .interiorid = 10); //object(cj_foldchair)(4)
-    CreateDynamicObject(1810,-2057.18041992,-211.44512939,977.83154297,0.00000000,0.00000000,87.99145508, .interiorid = 10); //object(cj_foldchair)(5)
-    CreateDynamicObject(1810,-2059.42065430,-209.14479065,977.83154297,0.00000000,0.00000000,71.98950195, .interiorid = 10); //object(cj_foldchair)(6)
-    CreateDynamicObject(1810,-2059.69921875,-210.07162476,977.83154297,0.00000000,0.00000000,93.98791504, .interiorid = 10); //object(cj_foldchair)(7)
-    CreateDynamicObject(1810,-2059.99951172,-211.05667114,977.83154297,0.00000000,0.00000000,99.98254395, .interiorid = 10); //object(cj_foldchair)(8)
-    CreateDynamicObject(1810,-2059.80541992,-212.17610168,977.83154297,0.00000000,0.00000000,95.98107910, .interiorid = 10); //object(cj_foldchair)(9)
-    CreateDynamicObject(14782,-2042.43017578,-189.35440063,985.19915771,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(int3int_boxing30)(1)
-    CreateDynamicObject(2165,-2052.15722656,-202.85176086,984.18310547,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_desk_1)(1)
-    CreateDynamicObject(2198,-2052.18432617,-196.85423279,984.18310547,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office2_desk_3)(1)
-    CreateDynamicObject(2181,-2047.07446289,-195.83015442,984.18310547,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(med_office5_desk_2)(1)
-    CreateDynamicObject(2174,-2047.08459473,-199.84242249,984.18310547,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(med_office4_desk_2)(1)
-    CreateDynamicObject(2202,-2047.09069824,-204.22729492,984.18310547,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(photocopier_2)(1)
-    CreateDynamicObject(3089,-1824.46911621,-179.18721008,999.33679199,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(ab_casdorlok)(1)
-    CreateDynamicObject(3089,-1836.84790039,-177.64791870,999.33679199,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(ab_casdorlok)(4)
-    CreateDynamicObject(2395,-1829.75231934,-169.92257690,996.18090820,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(1)
-    CreateDynamicObject(2395,-1829.75231934,-173.64843750,996.18090820,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(3)
-    CreateDynamicObject(2395,-1829.75231934,-177.38085938,996.18090820,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(4)
-    CreateDynamicObject(2664,-1829.72412109,-170.60522461,998.97259521,90.00000000,334.99511719,24.99938965, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2664,-1829.72412109,-172.96191406,998.97259521,90.00000000,334.98962402,24.99938965, .interiorid = 10); //object(cj_suburb_door)(2)
-    CreateDynamicObject(2664,-1829.72412109,-175.31640625,998.97259521,90.00000000,334.98962402,24.99938965, .interiorid = 10); //object(cj_suburb_door)(3)
-    CreateDynamicObject(2664,-1829.72412109,-177.67089844,998.97259521,90.00000000,334.98962402,24.99938965, .interiorid = 10); //object(cj_suburb_door)(4)
-    CreateDynamicObject(2664,-1829.72412109,-180.02734375,998.97259521,90.00000000,334.98962402,24.99938965, .interiorid = 10); //object(cj_suburb_door)(5)
-    CreateDynamicObject(2395,-1828.18603516,-172.67605591,996.18090820,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(5)
-    CreateDynamicObject(2395,-1828.18603516,-176.40924072,996.18090820,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(6)
-    CreateDynamicObject(2395,-1828.18798828,-180.14053345,996.18090820,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(7)
-    CreateDynamicObject(14842,-2049.41137695,-211.55201721,992.03173828,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(int_policea07)(1)
-    CreateDynamicObject(14842,-2052.16186523,-212.22656250,992.03173828,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(int_policea07)(2)
-    CreateDynamicObject(5856,-2044.96081543,-213.08113098,992.54260254,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(lawnspraydoor1)(1)
-    CreateDynamicObject(2395,-1829.75439453,-169.92193604,1000.34692383,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(1)
-    CreateDynamicObject(2395,-1828.18310547,-172.67553711,1000.34692383,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(5)
-    CreateDynamicObject(2664,-1829.72485352,-170.60449219,1000.41766357,270.00000000,180.07592773,180.07043457, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2664,-1829.72485352,-172.95890808,1000.41766357,270.00000000,180.07141113,180.06591797, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2664,-1829.72485352,-175.31449890,1000.41766357,270.00000000,180.07141113,180.06591797, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2664,-1829.72485352,-177.67112732,1000.41766357,270.00000000,180.07141113,180.06591797, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2664,-1829.72729492,-180.02700806,1000.41766357,270.00000000,180.07141113,180.06591797, .interiorid = 10); //object(cj_suburb_door)(1)
-    CreateDynamicObject(2395,-1829.75439453,-173.65324402,1000.34692383,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(1)
-    CreateDynamicObject(2395,-1829.75805664,-177.38621521,1000.34692383,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_sports_wall)(1)
-    CreateDynamicObject(2395,-1828.18432617,-176.40432739,1000.34692383,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(5)
-    CreateDynamicObject(2395,-1828.18432617,-180.13575745,1000.34692383,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_sports_wall)(5)
-    CreateDynamicObject(2604,-2089.58740234,-201.86988831,995.49737549,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_police_counter)(1)
-    CreateDynamicObject(2604,-2089.58740234,-197.80743408,995.49737549,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_police_counter)(2)
-    CreateDynamicObject(2604,-2089.58740234,-193.97636414,995.49737549,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cj_police_counter)(3)
-    CreateDynamicObject(2608,-2096.79296875,-188.96917725,996.21203613,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(polce_shelf)(1)
-    CreateDynamicObject(9362,-2091.34814453,-190.35647583,995.45153809,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(boatoffice2_sfn)(1)
-    CreateDynamicObject(2204,-2094.45385742,-185.71038818,994.70050049,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(med_office8_cabinet)(1)
-    CreateDynamicObject(2199,-2096.19287109,-185.70500183,994.70050049,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(med_office6_mc_1)(1)
-    CreateDynamicObject(2161,-2097.01147461,-197.70417786,994.70050049,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_4)(1)
-    CreateDynamicObject(2162,-2097.01953125,-197.69850159,996.05303955,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_1)(1)
-    CreateDynamicObject(2163,-2097.06298828,-199.47497559,996.54028320,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_2)(1)
-    CreateDynamicObject(2164,-2097.00048828,-199.47152710,994.70050049,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_5)(1)
-    CreateDynamicObject(2167,-2097.00659180,-200.38932800,994.70050049,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_7)(1)
-    CreateDynamicObject(2161,-2097.01123047,-196.37368774,994.70050049,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(med_office_unit_4)(2)
-    CreateDynamicObject(1663,-2090.78466797,-193.21559143,995.16070557,0.00000000,0.00000000,76.00000000, .interiorid = 10); //object(swivelchair_b)(1)
-    CreateDynamicObject(1663,-2090.75390625,-197.19273376,995.16070557,0.00000000,0.00000000,113.99792480, .interiorid = 10); //object(swivelchair_b)(2)
-    CreateDynamicObject(1663,-2090.89038086,-201.25115967,995.16070557,0.00000000,0.00000000,95.99414062, .interiorid = 10); //object(swivelchair_b)(3)
-    CreateDynamicObject(16501,-2097.30029297,-203.91860962,998.24475098,90.00000000,179.99450684,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(16501,-2093.90014648,-203.91744995,1000.92150879,90.00000000,179.99450684,270.00000000, .interiorid = 10); //object(cn2_savgardr2_)(23)
-    CreateDynamicObject(18001,-1829.00146484,-173.50103760,999.67968750,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(int_barbera07)(1)
-    CreateDynamicObject(18001,-1829.00183105,-181.65551758,999.67968750,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(int_barbera07)(2)
-    CreateDynamicObject(18001,-1829.04199219,-173.51861572,999.67968750,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(int_barbera07)(3)
-    CreateDynamicObject(18001,-1829.04260254,-181.67398071,999.67968750,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(int_barbera07)(4)
-    CreateDynamicObject(16500,-1827.91259766,-180.03456116,1000.18389893,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cn2_savgardr1_)(1)
-    CreateDynamicObject(1886,-1836.21911621,-179.26062012,1001.99920654,0.00000000,0.00000000,133.94799805, .interiorid = 10); //object(shop_sec_cam)(1)
-    CreateDynamicObject(1886,-1822.64685059,-170.16996765,1001.99920654,0.00000000,0.00000000,309.94531250, .interiorid = 10); //object(shop_sec_cam)(2)
-    CreateDynamicObject(2412,-2065.55200195,-127.65823364,987.21569824,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_detector)(1)
-    CreateDynamicObject(2412,-2063.90795898,-127.66858673,987.21569824,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_detector)(2)
-    CreateDynamicObject(1671,-2064.93530273,-158.95504761,987.68243408,0.00000000,0.00000000,180.00000000, .interiorid = 10); //object(swivelchair_a)(1)
-    CreateDynamicObject(2190,-2065.85009766,-156.84443665,987.94226074,0.00000000,0.00000000,24.00000000, .interiorid = 10); //object(pc_1)(1)
-    CreateDynamicObject(2855,-2064.30078125,-157.04948425,987.94891357,0.00000000,0.00000000,346.00000000, .interiorid = 10); //object(gb_bedmags05)(1)
-    CreateDynamicObject(2290,-2080.03613281,-145.23802185,987.22222900,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(swk_couch_1)(1)
-    CreateDynamicObject(2290,-2077.78979492,-140.74829102,987.22222900,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(swk_couch_1)(2)
-    CreateDynamicObject(2370,-2079.93066406,-141.70115662,987.22222900,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(shop_set_1_table)(1)
-    CreateDynamicObject(2204,-2048.81274414,-185.67845154,984.18310547,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(med_office8_cabinet)(2)
-    CreateDynamicObject(2200,-2051.00927734,-185.70999146,984.11962891,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(med_office5_unit_1)(1)
-    CreateDynamicObject(1671,-2051.04614258,-196.18898010,984.64331055,0.00000000,0.00000000,286.00000000, .interiorid = 10); //object(swivelchair_a)(2)
-    CreateDynamicObject(1671,-2050.93627930,-202.42897034,984.64331055,0.00000000,0.00000000,257.99609375, .interiorid = 10); //object(swivelchair_a)(3)
-    CreateDynamicObject(1671,-2048.17358398,-196.19895935,984.64331055,0.00000000,0.00000000,73.99194336, .interiorid = 10); //object(swivelchair_a)(4)
-    CreateDynamicObject(2297,-2052.12744141,-137.69400024,981.42004395,0.00000000,0.00000000,224.80395508, .interiorid = 10); //object(tv_unit_2)(1)
-    CreateDynamicObject(2099,-2052.07714844,-142.77728271,981.41802979,0.00000000,0.00000000,226.00000000, .interiorid = 10); //object(med_hi_fi_1)(1)
-    CreateDynamicObject(1709,-2064.27905273,-139.63945007,981.41827393,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(kb_couch08)(1)
-    CreateDynamicObject(1712,-2064.02807617,-141.98219299,981.41418457,0.00000000,0.00000000,130.00000000, .interiorid = 10); //object(kb_couch05)(1)
-    CreateDynamicObject(2319,-2063.18554688,-138.54856873,981.41986084,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(cj_tv_table5)(1)
-    CreateDynamicObject(2952,-2081.15136719,-125.16210938,981.41607666,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(kmb_gimpdoor)(4)
-    CreateDynamicObject(2952,-2090.40820312,-197.46386719,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2090.40917969,-199.59375000,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(16500,-2052.10913086,-205.81849670,986.39257812,90.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr1_)(2)
-    CreateDynamicObject(16500,-2049.82055664,-205.81401062,988.51171875,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(cn2_savgardr1_)(3)
-    CreateDynamicObject(1508,-2045.02722168,-185.57441711,992.18908691,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(dyn_garage_door)(4)
-    CreateDynamicObject(1363,-1829.50476074,-172.71221924,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(1)
-    CreateDynamicObject(1363,-1829.50781250,-170.39923096,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(2)
-    CreateDynamicObject(1363,-1829.50451660,-175.02044678,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(3)
-    CreateDynamicObject(1363,-1829.50683594,-177.27876282,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(4)
-    CreateDynamicObject(1363,-1828.44177246,-170.48242188,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(6)
-    CreateDynamicObject(1363,-1828.43896484,-172.83682251,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(7)
-    CreateDynamicObject(1363,-1828.44042969,-175.09916687,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(8)
-    CreateDynamicObject(1363,-1828.43969727,-177.42355347,998.04901123,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(cj_phone_kiosk)(9)
-    CreateDynamicObject(2591,-1830.75964355,-171.63954163,997.70092773,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(ab_partition1)(1)
-    CreateDynamicObject(2591,-1827.28613281,-171.66728210,997.70092773,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(ab_partition1)(2)
-    CreateDynamicObject(2591,-1830.75976562,-173.91041565,997.70092773,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(ab_partition1)(3)
-    CreateDynamicObject(2591,-1827.28442383,-173.93730164,997.70092773,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(ab_partition1)(4)
-    CreateDynamicObject(2591,-1830.76013184,-176.13203430,997.70092773,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(ab_partition1)(5)
-    CreateDynamicObject(2591,-1827.28430176,-176.15887451,997.70092773,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(ab_partition1)(6)
-    CreateDynamicObject(2591,-1830.76000977,-178.48925781,997.70092773,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(ab_partition1)(7)
-    CreateDynamicObject(2591,-1827.28576660,-178.51617432,997.70092773,0.00000000,0.00000000,270.00000000, .interiorid = 10); //object(ab_partition1)(8)
-    CreateDynamicObject(2952,-2088.76562500,-212.69387817,994.66918945,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2088.76562500,-207.84756470,994.66918945,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(2)
-    CreateDynamicObject(2952,-2097.02734375,-203.91210938,994.66918945,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(kmb_gimpdoor)(2)
-    CreateDynamicObject(2952,-2048.29296875,-204.15304565,990.45825195,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2048.29296875,-208.89294434,990.45825195,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2041.79785156,-194.32409668,990.45825195,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2041.79687500,-198.98385620,990.45825195,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2041.78808594,-207.90933228,984.02539062,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2041.78613281,-212.59669495,984.02539062,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2052.04711914,-205.82617188,984.02539062,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2053.92187500,-204.18669128,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2053.92187500,-208.79632568,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2090.40820312,-196.16638184,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(2952,-2090.40917969,-200.79452515,977.75732422,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(kmb_gimpdoor)(1)
-    CreateDynamicObject(10252,-2066.12377930,-193.01911926,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2065.43676758,-191.64585876,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2054.11987305,-193.01524353,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2054.09497070,-191.64564514,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2059.46777344,-205.66845703,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2060.09667969,-207.03564453,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2071.40747070,-205.66682434,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2072.13549805,-207.03514099,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2083.39672852,-205.67703247,992.19836426,0.00000000,0.00000000,0.00000000, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(10252,-2083.38842773,-207.04818726,992.19836426,0.00000000,0.00000000,179.99450684, .interiorid = 10); //object(china_town_gateb)(3)
-    CreateDynamicObject(2952,-2082.63525391,-125.16210938,981.41607666,0.00000000,0.00000000,90.00000000, .interiorid = 10); //object(kmb_gimpdoor)(4)
-	CreateDynamicObject(18766,-2046.20000000,-142.18000000,983.06000000,0.00000000,0.00000000,270.00000000, .interiorid = 10);
-	CreateDynamicObject(18981,-2069.40000000,-99.20000000,984.00000000,0.00000000,0.00000000,90.00000000, .interiorid = 10);
+ 	CreateDynamicObject(19450, 600.00000, 1500.02600, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1480.77844, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1480.77844, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1480.77844, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1480.77844, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34167, 1480.77368, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.16272, 1504.74292, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.55603, 1504.74963, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 590.30640, 1496.65479, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.20721, 1475.88672, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1490.38965, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1480.76843, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 598.33331, 1494.97498, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 598.30701, 1482.30859, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 595.13177, 1494.97839, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 591.93011, 1494.97961, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 590.30640, 1499.85596, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 590.30640, 1490.23669, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1569, 593.90442, 1504.68542, 5999.43311,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1569, 596.89752, 1504.68774, 5999.43311,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 590.30640, 1503.06018, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 585.05182, 1503.17346, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1500.02063, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1490.40454, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 563.09399, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 588.61212, 1495.09998, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 590.30170, 1483.82629, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18755, 588.28552, 1464.25183, 6001.32129,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 588.83948, 1475.82666, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 582.42712, 1475.82666, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.06799, 1483.54846, 6001.12549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19431, 579.95258, 1504.74963, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.05298, 1496.94080, 6001.12549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 580.61267, 1495.09998, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 583.82037, 1495.09998, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19431, 586.21527, 1495.09998, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 590.30170, 1480.66589, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 590.30170, 1474.25537, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 585.05182, 1499.99329, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19404, 585.06372, 1496.79285, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.36200, 1490.20203, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.52991, 1466.42236, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 588.57501, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 591.99701, 1492.51965, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1480.78845, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.26721, 1475.90845, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.01361, 1500.04065, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.16272, 1504.74292, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.53601, 1504.74963, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19431, 579.92743, 1504.73669, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.05298, 1503.17139, 6001.12549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.06799, 1496.92004, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.06799, 1503.17139, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.06799, 1483.54846, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 572.80212, 1475.82666, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 585.36200, 1483.79285, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 585.36200, 1480.58521, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 585.36200, 1477.42639, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.06799, 1477.43994, 6001.12549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14416, 560.36182, 1473.76550, 5996.22852,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34113, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(0, 591.33698, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34113, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1490.40454, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1480.77844, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1480.77844, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34167, 1480.77368, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1480.77844, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1500.02063, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(0, 597.89490, 1483.82153, 6002.79150,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 595.32819, 1495.00635, 6001.09473,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 591.75092, 1495.00635, 6001.09473,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1502, 590.31659, 1502.31189, 5999.40479,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 599.50134, 1497.53540, 5999.79639,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 599.45404, 1501.57788, 5999.79639,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1775, 590.86938, 1500.40161, 6000.52734,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1776, 590.81122, 1498.09558, 6000.50488,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2001, 599.43103, 1504.09070, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.07178, 1496.64258, 6001.09473,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.07178, 1500.21899, 6001.09473,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.07178, 1503.37781, 6001.09473,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 585.02460, 1498.39160, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 585.02460, 1501.63196, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1480.77844, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1480.77844, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34167, 1480.77368, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 595.09332, 1482.30859, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 591.89093, 1482.30859, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 583.89722, 1495.10706, 6001.09473,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2185, 595.90369, 1494.45276, 5999.42676,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2185, 592.72510, 1494.45276, 5999.42676,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 595.12299, 1493.30786, 5999.87549,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 591.94348, 1493.30786, 5999.87549,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17999, 1488.52173, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.16162, 1488.52173, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.17340, 1488.52173, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.12238, 1488.52173, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.13501, 1489.52271, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.15210, 1489.52502, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17102, 1489.51965, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.18817, 1489.52332, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.18817, 1489.52332, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17102, 1489.51965, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.15210, 1489.52502, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.13501, 1489.52271, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.17340, 1488.52173, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17999, 1488.52173, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.16162, 1488.52173, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.12238, 1488.52173, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.12238, 1485.56140, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.14038, 1485.56140, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17999, 1485.56140, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.17340, 1485.56140, 5999.42627,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.12238, 1485.56140, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.16162, 1485.56140, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17999, 1485.56140, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.17340, 1485.56140, 6000.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.13501, 1486.55664, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.15210, 1486.55664, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17102, 1486.55664, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.18817, 1486.55664, 5999.42627,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 594.18817, 1486.55664, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 595.17102, 1486.55664, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.15210, 1486.55664, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.13501, 1486.55664, 6000.82666,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 596.22809, 1482.43762, 5999.42725,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 592.63159, 1482.41919, 5999.42725,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 594.45258, 1482.42358, 5999.42725,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 593.55170, 1482.41406, 5999.42725,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 590.46075, 1487.42261, 5999.42725,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 590.41425, 1490.70471, 5999.42725,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2001, 591.06122, 1489.46826, 5999.42529,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.55731, 1475.90845, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 588.85950, 1475.90845, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 577.74420, 1471.08154, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.27283, 1466.36902, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.84802, 1471.11475, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 585.07550, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 581.58173, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 578.09253, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 574.60199, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 590.29791, 1467.83496, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 587.27588, 1468.41882, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 571.11072, 1471.13916, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 567.61023, 1471.07898, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 564.12659, 1471.15906, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 576.92432, 1471.91528, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 573.01880, 1466.19092, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34113, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1500.02063, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34113, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1490.40454, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1480.77844, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34167, 1480.77368, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1480.77844, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1480.77844, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1480.77844, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1480.77844, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.06799, 1477.43994, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18758, 577.07843, 1490.16663, 6001.06152,   0.00000, 0.00000, 180.12000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18758, 577.08649, 1490.16284, 6008.20605,   0.00000, 0.00000, 180.12000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1500.02063, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1490.40454, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1480.77844, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1480.77844, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1480.77844, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1480.77844, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1480.77844, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 588.57501, 1471.15906, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 585.07550, 1471.15906, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 581.58173, 1471.07898, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.83173, 1467.18262, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 567.27533, 1471.91528, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.29230, 1456.84802, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18758, 577.08649, 1490.16284, 6015.22217,   0.00000, 0.00000, 180.12000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.06799, 1496.92004, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.06799, 1503.17139, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 579.06799, 1483.54846, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.06799, 1477.43994, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.64001, 1475.90417, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.26721, 1475.90845, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1480.78845, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1490.40955, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.01361, 1500.04065, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.16272, 1504.74292, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.53601, 1504.74963, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19431, 579.92743, 1504.73669, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1500.02063, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1480.75854, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34167, 1480.77368, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1480.77844, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1480.77844, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1480.77844, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1480.77844, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.32892, 1490.40454, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 598.31525, 1500.03516, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 594.83173, 1500.02063, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 591.33698, 1500.02063, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 587.84271, 1500.02063, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 584.34113, 1500.02063, 6013.40625,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1461.47070, 6004.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 578.08197, 1471.07898, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.46521, 1461.44690, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 576.98041, 1461.44690, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 573.48022, 1461.44690, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 569.99780, 1461.44690, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.46521, 1451.82739, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 576.98041, 1451.82739, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 573.48022, 1451.82739, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 569.99780, 1451.82739, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1451.83752, 6004.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1462.47925, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1449.64868, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.32849, 1442.62939, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.30640, 1466.20374, 5997.73389,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1461.47070, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 566.60596, 1451.94873, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.30670, 1442.62939, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 561.14508, 1466.12537, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 588.57501, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 585.07550, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 581.58173, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 578.08197, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.46521, 1461.44690, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 576.98041, 1461.44690, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.46521, 1451.82739, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 576.98041, 1451.82739, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 573.48022, 1451.82739, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 569.99780, 1451.82739, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 573.48022, 1461.44690, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 569.99780, 1461.44690, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.23163, 1456.22437, 6005.89746,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.23163, 1456.22437, 6010.69727,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 573.02496, 1447.10681, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 568.15680, 1459.92114, 6008.27295,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 568.16278, 1455.45898, 6008.27295,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 568.16278, 1457.68005, 6008.27295,   0.00000, 0.00000, 0.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.30670, 1447.01855, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14416, 555.38293, 1468.07605, 5996.26465,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 548.30872, 1466.12537, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 560.67908, 1455.90088, 5995.99023,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 560.69312, 1471.89966, 5997.69385,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 555.96545, 1467.06445, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 560.40778, 1475.81873, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.30640, 1466.12537, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.68689, 1466.12537, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 554.72931, 1466.12537, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 566.39209, 1475.82666, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 556.63037, 1495.88354, 5995.99023,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 553.99640, 1475.81873, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 564.84003, 1480.67285, 5997.67383,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 560.40778, 1475.99866, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.47778, 1466.97742, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 551.80408, 1471.71082, 5997.69385,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 551.81659, 1462.24707, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 588.57501, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 585.07550, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 581.58173, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 578.09253, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 574.60199, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 571.11072, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 567.61023, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 564.12659, 1471.07898, 6002.79150,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 562.47699, 1474.22205, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 562.47699, 1471.02673, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 563.25983, 1475.82666, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 557.47357, 1475.81873, 6001.14258,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 564.81818, 1490.24963, 5997.67383,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 564.80103, 1499.88367, 5997.67383,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 547.59808, 1476.01587, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 547.57800, 1475.81531, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 547.83801, 1475.81531, 6001.16260,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 550.28912, 1466.97485, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 545.39221, 1471.71082, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 558.38361, 1462.25281, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.67120, 1447.01855, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 550.39093, 1447.84839, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 557.37915, 1446.20776, 5999.50244,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.74902, 1471.10559, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 560.69312, 1471.89966, 6001.16260,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 560.03943, 1504.60315, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 550.41687, 1504.60315, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 543.00238, 1480.72925, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 543.00238, 1490.35559, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 543.00238, 1499.98438, 5997.69385,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19397, 553.99640, 1475.99866, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 549.60742, 1474.11353, 5997.67383,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.67120, 1442.62939, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.04022, 1442.62939, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.71118, 1442.62939, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.08020, 1442.62939, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 550.39093, 1457.48315, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.00781, 1462.25281, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 560.54852, 1471.04272, 6002.95361,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 555.96552, 1467.06445, 6001.18701,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.46088, 1471.02222, 6001.16699,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 557.06281, 1471.03223, 6002.95361,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 553.56293, 1471.03076, 6002.95361,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 548.09637, 1471.00452, 5999.50049,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 544.63287, 1471.00452, 5999.50049,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19463, 551.62030, 1471.00452, 5999.50049,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 549.60742, 1467.69055, 5997.67383,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 568.04871, 1480.71399, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 565.03998, 1480.66174, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 570.77173, 1466.12537, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 556.17389, 1446.20654, 6009.93018,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.38672, 1442.62939, 6008.18311,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.36639, 1466.12537, 6008.18311,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.74689, 1466.10535, 6008.18311,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.29730, 1447.21802, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 582.64789, 1447.10681, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 540.78369, 1504.60315, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 564.85553, 1480.66125, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 556.63037, 1495.88354, 5999.25879,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 564.84192, 1493.34790, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 559.96393, 1475.89246, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 550.32928, 1475.89246, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 548.97522, 1480.44458, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 548.97522, 1490.06470, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 559.94873, 1494.96558, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 580.84790, 1480.77844, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 559.59912, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 556.11102, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 552.61908, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 549.13019, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 545.63721, 1480.58435, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 545.63721, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 549.13019, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 552.61908, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 556.11102, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 559.59912, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 563.09399, 1490.20874, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 566.61420, 1480.70020, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 566.59418, 1490.33618, 5999.33984,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19383, 564.85553, 1487.08447, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 565.03998, 1487.08447, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 568.04871, 1490.33325, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 569.75568, 1488.78027, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1442.21204, 6004.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.23163, 1446.59180, 6008.18311,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.21161, 1440.02734, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.06677, 1466.12537, 6004.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.12311, 1466.12537, 6008.20313,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 538.68793, 1466.12537, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.75122, 1442.62939, 6008.18311,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.12018, 1442.62939, 6008.20313,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19445, 550.32581, 1494.96606, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1461.23535, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1461.23535, 6004.71143,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1461.23535, 6008.20752,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1451.60742, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1451.60742, 6004.71143,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1451.60742, 6008.20752,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1441.97510, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1441.97510, 6004.71143,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 539.32178, 1441.97510, 6008.20752,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 566.61420, 1480.70020, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 566.59418, 1490.33618, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 563.09399, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 559.59912, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 556.11102, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 549.13019, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 552.61908, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 545.63721, 1480.58435, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 545.63721, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 549.13019, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 552.61908, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 559.59912, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 556.11102, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 563.09399, 1490.20874, 6002.88721,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 568.23163, 1465.85925, 6008.18311,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 568.16278, 1453.21973, 6008.27295,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 568.16278, 1450.97937, 6008.27295,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 566.36249, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 564.53369, 1444.31860, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 565.47034, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 560.86890, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 562.70270, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 557.18750, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 559.00928, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 553.51477, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 555.34210, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 561.84930, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 558.11298, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 554.45978, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 549.85571, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.68201, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 546.18982, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 548.01923, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 550.79999, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 547.13702, 1445.88171, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 564.53369, 1444.31860, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 560.86890, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 557.18750, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 553.51477, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 549.85571, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 546.18982, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 563.29407, 1442.76929, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 566.36249, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 562.67023, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 564.53369, 1444.31860, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 560.86890, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 557.18750, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 553.51477, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 549.85571, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 559.02948, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 558.11298, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 561.84930, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 565.47028, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 554.45978, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 550.79999, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 547.13702, 1445.88171, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 559.00928, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 555.34210, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.68201, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 548.01923, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 563.29413, 1446.26636, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 553.66998, 1442.76929, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 544.03802, 1442.76929, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 553.66998, 1446.26636, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 544.03802, 1446.26636, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 563.33411, 1444.13684, 6007.20996,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 553.69788, 1444.13684, 6007.20996,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 544.06940, 1444.13684, 6007.20996,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.81482, 1445.84094, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 554.18988, 1445.84094, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.56500, 1445.82092, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.37122, 1445.87524, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.37122, 1445.87524, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 542.52509, 1444.29346, 6004.71533,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 542.52509, 1444.29346, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 546.18982, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 542.52509, 1444.29346, 6008.18408,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78284, 1445.83337, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1445.81335, 6005.37207,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 543.46259, 1445.86316, 6004.63037,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 543.46259, 1445.86316, 6000.74609,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1445.83337, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 539.24670, 1452.83276, 6003.29248,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 542.73248, 1452.83276, 6003.29248,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1449.49329, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1447.66394, 6006.50146,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1449.49329, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1447.66394, 6002.58936,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.51202, 1450.71936, 6008.86230,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.51202, 1460.34668, 6008.86230,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 539.24670, 1462.45764, 6003.29248,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 542.73248, 1462.45764, 6003.29248,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1449.49329, 6008.21191,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1451.32935, 6006.50146,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1453.16882, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1456.83374, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1455.00024, 6006.50146,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1458.67261, 6006.50146,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1460.49695, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1453.16882, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1456.83374, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1460.49695, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1453.16882, 6008.21191,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1456.83374, 6008.21191,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1460.49695, 6008.21191,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1451.32935, 6002.58936,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1455.00024, 6002.58936,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 542.55432, 1458.67261, 6002.58936,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1464.17981, 6004.71533,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1464.17981, 6008.21191,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.51202, 1469.97949, 6008.86230,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 537.78278, 1464.17981, 6001.22021,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.52509, 1465.40259, 6004.70605,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.51868, 1465.40894, 6005.56836,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.56842, 1448.53845, 6000.74609,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.56842, 1448.53845, 6004.63135,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.54321, 1452.20886, 6000.74609,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.55432, 1455.88086, 6000.74609,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.55432, 1459.54395, 6000.74609,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.54321, 1452.20886, 6004.63135,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.55432, 1455.88086, 6004.63135,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 542.55432, 1459.54395, 6004.63135,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 540.77185, 1450.56384, 6007.20996,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 540.77191, 1460.19470, 6007.20996,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 568.21161, 1456.06995, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 572.94781, 1457.47925, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 579.48297, 1454.20142, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 576.62366, 1455.28918, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 588.98450, 1440.55542, 6003.01611,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 542.52509, 1465.40259, 6001.22021,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 546.20111, 1467.06445, 6001.22021,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.36121, 1462.26819, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 548.03662, 1462.26819, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 549.84888, 1467.06445, 6001.22021,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.67792, 1462.26819, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.50787, 1467.06445, 6001.22021,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.36121, 1462.26819, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 548.03662, 1462.26819, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.67792, 1462.26819, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 546.20111, 1467.06445, 6004.71094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 546.20111, 1467.06445, 6008.20703,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 544.24310, 1462.31152, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.85217, 1462.31152, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.47491, 1462.31152, 6008.86230,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.50787, 1467.06445, 6004.71094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 549.84888, 1467.06445, 6004.71094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.50787, 1467.06445, 6008.20703,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 549.84888, 1467.06445, 6008.20703,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 548.94318, 1465.60742, 6003.31250,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 548.94318, 1462.10950, 6003.31250,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14416, 565.28510, 1462.27466, 6000.18066,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 558.58801, 1465.62695, 6003.31250,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 558.58801, 1462.12952, 6003.31250,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 568.20801, 1465.88391, 6003.29248,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.30341, 1463.39075, 6001.56885,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 563.29211, 1463.39075, 5998.07861,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14416, 569.28027, 1462.27405, 6000.18066,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 557.79358, 1462.26819, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 559.62402, 1467.04834, 6001.18701,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 561.47418, 1462.26819, 6002.58936,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 555.96552, 1467.06445, 6004.71094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 559.62402, 1467.04834, 6004.71094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 555.96552, 1467.06445, 6008.20703,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 559.62402, 1467.04834, 6008.20703,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 557.79358, 1462.26819, 6006.50146,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19437, 554.38745, 1462.34729, 6004.71094,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19437, 555.20782, 1462.36194, 6004.71094,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19437, 554.38751, 1462.34729, 6008.20703,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19437, 555.20782, 1462.36194, 6008.20703,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 545.23071, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 545.23071, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 548.90271, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 552.56268, 1462.28821, 6004.63135,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 558.66351, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 548.90271, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 552.56268, 1462.28821, 6000.74609,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 558.66351, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19302, 562.34338, 1462.26819, 6000.74609,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 586.31799, 1499.96362, 5999.87549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 586.31799, 1496.72290, 5999.87549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 586.31799, 1503.31360, 5999.87549,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 583.67181, 1496.75598, 5999.87549,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 583.67181, 1500.16052, 5999.87549,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 583.67181, 1503.17322, 5999.87549,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 562.69727, 1461.61377, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 567.43280, 1456.73218, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 562.71472, 1455.22766, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 562.71344, 1452.02136, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 562.71338, 1445.61914, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 561.02606, 1450.37024, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 557.82910, 1450.37024, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 554.62732, 1450.37024, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 551.43011, 1450.37024, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 567.60852, 1453.62659, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 567.58252, 1450.44678, 5997.71387,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 559.44678, 1445.61914, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 556.15039, 1445.61914, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 553.06372, 1445.61914, 5997.71387,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 562.29700, 1474.22205, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 562.33698, 1471.02673, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 562.29700, 1471.02673, 6001.12695,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1480.75854, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.36169, 1480.77368, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1480.77844, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1480.77844, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1480.77844, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.30127, 1480.77844, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.36108, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 580.84790, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 584.34113, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 587.84271, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 594.83173, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 598.32892, 1500.02063, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 591.33698, 1490.40454, 6016.93359,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 579.23718, 1475.90417, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 561.69348, 1460.42932, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 558.18518, 1460.42932, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 554.68542, 1460.42932, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.17297, 1460.42932, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 547.66040, 1460.42615, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 546.05212, 1460.42615, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.34058, 1458.65784, 6003.99316,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.34058, 1455.15515, 6003.99316,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.34058, 1451.65906, 6003.99316,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 544.34058, 1449.61743, 6003.99316,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 546.10828, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 549.60797, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 553.08820, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 556.58893, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 560.09100, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 563.59058, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 567.09088, 1447.89307, 6003.99316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 563.40460, 1462.19446, 6003.99316,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 565.16241, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 557.74469, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 561.42548, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 554.07013, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 550.41711, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 546.74127, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 543.07843, 1441.61536, 5999.43359,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 565.16241, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 561.42548, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 557.74469, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 554.07013, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 550.41711, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 546.74127, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 543.07843, 1441.61536, 6003.35645,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89001, 1452.24988, 5999.43359,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89001, 1448.62439, 5999.43359,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89001, 1448.62439, 6003.35791,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89001, 1452.24988, 6003.35791,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89130, 1455.90540, 5999.43359,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.87885, 1459.64282, 5999.43359,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89130, 1455.90540, 6003.35791,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 542.89001, 1459.65942, 6003.35791,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 545.33911, 1462.56995, 5999.45361,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 548.93018, 1462.56995, 5999.45361,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 552.66388, 1462.56995, 5999.45361,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 545.33911, 1462.56995, 6003.38379,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 548.93018, 1462.56995, 6003.38379,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 552.66388, 1462.56995, 6003.38379,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 558.65057, 1462.44177, 5999.45361,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 562.46552, 1462.44177, 5999.45361,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 558.65057, 1462.44177, 6003.38379,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 589.62653, 1500.16235, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 581.51556, 1495.44006, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 587.93732, 1495.43970, 6008.16064,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 591.31030, 1495.43970, 6008.16064,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 597.73163, 1495.44006, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19377, 584.40100, 1500.17285, 6006.39404,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19377, 594.90100, 1500.16895, 6006.39404,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 585.74799, 1496.96814, 6008.23340,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.74609, 1503.37952, 6005.93994,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.69672, 1499.66248, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 585.74609, 1503.37952, 6010.93994,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.69708, 1501.90039, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.69781, 1504.13965, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2180, 582.05353, 1500.14441, 6006.48193,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1810, 581.17719, 1500.87585, 6006.48145,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.66913, 1499.65613, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.66272, 1501.83704, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 585.66907, 1503.79504, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 583.61072, 1501.50256, 6006.48242,   0.00000, 0.00000, -230.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 582.27759, 1501.01086, 6007.28271,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 583.35852, 1499.67700, 6006.48242,   0.00000, 0.00000, 60.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2165, 587.91742, 1503.97449, 6006.48047,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 588.56927, 1502.85059, 6006.48193,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2162, 589.51550, 1500.16284, 6007.90137,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1502, 585.78522, 1496.22009, 6006.46924,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 593.24609, 1503.37952, 6005.93994,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 593.24762, 1496.96997, 6008.23340,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 593.24609, 1503.37952, 6010.93994,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1502, 593.25647, 1496.22095, 6006.47119,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18469, 1499.66248, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18512, 1501.90039, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18579, 1504.13965, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18909, 1499.65540, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18597, 1501.85706, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 593.18909, 1503.79504, 6008.61377,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2180, 597.05353, 1501.64441, 6006.48193,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1810, 598.01672, 1500.88904, 6006.48193,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 596.89069, 1501.23157, 6007.28223,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2165, 590.36829, 1503.12109, 6006.48047,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 591.52600, 1503.74854, 6006.48242,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 595.66425, 1500.35779, 6006.48193,   0.00000, 0.00000, 290.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 595.66888, 1502.03979, 6006.48193,   0.00000, 0.00000, 235.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 583.92676, 1486.50317, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 589.27765, 1500.01331, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 582.08612, 1493.22046, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 588.07648, 1494.23218, 6015.16016,   0.00000, 0.00000, -50.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14782, 588.72638, 1501.18994, 6014.47070,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 584.66565, 1502.34375, 6013.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14782, 585.19849, 1501.45569, 6014.47070,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 585.12030, 1497.94458, 6013.49414,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2632, 587.04437, 1501.13904, 6013.49268,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 582.45172, 1500.69702, 6013.80811,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1792, 581.74042, 1504.85278, 6015.15820,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2611, 581.80328, 1493.35364, 6015.56787,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2002, 584.43005, 1493.88818, 6013.49219,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1775, 585.57892, 1493.86096, 6014.42139,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1737, 581.43799, 1493.72864, 6013.46094,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 581.40778, 1493.76697, 6014.25488,   0.00000, 0.00000, 140.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 581.94550, 1493.65747, 6014.25488,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2196, 582.11700, 1493.44519, 6014.24561,   0.00000, 0.00000, 140.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 579.60870, 1493.77100, 6013.49365,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2258, 579.16180, 1500.91980, 6015.63135,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 590.81531, 1494.64197, 6015.16016,   0.00000, 0.00000, 70.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 593.88623, 1494.09399, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.28540, 1494.09717, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 591.14008, 1493.85461, 6013.49365,   0.00000, 0.00000, -20.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 590.11340, 1494.21558, 6013.49365,   0.00000, 0.00000, -20.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1502, 587.52820, 1493.72253, 6013.39307,   0.00000, 0.00000, 40.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1502, 593.10083, 1494.05994, 6013.39307,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2024, 591.39209, 1501.09155, 6013.49365,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1723, 590.92017, 1504.05688, 6013.49365,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 589.94019, 1504.15405, 6013.49316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1723, 594.59515, 1502.58923, 6013.49365,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 599.36975, 1494.79602, 6013.49316,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 599.35498, 1495.78064, 6013.49316,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 597.99670, 1494.68518, 6013.49316,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2007, 596.97668, 1494.69934, 6013.49316,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2024, 596.63574, 1495.90356, 6013.49316,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 597.47748, 1496.21899, 6014.02588,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 596.81165, 1496.63257, 6014.02588,   0.00000, 0.00000, 220.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 596.91083, 1496.13599, 6014.02588,   0.00000, 0.00000, 260.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 597.54218, 1496.73389, 6014.02588,   0.00000, 0.00000, 170.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1724, 591.54095, 1499.26379, 6013.49365,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1433, 594.40912, 1503.93701, 6013.66992,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2647, 594.22119, 1504.23975, 6014.31787,   0.00000, 0.00000, 70.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2647, 594.64325, 1503.73474, 6014.31787,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2631, 591.87128, 1501.59473, 6013.49268,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1723, 595.59430, 1500.57056, 6013.49365,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1723, 599.41138, 1502.58118, 6013.49365,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1723, 596.50018, 1504.05688, 6013.49365,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1792, 590.84399, 1494.43274, 6015.16846,   0.00000, 0.00000, 159.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1737, 590.53162, 1495.45972, 6013.49316,   0.00000, 0.00000, -20.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2002, 595.33966, 1494.70374, 6013.49219,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1433, 595.03705, 1499.35376, 6013.66992,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 594.91229, 1499.26636, 6014.17725,   0.00000, 0.00000, 300.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19378, 584.21863, 1481.77185, 6013.41162,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19378, 594.69733, 1481.77429, 6013.41162,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19378, 594.69153, 1472.16699, 6013.41357,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19378, 584.23138, 1472.15881, 6013.40967,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 590.35071, 1486.50208, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 596.75140, 1486.50415, 6015.16016,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2207, 584.16309, 1479.99243, 6013.49854,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 582.63312, 1480.82593, 6013.49902,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1722, 585.52850, 1479.91675, 6013.49902,   0.00000, 0.00000, 60.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1722, 585.45026, 1481.77588, 6013.49902,   0.00000, 0.00000, 130.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 583.78809, 1480.30615, 6014.27441,   0.00000, 0.00000, 220.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2190, 584.05865, 1481.48840, 6014.27441,   0.00000, 0.00000, -54.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2196, 583.93524, 1479.89392, 6014.27441,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 591.64734, 1481.67053, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 591.64697, 1472.08655, 6015.16016,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 591.40356, 1477.51453, 6015.09766,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 591.13135, 1476.42249, 6013.50049,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1753, 586.21857, 1485.77612, 6013.49805,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 589.18463, 1485.94275, 6013.49902,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2011, 585.33447, 1485.93347, 6013.49902,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1792, 591.94708, 1484.57739, 6015.23779,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1808, 591.32318, 1483.16138, 6013.49805,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1817, 586.91010, 1483.50903, 6013.49805,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1828, 587.65173, 1483.97803, 6013.49805,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 579.21222, 1484.41650, 6015.09766,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1490.40955, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 598.40167, 1492.51965, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 587.27594, 1487.68091, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 587.27588, 1478.04236, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 590.73779, 1466.38501, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 585.88263, 1475.90845, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 579.43451, 1471.11475, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 595.49957, 1466.36853, 6008.16357,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19450, 600.00000, 1471.00964, 6008.16357,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 592.07599, 1471.15906, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 595.57391, 1471.15906, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19462, 599.06543, 1471.15906, 6006.39209,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 592.05792, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 595.55780, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19458, 599.03619, 1471.07898, 6009.83203,   0.00000, 90.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 550.29883, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19397, 548.23242, 1498.28772, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 551.28979, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 552.28528, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 553.28168, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 554.27600, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 564.52942, 1498.28772, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19461, 541.82373, 1498.28772, 5997.67383,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 555.27362, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 556.26190, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 557.26202, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 558.24579, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 559.24707, 1498.51123, 5995.95410,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 550.31622, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 551.30981, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 552.29169, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 553.27588, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 554.27612, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 555.27643, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 556.27612, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 557.25732, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 558.24982, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2441, 559.23090, 1498.51123, 5999.25830,   0.00000, 180.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 551.56860, 1498.32861, 5998.05811,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 555.06982, 1498.32861, 5998.05811,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19304, 558.55829, 1498.32861, 5998.05811,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.18860, 1494.40063, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 544.25189, 1496.01428, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.20862, 1497.73816, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.20862, 1493.52417, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.08508, 1489.19202, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.03149, 1490.04895, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 544.22095, 1491.69116, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.16803, 1486.06055, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.20349, 1485.19482, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 549.94788, 1495.94592, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 551.74359, 1495.84277, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 553.51599, 1495.77795, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 555.24609, 1495.76208, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 556.96655, 1495.74597, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 558.95605, 1495.92651, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 549.94269, 1494.03979, 5996.45313,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 551.73840, 1493.93005, 5996.45313,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 553.51563, 1493.85681, 5996.45313,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 555.25330, 1493.85156, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 556.96649, 1493.81567, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 558.96082, 1494.02332, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 549.95972, 1492.11743, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 551.74628, 1491.99646, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 553.52521, 1491.93323, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 555.25122, 1491.91956, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 556.97101, 1491.89380, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2773, 558.97040, 1492.10254, 5996.47314,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.13098, 1482.19312, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.20459, 1481.31396, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 544.19238, 1477.45691, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 544.17651, 1487.71716, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 544.29602, 1483.61682, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 544.43311, 1479.45654, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.54407, 1497.69910, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.59790, 1495.00281, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 563.34906, 1496.32849, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 550.89307, 1485.29297, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 550.70197, 1482.12720, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 557.76831, 1485.16711, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 557.76794, 1481.98523, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.63263, 1494.10803, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.47955, 1491.06104, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 563.30896, 1492.65771, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.50690, 1490.21936, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.46796, 1486.95276, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 563.28833, 1488.63342, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.48969, 1486.08923, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 550.89313, 1483.89514, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 557.28644, 1483.69739, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.33185, 1482.77307, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.37317, 1481.91077, 5996.59131,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2639, 563.45856, 1478.40930, 5996.59131,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 563.01831, 1484.22327, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2637, 563.13116, 1480.35413, 5996.37744,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1359, 557.89081, 1481.12427, 5996.60303,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1359, 550.73297, 1481.15308, 5996.60303,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1359, 546.61438, 1497.46887, 5996.60303,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1359, 561.13184, 1497.28381, 5996.60303,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2136, 549.26251, 1504.01697, 5995.95898,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2305, 543.47748, 1504.03101, 5995.95703,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2451, 557.31952, 1503.91125, 5995.95801,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2451, 559.21069, 1503.91125, 5995.95801,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2451, 561.09003, 1503.91125, 5995.95801,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 597.35022, 1494.91211, 6001.10938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 590.24860, 1484.88452, 6001.10938,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 590.26862, 1481.74048, 6001.10938,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 585.40179, 1478.44385, 6001.10938,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 580.61267, 1492.56213, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19358, 583.81592, 1492.56213, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19431, 586.24872, 1487.88989, 6001.12695,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19388, 588.63251, 1487.89648, 6001.12695,   0.00000, 0.00000, 90.18000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 589.62848, 1495.14355, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 589.81091, 1487.87024, 6001.10938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 589.85388, 1475.87500, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 567.36768, 1475.87500, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 562.24152, 1475.25171, 6001.10938,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1569, 545.47394, 1433.03821, 5999.40674,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1569, 545.49622, 1475.73022, 5995.95459,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1569, 545.75275, 1471.77429, 5995.95459,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 549.57037, 1475.17310, 5997.64258,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 555.01172, 1476.03845, 5997.64258,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 552.95190, 1462.20154, 5997.64258,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 552.95190, 1471.73376, 5997.64258,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 552.95190, 1462.29626, 5997.64258,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 547.00482, 1498.32410, 5997.64258,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 581.68347, 1492.63196, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 581.66852, 1495.14844, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 578.28308, 1471.14771, 6008.33350,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 584.73877, 1475.98608, 6008.33350,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 587.73486, 1475.95093, 6008.33350,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 597.27667, 1492.46313, 6008.33350,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 592.48859, 1495.39746, 6008.33350,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 589.09009, 1495.39746, 6008.33350,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 591.32568, 1486.51685, 6015.14746,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 568.25171, 1455.06677, 6001.10938,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.35950, 1479.96033, 6006.34082,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.37207, 1479.02209, 6006.34082,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.33398, 1478.09558, 6006.34082,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.34979, 1477.40198, 6006.32080,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.09637, 1477.32324, 6006.32080,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.09637, 1477.32324, 6006.91211,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.34979, 1477.40198, 6006.91211,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.35950, 1479.94031, 6006.91553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.43964, 1477.67615, 6006.24658,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.53625, 1477.15735, 6006.14063,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.51300, 1476.56909, 6005.92725,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.35950, 1479.96033, 6007.39307,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 590.65198, 1479.96594, 6006.34082,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.20746, 1479.95618, 6006.34082,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 590.71515, 1477.39172, 6006.32080,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 598.81915, 1477.32593, 6006.32080,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.17175, 1479.89221, 6006.69434,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 590.53137, 1479.87378, 6006.69434,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.12122, 1479.15015, 6006.18506,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.17047, 1478.21033, 6006.18506,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.46838, 1477.32751, 6006.04004,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.49969, 1476.65173, 6005.86768,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 591.04266, 1479.10291, 6006.18506,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 591.04968, 1478.16296, 6006.18506,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 590.92853, 1477.32751, 6006.04004,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 591.16858, 1476.65173, 6005.86768,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 590.69342, 1477.32019, 6006.69043,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 598.81049, 1477.26770, 6006.69043,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2614, 594.70618, 1480.52051, 6007.37744,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 591.91724, 1478.02490, 6007.04932,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 594.51624, 1478.33960, 6007.18799,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 597.44806, 1478.18909, 6007.04932,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 597.57593, 1488.31116, 6006.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 597.57593, 1490.35059, 6006.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 589.52441, 1488.31116, 6006.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 589.52441, 1490.35059, 6006.82666,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.09937, 1484.44727, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 588.44110, 1484.44727, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 598.45941, 1486.16357, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 597.25348, 1486.14111, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 596.00879, 1486.11914, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 591.01617, 1486.11914, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 589.67072, 1486.11914, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2310, 588.36908, 1486.11914, 6006.93262,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 563.39722, 1464.08777, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 553.76508, 1464.08777, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 544.14459, 1464.08777, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 563.39563, 1467.58350, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 553.76508, 1467.58350, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19447, 544.14459, 1467.58350, 6007.19580,   0.00000, 90.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 558.38538, 1453.90344, 5999.81689,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 552.70972, 1453.98511, 5999.81689,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1892, 588.09839, 1494.81091, 5999.42773,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1892, 594.12640, 1504.21643, 5999.42773,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1892, 595.72681, 1504.22864, 5999.42773,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 552.19818, 1446.09436, 5995.94189,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 555.25708, 1446.03711, 5995.94189,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 558.60492, 1446.08740, 5995.94189,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 561.84985, 1446.14453, 5995.94189,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 567.47070, 1452.69690, 5995.94189,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1800, 567.61877, 1455.88586, 5995.94189,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2602, 556.44269, 1465.63416, 5999.85449,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 593.75092, 1466.40039, 6007.96143,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 599.96637, 1464.28723, 6007.96143,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 599.96472, 1470.76306, 6007.96143,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.75092, 1469.88586, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.75092, 1470.81372, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.75092, 1471.76086, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.75092, 1472.70276, 6006.35938,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 596.37250, 1472.72046, 6006.33936,   0.00000, 0.00000, -90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 593.69043, 1472.72046, 6006.33936,   0.00000, 0.00000, -90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 595.84991, 1467.96729, 6006.45654,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 594.47430, 1467.94299, 6006.45654,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 598.34576, 1470.22559, 6006.45654,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 598.29559, 1471.42847, 6006.45654,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 598.30737, 1472.64478, 6006.45654,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 595.72375, 1474.33777, 6006.45654,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 594.26251, 1474.35327, 6006.45654,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 592.02216, 1472.43567, 6006.45654,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 592.00623, 1471.32080, 6006.45654,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 592.06995, 1470.20190, 6006.45654,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 594.96143, 1472.73242, 6007.22266,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 595.03723, 1469.87000, 6007.22266,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 596.43280, 1471.44763, 6007.22266,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 593.65948, 1470.91931, 6007.22266,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 593.86249, 1472.05176, 6007.22266,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 581.19214, 1461.47510, 6006.47803,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 581.20258, 1460.56335, 6006.47803,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 581.20447, 1459.63989, 6006.47559,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 581.19250, 1457.87476, 6006.47559,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 581.18781, 1452.63782, 6006.47803,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2161, 581.20178, 1455.45129, 6007.85498,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2161, 581.20313, 1454.11035, 6007.85498,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 581.18628, 1449.31067, 6006.47559,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2162, 581.22882, 1451.40540, 6007.91357,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3397, 568.90729, 1449.46228, 6006.47900,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3397, 568.74567, 1463.80884, 6006.47900,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2606, 570.78638, 1466.21411, 6008.42236,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2606, 572.75629, 1466.21411, 6008.42236,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2606, 572.75629, 1466.21411, 6008.86816,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2606, 570.78638, 1466.21411, 6008.86816,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 574.33331, 1466.10815, 6006.47559,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2164, 576.21680, 1466.09583, 6006.47559,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19172, 574.34198, 1447.18396, 6008.69092,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 566.77863, 1434.97791, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 557.16998, 1434.97791, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 547.61420, 1434.97791, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 576.62390, 1442.47925, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 576.61963, 1448.86328, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(10722, 590.04822, 1442.18433, 5982.30566,   90.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 589.11737, 1454.20142, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 592.62201, 1449.50134, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 592.62201, 1439.93042, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 581.52698, 1435.26001, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 576.64551, 1432.85034, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 591.13544, 1435.26221, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 573.06122, 1454.20142, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19364, 569.85638, 1454.20142, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 571.49152, 1449.36475, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 571.50262, 1439.75732, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 555.89160, 1406.22937, 5999.50244,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 547.77899, 1415.04321, 6003.01611,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 571.79303, 1429.45557, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 567.42218, 1424.56152, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 572.16913, 1419.84045, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 576.43591, 1414.97412, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(6959, 589.10791, 1400.69812, 6003.01611,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 576.43188, 1405.34924, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 571.69666, 1401.48767, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 562.15814, 1401.41040, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 565.37909, 1429.45544, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 558.96222, 1429.45544, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 554.21429, 1424.66077, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 554.21429, 1415.03430, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 554.21429, 1405.40710, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 552.60132, 1401.41003, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19393, 552.54211, 1429.45544, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 546.12079, 1429.45544, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 549.48425, 1422.48218, 6001.22412,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 545.42462, 1423.29871, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 545.42462, 1432.93042, 6001.22412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19456, 583.85339, 1445.34949, 6000.30957,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14791, 571.41870, 1415.21375, 6000.92676,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14791, 571.41870, 1406.68909, 6000.92676,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14791, 558.62024, 1425.10840, 6000.92676,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 559.87659, 1414.48035, 5999.74268,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 565.45056, 1402.68494, 5999.46680,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 556.47284, 1414.65491, 5999.74268,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 562.37408, 1402.51465, 5999.46680,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 559.51642, 1402.51465, 5999.46680,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 556.71838, 1402.51465, 5999.46680,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 555.34656, 1405.21338, 5999.46680,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2629, 555.34662, 1409.06616, 5999.46680,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1216, 549.79559, 1428.93091, 6000.12012,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1216, 547.10773, 1428.93091, 6000.12012,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1216, 547.87653, 1423.10657, 6000.12012,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1216, 551.50531, 1423.10657, 6000.12012,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1216, 545.87531, 1425.07288, 6000.12012,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2205, 597.07941, 1478.16919, 5999.42627,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 598.83575, 1478.88123, 5999.42773,   0.00000, 0.00000, -90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 595.57532, 1480.12622, 5999.42676,   0.00000, 0.00000, -129.65999, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 595.64777, 1477.51050, 5999.42676,   0.00000, 0.00000, -47.39997, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 597.18616, 1479.24561, 6000.36035,   0.00000, 0.00000, 77.22002, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 591.39630, 1475.92810, 6001.04639,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 597.72437, 1475.97229, 6001.04639,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14455, 599.91669, 1477.01416, 6001.04639,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 585.90521, 1488.29041, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2208, 585.95752, 1492.06213, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 585.85663, 1489.37830, 6000.29004,   0.00000, 0.00000, -236.76001, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 589.79077, 1487.91870, 6001.10938,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 579.68073, 1478.60339, 6006.84668,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 579.66010, 1484.05774, 6006.84668,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 586.60632, 1490.19153, 6006.86670,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 586.60632, 1484.53540, 6006.86670,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 586.60632, 1479.09949, 6006.86670,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 582.97418, 1494.90625, 6006.86670,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 579.64374, 1484.56445, 5999.83057,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 579.59784, 1478.98157, 5999.83057,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 584.87854, 1480.65930, 5999.83057,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 584.81128, 1485.41589, 5999.83057,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 584.83630, 1489.94958, 5999.83057,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19172, 579.14600, 1482.37671, 6001.54834,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19173, 585.26923, 1487.81335, 6001.63330,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19174, 585.27283, 1481.29517, 6001.59814,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19353, 557.15161, 1477.34790, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19353, 557.13159, 1493.26855, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 557.15161, 1479.68933, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19383, 558.67529, 1480.41687, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19399, 561.87848, 1480.42688, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 564.28748, 1480.42688, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19383, 555.46179, 1480.41797, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19399, 552.25049, 1480.41858, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 549.84979, 1480.41858, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19383, 555.44830, 1490.15137, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 557.13159, 1490.86926, 6001.16553,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19399, 552.25580, 1490.13208, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 549.84979, 1490.15588, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19383, 558.82562, 1490.15137, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19399, 562.03699, 1490.15137, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19426, 564.44891, 1490.15137, 6001.16553,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18070, 552.25775, 1485.23938, 5999.77344,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 561.75281, 1480.44409, 6001.47656,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 552.05078, 1480.44409, 6001.47656,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 552.37494, 1490.14832, 6001.47656,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(19466, 561.95551, 1490.14832, 6001.47656,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1523, 564.92963, 1486.32983, 5999.42822,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1523, 559.42542, 1480.44653, 5999.40820,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1523, 554.67657, 1480.36743, 5999.40820,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1523, 554.66620, 1490.14307, 5999.40820,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1523, 559.58252, 1490.19556, 5999.40820,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1997, 563.70886, 1476.53149, 5999.42676,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1997, 563.87152, 1494.43115, 5999.42676,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1997, 550.13495, 1494.36670, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1997, 550.15106, 1476.49121, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 557.19104, 1491.29224, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2163, 557.07922, 1492.56104, 6001.37402,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 561.41724, 1490.48157, 5999.39893,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 560.01666, 1490.46545, 5999.39893,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 559.86890, 1480.16235, 5999.39893,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 561.66974, 1480.20288, 5999.39893,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 554.10297, 1480.15149, 5999.39893,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 552.43756, 1480.18115, 5999.39893,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 553.92084, 1490.37500, 5999.39893,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1721, 552.03741, 1490.37183, 5999.39893,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 549.01959, 1484.51233, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 548.94531, 1486.01672, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 557.17682, 1479.64099, 5999.42676,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2163, 557.09662, 1477.60999, 6001.37402,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2163, 557.07495, 1477.68481, 6001.37402,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 557.11627, 1479.51904, 5999.42676,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2167, 557.20282, 1491.13843, 5999.42676,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2163, 557.07062, 1493.69702, 6001.37402,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(1714, 551.84369, 1485.60645, 5999.42773,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2894, 554.11340, 1485.42383, 6000.28271,   0.00000, 0.00000, 53.39999, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(3657, 564.26556, 1483.29590, 5999.88232,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14842, 577.62048, 1452.50757, 6001.30957,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14842, 578.28302, 1436.23950, 6001.41113,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14842, 590.98700, 1453.22363, 6001.41113,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14842, 591.65118, 1436.93311, 6001.41113,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 583.69537, 1440.01123, 5999.90381,   0.00000, 0.00000, 270.17999, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14401, 584.27832, 1448.51123, 5999.90381,   0.00000, 0.00000, 270.17999, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14782, 584.38989, 1444.87000, 6000.43799,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(14782, 584.52710, 1445.82507, 6000.43799,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18671, 590.96576, 1436.88708, 5999.47412,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18671, 580.63440, 1435.84851, 5999.47461,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18671, 590.81531, 1453.08875, 5999.47168,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18671, 580.53101, 1452.12939, 5999.47217,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(18758, 588.31818, 1464.42615, 6001.30029,   0.00000, 0.00000, 270.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 555.69672, 1466.13586, 6001.14990,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 574.10541, 1454.17419, 6001.05078,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 576.65442, 1449.88806, 6001.05078,   0.00000, 0.00000, 90.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 566.48724, 1429.42993, 6001.05078,   0.00000, 0.00000, 0.00000, .interiorid = -1, .streamdistance = 120.0);
+	CreateDynamicObject(2886, 553.63123, 1429.49854, 6001.05078,   0.00000, 0.00000, 180.00000, .interiorid = -1, .streamdistance = 120.0);
 
 	// SFPD interior
     CreateDynamicObject(1569,-1613.07421875,701.21972656,19994.85156250,0.00000000,0.00000000,179.99450684, .interiorid = 3); //object(adam_v_door) (1)
@@ -17904,6 +18691,25 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19454, -2435.15674, 2321.52710, 2.22090,   0.00000, 0.00000, -0.66000, .streamdistance = 200.0);
 	CreateDynamicObject(1300, -2427.13135, 2318.37378, 3.08337,   0.00000, 0.00000, -7.98000, .streamdistance = 200.0);
 	CreateDynamicObject(1300, -2426.61841, 2318.30615, 2.99810,   0.00000, 17.58000, -4.62000, .streamdistance = 200.0);
+	
+	//OOC Prison
+	CreateDynamicObject(14412, -1154.70056, 2895.23120, 10001.47559,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(14459, -1159.42188, 2895.22583, 9999.14355,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(14459, -1159.18933, 2895.22583, 9993.54004,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19447, -1137.38354, 2888.52612, 9993.35449,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(14416, -1175.43152, 2902.14038, 9993.03613,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18769, -1131.23511, 2889.36621, 9992.12793,   90.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18769, -1165.79407, 2915.22803, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1157.79150, 2915.23901, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1149.70569, 2915.23462, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1141.56396, 2915.23633, 9992.12793,   90.00000, 0.00000, 89.58001);
+	CreateDynamicObject(18769, -1131.22742, 2897.49683, 9992.12793,   90.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18769, -1165.91492, 2875.18848, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1149.62463, 2875.20166, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1157.78735, 2875.19141, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18769, -1178.25159, 2875.59326, 9992.12793,   90.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19364, -1186.08496, 2887.28125, 9997.06836,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18769, -1173.94983, 2915.22021, 9992.12793,   90.00000, 0.00000, 90.00000);
 	
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{

@@ -149,12 +149,12 @@ SaveGroup(iGroupID) {
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d'",
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = %d",
 		szQuery,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps]);
+		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess]);
 
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%i` = '%s'", szQuery, i, arrGroupRanks[iGroupID][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%iPay` = %i", szQuery, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -669,6 +669,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "LockPickTime", szResult, MainPipeline); PlayerInfo[extraid][pLockPickTime] = strval(szResult);
 					cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
 					cache_get_field_content(row,  "BM", szResult, MainPipeline); PlayerInfo[extraid][pBM] = strval(szResult);
+					
+					cache_get_field_content(row,  "Isolated", szResult, MainPipeline); PlayerInfo[extraid][pIsolated] = strval(szResult);
+					cache_get_field_content(row,  "WantedJailTime", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailTime] = strval(szResult);
+					cache_get_field_content(row,  "WantedJailFine", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailFine] = strval(szResult);
 					
 					GetPartnerName(extraid);
 
@@ -2731,13 +2735,29 @@ stock SaveArrestPoint(id)
 		`PosZ`=%f, \
 		`VW`=%d, \
 		`Int`=%d, \
-		`Type`=%d WHERE `id`=%d",
+		`Type`=%d, \
+		`jailVW`=%d, \
+		`jailInt`=%d, \
+		`jailpos1x`=%f, \
+		`jailpos1y`=%f, \
+		`jailpos1z`=%f, \
+		`jailpos2x`=%f, \
+		`jailpos2y`=%f, \
+		`jailpos2z`=%f WHERE `id`=%d",
 		ArrestPoints[id][arrestPosX],
 		ArrestPoints[id][arrestPosY],
 		ArrestPoints[id][arrestPosZ],
 		ArrestPoints[id][arrestVW],
 		ArrestPoints[id][arrestInt],
 		ArrestPoints[id][arrestType],
+		ArrestPoints[id][jailVW],
+		ArrestPoints[id][jailInt],
+		ArrestPoints[id][JailPos1][0],
+		ArrestPoints[id][JailPos1][1],
+		ArrestPoints[id][JailPos1][2],
+		ArrestPoints[id][JailPos2][0],
+		ArrestPoints[id][JailPos2][1],
+		ArrestPoints[id][JailPos2][2],
 		id
 	);
 
@@ -3229,7 +3249,9 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SEC", PlayerInfo[playerid][pSEC]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BM", PlayerInfo[playerid][pBM]);
 	
-	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Isolated", PlayerInfo[playerid][pIsolated]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);	
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -5164,6 +5186,14 @@ public OnLoadArrestPoints()
 		cache_get_field_content(i, "VW", tmp, MainPipeline); ArrestPoints[i][arrestVW] = strval(tmp);
 		cache_get_field_content(i, "Int", tmp, MainPipeline); ArrestPoints[i][arrestInt] = strval(tmp);
 		cache_get_field_content(i, "Type", tmp, MainPipeline); ArrestPoints[i][arrestType] = strval(tmp);
+		cache_get_field_content(i, "jailVW", tmp, MainPipeline); ArrestPoints[i][jailVW] = strval(tmp);
+		cache_get_field_content(i, "jailInt", tmp, MainPipeline); ArrestPoints[i][jailInt] = strval(tmp);
+		cache_get_field_content(i, "jailpos1x", tmp, MainPipeline); ArrestPoints[i][JailPos1][0] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos1y", tmp, MainPipeline); ArrestPoints[i][JailPos1][1] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos1z", tmp, MainPipeline); ArrestPoints[i][JailPos1][2] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2x", tmp, MainPipeline); ArrestPoints[i][JailPos2][0] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2y", tmp, MainPipeline); ArrestPoints[i][JailPos2][1] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2z", tmp, MainPipeline); ArrestPoints[i][JailPos2][2] = floatstr(tmp);
 		if(ArrestPoints[i][arrestPosX] != 0)
 		{
 			switch(ArrestPoints[i][arrestType])
@@ -6710,6 +6740,8 @@ public Group_QueryFinish(iType, iExtraID) {
 			
 			cache_get_field_content(iIndex, "WheelClamps", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iWheelClamps] = strval(szResult);
+			
+			arrGroupData[iIndex][g_iDoCAccess] = cache_get_field_content_int(iIndex, "DoCAccess", MainPipeline);
 
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);

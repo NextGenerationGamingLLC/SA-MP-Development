@@ -64,7 +64,8 @@ enum eGroupData {
 	g_iJCount,
 	g_iTackleAccess,
 	Float: g_fGaragePos[3],
-	g_iWheelClamps
+	g_iWheelClamps,
+	g_iDoCAccess
 }
 
 enum eLockerData {
@@ -1083,7 +1084,10 @@ enum pInfo
 	pLockPickVehCount,
 	pLockPickTime,
 	pSEC,
-	pBM
+	pBM,
+	pIsolated,
+	pWantedJailTime,
+	pWantedJailFine
 };
 
 enum pvInfo
@@ -1384,8 +1388,19 @@ enum arrestInfo
 	Float: arrestPosZ,
 	arrestVW,
 	arrestInt,
+	Float: JailPos1[3],
+	Float: JailPos2[3],
+	jailVW,
+	jailInt,
 	Text3D: arrestTextID,
 	arrestPickupID
+}
+
+enum eJailBoxing {
+	bool:bInProgress = false,
+	iParticipants,
+	iDocBoxingCountdown = 4,
+	iDocCountDownTimer
 }
 
 enum impoundInfo
