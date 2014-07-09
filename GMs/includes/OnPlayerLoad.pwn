@@ -356,39 +356,6 @@ public OnPlayerLoad(playerid)
 			PlayerInfo[playerid][pBItems][i] = 0;
 		}
 	}
-	else {
-		for(new j = 0; j < MAX_PLAYERS; ++j)
-		{
-			if(IsPlayerConnected(j))
-			{
-				if(GetPVarType(j, "LockPickVehicleSQLId")) {
-					new v = FindPlayerVehicleWithSQLId(playerid, GetPVarInt(j, "LockPickVehicleSQLId"));
-					if(v != -1) {
-						new szMessage[185];
-						if(GetPVarType(j, "AttemptingLockPick")) PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 1;
-						else if(GetPVarType(j, "DeliveringVehicleTime")) PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 2;
-						SetPVarInt(j, "LockPickPlayer", playerid);
-						PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = j;
-						++PlayerCars;
-						VehicleSpawned[playerid]++;
-						PlayerVehicleInfo[playerid][v][pvId] = GetPVarInt(j, "LockPickVehicle");
-						PlayerVehicleInfo[playerid][v][pvSpawned] = 1;
-						PlayerVehicleInfo[playerid][v][pvFuel] = VehicleFuel[GetPVarInt(j, "LockPickVehicle")];
-						g_mysql_SaveVehicle(playerid, v);
-						SendClientMessageEx(j, COLOR_GREY, "(( The player that owns this vehicle has logged back in! ))");
-						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-						GetPlayerIp(playerid, ip, sizeof(ip));
-						GetPlayerIp(j, ip2, sizeof(ip2));
-						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) has logged back in while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId:%d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(j), ip2, GetPlayerSQLId(j));
-						Log("logs/playervehicle.log", szMessage);
-						DeletePVar(j, "LockPickVehicleSQLId");
-						DeletePVar(j, "LockPickPlayerSQLId");
-						DeletePVar(j, "LockPickPlayerName");
-					}
-				}
-			}	
-		}
-	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
 	{
@@ -1017,5 +984,6 @@ public OnPlayerLoad(playerid)
 	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
 	format(szQuery, sizeof(szQuery), "SELECT `id`, `Bug` FROM `bugs` WHERE `status` = '5' AND `ReportedBy` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
+	defer CheckVehiclesLeftSpawned(playerid);
 	return 1;
 }

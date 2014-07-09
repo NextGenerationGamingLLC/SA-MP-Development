@@ -8370,28 +8370,45 @@ forward CheckTrunkContents(playerid);
 public CheckTrunkContents(playerid)
 {
 	new rows, fields, TrunkWeaps[3];
+	print("CheckTrunkContents 1.0");
 	cache_get_data(rows, fields, MainPipeline);
+	print("CheckTrunkContents 1.1");
 	if(rows == 0) return 1;
+	print("CheckTrunkContents 1.2");
 	new string[189];
-	cache_get_field_content(0, "pvWeapon0", TrunkWeaps[0], MainPipeline, 128);
-	cache_get_field_content(0, "pvWeapon1", TrunkWeaps[1], MainPipeline, 128);
-	cache_get_field_content(0, "pvWeapon2", TrunkWeaps[2], MainPipeline, 128);
+	print("CheckTrunkContents 1.3");
+	TrunkWeaps[0] = cache_get_field_content_int(0, "pvWeapon0", MainPipeline);
+	print("CheckTrunkContents 1.4");
+	TrunkWeaps[1] = cache_get_field_content_int(0, "pvWeapon1", MainPipeline);
+	print("CheckTrunkContents 1.5");
+	TrunkWeaps[2] = cache_get_field_content_int(0, "pvWeapon2", MainPipeline);
+	print("CheckTrunkContents 1.6");
 	new
 		i = 0;
-	while (i < 3 &&  TrunkWeaps[i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] !=  TrunkWeaps[i])
+	while (i < 3 &&  TrunkWeaps[i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i])
 	{
+		printf("CheckTrunkContents 1.7.%d TrunkWeap %d WeaponSlot %d pGuns %d", i+1, TrunkWeaps[i], GetWeaponSlot(TrunkWeaps[i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])]);
 		i++;
 	}
-	if (i == 3) return SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+	if (i == 3) return SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 	else {
+		print("CheckTrunkContents 1.8");
 		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
+		print("CheckTrunkContents 1.9");
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		print("CheckTrunkContents 2.0");
 		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 60000);
+		print("CheckTrunkContents 2.1");
 		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0', WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		print("CheckTrunkContents 2.2");
 		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		print("CheckTrunkContents 2.3");
 		new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME], vehicleid = GetPVarInt(playerid, "LockPickVehicle");
+		print("CheckTrunkContents 2.4");
 		GetPlayerIp(playerid, ip, sizeof(ip)), GetPVarString(playerid, "LockPickPlayerName", ownername, sizeof(ownername));
-		format(string, sizeof(string), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully cracked the trunk of a %s(VID:%d SQLId %d Weapon ID: %d) owned by %s(Offline, SQLId:%d)", GetPlayerNameEx(playerid), ip, GetVehicleName(vehicleid), GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicleSQLId"), TrunkWeaps[i], ownername, GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		print("CheckTrunkContents 2.5");
+		format(string, sizeof(string), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully cracked the trunk of a %s(VID:%d SQLId %d Weapon ID: %d) owned by %s(Offline, SQLId:%d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(vehicleid), vehicleid, GetPVarInt(playerid, "LockPickVehicleSQLId"), TrunkWeaps[i], ownername, GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		print("CheckTrunkContents 2.6");
 		Log("logs/playervehicle.log", string);
 	}
 	return 1;

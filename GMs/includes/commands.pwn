@@ -24170,7 +24170,7 @@ CMD:sellmycar(playerid, params[])
             }
             if(health < 500) return SendClientMessageEx(playerid, COLOR_GREY, " Your vehicle is too damaged to sell it.");
 
-            new string[144], giveplayerid, price, alarmstring[9], lockstring[11];
+            new string[144], giveplayerid, price, alarmstring[9], lockstring[11], worklockstring[10];
 			if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellmycar [player] [price]");
 
             if(price < 1 || price > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "Price must be higher than 0 and less than 1,000,000,000.");
@@ -24222,9 +24222,10 @@ CMD:sellmycar(playerid, params[])
 					case 3: lockstring = "Industrial";
 					default: lockstring = "no";
 				}
-                format(string, sizeof(string), "* You offered %s to buy this %s with %s Alarm & %s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, lockstring, number_format(price));
-                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* %s has offered you their %s (VID: %d) with %s Alarm & %s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, lockstring, number_format(price));
+				if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Broken)";
+				format(string, sizeof(string), "* You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "* %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				DeletePVar(playerid, "confirmvehsell");
                 return 1;
@@ -57743,23 +57744,10 @@ CMD:bopen(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
-		#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
-		#endif
-		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
-		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
-		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
-		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
-		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
-		if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lock pick, please wait.");
-		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-		if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
-		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid,COLOR_GREY,"   You can not open a backpack while in jail or prison!");
-		if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't open your backpack whilst in Hospital.");
-		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be wearing your backpack.");
-		if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this since your account is restricted.");
+		if(!IsBackpackAvailable(playerid)) {
+			SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+			return 1;
+		}
 		new string[122];
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s lays down and opens a backpack.", GetPlayerNameEx(playerid));
@@ -57777,7 +57765,7 @@ CMD:backpackhelp(playerid, params[])
 	new bdialog[565];
 	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 2 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", bdialog, number_format(ShopItems[37][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 5 Meal\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
+	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 6 Meal\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", bdialog);
 	
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", bdialog, "Exit", "");
@@ -58046,6 +58034,7 @@ CMD:cracktrunk(playerid, params[])
 	if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
 	if(!PlayerInfo[playerid][pCrowBar]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Crow Bar in order to crack this trunk, get one from a Craftsman.");
 	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
+	if(GetPVarType(playerid, "TrunkAlreadyCracked")) return SendClientMessageEx(playerid, COLOR_WHITE, "You already cracked the trunk of this vehicle.");
 	
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
@@ -58078,11 +58067,19 @@ CMD:cracktrunk(playerid, params[])
 			GetVehicleZAngle(vehicleid, z);
 			SetPlayerFacingAngle(playerid, z);
 			ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
-			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
-			GetPlayerIp(playerid, ip, sizeof(ip));
-			GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2);
-			Log("logs/playervehicle.log", szMessage);
+			if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
+				new ip[MAX_PLAYER_NAME];
+				GetPlayerIp(playerid, ip, sizeof(ip));
+				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) is attempting to crack trunk a %s(VID:%d SQLId: %d) owned by %s(Offline SQLId: %d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+				Log("logs/playervehicle.log", szMessage);
+			}
+			else {
+				new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
+				GetPlayerIp(playerid, ip, sizeof(ip));
+				GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
+				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2, GetPlayerSQLId(GetPVarInt(playerid, "LockPickPlayer")));
+				Log("logs/playervehicle.log", szMessage);
+			}
 		}
 		else {
 			SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to crack this vehicle's trunk failed! Try again or move on. ))");

@@ -2012,7 +2012,12 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
     IsPlayerEntering{playerid} = true;
 	Seatbelt[playerid] = 0;
 	if(PlayerCuffed[playerid] != 0) SetPVarInt( playerid, "ToBeEjected", 1 );
-
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
+		DeletePVar(playerid, "BackpackMedKit");
+	if(GetPVarInt(playerid, "BackpackMeal") == 1) 
+		DeletePVar(playerid, "BackpackMeal");
+	if(GetPVarType(playerid, "BackpackOpen")) 
+		DeletePVar(playerid, "BackpackOpen");
 	if(ispassenger) {
 		if(GetPVarType(playerid, "Injured")) {
 			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));

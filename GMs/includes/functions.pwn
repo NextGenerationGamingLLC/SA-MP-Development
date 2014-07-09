@@ -10604,7 +10604,7 @@ stock GetWeaponSlot(weaponid)
 			return 11;
 		}
 	}
-	return -1;
+	return 0;
 }
 
 
@@ -17395,7 +17395,7 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 	    	PlayerVehicleInfo[playerid][playervehicleid][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 		}
 
-		new query[128];
+		new query[60];
 		format(query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		PlayerVehicleInfo[playerid][playervehicleid][pvSlotId] = 0;
@@ -17474,6 +17474,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new extraid = PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy];
 			SetPVarInt(extraid, "LockPickVehicleSQLId", PlayerVehicleInfo[playerid][v][pvSlotId]);
 			SetPVarInt(extraid, "LockPickPlayerSQLId", GetPlayerSQLId(playerid));
+			//SetPVarInt(extraid, "LockPickPlayerLocksLeft", PlayerVehicleInfo[playerid][v][pvLocksLeft]);
 			SetPVarString(extraid, "LockPickPlayerName", GetPlayerNameEx(playerid));
 			new szMessage[150], rsMessage[20];
 			switch(reason){
@@ -17483,11 +17484,10 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			}
 			format(szMessage, sizeof(szMessage), "The player (%s) that owns this vehicle (%s) has %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), rsMessage);
 			SendClientMessageEx(extraid, COLOR_YELLOW, szMessage);
-			new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-			GetPlayerIp(playerid, ip, sizeof(ip));
+			new ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(extraid, ip2, sizeof(ip2));
 			SendClientMessageEx(extraid, COLOR_YELLOW, "(( The vehicle will de-spawn once you complete or fail the deliver. ))");
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s)", GetPlayerNameEx(playerid), ip, rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2);
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP], GetPlayerSQLId(playerid), rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2, GetPlayerSQLId(extraid));
 			Log("logs/playervehicle.log", szMessage);
 			DeletePVar(extraid, "LockPickPlayer");
 			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
@@ -19146,8 +19146,8 @@ stock UpdateSpeedCamerasForPlayer(p)
 					if(!IsAPlane(vehicleid) && !IsAHelicopter(vehicleid) && GetVehicleModel(vehicleid) != 481 && GetVehicleModel(vehicleid) != 509 && GetVehicleModel(vehicleid) != 510)
 					{
 						if(GetPVarType(p, "LockPickPlayerSQLId") && GetPVarInt(p, "LockPickVehicle") == vehicleid) {
-							new string[128], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
-							format(string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = (`pvTicket`+%d), WHERE `id` = '%d'", Amount, GetPVarInt(p, "LockPickVehicleSQLId"));
+							new string[155], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
+							format(string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = (`pvTicket`+%d) WHERE `id` = '%d'", Amount, GetPVarInt(p, "LockPickVehicleSQLId"));
 							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
 							PlayerInfo[p][pTicketTime] = 60;
 							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
@@ -25844,14 +25844,14 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 	new dgString[312],
 		dgTitle[128],
 		string[15];
-	if(!GetPVarType(playerid, "BackpackOpen")) 
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		
-	if(!GetPVarType(playerid, "BackpackProt"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		
-	if(GetPVarType(playerid, "BackpackDisabled"))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+	if(!IsBackpackAvailable(playerid)) {
+		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		return 1;
+	}
+	if(!GetPVarType(playerid, "BackpackOpen") || !GetPVarType(playerid, "BackpackProt")) {
+		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		return 1;
+	}
 		
 	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
 	switch(dialogid) {
@@ -26246,13 +26246,16 @@ public Anti_Rapidfire()
 
 stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
 {
+	print("FindGunInVehicleForPlayer 1.0");
 	new
 		i = 0;
-	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && PlayerVehicleInfo[ownerid][slot][pvWeapons][i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] != PlayerVehicleInfo[ownerid][slot][pvWeapons][i])
+	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && PlayerVehicleInfo[ownerid][slot][pvWeapons][i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] == PlayerVehicleInfo[ownerid][slot][pvWeapons][i])
 	{
+		printf("FindGunInVehicleForPlayer 1.1.%d MaxSlots %d TrunkWeap %d WeaponSlot %d pGuns %d", i+1, (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1), PlayerVehicleInfo[ownerid][slot][pvWeapons][i], GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])]);
 		i++;
 	}
 	if (i == (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1)) return -1;
+	printf("FindGunInVehicleForPlayer 1.2 MaxSlots %d TrunkWeap %d WeaponSlot %d pGuns %d", (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1), PlayerVehicleInfo[ownerid][slot][pvWeapons][i], GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])]);
 	return i;
 }
 
@@ -26266,4 +26269,18 @@ stock FindPlayerVehicleWithSQLId(ownerid, sqlid)
 	}
 	if (i == MAX_PLAYERVEHICLES) return -1;
 	return i;
+}
+
+stock IsBackpackAvailable(playerid)
+{
+	#if defined zombiemode
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) 
+			return 0;
+	#endif
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "EMSAttempt") != 0 || HungerPlayerInfo[playerid][hgInEvent] != 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerInfo[playerid][pAccountRestricted] != 0) 
+		return 0;
+	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || WatchingTV[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped]) 
+		return 0;
+	
+	return 1;
 }
