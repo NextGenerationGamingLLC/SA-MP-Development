@@ -5937,14 +5937,17 @@ public OtherTimerEx(playerid, type)
 		}
 		case TYPE_PIZZATIMER:
 		{
-			if(GetPVarInt(playerid, "pizzaTimer") == 0)
+			if(GetPVarType(playerid, "pizzaTimer") && GetPVarInt(playerid, "pizzaTimer") == 0)
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "You failed to deliver the pizza to the house before it got cold!");
 				DeletePVar(playerid, "Pizza");
+				DeletePVar(playerid, "pizzaTimer");
 				DisablePlayerCheckpoint(playerid);
 			}
 			else if (GetPVarInt(playerid, "Pizza") == 0)
 			{
+				DeletePVar(playerid, "Pizza");
+				DeletePVar(playerid, "pizzaTimer");
 				DisablePlayerCheckpoint(playerid);
 			}
 			else if (GetPVarInt(playerid, "pizzaTimer") > 0 && GetPVarInt(playerid, "Pizza") > 0)

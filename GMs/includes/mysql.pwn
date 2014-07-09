@@ -780,6 +780,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
 				GetPVarString(extraid, "PassAuth", szBuffer, sizeof(szBuffer));
 				WP_Hash(szPass, sizeof(szPass), szBuffer);
+				if(cache_get_field_content_int(i, "Online", MainPipeline)) {
+					SendClientMessage(extraid, COLOR_RED, "SERVER: This account has already logged in.");
+					SetTimerEx("KickEx", 1000, 0, "i", extraid);
+					return 1;
+				}
 
 				if((isnull(szPass)) || (isnull(szResult)) || (strcmp(szPass, szResult) != 0)) {
 					// Invalid Password - Try Again!
@@ -1364,7 +1369,7 @@ stock g_mysql_AccountLoginCheck(playerid)
 
 	new string[128];
 
-	format(string, sizeof(string), "SELECT `Username`, `Key` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	format(string, sizeof(string), "SELECT `Username`, `Key`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }

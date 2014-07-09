@@ -3526,6 +3526,10 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "pbOldZ");
 			PlayerInfo[playerid][pHealth] = GetPVarFloat(playerid, "pbOldHealth");
 			PlayerInfo[playerid][pArmor] = GetPVarFloat(playerid, "pbOldArmor");
+			new szLog[128], Float: realarmor;
+			GetPlayerArmour(playerid, realarmor);
+			format(szLog, sizeof(szLog), "Player %s(%d) disconnects inside paintball with %f.2 armor, but has %f.2.", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pArmor], realarmor);
+			Log("logs/debug.log", szLog);
 			SetPlayerHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
 			SetPlayerArmor(playerid,GetPVarFloat(playerid, "pbOldArmor"));
 		}
@@ -5131,7 +5135,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		return 1;
 	}
 	// Pizza Delivery
-	if(GetPVarInt(playerid, "Pizza") > 0 && GetPVarInt(playerid, "pizzaTimer") > 0 && IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorX], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorY], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtVW])
+	if(GetPVarType(playerid, "Pizza") > 0 && GetPVarInt(playerid, "pizzaTimer") > 0 && IsPlayerInRangeOfPoint(playerid, 5.0, HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorX], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorY], HouseInfo[GetPVarInt(playerid, "Pizza")][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[GetPVarInt(playerid, "Pizza")][hExtVW])
 	{
 	    new string[128];
 		if (GetPVarInt(playerid, "tpPizzaTimer") != 0)
@@ -5202,7 +5206,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			case CHECKPOINT_HOME:
 			{
 				PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
-				new i = hInviteHouse[playerid];
+				new i = GetPVarInt(playerid, "hInviteHouse");
 				DisablePlayerCheckpoint(playerid);
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 				SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
@@ -5212,8 +5216,6 @@ public OnPlayerEnterCheckpoint(playerid)
 				PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
 				SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
 				if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
-				hInviteOffer[playerid] = INVALID_PLAYER_ID;
-				hInviteHouse[playerid] = INVALID_HOUSE_ID;
 			}
 			case CHECKPOINT_LOADTRUCK:
 			{

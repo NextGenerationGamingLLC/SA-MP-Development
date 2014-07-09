@@ -6827,7 +6827,7 @@ CMD:help(playerid, params[])
 			{
 				format(string, sizeof(string), "*** %s *** (/f)amily /r /contracts /givemehit /order /ranks /profile /h(show)badge /hfind /togbr /execute", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s *** /plantbomb /plantcarbomb /pickupbomb /myc4 /clothes /invite /giverank /showmehq /showmehq2 /showmehq3", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s *** /plantbomb /plantcarbomb /pickupbomb /myc4 /invite /giverank /showmehq /showmehq2 /showmehq3", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
 			case 3:
@@ -10111,6 +10111,7 @@ CMD:accept(playerid, params[])
 					DisablePlayerCheckpoint(playerid);
                     SetPlayerCheckpoint(playerid, HouseInfo[hInviteHouse[playerid]][hExteriorX], HouseInfo[hInviteHouse[playerid]][hExteriorY], HouseInfo[hInviteHouse[playerid]][hExteriorZ], 4.0);
                     gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
+					SetPVarInt(playerid, "hInviteHouse", hInviteHouse[playerid]);
                     hInviteOffer[playerid] = INVALID_PLAYER_ID;
 					hInviteHouse[playerid] = INVALID_HOUSE_ID;
                     return 1;
@@ -18106,7 +18107,7 @@ CMD:kill(playerid, params[])
 {
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	else if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-    else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
+    else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "IsFrozen") != 0 || PlayerCuffed[playerid] != 0 || PlayerTied[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	else
 	{
 		if(GetPVarInt(playerid, "EventToken") >= 1 || GetPVarInt(playerid, "IsInArena") >= 0)
@@ -37456,6 +37457,8 @@ CMD:endevent(playerid, params[])
 						if(EventFloats[i][5] > 0) {
 							SetPlayerArmor(i, EventFloats[i][5]);
 						}
+						for(new w = 0; w < 12; w++)
+							PlayerInfo[i][pAGuns][w] = 0;
 						for(new d = 0; d < 6; d++)
 						{
 							EventFloats[i][d] = 0.0;
@@ -42554,7 +42557,7 @@ CMD:cancelreport(playerid, params[])
 			DeletePVar(playerid, "HasReport");
 			DeletePVar(playerid, "_rAutoM");
 			DeletePVar(playerid, "_rRepID");
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully canceled your report." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully canceled your report." );
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending reports.");
@@ -49193,13 +49196,33 @@ CMD:cancel(playerid, params[])
 		return 1;
 	}
 
-	if(strcmp(choice,"sex",true) == 0) {	SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0; }
+	if(strcmp(choice,"sex",true) == 0) {	
+		if(GetPVarType(playerid, "SexOfferTo")) { 
+			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID; 
+			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0; 
+			DeletePVar(playerid, "SexOfferTo");
+		}
+		else {
+			SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0; 
+		}
+	}
 	else if(strcmp(choice,"mats",true) == 0) { MatsOffer[playerid] = INVALID_PLAYER_ID; MatsStorageID[playerid] = -1; MatsPrice[playerid] = 0; MatsAmount[playerid] = 0; }
 	else if(strcmp(choice,"pot",true) == 0) { PotOffer[playerid] = INVALID_PLAYER_ID; PotStorageID[playerid] = -1; PotPrice[playerid] = 0; PotGram[playerid] = 0; }
 	else if(strcmp(choice,"crack",true) == 0) { CrackOffer[playerid] = INVALID_PLAYER_ID; CrackStorageID[playerid] = -1; CrackPrice[playerid] = 0; CrackGram[playerid] = 0; }
 	else if(strcmp(choice,"weapon",true) == 0) { GunOffer[playerid] = INVALID_PLAYER_ID; GunStorageID[playerid] = -1; GunId[playerid] = 0; }
 	else if(strcmp(choice,"craft",true) == 0) { CraftOffer[playerid] = INVALID_PLAYER_ID; CraftId[playerid] = 0; }
 	else if(strcmp(choice,"repair",true) == 0) {	RepairOffer[playerid] = INVALID_PLAYER_ID; RepairPrice[playerid] = 0; RepairCar[playerid] = 0; }
+	else if(strcmp(choice,"repair",true) == 0) {	
+		if(GetPVarType(playerid, "RepairOfferTo")) { 
+			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID; 
+			RepairPrice[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
+			RepairCar[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
+			DeletePVar(playerid, "RepairOfferTo");
+		}
+		else {
+			RepairOffer[playerid] = INVALID_PLAYER_ID; RepairPrice[playerid] = 0; RepairCar[playerid] = 0;
+		}
+	}
 	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
 	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
 	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
@@ -49277,20 +49300,23 @@ CMD:cancel(playerid, params[])
 		}
 		else
 		{
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
+			if(GetPVarInt(playerid, "TaxiCall")) DeletePVar(playerid, "TaxiCall");
+			else {
+				//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
 				{
-					if(TaxiAccepted[i] != INVALID_PLAYER_ID && TaxiAccepted[i] == playerid)
+					if(IsPlayerConnected(i))
 					{
-							GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Canceled the call", 5000, 1);
-							TaxiCallTime[i] = 0;
-							DeletePVar(TaxiAccepted[i], "TaxiCall");
-							TaxiAccepted[i] = INVALID_PLAYER_ID;
-							DisablePlayerCheckpoint(i);
-					}
-				}	
+						if(TaxiAccepted[i] != INVALID_PLAYER_ID && TaxiAccepted[i] == playerid)
+						{
+								GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Canceled the call", 5000, 1);
+								TaxiCallTime[i] = 0;
+								DeletePVar(TaxiAccepted[i], "TaxiCall");
+								TaxiAccepted[i] = INVALID_PLAYER_ID;
+								DisablePlayerCheckpoint(i);
+						}
+					}	
+				}
 			}
 		}
 	}
@@ -49458,6 +49484,7 @@ CMD:repair(playerid, params[])
 						format(string, sizeof(string), "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.",GetPlayerNameEx(playerid),money);
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 						PlayerInfo[playerid][pMechTime] = gettime()+60;
+						SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
 						RepairOffer[giveplayerid] = playerid;
 						RepairPrice[giveplayerid] = money;
 					}
@@ -50290,6 +50317,7 @@ CMD:sex(playerid, params[])
 							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 							format(string, sizeof(string), "* Whore %s has offered you to have sex with them, for $%s (type /accept sex) to accept.", GetPlayerNameEx(playerid), number_format(money));
 							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+							SetPVarInt(playerid, "SexOfferTo", giveplayerid);
 							SexOffer[giveplayerid] = playerid;
 							SexPrice[giveplayerid] = money;
 							PlayerInfo[playerid][pSexTime] = gettime()+60;
@@ -50560,12 +50588,13 @@ CMD:drop(playerid, params[])
 	}
 	else if(strcmp(choice,"pizza",true) == 0)
 	{
-		if(GetPVarInt(playerid, "Pizza") > 0)
+		if(GetPVarType(playerid, "Pizza"))
 		{
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 			format(string, sizeof(string), "* %s has thrown away their pizza delivery.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             DeletePVar(playerid, "Pizza");
+			DeletePVar(playerid, "pizzaTimer");
 		}
 		else
 		{

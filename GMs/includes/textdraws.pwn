@@ -1315,7 +1315,7 @@ public LoadTextDraws()
 	textdrawscount++;
 
 	// Tutorial (Frame 12) (Title)
-	TutTxtdraw[40] = TextDrawCreate(168.000000, 120.000000, "Tutorial - K-LSR");
+	TutTxtdraw[40] = TextDrawCreate(168.000000, 120.000000, "Tutorial - SANews");
 	TextDrawBackgroundColor(TutTxtdraw[40], 255);
 	TextDrawFont(TutTxtdraw[40], 2);
 	TextDrawLetterSize(TutTxtdraw[40], 0.209998, 1.000000);
@@ -1326,7 +1326,7 @@ public LoadTextDraws()
 	textdrawscount++;
 
 	// Tutorial (Frame 12) (Line 1)
-	TutTxtdraw[41] = TextDrawCreate(175.000000, 141.000000, "There is a ~b~K-LSR~w~ faction, they handle all the news within San");
+	TutTxtdraw[41] = TextDrawCreate(175.000000, 141.000000, "There is a ~b~SANews~w~ faction, they handle all the news within San");
 	TextDrawBackgroundColor(TutTxtdraw[41], 255);
 	TextDrawFont(TutTxtdraw[41], 2);
 	TextDrawLetterSize(TutTxtdraw[41], 0.159998, 0.899999);
