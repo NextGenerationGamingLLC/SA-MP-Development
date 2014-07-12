@@ -37404,6 +37404,8 @@ CMD:endevent(playerid, params[])
 					{
 						ResetPlayerWeapons( i );
 						DeletePVar(i, "EventToken");
+						for(new w = 0; w < 12; w++)
+							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
 						SetPlayerWeapons(i);
 						SetPlayerToTeamColor(i);
 						SetPlayerSkin(i, PlayerInfo[i][pModel]);
@@ -37417,6 +37419,7 @@ CMD:endevent(playerid, params[])
 							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
 							SetPlayerToTeamColor(i);
 						}
+						
 						for(new d = 0; d < 6; d++)
 						{
 							EventFloats[i][d] = 0.0;
@@ -37445,6 +37448,8 @@ CMD:endevent(playerid, params[])
 							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
 						}
 						ResetPlayerWeapons( i );
+						for(new w = 0; w < 12; w++)
+							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
 						SetPlayerWeapons(i);
 						SetPlayerToTeamColor(i);
 						SetPlayerSkin(i, PlayerInfo[i][pModel]);
@@ -37457,8 +37462,6 @@ CMD:endevent(playerid, params[])
 						if(EventFloats[i][5] > 0) {
 							SetPlayerArmor(i, EventFloats[i][5]);
 						}
-						for(new w = 0; w < 12; w++)
-							PlayerInfo[i][pAGuns][w] = 0;
 						for(new d = 0; d < 6; d++)
 						{
 							EventFloats[i][d] = 0.0;
