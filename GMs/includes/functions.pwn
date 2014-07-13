@@ -26249,7 +26249,7 @@ stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
 	print("FindGunInVehicleForPlayer 1.0");
 	new
 		i = 0;
-	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && PlayerVehicleInfo[ownerid][slot][pvWeapons][i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] == PlayerVehicleInfo[ownerid][slot][pvWeapons][i])
+	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && (!PlayerVehicleInfo[ownerid][slot][pvWeapons][i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] == PlayerVehicleInfo[ownerid][slot][pvWeapons][i]))
 	{
 		printf("FindGunInVehicleForPlayer 1.1.%d MaxSlots %d TrunkWeap %d WeaponSlot %d pGuns %d", i+1, (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1), PlayerVehicleInfo[ownerid][slot][pvWeapons][i], GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])]);
 		i++;

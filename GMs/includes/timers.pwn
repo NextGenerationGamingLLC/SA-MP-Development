@@ -1143,8 +1143,8 @@ task ServerHeartbeat[1000]() {
 							if(GetPVarInt(i, "LockPickCountdown") <= 0) {
 								LockStatus{vehicleid} = 0;
 								vehicle_unlock_doors(vehicleid);
-								mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvLocksLeft` = '(`pvLocksLeft`-1)', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-								mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+								mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvLocksLeft` = '(`pvLocksLeft`-1)', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+								mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 								new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
 								GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
 								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully lock picked a %s(VID:%d SQLId %d) owned by %s(Offline, SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, GetPVarInt(i, "LockPickVehicleSQLId"), ownername, GetPVarInt(i, "LockPickPlayerSQLId"));

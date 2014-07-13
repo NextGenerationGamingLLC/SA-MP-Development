@@ -8385,21 +8385,21 @@ public CheckTrunkContents(playerid)
 	print("CheckTrunkContents 1.6");
 	new
 		i = 0;
-	while (i < 3 &&  TrunkWeaps[i] && PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i])
+	while (i < 3 && (!TrunkWeaps[i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i]))
 	{
 		printf("CheckTrunkContents 1.7.%d TrunkWeap %d WeaponSlot %d pGuns %d", i+1, TrunkWeaps[i], GetWeaponSlot(TrunkWeaps[i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])]);
 		i++;
 	}
 	if (i == 3) return SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 	else {
-		print("CheckTrunkContents 1.8");
+		printf("CheckTrunkContents 1.8 TrunkWeap %d WeaponSlot %d pGuns %d", TrunkWeaps[i], GetWeaponSlot(TrunkWeaps[i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])]);
 		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
 		print("CheckTrunkContents 1.9");
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		print("CheckTrunkContents 2.0");
 		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 60000);
 		print("CheckTrunkContents 2.1");
-		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0', WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
 		print("CheckTrunkContents 2.2");
 		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		print("CheckTrunkContents 2.3");

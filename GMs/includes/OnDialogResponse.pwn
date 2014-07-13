@@ -8519,7 +8519,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have not given anyone the keys for this car.");
 				return 1;
 			}
-			if (ProxDetectorS(8.0, playerid, PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])) {
+			if (ProxDetectorS(4.0, playerid, PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])) {
 				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
 				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
 				format(string, sizeof(string), "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));

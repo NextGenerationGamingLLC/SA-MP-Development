@@ -23531,7 +23531,7 @@ CMD:givekeys(playerid, params[])
     if(IsPlayerConnected(giveplayerid))
 	{
         if(playerid == giveplayerid) return 1;
-        if (ProxDetectorS(8.0, playerid, giveplayerid))
+        if (ProxDetectorS(4.0, playerid, giveplayerid))
 		{
             new
 				iValidVehicles,
@@ -57991,6 +57991,7 @@ CMD:pickveh(playerid, params[])
 						SetPVarInt(playerid, "LockPickTotalTime", waittime);
 						SetPVarInt(playerid, "LockPickVehicle", vehicleid);
 						SetPVarInt(playerid, "LockPickPlayer", i);
+						DeletePVar(playerid, "TrunkAlreadyCracked");
 						
 						PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
 						PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;

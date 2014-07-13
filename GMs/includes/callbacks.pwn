@@ -4247,7 +4247,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	{
 		if(!IsPlayerInVehicle(playerid, GetPVarInt(playerid, "LockPickVehicle")))
 			return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be inside the vehicle you are delivering!");
-		new szMessage[128];
+		new szMessage[140];
 		new RandAmount;
 		switch(PlayerInfo[playerid][pCarLockPickSkill]) {
 			case 0 .. 49: RandAmount = Random(10000, 13000);
@@ -4257,7 +4257,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			default: RandAmount = Random(27000, 33000);
 		}
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]+RandAmount;
-		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", VehicleName[GetPVarInt(playerid, "LockPickVehicle") - 400], GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
+		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
