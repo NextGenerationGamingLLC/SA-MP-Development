@@ -1467,6 +1467,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocCPButton)
 	{
+		if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		ShowDocPrisonControls(playerid, 0);
 	}
 	return false;
@@ -2919,6 +2920,8 @@ public OnPlayerConnect(playerid)
 	VehicleSpawned[playerid] = 0;
 	ReportCount[playerid] = 0;
 	ReportHourCount[playerid] = 0;
+	WDReportCount[playerid] = 0;
+	WDReportHourCount[playerid] = 0;
 	PlayerInfo[playerid][pServiceTime] = 0;
 	Homes[playerid] = 0;
 	sobeitCheckvar[playerid] = 0;
@@ -3727,6 +3730,7 @@ public OnPlayerDisconnect(playerid, reason)
 				TransportCost[TransportDriver[playerid]] = 0;
 				format(string, sizeof(string), "~w~Passenger left~n~~g~Earned $%d",TransportCost[playerid]);
 				GameTextForPlayer(TransportDriver[playerid], string, 5000, 1);
+				GivePlayerCashEx(playerid, TYPE_ONHAND, -TransportCost[playerid]);
 				TransportDriver[playerid] = INVALID_PLAYER_ID;
 			}
 		}

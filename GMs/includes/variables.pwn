@@ -877,6 +877,8 @@ new gBike[MAX_PLAYERS];
 new gBikeRenting[MAX_PLAYERS];
 new ReportCount[MAX_PLAYERS];
 new ReportHourCount[MAX_PLAYERS];
+new WDReportCount[MAX_PLAYERS];
+new WDReportHourCount[MAX_PLAYERS];
 new pointpinglimit = 800;
 new noooc = 1;
 new rflstatus = 0;

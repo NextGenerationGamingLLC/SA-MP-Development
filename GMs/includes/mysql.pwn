@@ -4513,7 +4513,7 @@ public GetWDCount(userid, tdate[])
 {
 	new string[128];
 	format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 0);
+	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 3);
 }
 
 forward GetWDHourCount(userid, thour[], tdate[]);
@@ -4521,7 +4521,7 @@ public GetWDHourCount(userid, thour[], tdate[])
 {
 	new string[128];
 	format(string, sizeof(string), "SELECT `count` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 1);
+	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 4);
 }
 
 forward QueryGetCountFinish(userid, type);
@@ -4553,6 +4553,22 @@ public QueryGetCountFinish(userid, type)
 		case 2:
 		{
 			Homes[userid] = rows;
+		}
+		case 3:
+		{
+			if(rows > 0)
+			{
+				WDReportCount[userid] = cache_get_field_content_int(0, "SUM(count)", MainPipeline);
+			}
+			else WDReportCount[userid] = 0;
+		}
+		case 4:
+		{
+			if(rows > 0)
+			{
+				WDReportHourCount[userid] = cache_get_field_content_int(0, "count", MainPipeline);
+			}
+			else WDReportHourCount[userid] = 0;
 		}
 	}
 	return 1;
@@ -5351,7 +5367,8 @@ public OnPlayerChangePass(index)
 		format(szMessage, sizeof(szMessage), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), GetPlayerSQLId(index), PlayerInfo[index][pIP]);
 		Log("logs/password.log", szMessage);
 		DeletePVar(index, "PassChange");
-
+		format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `LastPassChange` = NOW() WHERE `id` = '%i'", PlayerInfo[index][pId]);
+		mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 		if(PlayerInfo[index][pForcePasswordChange] == 1)
 		{
 		    PlayerInfo[index][pForcePasswordChange] = 0;
@@ -8385,8 +8402,8 @@ public WatchWatchlist(index)
 				SetPVarInt(index, "NextWatch", gettime()+180);
 				SetPVarInt(index, "SpectatingWatch", x);
 				SetPVarInt(index, "StartedWatching", 1);
-				ReportCount[index]++;
-				ReportHourCount[index]++;
+				WDReportCount[index]++;
+				WDReportHourCount[index]++;
 				AddWDToken(index);
 				result = 1;
 				break;
