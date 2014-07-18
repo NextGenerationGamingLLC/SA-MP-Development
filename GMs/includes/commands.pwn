@@ -12287,7 +12287,7 @@ CMD:join(playerid, params[])
 				return 1;
 			}			
 		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,161.92, -25.70, 1.57) || IsPlayerInRangeOfPoint(playerid,3.0,-2032.601928, 143.866592, 28.835937) || IsPlayerInRangeOfPoint(playerid,3.0,-1475.4224,1877.3550,32.6328)) {
+		else if (IsPlayerInRangeOfPoint(playerid,3.0,161.92, -25.70, 1.57) || IsPlayerInRangeOfPoint(playerid,3.0,-2032.601928, 143.866592, 28.835937) || IsPlayerInRangeOfPoint(playerid,3.0,-1475.4224,1877.3550,32.6328) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2279.8159, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Mechanic, type /accept job.");
 				GettingJob[playerid] = 7;
@@ -12306,7 +12306,7 @@ CMD:join(playerid, params[])
 				return 1;
 			}			
 		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,1224.13, 267.98, 19.55) || IsPlayerInRangeOfPoint(playerid,3.0,-2269.256103, -158.054321, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,2226.1716,-1718.1792,13.5165) || IsPlayerInRangeOfPoint(playerid,3.0,1099.73,-1504.67,15.800) || IsPlayerInRangeOfPoint(playerid,3.0,-821.3508,1574.9393,27.1172)) {
+		else if (IsPlayerInRangeOfPoint(playerid,3.0,1224.13, 267.98, 19.55) || IsPlayerInRangeOfPoint(playerid,3.0,-2269.256103, -158.054321, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,2226.1716,-1718.1792,13.5165) || IsPlayerInRangeOfPoint(playerid,3.0,1099.73,-1504.67,15.800) || IsPlayerInRangeOfPoint(playerid,3.0,-821.3508,1574.9393,27.1172) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2293.3923, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Bodyguard, type /accept job.");
 				GettingJob[playerid] = 8;
@@ -12416,7 +12416,7 @@ CMD:join(playerid, params[])
 				return 1;
 			}			
 		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,2195.8335,-1973.0638,13.5589) || IsPlayerInRangeOfPoint(playerid,3.0,-1356.7195,2065.3450,52.4677)) {
+		else if (IsPlayerInRangeOfPoint(playerid,3.0,2195.8335,-1973.0638,13.5589) || IsPlayerInRangeOfPoint(playerid,3.0,-1356.7195,2065.3450,52.4677) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2246.2598, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Craftsman, type /accept job.");
 				GettingJob[playerid] = 18;
@@ -12454,7 +12454,7 @@ CMD:join(playerid, params[])
 				return 1;
 			}			
 		}
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,-1560.963867, 127.491157, 3.554687)) {
+		else if (IsPlayerInRangeOfPoint(playerid,3.0,-1560.963867, 127.491157, 3.554687) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2240.7227, 4.8137)) {
 			if(PlayerInfo[playerid][pLevel] >= 2)
 			{
 				if(PlayerInfo[playerid][pJob] == 0){
@@ -13456,31 +13456,17 @@ CMD:enter(playerid, params[])
         PlayerInfo[playerid][pVW] = 1337;
     }
 //NG/LEO Only Entrance
-
-                                                  // Hitman HQ
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, -418.95, -1759.26, 6.22 )) {
-        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
-            SetPlayerVirtualWorld(playerid, 666420);
-            PlayerInfo[playerid][pVW] = 666420;
-            SetPlayerInterior(playerid, 6);
-            PlayerInfo[playerid][pInt] = 6;
-            SetPlayerPos(playerid, -68.8239,1351.4331,1080.6257);
-            SetPlayerFacingAngle(playerid, 160);
-            SetCameraBehindPlayer(playerid);
-            Player_StreamPrep(playerid, -68.8239,1351.4331,1080.6257, FREEZE_TIME);
-        }
-    }
                                                   // Hitman HQ
     else if(IsPlayerInRangeOfPoint(playerid, 2.0, 2323.3135, 7.6760, 26.5640)) {
         	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
             SetPlayerVirtualWorld(playerid, 666421);
             PlayerInfo[playerid][pVW] = 666421;
-            SetPlayerInterior(playerid, 6);
-            PlayerInfo[playerid][pInt] = 6;
-            SetPlayerPos(playerid, -68.8239,1351.4331,1080.6257);
-            SetPlayerFacingAngle(playerid, 160);
+            SetPlayerInterior(playerid, 1);
+            PlayerInfo[playerid][pInt] = 1;
+            SetPlayerPos(playerid, 65.176315, 1975.498779, -68.817260);
+            SetPlayerFacingAngle(playerid, 90);
             SetCameraBehindPlayer(playerid);
-            Player_StreamPrep(playerid, -68.8239,1351.4331,1080.6257, FREEZE_TIME);
+            Player_StreamPrep(playerid, 65.176315, 1975.498779, -68.817260, FREEZE_TIME);
         }
     }
                                                   //Garage
@@ -14047,18 +14033,7 @@ CMD:exit(playerid, params[])
         }
 	}
                                                   // Hitman HQ
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, -68.845336914063, 1351.3386230469, 1079.2109375 ) && (GetPlayerVirtualWorld(playerid) == 666420)) {
-        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
-            SetPlayerVirtualWorld(playerid, 0);
-            PlayerInfo[playerid][pVW] = 0;
-            SetPlayerInterior(playerid, 0);
-            PlayerInfo[playerid][pInt] = 0;
-            SetPlayerPos(playerid, -418.95, -1759.26, 6.22);
-            SetCameraBehindPlayer(playerid);
-        }
-    }
-                                                  // Hitman HQ
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, -68.845336914063, 1351.3386230469, 1079.2109375 ) && (GetPlayerVirtualWorld(playerid) == 666421)) {
+    else if(IsPlayerInRangeOfPoint(playerid, 2.0, 65.176315, 1975.498779, -68.817260 ) && (GetPlayerVirtualWorld(playerid) == 666421)) {
         	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
             SetPlayerVirtualWorld(playerid, 0);
             PlayerInfo[playerid][pVW] = 0;
@@ -14104,7 +14079,7 @@ CMD:exit(playerid, params[])
 			SetPlayerInterior(playerid, 0);
 			PlayerInfo[playerid][pInt] = 0;
 			SetPlayerFacingAngle(playerid, 180);
-			SetPlayerPos(playerid, -2073.0698,-155.5515,35.3274);
+			Player_StreamPrep(playerid, -2073.0698,-155.5515,35.3274, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}
@@ -14115,7 +14090,7 @@ CMD:exit(playerid, params[])
 			SetPlayerInterior(playerid, 0);
 			PlayerInfo[playerid][pInt] = 0;
 			SetPlayerFacingAngle(playerid, 180);
-			SetPlayerPos(playerid, -2028.1309,-155.6799,35.3204);
+			Player_StreamPrep(playerid, -2028.1309,-155.6799,35.3204, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}
@@ -20628,7 +20603,7 @@ CMD:dvstatus(playerid, params[])
 
 CMD:dvcreate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new
 				iVehicle,
@@ -20754,7 +20729,7 @@ CMD:dvrespawn(playerid, params[])
 
 CMD:dvedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot)) {
@@ -20968,7 +20943,7 @@ CMD:dvedit(playerid, params[])
 
 CMD:dveditslot(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new iDvSlotID, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
@@ -21181,7 +21156,7 @@ CMD:dveditslot(playerid, params[])
 
 CMD:dvplate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, plate[32];
         if(sscanf(params, "ds[32]", vehicleid, plate))
@@ -30429,7 +30404,7 @@ CMD:order(playerid, params[])
 	if (IsAHitman(playerid))
 	{
 	    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
-		if(IsPlayerInRangeOfPoint(playerid, 4.0, -71.419654846191,1360.4097900391,1080.2185058594) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657))
+		if(IsPlayerInRangeOfPoint(playerid, 4.0, 63.973995, 1973.618774, -68.786064) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657))
 		{
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 			new string[128];
@@ -40719,6 +40694,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /gtedit /gtstatus /gtnear /tagperm /tagedit");
 	}
+	if (PlayerInfo[playerid][pGangModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoGM *** /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /orders /adjustoid /shop(car(del)/house/tokens/exp/plate/laser/vest/firework/viptokens/boombox/object) /gedit /gnear");
@@ -49214,7 +49190,6 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"crack",true) == 0) { CrackOffer[playerid] = INVALID_PLAYER_ID; CrackStorageID[playerid] = -1; CrackPrice[playerid] = 0; CrackGram[playerid] = 0; }
 	else if(strcmp(choice,"weapon",true) == 0) { GunOffer[playerid] = INVALID_PLAYER_ID; GunStorageID[playerid] = -1; GunId[playerid] = 0; }
 	else if(strcmp(choice,"craft",true) == 0) { CraftOffer[playerid] = INVALID_PLAYER_ID; CraftId[playerid] = 0; }
-	else if(strcmp(choice,"repair",true) == 0) {	RepairOffer[playerid] = INVALID_PLAYER_ID; RepairPrice[playerid] = 0; RepairCar[playerid] = 0; }
 	else if(strcmp(choice,"repair",true) == 0) {	
 		if(GetPVarType(playerid, "RepairOfferTo")) { 
 			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID; 
@@ -57143,7 +57118,7 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "Senior Watchdog %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "RP Specialist %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "Director of RP Improvement %s (ID %i)", GetPlayerNameEx(i), i);
-				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, ReportHourCount[i], ReportCount[i]);
+				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, WDReportHourCount[i], WDReportCount[i]);
 				if(GetPVarInt(i, "WatchdogChat") == 0) strcat(string, " (WD Chat Toggled)");
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
@@ -57172,6 +57147,7 @@ CMD:wd(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
+		if(PlayerInfo[playerid][pWatchdog] < 3) SetPVarInt(playerid, "WatchdogChat", 1);
 		if(GetPVarInt(playerid, "WatchdogChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
 		if(!isnull(params)) 
 		{
@@ -58983,16 +58959,14 @@ CMD:listprisoners(playerid, params[])
 {
 	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
 	new szInmates[1024],
-		szString[128],
+		szString[20],
 		id;
-		
 	if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listprisoners [arrestpoint id]");
 	foreach(Player, i)
 	{
 		if((GetPVarInt(i, "ArrestPoint") == id + 1) && PlayerInfo[i][pJailTime] > 0)
 		{
-			format(szString, sizeof(szString), "* [%d] Prisoner Name: %s", i, GetPlayerNameEx(i));
-			strcat(szInmates, szString);
+			format(szInmates, sizeof(szInmates), "%s\n* [%d] Prisoner Name: %s", szInmates, i, GetPlayerNameEx(i));
 		}
 	}
 	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "Holding cell empty!");
@@ -59226,7 +59200,7 @@ CMD:extendsentence(playerid, params[])
 	return 1;
 }
 
-CMD:shortensentence(playerid, params[])
+CMD:reducesentence(playerid, params[])
 {
 	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
 	new iTargetID,
@@ -59309,21 +59283,16 @@ CMD:unisolateinmate(playerid, params[])
 CMD:inmates(playerid, params[])
 {
 	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-	new szInmates[1024],
-		szString[128];
+	new szInmates[1024];
 	
 	foreach(Player, i)
 	{
 		if(PlayerInfo[i][pJailTime] > 0 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 		{
-			format(szString, sizeof(szString), "* %s: %s\n", GetPlayerNameEx(i), TimeConvert(PlayerInfo[i][pJailTime]));
-			strcat(szInmates, szString, 128);
+			format(szInmates, sizeof(szInmates), "%s\n* %s: %s", szInmates, GetPlayerNameEx(i), TimeConvert(PlayerInfo[i][pJailTime]));
 		}
 	}
-	if(strlen(szInmates) == 0)
-	{
-		format(szInmates, sizeof(szInmates), "No inmates");
-	}
+	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "No inmates");
 	ShowPlayerDialog(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, "DOC Inmates Logbook", szInmates, "Close", "");
 	
 	return 1;

@@ -7649,7 +7649,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
-					//Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
+					Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
 					Businesses[iBusiness][bTotalSales]++;
 					Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
 					//if(penalty) Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
@@ -7746,7 +7746,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
-					//Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
+					Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
 					Businesses[iBusiness][bTotalSales]++;
 					Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
 					//if(penalty) Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
@@ -7803,7 +7803,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "lockcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
-					//Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
+					Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
 					Businesses[iBusiness][bTotalSales]++;
 					Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
 					//if(penalty) Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);

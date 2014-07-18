@@ -3467,7 +3467,7 @@ forward OnPlayerModelSelectionEx(playerid, response, extraid, modelid);
 forward InitiateGamemode();
 public InitiateGamemode()
 {
-	AddPlayerClass(0, 1958.33, 1343.12, 15.36, 269.15, 0, 0, 0, 0, 0, 0);
+	AddPlayerClass(0, 1715.1201, -1903.1711, 13.5665, 360, 0, 0, 0, 0, 0, 0);
 	
 	SetGameModeText(SERVER_GM_TEXT);
     
@@ -11208,10 +11208,8 @@ stock IsAtNameChange(playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(IsPlayerInRangeOfPoint(playerid, 3.0,1154.7295,-1440.2323,15.7969))
-		{
-			return 1;
-		}
+		if(IsPlayerInRangeOfPoint(playerid, 3.0,1154.7295,-1440.2323,15.7969)) return 1;//LS
+		else if(IsPlayerInRangeOfPoint(playerid, 3.0,-2279.6545, 2311.2238, 4.9641)) return 1;//TR
 	}
 	return 0;
 }
@@ -14197,9 +14195,8 @@ stock Group_NumToDialogHex(iValue)
 
 stock GivePlayerStoreItem(playerid, type, business, item, price)
 {
+	if(Businesses[business][bInventory] <= StoreItemCost[item-1][ItemValue]) return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
 	new string[256];
-	if(Businesses[business][bInventory] >= StoreItemCost[item-1][ItemValue]) Businesses[business][bInventory] -= StoreItemCost[item-1][ItemValue];
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
 	switch (item)
   	{
   		case ITEM_CELLPHONE:
@@ -14367,6 +14364,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		    return 0;
 		}
 	}
+	Businesses[business][bInventory] -= StoreItemCost[item-1][ItemValue];
 	Businesses[business][bTotalSales]++;
 	Businesses[business][bSafeBalance] += TaxSale(price);
 	GivePlayerCash(playerid, -price);

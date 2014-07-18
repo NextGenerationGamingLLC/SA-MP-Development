@@ -267,11 +267,14 @@ public LoadStreamerDynamicPickups()
   	//CreateDynamicPickup(1239, 23, 2565.346191, 1403.409790, 7699.584472, -1);// VIP ph changing station.
   	CreateDynamicPickup(1239, 23, 701.7953,-519.8322,16.3348, -1); //Rental Icon
 	CreateDynamicPickup(1239, 23, -1475.4224,1877.3550,32.6328, -1); // Mechanic Job (TR)
+	CreateDynamicPickup(1239, 23, -2412.5095, 2279.8159, 4.8137, -1); // Mechanic Job (TR)
 	CreateDynamicPickup(1239, 23, -1385.6786,2625.6636,55.5572, -1); // Detective Job (TR)
 	CreateDynamicPickup(1239, 23, -1513.4904,2614.3591,55.8078, -1); // Arms Dealer Job (TR)
 	CreateDynamicPickup(1239, 23, -1356.7195,2065.3450,52.4677, -1); // Craftsman Job (TR)
+	CreateDynamicPickup(1239, 23, -2412.5095, 2246.2598, 4.8137, -1); // Craftsman Job (TR)
 	CreateDynamicPickup(1239, 23, -1528.0924,2688.7837,55.8359, -1); // Drug Dealer Job (TR)
 	CreateDynamicPickup(1239, 23, -821.3508,1574.9393,27.1172, -1); // Bodyguard Job (TR)
+	CreateDynamicPickup(1239, 23,-2412.5095, 2293.3923, 4.8137, -1); // Bodyguard Job (TR)
 	CreateDynamicPickup(1239, 23, -2630.7375,2349.3994,8.4892, -1); // Drug Smuggler Job (TR)
 	CreateDynamicPickup(1239, 23, -864.3550,1536.9703,22.5870, -1); // Bartender Job (TR)
 	CreateDynamicPickup(1239, 23, 757.3734,5.7227,1000.7012, -1); // Train Pos
@@ -281,7 +284,7 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, 2354.2808,-1169.2959,28.0066, -1); //Drug Smuggler
 	CreateDynamicPickup(1240, 23, 1179.4012451172,-1331.5632324219,2423.0461425781, -1);// /healme//Old Healme: 2103.4998,2824.2568,-16.1672
 	CreateDynamicPickup(1239, 23, 1169.7209472656,-1348.3218994141,2423.0461425781, -1);// /Old Insurance: 2086.4915,2826.7122,-16.1744
-    CreateDynamicPickup(1210, 23, -71.419654846191,1360.4097900391,1080.2185058594, -1); //Hitman Pickup
+    CreateDynamicPickup(1210, 23, 63.973995, 1973.618774, -68.786064, -1); //Hitman Pickup
 	CreateDynamicPickup(1240, 23, -1528.814331, 2540.706054, 55.835937, -1);// Deliverpt (TR - El Quebrados)
 	CreateDynamicPickup(1240, 23, 1142.4733,-1326.3633,13.6259, -1);// Deliverpt (All Saints)
 	CreateDynamicPickup(1240, 23, 2027.0599,-1410.6870,16.9922, -1);// Deliverpt (County General)
@@ -298,6 +301,7 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1240, 23, 225.3467,1981.8497,17.6406, -1); //Deliverpt (DeMorgan)
 	CreateDynamicPickup(1239, 23, 366.54, 159.09, 1008.38, -1); // LICENSES @ CITY HALL
 	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
+	CreateDynamicPickup(1239, 23, -2412.5095, 2240.7227, 4.8137); //Trucker registration (TR)
     CreateDynamicPickup(1239, 23, -1720.962646, 1364.456176, 7.187500); //Pizza job registration
 	CreateDynamicPickup(1239, 23, 251.99, 117.36, 1003.22); //Detective Registration
 	CreateDynamicPickup(1239, 23, 1478.9515, -1755.7147, 3285.2859); //Detective Registration
@@ -421,6 +425,7 @@ public LoadStreamerDynamic3DTextLabels()
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1816.528686, -179.502624, 9.398437+0.6,5.0);
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1522.7351, 2587.2612, 55.8359+0.6, 5.0);
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,1154.7295,-1440.2323,15.7969+0.6,18.0); // Namechange at mall
+	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,-2279.6545, 2311.2238, 4.9641+0.6,18.0); // Namechange (TR)
 
     /* Sprunk 3D Text */
     CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,2140.4504,-1161.4298,23.9922+0.6,12.0); // Sprunk Machine
@@ -444,6 +449,7 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,2226.1716,-1718.1792,13.5165+0.5,4.0);// Bodyguard (LS)
     CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-2269.256103, -158.054321, 35.320312+0.5,4.0);// Bodyguard (SF)
 	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-821.3508,1574.9393,27.1172+0.5,4.0);// Bodyguard (TR)
+	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-2412.5095, 2293.3923, 4.8137+0.5,4.0);// Bodyguard (TR)
 	CreateDynamic3DTextLabel("Lawyer Job \nType /join to become one",COLOR_RED,1469.5247,-1755.7039,3285.2859+0.5,4.0);// Lawyer
     CreateDynamic3DTextLabel("Taxi Job \nType /join to become one",COLOR_RED,1741.6218,-1863.6486,13.5748+0.5,4.0);// Taxi Driver (LS)
     CreateDynamic3DTextLabel("Taxi Job \nType /join to become one",COLOR_RED,-1981.144775, 133.063293, 27.687500+0.5,4.0);// Taxi Driver (SF)
@@ -452,6 +458,7 @@ public LoadStreamerDynamic3DTextLabels()
     CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,161.92, -25.70, 1.57+0.5,4.0);// Mechanic (Blueberry)
     CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-2032.601928, 143.866592, 28.835937+0.5,4.0);// Mechanic (SF)
 	CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-1475.4224, 1877.3550, 32.6328+0.5,4.0);// Mechanic (TR)
+	CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-2412.5095, 2279.8159, 4.8137+0.5,4.0);// Mechanic (TR)
 	CreateDynamic3DTextLabel("Whore Job \nType /join to become one",COLOR_RED,1215.1304,-11.8431,1000.9219+0.5,4.0);// Whore
     CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,766.0804,14.5133,1000.7004+0.5,4.0);// Boxer
     CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,758.98,-60.32,1000.78+0.5,4.0);// Boxer2
@@ -460,9 +467,11 @@ public LoadStreamerDynamic3DTextLabels()
     CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,1099.73,-1504.67,15.800+0.5,4.0);// Bodyguard (MALL GYM)
     CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,2195.8335,-1973.0638,13.5589+0.5,4.0);// Craftsman (JUNKYARD LS)
 	CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,-1356.7195,2065.3450,52.4677+0.5,4.0);// Craftsman (TR)
+	CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,-2412.5095, 2246.2598, 4.8137+0.5,4.0);// Craftsman (TR)
 	CreateDynamic3DTextLabel("Bartender Job \nType /join to become one",COLOR_RED,502.6696,-11.6603,1000.6797+0.5,4.0);// Bartender (Alhambra)
 	CreateDynamic3DTextLabel("Bartender Job \nType /join to become one",COLOR_RED,-864.3550,1536.9703,22.5870+0.5,4.0);// Bartender (TR)
     CreateDynamic3DTextLabel("Shipment Contractor Job \nType /join to become one",COLOR_RED,-1560.963867, 127.491157, 3.554687+0.5,4.0);// Trucker Job (SF)
+    CreateDynamic3DTextLabel("Shipment Contractor Job \nType /join to become one",COLOR_RED,-2412.5095, 2240.7227, 4.8137+0.5,4.0);// Trucker Job (TR)
     CreateDynamic3DTextLabel("Pizza Boy Job \nType /join to become one",COLOR_RED,-1720.962646, 1364.456176, 7.187500+0.5,4.0);// Pizza Boy Job (SF)
     CreateDynamic3DTextLabel("Tierra Robada Gant Bridge Access.",0xFFFF00AA,-2678.2702636719,2148.0134277344,55.4296875+0.6,20.0);// Border Lable
 	CreateDynamic3DTextLabel("Tierra Robada Airport",0xFFFF00AA,-1873.2819824219,2172.4621582031,6.2687501907349+0.6,20.0);// Airport Lable.
@@ -483,6 +492,11 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	
 	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
+	
+	CreateDynamic3DTextLabel("Monument to Those Who Gave Their Lives for a Free Tierra Robada", COLOR_YELLOW, -2264.1331, 2259.0814, 4.9641, 20.0);
+	CreateDynamic3DTextLabel("Monument to the Battles of Bayside", COLOR_YELLOW, -2333.5400, 2262.8799, 4.8137, 20.0);
+	CreateDynamic3DTextLabel("Monument to the Revolution", COLOR_YELLOW, -2325.9256, 2338.7119, 4.8137, 20.0);
+	CreateDynamic3DTextLabel("Monument to the Civil Services and Mechanist Union of Tierra Robada", COLOR_YELLOW, -2356.6712, 2222.0739, 4.8137, 20.0);
 	print("[Streamer] Dynamic 3D Text Labels has been loaded.");
 	return 1;
 }
@@ -611,7 +625,9 @@ public LoadStreamerDynamicObjects()
 
 	new FCTS = CreateDynamicObject(19482, -58.9155, -1118.4808, 7.4781, 0.0000, 0.0000, 160.3858);
 	SetDynamicObjectMaterialText(FCTS, 0, "{880000}Flint County Towing Services\n{000000}CALL 1715 OR 2112", 110, "Impact", 40, 1, 0xFF000000, 0, 1);
-
+	new TR = CreateDynamicObject(19482, -2328.9254, 2313.8192, 16.7774, 0.0000, 0.0000, 90.0);
+	SetDynamicObjectMaterialText(TR, 0, "The People's Plaza", 70, "Georgia", 24, 1, 0xFFFFFFFF, 0, 1);
+	
     /* (ongamemodeinit) - LSPD stuff */
 	eastlobby1 = CreateDynamicObject(1536,253.14941406,110.59960938,1002.21502686,0.00000000,0.00000000,270.00000000,-1,10,-1,100.0); // East lobby door (moves north)
 	eastlobby2 = CreateDynamicObject(1536,253.18457031,107.59960938,1002.21502686,0.00000000,0.00000000,90.00000000,-1,10,-1,100.0); // East lobby door (moves south)
