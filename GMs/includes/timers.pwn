@@ -188,21 +188,33 @@ task SyncUp[60000]()
 					Float: y,
 					Float: z,
 					int = GetPlayerInterior(i),
-					slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
 					ownerid = GetPVarInt(i, "LockPickPlayer");
 				GetVehiclePos(GetPVarInt(i, "LockPickVehicle"), x, y, z);
 				if(GetPVarInt(i, "DeliveringVehicleTime") < gettime() || !IsPlayerInRangeOfPoint(i, 50.0, x, y, z) && int == 0) {
 					SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
-					--PlayerCars;
-					VehicleSpawned[ownerid]--;
-					PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-					PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
+					if(GetPVarType(i, "LockPickVehicleSQLId")) 
+					{
+						format(string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+						mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+						DeletePVar(i, "LockPickVehicleSQLId");
+						DeletePVar(i, "LockPickPlayerSQLId");
+						DeletePVar(i, "LockPickPlayerName");
+					}
+					else {
+						new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+						--PlayerCars;
+						VehicleSpawned[ownerid]--;
+						PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+						PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
+						PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
+						PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
+						PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
+						g_mysql_SaveVehicle(ownerid, slot);
+					}
+					
 					DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
-					PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
-					g_mysql_SaveVehicle(ownerid, slot);
+					
 					DisablePlayerCheckpoint(i);
 					DeletePVar(i, "DeliveringVehicleTime");
 					DeletePVar(i, "LockPickVehicle");
@@ -1115,8 +1127,8 @@ task ServerHeartbeat[1000]() {
 					ClearCrimes(i);
 				}
 				if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
-						szMessage[115],
+					new 
+						szMessage[190],
 						Float: vehSize[3],
 						Float: Pos[3],
 						vehicleid = GetPVarInt(i, "LockPickVehicle"),
@@ -1127,16 +1139,42 @@ task ServerHeartbeat[1000]() {
 					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
 						SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
 						UpdateVLPTextDraws(i, vehicleid);
-						if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
-							TriggerVehicleAlarm(i, ownerid, vehicleid);
-						}
-						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
-							PlayerVehicleInfo[ownerid][slot][pvLocked] = 0;
-							UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
-							PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
-							if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
-								SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+						if(GetPVarType(i, "LockPickVehicleSQLId")) {
+							if(GetPVarInt(i, "LockPickCountdown") <= 0) {
+								LockStatus{vehicleid} = 0;
+								vehicle_unlock_doors(vehicleid);
+								mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvLocksLeft` = '(`pvLocksLeft`-1)', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+								mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+								new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
+								GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
+								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully lock picked a %s(VID:%d SQLId %d) owned by %s(Offline, SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, GetPVarInt(i, "LockPickVehicleSQLId"), ownername, GetPVarInt(i, "LockPickPlayerSQLId"));
+								Log("logs/playervehicle.log", szMessage);
+								/* DeletePVar(i, "LockPickVehicle");
+								DeletePVar(i, "LockPickPlayer"); */
 							}
+						}
+						else {
+							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+							if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
+								TriggerVehicleAlarm(i, ownerid, vehicleid);
+							}
+							if(GetPVarInt(i, "LockPickCountdown") <= 0) {
+								PlayerVehicleInfo[ownerid][slot][pvLocked] = 0;
+								UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
+								PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
+								if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
+									SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+								}
+								strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
+								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+								GetPlayerIp(i, ip, sizeof(ip));
+								GetPlayerIp(ownerid, ip2, sizeof(ip2));
+								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2, GetPlayerSQLId(ownerid));
+								Log("logs/playervehicle.log", szMessage);
+							}
+						}
+						
+						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
 							if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
 							if(++PlayerInfo[i][pLockPickVehCount] > 11) {
 								PlayerInfo[i][pLockPickTime] = gettime() + 21600;
@@ -1175,7 +1213,6 @@ task ServerHeartbeat[1000]() {
 							DeletePVar(i, "LockPickTotalTime");
 							ClearAnimations(i, 1);
 							
-							PlayerInfo[i][pCarLockPickSkill]++;
 							if(PlayerInfo[i][pDoubleEXP] > 0) {
 								format(szMessage, sizeof(szMessage), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
 								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
@@ -1197,8 +1234,17 @@ task ServerHeartbeat[1000]() {
 							DeletePVar(i, "AttemptingLockPick");
 							DeletePVar(i, "LockPickCountdown");
 							DeletePVar(i, "LockPickTotalTime");
-							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+							if(GetPVarType(i, "LockPickVehicleSQLId")) {
+								DeletePVar(i, "LockPickVehicleSQLId");
+								DeletePVar(i, "LockPickPlayerSQLId");
+								DeletePVar(i, "LockPickPlayerName");
+								DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+							}
+							else {
+								new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+								PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+								PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+							}
 							DeletePVar(i, "LockPickVehicle");
 							DeletePVar(i, "LockPickPlayer");
 							DestroyVLPTextDraws(i);
@@ -1210,8 +1256,17 @@ task ServerHeartbeat[1000]() {
 						DeletePVar(i, "AttemptingLockPick");
 						DeletePVar(i, "LockPickCountdown");
 						DeletePVar(i, "LockPickTotalTime");
-						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-						PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						if(GetPVarType(i, "LockPickVehicleSQLId")) {
+							DeletePVar(i, "LockPickVehicleSQLId");
+							DeletePVar(i, "LockPickPlayerSQLId");
+							DeletePVar(i, "LockPickPlayerName");
+							DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+						}
+						else {
+							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						}
 						DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer");
 						DestroyVLPTextDraws(i);
@@ -1219,19 +1274,18 @@ task ServerHeartbeat[1000]() {
 					}
 				}
 				if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle")),
-						szMessage[115], 
-						wslot, 
-						vehicleid = GetPVarInt(i, "LockPickVehicle"),
-						ownerid = GetPVarInt(i, "LockPickPlayer"),
+					new	vehicleid = GetPVarInt(i, "LockPickVehicle"),
 						Float: Pos[3];
-	
+
 					GetPosBehindVehicle(vehicleid, Pos[0], Pos[1], Pos[2], 1.0);
 					if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
 						SetPVarInt(i, "CrackTrunkCountdown", GetPVarInt(i, "CrackTrunkCountdown")-1);
 						UpdateVLPTextDraws(i, vehicleid, 1);
 						if(GetPVarInt(i, "CrackTrunkCountdown") <= 0) {
-							if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+							new 
+								szMessage[120 + (MAX_PLAYER_NAME * 2)],
+								wslot,
+								ownerid = GetPVarInt(i, "LockPickPlayer");
 							SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
 							PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
 							new engine, lights, alarm, doors, bonnet, boot, objective;
@@ -1240,26 +1294,30 @@ task ServerHeartbeat[1000]() {
 							ClearAnimations(i, 1);
 							SetPlayerSkin(i, GetPlayerSkin(i));
 							SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-							while (wslot < PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) {
-								if(wslot >= PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1 || PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] != 0 && PlayerInfo[i][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])] != PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot])
-									break;
-								wslot++;
+							if(GetPVarType(i, "LockPickVehicleSQLId")) {
+								format(szMessage, sizeof(szMessage), "SELECT `pvWeapon0`, `pvWeapon1`, `pvWeapon2` FROM `vehicles` WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+								mysql_function_query(MainPipeline, szMessage, true, "CheckTrunkContents", "i", i);
 							}
-							if(wslot != PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) {
-								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
-								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
-								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 60000);
-								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
-								g_mysql_SaveVehicle(ownerid, slot);
-								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-								GetPlayerIp(i, ip, sizeof(ip));
-								GetPlayerIp(ownerid, ip2, sizeof(ip2));
-								format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
-								Log("logs/playervehicle.log", szMessage);
+							else {
+								new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+								wslot = FindGunInVehicleForPlayer(ownerid, slot, i);
+								if(wslot != -1) {
+									format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
+									SendClientMessageEx(i, COLOR_YELLOW, szMessage);
+									GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 60000);
+									PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
+									g_mysql_SaveVehicle(ownerid, slot);
+									new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+									GetPlayerIp(i, ip, sizeof(ip));
+									GetPlayerIp(ownerid, ip2, sizeof(ip2));
+									format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+									Log("logs/playervehicle.log", szMessage);
+								}
+								else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 							}
-							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
 							DestroyVLPTextDraws(i);
-							
+							if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+							SetPVarInt(i, "TrunkAlreadyCracked", 1);
 							DeletePVar(i, "AttemptingCrackTrunk");
 							DeletePVar(i, "CrackTrunkCountdown");
 						}
@@ -2642,7 +2700,7 @@ timer FinishMedKit[5000](playerid)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Med Kit.");
+		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage or tried entering a car during the 5 seconds, therefore you couldn't use the Med Kit.");
 		SetPVarInt(playerid, "BackpackDisabled", 60);
 	}
 	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
@@ -2684,4 +2742,40 @@ timer FinishMeal[5000](playerid)
 	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	DeletePVar(playerid, "BackpackMeal");
 	return 1;
+}
+
+timer CheckVehiclesLeftSpawned[5000](playerid)
+{
+	for(new j = 0; j < MAX_PLAYERS; ++j)
+	{
+		if(IsPlayerConnected(j))
+		{
+			if(GetPVarType(j, "LockPickVehicleSQLId") && GetPVarInt(j, "LockPickPlayerSQLId") == GetPlayerSQLId(playerid)) {
+				new v = FindPlayerVehicleWithSQLId(playerid, GetPVarInt(j, "LockPickVehicleSQLId"));
+				if(v != -1) {
+					new szMessage[185];
+					if(GetPVarType(j, "AttemptingLockPick")) PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 1;
+					else if(GetPVarType(j, "DeliveringVehicleTime")) PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 2;
+					SetPVarInt(j, "LockPickPlayer", playerid);
+					PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy] = j;
+					++PlayerCars;
+					VehicleSpawned[playerid]++;
+					PlayerVehicleInfo[playerid][v][pvId] = GetPVarInt(j, "LockPickVehicle");
+					PlayerVehicleInfo[playerid][v][pvSpawned] = 1;
+					PlayerVehicleInfo[playerid][v][pvFuel] = VehicleFuel[GetPVarInt(j, "LockPickVehicle")];
+					g_mysql_SaveVehicle(playerid, v);
+					SendClientMessageEx(j, COLOR_GREY, "(( The player that owns this vehicle has logged back in! ))");
+					new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(j, ip2, sizeof(ip2));
+					format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) has logged back in while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId:%d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(j), ip2, GetPlayerSQLId(j));
+					Log("logs/playervehicle.log", szMessage);
+					DeletePVar(j, "LockPickVehicleSQLId");
+					DeletePVar(j, "LockPickPlayerSQLId");
+					DeletePVar(j, "LockPickPlayerName");
+				}
+				else SendClientMessageEx(j, COLOR_GREY, "Error on function FindPlayerVehicleWithSQLId");
+			}
+		}	
+	}
 }

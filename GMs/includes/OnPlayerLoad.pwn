@@ -717,7 +717,7 @@ public OnPlayerLoad(playerid)
 	}
 
 	if(PlayerInfo[playerid][pDonateRank] >= 1)
-	SendClientMessageEx(playerid, COLOR_VIP, VIPMOTD);
+		SendClientMessageEx(playerid, COLOR_VIP, VIPMOTD);
 
 	if(PlayerInfo[playerid][pHelper] >= 1) {
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR, CAMOTD);
@@ -988,5 +988,6 @@ public OnPlayerLoad(playerid)
 	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
 	format(szQuery, sizeof(szQuery), "SELECT `id`, `Bug` FROM `bugs` WHERE `status` = '5' AND `ReportedBy` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
+	defer CheckVehiclesLeftSpawned(playerid);
 	return 1;
 }

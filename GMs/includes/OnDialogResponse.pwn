@@ -2218,6 +2218,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_OBACKPACK: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				switch(listitem) {
 					case 0: { // Food
 						if(PlayerInfo[playerid][pBItems][0] > 0) {
@@ -2251,6 +2255,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BFOOD: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				if(GetPVarInt(playerid, "BackpackMeal") == 1) {
 					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a meal.");
 				}
@@ -2270,6 +2278,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BMEDKIT: {
 			if(response && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
 					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a med kit.");
 				}
@@ -2289,6 +2301,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BNARCOTICS: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				SetPVarInt(playerid, "pbitemindex", listitem+1);
 				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS2, "");
 			}
@@ -2298,6 +2314,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BNARCOTICS2: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				SetPVarInt(playerid, "bnwd", listitem);
 				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "");
 			}
@@ -2307,6 +2327,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BNARCOTICS3: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				new TypeName[8];
 				
 				new pbi = GetPVarInt(playerid, "pbitemindex");	
@@ -2390,6 +2414,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BGUNS: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				new szDialog[130], weapname[20];
 				if(listitem == GetPVarInt(playerid, "DepositGunId")) {
 					switch(PlayerInfo[playerid][pBackpack]) {
@@ -2529,6 +2557,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BGUNS2: {
 			if(response) {
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
 				new handguns, primguns, wbid, weapname[20], slot;
 				for(new i = 6; i < 11; i++) {
 					if(PlayerInfo[playerid][pBItems][i] > 0) {
@@ -6635,6 +6667,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if (GetPVarInt(playerid, "Refueling") == PlayerVehicleInfo[playerid][listitem][pvId])
 					SendClientMessageEx(playerid, COLOR_WHITE, "You can not store a vehicle while it is being refueled.");
+				else if (WheelClamp{PlayerVehicleInfo[playerid][listitem][pvId]})
+					SendClientMessageEx(playerid, COLOR_WHITE, "You can not store this vehicle at this moment.");
 				else {
 					--PlayerCars;
 					VehicleSpawned[playerid]--;
@@ -8516,13 +8550,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have not given anyone the keys for this car.");
 				return 1;
 			}
-			PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
-			PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
-			format(string, sizeof(string), "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
-			SendClientMessageEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId], COLOR_GRAD2, string);
-			format(string, sizeof(string), "You took the keys of your %s from %s.", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]),GetPlayerNameEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]));
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
-			PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+			if (ProxDetectorS(4.0, playerid, PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId])) {
+				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
+				PlayerInfo[PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
+				format(string, sizeof(string), "%s has taken the keys of their %s.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]));
+				SendClientMessageEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId], COLOR_GRAD2, string);
+				format(string, sizeof(string), "You took the keys of your %s from %s.", GetVehicleName(PlayerVehicleInfo[playerid][listitem][pvId]),GetPlayerNameEx(PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId]));
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				PlayerVehicleInfo[playerid][listitem][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+			}
+			else
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not close enough to that player.");
 		}
 	}
 	if(dialogid == MPSPAYTICKETSCOP)
