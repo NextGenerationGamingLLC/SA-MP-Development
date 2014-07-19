@@ -38821,7 +38821,7 @@ CMD:destroyboombox(playerid, params[])
 
 CMD:placefirework(playerid, params[])
 {
-	if(fireworktog == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot currently launch fireworks.");
+	if(fireworktog == 0 || GetPVarInt(playerid, "camerasc") == 1 || GetPVarInt(playerid, "rccam") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot currently launch fireworks.");
 	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You must be Level 3+ to place a firework!");
 	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 	if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this while watching TV!");
