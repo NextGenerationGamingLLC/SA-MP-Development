@@ -17505,7 +17505,8 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new extraid = PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy];
 			SetPVarInt(extraid, "LockPickVehicleSQLId", PlayerVehicleInfo[playerid][v][pvSlotId]);
 			SetPVarInt(extraid, "LockPickPlayerSQLId", GetPlayerSQLId(playerid));
-			//SetPVarInt(extraid, "LockPickPlayerLocksLeft", PlayerVehicleInfo[playerid][v][pvLocksLeft]);
+			SetPVarInt(extraid, "VLPLocksLeft", PlayerVehicleInfo[playerid][v][pvLocksLeft]);
+			SetPVarInt(extraid, "VLPTickets", PlayerVehicleInfo[playerid][v][pvTicket]);
 			SetPVarString(extraid, "LockPickPlayerName", GetPlayerNameEx(playerid));
 			new szMessage[150], rsMessage[20];
 			switch(reason){
@@ -17518,7 +17519,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			new ip2[MAX_PLAYER_NAME];
 			GetPlayerIp(extraid, ip2, sizeof(ip2));
 			SendClientMessageEx(extraid, COLOR_YELLOW, "(( The vehicle will de-spawn once you complete or fail the deliver. ))");
-			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP], GetPlayerSQLId(playerid), rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2, GetPlayerSQLId(extraid));
+			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) has %s while his %s(VID:%d Slot %d) was lock picked by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP], rsMessage, GetVehicleName(PlayerVehicleInfo[playerid][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(extraid), ip2, GetPlayerSQLId(extraid));
 			Log("logs/playervehicle.log", szMessage);
 			DeletePVar(extraid, "LockPickPlayer");
 			PlayerVehicleInfo[playerid][v][pvBeingPickLocked] = 0;
@@ -19178,7 +19179,8 @@ stock UpdateSpeedCamerasForPlayer(p)
 					{
 						if(GetPVarType(p, "LockPickPlayerSQLId") && GetPVarInt(p, "LockPickVehicle") == vehicleid) {
 							new string[155], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
-							format(string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = (`pvTicket`+%d) WHERE `id` = '%d'", Amount, GetPVarInt(p, "LockPickVehicleSQLId"));
+							SetPVarInt(p, "VLPTickets", GetPVarInt(p, "VLPTickets")+Amount);
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
 							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
 							PlayerInfo[p][pTicketTime] = 60;
 							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
@@ -26411,16 +26413,13 @@ public Anti_Rapidfire()
 
 stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
 {
-	print("FindGunInVehicleForPlayer 1.0");
 	new
 		i = 0;
 	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && (!PlayerVehicleInfo[ownerid][slot][pvWeapons][i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] == PlayerVehicleInfo[ownerid][slot][pvWeapons][i]))
 	{
-		printf("FindGunInVehicleForPlayer 1.1.%d MaxSlots %d TrunkWeap %d WeaponSlot %d pGuns %d", i+1, (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1), PlayerVehicleInfo[ownerid][slot][pvWeapons][i], GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])]);
 		i++;
 	}
 	if (i == (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1)) return -1;
-	printf("FindGunInVehicleForPlayer 1.2 MaxSlots %d TrunkWeap %d WeaponSlot %d pGuns %d", (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1), PlayerVehicleInfo[ownerid][slot][pvWeapons][i], GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i]), PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])]);
 	return i;
 }
 

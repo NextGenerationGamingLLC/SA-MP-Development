@@ -1143,7 +1143,8 @@ task ServerHeartbeat[1000]() {
 							if(GetPVarInt(i, "LockPickCountdown") <= 0) {
 								LockStatus{vehicleid} = 0;
 								vehicle_unlock_doors(vehicleid);
-								mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvLocksLeft` = '(`pvLocksLeft`-1)', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+								SetPVarInt(i, "VLPLocksLeft", GetPVarInt(i, "VLPLocksLeft")-1);
+								mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvLocksLeft` = '%d', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "VLPLocksLeft"), GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
 								mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 								new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
 								GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
@@ -1194,12 +1195,6 @@ task ServerHeartbeat[1000]() {
 								rand = random(sizeof(lpRandomLocations));
 							SetPlayerCheckpoint(i, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2], 8.0);
 							SetPVarInt(i, "DeliveringVehicleTime", gettime()+900);
-							strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
-							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-							GetPlayerIp(i, ip, sizeof(ip));
-							GetPlayerIp(ownerid, ip2, sizeof(ip2));
-							format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2);
-							Log("logs/playervehicle.log", szMessage);
 							new Float: pX, Float: pY, Float: pZ;
 							GetPlayerPos(i, pX, pY, pZ);
 							SetPVarFloat(i, "tpDeliverVehX", pX);
@@ -1310,7 +1305,7 @@ task ServerHeartbeat[1000]() {
 									new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 									GetPlayerIp(i, ip, sizeof(ip));
 									GetPlayerIp(ownerid, ip2, sizeof(ip2));
-									format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+									format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%s) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
 									Log("logs/playervehicle.log", szMessage);
 								}
 								else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");

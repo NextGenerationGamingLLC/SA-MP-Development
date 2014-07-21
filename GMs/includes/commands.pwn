@@ -58379,14 +58379,14 @@ CMD:cracktrunk(playerid, params[])
 			if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
 				new ip[MAX_PLAYER_NAME];
 				GetPlayerIp(playerid, ip, sizeof(ip));
-				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) is attempting to crack trunk a %s(VID:%d SQLId: %d) owned by %s(Offline SQLId: %d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to crack trunk a %s(VID:%d SQLId: %d) owned by %s(Offline SQLId: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), GetPVarInt(playerid, "LockPickPlayerSQLId"));
 				Log("logs/playervehicle.log", szMessage);
 			}
 			else {
 				new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME], v = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(GetPVarInt(playerid, "LockPickPlayer"), ip2, sizeof(ip2));
-				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s (IP:%s SQLId: %d) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), ip, GetPlayerSQLId(playerid), GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2, GetPlayerSQLId(GetPVarInt(playerid, "LockPickPlayer")));
+				format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to crack trunk a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId]), PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][v][pvId], v, GetPlayerNameEx(GetPVarInt(playerid, "LockPickPlayer")), ip2, GetPlayerSQLId(GetPVarInt(playerid, "LockPickPlayer")));
 				Log("logs/playervehicle.log", szMessage);
 			}
 		}
