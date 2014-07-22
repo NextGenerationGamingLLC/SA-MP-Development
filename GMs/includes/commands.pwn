@@ -9729,11 +9729,20 @@ CMD:accept(playerid, params[])
         }
 
         else if(strcmp(params, "death", true) == 0) {
-            if(GetPVarInt(playerid, "Injured") == 1) {
-                SendClientMessageEx(playerid, COLOR_WHITE, "You gave up hope and fell unconscious, you were immediately sent to the hospital.");
-                KillEMSQueue(playerid);
-                ResetPlayerWeaponsEx(playerid);
-                SpawnPlayer(playerid);
+			if(GetPVarInt(playerid, "Injured") == 1) {
+                new curTime = gettime();
+                new accDTime = GetPVarInt(playerid, "CanAD");
+                if(accDTime > curTime) {
+                    new adTimeStr[128];
+                    format(adTimeStr, sizeof(adTimeStr), "You must wait %d more seconds before accepting death!", accDTime-curTime);
+                    SendClientMessageEx(playerid, COLOR_WHITE, adTimeStr);
+                } else {
+                    DeletePVar(playerid, "CanAD");
+	                SendClientMessageEx(playerid, COLOR_WHITE, "You gave up hope and fell unconscious, you were immediately sent to the hospital.");
+	                KillEMSQueue(playerid);
+	                ResetPlayerWeaponsEx(playerid);
+	                SpawnPlayer(playerid);
+				}
             }
             else {  SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now !"); }
         }
