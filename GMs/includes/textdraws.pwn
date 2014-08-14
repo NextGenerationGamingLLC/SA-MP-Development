@@ -1956,7 +1956,7 @@ public LoadTextDraws()
 	textdrawscount++;
 
 	// Tutorial (Frame 22) (Line 3)
-	TutTxtdraw[103] = TextDrawCreate(189.000000, 170.000000, "| Brendan Thomson");
+	TutTxtdraw[103] = TextDrawCreate(189.000000, 170.000000, "| Miguel");
 	TextDrawBackgroundColor(TutTxtdraw[103], 255);
 	TextDrawFont(TutTxtdraw[103], 2);
 	TextDrawLetterSize(TutTxtdraw[103], 0.159998, 0.899999);

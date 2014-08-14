@@ -582,6 +582,58 @@ public OnPlayerUpdate(playerid)
 			MoveDynamicObject(backlift, XC[2], YC[2]+distance, ZC[2], speed);
 		}
 	}
+	new newkeys, dir1, dir2;
+	GetPlayerKeys(playerid, newkeys, dir1, dir2);
+	if(ActiveKey(KEY_FIRE))
+	{
+		if(GetPlayerWeapon(playerid) == WEAPON_FIREEXTINGUISHER)
+		{
+			new n;
+			for(n =0; n < MAX_STRUCTURE_FIRES; n++)
+			{
+				if(IsValidStructureFire(n))
+				{
+					if(CheckPlayerFacing(playerid, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2], 1) \
+					&& IsPlayerInRangeOfPoint(playerid, 4, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
+					{
+						new szString[128];
+
+						arrStructureFires[n][iFireStrength] -=2;
+						format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[n][iFireStrength], MAX_FIRE_HEALTH, n);
+						UpdateDynamic3DTextLabelText(arrStructureFires[n][szFireLabel], 0xFFFFFFFF, szString);
+
+						if(arrStructureFires[n][iFireStrength] <=0)
+						{
+							DeleteStructureFire(n);
+						}
+					}
+				}
+			}
+		}
+		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 407 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 601)
+		{
+			new n;
+			for(n =0; n < MAX_STRUCTURE_FIRES; n++)
+			{
+				if(IsValidStructureFire(n))
+				{
+					if(CheckPlayerFacing(playerid, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2], 3) \
+					&& IsPlayerInRangeOfPoint(playerid, 20, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
+					{
+						new szString[128];
+
+						arrStructureFires[n][iFireStrength] -=2;
+						format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[n][iFireStrength], MAX_FIRE_HEALTH, n);
+						UpdateDynamic3DTextLabelText(arrStructureFires[n][szFireLabel], 0xFFFFFFFF, szString);
+						if(arrStructureFires[n][iFireStrength] <=0)
+						{
+							DeleteStructureFire(n);
+						}
+					}
+				}
+			}
+		}
+	}
 	return 1;
 }
 
@@ -1710,7 +1762,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	        }
 	        else
 	        {
-   	 			new stringg[512];
+				new stringg[4096];
 				for(new z;z<MAX_PLAYERTOYS;z++)
 				{
 					new name[24];
@@ -2108,9 +2160,30 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			SetPVarInt(playerid, "KillShotCooldown", gettime());
 		}
 	}
+	if(GetPVarInt(playerid, "FireStart") == 1)
+	{
+		if(fX != 0 && fY != 0 && fZ != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
+		{
+			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ);
+		}
+	}
 	return 1;
 }
 
+public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
+{
+	if(GetPVarInt(playerid, "FireStart") == 1)
+	{
+		new Float:fX, Float:fY, Float:fZ;
+		GetDynamicObjectPos(objectid, fX, fY, fZ);
+		if(fX != 0 && fY != 0 && fZ != 0)
+		{
+			CreateStructureFire(fX+x, fY+y, fZ+z);
+			SetPVarInt(playerid, "fCooldown", gettime()+2);
+		}
+	}
+	return 1;
+}
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
@@ -3394,7 +3467,8 @@ public OnPlayerDisconnect(playerid, reason)
 		if(gettime() >= PlayerInfo[playerid][pDrugsTime]) PlayerInfo[playerid][pDrugsTime] = 0;
 		if(gettime() >= PlayerInfo[playerid][pSexTime]) PlayerInfo[playerid][pSexTime] = 0;
 		
-
+		if(GetPVarInt(playerid, "HidingKnife") == 1) PlayerInfo[playerid][pGuns][1] = 4;
+		
 		new string[128];
 		switch(reason)
 		{
@@ -4283,24 +4357,22 @@ public OnPlayerDeath(playerid, killerid, reason)
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 	}
 
-	if(PlayerInfo[playerid][pHeadValue] >= 1)
+	if(IsPlayerConnected(killerid))
 	{
-		if(IsPlayerConnected(killerid))
+		if(PlayerInfo[playerid][pHeadValue] >= 1)
 		{
-			if(GoChase[killerid] == playerid && GetPVarInt(killerid, "HitCooldown") <= 0)
+			if(GoChase[killerid] == playerid)// && GetPVarInt(killerid, "HitCooldown") <= 0)
 			{
 				new szMessage[64 + MAX_PLAYER_NAME];
-				new takemoney = floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
+				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
 				SendGroupMessage(2, COLOR_YELLOW, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
 				PlayerInfo[playerid][pContractDetail][0] = 0;
-   				ResetPlayerWeaponsEx(playerid);
-				// SpawnPlayer(playerid);
+				ResetPlayerWeaponsEx(playerid);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
-				// KillEMSQueue(playerid);
 				PlayerInfo[playerid][pHeadValue] = 0;
 				PlayerInfo[killerid][pCHits] += 1;
 				GotHit[playerid] = 0;
@@ -4308,18 +4380,15 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GoChase[killerid] = INVALID_PLAYER_ID;
 			}
 		}
-	}
-	if(IsPlayerConnected(killerid))
- 	{
 		if(GoChase[playerid] == killerid)
 		{
 			new szMessage[64 + MAX_PLAYER_NAME];
-			new takemoney = floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
+			new takemoney = PlayerInfo[playerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
-			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%d.",GetPlayerNameEx(playerid),GetPlayerNameEx(killerid),takemoney);
+			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), takemoney);
 			SendGroupMessage(2, COLOR_YELLOW, szMessage);
 			GivePlayerCash(playerid, -takemoney);
-		   	format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%d, removing the contract on your head.",takemoney);
+			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%d, removing the contract on your head.", takemoney);
 			PlayerInfo[killerid][pContractDetail][0] = 0;
 			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
 			PlayerInfo[killerid][pHeadValue] = 0;
@@ -5951,7 +6020,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						if (IsAHitman(playerid))
 						{
 							new string[128];
-							new takemoney = (PlayerInfo[GoChase[playerid]][pHeadValue] / 4) * 2;
+							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];//(PlayerInfo[GoChase[playerid]][pHeadValue] / 4) * 2;
 							GivePlayerCash(playerid, takemoney);
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
@@ -6104,7 +6173,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					CreateExplosion(boomx, boomy , boomz, 7, 1);
 					VehicleBomb{vehicleid} = 0;
 					PlacedVehicleBomb[GetChased[playerid]] = INVALID_VEHICLE_ID;
-					new takemoney = (PlayerInfo[playerid][pHeadValue] / 4) * 2;
+					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
@@ -7360,7 +7429,7 @@ public OnPlayerText(playerid, text[])
 	return 0;
 }
 
-public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat)
+public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
 {
 	if(DynVeh[vehicleid] != -1)
 	{
@@ -7392,6 +7461,23 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid)
 		}
 		else
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You exit the clothes selection menu.");
+	}
+	else if(extraid == 1338) 
+	{
+		if(response)
+		{
+			if(modelid == 1654) PlayerInfo[playerid][pC4] = CreateDynamicObject(modelid, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")-0.9, 0, 89.325012207031, 3.9700012207031);
+			else PlayerInfo[playerid][pC4] = CreateDynamicObject(modelid, GetPVarFloat(playerid, "DYN_C4_FLOAT_X"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Y"), GetPVarFloat(playerid, "DYN_C4_FLOAT_Z")-0.7, 0, 0, 0);
+			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
+			ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
+			PlayerInfo[playerid][pBombs]--;
+			PlayerInfo[playerid][pC4Used] = 1;
+			SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the ground, /pickupbomb to remove it.");
+		}
+		else
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the bomb selection menu.");
+		}
 	}
 	return 1;
 }

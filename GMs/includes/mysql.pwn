@@ -2205,7 +2205,8 @@ stock SaveFamily(id) {
 		`GtObject`=%d, \
 		`MOTD1`='%s', \
 		`MOTD2`='%s', \
-		`MOTD3`='%s' \
+		`MOTD3`='%s', \
+		`FamColor` = %i \
 		WHERE `ID` = %d",
 		string,
 		FamilyInfo[id][FamilyMaxSkins],
@@ -2233,6 +2234,7 @@ stock SaveFamily(id) {
 		g_mysql_ReturnEscaped(FamilyMOTD[id][0], MainPipeline),
 		g_mysql_ReturnEscaped(FamilyMOTD[id][1], MainPipeline),
 		g_mysql_ReturnEscaped(FamilyMOTD[id][2], MainPipeline),
+		FamilyInfo[id][FamColor],
 		id
 	);
 
@@ -4558,7 +4560,8 @@ public QueryGetCountFinish(userid, type)
 		{
 			if(rows > 0)
 			{
-				WDReportCount[userid] = cache_get_field_content_int(0, "SUM(count)", MainPipeline);
+				cache_get_field_content(0, "SUM(count)", sResult, MainPipeline);
+				WDReportCount[userid] = strval(sResult);
 			}
 			else WDReportCount[userid] = 0;
 		}
@@ -4646,6 +4649,7 @@ public OnLoadFamilies()
 	        format(column,sizeof(column), "Gun%d", j+1);
 	        cache_get_field_content(i, column, tmp, MainPipeline); FamilyInfo[famid][FamilyGuns][j] = strval(tmp);
 	    }
+		FamilyInfo[famid][FamColor] = cache_get_field_content_int(i, "FamColor", MainPipeline);
 		if(FamilyInfo[famid][FamilyUSafe] > 0)
 		{
 			FamilyInfo[famid][FamilyPickup] = CreateDynamicPickup(1239, 23, FamilyInfo[famid][FamilySafe][0], FamilyInfo[famid][FamilySafe][1], FamilyInfo[famid][FamilySafe][2], .worldid = FamilyInfo[famid][FamilySafeVW], .interiorid = FamilyInfo[famid][FamilySafeInt]);

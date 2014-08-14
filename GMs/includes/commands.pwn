@@ -6744,7 +6744,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
+		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -6764,7 +6764,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getseeds /plantpotseeds /pickweed /checkweed");
+		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -6784,7 +6784,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getseeds /plantpotseeds /pickweed /checkweed");
+		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -6819,7 +6819,7 @@ CMD:help(playerid, params[])
                     format(string, sizeof(string), "*** %s ***  /cratelimit /viewcrateorders", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all) /wheelclamps", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /placekit /usekit /backup (code2) /backupall /backupint /calls /a(ccept)c(all) /i(gnore)c(all) /wheelclamp", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 
 			}
@@ -11781,37 +11781,37 @@ CMD:accept(playerid, params[])
                 return 1;
             }
         }
-        else if(strcmp(params,"contract",true) == 0) {
-            if(HitOffer[playerid] != INVALID_PLAYER_ID) {
-                if(HitToGet[playerid] != INVALID_PLAYER_ID) {
-                    if(IsPlayerConnected(HitToGet[playerid])) {
-                        format(szMessage, sizeof(szMessage), "* %s has accepted the contract to kill %s.", GetPlayerNameEx(playerid),GetPlayerNameEx(HitToGet[playerid]));
-                        SendClientMessageEx(HitOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-                        format(szMessage, sizeof(szMessage), "* You have accepted the contract to kill %s, you will recieve $%d when completed.", GetPlayerNameEx(HitToGet[playerid]), (PlayerInfo[HitToGet[playerid]][pHeadValue] / 4) * 2);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                        format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  (PlayerInfo[HitToGet[playerid]][pHeadValue] / 4) * 2);
-                        SendGroupMessage(2, COLOR_YELLOW, szMessage);
-						SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 15 seconds for the final go ahead from the Agency.");
-						SetPVarInt(playerid, "HitCooldown", 15);
-                        GoChase[playerid] = HitToGet[playerid];
-                        GetChased[HitToGet[playerid]] = playerid;
-                        GotHit[HitToGet[playerid]] = 1;
-                        HitToGet[playerid] = INVALID_PLAYER_ID;
-                        HitOffer[playerid] = INVALID_PLAYER_ID;
-                        return 1;
-                    }
-                    else {
-                        HitToGet[playerid] = INVALID_PLAYER_ID;
-                        HitOffer[playerid] = INVALID_PLAYER_ID;
-                        return 1;
-                    }
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you a contract!");
-                return 1;
-            }
-        }
+		else if(strcmp(params,"contract",true) == 0) {
+			if(HitOffer[playerid] != INVALID_PLAYER_ID) {
+				if(HitToGet[playerid] != INVALID_PLAYER_ID) {
+					if(IsPlayerConnected(HitToGet[playerid])) {
+						format(szMessage, sizeof(szMessage), "* %s has accepted the contract to kill %s.", GetPlayerNameEx(playerid),GetPlayerNameEx(HitToGet[playerid]));
+						SendClientMessageEx(HitOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+						format(szMessage, sizeof(szMessage), "* You have accepted the contract to kill %s, you will recieve $%d when completed.", GetPlayerNameEx(HitToGet[playerid]), PlayerInfo[HitToGet[playerid]][pHeadValue]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+						format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  PlayerInfo[HitToGet[playerid]][pHeadValue]);
+						SendGroupMessage(2, COLOR_YELLOW, szMessage);
+						//SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 15 seconds for the final go ahead from the Agency.");
+						//SetPVarInt(playerid, "HitCooldown", 15);
+						GoChase[playerid] = HitToGet[playerid];
+						GetChased[HitToGet[playerid]] = playerid;
+						GotHit[HitToGet[playerid]] = 1;
+						HitToGet[playerid] = INVALID_PLAYER_ID;
+						HitOffer[playerid] = INVALID_PLAYER_ID;
+						return 1;
+					}
+					else {
+						HitToGet[playerid] = INVALID_PLAYER_ID;
+						HitOffer[playerid] = INVALID_PLAYER_ID;
+						return 1;
+					}
+				}
+			}
+			else {
+				SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you a contract!");
+				return 1;
+			}
+		}
         else if(strcmp(params,"sex",true) == 0) {
             if(SexOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > SexPrice[playerid]) {
@@ -13301,6 +13301,7 @@ CMD:enter(playerid, params[])
 					SetPVarFloat(playerid, "tpForkliftY", pY);
 					SetPVarFloat(playerid, "tpForkliftZ", pZ);
 				}
+				if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0) SetPVarInt(playerid, "tpJustEntered", 1);
 				if(DynVeh[GetPlayerVehicleID(playerid)] != -1)
 				{
 					new vw[1];
@@ -19085,34 +19086,46 @@ CMD:pickplant(playerid, params[])
 CMD:levelones(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		new szNoobs[156], zone[MAX_ZONE_NAME];
-   		SendClientMessageEx(playerid,COLOR_WHITE,"Listing all level ones...");
-
-    	//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		new szNoobs[156], zone[MAX_ZONE_NAME], search[MAX_ZONE_NAME], hours;
+		SendClientMessageEx(playerid, COLOR_WHITE, "Listing level ones...");
+		if(!sscanf(params, "d", hours)) 
 		{
-			if(IsPlayerConnected(i))
+			foreach(new i: Player)
 			{
-				if(gPlayerLogged{playerid} > 0 && PlayerInfo[i][pLevel] == 1 && PlayerInfo[i][pConnectHours] == 0 && PlayerInfo[i][pAdmin] == 0)
-				{
-					GetPlayer3DZone(i, zone, sizeof(zone));
-					format(szNoobs, sizeof(szNoobs), "* %s (ID %i) (Hours 0) - Location: %s", GetPlayerNameEx(i), i, zone);
-					SendClientMessageEx(playerid, COLOR_WHITE, szNoobs);
-				}
-			}	
-		}
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
-		{
-			if(IsPlayerConnected(i))
-			{
-				if(gPlayerLogged{playerid} > 0 && PlayerInfo[i][pLevel] == 1 && PlayerInfo[i][pConnectHours] != 0 && PlayerInfo[i][pAdmin] == 0)
+				if(gPlayerLogged{playerid} > 0 && PlayerInfo[i][pLevel] == 1 && PlayerInfo[i][pConnectHours] == hours && PlayerInfo[i][pAdmin] == 0)
 				{
 					GetPlayer3DZone(i, zone, sizeof(zone));
 					format(szNoobs, sizeof(szNoobs), "* %s (ID %i) (Hours %i) - Location: %s", GetPlayerNameEx(i), i, PlayerInfo[i][pConnectHours], zone);
 					SendClientMessageEx(playerid, COLOR_WHITE, szNoobs);
 				}
-			}	
+			}
+		}
+		else if(!sscanf(params, "s[28]", search)) 
+		{
+			foreach(new i: Player)
+			{
+				if(gPlayerLogged{playerid} > 0 && PlayerInfo[i][pLevel] == 1 && PlayerInfo[i][pAdmin] == 0)
+				{
+					GetPlayer3DZone(i, zone, sizeof(zone));
+					if(strcmp(search, zone, true) == 0 && !isnull(zone)) // null check, as strcmp returns 0 if empty.
+					{
+						format(szNoobs, sizeof(szNoobs), "* %s (ID %i) (Hours %i) - Location: %s", GetPlayerNameEx(i), i, PlayerInfo[i][pConnectHours], zone);
+						SendClientMessageEx(playerid, COLOR_WHITE, szNoobs);
+					}
+				}
+			}
+		}
+		else 
+		{
+			foreach(new i: Player)
+			{
+				if(gPlayerLogged{playerid} > 0 && PlayerInfo[i][pLevel] == 1 && PlayerInfo[i][pAdmin] == 0)
+				{
+					GetPlayer3DZone(i, zone, sizeof(zone));
+					format(szNoobs, sizeof(szNoobs), "* %s (ID %i) (Hours %i) - Location: %s", GetPlayerNameEx(i), i, PlayerInfo[i][pConnectHours], zone);
+					SendClientMessageEx(playerid, COLOR_WHITE, szNoobs);
+				}
+			}
 		}
 	}
 	return 1;
@@ -22049,6 +22062,7 @@ CMD:quitgroup(playerid, params[])
 		player_remove_vip_toys(playerid);
 		ResetPlayerWeaponsEx(playerid);
    		pTazer{playerid} = 0;
+		DeletePVar(playerid, "HidingKnife");
 	}
 	else
 	{
@@ -30237,6 +30251,7 @@ CMD:groupkick(playerid, params[])
 				}
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
+				DeletePVar(giveplayerid, "HidingKnife");
 				SetPlayerToTeamColor(giveplayerid);
 				format(string, sizeof(string), "You have group-kicked %s.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -31559,7 +31574,7 @@ CMD:calls(playerid, params[])
 			{
 				for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
 				{
-					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0)
+					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0 || (!strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], gMainZones[9][SAZONE_NAME], true) && strcmp(Calls[i][MainZone], gMainZones[3][SAZONE_NAME], true) == -1))
 					{
 						if(Calls[i][Type] == 0 && IsACop(playerid))
 						{
@@ -36835,6 +36850,7 @@ CMD:setskin(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
+			if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) && giveplayerid != playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on a the same/greater level admin than you!");
 			if(!IsInvalidSkin(skinid))
 			{
 				if(GetPlayerSkin(giveplayerid) == skinid)
@@ -38100,7 +38116,7 @@ CMD:gotoco(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new Float: pos[3], int;
-		if(sscanf(params, "fffd", pos[0], pos[1], pos[2], int)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoco [x coordinate] [y coordinate] [z coordinate] [interior]");
+		if(sscanf(params, "p<,>fffd", pos[0], pos[1], pos[2], int)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoco [x coordinate] [y coordinate] [z coordinate] [interior]");
 
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have been teleported to the coordinates specified.");
 		SetPlayerPos(playerid, pos[0], pos[1], pos[2]);
@@ -40747,8 +40763,8 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pGangModerator] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /gtedit /gtstatus /gtnear /tagperm /tagedit");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /feditcolor /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /gtedit /gtstatus /gtnear /tagperm /tagedit /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	}
 	if (PlayerInfo[playerid][pGangModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoGM *** /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pShopTech] >= 1)
@@ -40764,7 +40780,7 @@ CMD:ah(playerid, params[])
 		if(PlayerInfo[playerid][pBM] >= 2) SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - DoBM *** /asellbiz");
 	}
 	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm");
-	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn");
+	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoFM *** /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
 	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -41066,9 +41082,9 @@ CMD:families(playerid, params[])
 			return 1;
 		}
 
-		if(familyid < 1 || familyid > MAX_FAMILY)
+		if(familyid < 1 || familyid >= MAX_FAMILY)
 		{
-			format(string, sizeof(string), "Family slot must be between 1 and %i.", MAX_FAMILY);
+			format(string, sizeof(string), "Family slot must be between 1 and %i.", MAX_FAMILY-1);
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 		 	return 1;
  	 	}
@@ -46361,17 +46377,12 @@ CMD:pb(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTRED,"You can't plant C4 while in a vehicle!");
 					return 1;
 				}
-				GetPlayerPos(playerid,Positions[0][0], Positions[0][1], Positions[0][2]);
+				GetPlayerPos(playerid, Positions[0][0], Positions[0][1], Positions[0][2]);
 				SetPVarFloat(playerid, "DYN_C4_FLOAT_X", Positions[0][0]);
 				SetPVarFloat(playerid, "DYN_C4_FLOAT_Y", Positions[0][1]);
 				SetPVarFloat(playerid, "DYN_C4_FLOAT_Z", Positions[0][2]);
-				PlayerInfo[playerid][pC4] = CreateDynamicObject(1654, Positions[0][0], Positions[0][1], Positions[0][2]-0.9, 0, 89.325012207031, 3.9700012207031);
-				ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
-				ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0);
-				SendClientMessageEx(playerid, COLOR_GREEN, "You have placed C4 on the ground, /pickupbomb to remove it.");
-				//PlayerInfo[playerid][pC4] = 1;
-				PlayerInfo[playerid][pBombs]--;
-				PlayerInfo[playerid][pC4Used] = 1;
+				new models[9] = {1654, 1230, 1778, 2814, 1271, 1328, 2919, 2770, 1840};
+				ShowModelSelectionMenuEx(playerid, models, sizeof(models), "Bomb Model Selector", 1338, 0.0, 0.0, 180.0);
 			}
 			else
 			{
@@ -46381,13 +46392,13 @@ CMD:pb(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD2, " You can only deploy 1 C4 at a time ! ");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You can only deploy 1 C4 at a time!");
 			return 1;
 		}
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, " You are not a member of the Hitman Agency ! ");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a member of the Hitman Agency!");
 	}
 	return 1;
 }
@@ -49571,12 +49582,12 @@ CMD:f(playerid, params[])
 	        new division[GROUP_MAX_DIV_LEN];
 	        format(division, sizeof(division), "%s", FamilyDivisionInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pDivision]]);
 		    format(string, sizeof(string), "** (%i) %s (%s) %s: %s **", PlayerInfo[playerid][pRank], FamilyRankInfo[fam][PlayerInfo[playerid][pRank]], division, GetPlayerNameEx(playerid), params);
-			SendNewFamilyMessage(fam, TEAM_AZTECAS_COLOR, string);
+			SendNewFamilyMessage(fam, FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
 		}
 		else
 		{
 		    format(string, sizeof(string), "** (%i) %s %s: %s **", PlayerInfo[playerid][pRank], FamilyRankInfo[fam][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), params);
-			SendNewFamilyMessage(fam, TEAM_AZTECAS_COLOR, string);
+			SendNewFamilyMessage(fam, FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
 		}
 	}
 	else
@@ -52183,83 +52194,54 @@ CMD:contract(playerid, params[])
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in jail.");
 	
 	new string[128], giveplayerid, moneys, detail[32];
-	if(sscanf(params, "uds[32]", giveplayerid, moneys, detail)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /contract [player] [amount] [details]");
+	if(sscanf(params, "uds[32]", giveplayerid, moneys, detail)) 
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /contract [player] [amount] [details]");
 
-	if (!IsPlayerConnected(giveplayerid)) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	}
-	if(PlayerInfo[playerid][pLevel] < 5 || PlayerInfo[giveplayerid][pLevel] < 5) {
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 5.");
-	}
-	if( moneys < 50000 || moneys > 1000000)
+	if (IsPlayerConnected(giveplayerid) && giveplayerid != INVALID_PLAYER_ID) 
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $50,000 or more than $1,000,000.");
-		return 1;
-	}
-	else if((moneys < 100000 || moneys > 1000000) && IsACop(giveplayerid))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $100,000.");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pLevel] < 3)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You must be level 3 to place a contract.");
-		return 1;
-	}
-	if(PlayerInfo[giveplayerid][pConnectHours] < 12)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not place contracts on players with less than 12 playing hours.");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2)
-	{
-		SendClientMessageEx( playerid, COLOR_GREY, "You can't place contracts as a hitman." );
+		if(giveplayerid == playerid) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "You can't contract yourself.");
+
+		if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3) 
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 3.");
+			
+		if(moneys < 100000 || moneys > 3000000) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $100,000 or more than $3,000,000.");
+		
+		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid)) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
+		
+		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2)
+			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this to that person.");
+			
+		if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)
+			return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
+		
+		if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
+		{
+			if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Contract details may not be longer than 32 characters in length.");
+			GivePlayerCash(playerid, (0 - moneys));
+			PlayerInfo[giveplayerid][pHeadValue] += moneys;
+			strmid(PlayerInfo[giveplayerid][pContractBy], GetPlayerNameEx(playerid), 0, strlen(GetPlayerNameEx(playerid)), MAX_PLAYER_NAME);
+			strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
+			format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
+			SendGroupMessage(2, COLOR_YELLOW, string);
+			format(string, sizeof(string), "* You placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(giveplayerid), moneys, detail);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "<< %s has placed a contract on %s for $%d, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
+			Log("logs/contracts.log", string);
+			format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
+			ABroadCast(COLOR_YELLOW,string,4);
+			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money for this.");
+		}
 	}
 	else
 	{
-		if(giveplayerid != INVALID_PLAYER_ID)
-		{
-			if( moneys >= 1000001 )
-			{
-				SendClientMessageEx( playerid, COLOR_GREY, "The maximum contract price is $1,000,000!" );
-				return 1;
-			}
-
-			if( PlayerInfo[giveplayerid][pHeadValue] >= 1000000 )
-			{
-				SendClientMessageEx( playerid, COLOR_GREY, "That person has the maximum on their head." );
-				return 1;
-			}
-			if(moneys + PlayerInfo[giveplayerid][pHeadValue] >= 1000001 )
-			{
-				SendClientMessageEx( playerid, COLOR_GREY, "That person has the maximum on their head." );
-				return 1;
-			}
-
-			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't contract yourself."); return 1; }
-			new playermoney = GetPlayerCash(playerid);
-			if (moneys > 0 && playermoney >= moneys)
-			{
-				if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Contract details may not be longer than 32 characters in length.");
-				GivePlayerCash(playerid, (0 - moneys));
-				PlayerInfo[giveplayerid][pHeadValue]+=moneys;
-				strmid(PlayerInfo[giveplayerid][pContractBy], GetPlayerNameEx(playerid), 0, strlen(GetPlayerNameEx(playerid)), MAX_PLAYER_NAME);
-				strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
-				format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
-				SendGroupMessage(2, COLOR_YELLOW, string);
-				format(string, sizeof(string), "* You placed a contract on %s for $%d, details: %s.",GetPlayerNameEx(giveplayerid), moneys, detail);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "<< %s(%d) has placed a contract on %s(%d) for $%d, details: %s >>",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), moneys, detail);
-				Log("logs/contracts.log", string);
-				format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
-				ABroadCast(COLOR_YELLOW,string,4);
-				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have enough money for this.");
-			}
-		}
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
 	return 1;
 }
@@ -54355,7 +54337,7 @@ CMD:reloadlist(playerid, params[])
 //======[Start of Famed Commands]=======
 
 CMD:fc(playerid, params[]) {
-	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
 		if(isnull(params)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fc [message]");
 		}
@@ -54395,7 +54377,7 @@ CMD:fc(playerid, params[]) {
 
 CMD:togfamed(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFamed] >= 1)
+	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 2)
 	{
 	    if(PlayerInfo[playerid][pFamedTogged] == 0)
 	    {
@@ -54432,7 +54414,7 @@ CMD:fmute(playerid, params[])
 					format(string, sizeof(string), "You were muted from the famed channel by %s, reason: %s. You may appeal this mute at www.ng-gaming.net/forums", GetPlayerNameEx(playerid), reason);
 					SendClientMessageEx(targetid, COLOR_GRAD2, string);
 					format(string, sizeof(string), "AdmCmd: %s has muted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
-					ABroadCast(COLOR_LIGHTRED, string, 1);
+					ABroadCast(COLOR_LIGHTRED, string, 2);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 					format(string, sizeof(string), "AdmCmd: %s has muted %s(%d) from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), reason);
 					Log("logs/admin.log", string);
@@ -54467,7 +54449,7 @@ CMD:funmute(playerid, params[])
 					format(string, sizeof(string), "You were unmuted from the famed channel by %s, reason: %s.", GetPlayerNameEx(playerid), reason);
 					SendClientMessageEx(targetid, COLOR_GRAD2, string);
 					format(string, sizeof(string), "AdmCmd: %s has unmuted %s from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), reason);
-					ABroadCast(COLOR_LIGHTRED, string, 1);
+					ABroadCast(COLOR_LIGHTRED, string, 2);
 					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 					format(string, sizeof(string), "AdmCmd: %s has unmuted %s(%d) from the Famed Channel, reason: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), reason);
 					Log("logs/admin.log", string);
@@ -59661,6 +59643,112 @@ CMD:jailcuff(playerid, params[])
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+	}
+	return 1;
+}
+
+CMD:feditcolor(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] >= 1)
+	{
+		new fam, color, string[128];
+		if(sscanf(params, "dh", fam, color)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /feditcolor [family] [color]"), SendClientMessageEx(playerid, COLOR_GREY, "Color Must be in Hex format! Ex: 01FCFF");
+		if(fam < 1 || fam > MAX_FAMILY-1) return format(string,sizeof(string), "   FamilyNr can't be below 1 or above %i!", MAX_FAMILY-1), SendClientMessageEx(playerid, COLOR_GREY, string);
+		FamilyInfo[fam][FamColor] = color;
+		format(string, sizeof(string), "%s has set the family color to %x in %s (%d)", GetPlayerNameEx(playerid), FamilyInfo[fam][FamColor], FamilyInfo[fam][FamilyName], fam);
+		SendClientMessageEx(playerid, FamilyInfo[fam][FamColor] * 256 + 255, string);
+		Log("logs/family.log", string);
+		SaveFamily(fam);
+	}
+	return 1;
+}
+
+CMD:fires(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	if(GetPVarInt(playerid, "FireStart") != 1)
+	{
+		SetPVarInt(playerid, "FireStart", 1);
+		SendClientMessageEx(playerid, COLOR_GREY, "You are now in fire creation mode");
+		SendClientMessageEx(playerid, COLOR_GREY, "Please use a weapon and shoot whereever you wish to create a fire");
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You have exited fire creation mode and are no longer able to create fires");
+		DeletePVar(playerid, "FireStart");
+	}
+	return 1;
+}
+
+CMD:destroyfire(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	new fire;
+	if(sscanf(params, "d", fire)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroyfire [fireid]");
+	if(!(0 <= fire <= MAX_STRUCTURE_FIRES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Fire ID!");
+	if(arrStructureFires[fire][fFirePos][0] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Fire has not been created!");
+	DeleteStructureFire(fire);
+	return 1;
+}
+
+CMD:destroyfires(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
+	for(new i; i < MAX_STRUCTURE_FIRES; i++)
+	{
+		DeleteStructureFire(i);
+	}
+	return 1;
+}
+
+CMD:gotofire(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	new fire;
+	if(sscanf(params, "d", fire)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotofire [fireid]");
+	if(!(0 <= fire <= MAX_STRUCTURE_FIRES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Fire ID!");
+	if(arrStructureFires[fire][fFirePos][0] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "Fire has not been created!");
+	SetPlayerPos(playerid, arrStructureFires[fire][fFirePos][0], arrStructureFires[fire][fFirePos][1], arrStructureFires[fire][fFirePos][2]);
+	return 1;
+}
+
+CMD:setfstrength(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	new fire, strength;
+	if(sscanf(params, "dd", fire, strength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setfstrength [fireid] [strength]");
+	if(!(0 <= fire <= MAX_STRUCTURE_FIRES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Fire ID!");
+	arrStructureFires[fire][iFireStrength] = strength;
+	return 1;
+}
+
+CMD:changes(playerid, params[])
+{
+	new rev[16], string[64];
+	format(rev, sizeof(rev), "%s", str_replace("NG:RP ", "", SERVER_GM_TEXT));
+	format(string, sizeof(string), "%s/devlog/server.php?revision=%s", SAMP_WEB, rev);
+	HTTP(playerid, HTTP_GET, string, "", "RevisionListHTTP");
+	return 1;
+}
+
+CMD:knife(playerid, params[]) 
+{
+	if(IsAHitman(playerid)) {
+		if(GetPVarInt(playerid, "HidingKnife") == 1) {
+			GivePlayerValidWeapon(playerid, 4, 1);
+			DeletePVar(playerid, "HidingKnife");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have pulled out your knife.");
+		}
+		else {
+			if(PlayerInfo[playerid][pGuns][1] == WEAPON_KNIFE) {
+				RemovePlayerWeapon(playerid, 4); // Remove Knife
+				SetPVarInt(playerid, "HidingKnife", 1);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have hidden your knife.");
+			} 
+			else {
+				SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a knife available.");
+			}
+		}
 	}
 	return 1;
 }

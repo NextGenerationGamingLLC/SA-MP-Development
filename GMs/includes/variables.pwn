@@ -1259,6 +1259,9 @@ new bool: IsDynamicGiftBoxEnabled = false;
 
 new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
 
+new arrStructureFires[MAX_STRUCTURE_FIRES][eStructureFires];
+new iServerFires = 0;
+
 new Float:JoinCameraPosition[8][3] = {
 	{2211.1460, -1748.3909, 29.3744},
 	{1283.8524, -1385.5304, -10.0},

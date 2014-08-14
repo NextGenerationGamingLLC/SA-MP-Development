@@ -3186,7 +3186,8 @@ IsValidName(iPlayer) {
 
 	new
 		iLength,
-		szPlayerName[MAX_PLAYER_NAME], tmpName[MAX_PLAYER_NAME];
+		szPlayerName[MAX_PLAYER_NAME], tmpName[MAX_PLAYER_NAME],
+		falses;
 
 	GetPlayerName(iPlayer, szPlayerName, sizeof(szPlayerName));
 
@@ -3204,6 +3205,9 @@ IsValidName(iPlayer) {
 		if(!('a' <= szPlayerName[i] <= 'z' || 'A' <= szPlayerName[i] <= 'Z' || szPlayerName[i] == '_') && szPlayerName[i] != '.') {
 			return 0;
 		}
+		if(szPlayerName[i] == 'I' && i == 0) continue;
+		if(szPlayerName[i] == 'I' && szPlayerName[i-1] != '_') falses++;
+		if(falses > 0) return 0;
 	}
 	return 1;
 }
@@ -3543,6 +3547,7 @@ public InitiateGamemode()
 	SetTimer("MailDeliveryTimer", 60000, 1);
 	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
 	SetTimer("Anti_Rapidfire", 1000, true);
+	SetTimer("OnEnterFire", 1000, true);
 	
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates
@@ -5043,7 +5048,7 @@ public SetVehicleEngine(vehicleid, playerid)
 					CreateExplosion(boomx, boomy , boomz, 7, 1);
 					VehicleBomb{vehicleid} = 0;
 					PlacedVehicleBomb[GetChased[playerid]] = INVALID_VEHICLE_ID;
-					new takemoney = (PlayerInfo[playerid][pHeadValue] / 4) * 2;
+					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
@@ -8512,6 +8517,7 @@ stock ClearFamily(family)
 	FamilyInfo[family][FamilySafeVW] = 0;
 	FamilyInfo[family][FamilySafeInt] = 0;
 	FamilyInfo[family][FamilyUSafe] = 0;
+	FamilyInfo[family][FamColor] = 0x01FCFF;
 	DestroyDynamicPickup( FamilyInfo[family][FamilyEntrancePickup] );
 	DestroyDynamicPickup( FamilyInfo[family][FamilyExitPickup] );
 	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyEntranceText] );
@@ -14951,7 +14957,7 @@ stock ShowPlayerCrimeDialog(playerid)
 			strcat(szCrime, "\n");
 		}
 	}
-	strcat(szCrime, "Other (Not Listed)");
+	//strcat(szCrime, "Other (Not Listed)");
 	return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Select a committed crime", szCrime, "Select", "Exit");
 }
 
@@ -18968,6 +18974,7 @@ stock IsKeyJustDown(key, newkeys, oldkeys)
 
 stock ResetPlayerWeaponsEx( playerid )
 {
+	DeletePVar(playerid, "HidingKnife");
 	ResetPlayerWeapons(playerid);
 	PlayerInfo[playerid][pGuns][ 0 ] = 0;
 	PlayerInfo[playerid][pGuns][ 1 ] = 0;
@@ -27317,6 +27324,82 @@ public StartJailBoxing(iArenaID)
 	{
 		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] %d seconds until start! **", iArenaID, arrJailBoxingData[iArenaID][iDocBoxingCountdown]);
 		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+	}
+	return 1;
+}
+
+CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ)
+{
+	if(iServerFires < MAX_STRUCTURE_FIRES)
+	{
+		new szString[128], next = GetAvailableFireSlot();
+		arrStructureFires[next][iFireObj] = CreateDynamicObject(18691, FirePosX, FirePosY, FirePosZ - 1.5, 0,0,0, .streamdistance = 300);
+		arrStructureFires[next][fFirePos][0] = FirePosX;
+		arrStructureFires[next][fFirePos][1] = FirePosY;
+		arrStructureFires[next][fFirePos][2] = FirePosZ;
+		arrStructureFires[next][iFireStrength] = MAX_FIRE_HEALTH;
+
+		format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[next][iFireStrength], MAX_FIRE_HEALTH, next);
+		arrStructureFires[next][szFireLabel] = CreateDynamic3DTextLabel(szString, 0xFFFFFFFFF, FirePosX, FirePosY, FirePosZ, 20);
+		++iServerFires;
+		if(!IsValidStructureFire(next)) DeleteStructureFire(next);
+	}
+}
+
+DeleteStructureFire(iFireID)
+{
+	if(arrStructureFires[iFireID][fFirePos][0] == 0) return 1;
+	for(new i = 0; i < 3; i++)
+	{
+		arrStructureFires[iFireID][fFirePos][i] = 0.0;
+	}
+	if(IsValidDynamicObject(arrStructureFires[iFireID][iFireObj])) DestroyDynamicObject(arrStructureFires[iFireID][iFireObj]);
+	if(IsValidDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel])) DestroyDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel]);
+	if(iServerFires) --iServerFires;
+	return 1;
+}
+
+IsValidStructureFire(iFireID)
+{
+	if(arrStructureFires[iFireID][fFirePos][0] != 0 && arrStructureFires[iFireID][fFirePos][1] != 0 && arrStructureFires[iFireID][fFirePos][2] != 0) return true;
+	else return false;
+}
+
+GetAvailableFireSlot()
+{
+	for(new i; i < MAX_STRUCTURE_FIRES; i++)
+	{
+		if(arrStructureFires[i][fFirePos][0] == 0.0) return i;
+	}
+	return -1;
+}
+
+CheckPlayerFacing(iTargetID, Float:x, Float:y, Float:z, Float:range)
+{
+	new Float:camx,Float:camy,Float:camz,Float:fvecx,Float:fvecy,Float:fvecz;
+	GetPlayerCameraPos(iTargetID, camx, camy, camz);
+	GetPlayerCameraFrontVector(iTargetID, fvecx, fvecy, fvecz);
+	return (range >= DistanceCameraTargetToLocation(camx, camy, camz, x, y, z, fvecx, fvecy, fvecz));
+}
+
+forward OnEnterFire();
+public OnEnterFire()
+{
+	foreach(Player, i)
+	{
+		if(GetPVarType(i, "pGodMode")) continue;
+		for(new n = 0; n < MAX_STRUCTURE_FIRES; n++)
+		{
+			if(IsPlayerInRangeOfPoint(i, 1.7, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
+			{
+				if(IsValidStructureFire(n))
+				{
+					new Float:ftempHP;
+					GetPlayerHealth(i, ftempHP);
+					SetPlayerHealth(i, ftempHP - 5);
+				}
+			}
+		}
 	}
 	return 1;
 }

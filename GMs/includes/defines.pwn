@@ -144,7 +144,8 @@ native gpci(playerid, serial[], maxlen);
 #define			BODY_PART_RIGHT_LEG	8
 #define			BODY_PART_HEAD		9
 
-
+#define			MAX_STRUCTURE_FIRES			100
+#define			MAX_FIRE_HEALTH				1000
 
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
@@ -159,7 +160,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		ini_SetFloat(%0,%1,%2,%3)       format(%1, sizeof(%1), "%s=%f\r\n", %2, %3) && fwrite(%0, %1)
 #define 		chrtoupper(%1) \
         			(((%1) > 0x60 && (%1) <= 0x7A) ? ((%1) ^ 0x20) : (%1))				
-
+#define			ActiveKey(%0)			((newkeys & (%0)) == (%0))
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
     strcat((%0[0] = '\0', %0), %1, %2)*/

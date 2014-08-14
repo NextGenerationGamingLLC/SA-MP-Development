@@ -637,7 +637,8 @@ enum fInfo
 	gt_Bold,
 	gt_FontColor,
 	gt_BackColor,
-	gt_SPUsed
+	gt_SPUsed,
+	FamColor
 };
 
 enum fPoint
@@ -1602,3 +1603,10 @@ enum garInfo
 	gar_Locked,
 	Text3D: gar_TextID
 };
+
+enum eStructureFires {
+	iFireObj,
+	Text3D:szFireLabel,
+	iFireStrength,
+	Float:fFirePos[3],
+}

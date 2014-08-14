@@ -2206,8 +2206,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response) // Clicked Yes
 			{
-				SendClientMessageEx(playerid, COLOR_CYAN, "You have use 1 Priority Advertisement.");
-				PlayerInfo[playerid][pAdvertVoucher]--;
 				SetPVarInt(playerid, "AdvertVoucher", 1);
 				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
@@ -13011,7 +13009,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			GetPVarString(playerid, "ReportNotList", Message, sizeof(Message));
 			SendReportToQue(playerid, Message, 2, 5);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Your message has been sent to to the admin team.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your message has been sent to the admin team.");
 		}
 	}
 	else if(dialogid == DIALOG_SPEAKTOADMIN)
@@ -13764,6 +13762,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new car = CreatePlayerVehicle(playerid, playervehicleid, Businesses[d][bModel][v], Businesses[d][bPurchaseX], Businesses[d][bPurchaseY], Businesses[d][bPurchaseZ], Businesses[d][bPurchaseAngle], randcolor1, randcolor2, cost, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 			PutPlayerInVehicle(playerid, car, 0);
 			SaveBusiness(d);
+			format(string, sizeof(string), "%s(%d) has purchased a %s(%d) from %s for $%s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), VehicleName[Businesses[d][bModel][v] - 400], Businesses[d][bModel][v], Businesses[d][bName], number_format(Businesses[d][bPrice][v]));
+			Log("logs/dealership.log", string);
 		}
 		else
 		{
@@ -18904,11 +18904,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new advert[256], reportid = GetPVarInt(playerid, "ReporterID");
 			new szString[128], shared;
 			GetPVarString(reportid, "PriorityAdText", advert, 128);
+			if(isnull(advert) || !IsPlayerConnected(reportid))
+			{
+				DeletePVar(playerid, "ReporterID");
+				DeletePVar(reportid, "PriorityAdText");
+				DeletePVar(reportid, "RequestingAdP");
+				DeletePVar(reportid, "AdvertVoucher");
+				return SendClientMessageEx(playerid, -1, "There was a issue with the advertisement, the ad was empty and/or the player logged out.");
+			}
 			// Do not comment this out! This is needed to re-format the ad with the proper format - Nathan
 			format(advert, sizeof(advert), "Advertisement: %s - contact: %s (%d)", advert, GetPlayerNameEx(reportid), PlayerInfo[reportid][pPnumber]);
 			SendClientMessageEx(reportid, -1, "Your Priority Advertisement has been approved & published.");
 			if(GetPVarInt(reportid, "AdvertVoucher") > 0)
 			{
+				SendClientMessageEx(reportid, COLOR_CYAN, "You have used 1 Priority Advertisement.");
+				PlayerInfo[reportid][pAdvertVoucher]--;
 			}
 			else if(PlayerInfo[reportid][pFreeAdsLeft] > 0 && PlayerInfo[reportid][pDonateRank] >= 4)
 			{
