@@ -338,6 +338,7 @@ CMD:usekit(playerid, params[]) {
 	{
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
+		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		new string[128];
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 10.0);
 		if( vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 10 )
@@ -375,7 +376,7 @@ CMD:usekit(playerid, params[]) {
 					SetPVarInt(playerid, "BackpackMedKit", 1);
 					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 					format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking the Med Kit from your backpack, please wait.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking a Med Kit from your backpack, please wait.");
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
@@ -42611,6 +42612,7 @@ CMD:cancelreport(playerid, params[])
 			DeletePVar(playerid, "_rAutoM");
 			DeletePVar(playerid, "_rRepID");
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully canceled your report." );
+			return 1;
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending reports.");
@@ -49239,6 +49241,7 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Pot, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Divorce, Drink, House, Shipment, Help, Firstaid");
+		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 		return 1;
@@ -49396,6 +49399,13 @@ CMD:cancel(playerid, params[])
 				}	
 			}
 		}
+	}
+	else if(strcmp(choice,"foodoffer",true) == 0) {
+		new offeredTo = GetPVarInt(playerid, "OfferedMealTo");
+		DeletePVar(offeredTo, "OfferedMeal");
+		DeletePVar(offeredTo, "OfferedMealBy");
+		DeletePVar(playerid, "OfferingMeal");
+		DeletePVar(playerid, "OfferedMealTo");
 	}
 	else { return 1; }
 	format(string, sizeof(string), "* You have canceled: %s.", choice);
@@ -57515,7 +57525,7 @@ CMD:sellbackpack(playerid, params[])
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
-		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
@@ -57839,7 +57849,7 @@ CMD:bwear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
-		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
@@ -57942,7 +57952,7 @@ CMD:bstore(playerid, params[])
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
-		if(GetPVarInt(playerid, "BackpackDisabled") > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
 		if(GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
@@ -59110,11 +59120,14 @@ CMD:offerinmatefood(playerid, params[])
 	else if(iGiveTo == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot offer yourself food.");
 	else if(!IsPlayerConnected(iGiveTo)) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not connected");
 	else if(GetPVarInt(playerid, "OfferingMeal") == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to one person at a time.");
+	else if(!PlayerInfo[iGiveTo][pJailTime]) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to prison inmates.");
+	else if(!GetPVarInt(playerid, "inmatefood")) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any prison food to offer.");
 	else if(ProxDetectorS(5.0, playerid, iGiveTo))
 	{
 		SetPVarInt(iGiveTo, "OfferedMeal", 1);
 		SetPVarInt(iGiveTo, "OfferedMealBy", playerid);
 		SetPVarInt(playerid, "OfferingMeal", 1);
+		SetPVarInt(playerid, "OfferedMealTo", iGiveTo);
 		format(string, sizeof(string), "%s has offered you a meal. Type /acceptjailfood to take it.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(iGiveTo, COLOR_LIGHTBLUE, string);
 		format(string, sizeof(string), "You have offered %s some prisoner food", GetPlayerNameEx(iGiveTo));
@@ -59147,15 +59160,14 @@ CMD:acceptjailfood(playerid, params[])
 		if(GetPVarInt(iOffering, "inmatefood") > 0)
 		{
 			SetPVarInt(iOffering, "inmatefood", GetPVarInt(iOffering, "inmatefood") - 1);
-		}
-		if(GetPVarInt(iOffering, "inmatefood") == 0)
-		{
+		} else {
 			RemovePlayerAttachedObject(iOffering, 9);
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 		}
 		DeletePVar(playerid, "OfferedMeal");
 		DeletePVar(playerid, "OfferedMealBy");
 		DeletePVar(iOffering, "OfferingMeal");
+		DeletePVar(iOffering, "OfferedMealTo");
 		format(string, sizeof(string), "* %s takes a plate of food from %s and begins to eat it.", GetPlayerNameEx(playerid), GetPlayerNameEx(iOffering));
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		//ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 1, 0, 4000, 1);
