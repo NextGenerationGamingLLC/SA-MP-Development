@@ -2820,6 +2820,10 @@ CMD:joinarena(playerid, params[])
     return 1;
 }
 
+CMD:kcp(playerid, params[]) {
+	return cmd_killcheckpoint(playerid, params);
+}
+
 CMD:killcheckpoint(playerid, params[])
 {
 	ClearCheckpoint(playerid);
@@ -9555,7 +9559,7 @@ CMD:accept(playerid, params[])
 			}
 			PlayerInfo[playerid][pBusiness] = GetPVarInt(playerid, "Business_Invited");
 			PlayerInfo[playerid][pBusinessRank] = 0;
-            format(string, sizeof(string), "* You have accepted the invitation and joined %s, you were invited by %s %s.", Businesses[GetPVarInt(playerid, "Business_Invited")][bName], GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")));
+            format(string, sizeof(string), "* You have accepted the invitation and joined %s, you were invited by %s.", Businesses[GetPVarInt(playerid, "Business_Invited")][bName], GetPlayerNameEx(GetPVarInt(playerid, "Business_Inviter")));
             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
             format(string, sizeof(string), "* %s has accepted your invitation and joined %s", GetPlayerNameEx(playerid),Businesses[GetPVarInt(playerid, "Business_Invited")][bName]);
             SendClientMessageEx(GetPVarInt(playerid, "Business_Inviter"), COLOR_LIGHTBLUE, string);
@@ -43349,6 +43353,7 @@ CMD:nggshop(playerid, params[]) {
 CMD:leaveshop(playerid, params[]) {
 	if(GetPVarInt(playerid, "ShopTP") == 1)
 	{
+		DeletePVar(playerid, "ShopTP");
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
 			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do this at this time!.");
 		if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 60 seconds, you will not be teleported to your previous location.");
@@ -45590,7 +45595,7 @@ CMD:sellfish(playerid, params[])
 
 CMD:fare(playerid, params[])
 {
-	if(IsATaxiDriver(playerid) || PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1 || PlayerInfo[playerid][pJob3] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1)
+	if(IsATaxiDriver(playerid) || (PlayerInfo[playerid][pJob] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1) || (PlayerInfo[playerid][pJob2] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1) || (PlayerInfo[playerid][pJob3] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1))
 	{
 		new string[128], fare;
 		if(sscanf(params, "d", fare)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fare [price]");
@@ -59099,11 +59104,12 @@ CMD:dropfoodtray(playerid, params[])
 	if(GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "carryingfood") > 0)
 	{
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+		RemovePlayerAttachedObject(playerid, 9);
 		format(string, sizeof(string), "* %s has dropped their food tray.", GetPlayerNameEx(playerid));
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		RemovePlayerAttachedObject(playerid, 9);
 		DeletePVar(playerid, "inmatefood");
 		DeletePVar(playerid, "carryingfood");
+		DeletePVar(playerid, "OfferedMealTo");
 	}
 	else
 	{
@@ -59157,12 +59163,10 @@ CMD:acceptjailfood(playerid, params[])
 				PlayerInfo[playerid][pFitness] = 0;
 			}
 		}
-		if(GetPVarInt(iOffering, "inmatefood") > 0)
-		{
-			SetPVarInt(iOffering, "inmatefood", GetPVarInt(iOffering, "inmatefood") - 1);
-		} else {
+		SetPVarInt(iOffering, "inmatefood", GetPVarInt(iOffering, "inmatefood") - 1);	
+		if(!GetPVarInt(iOffering, "inmatefood")) {
 			RemovePlayerAttachedObject(iOffering, 9);
-			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+			SetPlayerSpecialAction(iOffering, SPECIAL_ACTION_NONE);
 		}
 		DeletePVar(playerid, "OfferedMeal");
 		DeletePVar(playerid, "OfferedMealBy");

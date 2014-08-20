@@ -1740,6 +1740,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerVehicleInfo[playerid][i][pvAlarm] = 0;
 					PlayerVehicleInfo[playerid][i][pvAlarmTriggered] = 0;
 					PlayerVehicleInfo[playerid][i][pvBeingPickLocked] = 0;
+					PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
+					PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
+					PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+					GiveKeysTo[playerid] = INVALID_PLAYER_ID;
 					DeletePVar(playerid, "vDel");
 
 					new query[128];

@@ -25806,7 +25806,7 @@ stock GetDynamicGiftBoxType(value)
 forward TeleportToShop(playerid);
 public TeleportToShop(playerid)
 {
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena") >= 0 || !GetPVarInt(playerid, "ShopTP"))
 		return DeletePVar(playerid, "ShopTP"), SendClientMessage(playerid, COLOR_GRAD2, "SERVER: Shop Teleportation has been cancelled.");
 	if(gettime() - LastShot[playerid] < 30) return DeletePVar(playerid, "ShopTP"), SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 30 seconds, you will not be teleported to the shop.");
 	if(GetPVarInt(playerid, "ShopTP") == 1)
