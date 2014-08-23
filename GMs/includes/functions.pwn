@@ -994,7 +994,9 @@ ReturnUser(text[]) {
 		strPos,
 		returnID = 0,
 		bool: isnum = true;
-
+	
+	if(!strlen(text)) return INVALID_PLAYER_ID;
+	
 	while(text[strPos]) {
 		if(isnum) {
 			if ('0' <= text[strPos] <= '9') returnID = (returnID * 10) + (text[strPos] - '0');

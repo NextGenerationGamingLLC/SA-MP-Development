@@ -2772,7 +2772,7 @@ CMD:twmenu(playerid, params[])
 CMD:switchteam(playerid, params[])
 {
     if(GetPVarInt(playerid, "IsInArena") == -1) {
-        SendClientMessageEx(playerid,COLOR_WHITE,"You are not in a arena, you can not switch teams!");
+        SendClientMessageEx(playerid,COLOR_WHITE,"You are not in an arena, you can not switch teams!");
         return 1;
     }
     if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1) {
@@ -2815,7 +2815,7 @@ CMD:joinarena(playerid, params[])
 
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are already in a arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You are already in an arena!");
     }
     return 1;
 }
@@ -2845,7 +2845,7 @@ CMD:exitarena(playerid, params[])
         LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
     }
     else {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in an arena!");
     }
     return 1;
 }
@@ -5715,7 +5715,7 @@ CMD:joinevent(playerid, params[]) {
 		SendClientMessageEx( playerid, COLOR_WHITE, "You are already in the event." );
 	}
 	else if(GetPVarInt(playerid, "IsInArena") >= 0) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	}
 	else if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || GetPVarInt(playerid, "Injured")) {
 		SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
@@ -11515,7 +11515,7 @@ CMD:accept(playerid, params[])
                             return 1;
                         }
 					    if(GetPVarInt(playerid, "IsInArena") >= 0) {
-					        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in a arena!");
+					        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in an arena!");
 					        return 1;
 					    }
                         if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please exit the vehicle, before using this command.");
@@ -12528,7 +12528,7 @@ CMD:sellgun(playerid, params[])
     new string[128];
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
     if(GetPVarInt(playerid, "IsInArena") >= 0) {
-        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in a arena!");
+        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in an arena!");
         return 1;
     }
    	if(GetPVarInt( playerid, "EventToken") != 0)
@@ -13155,7 +13155,7 @@ CMD:trickortreat(playerid, params[])
 CMD:enter(playerid, params[])
 {
     if(GetPVarInt(playerid, "IsInArena") >= 0) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }
 	if(GetPVarType(playerid, "StreamPrep")) {
@@ -13714,7 +13714,7 @@ CMD:exit(playerid, params[])
 	}
 
     if(GetPVarInt(playerid, "IsInArena") >= 0) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }
 	if(GetPVarType(playerid, "StreamPrep")) {
@@ -15466,7 +15466,7 @@ CMD:scores(playerid, params[])
     }
     else
 	{
-        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a arena!");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You are not in an arena!");
     }
     return 1;
 }
@@ -25583,7 +25583,7 @@ CMD:giveweapon(playerid, params[])
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
@@ -26204,7 +26204,7 @@ CMD:dropgun(playerid, params[])
 	}
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
@@ -28831,7 +28831,7 @@ CMD:trunkput(playerid, params[])
 {
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;
 	}
 	if(GetPVarInt( playerid, "EventToken") != 0)
@@ -29100,7 +29100,7 @@ CMD:trunkput(playerid, params[])
 CMD:trunktake(playerid, params[]) {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while you're inside a vehicle.");
 	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-	else if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+	else if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	else if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	else if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 	else if(GetPVarInt(playerid, "GiveWeaponTimer") >= 1)
@@ -29178,7 +29178,7 @@ CMD:storegun(playerid, params[])
 {
 	if(Homes[playerid] > 0)
 	{
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		new string[128], weaponchoice[32], slot;
@@ -41289,7 +41289,7 @@ CMD:fwithdraw(playerid, params[])
 
 CMD:fstoregun(playerid, params[])
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You can not store weapons from a vehicle!");
@@ -42029,7 +42029,7 @@ CMD:ram(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "IsInArena") >= 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 			return 1;
 		}
 		if( PlayerCuffed[playerid] >= 1 )
@@ -47444,7 +47444,7 @@ CMD:firstaid(playerid, params[])
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
 	}
 	if(GetPVarInt(playerid, "Injured") == 1)
@@ -47618,6 +47618,7 @@ CMD:smslog(playerid, params[])
 
 CMD:craft(playerid, params[])
 {
+	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if (PlayerInfo[playerid][pJob] != 18 && PlayerInfo[playerid][pJob2] != 18 && PlayerInfo[playerid][pJob3] != 18)
 	{
@@ -47638,7 +47639,7 @@ CMD:craft(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pHospital] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't craft whilst in Hospital.");
+		SendClientMessageEx(playerid, COLOR_GREY, "You can't craft while in the Hospital.");
 		return 1;
 	}
 	new giveplayerid, choice[32], weapon, price;
@@ -48391,7 +48392,7 @@ CMD:tazer(playerid, params[])
 
 		if(GetPVarInt(playerid, "IsInArena") >= 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;
 		}
 		if(GetPVarInt( playerid, "EventToken") != 0)
@@ -48500,7 +48501,7 @@ CMD:radargun(playerid, params[])
 
 		if(GetPVarInt(playerid, "IsInArena") >= 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;
 		}
 		if(GetPVarInt( playerid, "EventToken") != 0)
@@ -49063,7 +49064,7 @@ CMD:guard(playerid, params[])
 	}
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
 	}
 	new string[128], giveplayerid, money;
@@ -50047,7 +50048,7 @@ CMD:usepot(playerid, params[])
 	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
 	}
 	if(PlayerBoxing[playerid] > 0)
@@ -50160,7 +50161,7 @@ CMD:usecrack(playerid, params[])
 	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
 	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in a arena!");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
 	}
 	if(PlayerBoxing[playerid] > 0)
@@ -50575,7 +50576,7 @@ CMD:drop(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "IsInArena") >= 0)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;
 		}
 		if(GetPVarInt( playerid, "EventToken") != 0)
@@ -57531,7 +57532,7 @@ CMD:sellbackpack(playerid, params[])
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
 		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -57854,8 +57855,8 @@ CMD:bwear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
-		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		if(!IsBackpackAvailable(playerid) && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -57958,7 +57959,7 @@ CMD:bstore(playerid, params[])
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
 		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in a arena!");
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
