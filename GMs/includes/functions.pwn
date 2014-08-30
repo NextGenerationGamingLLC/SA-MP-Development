@@ -3611,35 +3611,6 @@ public CloseEastLobby()
 	return 1;
 }
 
-forward ClosePrisonDoor();
-public ClosePrisonDoor()
-{
-	MoveDynamicObject(BlastDoors[0],-2095.10156250 ,-203.91210938, 994.66918945, 1);
-	return 1;
-}
-
-forward ClosePrisonDoor2();
-public ClosePrisonDoor2()
-{
-	MoveDynamicObject(BlastDoors[1],-2088.76562500,-211.33984375,994.66918945, 1);
-	MoveDynamicObject(BlastDoors[6] ,-2088.76562500,-209.21093750,994.66918945, 1);
-	return 1;
-}
-
-forward ClosePrisonDoor3();
-public ClosePrisonDoor3()
-{
-    MoveDynamicObject(BlastDoors[11], -2050.50097656,-205.82617188,984.02539062, 1);
-    return 1;
-}
-
-forward ClosePrisonDoor4();
-public ClosePrisonDoor4()
-{
-	MoveDynamicObject(BlastDoors[16], -2057.9 , -144.905 ,987.24, 1);
-	return 1;
-}
-
 forward CloseBlastDoor();
 public CloseBlastDoor()
 {

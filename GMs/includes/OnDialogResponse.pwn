@@ -507,6 +507,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else return SendClientMessageEx(playerid, COLOR_WHITE, "You're already carrying a tazer and pair of cuffs");
 				}
+				case 7: // free namechanges in lockers - DGA scripting request
+				{
+					ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+				}
 			}
 		}
 		case G_LOCKER_EQUIPMENT: if(response)
@@ -9890,6 +9894,68 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerToTeamColor(suspect);
 					Player_StreamPrep(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
 					SetPlayerHealth(suspect, 100);
+				}
+				case 3: // doc judge arrest
+				{
+					format(string, sizeof(string), "* You have sentenced %s at the DoC courthouse.", GetPlayerNameEx(suspect));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					GivePlayerCash(suspect, -moneys);
+					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
+					arrGroupData[iGroupID][g_iBudget] += money;
+					new str[164], file[32];
+					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
+					new month, day, year;
+					getdate(year,month,day);
+					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+					Log(file, str);
+					for(new z; z < MAX_GROUPS; z++)
+					{
+						if(arrGroupData[iGroupID][g_iAllegiance] == 1)
+						{
+							if(arrGroupData[z][g_iAllegiance] == 1)
+							{
+								if(arrGroupData[z][g_iGroupType] == 5)
+								{
+									Tax += money;
+									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
+									break;
+								}
+							}
+						}
+						else if(arrGroupData[z][g_iAllegiance] == 2)
+						{
+							if(arrGroupData[z][g_iAllegiance] == 2)
+							{
+								if(arrGroupData[z][g_iGroupType] == 5)
+								{
+									TRTax += money;
+									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
+									break;
+								}
+							}
+						}
+					}
+					if(PlayerInfo[suspect][pDonateRank] >= 2)
+					{
+						PlayerInfo[suspect][pJailTime] = ((time*60)*75)/100;
+					}
+					else
+					{
+						PlayerInfo[suspect][pJailTime] = time * 60;
+					}
+					PhoneOnline[suspect] = 1;
+					PlayerInfo[suspect][pArrested] += 1;
+					SetPlayerFree(suspect,playerid, "was arrested");
+					PlayerInfo[suspect][pWantedLevel] = 0;
+					SetPlayerToTeamColor(suspect);
+					SetPlayerWantedLevel(suspect, 0);
+					strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
+					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC][JUDGE] EBCF Arrest", 128);
+					SetPlayerToTeamColor(suspect);
 				}
 			}
 			new iAllegiance;

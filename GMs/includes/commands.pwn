@@ -20230,7 +20230,7 @@ CMD:gwithdraw(playerid, params[])
 			return 1;
 		}
 	}
-	else if(-1 < PlayerInfo[playerid][pLeader] <= MAX_GROUPS && PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pLeader]))
+	else if(-1 < PlayerInfo[playerid][pLeader] <= MAX_GROUPS)
 	{
 		iGroupID = PlayerInfo[playerid][pLeader];
 		if(sscanf(params, "ds[64]", amount, reason))
@@ -28898,6 +28898,17 @@ CMD:trunkput(playerid, params[])
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}
 	}
+	else if(strcmp(weaponchoice, "9mm", true, strlen(weaponchoice)) == 0)
+	{
+		if( PlayerInfo[playerid][pGuns][2] == 22 && PlayerInfo[playerid][pAGuns][2] == 0 )
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a 9mm in your car gun locker.");
+			weapon = PlayerInfo[playerid][pGuns][2];
+			format(string,sizeof(string), "* %s deposited their 9mm in their car safe.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
+		}
+	}
 	else if(strcmp(weaponchoice, "deagle", true, strlen(weaponchoice)) == 0)
 	{
 		if( PlayerInfo[playerid][pGuns][2] == 24 && PlayerInfo[playerid][pAGuns][2] == 0 )
@@ -29924,6 +29935,22 @@ CMD:switchgroup(playerid, params[])
 		Group_ListGroups(playerid, DIALOG_SWITCHGROUP);
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized.");
+	return 1;
+}
+
+CMD:switchbiz(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pBM] >= 1)
+	{
+		new string[128], bizid;
+		if(sscanf(params, "d", bizid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /switchbiz [bizid]");
+		if(bizid < 1 || bizid > MAX_BUSINESSES) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid business ID.");
+		format(string, sizeof(string), "You have switched to business ID %d (%s).", bizid, Businesses[bizid][bName]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		PlayerInfo[playerid][pBusinessRank] = 5;
+		PlayerInfo[playerid][pBusiness] = bizid;
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	return 1;
 }
 
@@ -40729,7 +40756,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /relog /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
@@ -40781,7 +40808,7 @@ CMD:ah(playerid, params[])
 	
 	if(PlayerInfo[playerid][pBM] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - Biz Mod *** /bedit /bname /bnext /bnear /gotobiz /goinbiz /creategaspump /editgaspump /deletegaspump");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - Biz Mod *** /bedit /bname /bnext /bnear /gotobiz /goinbiz /creategaspump /editgaspump /deletegaspump /switchbiz");
 		if(PlayerInfo[playerid][pBM] >= 2) SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - DoBM *** /asellbiz");
 	}
 	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm");
@@ -51534,6 +51561,12 @@ CMD:quitjob(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "   You don't even have a Job!");
 		}
 	}
+	// fix a bug concering duty messages still remaining after quitting job.
+	SetPVarInt(playerid, "LawyerDuty", 0);
+	SetPVarInt(playerid, "MechanicDuty", 0);
+	Mechanics -= 1;
+	Lawyers -= 1;
+	
 	return 1;
 }
 
@@ -52267,7 +52300,7 @@ CMD:locker(playerid, params[]) {
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		szTitle[18 + GROUP_MAX_NAME_LEN],
-		szDialog[100];
+		szDialog[128];
 		
 	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
@@ -52292,7 +52325,14 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) // name-change point in faction lockers for free namechange factions
+						{
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+						}
+						else
+						{
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+						}
 						ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
 					}
@@ -57139,6 +57179,7 @@ CMD:unrestrictaccount(playerid, params[])
 			if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot unrestrict your own account!");
 			
 			PlayerInfo[giveplayerid][pAccountRestricted] = 0;
+			PlayerInfo[giveplayerid][pNonRPMeter] = 0; //fix for bug where non-rp points would remain after being unrestricted.
 			
 			format(string, sizeof(string), "You have unrestricted %s account.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -58071,7 +58112,7 @@ CMD:backpackhelp(playerid, params[])
 	new bdialog[565];
 	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 2 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", bdialog, number_format(ShopItems[37][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 6 Meal\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
+	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", bdialog);
 	
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", bdialog, "Exit", "");
@@ -59494,7 +59535,7 @@ CMD:docjudgesentence(playerid, params[])
 		SetPVarInt(playerid, "Arrest_Price", PlayerInfo[iSuspect][pWantedJailFine]);
 		SetPVarInt(playerid, "Arrest_Time", PlayerInfo[iSuspect][pWantedJailTime]);
 		SetPVarInt(playerid, "Arrest_Suspect", iSuspect);
-		SetPVarInt(playerid, "Arrest_Type", 0);
+		SetPVarInt(playerid, "Arrest_Type", 3);
 		format(string, sizeof(string), "Please write a brief report on how %s acted during the process.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(iSuspect));
 		ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	}

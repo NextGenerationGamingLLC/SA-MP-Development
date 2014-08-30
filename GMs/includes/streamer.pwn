@@ -537,17 +537,6 @@ public LoadStreamerDynamicButtons()
 	ncontrolroom[0] = CreateButton(-754.32763672,2538.71655273,10021.61132812, 178.50000000);
 	ncontrolroom[1] = CreateButton(-752.47076416,2538.23266602,10021.00195312, 0);
 
-	/* DoC Prison Buttons */
-	PrisonButtons[0] = CreateButton(-2097, -191.100006, 996.299987, 90); // Control Room
-	PrisonButtons[1] = CreateButton(-2092.550048, -204, 996.099975, 0); // Control Room Door 2
-	PrisonButtons[2] = CreateButton(-2088.530029, -213, 996, 90); //Control Room Door 1
-	PrisonButtons[3] = CreateButton(-2037, -191, 992.200012, 270); // Security Room
-	PrisonButtons[4] = CreateButton(-2050.5, -205.880004, 985.599975, 0); // Staff Lounge
-	PrisonButtons[5] = CreateButton(-2046.599975, -194, 985.700012, 270); // Duty Room
-	PrisonButtons[6] = CreateButton(-2092.772949, -193.570007, 979.299987, 0); // Security Room 2
- 	PrisonButtons[7] = CreateButton( -2054.699951, -84, 35.7, 270);
- 	PrisonButtons[8] = CreateButton(-2058, -146.75, 988.7,270);
-
  	// Create the required buttons for the interior.
 	SFPDButton[0] = CreateButton(-1635.12597656,708.45117188,19996.32812500, 180.0);
 	SFPDButton[1] = CreateButton(-1635.18176270,687.56250000,19996.32812500, 180.0);

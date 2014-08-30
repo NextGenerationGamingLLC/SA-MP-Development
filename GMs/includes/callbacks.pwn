@@ -1086,51 +1086,6 @@ public OnPlayerPressButton(playerid, buttonid)
 	    MoveDynamicObject(eastlobby2,253.18457031,106.59960938,1002.21502686,4);
 		SetTimer("CloseEastLobby", 2500, 0);
 	}
-	if (buttonid == PrisonButtons[0] || buttonid == PrisonButtons[3] || buttonid == PrisonButtons[5] || buttonid == PrisonButtons[6] || buttonid == PrisonButtons[7])
-	{
- 		if (IsACop(playerid))
-   		{
-            ShowPlayerDialog(playerid, PANEL, DIALOG_STYLE_LIST, "Easter Basin Correctional Facility Controls", "Prison Controls\r\nLockdown All\r\nClear Lockdown\r\nDistress Beacon", "Select", "Cancel");
-		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use the control panel.");
-	}
-	if(buttonid == PrisonButtons[1])
-	{
-	    if(IsACop(playerid))
-	    {
-     		MoveDynamicObject(BlastDoors[0],-2093.0048828125, -203.93110656738, 1994.6691894531, 1);
-			SetTimer("ClosePrisonDoor", 3000, 0);
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this control panel.");
-	}
-	if(buttonid == PrisonButtons[2])
-	{
-	    if(IsACop(playerid))
-	    {
-			MoveDynamicObject(BlastDoors[1], -2088.7998046875, -211.2998046875, 1996.7062988281, 1);
-		 	MoveDynamicObject(BlastDoors[6], -2088.76562500,-209.21093750,998.66918945, 1);
-			SetTimer("ClosePrisonDoor2", 3000, 0);
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this control panel.");
-	}
-	if(buttonid == PrisonButtons[4]) //
-	{
-	    if(IsACop(playerid))
-	    {
-     		MoveDynamicObject(BlastDoors[11], -2050.50097656,-205.82617188,987.02539062, 1);
-			SetTimer("ClosePrisonDoor3", 3000, 0);
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this control panel.");
-	}
-	if(buttonid == PrisonButtons[8]) //
-	{
-	    if(IsACop(playerid))
-	    {
-     		MoveDynamicObject(BlastDoors[16], -2057.9, -143.4, 987.24, 1);
-			SetTimer("ClosePrisonDoor4", 3000, 0);
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this control panel.");
-	}
 	if (buttonid == SFPDButton[0] || buttonid == SFPDButton[3])
 	{
 	    if(IsACop(playerid))
