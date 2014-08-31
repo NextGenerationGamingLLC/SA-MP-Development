@@ -12909,7 +12909,7 @@ CMD:sellgun(playerid, params[])
 CMD:window(playerid, params[])
 {
 	new string[128];
-    if(InsidePlane[playerid] != INVALID_VEHICLE_ID)
+    if(InsidePlane[playerid] != INVALID_VEHICLE_ID && GetPVarInt(playerid, "InsideCar") ==0)
 	{
         if(GetPlayerInterior(playerid) != 0)
 		{
@@ -13681,12 +13681,37 @@ CMD:enter(playerid, params[])
 				SetPlayerInterior(playerid, 9);
 			}
 		}
+		
+        SetCameraBehindPlayer(playerid);
+		PlayerInfo[playerid][pVW] = cCar;
+		SetPlayerVirtualWorld(playerid, cCar);
+		InsidePlane[playerid] = cCar;
+		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle, or /window to look outside.");
+	}
+	
+	// added as part of the large vehicle interior project
+	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar)
+	{
+	    if(VehicleStatus{cCar} == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not allowed to enter this vehicle as it's been damaged!");
+	    new string[47 + MAX_PLAYER_NAME];
+   		format(string, sizeof(string), "* %s enters the vehicle as a passenger.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
+		switch(GetVehicleModel(cCar)) {
+			case 508: { // Journey
+				SetPlayerPos(playerid, 2820.2109,1527.8270,-48.9141);
+				Player_StreamPrep(playerid,2820.2109,1527.8270,-48.9141, FREEZE_TIME);
+				SetPlayerFacingAngle(playerid, 270.0);
+				PlayerInfo[playerid][pInt] = 1;
+				SetPlayerInterior(playerid, 1);
+			}
+		}
 
         SetCameraBehindPlayer(playerid);
 		PlayerInfo[playerid][pVW] = cCar;
 		SetPlayerVirtualWorld(playerid, cCar);
 		InsidePlane[playerid] = cCar;
+		SetPVarInt(playerid, "InsideCar", 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle, or /window to look outside.");
 	}
 	if(GetPVarType(playerid, "tpDeliverVehTimer") > 0)
@@ -13929,10 +13954,10 @@ CMD:exit(playerid, params[])
 	        return 1;
 	    }
 	    new string[64];
-        format(string, sizeof(string), "* %s exits the airplane.", GetPlayerNameEx(playerid));
+        format(string, sizeof(string), "* %s exits the vehicle.", GetPlayerNameEx(playerid));
         ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-        if(!IsAPlane(InsidePlane[playerid])) {
+        if(!IsAPlane(InsidePlane[playerid]) && GetPVarInt(playerid, "InsideCar") == 0) {
             PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
             GivePlayerValidWeapon(playerid, 46, 60000);
             SetPlayerPos(playerid, 0.000000, 0.000000, 420.000000); // lol nick
@@ -49631,6 +49656,7 @@ CMD:f(playerid, params[])
 	new string[128];
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/f)amily [family chat]");
 
+	//if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS))
 	if(IsAHitman(playerid))
 	{
 		format(string, sizeof(string), "** (%d) %s %s: %s **", PlayerInfo[playerid][pRank], arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), params);
@@ -49654,7 +49680,7 @@ CMD:f(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a Family!");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
 	}
 	return 1;
 }
@@ -54193,9 +54219,11 @@ CMD:togbiz(playerid, params[])
 
 CMD:bizradio(playerid, params[])
 {
+
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		string[128],
+		radiostring[128],
 		iBusinessID = PlayerInfo[playerid][pBusiness],
 		iRank = PlayerInfo[playerid][pBusinessRank];
 
@@ -54204,6 +54232,8 @@ CMD:bizradio(playerid, params[])
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b(iz)r(radio) [biz chat]");
 
+	format(radiostring, sizeof(radiostring), "(radio) %s", string);
+	SetPlayerChatBubble(playerid,radiostring,COLOR_WHITE,15.0,5000);
 	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
 	//foreach(new i: Player) {
 	for(new i = 0; i < MAX_PLAYERS; ++i)
