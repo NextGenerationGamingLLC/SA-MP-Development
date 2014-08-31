@@ -3122,7 +3122,7 @@ CMD:businesshelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /buybizlevel /binvite /buninvite /bouninvite /bgiverank /resign /bsafe");
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /binventory /offeritem /resupply /checkresupply /cancelresupply /minrank");
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /employeepayset /employeeautopay /editgasprice /editprices /bizlock");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /bauto /bonline /bpanic /sellbiz /buybiz /b(iz)r(adio)");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /bauto /bonline /bpanic /sellbiz /b(iz)r(adio)");
 	if(IsValidBusinessID(PlayerInfo[playerid][pBusiness]))
 	{
 		if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP || Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_OLDCARDEALERSHIP) {
@@ -6741,7 +6741,7 @@ CMD:help(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits");
 
 	switch(PlayerInfo[playerid][pJob])
@@ -10279,6 +10279,16 @@ CMD:accept(playerid, params[])
                                     format(szMessage, sizeof(szMessage), "Priest: %s, do you take %s as your lovely husband? (Type 'yes', as anything else will reject the marriage.)", sendername, giveplayer);
                                     SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
                                     MarriageCeremoney[playerid] = 1;
+									if(GetPVarInt(ProposeOffer[playerid], "marriagelastname") == 1)
+									{
+										ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
+										"As your spouse decided to keep their last name you have the option to keep your last name or use your spouse's.\n\
+										Please use the buttons below to make your decision.", "Keep", "Use Their's");
+									}
+									if(GetPVarInt(ProposeOffer[playerid], "marriagelastname") == 2)
+									{
+										SendClientMessageEx(playerid, -1, "Your spouse decided to use your last name.");
+									}
                                     ProposedTo[ProposeOffer[playerid]] = playerid;
                                     GotProposedBy[playerid] = ProposeOffer[playerid];
                                     MarryWitness[ProposeOffer[playerid]] = INVALID_PLAYER_ID;
@@ -16860,32 +16870,27 @@ CMD:namechanges(playerid, params[])
 
 CMD:changename(playerid, params[])
 {
-	if(IsAtNameChange(playerid))
+	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
+	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "   You are not in the Name Change Place!" );
+	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if((0 <= iGroupID < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange])
 	{
-	    if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) {
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
-		}
-	    new iGroupID = PlayerInfo[playerid][pMember];
-		if((0 <= iGroupID < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange])
-		{
-			ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
-		}
-		else
-		{
-			if(PlayerInfo[playerid][pDonateRank] < 3)
-			{
-				ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes cost $15,000 per level.", "Change", "Cancel" );
-			}
-			else
-			{
-				ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes cost $15,000 per level.\n\nGold VIP+: 10 percent discount", "Change", "Cancel" );
-			}
-		}
+		ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 	}
-	else if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
+	else if(gettime() >= PlayerInfo[playerid][pNextNameChange])
+	{
+		ShowPlayerDialog(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change", "Please enter your new desired name!\n\nNote: Name Changes are free every 120 days.", "Change", "Cancel");
+	}
 	else
 	{
-		SendClientMessageEx( playerid, COLOR_WHITE, "   You are not in the Name Change Place!" );
+		if(GetPVarInt(playerid, "PinConfirmed"))
+		{
+			new string[128];
+			format(string, sizeof(string), "Please enter your new desired name!\n\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[40][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[40][sItemPrice]));
+			ShowPlayerDialog(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change", string, "Purchase", "Cancel");
+		}
+		else SetPVarInt(playerid, "OpenShop", 10), PinLogin(playerid);
 	}
 	return 1;
 }
@@ -17386,6 +17391,7 @@ CMD:deliver(playerid, params[])
 
 CMD:me(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /me [action]");
 	new string[128];
 	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
@@ -17399,6 +17405,7 @@ CMD:whisper(playerid, params[]) {
 
 CMD:w(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new giveplayerid, whisper[128];
 
 	if(gPlayerLogged{playerid} == 0)
@@ -17474,6 +17481,7 @@ CMD:do(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
 		return 1;
 	}
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /do [action]");
 	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not be longer than 120 characters in length.");
 	new
@@ -17553,6 +17561,7 @@ CMD:shout(playerid, params[]) {
 
 CMD:s(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(gPlayerLogged{playerid} == 0)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
@@ -17579,7 +17588,7 @@ CMD:l(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
 		return 1;
 	}
-
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/l)ow [close chat]");
 
 	new string[128];
@@ -22563,6 +22572,7 @@ CMD:headadmin(playerid, params[])  {
 
 CMD:staff(playerid, params[]) {
 	if((PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pDonateRank] == 5 || PlayerInfo[playerid][pWatchdog] >= 1) && advisorchat[playerid]) {
+		if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 		if(!isnull(params)) {
 
 			new
@@ -24442,7 +24452,7 @@ CMD:sellmyhouse(playerid, params[])
 		{
 			if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW])
 			{
-				if(PlayerInfo[giveplayerid][pLevel] >= HouseInfo[PlayerInfo[playerid][pPhousekey]][hLevel])
+				if(PlayerInfo[giveplayerid][pLevel] >= HouseInfo[i][hLevel])
 				{
 					if(ProxDetectorS(8.0, playerid, giveplayerid) && GetPlayerVirtualWorld(giveplayerid) == HouseInfo[i][hExtVW] && GetPlayerInterior(giveplayerid) == HouseInfo[i][hExtIW])
 					{
@@ -27775,6 +27785,7 @@ CMD:togvip(playerid, params[]) {
 }
 
 CMD:v(playerid, params[]) {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
 		if(isnull(params)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /v [message]");
@@ -30302,6 +30313,7 @@ CMD:groupkick(playerid, params[])
 }
 
 CMD:m(playerid, params[]) {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(!isnull(params))
 	{
 		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAJudge(playerid))
@@ -30336,7 +30348,7 @@ CMD:radio(playerid, params[]) {
 }
 
 CMD:r(playerid, params[]) {
-
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
@@ -31392,6 +31404,7 @@ CMD:txt(playerid, params[])
 CMD:sms(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You haven't logged in yet!");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "  You don't have a cell phone.");
 	if(PhoneOnline[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Your phone is off.");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
@@ -34982,6 +34995,7 @@ CMD:spec(playerid, params[])
 
 CMD:pr(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pRadio] == 1)
 	{
 		if(isnull(params))
@@ -40022,6 +40036,7 @@ CMD:leaders(playerid, params[])
 CMD:newb(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
@@ -40423,10 +40438,7 @@ CMD:admute(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-				if(PlayerInfo[giveplayerid][pAdmin] >= 1)
-				{
-					return SendClientMessageEx(playerid, COLOR_LIGHTRED, "You can't /admute admins");
-				}
+				if(PlayerInfo[giveplayerid][pAdmin] >= 2) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "You can't /admute admins");
 				if(PlayerInfo[giveplayerid][pADMute] == 0)
 				{
 				    SetPVarInt(giveplayerid, "UnmuteTime", gettime());
@@ -40764,6 +40776,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /audiourl /audiostopurl");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1338)
 	{
@@ -42245,6 +42258,10 @@ CMD:propose(playerid, params[])
 			format(string, sizeof(string), "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			ProposeOffer[giveplayerid] = playerid;
+			ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
+			"As the proposer you have the initial option to keep your last name or use your spouse's.\n\
+			If you decide to keep your last name, your spouse will be given same option.\n\
+			Please use the buttons below to make your decision.", "Keep", "Use Their's");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
 
@@ -42854,7 +42871,8 @@ CMD:ar(playerid, params[])
 		    new newname[MAX_PLAYER_NAME];
 			GetPVarString(Reports[reportid][ReportFrom], "NewNameRequest", newname, MAX_PLAYER_NAME);
 
-			format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}$%d", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost"));
+			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") == 2) format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}%s credits", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(ShopItems[40][sItemPrice]));
+			else format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}Free", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname);
 			ShowPlayerDialog(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Name Change Request",string,"Approve","Deny");
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
@@ -44211,7 +44229,7 @@ CMD:take(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Potseeds, OpiumSeeds, DrugCrates.");
 			return 1;
 		}
-
+		if(PlayerInfo[playerid][pAdmin] < 2 && (PlayerInfo[giveplayerid][pJailTime] && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot take items from a OOC Prisoner.");
 		if (playerid == giveplayerid)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You cannot take things from yourself!");
@@ -49314,7 +49332,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = 0; }
 	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"witness",true) == 0) { MarryWitnessOffer[playerid] = INVALID_PLAYER_ID; }
-	else if(strcmp(choice,"marriage",true) == 0) { ProposeOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"marriage",true) == 0) { DeletePVar(ProposeOffer[playerid], "marriagelastname"), ProposeOffer[playerid] = INVALID_PLAYER_ID, DeletePVar(playerid, "marriagelastname"); }
 	else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"firstaid",true) == 0) 
@@ -49603,6 +49621,7 @@ CMD:repair(playerid, params[])
 
 CMD:f(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(gFam[playerid] == 1)
 	{
 		SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "You have your family chat disabled. /togfamily!");
@@ -54174,7 +54193,7 @@ CMD:togbiz(playerid, params[])
 
 CMD:bizradio(playerid, params[])
 {
-
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		string[128],
 		iBusinessID = PlayerInfo[playerid][pBusiness],
@@ -54394,6 +54413,7 @@ CMD:reloadlist(playerid, params[])
 
 CMD:fc(playerid, params[]) {
 	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
+		if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 		if(isnull(params)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fc [message]");
 		}
@@ -58214,6 +58234,7 @@ CMD:togvipm(playerid, params[])
 
 CMD:vipm(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pDonateRank] < 5 && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "vStaffChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have VIP staff chat disabled - /togvipm to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vipm [text]");
@@ -58253,6 +58274,7 @@ CMD:togca(playerid, params[])
 
 CMD:ca(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pHelper] < 2 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "CAChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have Community Advisor chat disabled - /togca to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ca [text]");
@@ -58648,6 +58670,7 @@ CMD:togsec(playerid, params[])
 
 CMD:sec(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pSEC] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "SECChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have SEC chat disabled - /togsec to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sec [text]");
@@ -59807,6 +59830,18 @@ CMD:knife(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a knife available.");
 			}
 		}
+	}
+	return 1;
+}
+
+CMD:nextnamechange(playerid, params[])
+{
+	if(PlayerInfo[playerid][pNextNameChange] == 0 || gettime() >= PlayerInfo[playerid][pNextNameChange]) return SendClientMessageEx(playerid, -1, "You can change your name for free now.");
+	else
+	{
+		new string[128];
+		format(string, sizeof(string), "Your next free name change will be on %s", date(PlayerInfo[playerid][pNextNameChange], 4));
+		SendClientMessageEx(playerid, -1, string);
 	}
 	return 1;
 }

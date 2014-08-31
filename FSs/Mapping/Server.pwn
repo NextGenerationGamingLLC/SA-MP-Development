@@ -19530,6 +19530,114 @@ public OnFilterScriptInit()
 	}
 	for(new x; x < sizeof(DilliSLNum); x++) SetDynamicObjectMaterialText(DilliSLNum[x], 0, "25", 100, "Myriad Pro", 250, 1, -16777216, 0, 1);
 	
+	//FDSA
+	new FDSAWLS_Roof[6], FDSAWLS_Wall[18];
+	CreateObject(19340, 279.00, -1303.04, 9.33,   0.00, 0.00, 24.50);
+	FDSAWLS_Roof[0] = CreateDynamicObject(18766, 277.41, -1394.71, 17.00,   90.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Roof[1] = CreateDynamicObject(18766, 273.26, -1385.61, 17.01,   90.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Roof[2] = CreateDynamicObject(18981, 285.14, -1378.76, 17.01,   0.00, 90.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Roof[3] = CreateDynamicObject(18766, 274.16, -1396.18, 17.01,   90.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Roof[4] = CreateDynamicObject(18766, 270.03, -1387.08, 17.01,   90.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Roof[5] = CreateDynamicObject(18766, 269.95, -1380.87, 16.99,   90.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[0] = CreateDynamicObject(19355, 274.01, -1399.12, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[1] = CreateDynamicObject(19401, 276.18, -1399.80, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[2] = CreateDynamicObject(19447, 270.02, -1390.37, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[3] = CreateDynamicObject(19401, 272.68, -1396.20, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[4] = CreateDynamicObject(19447, 266.03, -1381.60, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[5] = CreateDynamicObject(19355, 279.10, -1398.46, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[6] = CreateDynamicObject(19355, 280.01, -1396.37, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[7] = CreateDynamicObject(19355, 278.68, -1393.46, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[8] = CreateDynamicObject(19428, 288.29, -1387.49, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[9] = CreateDynamicObject(19355, 279.60, -1391.38, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[10] = CreateDynamicObject(19355, 296.99, -1383.54, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[11] = CreateDynamicObject(19447, 296.55, -1378.55, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[12] = CreateDynamicObject(19447, 270.38, -1379.73, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[13] = CreateDynamicObject(19447, 279.15, -1375.74, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[14] = CreateDynamicObject(19447, 287.92, -1371.75, 14.81,   0.00, 0.00, 114.50, .streamdistance = 200);
+	FDSAWLS_Wall[15] = CreateDynamicObject(19385, 293.89, -1372.72, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[16] = CreateDynamicObject(19428, 292.89, -1370.53, 14.81,   0.00, 0.00, 24.50, .streamdistance = 200);
+	FDSAWLS_Wall[17] = CreateDynamicObject(19428, 291.87, -1370.01, 14.81,   0.00, 0.00, 114.00, .streamdistance = 200);
+	CreateDynamicObject(1308, 303.59, -1377.99, 13.33,   5.14, 0.00, 332.62, .streamdistance = 200);
+	CreateDynamicObject(19466, 272.70, -1396.27, 14.81,   0.00, 0.00, 24.50, .streamdistance = 100);
+	CreateDynamicObject(19466, 276.24, -1399.78, 14.81,   0.00, 0.00, 114.50, .streamdistance = 100);
+	CreateDynamicObject(19454, 276.02, -1387.62, 14.81,   0.00, 0.00, 24.50, .streamdistance = 50);
+	CreateDynamicObject(19391, 273.36, -1381.78, 14.81,   0.00, 0.00, 24.50, .streamdistance = 50);
+	CreateDynamicObject(19435, 272.37, -1379.61, 14.81,   0.00, 0.00, 24.50, .streamdistance = 50);
+	CreateDynamicObject(19391, 274.99, -1393.30, 14.81,   0.00, 0.00, 114.50, .streamdistance = 50);
+	CreateDynamicObject(19435, 277.18, -1392.30, 14.81,   0.00, 0.00, 114.50, .streamdistance = 50);
+	CreateDynamicObject(19435, 272.80, -1394.30, 14.81,   0.00, 0.00, 114.50, .streamdistance = 50);
+	CreateDynamicObject(2093, 266.75, -1382.76, 13.07,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(2290, 270.25, -1382.91, 13.08,   0.00, 0.00, 234.00, .streamdistance = 50);
+	CreateDynamicObject(1432, 270.58, -1387.41, 13.17,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(1432, 274.72, -1388.28, 13.17,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(1819, 267.73, -1383.31, 12.95,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(1502, 275.66, -1392.97, 13.04,   0.00, 0.00, 204.50, .streamdistance = 50);
+	CreateDynamicObject(1502, 273.02, -1381.06, 13.04,   0.00, 0.00, 294.50, .streamdistance = 50);
+	CreateDynamicObject(14752, 276.07, -1399.59, 15.00,   0.00, 0.00, 294.50, .streamdistance = 50);
+	CreateDynamicObject(1998, 275.80, -1397.79, 13.08,   0.00, 0.00, 24.50, .streamdistance = 50);
+	CreateDynamicObject(1714, 276.70, -1397.59, 13.08,   0.00, 0.00, 204.50, .streamdistance = 50);
+	CreateDynamicObject(1810, 275.14, -1395.56, 13.08,   0.00, 0.00, 46.00, .streamdistance = 50);
+	CreateDynamicObject(16780, 270.74, -1383.81, 16.38,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(16780, 272.97, -1389.20, 16.38,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(18075, 285.27, -1380.90, 16.31,   0.00, 0.00, 114.50, .streamdistance = 50);
+	CreateDynamicObject(2108, 279.83, -1397.46, 13.08,   0.00, 0.00, 0.00, .streamdistance = 50);
+	CreateDynamicObject(14782, 296.59, -1380.14, 14.09,   0.00, 0.00, 294.50, .streamdistance = 50);
+	new FDSAWLS_Flag = CreateDynamicObject(2048, 276.01, -1387.33, 15.00,   0.00, 0.00, 114.50, .streamdistance = 50);
+	SetDynamicObjectMaterial(FDSAWLS_Flag, 0, 7091, "vegasflag", "starspangban1_256", 0);
+	for(new x; x < sizeof(FDSAWLS_Roof); x++) SetDynamicObjectMaterial(FDSAWLS_Roof[x], 0, 11008, "firehouse_sfse", "corugwall_sandy", 0);
+	for(new x; x < sizeof(FDSAWLS_Wall); x++) SetDynamicObjectMaterial(FDSAWLS_Wall[x], 0, 11008, "firehouse_sfse", "GB_sandstwall01", 0);
+	
+	//Donahue Family Condos
+	new DFCLS[3], DFCLS_Wall[2], DFCLS_Roof[6], DFCLS_SS[3];
+	DFCLS[0] = CreateDynamicObject(19340, 1270.42, -1184.34, 8.78,   0.00, 0.00, 180.00);
+	DFCLS[1] = CreateDynamicObject(9507, 1246.30, -1260.27, 24.01,   0.00, 0.00, 0.00);
+	DFCLS[2] = CreateDynamicObject(3613, 1246.46, -1262.42, 35.08,   0.00, 0.00, 90.00);
+	DFCLS_Wall[0] = CreateDynamicObject(19447, 1259.21, -1268.23, 14.13,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 200);
+	DFCLS_Wall[1] = CreateDynamicObject(19428, 1238.0660, -1268.2170, 14.1233,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 200);
+	//DFCLS_Wall[1] = CreateDynamicObject(19447, 1234.45, -1268.23, 14.13,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 200);
+	//DFCLS_Wall[2] = CreateDynamicObject(19447, 1227.34, -1261.31, 14.13,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
+	DFCLS_Roof[0] = CreateDynamicObject(19355, 1255.57, -1265.97, 44.28,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	DFCLS_Roof[1] = CreateDynamicObject(19355, 1252.99, -1265.97, 44.28,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	DFCLS_Roof[2] = CreateDynamicObject(19428, 1254.84, -1264.45, 44.28,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 100);
+	DFCLS_Roof[3] = CreateDynamicObject(19428, 1253.70, -1264.45, 44.28,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 100);
+	DFCLS_Roof[4] = CreateDynamicObject(19355, 1254.28, -1266.41, 46.11,   0.00, 90.00, 90.00, .worldid = -1, .streamdistance = 100);
+	DFCLS_Roof[5] = CreateDynamicObject(19355, 1254.28, -1264.35, 46.10,   0.00, 90.00, 90.00, .worldid = -1, .streamdistance = 100);
+	new DFCLS_Garage = CreateDynamicObject(11326, 1230.11, -1244.96, 14.80,   0.00, 0.00, 270.00, .worldid = -1, .streamdistance = 150);
+	DFCLS_SS[0] = CreateDynamicObject(8548, 1211.96, -1290.98, 13.75,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
+	DFCLS_SS[1] = CreateDynamicObject(8548, 1210.38, -1270.48, 13.75,   0.00, 0.00, 180.00, .worldid = -1, .streamdistance = 200);
+	DFCLS_SS[2] = CreateDynamicObject(8548, 1266.11, -1291.41, 13.75,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
+	CreateDynamicObject(18981, 1226.70, -1254.13, 1.30,   4.20, 0.00, 0.10, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(18981, 1226.74, -1279.06, -0.54,   4.20, 0.00, 0.10, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(2949, 1254.98, -1264.34, 42.81,   0.00, 0.00, 270.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1506, 1242.40, -1257.02, 12.53,   0.00, 0.00, 180.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1280, 1239.78, -1260.61, 12.92,   0.00, 0.00, 180.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1280, 1239.78, -1265.05, 12.92,   0.00, 0.00, 180.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1280, 1244.94, -1265.05, 12.92,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1280, 1244.94, -1260.61, 12.92,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(638, 1244.06, -1257.46, 13.22,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1361, 1240.12, -1257.86, 13.28,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1361, 1240.12, -1262.81, 13.28,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1361, 1244.73, -1262.81, 13.28,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(1731, 1243.43, -1257.22, 14.81,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(957, 1242.39, -1265.07, 16.27,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(921, 1254.18, -1263.10, 45.90,   90.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(973, 1226.82, -1247.36, 15.15,   0.00, -4.20, 90.00, .worldid = -1, .streamdistance = 150);
+	CreateDynamicObject(973, 1226.82, -1256.72, 14.47,   0.00, -4.20, 90.00, .worldid = -1, .streamdistance = 150);
+	CreateDynamicObject(973, 1226.82, -1266.08, 13.78,   0.00, -4.20, 90.00, .worldid = -1, .streamdistance = 150);
+	CreateDynamicObject(3934, 1242.66, -1262.30, 42.80,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 200);
+	CreateDynamicObject(19281, 1242.4147, -1265.0727, 16.2299, 0.0000, 0.0000, -86.7483, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(19281, 1243.4476, -1257.2475, 14.9099, 0.0000, 0.0000, 265.6480, .worldid = -1, .streamdistance = 100);
+	CreateDynamicObject(19281, 1254.1955, -1263.1003, 45.9247, 0.0000, 0.0000, 81.1187, .worldid = -1, .streamdistance = 100);
+	new DFCLSRoof = CreateDynamicObject(2714, -2062.75732, 198.62910, 1005.76123, 0.00000, 0.00000, 180.00000, .interiorid = 6, .worldid = 2217, .streamdistance = 50);
+	SetDynamicObjectMaterial(DFCLSRoof, 0, 14506, "imy_motel", "mp_motel_roof", 0);
+	SetDynamicObjectMaterial(DFCLS[0], 0, 5739, "lawnbit", "backstageceiling1_128", 0);
+	SetDynamicObjectMaterial(DFCLS_Garage, 4, 9507, "boxybld2_sfw", "gz_vic4e", 0xFFA7A181);
+	for(new x; x < sizeof(DFCLS_Wall); x++) SetDynamicObjectMaterial(DFCLS_Wall[x], 0, 9507, "boxybld2_sfw", "gz_vic4e", 0xFFA7A181);
+	for(new x; x < sizeof(DFCLS_Roof); x++) SetDynamicObjectMaterial(DFCLS_Roof[x], 0, 3613, "hillhousex_la10_12", "banding3_64HV", 0);
+	for(new x; x < sizeof(DFCLS_SS); x++) SetDynamicObjectMaterial(DFCLS_SS[x], 0, 967, "cj_barr_set_1", "Stop2_64", 0);
+	CreateDynamicObject(19447, 1282.82, -1239.90, 14.26,   0.00, 0.00, 1.00);
+	CreateDynamicObject(19447, 1282.98, -1249.52, 14.26,   0.00, 0.00, 1.00);
+
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{
 	    if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0)
@@ -20426,6 +20534,32 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1351, 687.5625, -495.8125, 15.1797, 0.25);
 		RemoveBuildingForPlayer(playerid, 1351, 635.8281, -474.7109, 15.1797, 0.25);
 		RemoveBuildingForPlayer(playerid, 1351, 797.8047, -540.8047, 15.1797, 0.25);
+		
+		//FDSA
+		RemoveBuildingForPlayer(playerid, 1268, 311.9531, -1383.1484, 19.6719, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 274.9375, -1398.2188, 10.3203, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 278.0000, -1392.7188, 10.3203, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 280.1875, -1391.6953, 10.3203, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 285.6406, -1383.6406, 11.6328, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 290.7031, -1389.5078, 11.6328, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 297.1797, -1380.7500, 11.3984, 0.25);
+		RemoveBuildingForPlayer(playerid, 1259, 311.9531, -1383.1484, 19.6719, 0.25);
+		
+		//Donahue Family Condos
+		RemoveBuildingForPlayer(playerid, 5967, 1259.4375, -1246.8125, 17.1094, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1182.6484, -1280.0781, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1194.7969, -1290.8516, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1216.3203, -1281.4141, 15.5938, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1216.8516, -1270.7656, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1245.7266, -1281.3359, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 1388, 1238.3750, -1258.2813, 57.2031, 0.25);
+		RemoveBuildingForPlayer(playerid, 1391, 1238.3750, -1258.2734, 44.6641, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1261.3594, -1291.1797, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 1283, 1269.5469, -1280.3203, 15.7109, 0.25);
+		RemoveBuildingForPlayer(playerid, 5857, 1259.4375, -1246.8125, 17.1094, 0.25);
+		RemoveBuildingForPlayer(playerid, 1219, 1284.1797, -1239.6406, 12.9141, 0.25);
+		
+		RemoveBuildingForPlayer(playerid, 694, 2314.2578, 246.0625, 27.8672, 0.25);
 		SetPVarInt(playerid, "BuildingRemoved", 1);
 	}
 	return true;

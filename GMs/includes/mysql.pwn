@@ -673,6 +673,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Isolated", szResult, MainPipeline); PlayerInfo[extraid][pIsolated] = strval(szResult);
 					cache_get_field_content(row,  "WantedJailTime", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailTime] = strval(szResult);
 					cache_get_field_content(row,  "WantedJailFine", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailFine] = strval(szResult);
+					PlayerInfo[extraid][pNextNameChange] = cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
 					
 					GetPartnerName(extraid);
 
@@ -780,11 +781,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
 				GetPVarString(extraid, "PassAuth", szBuffer, sizeof(szBuffer));
 				WP_Hash(szPass, sizeof(szPass), szBuffer);
-				if(cache_get_field_content_int(i, "Online", MainPipeline)) {
+				/*if(cache_get_field_content_int(i, "Online", MainPipeline)) {
 					SendClientMessage(extraid, COLOR_RED, "SERVER: This account has already logged in.");
 					SetTimerEx("KickEx", 1000, 0, "i", extraid);
 					return 1;
-				}
+				}*/
 
 				if((isnull(szPass)) || (isnull(szResult)) || (strcmp(szPass, szResult) != 0)) {
 					// Invalid Password - Try Again!
@@ -1509,7 +1510,7 @@ GivePlayerCredits(Player, Amount, Shop, option = 0)
 stock g_mysql_SaveVehicle(playerid, slotid)
 {
 	new query[2048];
-	printf("%s (%i) saving their %d (slot %i) (Model %i)...", GetPlayerNameEx(playerid), playerid, PlayerVehicleInfo[playerid][slotid][pvModelId], slotid, PlayerVehicleInfo[playerid][slotid][pvModelId]);
+	printf("%s (%i) saving their %s (slot %i) (Model %i)...", GetPlayerNameEx(playerid), playerid, VehicleName[PlayerVehicleInfo[playerid][slotid][pvModelId] - 400], slotid, PlayerVehicleInfo[playerid][slotid][pvModelId]);
 
 	format(query, sizeof(query), "UPDATE `vehicles` SET");
 	format(query, sizeof(query), "%s `pvPosX` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvPosX]);
@@ -3258,7 +3259,8 @@ stock g_mysql_SaveAccount(playerid)
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Isolated", PlayerInfo[playerid][pIsolated]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -4231,8 +4233,10 @@ public CheckSales2(index)
 			Teamspeak User Channel: %d | Total Credits: %s\n\
 			Small Backpack: %d | Total Credits: %s\n\
 			Medium Backpack: %d | Total Credits: %s\n\
-			Large Backpack: %d | Total Credits: %s\n", 
-			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]));
+			Large Backpack: %d | Total Credits: %s\n\ 
+			Deluxe Car Alarm: %d | Total Credits: %s\n\ 
+			Name Changes: %d | Total Credits: %s\n", 
+			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]), Solds[39], number_format(Amount[39]), Solds[40], number_format(Amount[40]));
 			
 			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s\nTotal Amount of Credits spent: %s", szDialog, Solds[21], number_format(Amount[21]),
 			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]+Amount[35]+Amount[36]+Amount[37]+Amount[38]));
@@ -5930,8 +5934,30 @@ public OnApproveName(index, extraid)
 				format(string, sizeof(string), "[VIP NAMECHANGES] %s(%d) has changed their name to %s.", GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), newname);
 				Log("logs/vipnamechanges.log", string);
 			}
-
-			if((0 <= PlayerInfo[extraid][pMember] < MAX_GROUPS) && PlayerInfo[extraid][pRank] >= arrGroupData[PlayerInfo[extraid][pMember]][g_iFreeNameChange])
+			
+			if(GetPVarType(extraid, "marriagelastname"))
+			{
+				if(strlen(newname) > 0)
+				{
+					if(SetPlayerName(extraid, newname) == 1)
+					{
+						format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+						mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+						format(string, sizeof(string), "%s last name has been changed upon marriage. New Name: \"%s\" (id: %i).", oldname, newname, GetPlayerSQLId(extraid));
+						Log("logs/stats.log", string);
+						SendClientMessageEx(extraid, -1, "Upon a successful marriage your last name has been changed to match your spouse's at your own request.");
+					}
+					else
+					{
+						SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
+						format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
+						Log("logs/stats.log", string);
+						return 1;
+					}
+					DeletePVar(extraid, "marriagelastname");
+				}
+			}
+			else if((0 <= PlayerInfo[extraid][pMember] < MAX_GROUPS) && PlayerInfo[extraid][pRank] >= arrGroupData[PlayerInfo[extraid][pMember]][g_iFreeNameChange])
 			{
 				if(strlen(newname) > 0)
 				{
@@ -6026,42 +6052,73 @@ public OnApproveName(index, extraid)
 						DeletePVar(extraid, "RequestingNameChange");
 					}
 				}
+				else if(gettime() >= PlayerInfo[extraid][pNextNameChange])
+				{
+					if(strlen(newname) > 0)
+					{
+						if(SetPlayerName(extraid, newname) == 1)
+						{
+							format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+							PlayerInfo[extraid][pNextNameChange] = gettime()+10368000;
+							format(string, sizeof(string), " Your name has been changed from %s to %s for free.", oldname, newname);
+							SendClientMessageEx(extraid, COLOR_YELLOW, string);
+							format(string, sizeof(string), " Your next free name change will be on %s", date(PlayerInfo[extraid][pNextNameChange], 4));
+							SendClientMessageEx(extraid, COLOR_CYAN, string);
+							format(string, sizeof(string), " You have changed %s's name to %s for %s for free.", oldname, newname);
+							SendClientMessageEx(index,COLOR_YELLOW,string);
+							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for free. (Next Free N/C: %s)", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), date(PlayerInfo[extraid][pNextNameChange], 4));
+							Log("logs/stats.log", string);
+							format(string, sizeof(string), "%s has approved %s's name change to %s for free.", GetPlayerNameEx(index), oldname, newname);
+							ABroadCast(COLOR_YELLOW, string, 3);
+						}
+						else
+						{
+							SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
+							format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+							SendClientMessage(index, COLOR_REALRED, string);
+							format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
+							Log("logs/stats.log", string);
+							return 1;
+						}
+						DeletePVar(extraid, "RequestingNameChange");
+					}
+				}
 				else
 				{
 					if(strlen(newname) > 0)
 					{
-						if(PlayerInfo[extraid][pDonateRank] >= 3)
-						{
-							format(string, sizeof(string), " Your name has been changed from %s to %s for $%d (10 percent VIP Discount).", GetPlayerNameEx(extraid), newname, GetPVarInt(extraid, "NameChangeCost"));
-						}
-						else
-						{
-							format(string, sizeof(string), " Your name has been changed from %s to %s for $%d.", GetPlayerNameEx(extraid), newname, GetPVarInt(extraid, "NameChangeCost"));
-						}
-						SendClientMessageEx(extraid, COLOR_YELLOW, string);
-						GivePlayerCash(extraid, -GetPVarInt(extraid, "NameChangeCost"));
-						format(string, sizeof(string), " You have changed %s's name to %s for $%d.", GetPlayerNameEx(extraid), newname, GetPVarInt(extraid, "NameChangeCost"));
-						SendClientMessageEx(index,COLOR_YELLOW,string);
-						format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for $%d",GetPlayerNameEx(index),GetPlayerNameEx(extraid),newname, GetPlayerSQLId(extraid), GetPVarInt(extraid, "NameChangeCost"));
-						Log("logs/stats.log", string);
-						format(string, sizeof(string), "%s has approved %s's name change to %s for $%d",GetPlayerNameEx(index),GetPlayerNameEx(extraid), newname, GetPVarInt(extraid, "NameChangeCost"));
-						ABroadCast(COLOR_YELLOW, string, 3);
-
 						if(SetPlayerName(extraid, newname) == 1)
 						{
-	    					format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							GivePlayerCredits(extraid, -ShopItems[40][sItemPrice], 1);
+							printf("Price40: %d", ShopItems[40][sItemPrice]);
+							AmountSold[40]++;
+							AmountMade[40] += ShopItems[40][sItemPrice];
+							format(string, sizeof(string), "UPDATE `sales` SET `TotalSold40` = '%d', `AmountMade40` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[40], AmountMade[40]);
+							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+							format(string, sizeof(string), "[Name Change] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), GetPlayerIpEx(extraid), number_format(PlayerInfo[extraid][pCredits]), number_format(ShopItems[40][sItemPrice]));
+							Log("logs/credits.log", string), print(string);
+							format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
 							mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+
+							format(string, sizeof(string), " Your name has been changed from %s to %s for %s credits.", oldname, newname, number_format(ShopItems[40][sItemPrice]));
+							SendClientMessageEx(extraid, COLOR_CYAN, string);
+							format(string, sizeof(string), " You have changed %s's name to %s for %s credits.", oldname, newname, number_format(ShopItems[40][sItemPrice]));
+							SendClientMessageEx(index,COLOR_YELLOW,string);
+							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for %s credits.", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), number_format(ShopItems[40][sItemPrice]));
+							Log("logs/stats.log", string);
+							format(string, sizeof(string), "%s has approved %s's name change to %s for %s credits.", GetPlayerNameEx(index), oldname, newname, number_format(ShopItems[40][sItemPrice]));
+							ABroadCast(COLOR_YELLOW, string, 3);
 						}
 						else
 						{
-						    SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
-						    format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
-						    SendClientMessage(index, COLOR_REALRED, string);
-						    format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
-						    Log("logs/stats.log", string);
-						    return 1;
+							SendClientMessage(extraid, COLOR_REALRED, "There was an issue with your name change.");
+							format(string, sizeof(string), "%s's name change has failed due to incorrect size or characters.", GetPlayerNameExt(extraid));
+							SendClientMessage(index, COLOR_REALRED, string);
+							format(string, sizeof(string), "Error changing %s's(%d) name to %s", GetPlayerNameExt(extraid), GetPlayerSQLId(extraid), newname);
+							Log("logs/stats.log", string);
+							return 1;
 						}
-
 						DeletePVar(extraid, "RequestingNameChange");
 					}
 				}
@@ -6069,9 +6126,17 @@ public OnApproveName(index, extraid)
 		}
 		else
 		{
-			SendClientMessageEx(extraid, COLOR_GRAD2, "That name already exists, please choose a different one.");
-			SendClientMessageEx(index, COLOR_GRAD2, "That name already exists.");
+			if(GetPVarType(extraid, "marriagelastname"))
+			{
+				SendClientMessageEx(extraid, COLOR_GRAD2, "There was a error changing your name after marriage, the name already exists.");
+			}
+			else
+			{
+				SendClientMessageEx(extraid, COLOR_GRAD2, "That name already exists, please choose a different one.");
+				SendClientMessageEx(index, COLOR_GRAD2, "That name already exists.");
+			}
 			DeletePVar(extraid, "RequestingNameChange");
+			DeletePVar(extraid, "marriagelastname");
 			return 1;
 		}
 	}

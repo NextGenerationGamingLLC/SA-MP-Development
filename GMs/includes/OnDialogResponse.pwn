@@ -1744,9 +1744,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerVehicleInfo[playerid][i][pvAlarm] = 0;
 					PlayerVehicleInfo[playerid][i][pvAlarmTriggered] = 0;
 					PlayerVehicleInfo[playerid][i][pvBeingPickLocked] = 0;
-					PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
-					PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
-					PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+					if(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] != INVALID_PLAYER_ID)
+					{
+						PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeys] = INVALID_PLAYER_VEHICLE_ID;
+						PlayerInfo[PlayerVehicleInfo[playerid][i][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
+						PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] = INVALID_PLAYER_ID;
+					}
 					GiveKeysTo[playerid] = INVALID_PLAYER_ID;
 					DeletePVar(playerid, "vDel");
 
@@ -6730,7 +6733,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else {
 
 				new
-					iVeh = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
+					iVeh = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], (PlayerVehicleInfo[playerid][listitem][pvModelId] == 460) ? PlayerVehicleInfo[playerid][listitem][pvPosZ]+5 : PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
 
 				SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
 				LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);
@@ -7341,14 +7344,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessageEx( playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname." );
 						return 1;
 					}
-					new namechangecost;
+					/*new namechangecost;
 					namechangecost = (PlayerInfo[playerid][pLevel]) * 15000;
 					
 					if(PlayerInfo[playerid][pDonateRank] >= 3)
 					{
 						namechangecost = 90*namechangecost/100;
-					}
-
+					}*/
+					DeletePVar(playerid, "marriagelastname");
 					new tmpName[MAX_PLAYER_NAME];
 					mysql_escape_string(inputtext, tmpName);
 					if(strcmp(inputtext, tmpName, false) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Unacceptable characters used in namechange, try again");
@@ -7380,31 +7383,42 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until a General Admin approves it.", playername, inputtext, namechangecost);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until a General Admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
-
-					if(GetPlayerCash(playerid) >= namechangecost)
+					if(gettime() >= PlayerInfo[playerid][pNextNameChange])
 					{
-						if(GetPVarType(playerid, "HasReport")) {
-							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
-							return 1;
-						}
+						if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
 						new String[128];
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
-						SetPVarInt(playerid, "NameChangeCost", namechangecost);
+						SetPVarInt(playerid, "NameChangeCost", 1);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s for $%d, please wait until a General Admin approves it.", playername, inputtext, namechangecost);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s for free, please wait until a General Admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
+						return 1;
+					}
+					if(PlayerInfo[playerid][pCredits] >= ShopItems[40][sItemPrice])
+					{
+						if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
+						new String[128];
+						SetPVarInt(playerid, "RequestingNameChange", 1);
+						SetPVarString(playerid, "NewNameRequest", inputtext);
+						SetPVarInt(playerid, "NameChangeCost", 2);
+						new playername[MAX_PLAYER_NAME];
+						GetPlayerName(playerid, playername, sizeof(playername));
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s for %s credits, please wait until a General Admin approves it.", playername, inputtext, number_format(ShopItems[40][sItemPrice]));
+						SendClientMessageEx( playerid, COLOR_YELLOW, String );
+						SendReportToQue(playerid, "Name Change Request (Credits)", 2, 4);
+						return 1;
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money for the name change.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 					}
 				}
 			}
@@ -7454,6 +7468,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						new String[128];
+						DeletePVar(playerid, "marriagelastname");
 						SetPVarInt(playerid, "RequestingNameChange", 1);
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						SetPVarInt(playerid, "NameChangeCost", 0);
@@ -14951,9 +14966,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Small Backpack (Credits: %s)\n\
 				Medium Backpack (Credits: %s)\n\
 				Large Backpack (Credits: %s)\n\
-				Deluxe Car Alarm (Credits: %s)", 
+				Deluxe Car Alarm (Credits: %s)\n\
+				Name Changes (Credits: %s)", 
 				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]));
+				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 			}
 			else
@@ -15009,6 +15025,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
+				case 40: item = "Name Changes";
 			}
 			format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
 			ShowPlayerDialog(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
@@ -15064,6 +15081,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
+				case 40: item = "Name Changes";
 			}
 
 			if(isnull(inputtext) || Prices <= 0) {
@@ -15131,9 +15149,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Small Backpack (Credits: %s)\n\
 		Medium Backpack (Credits: %s)\n\
 		Large Backpack (Credits: %s)\n\
-		Deluxe Car Alarm (Credits: %s)", 
+		Deluxe Car Alarm (Credits: %s)\n\
+		Name Changes (Credits: %s)", 
 		szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]));
+		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]));
 		ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
@@ -15183,6 +15202,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 37: item = "Medium Backpack";
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
+				case 40: item = "Name Changes";
 			}
 			if(GetPVarInt(playerid, "EditingPriceValue") == 0)
 				SetPVarInt(playerid, "EditingPriceValue", 999999);
@@ -19952,6 +19972,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 		LoadPrisoner(playerid, prisonerid, getVeh, iVehicleSeat, getVW, getIW);
+	}
+	if(dialogid == DIALOG_MARRIAGE)
+	{
+		if(response)
+		{
+			SetPVarInt(playerid, "marriagelastname", 1);
+			SendClientMessageEx(playerid, -1, "You have chosen to keep your last name.");
+		}
+		else
+		{
+			SetPVarInt(playerid, "marriagelastname", 2);
+			SendClientMessageEx(playerid, -1, "You have chosen to take your spouse's last name.");
+		}
 	}
 	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
 	{

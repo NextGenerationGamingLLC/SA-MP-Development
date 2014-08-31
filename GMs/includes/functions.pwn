@@ -16796,7 +16796,7 @@ stock RefreshBusinessPickup(i)
     	new string[128];
 		Businesses[i][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(i), 23, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]);
         if (Businesses[i][bOwner] < 1) {
-			format(string,sizeof(string),"%s\n\nBusiness For Sale!\nCost: %s\nTo buy this business type /buybiz\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
+			format(string,sizeof(string),"%s\n\nBusiness For Sale!\nCost: %s\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
 		}
 		else {
 		    if(Businesses[i][bType] != BUSINESS_TYPE_GYM) {
@@ -27375,4 +27375,22 @@ public OnEnterFire()
 		}
 	}
 	return 1;
+}
+
+stock GetFirstName(playerid)
+{
+	new name[MAX_PLAYER_NAME], underscore;
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	underscore = strfind(name, "_");
+	strdel(name, underscore, MAX_PLAYER_NAME);
+	return name;
+}
+
+stock GetLastName(playerid)
+{
+	new name[MAX_PLAYER_NAME], underscore;
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	underscore = strfind(name, "_");
+	strdel(name, 0, underscore+1);
+	return name;
 }

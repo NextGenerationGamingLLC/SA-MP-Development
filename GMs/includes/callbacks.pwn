@@ -6881,7 +6881,7 @@ public OnPlayerText(playerid, text[])
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
 		return 0;
 	}
-
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b"), 0;
 	new sendername[MAX_PLAYER_NAME];
 	new giveplayer[MAX_PLAYER_NAME];
 	new string[128];
@@ -7116,6 +7116,20 @@ public OnPlayerText(playerid, text[])
 						format(string, sizeof(string), "Marriage News: We have a new lesbian couple! %s & %s have been married.", sendername, giveplayer);
 						OOCNews(COLOR_WHITE, string);
 					}
+					if(GetPVarInt(playerid, "marriagelastname") == 2)
+					{
+						format(string, sizeof(string), "%s_%s", GetFirstName(playerid), GetLastName(ProposedTo[playerid]));
+						SetPVarString(playerid, "NewNameRequest", g_mysql_ReturnEscaped(string, MainPipeline));
+						format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(string, MainPipeline));
+						mysql_function_query(MainPipeline, string, true, "OnApproveName", "ii", playerid, playerid);
+					}
+					if(GetPVarInt(ProposedTo[playerid], "marriagelastname") == 2)
+					{
+						format(string, sizeof(string), "%s_%s", GetFirstName(ProposedTo[playerid]), GetLastName(playerid));
+						SetPVarString(ProposedTo[playerid], "NewNameRequest", g_mysql_ReturnEscaped(string, MainPipeline));
+						format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(string, MainPipeline));
+						mysql_function_query(MainPipeline, string, true, "OnApproveName", "ii", ProposedTo[playerid], ProposedTo[playerid]);
+					}
 					//MarriageCeremoney[ProposedTo[playerid]] = 1;
 					MarriageCeremoney[ProposedTo[playerid]] = 0;
 					MarriageCeremoney[playerid] = 0;
@@ -7144,7 +7158,7 @@ public OnPlayerText(playerid, text[])
 				{
 					format(string, sizeof(string), "* You didn't want to marry %s, no 'yes' was said.", GetPlayerNameEx(GotProposedBy[playerid]));
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					format(string, sizeof(string), "* %s did't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
 					SendClientMessageEx(GotProposedBy[playerid], COLOR_YELLOW, string);
 					return 0;
 				}
@@ -7161,7 +7175,7 @@ public OnPlayerText(playerid, text[])
 				{
 					format(string, sizeof(string), "* You didn't want to marry %s, no 'yes' was said.",GetPlayerNameEx(ProposedTo[playerid]));
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					format(string, sizeof(string), "* %s did't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "* %s didn't want to marry you, no 'yes' was said.",GetPlayerNameEx(playerid));
 					SendClientMessageEx(ProposedTo[playerid], COLOR_YELLOW, string);
 					return 0;
 				}

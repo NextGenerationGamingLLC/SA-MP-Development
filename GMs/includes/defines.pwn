@@ -114,7 +114,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		INVALID_CALL_ID 			-1
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
-#define 		MAX_ITEMS 					(40)
+#define 		MAX_ITEMS 					(41)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001
@@ -921,6 +921,7 @@ native gpci(playerid, serial[], maxlen);
 #define			MSG_NOMONEY					("You do not have enough money for this")
 
 #define 		DIALOG_DGRAUTORESET			(6006)
+#define			DIALOG_MARRIAGE				(6007)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
