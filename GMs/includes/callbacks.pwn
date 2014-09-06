@@ -771,62 +771,6 @@ public OnPlayerPressButton(playerid, buttonid)
 			return 1;
 		}
 	}
-	if(buttonid == SANewsStudio)
-	{
-	    if(IsAReporter(playerid) || IsACop(playerid))
-	    {
-	        MoveDynamicObject(SANewsStudioA,625.60937500,-9.80000019,1106.96081543,4);
-	 		MoveDynamicObject(SANewsStudioB,625.64941406,-14.77000046,1106.96081543,4);
-			SetTimer("CloseSANewsStudio", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == SANewsPrivate)
-	{
-	    if(IsAReporter(playerid) || IsACop(playerid))
-	    {
-	        MoveDynamicObject(SANewsPrivateA,625.60937500,0.55000001,1106.96081543,4);
-	 		MoveDynamicObject(SANewsPrivateB,625.65002441,-4.54999995,1106.96081543,4);
-			SetTimer("CloseSANewsPrivate", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == SANewsPrivateOPP)
-	{
-	    if(IsAReporter(playerid) || IsACop(playerid))
-	    {
-	        MoveDynamicObject(SANewsPrivateA,625.60937500,0.55000001,1106.96081543,4);
-	 		MoveDynamicObject(SANewsPrivateB,625.65002441,-4.54999995,1106.96081543,4);
-			SetTimer("CloseSANewsPrivate", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == SANewsOffice)
-	{
-	    if((IsAReporter(playerid) && PlayerInfo[playerid][pRank] >=5) || IsACop(playerid))
-	    {
-	        MoveDynamicObject(SANewsOfficeA,613.66998291,17.82812500,1106.98425293,4);
-	 		MoveDynamicObject(SANewsOfficeB,618.69000244,17.86899948,1106.98425293,4);
-			SetTimer("CloseSANewsOffice", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
 	if(buttonid == sasdbtn1)
 	{
 	    if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 5)

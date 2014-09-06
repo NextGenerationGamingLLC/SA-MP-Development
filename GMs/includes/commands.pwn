@@ -13690,7 +13690,7 @@ CMD:enter(playerid, params[])
 	}
 	
 	// added as part of the large vehicle interior project
-	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar)
+	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508 || GetVehicleModel(cCar) == 570) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar)
 	{
 	    if(VehicleStatus{cCar} == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not allowed to enter this vehicle as it's been damaged!");
 	    new string[47 + MAX_PLAYER_NAME];
@@ -13705,6 +13705,14 @@ CMD:enter(playerid, params[])
 				PlayerInfo[playerid][pInt] = 1;
 				SetPlayerInterior(playerid, 1);
 			}
+			case 570: 
+			{
+				SetPlayerPos(playerid, 736.0656,1761.3657,-38.9038);
+				Player_StreamPrep(playerid,736.0656,1761.3657,-38.9038, FREEZE_TIME);
+				SetPlayerFacingAngle(playerid, 270.0);
+				PlayerInfo[playerid][pInt] = 1;
+				SetPlayerInterior(playerid, 1);
+			}
 		}
 
         SetCameraBehindPlayer(playerid);
@@ -13712,7 +13720,7 @@ CMD:enter(playerid, params[])
 		SetPlayerVirtualWorld(playerid, cCar);
 		InsidePlane[playerid] = cCar;
 		SetPVarInt(playerid, "InsideCar", 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle, or /window to look outside.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle.");
 	}
 	if(GetPVarType(playerid, "tpDeliverVehTimer") > 0)
 	{
@@ -13965,12 +13973,21 @@ CMD:exit(playerid, params[])
         else {
             new Float:X, Float:Y, Float:Z;
             GetVehiclePos(InsidePlane[playerid], X, Y, Z);
-            SetPlayerPos(playerid, X-2.7912, Y+3.2304, Z);
-			Player_StreamPrep(playerid, X-2.7912,Y+3.2304,Z, FREEZE_TIME);
-            if(Z > 50.0) {
-                PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
-                GivePlayerValidWeapon(playerid, 46, 60000);
-            }
+            
+			if(!IsAPlane(InsidePlane[playerid]))
+			{
+				SetPlayerPos(playerid, X-1.00, Y+1.00, Z);
+				Player_StreamPrep(playerid, X-1.00, Y+1.00,Z, FREEZE_TIME);
+			}
+			else
+			{
+				SetPlayerPos(playerid, X-2.7912, Y+3.2304, Z);
+				Player_StreamPrep(playerid, X-2.7912,Y+3.2304,Z, FREEZE_TIME);
+				if(Z > 50.0) {
+					PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
+					GivePlayerValidWeapon(playerid, 46, 60000);
+				}
+			}
         }
 
         PlayerInfo[playerid][pVW] = 0;
@@ -49713,7 +49730,7 @@ CMD:news(playerid, params[])
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /news [text]");
 
 		new newcar = GetPlayerVehicleID(playerid);
-		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid,15.0,639.7627,-11.1346,1107.9656))
+		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid,15.0, 647.5820,1.6036,1101.2821) || IsPlayerInRangeOfPoint(playerid,6.0, 660.2643,-1.8796,1101.2395) || IsPlayerInRangeOfPoint(playerid,15.0, 650.5955,-28.9854,1101.2126))
 		{
 			if(PlayerInfo[playerid][pRank] < 1)
 			{
@@ -49763,28 +49780,74 @@ CMD:watchtv(playerid, params[])
 
 				TogglePlayerControllable(playerid, false);
 				SetPlayerInterior(playerid, 1);
-				SetPlayerVirtualWorld(playerid, 4225);
-				SetPlayerPos(playerid, 639.2813,-11.8090,1111.4656);
+				SetPlayerVirtualWorld(playerid, 0);
+				SetPlayerPos(playerid, 648.9558,7.4022,1104.8258);
 
-				if(cameraangle == 0)
+				switch(broadcaststudio)
 				{
-					SetPlayerCameraPos(playerid, 635.6883,-11.1890,1108.6041);
-					SetPlayerCameraLookAt(playerid, 641.3040,-12.2565,1108.1642);
-				}
-				else if(cameraangle == 1)
-				{
-					SetPlayerCameraPos(playerid, 637.9041,-8.3097,1108.9656);
-					SetPlayerCameraLookAt(playerid, 640.9764,-14.7714,1107.9656);
-				}
-				else if(cameraangle == 2)
-				{
-					SetPlayerCameraPos(playerid, 638.6522,-15.6267,1108.9656);
-					SetPlayerCameraLookAt(playerid, 640.7208,-9.5926,1107.2006);
-				}
-				else
-				{
-					SetPlayerCameraPos(playerid, 635.6883,-11.1890,1108.6041);
-					SetPlayerCameraLookAt(playerid, 641.3040,-12.2565,1108.1642);
+					case 1:
+					{
+						switch(cameraangle)
+						{
+							case 0:
+							{
+								SetPlayerCameraPos(playerid, 651.7099, -23.5688, 1101.6589);
+								SetPlayerCameraLookAt(playerid, 651.6790, -24.5670, 1101.5894);
+							}
+							case 1:
+							{
+								SetPlayerCameraPos(playerid, 647.0847, -24.2731, 1101.7302);
+								SetPlayerCameraLookAt(playerid, 647.7896, -24.9810, 1101.6757);
+							}
+							case 2:
+							{
+								SetPlayerCameraPos(playerid, 653.3759, -24.5380, 1101.6094);
+								SetPlayerCameraLookAt(playerid, 652.9409, -25.4370, 1101.5249);
+							}
+						}
+					}
+					case 2:
+					{
+						switch(cameraangle)
+						{
+							case 0:
+							{
+								SetPlayerCameraPos(playerid, 647.3672, -3.6455, 1102.5767);
+								SetPlayerCameraLookAt(playerid, 647.4997, -2.6562, 1102.3917);
+							}
+							case 1:
+							{
+								SetPlayerCameraPos(playerid, 651.5222, -2.8707, 1102.1970);
+								SetPlayerCameraLookAt(playerid, 650.9796, -2.0328, 1102.0521);
+							}
+							case 2:
+							{
+								SetPlayerCameraPos(playerid, 642.5612, -2.0504, 1102.3726);
+								SetPlayerCameraLookAt(playerid, 643.2610, -1.3387, 1102.2280);
+							}
+						}
+					}
+					case 3:
+					{
+						switch(cameraangle)
+						{
+							case 0:
+							{
+								SetPlayerCameraPos(playerid, 661.6169, -1.8129, 1103.3221);
+								SetPlayerCameraLookAt(playerid, 660.6224, -1.9017, 1102.5270);
+							}
+							case 1:
+							{
+								SetPlayerCameraPos(playerid, 660.9686, 0.9339, 1103.2574);
+								SetPlayerCameraLookAt(playerid, 660.5128, 0.0453, 1102.8682);
+							}
+							case 2:
+							{
+								SetPlayerCameraPos(playerid, 660.8921, -4.4156, 1103.3365);
+								SetPlayerCameraLookAt(playerid, 660.3720, -3.5629, 1102.8322);
+							}
+						}
+					}
 				}
 				return 1;
 			}
@@ -49817,7 +49880,7 @@ CMD:cameraangle(playerid, params[])
 {
 	if (IsAReporter(playerid))
 	{
-		if(IsPlayerInRangeOfPoint(playerid,10.0,631.8096,-10.9424,1107.9729))
+		if(IsPlayerInRangeOfPoint(playerid,15.0, 647.5820,1.6036,1101.2821) || IsPlayerInRangeOfPoint(playerid,6.0, 660.2643,-1.8796,1101.2395) || IsPlayerInRangeOfPoint(playerid,15.0, 650.5955,-28.9854,1101.2126))
 		{
 			if(broadcasting == 0)
 			{
@@ -49838,24 +49901,24 @@ CMD:cameraangle(playerid, params[])
 				format(string, sizeof(string), "** %s changes the camera angle to the center **", GetPlayerNameEx(playerid));
 				SendGroupMessage(4, RADIO, string);
 				cameraangle = 0;
-				DestroyDynamic3DTextLabel(camera);
-				camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,635.6883,-11.1890,1108.6041,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				//DestroyDynamic3DTextLabel(camera);
+				//camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,635.6883,-11.1890,1108.6041,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 			}
 			else if(strcmp(choice,"left",true) == 0)
 			{
 				format(string, sizeof(string), "** %s changes the camera angle to the left **", GetPlayerNameEx(playerid));
 				SendGroupMessage(4, RADIO, string);
-				cameraangle = 1;
-				DestroyDynamic3DTextLabel(camera);
-				camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,637.9041,-8.3097,1107.9656,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				cameraangle = 2;
+				//DestroyDynamic3DTextLabel(camera);
+				//camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,637.9041,-8.3097,1107.9656,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 			}
 			else if(strcmp(choice,"right",true) == 0)
 			{
 				format(string, sizeof(string), "** %s changes the camera angle to the right **", GetPlayerNameEx(playerid));
 				SendGroupMessage(4, RADIO, string);
-				cameraangle = 2;
-				DestroyDynamic3DTextLabel(camera);
-				camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,638.6522,-15.6267,1107.9656,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				cameraangle = 1;
+				//DestroyDynamic3DTextLabel(camera);
+				//camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,638.6522,-15.6267,1107.9656,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 			}
 			else
 			{
@@ -49869,25 +49932,71 @@ CMD:cameraangle(playerid, params[])
 				{
 					if(WatchingTV[i] == 1)
 					{
-						if(cameraangle == 0)
+						switch(broadcaststudio)
 						{
-							SetPlayerCameraPos(i, 635.6883,-11.1890,1108.6041);
-							SetPlayerCameraLookAt(i, 641.3040,-12.2565,1108.1642);
-						}
-						else if(cameraangle == 1)
-						{
-							SetPlayerCameraPos(i, 637.9041,-8.3097,1108.9656);
-							SetPlayerCameraLookAt(i, 640.9764,-14.7714,1107.9656);
-						}
-						else if(cameraangle == 2)
-						{
-							SetPlayerCameraPos(i, 638.6522,-15.6267,1108.9656);
-							SetPlayerCameraLookAt(i, 640.7208,-9.5926,1107.2006);
-						}
-						else
-						{
-							SetPlayerCameraPos(i, 635.6883,-11.1890,1108.6041);
-							SetPlayerCameraLookAt(i, 641.3040,-12.2565,1108.1642);
+							case 1:
+							{
+								switch(cameraangle)
+								{
+									case 0:
+									{
+										SetPlayerCameraPos(i, 651.7099, -23.5688, 1101.6589);
+										SetPlayerCameraLookAt(i, 651.6790, -24.5670, 1101.5894);
+									}
+									case 1:
+									{
+										SetPlayerCameraPos(i, 647.0847, -24.2731, 1101.7302);
+										SetPlayerCameraLookAt(i, 647.7896, -24.9810, 1101.6757);
+									}
+									case 2:
+									{
+										SetPlayerCameraPos(i, 653.3759, -24.5380, 1101.6094);
+										SetPlayerCameraLookAt(i, 652.9409, -25.4370, 1101.5249);
+									}
+								}
+							}
+							case 2:
+							{
+								switch(cameraangle)
+								{
+									case 0:
+									{
+										SetPlayerCameraPos(i, 647.3672, -3.6455, 1102.5767);
+										SetPlayerCameraLookAt(i, 647.4997, -2.6562, 1102.3917);
+									}
+									case 1:
+									{
+										SetPlayerCameraPos(i, 651.5222, -2.8707, 1102.1970);
+										SetPlayerCameraLookAt(i, 650.9796, -2.0328, 1102.0521);
+									}
+									case 2:
+									{
+										SetPlayerCameraPos(i, 642.5612, -2.0504, 1102.3726);
+										SetPlayerCameraLookAt(i, 643.2610, -1.3387, 1102.2280);
+									}
+								}
+							}
+							case 3:
+							{
+								switch(cameraangle)
+								{
+									case 0:
+									{
+										SetPlayerCameraPos(i, 661.6169, -1.8129, 1103.3221);
+										SetPlayerCameraLookAt(i, 660.6224, -1.9017, 1102.5270);
+									}
+									case 1:
+									{
+										SetPlayerCameraPos(i, 660.9686, 0.9339, 1103.2574);
+										SetPlayerCameraLookAt(i, 660.5128, 0.0453, 1102.8682);
+									}
+									case 2:
+									{
+										SetPlayerCameraPos(i, 660.8921, -4.4156, 1103.3365);
+										SetPlayerCameraLookAt(i, 660.3720, -3.5629, 1102.8322);
+									}
+								}
+							}
 						}
 					}
 				}	
@@ -49973,6 +50082,7 @@ CMD:liveban(playerid, params[])
 	        string[128];
 
 	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /liveban [player]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
 	    if(PlayerInfo[giveplayerid][pLiveBanned] == 0)
 	    {
 	        PlayerInfo[giveplayerid][pLiveBanned] = 1;
@@ -49980,14 +50090,30 @@ CMD:liveban(playerid, params[])
 	        SendGroupMessage(4, RADIO, string);
 	        return 1;
 	    }
-	    else
-	    {
-	        PlayerInfo[giveplayerid][pLiveBanned] = 0;
-	        format(string, sizeof(string), "%s has unbanned %s from interviews", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	        SendGroupMessage(4, RADIO, string);
-	        return 1;
-	    }
+	    else SendClientMessageEx(playerid, COLOR_WHITE, "That player is already live banned.");
 	}
+	return 1;
+}
+
+CMD:liveunban(playerid, params[])
+{
+	new string[128],
+		giveplayerid;
+		
+	if(IsAReporter(playerid) && PlayerInfo[playerid][pRank] >= 7)
+	{
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /liveban [player]");
+		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+		if(PlayerInfo[giveplayerid][pLiveBanned] == 1)
+		{
+			PlayerInfo[giveplayerid][pLiveBanned] = 0;
+			format(string, sizeof(string), "%s has unbanned %s from interviews", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			SendGroupMessage(4, RADIO, string);
+		}
+		else SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently not live banned");
+	}
+	else SendClientMessageEx(playerid, COLOR_WHITE, "You must be at least Rank 7 to use this command");
+	
 	return 1;
 }
 
@@ -49996,7 +50122,7 @@ CMD:broadcast(playerid, params[])
 	if (IsAReporter(playerid))
 	{
 	    if(shutdown == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "The news system is currently shut down." );
-		if(IsPlayerInRangeOfPoint(playerid,15.0,631.8096,-10.9424,1107.9729))
+		if(IsPlayerInRangeOfPoint(playerid,15.0, 647.5820,1.6036,1101.2821) || IsPlayerInRangeOfPoint(playerid,6.0, 660.2643,-1.8796,1101.2395) || IsPlayerInRangeOfPoint(playerid,15.0, 650.5955,-28.9854,1101.2126))
 		{
 			new string[128];
 			if(broadcasting == 0)
@@ -50004,18 +50130,24 @@ CMD:broadcast(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Now broadcasting LIVE");
 				broadcasting = 1;
 				cameraangle = 0;
+				
+				if(IsPlayerInRangeOfPoint(playerid,15.0, 647.5820,1.6036,1101.2821)) broadcaststudio = 2;
+				else if(IsPlayerInRangeOfPoint(playerid,6.0, 660.2643,-1.8796,1101.2395)) broadcaststudio = 3;
+				else if(IsPlayerInRangeOfPoint(playerid,15.0, 650.5955,-28.9854,1101.2126)) broadcaststudio = 1;
+				
 				UpdateSANewsBroadcast();
 				format(string, sizeof(string), "%s will now broadcast LIVE from the studio! /watchtv to tune in!", GetPlayerNameEx(playerid));
 				OOCNews(COLOR_NEWS,string);
-				camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,635.6883,-11.1890,1108.6041,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+				//camera = CreateDynamic3DTextLabel("*The Camera*",COLOR_RED,635.6883,-11.1890,1108.6041,13.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
 				return 1;
 			}
 			else
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* No longer broadcasting");
 				broadcasting = 0;
+				broadcaststudio = 0;
 				UpdateSANewsBroadcast();
-				DestroyDynamic3DTextLabel(camera);
+				//DestroyDynamic3DTextLabel(camera);
 				//foreach(new i: Player)
 				for(new i = 0; i < MAX_PLAYERS; ++i)
 				{

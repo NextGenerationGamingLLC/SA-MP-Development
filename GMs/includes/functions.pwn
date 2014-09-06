@@ -3710,30 +3710,6 @@ public CloseSASD5()
 	return 1;
 }
 
-forward CloseSANewsStudio();
-public CloseSANewsStudio()
-{
-	MoveDynamicObject(SANewsStudioA,625.60937500,-10.80000019,1106.96081543,4);
-	MoveDynamicObject(SANewsStudioB,625.64941406,-13.77000046,1106.96081543,4);
-	return 1;
-}
-
-forward CloseSANewsPrivate();
-public CloseSANewsPrivate()
-{
-	MoveDynamicObject(SANewsPrivateA,625.61999512,-0.55000001,1106.96081543,4);
-	MoveDynamicObject(SANewsPrivateB,625.65002441,-3.54999995,1106.96081543,4);
-	return 1;
-}
-
-forward CloseSANewsOffice();
-public CloseSANewsOffice()
-{
-	MoveDynamicObject(SANewsOfficeA,614.66998291,17.82812500,1106.98425293,4);
-	MoveDynamicObject(SANewsOfficeB,617.69000244,17.86899948,1106.98425293,4);
-	return 1;
-}
-
 forward CloseFBILobbyLeft();
 public CloseFBILobbyLeft()
 {
@@ -8889,7 +8865,10 @@ stock UpdateSANewsBroadcast()
 	{
 	    format(string, sizeof(string), "Currently: LIVE\nViewers: %d", viewers);
 	}
-	UpdateDynamic3DTextLabelText(SANews3DText, COLOR_LIGHTBLUE, string);
+	for(new i = 0; i < 3; i++)
+	{
+		UpdateDynamic3DTextLabelText(SANews3DText[i], COLOR_LIGHTBLUE, string);
+	}
 }
 
 stock RespawnNearbyVehicles(iPlayerID, Float: fRadius) {

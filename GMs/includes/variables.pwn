@@ -611,9 +611,6 @@ new gWeather;
 new OrderAssignedTo[MAX_PLAYERS];
 new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, garagekey, chiefout, chiefin, westin, westout;
 new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
-new SANewsStudio, SANewsStudioA, SANewsStudioB;
-new SANewsPrivate, SANewsPrivateOPP, SANewsPrivateA, SANewsPrivateB;
-new SANewsOffice, SANewsOfficeA, SANewsOfficeB;
 new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
 new AkaDoor[4], AkaCell[8];
 
@@ -650,7 +647,7 @@ new Float:gCurrentTargetYAngle = 0.0;
 new gWheelTransAlternate = 0;
 new Float:gFerrisOrigin[3] = {389.77, -2028.47, 22.0};
 
-new Text3D:SANews3DText;
+new Text3D:SANews3DText[3];
 new gBug[MAX_PLAYERS char];
 new gRadio[MAX_PLAYERS char];
 new NOPTrigger[MAX_PLAYERS];
@@ -766,6 +763,7 @@ new LiveOffer[MAX_PLAYERS];
 new TalkingLive[MAX_PLAYERS];
 new broadcasting = 0;
 new cameraangle = 0;
+new broadcaststudio = 0;
 new Text3D:camera;
 new viewers = 0;
 new WatchingTV[MAX_PLAYERS];

@@ -416,7 +416,9 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Paintball Rooms\n\nType /joinarena to choose rooms",COLOR_YELLOW,1294.5062,-1445.0599,0.4403+0.5,6.0);
 
 	// SANews Broadcast
-	SANews3DText = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,632.7400,-14.2350,1108.2181,8.0);
+	SANews3DText[0] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,650.2051,-6.5939,1101.2085,8.0);
+	SANews3DText[1] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,648.7708,-20.0820,1101.2126,8.0);
+	SANews3DText[2] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,664.2178,0.9587,1101.2085,8.0);
 	
 	// Buildings 3D labels
 	//CreateDynamic3DTextLabel("Press F (enter) to go inside.",COLOR_YELLOW,1568.5718,-1691.0177,5.8906+0.6,4.0); //LSPD Garage enter
@@ -556,10 +558,10 @@ public LoadStreamerDynamicButtons()
 	FBIPrivateBTN[0] = CreateButton(298.87384033,-1495.87316895,-27.32773209,270); //Private Office Button
 	FBIPrivateBTN[1] = CreateButton(300.49453735,-1495.33837891,-27.28091812,180.49487305); //Private Office Button
 	
-	SANewsPrivate = CreateButton(625.51953125,-3.59961796,1108.50000000,269.99450684); //object(sec_keypad) (2)
+	/*SANewsPrivate = CreateButton(625.51953125,-3.59961796,1108.50000000,269.99450684); //object(sec_keypad) (2)
 	SANewsOffice = CreateButton(614.58581543,17.78320312,1108.55004883,0); //object(sec_keypad) (3)
 	SANewsStudio = CreateButton(625.50000000,-13.60000038,1108.50000000,270.00000000); //object(sec_keypad) (1)
-	SANewsPrivateOPP = CreateButton(626.13519287,-0.08516422,1108.61315918,0); //object(sec_keypad) (4)
+	SANewsPrivateOPP = CreateButton(626.13519287,-0.08516422,1108.61315918,0); //object(sec_keypad) (4)*/
 	
 	//new doc buttons
 	DocButtons[0] = CreateButton(597.35022, 1495.02881, 6001.10938, 180.00);
@@ -662,17 +664,6 @@ public LoadStreamerDynamicObjects()
 	FBIPrivate[1] = CreateDynamicObject(1536,299.33737183,-1495.83911133,-28.73300552,0.00000000,0.00000000,90.00000000,1324123, .interiorid = 1); //Private Office Door Right
 	FBILobbyLeft = CreateDynamicObject(1536,295.40136719,-1498.43457031,-46.13965225,0.00000000,0.00000000,0.00000000,1324123, .interiorid = 1); //Lobby Door Left
 	FBILobbyRight = CreateDynamicObject(1536,302.39355469,-1521.62988281,-46.13965225,0.00000000,0.00000000,179.99450684,1324123, .interiorid = 1); //Lobby Door Right
-
-
-	//SANews Custom Interior
-	SANewsStudioA = CreateDynamicObject(1536,625.60937500,-10.80000019,1106.96081543,0.00000000,0.00000000,270.00000000, .interiorid = 1); //object(gen_doorext15) (1)
-	SANewsStudioB = CreateDynamicObject(1536,625.64941406,-13.77000046,1106.96081543,0.00000000,0.00000000,89.99450684, .interiorid = 1); //object(gen_doorext15) (2)
-
-    SANewsPrivateA = CreateDynamicObject(1536,625.60937500,-0.55000001,1106.96081543,0.00000000,0.00000000,269.98901367, .interiorid = 1); //object(gen_doorext15) (4)
-	SANewsPrivateB = CreateDynamicObject(1536,625.65002441,-3.54999995,1106.96081543,0.00000000,0.00000000,89.99450684, .interiorid = 1); //object(gen_doorext15) (4)
-
-	SANewsOfficeA = CreateDynamicObject(1536,614.66998291,17.82812500,1106.98425293,0.00000000,0.00000000,0.00000000, .interiorid = 1); //object(gen_doorext15) (3)
-	SANewsOfficeB = CreateDynamicObject(1536,617.69000244,17.86899948,1106.98425293,0.00000000,0.00000000,179.99450684, .interiorid = 1); //object(gen_doorext15) (5)
 
 
 	/* SAAS CARRIER */
