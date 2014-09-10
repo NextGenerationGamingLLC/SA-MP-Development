@@ -49,7 +49,6 @@ native gpci(playerid, serial[], maxlen);
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
-#define			WEB_SERVER					"64.31.32.194"
 #define			SAMP_WEB					"127.0.0.1"
 			/*  ---------------- TIMERS ----------------- */
 #define			TYPE_TPMATRUNTIMER 			1
@@ -556,6 +555,7 @@ native gpci(playerid, serial[], maxlen);
 #define         PBFORCE                   	(3242)
 #define			MDC_REPORTS					(3243)
 #define			MDC_SHOWREPORTS				(3244)
+#define			FLAG_TRANSFER				(3245)
 
 #define 		DIALOG_LISTGROUPS 			(3250)
 #define 		DIALOG_EDITGROUP 			(3251)
@@ -922,6 +922,7 @@ native gpci(playerid, serial[], maxlen);
 
 #define 		DIALOG_DGRAUTORESET			(6006)
 #define			DIALOG_MARRIAGE				(6007)
+#define			DIALOG_SETEXAMINE			(6008)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

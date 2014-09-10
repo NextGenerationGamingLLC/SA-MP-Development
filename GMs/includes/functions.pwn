@@ -170,7 +170,7 @@ NationSel_HandleNationSelection(playerid)
 		for(new x;x<10000;x++)
 		{
 			new rand=random(300);
-			if(PlayerInfo[playerid][pSex] == 0)
+			if(PlayerInfo[playerid][pSex] == 2)
 			{
 				if(IsValidSkin(rand) && IsFemaleSpawnSkin(rand))
 				{
@@ -193,7 +193,7 @@ NationSel_HandleNationSelection(playerid)
 		SetPlayerVirtualWorld(playerid, 0);
 		if(NATION_SAN_ANDREAS == PlayerNationSelection[playerid])
 		{
-			PlayerInfo[playerid][pNation] = 1;
+			PlayerInfo[playerid][pNation] = 0;
 			switch(random(2))
 			{
 				case 0:

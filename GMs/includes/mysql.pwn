@@ -674,6 +674,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "WantedJailTime", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailTime] = strval(szResult);
 					cache_get_field_content(row,  "WantedJailFine", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailFine] = strval(szResult);
 					PlayerInfo[extraid][pNextNameChange] = cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
+					cache_get_field_content(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc], MainPipeline, 128);
 					
 					GetPartnerName(extraid);
 
@@ -3261,6 +3262,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "pExamineDesc", PlayerInfo[playerid][pExamineDesc]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -8650,4 +8652,24 @@ public OnSetGarageOwner(playerid, garageid)
 		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
 	}
 	return 1;
+}
+
+forward OnRequestTransferFlag(playerid, flagid, to, from);
+public OnRequestTransferFlag(playerid, flagid, to, from)
+{
+	new rows, fields, string[512];
+	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
+	cache_get_data(rows, fields, MainPipeline);
+	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(cache_get_field_content_int(0, "id", MainPipeline) != GetPlayerSQLId(from))
+		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
+	cache_get_field_content(0, "flag", FlagText, MainPipeline);
+	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
+	cache_get_field_content(0, "time", FlagDate, MainPipeline);
+	SetPVarInt(playerid, "Flag_Transfer_ID", flagid);
+	SetPVarInt(playerid, "Flag_Transfer_To", to);
+	SetPVarInt(playerid, "Flag_Transfer_From", from);
+	SetPVarString(playerid, "FlagText", FlagText);
+	format(string, sizeof(string), "Are you sure you want to transfer:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s\n{FF6347}To: {BFC0C2}%s\n{FF6347}From: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate, GetPlayerNameEx(to), GetPlayerNameEx(from));
+	return ShowPlayerDialog(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
 }

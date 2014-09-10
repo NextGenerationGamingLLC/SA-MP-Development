@@ -5006,8 +5006,9 @@ CMD:ringbell(playerid, params[])
 					format(string,sizeof(string),"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
 					SendClientMessageEx(i,COLOR_PURPLE,string);
 					GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~The doorbell rings...", 4000,3);
+					break;
 				}
-			}	
+			}
 		}
 		format(string,sizeof(string),"* %s presses a button next to the door, ringing the doorbell of %s's house.", GetPlayerNameEx(playerid), StripUnderscore(HouseInfo[h][hOwnerName]));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -6736,7 +6737,8 @@ CMD:help(playerid, params[])
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /rules /faq /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /me /togooc /tognews /togfam /togwhisper /do /cancelcall");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /togwhisper /cancelcall");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /me /ame /lme /do /ldo /se(texamine) /examine");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** BANK *** /balance /withdraw /deposit /wiretransfer /abalance /awithdraw /adeposit /awiretransfer");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
@@ -11978,7 +11980,8 @@ CMD:accept(playerid, params[])
                                 }
                             }
                             else {
-                                SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* That person was already infected with a STI, can't get another one.");
+                                SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* That person was already infected with a STD, can't get another one.");
+								SexOffer[playerid] = INVALID_PLAYER_ID;
                                 return 1;
                             }
                             SexOffer[playerid] = INVALID_PLAYER_ID;
@@ -18224,7 +18227,7 @@ CMD:eventhelp(playerid, params[])
 	{
 	    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** EVENT HELP *** type a command for more information");
-		SendClientMessageEx(playerid, COLOR_WHITE,"*** EVENT HELP *** /seteventpos /seteventinfo /startevent /lockevent /endevent /announceevent /beginevent /quitevent");
+		SendClientMessageEx(playerid, COLOR_WHITE,"*** EVENT HELP *** /event /seteventpos /seteventinfo /startevent /lockevent /endevent /announceevent /beginevent /quitevent");
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	}
 	return 1;
@@ -27970,7 +27973,7 @@ CMD:givemeorder(playerid, params[])
 		if(sscanf(params, "ui", giveplayerid, orderid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustoid [player] [new orderid]");
 		SendClientMessageEx(playerid, COLOR_WHITE, "Processing..");
   		PlayerInfo[giveplayerid][pOrder] = orderid;
-		format(string, sizeof(string), "%s/~nggami/idcheck.php?id=%d", WEB_SERVER, orderid);
+		format(string, sizeof(string), "%s/shop/idcheck.php?id=%d", SAMP_WEB, orderid);
 		HTTP(giveplayerid, HTTP_GET, string, "", "HttpCallback_ShopIDCheck");
 		format(string, sizeof(string), "%s has edited %s's Order ID to %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), orderid);
 		Log("logs/shoporders.log", string);
@@ -31456,7 +31459,7 @@ CMD:sms(playerid, params[])
 	new string[128], phonenumb, text[100];
 	if(sscanf(params, "ds[100]", phonenumb, text)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/t)ext [phonenumber] [text chat]");
 
-	if(Spectating[playerid] == 0)
+	if(Spectating[playerid] == 0 || !GetPVarType(playerid, "FlyMode"))
 	{
 		format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -34154,12 +34157,12 @@ CMD:shopbusiness(playerid, params[])
 
 CMD:shophouse(playerid, params[])
 {
-	//if(PlayerInfo[playerid][pShopTech] < 1)
-	if(!IsPlayerAdmin(playerid) || PlayerInfo[playerid][pAdmin] != 99999)
+	if(PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	/*if(!IsPlayerAdmin(playerid) || PlayerInfo[playerid][pAdmin] != 99999)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
-	}
+	}*/
 
 	new string[128], choice[32], houseid, amount, invoice[64];
 	if(sscanf(params, "s[32]dDs[64]", choice, houseid, amount, invoice))
@@ -40810,7 +40813,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
@@ -43688,7 +43691,8 @@ CMD:userimkit(playerid, params[])
 
 CMD:sellcredits(playerid, params[])
 {
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
+/*	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
 	new
 	    Player,
 	    Credits,
@@ -43755,7 +43759,7 @@ CMD:sellcredits(playerid, params[])
 	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
 	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
 	}
-	return 1;
+	return 1;*/
 }
 
 CMD:togglehealthcare(playerid, params[])
@@ -50332,7 +50336,7 @@ CMD:usepot(playerid, params[])
 			case 1:
 			{
 				DeletePVar(playerid, "STD");
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STI anymore because of the Drugs!");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the Drugs!");
 			}
 			case 2:
 			{
@@ -51707,16 +51711,46 @@ CMD:quitjob(playerid, params[])
 		case 1:
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
 				PlayerInfo[playerid][pJob] = 0;
 			}
 		case 2:
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your secondary Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob2] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
 				PlayerInfo[playerid][pJob2] = 0;
 			}
 		case 3:
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob3] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
 				PlayerInfo[playerid][pJob3] = 0;
 			}
 		default:
@@ -51731,6 +51765,16 @@ CMD:quitjob(playerid, params[])
 		if(PlayerInfo[playerid][pJob] > 0 )
 		{
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
+			if(PlayerInfo[playerid][pJob] == 2)
+			{
+				if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+				SetPVarInt(playerid, "LawyerDuty", 0);
+			}
+			if(PlayerInfo[playerid][pJob] == 7)
+			{
+				if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+				SetPVarInt(playerid, "MechanicDuty", 0);
+			}
 			PlayerInfo[playerid][pJob] = 0;
 		}
 		else
@@ -51738,12 +51782,6 @@ CMD:quitjob(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "   You don't even have a Job!");
 		}
 	}
-	// fix a bug concering duty messages still remaining after quitting job.
-	SetPVarInt(playerid, "LawyerDuty", 0);
-	SetPVarInt(playerid, "MechanicDuty", 0);
-	Mechanics -= 1;
-	Lawyers -= 1;
-	
 	return 1;
 }
 
@@ -54355,7 +54393,6 @@ CMD:bizradio(playerid, params[])
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		string[128],
-		radiostring[128],
 		iBusinessID = PlayerInfo[playerid][pBusiness],
 		iRank = PlayerInfo[playerid][pBusinessRank];
 
@@ -54364,8 +54401,8 @@ CMD:bizradio(playerid, params[])
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b(iz)r(radio) [biz chat]");
 
-	format(radiostring, sizeof(radiostring), "(radio) %s", string);
-	SetPlayerChatBubble(playerid,radiostring,COLOR_WHITE,15.0,5000);
+	format(string, sizeof(string), "(radio) %s", params);
+	SetPlayerChatBubble(playerid,string,COLOR_WHITE,15.0,5000);
 	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
 	//foreach(new i: Player) {
 	for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -54615,7 +54652,7 @@ CMD:fc(playerid, params[]) {
 
 CMD:togfamed(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)
 	{
 	    if(PlayerInfo[playerid][pFamedTogged] == 0)
 	    {
@@ -54645,7 +54682,7 @@ CMD:fmute(playerid, params[])
 		    {
 		        if(targetid != INVALID_PLAYER_ID)
 		        {
-			        if(PlayerInfo[targetid][pFamed] > PlayerInfo[playerid][pFamed] || PlayerInfo[targetid][pAdmin] > PlayerInfo[playerid][pAdmin])
+			        if((PlayerInfo[targetid][pFamed] > PlayerInfo[playerid][pFamed] &&  PlayerInfo[playerid][pAdmin] < 2) || PlayerInfo[targetid][pAdmin] > PlayerInfo[playerid][pAdmin])
 		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pFMuted] = 1;
@@ -60004,6 +60041,118 @@ CMD:nextnamechange(playerid, params[])
 		new string[128];
 		format(string, sizeof(string), "Your next free name change will be on %s", date(PlayerInfo[playerid][pNextNameChange], 4));
 		SendClientMessageEx(playerid, -1, string);
+	}
+	return 1;
+}
+
+CMD:transferflag(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return 1;
+	new to, from, flagid;
+	if(sscanf(params, "iuu", flagid, to, from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /transferflag [flag] [to] [from]");
+	if(!IsPlayerConnected(to)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (to)");
+	if(!IsPlayerConnected(from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (from)");
+	if(to == from) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person");
+	new query[128];
+	format(query, sizeof(query), "SELECT id, flag, issuer, time FROM `flags` WHERE `fid` = %i", flagid);
+	mysql_function_query(MainPipeline, query, true, "OnRequestTransferFlag", "iiii", playerid, flagid, to, from);
+	return 1;
+}
+
+CMD:event(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "There are currently no active events.");
+		new string[128];
+		format(string, sizeof(string), "[Event] %s: %s", GetPlayerNameEx(playerid), params);
+		for(new i; i < MAX_PLAYERS; i++)
+		{
+			if(!IsPlayerConnected(i)) continue;
+			if(GetPVarInt(i, "EventToken") || PlayerInfo[i][pAdmin] >= 2 || EventKernel[EventCreator] == i || GetPVarInt(i, "eventStaff"))
+			{
+				SendClientMessageEx(i, COLOR_OOC, string);
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:ame(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ame [action]");
+	new string[128];
+	format(string, sizeof(string), "%s %s", GetPlayerNameEx(playerid), params);
+	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 15.0, 5000);
+	format(string, sizeof(string), "{FF8000}> {C2A2DA}%s", params);
+	SendClientMessageEx(playerid, COLOR_PURPLE, string);
+	return 1;
+}
+
+CMD:lme(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lme [action]");
+	new string[128];
+	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
+	ProxDetectorWrap(playerid, string, 92, 15, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	return 1;
+}
+
+CMD:ldo(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ldo [action]");
+	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not be longer than 120 characters in length.");
+	new
+		iCount,
+		iPos,
+		iChar;
+	while((iChar = params[iPos++])) if(iChar == '@') iCount++;
+	if(iCount >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not contain more than 4 '@' symbols.");
+
+	new string[150];
+	format(string, sizeof(string), "* %s (( %s ))", params, GetPlayerNameEx(playerid));
+	ProxDetectorWrap(playerid, string, 92, 15.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	return 1;
+}
+
+CMD:resetexamine(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return 1;
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetexamine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
+	format(PlayerInfo[target][pExamineDesc], 256, "None");
+	return SendClientMessageEx(playerid, COLOR_GREY, "You have successfully reset their examine description.");
+}
+
+CMD:se(playerid, params[]) return cmd_setexamine(playerid, params);
+CMD:setexamine(playerid, params[]) return ShowPlayerDialog(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
+
+CMD:examine(playerid, params[])
+{
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /examine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
+	if(!ProxDetectorS(5.0, playerid, target) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+	if(!strlen(PlayerInfo[target][pExamineDesc]) || !strcmp(PlayerInfo[target][pExamineDesc], "None", true)) return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't have a description set.");
+	if(strlen(PlayerInfo[target][pExamineDesc]) > 101)
+	{
+		new firstline[128], secondline[128];
+		strmid(firstline, PlayerInfo[target][pExamineDesc], 0, 101);
+		strmid(secondline, PlayerInfo[target][pExamineDesc], 101, 128);
+		format(firstline, sizeof(firstline), "* %s %s", GetPlayerNameEx(target), firstline);
+		format(secondline, sizeof(secondline), "...%s", secondline);
+		SendClientMessageEx(playerid, COLOR_PURPLE, firstline);
+		SendClientMessageEx(playerid, COLOR_PURPLE, secondline);
+	}
+	else
+	{
+		new string[128];
+		format(string, sizeof(string), "* %s %s", GetPlayerNameEx(target), PlayerInfo[target][pExamineDesc]);
+		SendClientMessageEx(playerid, COLOR_PURPLE, string);
 	}
 	return 1;
 }

@@ -355,6 +355,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pWantedJailTime] = 0;
 		PlayerInfo[playerid][pWantedJailFine] = 0;
 		PlayerInfo[playerid][pNextNameChange] = 0;
+		PlayerInfo[playerid][pExamineDesc][0] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 11; i++)
 		{

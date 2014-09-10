@@ -383,6 +383,7 @@ task ProductionUpdate[300000]()
 		}
 	}
 	SaveFamilies();
+	ResetElevatorQueue();
 }
 
 // Timer Name: playerTabbedLoop()

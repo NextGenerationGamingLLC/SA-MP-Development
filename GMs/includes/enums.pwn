@@ -1089,7 +1089,8 @@ enum pInfo
 	pIsolated,
 	pWantedJailTime,
 	pWantedJailFine,
-	pNextNameChange
+	pNextNameChange,
+	pExamineDesc[128]
 };
 
 enum pvInfo

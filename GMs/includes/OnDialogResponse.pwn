@@ -3161,7 +3161,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			SetPVarInt(playerid, "ShopOrderTimer", 60); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_SHOPORDERTIMER);
 
-			format(string, sizeof(string), "%s/~nggami/idcheck.php?id=%d", WEB_SERVER, orderid);
+			format(string, sizeof(string), "%s/shop/idcheck.php?id=%d", SAMP_WEB, orderid);
 			HTTP(playerid, HTTP_GET, string, "", "HttpCallback_ShopIDCheck");
 		}
 	}
@@ -19984,6 +19984,44 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			SetPVarInt(playerid, "marriagelastname", 2);
 			SendClientMessageEx(playerid, -1, "You have chosen to take your spouse's last name.");
+		}
+	}
+	if(dialogid == FLAG_TRANSFER)
+	{
+		if(response)
+		{
+			GetPVarString(playerid, "FlagText", string, sizeof(string));
+			DeleteFlag(GetPVarInt(playerid, "Flag_Transfer_ID"), playerid);
+			format(string, sizeof(string), "%s [Transfered from: %s]", string, GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")));
+			AddFlag(GetPVarInt(playerid, "Flag_Transfer_To"), playerid, string);
+			format(string, sizeof(string), "You have successfully transferred FlagID: %d To: %s From: %s", GetPVarInt(playerid, "Flag_Transfer_ID"), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")));
+			SendClientMessageEx(playerid, -1, string);
+			format(string, sizeof(string), "[TRANSFER] %s has transferred FlagID: %d To: %s(%d) From: %s(%d)", GetPlayerNameEx(playerid), GetPVarInt(playerid, "Flag_Transfer_ID"), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerSQLId(GetPVarInt(playerid, "Flag_Transfer_To")), GetPlayerNameEx(GetPVarInt(playerid, "Flag_Transfer_From")), GetPlayerSQLId(GetPVarInt(playerid, "Flag_Transfer_From")));
+			Log("logs/flags.log", string);
+			DeletePVar(playerid, "Flag_Transfer_ID");
+			DeletePVar(playerid, "Flag_Transfer_To");
+			DeletePVar(playerid, "Flag_Transfer_From");
+			DeletePVar(playerid, "FlagText");
+		}
+		else
+		{
+			DeletePVar(playerid, "Flag_Transfer_ID");
+			DeletePVar(playerid, "Flag_Transfer_To");
+			DeletePVar(playerid, "Flag_Transfer_From");
+			DeletePVar(playerid, "FlagText");
+			SendClientMessageEx(playerid, -1, "You have cancelled yourself from transferring the flag!");
+		}
+	}
+	if(dialogid == DIALOG_SETEXAMINE)
+	{
+		if(response)
+		{
+			if(isnull(inputtext)) return ShowPlayerDialog(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
+			format(PlayerInfo[playerid][pExamineDesc], 128, "%s", inputtext);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, -1, "You have cancelled yourself from setting your examine description.");
 		}
 	}
 	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
