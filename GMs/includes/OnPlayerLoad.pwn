@@ -983,7 +983,12 @@ public OnPlayerLoad(playerid)
 		PlayerTextDrawShow(playerid, AccountRestriction[playerid]);
 		PlayerTextDrawShow(playerid, AccountRestrictionEx[playerid]);
 	}
-	if(PlayerInfo[playerid][pAdmin] >= 2) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]); //Used for filterscripts
+
+	//PVars for filterscripts
+	if(PlayerInfo[playerid][pAdmin] >= 1) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]);
+	if(PlayerInfo[playerid][pHelper] >= 1) SetPVarInt(playerid, "hLvl", PlayerInfo[playerid][pHelper]);
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) SetPVarInt(playerid, "fLvl", PlayerInfo[playerid][pMember]);
+	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) SetPVarInt(playerid, "gLvl", PlayerInfo[playerid][pFMember]);
 	
 	new szQuery[128];
 	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));

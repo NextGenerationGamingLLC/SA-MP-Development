@@ -5093,124 +5093,112 @@ CMD:prisoners(playerid, params[])
 	return 1;
 }
 
-CMD:tow(playerid, params[]) {
- 	if(IsACop(playerid) || IsATowman(playerid) || IsAMedic(playerid)) {
-   		if(IsPlayerInAnyVehicle(playerid))
-     	{
+CMD:tow(playerid, params[])
+{
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new
+			carid = GetPlayerVehicleID(playerid);
+
+		if(IsATowTruck(carid))
+		{
 			new
-				carid = GetPlayerVehicleID(playerid);
+				closestcar = GetClosestCar(playerid, carid);
 
-			if(IsATowTruck(carid))
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
-   				new
-					closestcar = GetClosestCar(playerid, carid);
+				if(IsPlayerConnected(i))
+				{
+					if(arr_Towing[i] == closestcar || (GetPlayerVehicleID(i) == closestcar && GetPlayerState(i) == 2)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't tow a vehicle which is occupied, or in tow.");
+				}
+			}
 
+			if(GetDistanceToCar(playerid,closestcar) <= 8 && !IsTrailerAttachedToVehicle(carid)) {
 				//foreach(new i: Player)
 				for(new i = 0; i < MAX_PLAYERS; ++i)
 				{
 					if(IsPlayerConnected(i))
 					{
-						if(arr_Towing[i] == closestcar || (GetPlayerVehicleID(i) == closestcar && GetPlayerState(i) == 2)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't tow a vehicle which is occupied, or in tow.");
-					}
+						if(IsAPlane(closestcar) || IsABike(closestcar) || IsASpawnedTrain(closestcar) || IsATrain(closestcar) || IsAHelicopter(closestcar)) {
+							return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tow this type of vehicle.");
+						}
+						if(GetPlayerVehicle(i, closestcar) != -1) {
+
+							new
+								hKey;
+
+							if(((hKey = PlayerInfo[i][pPhousekey]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])
+							||((hKey = PlayerInfo[i][pPhousekey2]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])
+							||((hKey = PlayerInfo[i][pPhousekey3]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])) {
+								return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle doesn't need to be towed.");
+							}
+
+							arr_Towing[playerid] = closestcar;
+							SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
+							return AttachTrailerToVehicle(closestcar,carid);
+						}
+					}	
 				}
-
-       			if(GetDistanceToCar(playerid,closestcar) <= 8 && !IsTrailerAttachedToVehicle(carid)) {
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
-					{
-						if(IsPlayerConnected(i))
-						{
-							if(IsAPlane(closestcar) || IsABike(closestcar) || IsASpawnedTrain(closestcar) || IsATrain(closestcar) || IsAHelicopter(closestcar)) {
-								return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot tow this type of vehicle.");
-							}
-							if(GetPlayerVehicle(i, closestcar) != -1) {
-
-								new
-									hKey;
-
-								if(((hKey = PlayerInfo[i][pPhousekey]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])
-								||((hKey = PlayerInfo[i][pPhousekey2]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])
-								||((hKey = PlayerInfo[i][pPhousekey3]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])) {
-									return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle doesn't need to be towed.");
-								}
-
-								arr_Towing[playerid] = closestcar;
-								SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
-								return AttachTrailerToVehicle(closestcar,carid);
-							}
-						}	
-					}
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
-					AttachTrailerToVehicle(closestcar,carid);
-					arr_Towing[playerid] = closestcar;
-					return 1;
-     			}
+				SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
+				AttachTrailerToVehicle(closestcar,carid);
+				arr_Towing[playerid] = closestcar;
+				return 1;
 			}
-			else if(IsAAircraftTowTruck(carid)) //Tug
+		}
+		else if(IsAAircraftTowTruck(carid)) //Tug
+		{
+			new
+				closestcar = GetClosestCar(playerid, carid);
+				
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
 			{
-				new
-				    closestcar = GetClosestCar(playerid, carid);
-				    
-                //foreach(new i: Player)
+				if(IsPlayerConnected(i))
+				{
+					if(arr_Towing[i] == closestcar || (GetPlayerVehicleID(i) == closestcar && GetPlayerState(i) == 2)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't tow a vehicle which is occupied, or in tow.");
+				}
+			}
+			
+			if(GetDistanceToCar(playerid,closestcar) <= 8 && !IsTrailerAttachedToVehicle(carid))
+			{
+				//foreach(new i: Player)
 				for(new i = 0; i < MAX_PLAYERS; ++i)
 				{
 					if(IsPlayerConnected(i))
 					{
-						if(arr_Towing[i] == closestcar || (GetPlayerVehicleID(i) == closestcar && GetPlayerState(i) == 2)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't tow a vehicle which is occupied, or in tow.");
-					}
-				}
-				
-				if(GetDistanceToCar(playerid,closestcar) <= 8 && !IsTrailerAttachedToVehicle(carid))
-				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
-					{
-						if(IsPlayerConnected(i))
+						if(IsAPlane(closestcar))
 						{
-							if(IsAPlane(closestcar))
+							if(GetPlayerVehicle(i, closestcar) != -1)
 							{
-								if(GetPlayerVehicle(i, closestcar) != -1)
-								{
-									arr_Towing[playerid] = closestcar;
-									SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
-									return AttachTrailerToVehicle(closestcar,carid);
-								}
+								arr_Towing[playerid] = closestcar;
+								SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
+								return AttachTrailerToVehicle(closestcar,carid);
 							}
-							else return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only tow aircrafts with this vehicle!");
-						}	
-	      			}
-					SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
-					AttachTrailerToVehicle(closestcar,carid);
-					arr_Towing[playerid] = closestcar;
-	      		}
-	      	}
-			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to tow with this vehicle.");
-   		}
-     	else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be inside a vehicle to use this command!");
+						}
+						else return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only tow aircrafts with this vehicle!");
+					}	
+				}
+				SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
+				AttachTrailerToVehicle(closestcar,carid);
+				arr_Towing[playerid] = closestcar;
+			}
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to tow with this vehicle.");
 	}
-   	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be inside a vehicle to use this command!");
 	return 1;
 }
 
 CMD:untow(playerid, params[])
 {
- 	if(IsACop(playerid) || IsATowman(playerid) || IsAMedic(playerid))
+	if(IsTrailerAttachedToVehicle(GetPlayerVehicleID(playerid)))
 	{
-   		if(IsTrailerAttachedToVehicle(GetPlayerVehicleID(playerid)))
-     	{
-      		SendClientMessageEx(playerid, COLOR_GRAD1,"You have unhooked the vehicle that you were towing.");
-			arr_Towing[playerid] = INVALID_VEHICLE_ID;
-			DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
-     	}
-      	else
-       	{
-        	SendClientMessageEx(playerid, COLOR_GRAD1,"You are currently not towing anything.");
-        }
-  	}
-   	else
-	{
- 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You have unhooked the vehicle that you were towing.");
+		arr_Towing[playerid] = INVALID_VEHICLE_ID;
+		DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
 	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are currently not towing anything.");
 	return 1;
 }
 
@@ -22885,7 +22873,7 @@ CMD:veh(playerid, params[]) {
 			iVehicle,
 			iColors[2];
 
-		if(sscanf(params, "iii", iVehicle, iColors[0], iColors[1])) {
+		if(sscanf(params, "iD(0)D(0)", iVehicle, iColors[0], iColors[1])) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /veh [model ID] [color 1] [color 2]");
 		}
 		else if(!(400 <= iVehicle <= 611)) {
@@ -24727,7 +24715,7 @@ CMD:createpvehicle(playerid, params[]) {
 	{
 		new iColors[2], iTargetID, iModelID;
 
-		if(sscanf(params, "uiii", iTargetID, iModelID, iColors[0], iColors[1])) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /createpvehicle [player] [model] [color 1] [color 2]");
+		if(sscanf(params, "uiD(0)D(0)", iTargetID, iModelID, iColors[0], iColors[1])) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /createpvehicle [player] [model] [color 1] [color 2]");
 		else if(!(400 <= iModelID <= 611)) SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid model specified (model IDs start at 400, and end at 611).");
 		else if(IsATrain(iModelID)) SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
@@ -32284,7 +32272,7 @@ CMD:gnear(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you...");
-		for(new i, Float: fGatePos[3], szMessage[32]; i < MAX_GATES; i++)
+		for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
 		{
 			GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
 			if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
@@ -35141,14 +35129,10 @@ CMD:rcabuse(playerid, params[]) {
 		new
 			iTargetID;
 
-		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rcabuse [player]");
-		}
-		else if(!IsPlayerConnected(iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-		}
-		else if(GetPlayerState(iTargetID) == PLAYER_STATE_DRIVER && IsRestrictedVehicle(GetVehicleModel(GetPlayerVehicleID(iTargetID)))) {
-
+		if(sscanf(params, "u", iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rcabuse [player]");
+		else if(!IsPlayerConnected(iTargetID)) SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		else if(GetPlayerState(iTargetID) == PLAYER_STATE_DRIVER && IsRestrictedVehicle(GetVehicleModel(GetPlayerVehicleID(iTargetID))))
+		{
 			new
 				iVehicleID = GetPlayerVehicleID(iTargetID),
 				iVehModel = GetVehicleModel(iVehicleID),

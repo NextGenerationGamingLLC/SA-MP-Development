@@ -11359,6 +11359,8 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3029, 2223.58203125, 1598.2083740234, 998.9765625, 0, 0, 268.69067382813);
 
 	//SANEWS Gates
+	CreateDynamicObject(1566, 754.70, -1362.30, 14.00, 0.00, 0.00, 90.00);
+	CreateDynamicObject(1566, 732.00, -1347.00, 14.00, 0.00, 0.00, 90.00);
     CreateDynamicObject(969, 774.17346191406, -1330.1989746094, 12.551734924316, 0, 0, 0);
     CreateDynamicObject(1282, 781.29571533203, -1328.1229248047, 13.235691070557, 0, 0, 270.63061523438);
     CreateDynamicObject(1282, 777.85040283203, -1328.0673828125, 13.235691070557, 0, 0, 270.67565917969);
@@ -11912,6 +11914,14 @@ public OnFilterScriptInit()
 	CreateDynamicObject(638,2525.97436523,-1674.83300781,562.48925781,0.00000000,0.00000000,0.00000000); //object(kb_planter_bush) (3)
 	
 	//---------------SASD HQ Exterior-------------------//
+	new SASDGarageWall[6];
+	SASDGarageWall[0] = CreateDynamicObject(18766, 645.66, -564.83, -2.75,   0.00, 0.00, 0.00, .streamdistance = 150);
+	SASDGarageWall[1] = CreateDynamicObject(18766, 645.66, -564.83, 2.25,   0.00, 180.00, 0.00, .streamdistance = 150);
+	SASDGarageWall[2] = CreateDynamicObject(18766, 636.01, -563.44, -2.75,   0.00, 0.00, 343.60, .streamdistance = 150);
+	SASDGarageWall[3] = CreateDynamicObject(18766, 626.41, -560.61, -2.75,   0.00, 0.00, 343.60, .streamdistance = 150);
+	SASDGarageWall[4] = CreateDynamicObject(18766, 626.41, -560.61, 2.25,   0.00, 180.00, 343.60, .streamdistance = 150);
+	SASDGarageWall[5] = CreateDynamicObject(18766, 636.01, -563.44, 2.25,   0.00, 180.00, 343.60, .streamdistance = 150);
+	for(new x; x < sizeof(SASDGarageWall); x++) SetDynamicObjectMaterial(SASDGarageWall[x], 0, 7244, "vgndwntwn1", "ws_carpark2", 0);
 	CreateDynamicObject(13028,617.99237061,-601.51629639,18.15020561,0.00000000,0.00000000,180.00000000); //object(ce_spraydoor1) (1)
 	CreateDynamicObject(13028,618.01251221,-597.02111816,18.15020561,0.00000000,0.00000000,179.99450684); //object(ce_spraydoor1) (2)
 	CreateDynamicObject(13028,618.05236816,-606.01776123,18.15020561,0.00000000,0.00000000,179.99450684); //object(ce_spraydoor1) (3)
@@ -11920,13 +11930,12 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3934,612.18194580,-609.08203125,21.72580719,0.00000000,0.00000000,0.00000000); //object(helipad01) (1)
 	CreateDynamicObject(3934,612.14978027,-598.15740967,21.72580719,0.00000000,0.00000000,0.00000000); //object(helipad01) (2)
  	CreateObject(7244,599.38818359,-590.32952881,-6.84161758,0.00000000,0.00000000,0.00000000); //object(vgnpolicecparkug)(1)
-	CreateDynamicObject(11243,669.63659668,-543.61560059,-1.68377352,0.00000000,357.50000000,165.75000000); //object(wall_cm_firehse) (1)
-	CreateDynamicObject(11243,667.82116699,-543.08807373,1.92120266,0.00000000,357.49511719,165.74523926); //object(wall_cm_firehse) (2)
 	CreateDynamicObject(8948,650.16394043,-604.44439697,-3.47658730,0.00000000,0.00000000,0.00000000); //object(lckupgrgdoor_lvs) (1)
 	CreateDynamicObject(8948,650.19708252,-611.59515381,-3.47658730,0.00000000,0.00000000,0.00000000); //object(lckupgrgdoor_lvs) (2)
 	CreateDynamicObject(8948,650.14471436,-604.46228027,-0.19905701,0.00000000,0.00000000,0.00000000); //object(lckupgrgdoor_lvs) (3)
 	CreateDynamicObject(8948,650.19073486,-611.58850098,-0.17405701,0.00000000,0.00000000,0.00000000); //object(lckupgrgdoor_lvs) (4)
 	CreateDynamicObject(11391,549.71221924,-603.48608398,-14.68468285,0.00000000,0.00000000,2.00000000); //object(hubprops6_sfse) (1)
+	CreateDynamicObject(1533, 620.50, -568.66, 25.15, 0.00, 0.00, 0.00, .streamdistance = 150); //Roof Access Door
 	
 	// New SANEWS Interior Ross
 	
@@ -18056,15 +18065,16 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19125, 1022.74493, -1926.18860, 12.25814,   0.00000, 0.00000, 0.00000);
 	
 	//Benny McCabe - Dillimore Gasso Exterior mapping UPDATE2
+	new DilliGasWall[2];
+	DilliGasWall[0] = CreateDynamicObject(19447, 666.53, -590.04, 16.67,   0.00, 0.00, 90.00, .streamdistance = 200);
+	DilliGasWall[1] = CreateDynamicObject(19355, 661.81, -578.60, 16.67,   0.00, 0.00, 0.00, .streamdistance = 200);
+	for(new x; x < sizeof(DilliGasWall); x++) SetDynamicObjectMaterial(DilliGasWall[x], 0, 12853, "cunte_gas01", "sw_brick03", 0xFF4D5649);
 	CreateDynamicObject(9339, 647.54, -553.16, 15.96,   0.00, 0.00, 180.04, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(9339, 647.55, -579.00, 15.96,   0.00, 0.00, 180.03, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(966, 661.83, -582.32, 15.34,   0.00, 0.00, 89.73, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(967, 662.35, -580.97, 15.34,   0.00, 0.00, 179.45, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(9339, 648.37, -540.26, 3.58,   270.00, 0.00, 270.60, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(9339, 649.77, -540.25, 3.58,   270.00, 0.00, 270.60, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 669.69, -597.81, -6.57,   270.00, 0.00, 89.89, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 666.61, -597.80, -6.57,   270.00, 0.00, 89.89, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 663.53, -597.80, -6.57,   270.00, 0.00, 89.89, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215, 647.56, -592.34, 15.89,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215, 652.05, -540.26, 15.90,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215, 661.85, -589.78, 15.89,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
@@ -18081,14 +18091,10 @@ public OnFilterScriptInit()
 	CreateDynamicObject(17969, 666.11, -577.66, 17.70,   5.25, 0.00, 89.73, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(8843, 655.73, -576.42, 15.35,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(8843, 655.54, -553.60, 15.36,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 667.02, -579.17, -6.44,   270.00, 0.00, 179.46, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1764, 662.87, -579.82, 15.34,   0.00, 0.00, 43.90, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(2986, 668.32, -559.00, 19.66,   180.00, 0.00, 270.27, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(9339, 651.17, -540.25, 3.58,   270.00, 0.00, 270.60, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215, 661.53, -540.26, 15.90,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 666.70, -591.21, -6.57,   270.00, 90.00, 89.89, .worldid = -1, .streamdistance = 200);
-	//CreateDynamicObject(12853, 667.02, -58.17, -6.52,   270.00, 0.00, 179.46, .worldid = -1, .streamdistance = 200);
-	CreateDynamicObject(12853, 667.06, -592.17, -6.56,   270.00, 0.00, 179.46, .worldid = -1, .streamdistance = 200);
 
 	
 	/*
@@ -19916,8 +19922,8 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2249, -2731.17871, 54.10656, 4.92870,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(1247, -2723.95679, 59.27190, 6.20000,   0.00000, 0.00000, 0.00000);
 
-	//Stop/Speed Limit signs (SF/Dillimore) -- Farva
-	new SFSS[7], DilliSS[13], DilliSL[3], DilliSLNum[3];
+	//DMV/Stop/Speed Limit signs (SF/Dillimore) -- Farva
+	new SFSS[7], DilliSS[13], DilliSL[3], DilliSLNum[3], DilliDMV[6], DilliDMVArrow[6];
 	SFSS[0] = CreateDynamicObject(8548, -1792.47607, -126.36760, 5.86810,   0.00000, 0.00000, 0.00000, .worldid = -1, .streamdistance = 200);
 	SFSS[1] = CreateDynamicObject(8548, -1805.85950, -106.32380, 5.86810,   0.00000, 0.00000, 180.00000, .worldid = -1, .streamdistance = 200);
 	SFSS[2] = CreateDynamicObject(8548, -1789.18567, -109.65966, 5.86810,   0.00000, 0.00000, 90.00000, .worldid = -1, .streamdistance = 200);
@@ -19952,6 +19958,33 @@ public OnFilterScriptInit()
 		SetDynamicObjectMaterialText(DilliSL[x], 2, "      SPEED\n       LIMIT", 130, "Myriad Pro", 60, 1, 0xFF000000, 0xFFFFFFFF, 0);
 	}
 	for(new x; x < sizeof(DilliSLNum); x++) SetDynamicObjectMaterialText(DilliSLNum[x], 0, "25", 100, "Myriad Pro", 250, 1, -16777216, 0, 1);
+	new DMVSignBG = CreateDynamicObject(18766, 854.57, -576.34, 18.44,   0.00, 0.00, 0.00, .streamdistance = 200);
+	SetDynamicObjectMaterial(DMVSignBG, 0, 19362, "all_walls", "la_carp3", 0);
+	new DMVSign = CreateDynamicObject(19480, 854.5275, -575.8228, 19.0440, 0.0000, 0.0000, 90.0179);
+	SetDynamicObjectMaterialText(DMVSign, 0, "San Andreas\nDMV", 80, "Myriad Pro", 0, 1, -16777216, 0, 1);
+	DilliDMV[0] = CreateDynamicObject(1233, 854.37, -558.82, 17.81,   0.00, 0.00, 90.00, .streamdistance = 200);
+	DilliDMV[1] = CreateDynamicObject(1233, 837.27, -582.31, 16.89,   0.00, 0.00, 0.00, .streamdistance = 200);
+	DilliDMV[2] = CreateDynamicObject(1233, 826.11, -549.99, 16.89,   0.00, 0.00, 180.00, .streamdistance = 200);
+	DilliDMV[3] = CreateDynamicObject(1233, 687.04, -547.79, 16.89,   0.00, 0.00, 0.00, .streamdistance = 200);
+	DilliDMV[4] = CreateDynamicObject(1233, 676.34, -512.28, 16.89,   0.00, 0.00, 180.00, .streamdistance = 200);
+	DilliDMV[5] = CreateDynamicObject(1233, 663.23, -667.80, 16.90,   0.00, 0.00, 270.00, .streamdistance = 200);
+	for(new x; x < sizeof(DilliDMV); x++)
+	{
+		SetDynamicObjectMaterialText(DilliDMV[x], 2, "DMV", 90, "Myriad Pro", 120, 1, 0xFFFFFFFF, 0xFF2B5147, 1);
+		SetDynamicObjectMaterialText(DilliDMV[x], 3, " ", 20, "Wingdings 3", 64, 1, 0xFFFFFFFF, 0xFF2B5147, 0);
+	}
+	DilliDMVArrow[0] = CreateDynamicObject(19475, 854.4102, -558.8122, 18.4241, 0.0000, 0.0000, 0.00, .streamdistance = 200);
+	DilliDMVArrow[1] = CreateDynamicObject(19475, 837.2747, -582.3448, 17.5159, 0.0000, 0.0000, 270.00, .streamdistance = 200);
+	DilliDMVArrow[2] = CreateDynamicObject(19475, 826.0994, -549.9324, 17.5159, 0.0000, 0.0000, 90.00, .streamdistance = 200);
+	DilliDMVArrow[3] = CreateDynamicObject(19475, 687.0512, -547.8269, 17.5259, 0.0000, 0.0000, 270.00, .streamdistance = 200);
+	DilliDMVArrow[4] = CreateDynamicObject(19475, 676.3300, -512.2365, 17.5259, 0.0000, 0.0000, 90.00, .streamdistance = 200);
+	DilliDMVArrow[5] = CreateDynamicObject(19475, 663.1939, -667.8123, 17.5365, 0.0000, 0.0000, 180.00, .streamdistance = 200);
+	for(new x; x < sizeof(DilliDMV); x++)
+	{
+		if(x == 0 || x == 2 || x == 4 || x == 5) SetDynamicObjectMaterialText(DilliDMVArrow[x], 0, "3", 10, "Wingdings 3", 32, 1, 0xFFFFFFFF, 0, 1);
+		else SetDynamicObjectMaterialText(DilliDMVArrow[x], 0, "4", 10, "Wingdings 3", 32, 1, 0xFFFFFFFF, 0, 1);
+	}
+	
 	
 	//FDSA
 	new FDSAWLS_Roof[6], FDSAWLS_Wall[18];
@@ -20051,8 +20084,6 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19281, 1242.4147, -1265.0727, 16.2299, 0.0000, 0.0000, -86.7483, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(19281, 1243.4476, -1257.2475, 14.9099, 0.0000, 0.0000, 265.6480, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(19281, 1254.1955, -1263.1003, 45.9247, 0.0000, 0.0000, 81.1187, .worldid = -1, .streamdistance = 100);
-	new DFCLSRoof = CreateDynamicObject(2714, -2062.75732, 198.62910, 1005.76123, 0.00000, 0.00000, 180.00000, .interiorid = 6, .worldid = 2217, .streamdistance = 50);
-	SetDynamicObjectMaterial(DFCLSRoof, 0, 14506, "imy_motel", "mp_motel_roof", 0);
 	SetDynamicObjectMaterial(DFCLS[0], 0, 5739, "lawnbit", "backstageceiling1_128", 0);
 	SetDynamicObjectMaterial(DFCLS_Garage, 4, 9507, "boxybld2_sfw", "gz_vic4e", 0xFFA7A181);
 	for(new x; x < sizeof(DFCLS_Wall); x++) SetDynamicObjectMaterial(DFCLS_Wall[x], 0, 9507, "boxybld2_sfw", "gz_vic4e", 0xFFA7A181);
@@ -20198,6 +20229,11 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 11459, -1292.7969, 2529.0000, 86.5313, 0.25);
 		RemoveBuildingForPlayer(playerid, 11457, -1303.7734, 2550.2344, 86.2266, 0.25);
 		
+		//Dillimore Gas Pumps
+		RemoveBuildingForPlayer(playerid, 1686, 655.6641, -571.2109, 15.3594, 0.25);
+		RemoveBuildingForPlayer(playerid, 1686, 655.6641, -569.6016, 15.3594, 0.25);
+		RemoveBuildingForPlayer(playerid, 1686, 655.6641, -558.9297, 15.3594, 0.25);
+		RemoveBuildingForPlayer(playerid, 1686, 655.6641, -560.5469, 15.3594, 0.25);
 		//Misc
 		RemoveBuildingForPlayer(playerid, 1308, 9.0234, 15.1563, -5.7109, 0.25);
 		RemoveBuildingForPlayer(playerid, 1411, -2529.2813, -594.3281, 133.2969, 0.25);
@@ -20356,7 +20392,8 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1294, 1738.8594, -1813.2500, 16.9063, 0.25); 
 		//SA News
 		RemoveBuildingForPlayer(playerid, 1226, 778.8594, -1391.1563, 16.3125, 0.25);
-		
+
+
 		/*
 			 ######      ###    ##    ##  ######   
 			##    ##    ## ##   ###   ## ##    ##  

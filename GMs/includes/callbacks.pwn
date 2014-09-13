@@ -3851,6 +3851,13 @@ public OnPlayerDisconnect(playerid, reason)
 	DeletePVar(playerid, "pTmpEmail");
 	DeletePVar(playerid, "NullEmail");
 	DeletePVar(playerid, "ViewedPMOTD");
+	DeletePVar(playerid, "WatchdogChat");
+	DeletePVar(playerid, "vStaffChat");
+	DeletePVar(playerid, "SECChat");
+	DeletePVar(playerid, "aLvl");
+	DeletePVar(playerid, "hLvl");
+	DeletePVar(playerid, "fLvl");
+	DeletePVar(playerid, "gLvl");
 	gPlayerLogged{playerid} = 0;
 	return 1;
 }

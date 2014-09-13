@@ -21,11 +21,11 @@
 									 Miguel (s0nic)
 								
 								**   Development Staff:
-									 Akatony
 									 Brendan
 									 Donuts
 									 Austin
 									 Dom
+									 Farva
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.133"
+#define SERVER_GM_TEXT "NG:RP v3.0.134"
 
 
 
