@@ -192,8 +192,8 @@ native gpci(playerid, serial[], maxlen);
 #define 		MAX_SPIKES 					20
 #define 		MAX_CONES 					20
 #define 		MAX_FLARES 					20
-#define 		MAX_BARRICADES 				20
-#define 		MAX_BARRELS 				20
+#define 		MAX_BARRICADES 				30
+#define 		MAX_BARRELS 				45
 #define         MAX_AUCTIONS                10
 #define         MAX_PLANTS                  300
 #define         MAX_BUSINESSSALES           100

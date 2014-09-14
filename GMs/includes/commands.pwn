@@ -21412,6 +21412,31 @@ CMD:deploy(playerid, params[])
 								Barricades[i][sObjectID] = CreateDynamicObject(979, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
 								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
 							}
+							case 7:
+							{
+								Barricades[i][sObjectID] = CreateDynamicObject(3091, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.30, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+							}
+							case 8:
+							{
+								Barricades[i][sObjectID] = CreateDynamicObject(1425, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+							}
+							case 9:
+							{
+								Barricades[i][sObjectID] = CreateDynamicObject(1459, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+							}
+							case 10:
+							{
+								Barricades[i][sObjectID] = CreateDynamicObject(1423, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+							}
+							case 11:
+							{
+								Barricades[i][sObjectID] = CreateDynamicObject(1424, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+							}
 							default:
 							{
 								Barricades[i][sObjectID] = CreateDynamicObject(981, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
