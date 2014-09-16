@@ -111,6 +111,7 @@ Group_DisbandGroup(iGroupID) {
 				PlayerInfo[x][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[x][pRank] = INVALID_RANK;
 				PlayerInfo[x][pDivision] = INVALID_DIVISION;
+				strcpy(PlayerInfo[x][pBadge], "None", 8);
 			}
 			if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
 		}	
@@ -443,6 +444,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Leader", szResult, MainPipeline); PlayerInfo[extraid][pLeader] = strval(szResult);
 					cache_get_field_content(row,  "Member", szResult, MainPipeline); PlayerInfo[extraid][pMember] = strval(szResult);
 					cache_get_field_content(row,  "Division", szResult, MainPipeline); PlayerInfo[extraid][pDivision] = strval(szResult);
+					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 8);
 					cache_get_field_content(row,  "FMember", szResult, MainPipeline); PlayerInfo[extraid][pFMember] = strval(szResult);
 					cache_get_field_content(row,  "Rank", szResult, MainPipeline); PlayerInfo[extraid][pRank] = strval(szResult);
 					cache_get_field_content(row,  "DetSkill", szResult, MainPipeline); PlayerInfo[extraid][pDetSkill] = strval(szResult);
@@ -675,6 +677,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "WantedJailFine", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailFine] = strval(szResult);
 					PlayerInfo[extraid][pNextNameChange] = cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
 					cache_get_field_content(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc], MainPipeline, 128);
+					cache_get_field_content(row,  "FavStation", PlayerInfo[extraid][pFavStation], MainPipeline, 255);
 					
 					GetPartnerName(extraid);
 
@@ -3017,6 +3020,7 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Leader", PlayerInfo[playerid][pLeader]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Member", PlayerInfo[playerid][pMember]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Division", PlayerInfo[playerid][pDivision]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "Badge", PlayerInfo[playerid][pBadge]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "FMember", PlayerInfo[playerid][pFMember]);
 
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rank", PlayerInfo[playerid][pRank]);
@@ -3263,6 +3267,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailFine", PlayerInfo[playerid][pWantedJailFine]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "pExamineDesc", PlayerInfo[playerid][pExamineDesc]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "FavStation", PlayerInfo[playerid][pFavStation]);
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
@@ -6898,13 +6903,14 @@ public Group_QueryFinish(iType, iExtraID) {
 			SendClientMessageEx(iExtraID, COLOR_WHITE, string);
 			format(string, sizeof(string), "You have been group-banned, by %s.", GetPlayerNameEx(iExtraID));
 			SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "Administrator %s has group-banned %s(%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
-			Log("logs/group.log", string);
+			format(string, sizeof(string), "Administrator %s has group-banned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[PlayerInfo[otherplayer][pMember]][g_szGroupName], PlayerInfo[otherplayer][pMember]);
+			GroupLog(PlayerInfo[otherplayer][pMember], string);
 			PlayerInfo[otherplayer][pMember] = INVALID_GROUP_ID;
 			PlayerInfo[otherplayer][pLeader] = INVALID_GROUP_ID;
 			PlayerInfo[otherplayer][pRank] = INVALID_RANK;
 			PlayerInfo[otherplayer][pDuty] = 0;
 			PlayerInfo[otherplayer][pDivision] = INVALID_DIVISION;
+			strcpy(PlayerInfo[otherplayer][pBadge], "None", 8);
 			new rand = random(sizeof(CIV));
 			PlayerInfo[otherplayer][pModel] = CIV[rand];
 			SetPlayerToTeamColor(otherplayer);
@@ -6924,8 +6930,8 @@ public Group_QueryFinish(iType, iExtraID) {
 				SendClientMessageEx(iExtraID, COLOR_WHITE, string);
 				format(string, sizeof(string), "You have been group-unbanned from %s, by %s.", arrGroupData[group][g_szGroupName], GetPlayerNameEx(iExtraID));
 				SendClientMessageEx(otherplayer, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "Administrator %s has group-unbanned %s(%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[group][g_szGroupName], group);
-				Log("logs/group.log", string);
+				format(string, sizeof(string), "Administrator %s has group-unbanned %s (%d) from %s (%d)", GetPlayerNameEx(iExtraID), GetPlayerNameEx(otherplayer), GetPlayerSQLId(otherplayer), arrGroupData[group][g_szGroupName], group);
+				GroupLog(group, string);
 			}
 			else
 			{
@@ -6969,7 +6975,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				SendClientMessage(iExtraID, COLOR_GREY, szResult);
 
 				format(szResult, sizeof szResult, "%s %s (rank %i) has offline uninvited %s from %s (%i).", arrGroupRanks[iGroupID][i], GetPlayerNameEx(iExtraID), i + 1, szName, arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-				Log("logs/group.log", szResult);
+				GroupLog(iGroupID, szResult);
 			}
 			else {
 				format(szResult, sizeof szResult, "An error was encountered while attempting to remove %s from your group.", szName);
@@ -8672,4 +8678,31 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	SetPVarString(playerid, "FlagText", FlagText);
 	format(string, sizeof(string), "Are you sure you want to transfer:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s\n{FF6347}To: {BFC0C2}%s\n{FF6347}From: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate, GetPlayerNameEx(to), GetPlayerNameEx(from));
 	return ShowPlayerDialog(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
+}
+
+forward GetShiftInfo(szMessage[]);
+public GetShiftInfo(szMessage[])
+{
+	new rows, fields, fieldname[24], szResult[32], string[128], shift[4], needs, signedup;
+	cache_get_data(rows, fields, MainPipeline);
+	
+	if(rows)
+	{
+		format(fieldname, sizeof(fieldname), "needs_%s", GetWeekday());
+		cache_get_field_content(0, "shift", shift, MainPipeline, sizeof(shift));
+		cache_get_field_content(0, fieldname, szResult, MainPipeline); needs = strval(szResult);
+		cache_get_field_content(0, "ShiftCount", szResult, MainPipeline); signedup = strval(szResult);
+	}
+	
+	if(needs - signedup > 0) format(string, sizeof(string), "%s The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+	else format(string, sizeof(string), "%s The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
+		}
+	}
+	return 1;
 }

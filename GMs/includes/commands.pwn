@@ -1525,7 +1525,7 @@ CMD:setboombox(playerid, params[])
 {
 	if(GetPVarType(playerid, "pBoomBox"))
 	{
-		ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+		ShowSetStation(playerid);
     }
 	else
 	{
@@ -1538,7 +1538,7 @@ CMD:setstation(playerid, params[]) {
     if(!IsPlayerInAnyVehicle(playerid)) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be in a car to use a car radio.");
 	}
-	ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+	ShowSetStation(playerid);
     return 1;
 }
 
@@ -3768,6 +3768,7 @@ CMD:online(playerid, params[]) {
 	{
 
 		new
+			badge[10],
 			szDialog[1024];
 
 		//foreach(new i: Player)
@@ -3775,17 +3776,18 @@ CMD:online(playerid, params[]) {
 		{
 			if(IsPlayerConnected(i))
 			{
+				if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s]", PlayerInfo[i][pBadge]);
 				if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s (on duty), %i calls accepted", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s (off duty), %i calls accepted", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 				}
 				else if(IsAMedic(playerid) && IsAMedic(i) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s (on duty), %i calls accepted, %i patients delivered.", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s (off duty), %i calls accepted, %i patients delivered.", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 				}
 				else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pLeader]) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s (on duty)", szDialog, GetPlayerNameEx(i));
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s (off duty)", szDialog, GetPlayerNameEx(i));
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty)", szDialog, badge, GetPlayerNameEx(i));
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty)", szDialog, badge, GetPlayerNameEx(i));
 				}
 			}	
 		}
@@ -4880,11 +4882,11 @@ CMD:time(playerid, params[])
 
 	if (PlayerInfo[playerid][pJailTime] > 0)
 	{
-		format(string, sizeof(string), "~y~%s %d, %d~n~~g~|~w~%d:%02d~g~%s|~n~~w~Jail Time Left: ~r~%s", mtext, day, year, thour, minuite, suffix, TimeConvert(PlayerInfo[playerid][pJailTime]));
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|~n~~w~Jail Time Left: ~r~%s", GetWeekday(), mtext, day, year, thour, minuite, suffix, TimeConvert(PlayerInfo[playerid][pJailTime]));
 	}
 	else
 	{
-		format(string, sizeof(string), "~y~%s %d, %d~n~~g~|~w~%d:%02d~g~%s|", mtext, day, year, thour, minuite, suffix);
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|", GetWeekday(), mtext, day, year, thour, minuite, suffix);
 	}
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
@@ -6870,7 +6872,7 @@ CMD:help(playerid, params[])
 		}
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online");
+			SendClientMessageEx(playerid, COLOR_WHITE, "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online /setbadge /setdivname");
 			if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
 			{
 			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /viewbudget /grepocars /gvbuyback /gdonate /ordercrates /dvtrackcar /gwithdraw, /dvstorage");
@@ -10168,6 +10170,8 @@ CMD:accept(playerid, params[])
 					PlayerInfo[playerid][pMember] = iGroupID;
 					PlayerInfo[playerid][pRank] = 0;
 					PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
+					strcpy(PlayerInfo[playerid][pBadge], "None", 8);
+					
 
 					format(szMessage, sizeof szMessage, "You have accepted %s %s's invite, and are now a member of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), arrGroupData[iGroupID][g_szGroupName]);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
@@ -10175,8 +10179,8 @@ CMD:accept(playerid, params[])
 					format(szMessage, sizeof szMessage, "%s accepted your group invite.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(iInviter, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s(%d) accepted %s %s's(%d) invite to join %s (%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), GetPlayerSQLId(iInviter), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-					Log("logs/group.log", szMessage);
+					format(szMessage, sizeof szMessage, "%s (%d) accepted %s %s's (%d) invite to join %s (%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), GetPlayerSQLId(iInviter), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					GroupLog(iGroupID, szMessage);
 
 					DeletePVar(playerid, "Group_Invite");
 					DeletePVar(iInviter, "Group_Invited");
@@ -16311,8 +16315,8 @@ CMD:nonrp(playerid, params[])
 
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked (/nonrp) %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
-				Log("logs/group.log", string);
+				format(string, sizeof(string), "Administrator %s has group-kicked (/nonrp) %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				GroupLog(PlayerInfo[giveplayerid][pMember], string);
 				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				PlayerInfo[giveplayerid][pDuty] = 0;
@@ -16320,6 +16324,7 @@ CMD:nonrp(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
 				time = 120;
@@ -16449,8 +16454,8 @@ CMD:snonrp(playerid, params[])
 
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked (/snonrp) %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
-				Log("logs/group.log", string);
+				format(string, sizeof(string), "Administrator %s has group-kicked (/snonrp) %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				GroupLog(PlayerInfo[giveplayerid][pMember], string);
 				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				PlayerInfo[giveplayerid][pDuty] = 0;
@@ -16458,6 +16463,7 @@ CMD:snonrp(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
 				time = 120;
@@ -22117,13 +22123,14 @@ CMD:quitgroup(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have quit your group, you are now a civilian again.");
 		new string[128];
-		format(string, sizeof(string), "%s(%d) has quit the %s as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
-		Log("logs/group.log", string);
+		format(string, sizeof(string), "%s (%d) has quit the %s as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
+		GroupLog(PlayerInfo[playerid][pMember], string);
 		PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
 		PlayerInfo[playerid][pDuty] = 0;
 		PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
+		strcpy(PlayerInfo[playerid][pBadge], "None", 8);
 		if(!IsValidSkin(GetPlayerSkin(playerid)))
 		{
   			new rand = random(sizeof(CIV));
@@ -29956,8 +29963,8 @@ CMD:gmotd(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the group MOTD.");
 			SaveGroup(iGroupID);
 			new string[256];
-			format(string,sizeof(string),"%s(%d) has changed MOTD for %s to: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[iGroupID][g_szGroupName], params);
-			Log("logs/group.log", string);
+			format(string,sizeof(string),"%s (%d) has changed MOTD for %s to: %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[iGroupID][g_szGroupName], params);
+			GroupLog(iGroupID, string);
 		} else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gmotd [message]");
 	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
 	return 1;
@@ -30058,6 +30065,7 @@ CMD:groupcsfban(playerid, params[])
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pDuty] = 0;
 				PlayerInfo[giveplayerid][pModel] = NOOB_SKIN;
@@ -30269,22 +30277,25 @@ CMD:hshowbadge(playerid, params[])
 {
 	if(IsAHitman(playerid))
 	{
-		new giveplayerid, rank, faction, division;
-		if(sscanf(params, "uiii", giveplayerid, faction, rank, division))
+		new giveplayerid, rank, faction, division, badge[8], oldbadge[8];
+		if(sscanf(params, "uiiiS(None)[8]", giveplayerid, faction, rank, division, badge))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hshowbadge [player] [faction] [rank] [division]");
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hshowbadge [player] [faction] [rank] [division] [badge (optional)]");
 			return 1;
 		}
 		new oldfaction = PlayerInfo[playerid][pMember];
 		new oldrank = PlayerInfo[playerid][pRank];
 		new olddivision = PlayerInfo[playerid][pDivision];
+		strcpy(oldbadge, PlayerInfo[playerid][pBadge], 8);
 		PlayerInfo[playerid][pMember] = faction;
 		PlayerInfo[playerid][pRank] = rank;
 		PlayerInfo[playerid][pDivision] = division;
+		strcpy(PlayerInfo[playerid][pBadge], badge, sizeof(badge));
 		cmd_showbadge(playerid, params);
 		PlayerInfo[playerid][pMember] = oldfaction;
 		PlayerInfo[playerid][pRank] = oldrank;
 		PlayerInfo[playerid][pDivision] = olddivision;
+		strcpy(PlayerInfo[playerid][pBadge], oldbadge, sizeof(oldbadge));
 	}
 	return 1;
 }
@@ -30299,12 +30310,13 @@ CMD:showbadge(playerid, params[])
 		if(giveplayerid != INVALID_PLAYER_ID) {
 			if(ProxDetectorS(5.0, playerid, giveplayerid)) {
 
-				new	infoArrays[3][GROUP_MAX_NAME_LEN];
+				new	infoArrays[3][GROUP_MAX_NAME_LEN], badge[11];
 
 				GetPlayerGroupInfo(playerid, infoArrays[0], infoArrays[1], infoArrays[2]);
+				if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
 
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "----------------------------------------------------------------------------------------------------");
-				format(string, sizeof(string), "%s %s is a duly sworn member of the %s.", infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
+				format(string, sizeof(string), "%s%s %s is a duly sworn member of the %s.", badge, infoArrays[0], GetPlayerNameEx(playerid), infoArrays[2]);
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "Current Assignment: %s.", infoArrays[1]);
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
@@ -30335,8 +30347,8 @@ CMD:groupkick(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0)
 			{
-				format(string, sizeof(string), "Administrator %s has group-kicked %s(%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
-				Log("logs/group.log", string);
+				format(string, sizeof(string), "Administrator %s has group-kicked %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
+				GroupLog(PlayerInfo[giveplayerid][pMember], string);
 				format(string, sizeof(string), "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				PlayerInfo[giveplayerid][pDuty] = 0;
@@ -30344,6 +30356,7 @@ CMD:groupkick(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
 				if(!IsValidSkin(GetPlayerSkin(giveplayerid)))
 				{
 					new rand = random(sizeof(CIV));
@@ -30420,7 +30433,8 @@ CMD:r(playerid, params[]) {
 					format(string, sizeof(string), "(radio) %s", params);
 					SetPlayerChatBubble(playerid, string, COLOR_WHITE, 15.0, 5000);
 					GetPlayerGroupInfo(playerid, rank, division, employer);
-					format(string, sizeof(string), "** %s (%s) %s: %s **", rank, division, GetPlayerNameEx(playerid), params);
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(string, sizeof(string), "** [%s] %s %s: %s **", PlayerInfo[playerid][pBadge], rank, GetPlayerNameEx(playerid), params);
+					else format(string, sizeof(string), "** %s (%s) %s: %s **", rank, division, GetPlayerNameEx(playerid), params);
 					//foreach(new i: Player)
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
@@ -32267,20 +32281,46 @@ CMD:ddnear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing all dynamic doors within 30 meters of you...");
-		for(new i, szMessage[128]; i < MAX_DDOORS; i++)
+		new option;
+		if(!sscanf(params, "d", option)) 
 		{
-			if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
+			new string[64];
+			format(string, sizeof(string), "* Listing all dynamic doors within 30 meters of you in VW %d...", option);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			for(new i, szMessage[128]; i < MAX_DDOORS; i++)
 			{
-				if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]))
+				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
 				{
-					format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]))
+					{
+						format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]))
+					{
+						format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
 				}
-				if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]))
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all dynamic doors within 30 meters of you...");
+			for(new i, szMessage[128]; i < MAX_DDOORS; i++)
+			{
+				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
 				{
-					format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]))
+					{
+						format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]))
+					{
+						format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorVW], DDoorsInfo[i][ddExteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
 				}
 			}
 		}
@@ -32296,16 +32336,38 @@ CMD:gnear(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you...");
-		for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
+		new option;
+		if(!sscanf(params, "d", option)) 
 		{
-			GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
+			new string[64];
+			format(string, sizeof(string), "* Listing all gates within 30 meters of you in VW %d...", option);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
 			{
-				if(GateInfo[i][gModel] != 0)
+				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
+				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == option)
 				{
-			    	format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
-			    	SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					if(GateInfo[i][gModel] != 0)
+					{
+						format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
+				}
+			}
+		}
+		else 
+		{
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you...");
+			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
+			{
+				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
+				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
+				{
+					if(GateInfo[i][gModel] != 0)
+					{
+						format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
 				}
 			}
 		}
@@ -44911,7 +44973,7 @@ CMD:mp3(playerid, params[])
 	{
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on foot to use your MP3 Player.");
 		
-		ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, "MP3 Player - Choose a station","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off", "Select", "Close");
+		ShowSetStation(playerid, "MP3 Player - Choose a station");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a CD Player/MP3 Player.");
 	return 1;
@@ -52614,11 +52676,12 @@ CMD:uninvite(playerid, params[]) {
 					format(szMessage, sizeof szMessage, "You have kicked %s out of the group.", GetPlayerNameEx(iTargetID));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s %s(%d) (rank %i) has uninvited %s(%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-					Log("logs/group.log", szMessage);
+					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has uninvited %s (%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					GroupLog(iGroupID, szMessage);
 
 					PlayerInfo[iTargetID][pMember] = INVALID_GROUP_ID;
 					PlayerInfo[iTargetID][pDivision] = -1;
+					strcpy(PlayerInfo[iTargetID][pBadge], "None", 8);
 					PlayerInfo[iTargetID][pLeader] = INVALID_GROUP_ID;
 					PlayerInfo[iTargetID][pDuty] = 0;
 					PlayerInfo[iTargetID][pRank] = INVALID_RANK;
@@ -52769,8 +52832,8 @@ CMD:giverank(playerid, params[]) {
 					format(szMessage, sizeof szMessage, "You have %s %s to the rank of %s.", ((iRank > PlayerInfo[iTargetID][pRank]) ? ("promoted") : ("demoted")), GetPlayerNameEx(iTargetID), arrGroupRanks[iGroupID][iRank]);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
-					format(szMessage, sizeof szMessage, "%s %s(%d) (rank %i) has given %s(%d) rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-					Log("logs/group.log", szMessage);
+					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has given %s (%d) rank %i (%s) in %s (%i).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pRank], GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iRank, arrGroupRanks[iGroupID][iRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+					GroupLog(iGroupID, szMessage);
 
 					PlayerInfo[iTargetID][pRank] = iRank;
 				}
@@ -52838,6 +52901,86 @@ CMD:giverank(playerid, params[]) {
 	return 1;
 }
 
+CMD:setdivname(playerid, params[])
+{
+	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
+	{
+		new
+			iDiv,
+			iName[8],
+			iGroupID = PlayerInfo[playerid][pLeader],
+			szMessage[128];
+
+		if(sscanf(params, "is[16]", iDiv, iName))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setdivname [division] [name] -- Use 'none' as name to remove division");
+			format(szMessage, sizeof(szMessage), "%s", "0 (None), ");
+			for(new i; i < MAX_GROUP_DIVS; i++)
+			{
+			    if(arrGroupDivisions[iGroupID][i][0]) format(szMessage, sizeof(szMessage), "%s%d (%s), ", szMessage, i+1, arrGroupDivisions[iGroupID][i]);
+				if(strlen(szMessage) > 64 || i == (MAX_GROUP_DIVS -1) && strlen(szMessage)) { SendClientMessageEx(playerid, COLOR_GRAD2, szMessage); szMessage[0] = 0; }
+
+			}
+		}
+		else if(!(0 <= iDiv <= Group_GetMaxDiv(iGroupID)+1))
+		{
+		    format(szMessage, sizeof(szMessage), "Invalid division specified! Must be between 0 and %d.", Group_GetMaxDiv(iGroupID) + 1);
+			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+		}
+		else
+		{
+			iDiv = iDiv - 1;
+			if(strcmp(iName, "none", true) == 0)
+			{
+				format(szMessage, sizeof(szMessage), "** %s has removed the %s division (#%i) **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(GetPVarInt(i, "togRadio") == 0)
+						{
+							if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
+							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
+							{
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
+								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+							}
+						}
+					}
+				}
+				format(szMessage, sizeof szMessage, "%s (%d) has removed the %s division (#%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
+				GroupLog(iGroupID, szMessage);
+			}
+			else
+			{
+				format(szMessage, sizeof(szMessage), "** %s has renamed division %s (#%i) to %s **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(GetPVarInt(i, "togRadio") == 0)
+						{
+							if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
+							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
+							{
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
+								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+							}
+						}
+					}
+				}
+				format(szMessage, sizeof szMessage, "%s (%d) has renamed the %s division (#%i) to %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
+				GroupLog(iGroupID, szMessage);
+			}
+			mysql_escape_string(iName, arrGroupDivisions[iGroupID][iDiv]);
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	return 1;
+}
+
 CMD:setdiv(playerid, params[]) {
 	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) {
 
@@ -52875,8 +53018,8 @@ CMD:setdiv(playerid, params[]) {
 						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "You have kicked %s from their division.", GetPlayerNameEx(iTargetID));
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof szMessage, "%s %s(%d) has kicked %s(%d) out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-						Log("logs/group.log", szMessage);
+						format(szMessage, sizeof szMessage, "%s %s (%d) has kicked %s (%d) out of their division in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+						GroupLog(iGroupID, szMessage);
 					}
 					else
 					{
@@ -52884,8 +53027,8 @@ CMD:setdiv(playerid, params[]) {
 						SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof szMessage, "You have set %s to the %s division.", GetPlayerNameEx(iTargetID), arrGroupDivisions[iGroupID][iDiv-1]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof szMessage, "%s %s(%d) has set %s's(%d) division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
-						Log("logs/group.log", szMessage);
+						format(szMessage, sizeof szMessage, "%s %s (%d) has set %s's (%d) division to %s in %s (%d).", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupDivisions[iGroupID][iDiv-1], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
+						GroupLog(iGroupID, szMessage);
 					}
 					PlayerInfo[iTargetID][pDivision] = iDiv-1;
 				}
@@ -52941,6 +53084,51 @@ CMD:setdiv(playerid, params[]) {
 	}
 	else
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	return 1;
+}
+
+CMD:setbadge(playerid, params[])
+{
+	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
+	{
+		new
+			iTargetID,
+			iBadge[8],
+			iGroupID = PlayerInfo[playerid][pLeader],
+			szMessage[128],
+			tmp[8];
+
+		if(sscanf(params, "us[8]", iTargetID, iBadge)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setbadge [player] [number] -- Use 'none' as number to remove badge");
+		else if(IsPlayerConnected(iTargetID))
+		{
+			if(iGroupID == PlayerInfo[iTargetID][pMember])
+			{
+				if(strcmp(iBadge, "none", true) == 0)
+				{
+					format(szMessage, sizeof(szMessage), "Your badge has been removed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+					format(szMessage, sizeof(szMessage), "You have removed %s's badge.", GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					format(szMessage, sizeof(szMessage), "%s (%d) has removed %s's (%d) badge.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID));
+					GroupLog(iGroupID, szMessage);
+				}
+				else
+				{
+					format(szMessage, sizeof(szMessage), "Your badge has been set to %s by %s.", iBadge, GetPlayerNameEx(playerid));
+					SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
+					format(szMessage, sizeof(szMessage), "You have set %s's badge to %s.", GetPlayerNameEx(iTargetID), iBadge);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+					format(szMessage, sizeof(szMessage), "%s (%d) has set %s's (%d) badge to %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), iBadge);
+					GroupLog(iGroupID, szMessage);
+				}
+				mysql_escape_string(iBadge, tmp);
+				strcat((PlayerInfo[iTargetID][pBadge][0] = 0, PlayerInfo[iTargetID][pBadge]), tmp, 8);
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
 	return 1;
 }
 
@@ -59261,21 +59449,45 @@ CMD:garagestatus(playerid, params[])
 CMD:garagenear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	SendClientMessageEx(playerid, COLOR_RED, "* Listing all garages within 30 meters of you...");
-	new string[128];
-	for(new i; i < MAX_GARAGES; i++)
+	new option, string[128];
+	if(!sscanf(params, "d", option)) 
 	{
-		if(GarageInfo[i][gar_InteriorX] != 0.0)
+		format(string, sizeof(string), "* Listing all garages within 30 meters of you in VW %d...", option);
+		SendClientMessageEx(playerid, COLOR_RED, string);
+		for(new i; i < MAX_GARAGES; i++)
 		{
-			if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
+			if(GarageInfo[i][gar_InteriorX] != 0.0)
 			{
-				format(string, sizeof(string), "(Interior) Garage ID %d | %f from you | Virtual World: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]), GarageInfo[i][gar_InteriorVW]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == option)
+				{
+					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == option)
+				{
+					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
 			}
-			if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_RED, "* Listing all garages within 30 meters of you...");
+		for(new i; i < MAX_GARAGES; i++)
+		{
+			if(GarageInfo[i][gar_InteriorX] != 0.0)
 			{
-				format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorVW], GarageInfo[i][gar_ExteriorInt]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
+				{
+					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you | Virtual World: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]), GarageInfo[i][gar_InteriorVW]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
+				{
+					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorVW], GarageInfo[i][gar_ExteriorInt]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
 			}
 		}
 	}

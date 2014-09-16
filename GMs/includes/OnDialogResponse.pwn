@@ -9548,7 +9548,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == MDC_MEMBERS && response)
 	{
 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-		new MemberString[1024], giveplayer[MAX_PLAYER_NAME];
+		new MemberString[1024], giveplayer[MAX_PLAYER_NAME], badge[10];
 		new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
 		new group = ListItemTrackId[playerid][listitem];
 		//foreach(new i: Player)
@@ -9558,9 +9558,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerInfo[i][pMember] == group)
 				{
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s]", PlayerInfo[i][pBadge]);
 					GetPlayerGroupInfo(i, rank, division, employer);
 					giveplayer = GetPlayerNameEx(i);
-					format(string, sizeof(string), "* %s (%s) %s Ph: %d\n", rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
+					format(string, sizeof(string), "* %s %s (%s) %s Ph: %d\n", badge, rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
 					strcat(MemberString, string, sizeof(MemberString));
 				}
 			}	
@@ -11269,6 +11270,46 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(listitem == 0)
 			{
+				if(isnull(PlayerInfo[playerid][pFavStation]))
+				{
+					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialog(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nWould you like to set the one that is currently playing?", "Select", "Back");
+					else ShowPlayerDialog(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nPlease find a station and return to this menu to set a favorite station.", "Back", "");
+				}
+				else
+				{
+					if(IsPlayerInAnyVehicle(playerid))
+					{
+						for(new i = 0; i < MAX_PLAYERS; ++i)
+						{
+							if(IsPlayerConnected(i))
+							{
+								if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation]);
+							}	
+						}
+						format(stationidv[GetPlayerVehicleID(playerid)], 255, "%s", PlayerInfo[playerid][pFavStation]);
+						format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
+						ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					}
+					else if(GetPVarType(playerid, "pBoomBox"))
+					{
+						for(new i = 0; i < MAX_PLAYERS; ++i)
+						{
+							if(IsPlayerConnected(i))
+							{
+								if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation], GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+							}	
+						}
+						SetPVarString(playerid, "pBoomBoxStation", PlayerInfo[playerid][pFavStation]);
+					}
+					else
+					{
+						PlayAudioStreamForPlayerEx(playerid, PlayerInfo[playerid][pFavStation]);
+						SetPVarInt(playerid, "MusicIRadio", 1);
+					}
+				}
+			}
+			if(listitem == 1)
+			{
 				if(!GetPVarType(playerid, "pHTTPWait"))
 				{
 					SetPVarInt(playerid, "pHTTPWait", 1);
@@ -11280,7 +11321,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 				}
 			}
-			else if(listitem == 1)
+			else if(listitem == 2)
 			{
 				if(!GetPVarType(playerid, "pHTTPWait"))
 				{
@@ -11293,11 +11334,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 				}
 			}
-			else if(listitem == 2)
+			else if(listitem == 3)
 			{
 				ShowPlayerDialog(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
 			}
-			else if(listitem == 3)
+			else if(listitem == 4)
 			{
 				if(IsPlayerInAnyVehicle(playerid))
 				{
@@ -11336,7 +11377,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "MusicIRadio", 1);
 				}
 			}
-			else if(listitem == 4)
+			else if(listitem == 5)
 			{
 				if(IsPlayerInAnyVehicle(playerid))
 				{
@@ -11375,11 +11416,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "MusicIRadio", 1);
 				}
 			}
-			else if(listitem == 5)
+			else if(listitem == 6)
 			{
 				ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
 			}
-			else if(listitem == 6)
+			else if(listitem == 7)
 			{
 				if(!IsPlayerInAnyVehicle(playerid))
 				{
@@ -11461,7 +11502,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+			ShowSetStation(playerid);
 		}
 	}		
 	else if(dialogid == GENRES)
@@ -11482,7 +11523,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+			ShowSetStation(playerid);
 			DeletePVar(playerid, "pSelectGenre");
 		}
 	}
@@ -11520,7 +11561,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(!response)
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+			ShowSetStation(playerid);
 		}
 		else
 		{
@@ -11603,7 +11644,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(strlen(inputtext) < 0 || strlen(inputtext) > 64)
 			{
-				ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+				ShowSetStation(playerid);
 			}
 			else
 			{
@@ -11623,7 +11664,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+			ShowSetStation(playerid);
 		}
 	}
 	else if(dialogid == STATIONSEARCHLIST)
@@ -11646,7 +11687,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid,SETSTATION,DIALOG_STYLE_LIST,"Radio Menu","Genres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off","Select", "Close");
+			ShowSetStation(playerid);
 		}
 	}
 	else if(dialogid == STATIONSEARCHLISTEN)
@@ -11681,6 +11722,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
 			}
 		}
+	}
+	else if(dialogid == STATIONFAV)
+	{
+		if(response)
+		{
+			GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully set your favorite station.");
+		}
+		else ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAV2)
+	{
+		ShowSetStation(playerid);
 	}
 	else if(dialogid == INTERACTMAIN)
 	{
@@ -13741,8 +13795,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have made %s the leader of the %s.", GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "%s(%d) has made %s(%d) the leader of the %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
-			Log("logs/group.log", string);
+			format(string, sizeof(string), "%s (%d) has made %s (%d) the leader of the %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
+			GroupLog(iGroupID, string);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have access to this.");
 	}

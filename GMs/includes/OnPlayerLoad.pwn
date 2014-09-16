@@ -232,6 +232,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pBusiness] = INVALID_BUSINESS_ID;
 		PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
+		strcpy(PlayerInfo[playerid][pBadge], "None", 8);
 		PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
 		PlayerInfo[playerid][pRenting] = INVALID_HOUSE_ID;
@@ -356,6 +357,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pWantedJailFine] = 0;
 		PlayerInfo[playerid][pNextNameChange] = 0;
 		PlayerInfo[playerid][pExamineDesc][0] = 0;
+		PlayerInfo[playerid][pFavStation][0] = 0;
 		PlayerInfo[playerid][pReg] = 1;
 		for(new i = 0; i < 11; i++)
 		{

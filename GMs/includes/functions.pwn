@@ -3381,18 +3381,19 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Locker Stock (%i)\n",
+		{EEEEEE}Edit Locker Stock (%i)\n\
+		{EEEEEE}Edit Locker Weapons (%i defined)\n",
 		szDialog,
 		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCones],
 		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares],
 		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
 		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_iLockerStock]
+		arrGroupData[iGroupID][g_iLockerStock],
+		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS)
 	);
 
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{EEEEEE}Edit Locker Weapons (%i defined)\n\
 		{EEEEEE}Edit Payments\n\
 		{EEEEEE}Edit Divisions (%i defined)\n\
 		{EEEEEE}Edit Ranks (%i defined)\n\
@@ -3404,7 +3405,6 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
 		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)",
 		szDialog,
-		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS),
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]),
@@ -14651,9 +14651,6 @@ public SyncTime()
 		}
 		#endif
 
-		format(string, sizeof(string), "The time is now %s.", ConvertToTwelveHour(tmphour));
-		SendClientMessageToAllEx(COLOR_WHITE, string);
-
 		ghour = tmphour;
 		TotalUptime += 1;
 		GiftAllowed = 1;
@@ -14663,16 +14660,21 @@ public SyncTime()
 		getdate(year, month, day);		
 
 		//foreach(new i: Player)
+		format(string, sizeof(string), "The time is now %s.", ConvertToTwelveHour(tmphour));
+		new query[256];
+		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 WHERE b.time_start = '%02d:00:00'", GetWeekday(), year, month, day, tmphour);
+		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "s", string);
 		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i,COLOR_LIGHTBLUE,"Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
 				if(PlayerInfo[i][pAdmin] >= 2)
 				{
 					if(tmphour == 0) ReportCount[i] = 0;
 					ReportHourCount[i] = 0;
 				}
+				if(PlayerInfo[i][pAdmin] < 2) SendClientMessageEx(i, COLOR_WHITE, string);
+				if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
 				if(PlayerInfo[i][pDonateRank] >= 3)
 				{
 					sscanf(PlayerInfo[i][pBirthDate], "p<->iii", byear, bmonth, bday);
@@ -18344,7 +18346,7 @@ stock TutorialStep(playerid)
 stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
 	if(GetPVarType(playerid, "pAudioStream")) StopAudioStreamForPlayer(playerid);
-	else SetPVarInt(playerid, "pAudioStream", 1);
+	else SetPVarString(playerid, "pAudioStream", url);
     PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
 }
 
@@ -18638,7 +18640,7 @@ stock ShowStats(playerid,targetid)
 		if(PlayerInfo[targetid][pMember] != INVALID_GROUP_ID)
 		{
 			GetPlayerGroupInfo(targetid, rank, division, employer);
-			format(org, sizeof(org), "Faction: %s (%d)\nRank: %s (%d)\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], division, PlayerInfo[targetid][pDivision]);
+			format(org, sizeof(org), "Faction: %s (%d)\nRank: %s (%d)\nBadge Number: %s\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], PlayerInfo[targetid][pBadge], division, PlayerInfo[targetid][pDivision]);
 		}
 		else if(PlayerInfo[targetid][pFMember] < INVALID_FAMILY_ID)
 		{
@@ -27390,4 +27392,62 @@ stock GetLastName(playerid)
 	underscore = strfind(name, "_");
 	strdel(name, 0, underscore+1);
 	return name;
+}
+
+stock ShowSetStation(playerid, title[] = "Radio Menu")
+{
+	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off", "Select", "Close");
+}
+
+stock GroupLog(groupid, string[])
+{
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	format(file, sizeof(file), "grouplogs/%d/%d-%02d-%02d.log", groupid, year, month, day);
+	return Log(file, string);
+}
+
+GetWeekday(display = 0, day = 0, month = 0, year = 0)
+{
+	if(!day) getdate(year, month, day);
+
+	new weekday_str[10], j, e;
+
+	if(month <= 2)
+	{
+		month += 12;
+		--year;
+	}
+
+	j = year % 100;
+	e = year / 100;
+	
+	if(display == 1)
+	{
+		switch((day + (month+1)*26/10 + j + j/4 + e/4 - 2*e) % 7)
+		{
+			case 0: weekday_str = "sat";
+			case 1: weekday_str = "sun";
+			case 2: weekday_str = "mon";
+			case 3: weekday_str = "tues";
+			case 4: weekday_str = "wed";
+			case 5: weekday_str = "thurs";
+			case 6: weekday_str = "fri";
+		}
+	}
+	else
+	{
+		switch((day + (month+1)*26/10 + j + j/4 + e/4 - 2*e) % 7)
+		{
+			case 0: weekday_str = "saturday";
+			case 1: weekday_str = "sunday";
+			case 2: weekday_str = "monday";
+			case 3: weekday_str = "tuesday";
+			case 4: weekday_str = "wednesday";
+			case 5: weekday_str = "thursday";
+			case 6: weekday_str = "friday";
+		}
+	}
+
+	return weekday_str;
 }

@@ -528,6 +528,8 @@ native gpci(playerid, serial[], maxlen);
 #define 		STATIONSEARCH   			(3110)
 #define 		STATIONSEARCHLIST   		(3120)
 #define 		STATIONSEARCHLISTEN 		(3130)
+#define 		STATIONFAV			 		(3135)
+#define 		STATIONFAV2			 		(3136)
 #define 		INTERACTMAIN				(3140)
 #define 		INTERACTPAY					(3150)
 #define 		INTERACTGIVE				(3160)

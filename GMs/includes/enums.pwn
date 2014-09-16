@@ -835,6 +835,7 @@ enum pInfo
 	pLeader,
 	pMember,
 	pDivision,
+	pBadge[8],
 	pFMember,
 	pSpeakerPhone,
 	pRank,
@@ -1090,7 +1091,8 @@ enum pInfo
 	pWantedJailTime,
 	pWantedJailFine,
 	pNextNameChange,
-	pExamineDesc[128]
+	pExamineDesc[128],
+	pFavStation[255]
 };
 
 enum pvInfo
