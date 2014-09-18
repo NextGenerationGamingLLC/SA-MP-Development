@@ -9548,7 +9548,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == MDC_MEMBERS && response)
 	{
 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
-		new MemberString[1024], giveplayer[MAX_PLAYER_NAME], badge[10];
+		new MemberString[1024], giveplayer[MAX_PLAYER_NAME], badge[11];
 		new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
 		new group = ListItemTrackId[playerid][listitem];
 		//foreach(new i: Player)
@@ -9558,10 +9558,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerInfo[i][pMember] == group)
 				{
-					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s]", PlayerInfo[i][pBadge]);
+					if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
 					GetPlayerGroupInfo(i, rank, division, employer);
 					giveplayer = GetPlayerNameEx(i);
-					format(string, sizeof(string), "* %s %s (%s) %s Ph: %d\n", badge, rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
+					format(string, sizeof(string), "* %s%s (%s) %s Ph: %d\n", badge, rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
 					strcat(MemberString, string, sizeof(MemberString));
 				}
 			}	
@@ -11420,7 +11420,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
 			}
-			else if(listitem == 7)
+			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7)
+			{
+				ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+			}
+			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8))
 			{
 				if(!IsPlayerInAnyVehicle(playerid))
 				{
@@ -11735,6 +11739,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	else if(dialogid == STATIONFAV2)
 	{
 		ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAVSETTING)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
+				ShowPlayerDialog(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully modified your favorite station!", "Go Back", "Exit");
+			}
+			case 1:
+			{
+				strcat((PlayerInfo[playerid][pFavStation][0] = 0, PlayerInfo[playerid][pFavStation]), "", 8);
+				ShowPlayerDialog(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully removed your favorite station!", "Go Back", "Exit");
+			}
+		}
+		if(!response) ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAVMODIFY)
+	{
+		if(response) ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+	}
+	else if(dialogid == STATIONREMOVE)
+	{
+		if(response) ShowSetStation(playerid);
 	}
 	else if(dialogid == INTERACTMAIN)
 	{

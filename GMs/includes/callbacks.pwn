@@ -2927,7 +2927,7 @@ public OnPlayerConnect(playerid)
 	PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
 	PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 	PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
-	strcpy(PlayerInfo[playerid][pBadge], "None", 8);
+	strcpy(PlayerInfo[playerid][pBadge], "None", 9);
 	PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 	PlayerInfo[playerid][pRank] = INVALID_RANK;
 	PlayerInfo[playerid][pOrder] = 0;

@@ -232,7 +232,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pBusiness] = INVALID_BUSINESS_ID;
 		PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
-		strcpy(PlayerInfo[playerid][pBadge], "None", 8);
+		strcpy(PlayerInfo[playerid][pBadge], "None", 9);
 		PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
 		PlayerInfo[playerid][pRenting] = INVALID_HOUSE_ID;

@@ -111,7 +111,7 @@ Group_DisbandGroup(iGroupID) {
 				PlayerInfo[x][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[x][pRank] = INVALID_RANK;
 				PlayerInfo[x][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[x][pBadge], "None", 8);
+				strcpy(PlayerInfo[x][pBadge], "None", 9);
 			}
 			if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
 		}	
@@ -444,7 +444,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Leader", szResult, MainPipeline); PlayerInfo[extraid][pLeader] = strval(szResult);
 					cache_get_field_content(row,  "Member", szResult, MainPipeline); PlayerInfo[extraid][pMember] = strval(szResult);
 					cache_get_field_content(row,  "Division", szResult, MainPipeline); PlayerInfo[extraid][pDivision] = strval(szResult);
-					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 8);
+					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 9);
 					cache_get_field_content(row,  "FMember", szResult, MainPipeline); PlayerInfo[extraid][pFMember] = strval(szResult);
 					cache_get_field_content(row,  "Rank", szResult, MainPipeline); PlayerInfo[extraid][pRank] = strval(szResult);
 					cache_get_field_content(row,  "DetSkill", szResult, MainPipeline); PlayerInfo[extraid][pDetSkill] = strval(szResult);
@@ -6910,7 +6910,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			PlayerInfo[otherplayer][pRank] = INVALID_RANK;
 			PlayerInfo[otherplayer][pDuty] = 0;
 			PlayerInfo[otherplayer][pDivision] = INVALID_DIVISION;
-			strcpy(PlayerInfo[otherplayer][pBadge], "None", 8);
+			strcpy(PlayerInfo[otherplayer][pBadge], "None", 9);
 			new rand = random(sizeof(CIV));
 			PlayerInfo[otherplayer][pModel] = CIV[rand];
 			SetPlayerToTeamColor(otherplayer);

@@ -835,7 +835,7 @@ enum pInfo
 	pLeader,
 	pMember,
 	pDivision,
-	pBadge[8],
+	pBadge[9],
 	pFMember,
 	pSpeakerPhone,
 	pRank,

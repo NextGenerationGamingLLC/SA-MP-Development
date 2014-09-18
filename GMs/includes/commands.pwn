@@ -3768,7 +3768,7 @@ CMD:online(playerid, params[]) {
 	{
 
 		new
-			badge[10],
+			badge[11],
 			szDialog[1024];
 
 		//foreach(new i: Player)
@@ -3776,18 +3776,18 @@ CMD:online(playerid, params[]) {
 		{
 			if(IsPlayerConnected(i))
 			{
-				if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s]", PlayerInfo[i][pBadge]);
+				if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
 				if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 				}
 				else if(IsAMedic(playerid) && IsAMedic(i) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 				}
 				else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pLeader]) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s %s (on duty)", szDialog, badge, GetPlayerNameEx(i));
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s %s (off duty)", szDialog, badge, GetPlayerNameEx(i));
+					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
+					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
 				}
 			}	
 		}
@@ -4882,11 +4882,11 @@ CMD:time(playerid, params[])
 
 	if (PlayerInfo[playerid][pJailTime] > 0)
 	{
-		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|~n~~w~Jail Time Left: ~r~%s", GetWeekday(), mtext, day, year, thour, minuite, suffix, TimeConvert(PlayerInfo[playerid][pJailTime]));
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|~n~~w~Jail Time Left: ~r~%s", GetWeekday(1), mtext, day, year, thour, minuite, suffix, TimeConvert(PlayerInfo[playerid][pJailTime]));
 	}
 	else
 	{
-		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|", GetWeekday(), mtext, day, year, thour, minuite, suffix);
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|", GetWeekday(1), mtext, day, year, thour, minuite, suffix);
 	}
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
@@ -10170,7 +10170,7 @@ CMD:accept(playerid, params[])
 					PlayerInfo[playerid][pMember] = iGroupID;
 					PlayerInfo[playerid][pRank] = 0;
 					PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
-					strcpy(PlayerInfo[playerid][pBadge], "None", 8);
+					strcpy(PlayerInfo[playerid][pBadge], "None", 9);
 					
 
 					format(szMessage, sizeof szMessage, "You have accepted %s %s's invite, and are now a member of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), arrGroupData[iGroupID][g_szGroupName]);
@@ -16324,7 +16324,7 @@ CMD:nonrp(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
 				time = 120;
@@ -16463,7 +16463,7 @@ CMD:snonrp(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
 				time = 120;
@@ -22130,7 +22130,7 @@ CMD:quitgroup(playerid, params[])
 		PlayerInfo[playerid][pDuty] = 0;
 		PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
-		strcpy(PlayerInfo[playerid][pBadge], "None", 8);
+		strcpy(PlayerInfo[playerid][pBadge], "None", 9);
 		if(!IsValidSkin(GetPlayerSkin(playerid)))
 		{
   			new rand = random(sizeof(CIV));
@@ -30065,7 +30065,7 @@ CMD:groupcsfban(playerid, params[])
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pDuty] = 0;
 				PlayerInfo[giveplayerid][pModel] = NOOB_SKIN;
@@ -30286,7 +30286,7 @@ CMD:hshowbadge(playerid, params[])
 		new oldfaction = PlayerInfo[playerid][pMember];
 		new oldrank = PlayerInfo[playerid][pRank];
 		new olddivision = PlayerInfo[playerid][pDivision];
-		strcpy(oldbadge, PlayerInfo[playerid][pBadge], 8);
+		strcpy(oldbadge, PlayerInfo[playerid][pBadge], 9);
 		PlayerInfo[playerid][pMember] = faction;
 		PlayerInfo[playerid][pRank] = rank;
 		PlayerInfo[playerid][pDivision] = division;
@@ -30356,7 +30356,7 @@ CMD:groupkick(playerid, params[])
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
 				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 8);
+				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
 				if(!IsValidSkin(GetPlayerSkin(giveplayerid)))
 				{
 					new rand = random(sizeof(CIV));
@@ -52681,7 +52681,7 @@ CMD:uninvite(playerid, params[]) {
 
 					PlayerInfo[iTargetID][pMember] = INVALID_GROUP_ID;
 					PlayerInfo[iTargetID][pDivision] = -1;
-					strcpy(PlayerInfo[iTargetID][pBadge], "None", 8);
+					strcpy(PlayerInfo[iTargetID][pBadge], "None", 9);
 					PlayerInfo[iTargetID][pLeader] = INVALID_GROUP_ID;
 					PlayerInfo[iTargetID][pDuty] = 0;
 					PlayerInfo[iTargetID][pRank] = INVALID_RANK;
@@ -52925,7 +52925,12 @@ CMD:setdivname(playerid, params[])
 		else if(!(0 <= iDiv <= Group_GetMaxDiv(iGroupID)+1))
 		{
 		    format(szMessage, sizeof(szMessage), "Invalid division specified! Must be between 0 and %d.", Group_GetMaxDiv(iGroupID) + 1);
-			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+			return SendClientMessageEx(playerid, COLOR_GREY, szMessage);
+		}
+		else if(strlen(iName) > sizeof(iName))
+		{
+			format(szMessage, sizeof(szMessage), "Division name must be less than %d characters!", sizeof(iName));
+			return SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
 		else
 		{
@@ -53093,10 +53098,10 @@ CMD:setbadge(playerid, params[])
 	{
 		new
 			iTargetID,
-			iBadge[8],
+			iBadge[9],
 			iGroupID = PlayerInfo[playerid][pLeader],
 			szMessage[128],
-			tmp[8];
+			tmp[9];
 
 		if(sscanf(params, "us[8]", iTargetID, iBadge)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setbadge [player] [number] -- Use 'none' as number to remove badge");
 		else if(IsPlayerConnected(iTargetID))
@@ -53122,7 +53127,7 @@ CMD:setbadge(playerid, params[])
 					GroupLog(iGroupID, szMessage);
 				}
 				mysql_escape_string(iBadge, tmp);
-				strcat((PlayerInfo[iTargetID][pBadge][0] = 0, PlayerInfo[iTargetID][pBadge]), tmp, 8);
+				strcat((PlayerInfo[iTargetID][pBadge][0] = 0, PlayerInfo[iTargetID][pBadge]), tmp, 9);
 			}
 			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
 		}

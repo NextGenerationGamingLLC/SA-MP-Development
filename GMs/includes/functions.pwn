@@ -14661,8 +14661,8 @@ public SyncTime()
 
 		//foreach(new i: Player)
 		format(string, sizeof(string), "The time is now %s.", ConvertToTwelveHour(tmphour));
-		new query[256];
-		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 WHERE b.time_start = '%02d:00:00'", GetWeekday(), year, month, day, tmphour);
+		new query[300];
+		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
 		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "s", string);
 		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
@@ -18345,14 +18345,18 @@ stock TutorialStep(playerid)
 			
 stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
-	if(GetPVarType(playerid, "pAudioStream")) StopAudioStreamForPlayer(playerid);
+	if(GetPVarType(playerid, "pAudioStream"))
+	{
+		SetPVarString(playerid, "pAudioStream", url);
+		StopAudioStreamForPlayerEx(playerid, 1);
+	}
 	else SetPVarString(playerid, "pAudioStream", url);
     PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
 }
 
-stock StopAudioStreamForPlayerEx(playerid)
+stock StopAudioStreamForPlayerEx(playerid, reset = 0)
 {
-	DeletePVar(playerid, "pAudioStream");
+	if(reset == 0) DeletePVar(playerid, "pAudioStream");
     StopAudioStreamForPlayer(playerid);
 }
 
@@ -27396,7 +27400,9 @@ stock GetLastName(playerid)
 
 stock ShowSetStation(playerid, title[] = "Radio Menu")
 {
-	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\nTurn radio off", "Select", "Close");
+	new string[128];
+	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
+	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
 }
 
 stock GroupLog(groupid, string[])
