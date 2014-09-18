@@ -998,5 +998,7 @@ public OnPlayerLoad(playerid)
 	format(szQuery, sizeof(szQuery), "SELECT `id`, `Bug` FROM `bugs` WHERE `status` = '5' AND `ReportedBy` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
 	defer CheckVehiclesLeftSpawned(playerid);
+	format(szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, szQuery, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
 	return 1;
 }

@@ -4405,7 +4405,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			SetOwnerTurfWarsZone(1, tw, strval(inputtext));
-			SaveTurfWars();
+			SaveTurfWar(tw);
 			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 		}
 		else
@@ -4429,7 +4429,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			TurfWars[tw][twVulnerable] = strval(inputtext);
-			SaveTurfWars();
+			SaveTurfWar(tw);
 			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 		}
 		else
@@ -4447,13 +4447,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0: // Lock
 				{
 					TurfWars[tw][twLocked] = 1;
-					SaveTurfWars();
+					SaveTurfWar(tw);
 					ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 				}
 				case 1: // Unlock
 				{
 					TurfWars[tw][twLocked] = 0;
-					SaveTurfWars();
+					SaveTurfWar(tw);
 					ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 				}
 			}
@@ -4469,7 +4469,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			new tw = GetPVarInt(playerid, "EditingTurfs");
 			TurfWars[tw][twSpecial] = listitem;
-			SaveTurfWars();
+			SaveTurfWar(tw);
 			ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 		}
 		else
@@ -12015,7 +12015,43 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
+			if(!IsPlayerConnected(GetPVarInt(playerid, "viewingflags"))) return SendClientMessage(playerid, -1, "The player whos flags you were managing is no longer connected!");
+			if(!GetPVarType(playerid, "ManageFlagID"))
+			{
+				new stpos = strfind(inputtext, "(");
+				new fpos = strfind(inputtext, ")");
+				new fid[11];
+				strmid(fid, inputtext, stpos+5, fpos);
+				SetPVarInt(playerid, "ManageFlagID", strval(fid));
+				format(string, sizeof(string), "Managing FlagID: %d", GetPVarInt(playerid, "ManageFlagID"));
+				return ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_LIST, string, "View\nTransfer\nDelete", "Select", "Close");
+			}
+			else
+			{
+				if(listitem == -1)
+				{
+					new target;
+					if(sscanf(inputtext, "u", target)) return ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_INPUT, "FLAG TRANSFER", "Who do you want to transfer the flag to?", "Select", "Cancel");
+					if(GetPVarInt(playerid, "viewingflags") == target) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person!");
+					if(!IsPlayerConnected(target)) return ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_INPUT, "FLAG TRANSFER - ERROR", "Player is not connected!\nWho do you want to transfer the flag to?", "Select", "Cancel");
+					format(string, sizeof(string), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_function_query(MainPipeline, string, true, "OnRequestTransferFlag", "iiii", playerid, GetPVarInt(playerid, "ManageFlagID"), target, GetPVarInt(playerid, "viewingflags"));
+				}
+				if(listitem == 0)
+				{
+					format(string, sizeof(string), "SELECT fid, issuer, flag, time FROM `flags` WHERE fid = %d", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_function_query(MainPipeline, string, true, "FlagQueryFinish", "iii", playerid, GetPVarInt(playerid, "viewingflags"), 0);
+				}
+				if(listitem == 1)
+				{
+					ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_INPUT, "FLAG TRANSFER", "Who do you want to transfer the flag to?", "Select", "Cancel");
+				}
+				if(listitem == 2)
+				{
+					format(string, sizeof(string), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_function_query(MainPipeline, string, true, "OnRequestDeleteFlag", "ii", playerid, GetPVarInt(playerid, "ManageFlagID"));
+				}
+			}
 		}
 	}
 	else if(dialogid == FLAG_DELETE)
@@ -12025,7 +12061,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new flagid;
 			if(sscanf(inputtext, "d", flagid)) return ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
 			new query[128];
-			format(query, sizeof(query), "SELECT flag, issuer, time FROM `flags` WHERE `fid` = %i", flagid);
+			format(query, sizeof(query), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
 			mysql_function_query(MainPipeline, query, true, "OnRequestDeleteFlag", "ii", playerid, flagid);
 		}
 	}

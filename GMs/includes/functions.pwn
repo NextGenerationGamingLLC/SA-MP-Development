@@ -8317,6 +8317,7 @@ public FinishMaintenance()
 		SaveRelayForLifeTeams();
 	}
 	g_mysql_SavePrices();
+	SaveTurfWars();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
 	DestroyAllDynamicObjects();
 	DestroyAllDynamic3DTextLabels();
@@ -14979,58 +14980,60 @@ stock UpdatePoints()
 	}
 }	
 
+stock SaveTurfWar(turfid)
+{
+	new string[128];
+	format(string, sizeof(string), "UPDATE `turfs` SET data='%s|%d|%d|%d|%d|%f|%f|%f|%f' WHERE id = %d",
+	g_mysql_ReturnEscaped(TurfWars[turfid][twName], MainPipeline),
+	TurfWars[turfid][twOwnerId],
+	TurfWars[turfid][twLocked],
+	TurfWars[turfid][twSpecial],
+	TurfWars[turfid][twVulnerable],
+	TurfWars[turfid][twMinX],
+	TurfWars[turfid][twMinY],
+	TurfWars[turfid][twMaxX],
+	TurfWars[turfid][twMaxY],
+	turfid);
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 1;
+}
+
 stock SaveTurfWars()
 {
-
-	new
-		szFileStr[1024],
-		File: fHandle = fopen("turfwars.cfg", io_write);
-	if(fHandle)
+	for(new i; i < MAX_TURFS; i++)
 	{
-		for(new iIndex; iIndex < MAX_TURFS; ++iIndex) {
-		    format(szFileStr, sizeof(szFileStr), "%s|%d|%d|%d|%d|%f|%f|%f|%f\r\n",
-				TurfWars[iIndex][twName],
-				TurfWars[iIndex][twOwnerId],
-				TurfWars[iIndex][twLocked],
-				TurfWars[iIndex][twSpecial],
-				TurfWars[iIndex][twVulnerable],
-				TurfWars[iIndex][twMinX],
-				TurfWars[iIndex][twMinY],
-				TurfWars[iIndex][twMaxX],
-				TurfWars[iIndex][twMaxY]
-			);
-			fwrite(fHandle, szFileStr);
-		}
-		return fclose(fHandle);
+		SaveTurfWar(i);
 	}
-	return 0;
+}
+
+forward OnLoadTurfWars();
+public OnLoadTurfWars()
+{
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+	while(i < rows)
+	{
+		cache_get_field_content(i, "data", tmp, MainPipeline);
+		if(!sscanf(tmp, "p<|>s[64]iiiiffff",
+			TurfWars[i][twName],
+			TurfWars[i][twOwnerId],
+			TurfWars[i][twLocked],
+			TurfWars[i][twSpecial],
+			TurfWars[i][twVulnerable],
+			TurfWars[i][twMinX],
+			TurfWars[i][twMinY],
+			TurfWars[i][twMaxX],
+			TurfWars[i][twMaxY]
+		)) CreateTurfWarsZone(0, i++);
+	}
+	if(i) printf("[LoadTurfWars] %d turfs loaded.", i);
+	else printf("[LoadTurfWars] Failed to load any turfs.");
+	return 1;
 }
 
 stock LoadTurfWars() {
-
-	if(!fexist("turfwars.cfg"))
-		return 1;
-
-	new
-		szFileStr[1024],
-		File: fHandle = fopen("turfwars.cfg", io_read),
-		iIndex;
-
-	while(iIndex < MAX_TURFS && fread(fHandle, szFileStr)) {
-		if(!sscanf(szFileStr, "p<|>s[64]iiiiffff",
-			TurfWars[iIndex][twName],
-			TurfWars[iIndex][twOwnerId],
-			TurfWars[iIndex][twLocked],
-			TurfWars[iIndex][twSpecial],
-			TurfWars[iIndex][twVulnerable],
-			TurfWars[iIndex][twMinX],
-			TurfWars[iIndex][twMinY],
-			TurfWars[iIndex][twMaxX],
-			TurfWars[iIndex][twMaxY]
-		)) CreateTurfWarsZone(0, iIndex++);
-	}
-	printf("[LoadTurfWars] %i turfs loaded.", iIndex);
-	return fclose(fHandle);
+	printf("[LoadTurfWars] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `turfs`", true, "OnLoadTurfWars", "");
 }
 
 stock ReloadHouseText(houseid)
@@ -15359,7 +15362,7 @@ stock CreateTurfWarsZone(forcesync, zone)
 	    SyncTurfWarsRadarToAll();
 	}
 
-	SaveTurfWars();
+	SaveTurfWar(zone);
 }
 
 stock ResetTurfWarsZone(forcesync, zone)
@@ -15374,7 +15377,7 @@ stock ResetTurfWarsZone(forcesync, zone)
 	    SyncTurfWarsRadarToAll();
 	}
 
-	SaveTurfWars();
+	SaveTurfWar(zone);
 }
 
 stock SetOwnerTurfWarsZone(forcesync, zone, ownerid)
@@ -15385,7 +15388,7 @@ stock SetOwnerTurfWarsZone(forcesync, zone, ownerid)
 	    SyncTurfWarsRadarToAll();
 	}
 
-	SaveTurfWars();
+	SaveTurfWar(zone);
 }
 
 stock DestroyTurfWarsZone(zone)
@@ -15417,7 +15420,7 @@ stock DestroyTurfWarsZone(zone)
 	TurfWars[zone][twVulnerable] = 12;
 
 	SyncTurfWarsRadarToAll();
-	SaveTurfWars();
+	SaveTurfWar(zone);
 
 }
 
@@ -15456,7 +15459,7 @@ stock ShutdownTurfWarsZone(zone)
 
 	SyncTurfWarsRadarToAll();
 
-	SaveTurfWars();
+	SaveTurfWar(zone);
 }
 
 stock TakeoverTurfWarsZone(familyid, zone)
@@ -15523,7 +15526,7 @@ stock CaptureTurfWarsZone(familyid, zone)
 	}
 	if(familyid != -2) TurfWars[zone][twOwnerId] = familyid;
 	else TurfWars[zone][twOwnerId] = -1;
-	SaveTurfWars();
+	SaveTurfWar(zone);
 }
 
 stock ExtortionTurfsWarsZone(playerid, type, money)

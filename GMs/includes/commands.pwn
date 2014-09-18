@@ -21457,13 +21457,13 @@ CMD:deploy(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						format(string, sizeof(string), "HQ: A barricade has been deployed by %s at %s.", GetPlayerNameEx(playerid), Barricades[i][sDeployedAt]);
 						//foreach(new x: Player)
-						for(new x = 0; x < MAX_PLAYERS; ++x)
+						/*for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
 							{
 								if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
 							}	
-						}
+						}*/
 						return 1;
 					}
 				}
@@ -21495,13 +21495,13 @@ CMD:deploy(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						format(string, sizeof(string), "HQ: A spike has been deployed by %s at %s.", GetPlayerNameEx(playerid), SpikeStrips[i][sDeployedAt]);
 						//foreach(new x: Player)
-						for(new x = 0; x < MAX_PLAYERS; ++x)
+						/*for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
 							{
 								if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
 							}	
-						}
+						}*/
 						return 1;
 					}
 				}
@@ -40864,7 +40864,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
 		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /requestevent /watch /dmwatchlist /mark(2) /n(un)mute /ad(un)mute /checkinv /lastshot");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /wd /watchlist /watchdogs");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /wd /watchlist /watchdogs /flag /viewflag /aflag /aviewflag /transferflag /deleteflag");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
@@ -52911,7 +52911,7 @@ CMD:setdivname(playerid, params[])
 			iGroupID = PlayerInfo[playerid][pLeader],
 			szMessage[128];
 
-		if(sscanf(params, "is[16]", iDiv, iName))
+		if(sscanf(params, "is[8]", iDiv, iName))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setdivname [division] [name] -- Use 'none' as name to remove division");
 			format(szMessage, sizeof(szMessage), "%s", "0 (None), ");
@@ -60280,7 +60280,7 @@ CMD:transferflag(playerid, params[])
 	if(!IsPlayerConnected(from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (from)");
 	if(to == from) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person");
 	new query[128];
-	format(query, sizeof(query), "SELECT id, flag, issuer, time FROM `flags` WHERE `fid` = %i", flagid);
+	format(query, sizeof(query), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
 	mysql_function_query(MainPipeline, query, true, "OnRequestTransferFlag", "iiii", playerid, flagid, to, from);
 	return 1;
 }
@@ -60381,4 +60381,34 @@ CMD:examine(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_PURPLE, string);
 	}
 	return 1;
+}
+
+CMD:aviewflag(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new giveplayerid;
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aviewflag [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Error: Player is not connected!");
+	return DisplayFlags(playerid, giveplayerid, 2);
+}
+
+CMD:aflag(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new giveplayerid, reason[64];
+	if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aflag [player] [reason]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	AddFlag(giveplayerid, playerid, reason, 2);
+	new string[128];
+	format(string, sizeof(string), "AdmCmd: %s was admin flagged by %s, reason: %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+	ABroadCast(COLOR_LIGHTRED, string, 2);
+	format(string, sizeof(string), "[AFLAG] %s was admin flagged by %s (%s).", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
+	Log("logs/flags.log", string);
+	return 1;
+}
+
+CMD:deleteflag(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	return ShowPlayerDialog(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
 }

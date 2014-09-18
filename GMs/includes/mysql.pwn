@@ -1846,12 +1846,12 @@ stock DisplayMailDetails(playerid, letterid)
 stock CountFlags(playerid)
 {
 	new query[80];
-	format(query, sizeof(query), "SELECT * FROM `flags` WHERE id=%d", GetPlayerSQLId(playerid));
+	format(query, sizeof(query), "SELECT * FROM `flags` WHERE id=%d AND type = 1", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Count);
 	return 1;
 }
 
-stock AddFlag(playerid, adminid, flag[])
+stock AddFlag(playerid, adminid, flag[], type = 1)
 {
 	new query[300];
 	new admin[24];
@@ -1862,7 +1862,7 @@ stock AddFlag(playerid, adminid, flag[])
 		format(admin, sizeof(admin), "Gifted/Script Added");
 	}
 	PlayerInfo[playerid][pFlagged]++;
-	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`) VALUES ('%d',NOW(),'%s','%s')", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline));
+	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`, `type`) VALUES ('%d',NOW(),'%s','%s','%d')", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline), type);
 	mysql_function_query(MainPipeline, query, true, "OnAddFlag", "iss", playerid, admin, flag);
 	return 1;
 }
@@ -1909,6 +1909,7 @@ public OnRequestDeleteFlag(playerid, flagid)
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_data(rows, fields, MainPipeline);
 	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
 	cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
 	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
 	cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
@@ -1931,12 +1932,14 @@ stock DeleteFlag(flagid, adminid)
 	return 1;
 }
 
-stock DisplayFlags(playerid, targetid)
+stock DisplayFlags(playerid, targetid, type = 1)
 {
-    new query[128];
+	new query[128];
 	CountFlags(targetid);
-    format(query, sizeof(query), "SELECT fid, issuer, flag, time FROM `flags` WHERE id=%d ORDER BY `time` LIMIT 15", GetPlayerSQLId(targetid));
-    mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, targetid, Flag_Query_Display);
+	format(query, sizeof(query), "SELECT fid, flag FROM `flags` WHERE id=%d AND type = %d ORDER BY `time` LIMIT 15", GetPlayerSQLId(targetid), type);
+	mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, targetid, Flag_Query_Display);
+	SetPVarInt(playerid, "viewingflags", targetid);
+	DeletePVar(playerid, "ManageFlagID");
 	return 1;
 }
 
@@ -3814,23 +3817,27 @@ public FlagQueryFinish(playerid, suspectid, queryid)
     new FlagID, FlagIssuer[MAX_PLAYER_NAME], FlagText[64], FlagDate[24];
 	switch(queryid)
 	{
+		case 0:
+		{
+			cache_get_field_content(0, "fid", sResult, MainPipeline); FlagID = strval(sResult);
+			cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
+			cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
+			format(resultline, sizeof(resultline),"{FF6347}FlagID: {BFC0C2}%d\n{FF6347}Flag: {BFC0C2}%s\n{FF6347}Issued by:{BFC0C2} %s \n{FF6347}Date: {BFC0C2}%s", FlagID, FlagText, FlagIssuer, FlagDate);
+			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Viewing Flag Info", resultline, "Close", "");
+		}
 	    case Flag_Query_Display:
 	    {
 			format(header, sizeof(header), "{FF6347}Flag History for{BFC0C2} %s", GetPlayerNameEx(suspectid));
-
+			if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}No Flags on this account", "Close", "");
 			for(new i; i < rows; i++)
 			{
-			    cache_get_field_content(i, "fid", sResult, MainPipeline); FlagID = strval(sResult);
-			    cache_get_field_content(i, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
-			    cache_get_field_content(i, "flag", FlagText, MainPipeline, 64);
-			    cache_get_field_content(i, "time", FlagDate, MainPipeline, 24);
-				format(resultline, sizeof(resultline),"%s{FF6347}Flag (ID: %d): {BFC0C2} %s \t{FF6347}Issued by:{BFC0C2} %s \t{FF6347}Date: {BFC0C2}%s\n",resultline, FlagID, FlagText, FlagIssuer, FlagDate);
+				cache_get_field_content(i, "fid", sResult, MainPipeline); FlagID = strval(sResult);
+				cache_get_field_content(i, "flag", FlagText, MainPipeline, 64);
+				if(strlen(FlagText) > 60) strmid(FlagText, FlagText, 0, 58), format(FlagText, sizeof(FlagText), "%s[...]", FlagText);
+				format(resultline, sizeof(resultline),"%s{FF6347}(ID: %d): {BFC0C2}%s\n", resultline, FlagID, FlagText);
 			}
-			if(rows == 0)
-			{
-				format(resultline, sizeof(resultline),"{FF6347}No Flags on this account");
-			}
-			ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_MSGBOX, header, resultline, "Delete Flag", "Close");
+			ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Close");
 		}
 		case Flag_Query_Offline:
 		{
@@ -3860,6 +3867,16 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 		case Flag_Query_Count:
 		{
 		    PlayerInfo[playerid][pFlagged] = rows;
+		}
+		case 4:
+		{
+			new count = cache_get_field_content_int(0, "aFlagCount", MainPipeline);
+			if(count)
+			{
+				new string[128];
+				format(string, sizeof(string), "SERVER: %s has logged in with %d outstanding admin flags /aviewflag to view!", GetPlayerNameEx(playerid), count);
+				ABroadCast(COLOR_LIGHTRED, string, 2);
+			}
 		}
 	}
 	return 1;
@@ -8667,6 +8684,8 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_data(rows, fields, MainPipeline);
 	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(cache_get_field_content_int(0, "type", MainPipeline) == 2)
+		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Administrative flags cannot be transferred!", "Close", "");
 	if(cache_get_field_content_int(0, "id", MainPipeline) != GetPlayerSQLId(from))
 		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
 	cache_get_field_content(0, "flag", FlagText, MainPipeline);
