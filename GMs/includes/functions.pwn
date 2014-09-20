@@ -265,6 +265,11 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	{
 	    SetPlayerArmedWeapon(playerid, 0);
 	}
+	
+	if(Weapon_ReturnSlot(newweapon) != PlayerInfo[playerid][pHolsteredWeapon])
+	{
+		SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][PlayerInfo[playerid][pHolsteredWeapon]]);
+	}
 
  	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
@@ -18710,6 +18715,17 @@ stock ShowStats(playerid,targetid)
 				case 7: famedrank = "{8F00FF}Famed Chairman{FFFFFF}\n";
 			}
 		}
+		new dprank[64];
+		if(PlayerInfo[targetid][pDedicatedPlayer] > 0)
+		{
+			switch(PlayerInfo[targetid][pDedicatedPlayer])
+			{
+				case 1: dprank = "{336600}Dedicated Player{FFFFFF}\n";
+				case 2: dprank = "{336600}Super Dedicated Player{FFFFFF}\n";
+				case 3: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
+				case 4: dprank = "{336600}Dedicated Associate{FFFFFF}\n";
+			}
+		}
 		if(PlayerInfo[targetid][pMarriedID] == -1) format(PlayerInfo[targetid][pMarriedName], MAX_PLAYER_NAME, "Nobody");
 		new nxtlevel = PlayerInfo[targetid][pLevel]+1;
 		new expamount = nxtlevel*4;
@@ -18725,6 +18741,7 @@ stock ShowStats(playerid,targetid)
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
+		%s\
 		%s\
 		%s\
 		{FFFFFF}Level: %d\n\
@@ -18748,6 +18765,7 @@ stock ShowStats(playerid,targetid)
 		Insurance: %s",
 		staffrank,
 		famedrank,
+		dprank,
 		drank,
 		PlayerInfo[targetid][pLevel],
 		sext,
@@ -27505,4 +27523,151 @@ GetDPRankName(playerid)
 		}
 	}
 	return rank;
+}
+
+ShowPlayerHolsterDialog(playerid)
+{
+	new szString[128];
+	
+	for(new i = 0; i < 12; i++)
+	{
+		if(PlayerInfo[playerid][pGuns][i] == 0 && i == 0)
+		{
+			format(szString, sizeof(szString), "%s\n", ReturnWeaponName(PlayerInfo[playerid][pGuns][i]));
+		}
+		else if(PlayerInfo[playerid][pGuns][i] != 0 && i > 0)
+		{
+			format(szString, sizeof(szString), "%s%s\n", szString, ReturnWeaponName(PlayerInfo[playerid][pGuns][i]));
+		}
+		else 
+		{
+			format(szString, sizeof(szString), "%sN/A\n", szString);
+		}
+	}
+	return ShowPlayerDialog(playerid, DIALOG_HOLSTER, DIALOG_STYLE_LIST, "Holster Menu", szString, "Select", "Cancel"); 
+}
+
+forward UnholsterWeapon(playerid, iWeaponSlot);
+public UnholsterWeapon(playerid, iWeaponSlot)
+{
+	new string[128];
+	
+	if(iWeaponSlot == 0)
+	{
+		SetPVarInt(playerid, "WeaponsHolstered", 1);
+		format(string, sizeof(string), "* %s holsters their weapon.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+		
+	}
+	else
+	{
+		SetPVarInt(playerid, "WeaponsHolstered", 0);
+		format(string, sizeof(string), "* %s unholsters their %s.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+	}
+	
+	SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][iWeaponSlot]);
+	PlayerInfo[playerid][pHolsteredWeapon] = iWeaponSlot;
+	
+	ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	
+	
+	
+	return 1;
+}
+
+ReturnWeaponName(iWeaponID) {
+
+	new
+		szName[32];
+
+	switch(iWeaponID) {
+		case 0: szName = "fist";
+		case 1: szName = "brass knuckles";
+		case 2: szName = "golf club";
+		case 3: szName = "nitestick";
+		case 4: szName = "knife";
+		case 5: szName = "baseball bat";
+		case 6: szName = "shovel";
+		case 7: szName = "pool cue";
+		case 8: szName = "katana";
+		case 9: szName = "chainsaw";
+		case 10: szName = "purple dildo";
+		case 11: szName = "white vibrator";
+		case 12: szName = "white vibrator";
+		case 13: szName = "silver vibrator";
+		case 14: szName = "flowers";
+		case 15: szName = "cane";
+		case 16: szName = "grenade";
+		case 17: szName = "tear gas";
+		case 18: szName = "molotov cocktail";
+		case 19: szName = "jetpack";
+		case 20: szName = "";
+		case 21: szName = "";
+		case 22: szName = "Colt .45";
+		case 23: szName = "silenced Colt .45";
+		case 24: szName = "Desert Eagle";
+		case 25: szName = "shotgun";
+		case 26: szName = "sawn-off shotgun";
+		case 27: szName = "SPAS-12";
+		case 28: szName = "Micro Uzi";
+		case 29: szName = "MP5";
+		case 30: szName = "AK-47";
+		case 31: szName = "M4A1";
+		case 32: szName = "TEC-9";
+		case 33: szName = "rifle";
+		case 34: szName = "sniper rifle";
+		case 35: szName = "RPG";
+		case 36: szName = "heatseeker";
+		case 37: szName = "flamethrower";
+		case 38: szName = "minigun";
+		case 39: szName = "satchel charge";
+		case 40: szName = "detonator";
+		case 41: szName = "spray can";
+		case 42: szName = "fire extinguisher";
+		case 43: szName = "camera";
+		case 44: szName = "nightvision goggles";
+		case 45: szName = "thermal goggles";
+		case 46: szName = "parachute";
+	}
+	return szName;
+}
+
+Weapon_ReturnSlot(iWeaponID) {
+	switch(iWeaponID) {
+		case 0, 1:
+			return 0;
+
+		case 2 .. 9:
+			return 1;
+
+		case 22 .. 24:
+			return 2;
+
+		case 25 .. 27:
+			return 3;
+			
+		case 28, 29, 32:
+			return 4;
+
+		case 30, 31:
+			return 5;
+
+		case 33, 34:
+			return 6;
+
+		case 35 .. 38:
+			return 7;
+
+		case 16 .. 18, 39, 40:
+			return 8;
+
+		case 41 .. 43:
+			return 9;
+
+		case 10 .. 15:
+			return 10;
+
+		case 44 .. 46:
+			return 11;
+	}
+	return -1;
 }

@@ -1358,7 +1358,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				GetPVarString(extraid, "Offline_DName", szName, MAX_PLAYER_NAME);
 		        
-		        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Dedicated` = %d WHERE `Username` = '%s'", ilevel, szName);
+		        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `pDedicatedPlayer` = %d WHERE `Username` = '%s'", ilevel, szName);
 				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				
 				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d Dedicated", GetPlayerNameEx(extraid), szName, ilevel);

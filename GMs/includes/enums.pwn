@@ -1096,7 +1096,8 @@ enum pInfo
 	pDedicatedPlayer,
 	pDedicatedEnabled,
 	pDedicatedMuted,
-	pDedicatedWarn
+	pDedicatedWarn,
+	pHolsteredWeapon
 };
 
 enum pvInfo

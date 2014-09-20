@@ -2936,6 +2936,8 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][LastOnFootPosition][0] = 0.0; acstruct[playerid][LastOnFootPosition][1] = 0.0; acstruct[playerid][LastOnFootPosition][2] = 0.0;
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
+	
+	PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
 	for(new x = 0; x < MAX_PLAYERS; x++)
 	{
@@ -3410,6 +3412,10 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - CWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
+					
+					PlayerInfo[playerid][pWantedJailFine] = 0;
+					PlayerInfo[playerid][pWantedJailTime] = 0;
+					PlayerInfo[playerid][pWantedLevel] = 0;
 				}
 			}
 			case 1:
@@ -3450,6 +3456,11 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
+					
+					PlayerInfo[playerid][pWantedJailFine] = 0;
+					PlayerInfo[playerid][pWantedJailTime] = 0;
+					PlayerInfo[playerid][pWantedLevel] = 0;
+					
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -3460,6 +3471,11 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWT", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
+					
+					PlayerInfo[playerid][pWantedJailFine] = 0;
+					PlayerInfo[playerid][pWantedJailTime] = 0;
+					PlayerInfo[playerid][pWantedLevel] = 0;
+					
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -3949,6 +3965,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	    
 	    RemoveArmor(playerid);
+		
+		PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
 		if (GetPVarInt(playerid, "_SwimmingActivity") >= 1)
 		{
@@ -6101,6 +6119,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
     }
+	else if(newkeys & KEY_SUBMISSION && (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT))
+	{
+		ShowPlayerHolsterDialog(playerid);
+	}
 	return 1;
 }
 

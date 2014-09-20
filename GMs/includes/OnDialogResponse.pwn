@@ -610,6 +610,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerToTeamColor(giveplayerid);
 						SetPlayerWantedLevel(giveplayerid, 0);
 						ClearCrimes(giveplayerid, playerid);
+						
+						PlayerInfo[giveplayerid][pWantedJailFine] = 0;
+						PlayerInfo[giveplayerid][pWantedJailTime] = 0;
 					}
 					else
 					{
@@ -20150,6 +20153,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
 		TogglePlayerControllable(playerid, false);
 		ShowPlayerDialog(playerid, DIALOG_VIPSPAWN, DIALOG_STYLE_LIST, "Spawn at VIP", "Los Santos VIP\nSan Fierro VIP\nLas Ventures VIP\nDon't spawn at VIP this time", "Select", "Close");
-	}	
+	}
+	if(dialogid == DIALOG_HOLSTER && response)
+	{
+		new time;
+		
+		switch(PlayerInfo[playerid][pFitness])
+		{
+			case 0 .. 20: time = 2000;
+			case 21 .. 50: time = 1700;
+			case 51 .. 70: time = 1500;
+			case 71 .. 100: time = 1000;
+		}
+		
+		if(listitem == 0)
+		{
+			GameTextForPlayer(playerid, "holstering", time, 6);
+		}
+		else
+		{
+			GameTextForPlayer(playerid, "unholstering", time, 6);
+		}
+	
+		SetTimerEx("UnholsterWeapon", time, false, "ii", playerid, listitem);
+	}
 	return 1;
 }

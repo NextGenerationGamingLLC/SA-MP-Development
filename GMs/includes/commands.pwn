@@ -48473,7 +48473,7 @@ CMD:getcrack(playerid, params[])
 	return 1;
 }
 
-CMD:holster(playerid, params[])
+/*CMD:holster(playerid, params[])
 {
 	new string[128];
     if(!GetPVarType(playerid, "WeaponsHolstered"))
@@ -48498,7 +48498,7 @@ CMD:holster(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must disable tackling before unholstering");
 		}
 	}
-}
+}*/
 
 
 CMD:tackle(playerid, params[])
@@ -48516,7 +48516,8 @@ CMD:tackle(playerid, params[])
 		}
 		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
 	    {
-	        cmd_holster(playerid, params);
+	        //cmd_holster(playerid, params);
+			UnholsterWeapon(playerid, 0);
 		}
         if(GetPVarInt(playerid, "TackleMode") == 0)
         {
@@ -48526,8 +48527,7 @@ CMD:tackle(playerid, params[])
 		else
 		{
 	        SetPVarInt(playerid, "TackleMode", 0);
-	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon. (/holster)");
-			cmd_holster(playerid, params);
+	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon.");
 			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
 		}
 	}
@@ -59536,7 +59536,7 @@ CMD:loadprisoners(playerid, params[])
 	if(GetArrestPointID(playerid) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a arrest point.");
 	new	getVeh = GetPlayerVehicleID(playerid);
 	
-	if(GetVehicleModel(getVeh) == 431)
+	if(GetVehicleModel(getVeh) == 431 || GetVehicleModel(getVeh) == 427)
 	{
 		ListDetainees(playerid);
 	}
@@ -60620,7 +60620,7 @@ CMD:osetdedicated(playerid, params[])
 			SetPVarInt(playerid, "Offline_Dedicated", level);
 			SetPVarString(playerid, "Offline_DName", szPlayerName);
 			
-            format(szQuery, sizeof(szQuery), "SELECT `Dedicated` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
+            format(szQuery, sizeof(szQuery), "SELECT `pDedicatedPlayer` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
  			mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", OFFLINE_DEDICATED_THREAD, playerid, g_arrQueryHandle{playerid});
  			
  			format(string, sizeof(string), "Attempting to offline set %s account to level %d Dedicated.", szPlayerName, level);

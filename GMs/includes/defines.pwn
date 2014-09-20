@@ -929,6 +929,8 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_MARRIAGE				(6007)
 #define			DIALOG_SETEXAMINE			(6008)
 
+#define			DIALOG_HOLSTER				(6009)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 
