@@ -27460,3 +27460,49 @@ GetWeekday(display = 0, day = 0, month = 0, year = 0)
 
 	return weekday_str;
 }
+	
+/** Austin's DP system **/
+
+SendDedicatedMessage(color, string[])
+{
+	for(new i = 0; i < MAX_PLAYERS; i++) 
+	{
+		if((PlayerInfo[i][pDedicatedPlayer] > 0 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pDedicatedEnabled] == 1)
+		{
+			SendClientMessageEx(i, color, string);
+		}
+	}
+}
+
+GetDPRankName(playerid)
+{
+	new rank[23];
+	
+	if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 1) 
+	{
+		rank = "Dedicated Player";
+	}
+	else if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+	{
+		switch(PlayerInfo[playerid][pAdmin])
+		{
+			case 2: rank = "Junior Admin";
+			case 3: rank = "General Admin";
+			case 4: rank = "Senior Admin";
+			case 1337: rank = "Head Admin";
+			case 1338: rank = "Lead Head Admin";
+			case 99999: rank = "Executive Admin";
+		}
+	}
+	else 
+	{
+		switch(PlayerInfo[playerid][pDedicatedPlayer])
+		{
+			case 1: rank = "Dedicated Player";
+			case 2: rank = "Super Dedicated Player";
+			case 3: rank = "Dedicated Moderator";
+			case 4: rank = "Dedicated Associate";
+		}
+	}
+	return rank;
+}

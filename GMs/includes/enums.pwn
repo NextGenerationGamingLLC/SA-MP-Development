@@ -1092,7 +1092,11 @@ enum pInfo
 	pWantedJailFine,
 	pNextNameChange,
 	pExamineDesc[128],
-	pFavStation[255]
+	pFavStation[255],
+	pDedicatedPlayer,
+	pDedicatedEnabled,
+	pDedicatedMuted,
+	pDedicatedWarn
 };
 
 enum pvInfo

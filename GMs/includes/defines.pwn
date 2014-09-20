@@ -1108,6 +1108,7 @@ native gpci(playerid, serial[], maxlen);
 #define			ADMINWHITELIST_THREAD			22
 #define			LOADGIFTBOX_THREAD				23
 #define			LOADPNONRPOINTS_THREAD			24
+#define			OFFLINE_DEDICATED_THREAD		30
 #define 		Flag_Query_Display  			1
 #define 		Flag_Query_Offline  			2
 #define 		Flag_Query_Count    			3

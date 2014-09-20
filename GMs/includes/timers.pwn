@@ -121,6 +121,17 @@ task SyncUp[60000]()
 
 	SyncTime();
 	SyncMinTime();
+	
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pDedicatedWarn] > 0)
+			{
+				PlayerInfo[i][pDedicatedWarn]--;
+			}
+		}
+	}
 
 	for(new i = 0; i < MAX_PLANTS; i++)
 	{

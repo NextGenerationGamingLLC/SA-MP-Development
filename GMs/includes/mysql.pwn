@@ -679,6 +679,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc], MainPipeline, 128);
 					cache_get_field_content(row,  "FavStation", PlayerInfo[extraid][pFavStation], MainPipeline, 255);
 					
+					// Austin's DP System
+					
+					cache_get_field_content(row,  "pDedicatedPlayer", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedPlayer] = strval(szResult);
+					cache_get_field_content(row,  "pDedicatedEnabled",  szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedEnabled] = strval(szResult);
+					cache_get_field_content(row,  "pDedicatedMuted", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedMuted] = strval(szResult);
+					cache_get_field_content(row,  "pDedicatedWarn", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedWarn] = strval(szResult);
+					
 					GetPartnerName(extraid);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
@@ -1337,6 +1344,33 @@ public OnQueryFinish(resultid, extraid, handleid)
 				}
 				// We're done with our loop, let's get our count and store it to a player variable
 				PlayerInfo[extraid][pNonRPMeter] = count;
+			}
+		}
+		case OFFLINE_DEDICATED_THREAD:
+		{
+		    new iRows, iFields, szQuery[128], string[128], szName[MAX_PLAYER_NAME];
+		    cache_get_data(iRows, iFields, MainPipeline);
+		    
+		    if(iRows)
+		    {
+		        new
+					ilevel = GetPVarInt(extraid, "Offline_Dedicated");
+
+				GetPVarString(extraid, "Offline_DName", szName, MAX_PLAYER_NAME);
+		        
+		        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Dedicated` = %d WHERE `Username` = '%s'", ilevel, szName);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				
+				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d Dedicated", GetPlayerNameEx(extraid), szName, ilevel);
+				SendDedicatedMessage(COLOR_LIGHTRED, string);
+				ABroadCast(COLOR_LIGHTRED, string, 2);
+				Log("logs/dedicated.log", string);
+				DeletePVar(extraid, "Offline_Dedicated");
+				DeletePVar(extraid, "Offline_DName");
+		    }
+		    else
+		    {    
+				SendClientMessageEx(extraid, COLOR_RED, "Error - This account does not exist.");
 			}
 		}
 	}
@@ -3271,6 +3305,13 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NextNameChange", PlayerInfo[playerid][pNextNameChange]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "pExamineDesc", PlayerInfo[playerid][pExamineDesc]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "FavStation", PlayerInfo[playerid][pFavStation]);
+	
+	// Austin's DP System
+	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedPlayer", PlayerInfo[playerid][pDedicatedPlayer]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedEnabled", PlayerInfo[playerid][pDedicatedEnabled]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);	
 	
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
