@@ -1786,6 +1786,14 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			}	
 			if(IsValidSkin(modelid) == 0)
 			{
+				if(PlayerInfo[playerid][mInventory][13])
+				{
+					if(PlayerInfo[playerid][pModel] == modelid) return SendClientMessageEx(playerid, COLOR_GREY, "You're already wearing those clothes.");
+					PlayerInfo[playerid][mInventory][13]--;
+					PlayerInfo[playerid][pModel] = modelid;
+					SetPlayerSkin(playerid, modelid);
+					return SendClientMessageEx(playerid, COLOR_YELLOW, "You have used a Restricted Skin token to change your clothes.");
+				}
 				if(GetPVarInt(playerid, "freeSkin") == 1)
 			    {
 					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to faction or family!");
@@ -2063,7 +2071,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	{
 		if(fX != 0 && fY != 0 && fZ != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
 		{
-			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ);
+			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
 	return 1;
@@ -2077,7 +2085,7 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 		GetDynamicObjectPos(objectid, fX, fY, fZ);
 		if(fX != 0 && fY != 0 && fZ != 0)
 		{
-			CreateStructureFire(fX+x, fY+y, fZ+z);
+			CreateStructureFire(fX+x, fY+y, fZ+z, GetPlayerVirtualWorld(playerid));
 			SetPVarInt(playerid, "fCooldown", gettime()+2);
 		}
 	}
@@ -3036,6 +3044,7 @@ public OnPlayerDisconnect(playerid, reason)
 	// Why save on people who haven't logged in!
 	if(gPlayerLogged{playerid} == 1)
 	{
+		if(GetPVarType(playerid, "signID") && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
 		g_mysql_RemoveDumpFile(GetPlayerSQLId(playerid));
 
 		if(HungerPlayerInfo[playerid][hgInEvent] == 1)
@@ -3986,8 +3995,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 			DeletePVar(winner, "_BoxingFight");
 			DeletePVar(playerid, "_BoxingFight");
 
-			PlayerInfo[winner][pFitness] += 6;
-			PlayerInfo[playerid][pFitness] += 4;
+			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[winner][pFitness] += 9;
+			else PlayerInfo[winner][pFitness] += 6;
+			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[playerid][pFitness] += 6;
+			else PlayerInfo[playerid][pFitness] += 4;
 
 			if (PlayerInfo[winner][pFitness] > 100)
 				PlayerInfo[winner][pFitness] = 100;
@@ -4014,7 +4025,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 				PlayerInfo[playerid][pFitness] -= 10;
 				PlayerInfo[playerid][pHunger] -= 10;
 				PlayerInfo[killerid][pHunger] -= 10;
-				PlayerInfo[killerid][pFitness] += 10;
+				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 15;
+				else PlayerInfo[killerid][pFitness] += 10;
 				
 				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
 				RemoveFromJailBoxing(playerid);
@@ -4034,7 +4046,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 				PlayerInfo[playerid][pFitness] -= 5;
 				PlayerInfo[playerid][pHunger] -= 10;
 				PlayerInfo[killerid][pHunger] -= 10;
-				PlayerInfo[killerid][pFitness] += 5;
+				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
+				else PlayerInfo[killerid][pFitness] += 5;
 				
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
 				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
@@ -5548,7 +5561,9 @@ public OnPlayerEnterCheckpoint(playerid)
 			case 6:
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "Lap completed! Your fitness has increased slightly.");
-				if (PlayerInfo[playerid][pFitness] != 100) PlayerInfo[playerid][pFitness] += 3;
+				if(PlayerInfo[playerid][mCooldown][4]) PlayerInfo[playerid][pFitness] += 5;
+				else PlayerInfo[playerid][pFitness] += 3;
+				if (PlayerInfo[playerid][pFitness] > 100) PlayerInfo[playerid][pFitness] = 100;
 				SendClientMessageEx(playerid, COLOR_WHITE, "If you have finished exercising, type /stopswimming.");
 				SetPVarInt(playerid, "_SwimmingActivity", 3);
 				SetPlayerCheckpoint(playerid, 2839.7312, -2268.6123, -0.9815, 2.0);
@@ -6119,10 +6134,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
     }
-	else if(newkeys & KEY_SUBMISSION && (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT))
+	/*else if(newkeys & KEY_SUBMISSION && (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT))
 	{
 		ShowPlayerHolsterDialog(playerid);
-	}
+	}*/
 	return 1;
 }
 
@@ -7496,6 +7511,41 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gEdit");
 			DeletePVar(playerid, "EditingGateID");
 		}
+		if(GetPVarType(playerid, "editingsign"))
+		{
+			new h = GetPVarInt(playerid, "house");
+			if(GetPointDistanceToPoint(HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], x, y, z) > 10)
+				return SendClientMessageEx(playerid, COLOR_GREY, "Keep the sign within the checkpoint radius!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
+			HouseInfo[h][hSign][0] = x;
+			HouseInfo[h][hSign][1] = y;
+			HouseInfo[h][hSign][2] = z;
+			HouseInfo[h][hSign][3] = rz;
+			if(GetPVarInt(playerid, "editingsign") == 1)
+			{
+				HouseInfo[h][hSignExpire] = gettime()+86400;
+				PlayerInfo[playerid][mInventory][6] = 0;
+				if(IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
+				SendClientMessageEx(playerid, COLOR_GREY, "You have finished placing your house sale sign!");
+				format(string, sizeof(string), "[PLACESIGN] %s has placed down their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
+			}
+			if(GetPVarInt(playerid, "editingsign") == 2)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the position of your house sale sign!");
+				format(string, sizeof(string), "[EDITSIGN] %s has edited the position of their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
+			}
+			if(GetPVarInt(playerid, "editingsign") == 3)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the house sale sign!");
+				format(string, sizeof(string), "[AEDITSIGN] %s has adjusted the position of the house sale sign placed at House ID: %d", GetPlayerNameEx(playerid), h);
+			}
+			Log("logs/house.log", string);
+			CreateHouseSaleSign(h);
+			SaveHouse(h);
+			DeletePVar(playerid, "signID");
+			DeletePVar(playerid, "house");
+			DeletePVar(playerid, "editingsign");
+			ClearCheckpoint(playerid);
+		}
 	}
 	if(response == EDIT_RESPONSE_CANCEL)
 	{
@@ -7514,6 +7564,15 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gEdit");
 			DeletePVar(playerid, "EditingGateID");
 			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
+		}
+		if(GetPVarType(playerid, "editingsign"))
+		{
+			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
+			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped yourself from placing down your House Sale Sign!");
+			DeletePVar(playerid, "signID");
+			DeletePVar(playerid, "house");
+			DeletePVar(playerid, "editingsign");
+			ClearCheckpoint(playerid);
 		}
 	}
 	return 1;

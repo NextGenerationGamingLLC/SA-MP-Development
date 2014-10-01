@@ -1073,7 +1073,7 @@ enum pInfo
 	pWatchlistTime,
 	pBackpack, // 0 = no bckpk 1 = small 2 = med 3 = large
 	pBEquipped,
-	pBItems[11], // 0 = food 1 = pot 2 = crack 3 = heroin 4 = opium 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4 10 = gun5
+	pBItems[12], // 0 = food 1 = pot 2 = crack 3 = heroin 4 = opium 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4 10 = gun5 11 = Energy Bars
 	pBStoredH,
 	pBStoredV,
 	pBugReportTimeout,
@@ -1097,7 +1097,13 @@ enum pInfo
 	pDedicatedEnabled,
 	pDedicatedMuted,
 	pDedicatedWarn,
-	pHolsteredWeapon
+	pHolsteredWeapon,
+	mInventory[MAX_MICROITEMS],
+	mPurchaseCount[MAX_MICROITEMS],
+	mCooldown[MAX_MICROITEMS],
+	mBoost[2], // Job | Skill
+	mShopCounter,
+	mNotice
 };
 
 enum pvInfo
@@ -1211,6 +1217,11 @@ enum hInfo
 	Float: hClosetY,
 	Float: hClosetZ,
 	Text3D: hClosetTextID,
+	hSignDesc[64],
+	Float:hSign[4],
+	hSignExpire,
+	hSignObj,
+	Text3D:hSignText
 };
 
 enum dmpInfo

@@ -308,6 +308,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 						//ShopItems[z][sMade] = strval(szResult);
 						printf("TotalSold%d: %d | AmountMade%d: %d", z, AmountSold[z], z, AmountMade[z]);
 					}
+					new result[128];
+					cache_get_field_content(i, "TotalSoldMicro", result, MainPipeline);
+					sscanf(result, "p<|>e<dddddddddddddddd>", AmountSoldMicro);
+					cache_get_field_content(i, "AmountMadeMicro", result, MainPipeline);
+					sscanf(result, "p<|>e<dddddddddddddddd>", AmountMadeMicro);
+					for(new m = 0; m < MAX_MICROITEMS; m++)
+					{
+						printf("TotalSoldMicro%d: %d | AmountMadeMicro%d: %d", m, AmountSoldMicro[m], m, AmountMadeMicro[m]);
+					}
 					break;
 				}
 			}
@@ -331,6 +340,14 @@ public OnQueryFinish(resultid, extraid, handleid)
 					Price[z] = strval(szResult);
 					if(ShopItems[z][sItemPrice] == 0) ShopItems[z][sItemPrice] = 99999999;
 					printf("Price%d: %d", z, ShopItems[z][sItemPrice]);
+				}
+				new result[128];
+				cache_get_field_content(i, "MicroPrices", result, MainPipeline);
+				sscanf(result, "p<|>e<dddddddddddddddd>", MicroItems);
+				for(new m = 0; m < MAX_MICROITEMS; m++)
+				{
+					if(MicroItems[m] == 0) MicroItems[m] = 99999999;
+					printf("MicroPrice%d: %d", m, MicroItems[m]);
 				}
                 //printf("[LOADSHOPDATA] Price0: %d, Price1: %d, Price2: %d, Price3: %d, Price4: %d, Price5: %d, Price6: %d, Price7: %d, Pricr8: %d, Price9: %d, Price10: %d", Price[0], Price[1], Price[2], Price[3], Price[4], Price[5], Price[6], Price[7], Price[8], Price[9], Price[10]);
 				break;
@@ -658,7 +675,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "NewbieTogged", szResult, MainPipeline); PlayerInfo[extraid][pNewbieTogged] = strval(szResult);
 					cache_get_field_content(row,  "VIPTogged", szResult, MainPipeline); PlayerInfo[extraid][pVIPTogged] = strval(szResult);
 					cache_get_field_content(row,  "FamedTogged", szResult, MainPipeline); PlayerInfo[extraid][pFamedTogged] = strval(szResult);
-					for(new i = 0; i < 11; i++)
+					for(new i = 0; i < 12; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
 						cache_get_field_content(row,  szField, szResult, MainPipeline);
@@ -685,6 +702,18 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "pDedicatedEnabled",  szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedEnabled] = strval(szResult);
 					cache_get_field_content(row,  "pDedicatedMuted", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedMuted] = strval(szResult);
 					cache_get_field_content(row,  "pDedicatedWarn", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedWarn] = strval(szResult);
+
+					cache_get_field_content(row,  "mInventory", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mInventory]);
+					cache_get_field_content(row,  "mPurchaseCounts", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mPurchaseCount]);
+					new result[256];
+					cache_get_field_content(row,  "mCooldowns", result, MainPipeline); 
+					sscanf(result, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mCooldown]);
+					cache_get_field_content(row,  "mBoost", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dd>", PlayerInfo[extraid][mBoost]);
+					cache_get_field_content(row,  "mShopNotice", szResult, MainPipeline);
+					sscanf(szResult, "p<|>dd", PlayerInfo[extraid][mShopCounter], PlayerInfo[extraid][mNotice]);
 					
 					GetPartnerName(extraid);
 
@@ -1683,7 +1712,13 @@ stock g_mysql_SavePrices()
 	{
 		format(query, sizeof(query), "%s`Price%d` = '%d', ", query, p, ShopItems[p][sItemPrice]);
 	}
-	strdel(query, strlen(query)-2, strlen(query));
+	new mString[128];
+	for(new m; m < MAX_MICROITEMS; m++)
+	{
+		format(mString, sizeof(mString), "%s%d", mString, MicroItems[m]);
+		if(m != MAX_MICROITEMS-1) strcat(mString, "|");
+	}
+	format(query, sizeof(query), "%s`MicroPrices` = '%s'", query, mString);
     mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
@@ -1970,7 +2005,7 @@ stock DisplayFlags(playerid, targetid, type = 1)
 {
 	new query[128];
 	CountFlags(targetid);
-	format(query, sizeof(query), "SELECT fid, flag FROM `flags` WHERE id=%d AND type = %d ORDER BY `time` LIMIT 15", GetPlayerSQLId(targetid), type);
+	format(query, sizeof(query), "SELECT fid, flag FROM `flags` WHERE id=%d AND type = %d ORDER BY `time` LIMIT 20", GetPlayerSQLId(targetid), type);
 	mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, targetid, Flag_Query_Display);
 	SetPVarInt(playerid, "viewingflags", targetid);
 	DeletePVar(playerid, "ManageFlagID");
@@ -2502,7 +2537,7 @@ stock SaveHouse(houseid)
 		`MailType`=%d, \
 		`ClosetX`=%f, \
 		`ClosetY`=%f, \
-		`ClosetZ`=%f WHERE `id`=%d",
+		`ClosetZ`=%f,",
 		string,
 		HouseInfo[houseid][hLock],
 		HouseInfo[houseid][hRentable],
@@ -2530,7 +2565,24 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hMailType],
 		HouseInfo[houseid][hClosetX],
 		HouseInfo[houseid][hClosetY],
-		HouseInfo[houseid][hClosetZ],
+		HouseInfo[houseid][hClosetZ]
+	);
+		
+	format(string, sizeof(string), "%s \
+		`SignDesc`='%s', \
+		`SignX`=%f, \
+		`SignY`=%f, \
+		`SignZ`=%f, \
+		`SignA`=%f, \
+		`SignExpire`=%d \
+		WHERE `id`=%d",
+		string,
+		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
+		HouseInfo[houseid][hSign][0],
+		HouseInfo[houseid][hSign][1],
+		HouseInfo[houseid][hSign][2],
+		HouseInfo[houseid][hSign][3],
+		HouseInfo[houseid][hSignExpire],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -3273,7 +3325,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
 	// Seriously, please save some lines! - Akatony
 	new szForLoop[16];
-	for(new x = 0; x < 11; x++)
+	for(new x = 0; x < 12; x++)
 	{	
 		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
@@ -3313,6 +3365,21 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);	
 	
+	new mistring[32], mpstring[32], mcstring[256];
+	for(new m; m < MAX_MICROITEMS; m++)
+	{
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
+		format(mpstring, sizeof(mpstring), "%s%d", mpstring, PlayerInfo[playerid][mPurchaseCount][m]);
+		format(mcstring, sizeof(mcstring), "%s%d", mcstring, PlayerInfo[playerid][mCooldown][m]);
+		if(m != MAX_MICROITEMS-1) strcat(mistring, "|"), strcat(mpstring, "|"), strcat(mcstring, "|");
+	}
+	SavePlayerString(query, GetPlayerSQLId(playerid), "mInventory", mistring);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "mPurchaseCounts", mpstring);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "mCooldowns", mcstring);
+	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mBoost][0], PlayerInfo[playerid][mBoost][1]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "mBoost", mpstring);
+	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	return 1;
 }
@@ -4303,13 +4370,47 @@ public CheckSales2(index)
 			Name Changes: %d | Total Credits: %s\n", 
 			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]), Solds[39], number_format(Amount[39]), Solds[40], number_format(Amount[40]));
 			
-			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s\nTotal Amount of Credits spent: %s", szDialog, Solds[21], number_format(Amount[21]),
-			number_format(Amount[0]+Amount[1]+Amount[2]+Amount[3]+Amount[4]+Amount[5]+Amount[6]+Amount[7]+Amount[8]+Amount[9]+Amount[10]+Amount[11]+Amount[12]+Amount[13]+Amount[14]+Amount[15]+Amount[16]+Amount[17]+Amount[18]+Amount[19]+Amount[20]+Amount[21]+Amount[22]+Amount[23]+Amount[24]+Amount[25]+Amount[26]+Amount[27]+Amount[28]+Amount[29]+Amount[30]+Amount[31]+Amount[32]+Amount[33]+Amount[34]+Amount[35]+Amount[36]+Amount[37]+Amount[38]));
-		 	ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
+			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s", szDialog, Solds[21], number_format(Amount[21]));
+		 	ShowPlayerDialog(index, DIALOG_VIEWSALE2, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
 		}
 		else
 		{
 		    SendClientMessageEx(index, COLOR_GREY, "There was an issue with checking the table.");
+		}
+	}
+}
+
+forward CheckSales3(index);
+public CheckSales3(index)
+{
+	if(IsPlayerConnected(index))
+	{
+		new rows, fields;
+		cache_get_data(rows, fields, MainPipeline);
+		if(rows)
+		{
+			new szDialog[1024], szField[15], mSolds[MAX_MICROITEMS], mAmount[MAX_MICROITEMS], Total, mTotal;
+			for(new z = 0; z < MAX_ITEMS; z++)
+			{
+				format(szField, sizeof(szField), "AmountMade%d", z);
+				Total += cache_get_field_content_int(0, szField, MainPipeline);
+			}
+			cache_get_field_content(0, "TotalSoldMicro", szDialog, MainPipeline);
+			sscanf(szDialog, "p<|>e<dddddddddddddddd>", mSolds);
+			cache_get_field_content(0, "AmountMadeMicro", szDialog, MainPipeline);
+			sscanf(szDialog, "p<|>e<dddddddddddddddd>", mAmount);
+			szDialog[0] = 0;
+			for(new m; m < MAX_MICROITEMS; m++)
+			{
+				format(szDialog, sizeof(szDialog), "%s%s: %s | Total Credits: %s\n", szDialog, mItemName[m], number_format(mSolds[m]), number_format(mAmount[m]));
+				mTotal += mAmount[m];
+			}
+			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, number_format(Total+mTotal));
+			ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
+		}
+		else
+		{
+			SendClientMessageEx(index, COLOR_GREY, "There was an issue with checking the table.");
 		}
 	}
 }
@@ -4996,9 +5097,23 @@ public OnLoadHouse(index)
 		cache_get_field_content(row, "ClosetY", tmp, MainPipeline); HouseInfo[index][hClosetY] = floatstr(tmp);
 		cache_get_field_content(row, "ClosetZ", tmp, MainPipeline); HouseInfo[index][hClosetZ] = floatstr(tmp);
 
+		cache_get_field_content(row, "SignDesc", HouseInfo[index][hSignDesc], MainPipeline, 64);
+		HouseInfo[index][hSign][0] = cache_get_field_content_float(row, "SignX", MainPipeline);
+		HouseInfo[index][hSign][1] = cache_get_field_content_float(row, "SignY", MainPipeline);
+		HouseInfo[index][hSign][2] = cache_get_field_content_float(row, "SignZ", MainPipeline);
+		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
+		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
+		
 		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
+		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
+		{
+			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", index);
+			Log("logs/house.log", tmp);
+			DeleteHouseSaleSign(index);
+		}
+		if(HouseInfo[index][hSign][0] != 0.0) CreateHouseSaleSign(index);
 	}
 	return 1;
 }
@@ -5059,9 +5174,23 @@ public OnLoadHouses()
 		cache_get_field_content(i, "ClosetY", tmp, MainPipeline); HouseInfo[i][hClosetY] = floatstr(tmp);
 		cache_get_field_content(i, "ClosetZ", tmp, MainPipeline); HouseInfo[i][hClosetZ] = floatstr(tmp);
 
+		cache_get_field_content(i, "SignDesc", HouseInfo[i][hSignDesc], MainPipeline, 64);
+		HouseInfo[i][hSign][0] = cache_get_field_content_float(i, "SignX", MainPipeline);
+		HouseInfo[i][hSign][1] = cache_get_field_content_float(i, "SignY", MainPipeline);
+		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
+		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
+		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
+		
 		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
 		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[i][hMailX] != 0.0) RenderHouseMailbox(i);
+		if(HouseInfo[i][hSignExpire] != 0 && gettime() >= HouseInfo[i][hSignExpire]) 
+		{
+			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
+			Log("logs/house.log", tmp);
+			DeleteHouseSaleSign(i);
+		}
+		if(HouseInfo[i][hSign][0] != 0.0) CreateHouseSaleSign(i);
 		i++;
 	}
 	if(i > 0) printf("[LoadHouses] %d houses rehashed/loaded.", i);
@@ -6660,6 +6789,8 @@ public OnPinCheck2(index)
 						case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
 						case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
 						case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
+						case 10: cmd_changename(index, "");
+						case 11: cmd_microshop(index, "");
 					}
 					DeletePVar(index, "OpenShop");
 				}
@@ -8740,8 +8871,8 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	return ShowPlayerDialog(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
 }
 
-forward GetShiftInfo(szMessage[]);
-public GetShiftInfo(szMessage[])
+forward GetShiftInfo();
+public GetShiftInfo()
 {
 	new rows, fields, fieldname[24], szResult[32], string[128], shift[4], needs, signedup;
 	cache_get_data(rows, fields, MainPipeline);
@@ -8754,8 +8885,8 @@ public GetShiftInfo(szMessage[])
 		cache_get_field_content(0, "ShiftCount", szResult, MainPipeline); signedup = strval(szResult);
 	}
 	
-	if(needs - signedup > 0) format(string, sizeof(string), "%s The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
-	else format(string, sizeof(string), "%s The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+	if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+	else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
 
 	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{

@@ -266,10 +266,10 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	    SetPlayerArmedWeapon(playerid, 0);
 	}
 	
-	if(Weapon_ReturnSlot(newweapon) != PlayerInfo[playerid][pHolsteredWeapon])
+	/*if(Weapon_ReturnSlot(newweapon) != PlayerInfo[playerid][pHolsteredWeapon])
 	{
 		SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][PlayerInfo[playerid][pHolsteredWeapon]]);
-	}
+	}*/
 
  	if(GetPVarInt(playerid, "IsInArena") >= 0)
 	{
@@ -2856,6 +2856,15 @@ PayDay(i) {
 			if(ShopReminder == 1 && PlayerInfo[i][pShopNotice] == 0)
 			{
 				PlayerInfo[i][pShopCounter]++;
+				PlayerInfo[i][mShopCounter]++;
+				if(PlayerInfo[i][pLevel] <= 5 && PlayerInfo[i][mShopCounter] == 3 || (PlayerInfo[i][pLevel] > 5 && PlayerInfo[i][mShopCounter] >= 4 && PlayerInfo[i][pCredits] >= 10))
+				{
+					PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[PlayerInfo[i][mNotice]]);
+					PlayerTextDrawShow(i, MicroNotice[i]);
+					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+					if(++PlayerInfo[i][mNotice] > 3) PlayerInfo[i][mNotice] = 0;
+					PlayerInfo[i][mShopCounter] = 0;
+				}
 				if(PlayerInfo[i][pLevel] <= 5 && PlayerInfo[i][pShopCounter] == 5 || PlayerInfo[i][pLevel] > 5 && PlayerInfo[i][pShopCounter] == 10)
 				{
 					format(string, sizeof(string), "Hey check this out, type: ~y~/nggshop");
@@ -2868,14 +2877,6 @@ PayDay(i) {
 					PlayerTextDrawShow(i, ShopNotice[i]);
 					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:ShopNotice[i]);
 				}
-			}
-			if(PlayerInfo[i][pBuddyInvited] == 1 && --PlayerInfo[i][pTempVIP] <= 0)
-			{
-				PlayerInfo[i][pTempVIP] = 0;
-				PlayerInfo[i][pBuddyInvited] = 0;
-				PlayerInfo[i][pDonateRank] = 0;
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
-				SetPlayerToTeamColor(i);
 			}
 		}
 		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");
@@ -4688,6 +4689,7 @@ public KillEMSQueue(playerid)
 	SetPVarInt(playerid, "MedicBill", 1);
 	DeletePVar(playerid, "MedicCall");
 	DeletePVar(playerid, "EMSWarns");
+	DeletePVar(playerid, "_energybar");
 	return 1;
 }
 
@@ -5004,7 +5006,13 @@ public SetVehicleEngine(vehicleid, playerid)
 		GetVehicleHealth(vehicleid, f_vHealth);
 		if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
 		if(f_vHealth < 350.0) return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - it's totalled!");
-	    if(IsRefuelableVehicle(vehicleid) && !IsVIPcar(vehicleid) && !IsAdminSpawnedVehicle(vehicleid) && VehicleFuel[vehicleid] <= 0.0) return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - there's no fuel in the tank!");
+		if(IsRefuelableVehicle(vehicleid) && !IsVIPcar(vehicleid) && !IsAdminSpawnedVehicle(vehicleid) && VehicleFuel[vehicleid] <= 0.0)
+		{
+			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[7]);
+			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+			return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - there's no fuel in the tank!");
+		}
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
 		if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && IsAPlane(vehicleid)) { SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (/announcetakeoff to turn the engine off)."); }
 		else SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (/car engine to turn the engine off).");
@@ -7294,7 +7302,8 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 				DeletePVar(playerid, "_BikeParkourSlot");
 				DeletePVar(playerid, "_BikeParkourPickup");
 
-				PlayerInfo[playerid][pFitness] += 15;
+				if(PlayerInfo[playerid][mCooldown][4]) PlayerInfo[playerid][pFitness] += 23;
+				else PlayerInfo[playerid][pFitness] += 15;
 
 				if (PlayerInfo[playerid][pFitness] > 100)
 					PlayerInfo[playerid][pFitness] = 100;
@@ -8403,6 +8412,14 @@ stock ClearHouse(houseid) {
 	HouseInfo[houseid][hClosetY] = 0.0;
 	HouseInfo[houseid][hClosetZ] = 0.0;
 	DestroyDynamic3DTextLabel(Text3D:HouseInfo[houseid][hClosetTextID]);
+	format(HouseInfo[houseid][hSignDesc], 64, "None");
+	HouseInfo[houseid][hSign][0] = 0.0;
+	HouseInfo[houseid][hSign][1] = 0.0;
+	HouseInfo[houseid][hSign][2] = 0.0;
+	HouseInfo[houseid][hSign][3] = 0.0;
+	HouseInfo[houseid][hSignExpire] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
 }
 
 stock ClearHouseMailbox(houseid)
@@ -14667,9 +14684,10 @@ public SyncTime()
 
 		//foreach(new i: Player)
 		format(string, sizeof(string), "The time is now %s.", ConvertToTwelveHour(tmphour));
+		SendClientMessageToAllEx(COLOR_WHITE, string);
 		new query[300];
 		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
-		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "s", string);
+		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "");
 		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
 			if(IsPlayerConnected(i))
@@ -14679,7 +14697,6 @@ public SyncTime()
 					if(tmphour == 0) ReportCount[i] = 0;
 					ReportHourCount[i] = 0;
 				}
-				if(PlayerInfo[i][pAdmin] < 2) SendClientMessageEx(i, COLOR_WHITE, string);
 				if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
 				if(PlayerInfo[i][pDonateRank] >= 3)
 				{
@@ -19900,6 +19917,9 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 		Calls[newid][BeingUsed] = 1;
 		Calls[newid][CallVehicleId] = vehicleid;
 		Calls[newid][CallExpireTimer] = SetTimerEx("CallTimer", 60000, 0, "d", newid);
+		new query[512];
+		format(query, sizeof(query), "INSERT INTO `911Calls` (Caller, Phone, Area, MainZone, Description, Type, Time) VALUES ('%s', %d, '%s', '%s', '%s', %d, UNIX_TIMESTAMP())", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber], g_mysql_ReturnEscaped(area, MainPipeline), mainzone, g_mysql_ReturnEscaped(description, MainPipeline), type);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
     }
     else
     {
@@ -23086,7 +23106,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 3;
+						PlayerInfo[giveplayerid][pTempVIP] = 180;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/setvip.log", string);
@@ -23767,7 +23787,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 3;
+						PlayerInfo[giveplayerid][pTempVIP] = 180;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/setvip.log", string);
@@ -24448,7 +24468,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 3;
+						PlayerInfo[giveplayerid][pTempVIP] = 180;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/setvip.log", string);					
@@ -25129,7 +25149,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(PlayerInfo[giveplayerid][pDonateRank] != 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 3;
+						PlayerInfo[giveplayerid][pTempVIP] = 180;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "BUDDY INVITE: %s(%d) has been invited to VIP by System", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 						Log("logs/setvip.log", string);
@@ -25511,7 +25531,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 					else
 					{
 						PlayerInfo[giveplayerid][pDonateRank] = 1;
-						PlayerInfo[giveplayerid][pTempVIP] = 3;
+						PlayerInfo[giveplayerid][pTempVIP] = 180;
 						PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 						format(string, sizeof(string), "You have been invited to become a Level 1 VIP for 3 hours. Enjoy!", GetPlayerNameEx(giveplayerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
@@ -26027,8 +26047,8 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
 	switch(dialogid) {
 		case DIALOG_OBACKPACK: {
-			format(dgString, sizeof(dgString), "Food({FFF94D}%d Meals{A9C4E4})\nNarcotics({FFF94D}%d Grams{A9C4E4})\nGuns", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid));
-			if(PlayerInfo[playerid][pBItems][5] != 0) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{A9C4E4})",dgString, PlayerInfo[playerid][pBItems][5]);
+			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
+			if(PlayerInfo[playerid][pBItems][5] != 0) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
 			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
 		}
 		case DIALOG_BFOOD: {
@@ -26079,6 +26099,15 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 			SetPVarInt(playerid, "DepositGunId", itemcount);
 			strcat(dgString, "Deposit a weapon");
 			ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+		}
+		case DIALOG_ENERGYBARS: {
+			DeletePVar(playerid, "bnwd");
+			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+		}
+		case DIALOG_ENERGYBARS*2: {
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d {02B0F5}Energy Bars%s", (GetPVarInt(playerid, "bnwd")) ? PlayerInfo[playerid][mInventory][4]:PlayerInfo[playerid][pBItems][11], (GetPVarInt(playerid, "bnwd")) ? (" on hand"):(""));
+			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s:", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
+			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
 		}
 	}
 	return 1;
@@ -27325,19 +27354,19 @@ public StartJailBoxing(iArenaID)
 	return 1;
 }
 
-CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ)
+CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ, VW)
 {
 	if(iServerFires < MAX_STRUCTURE_FIRES)
 	{
 		new szString[128], next = GetAvailableFireSlot();
-		arrStructureFires[next][iFireObj] = CreateDynamicObject(18691, FirePosX, FirePosY, FirePosZ - 1.5, 0,0,0, .streamdistance = 300);
+		arrStructureFires[next][iFireObj] = CreateDynamicObject(18691, FirePosX, FirePosY, FirePosZ - 1.5, 0,0,0, VW, .streamdistance = 300);
 		arrStructureFires[next][fFirePos][0] = FirePosX;
 		arrStructureFires[next][fFirePos][1] = FirePosY;
 		arrStructureFires[next][fFirePos][2] = FirePosZ;
 		arrStructureFires[next][iFireStrength] = MAX_FIRE_HEALTH;
 
 		format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[next][iFireStrength], MAX_FIRE_HEALTH, next);
-		arrStructureFires[next][szFireLabel] = CreateDynamic3DTextLabel(szString, 0xFFFFFFFFF, FirePosX, FirePosY, FirePosZ, 20);
+		arrStructureFires[next][szFireLabel] = CreateDynamic3DTextLabel(szString, 0xFFFFFFFFF, FirePosX, FirePosY, FirePosZ, 20, .worldid = VW);
 		++iServerFires;
 		if(!IsValidStructureFire(next)) DeleteStructureFire(next);
 	}
@@ -27387,7 +27416,7 @@ public OnEnterFire()
 		if(GetPVarType(i, "pGodMode")) continue;
 		for(new n = 0; n < MAX_STRUCTURE_FIRES; n++)
 		{
-			if(IsPlayerInRangeOfPoint(i, 1.7, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
+			if(IsPlayerInRangeOfPoint(i, 1.7, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]) && Streamer_IsItemVisible(i, STREAMER_TYPE_OBJECT, arrStructureFires[n][iFireObj]))
 			{
 				if(IsValidStructureFire(n))
 				{
@@ -27525,7 +27554,7 @@ GetDPRankName(playerid)
 	return rank;
 }
 
-ShowPlayerHolsterDialog(playerid)
+/*ShowPlayerHolsterDialog(playerid)
 {
 	new szString[128];
 	
@@ -27545,7 +27574,7 @@ ShowPlayerHolsterDialog(playerid)
 		}
 	}
 	return ShowPlayerDialog(playerid, DIALOG_HOLSTER, DIALOG_STYLE_LIST, "Holster Menu", szString, "Select", "Cancel"); 
-}
+}*/
 
 forward UnholsterWeapon(playerid, iWeaponSlot);
 public UnholsterWeapon(playerid, iWeaponSlot)
@@ -27631,7 +27660,7 @@ ReturnWeaponName(iWeaponID) {
 	return szName;
 }
 
-Weapon_ReturnSlot(iWeaponID) {
+/*Weapon_ReturnSlot(iWeaponID) {
 	switch(iWeaponID) {
 		case 0, 1:
 			return 0;
@@ -27670,4 +27699,89 @@ Weapon_ReturnSlot(iWeaponID) {
 			return 11;
 	}
 	return -1;
+}*/
+
+CreateHouseSaleSign(houseid)
+{
+	if(!HouseInfo[houseid][hSign][0]) return 1;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
+	new string[64];
+	HouseInfo[houseid][hSignObj] = CreateDynamicObject(19471, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2], 0, 0, HouseInfo[houseid][hSign][3], HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
+	format(string,sizeof(string),"ID: %d\nType /readsign to read the Owners Message.", houseid);
+	HouseInfo[houseid][hSignText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2] + 0.5, 10.0, .worldid = HouseInfo[houseid][hExtVW], .streamdistance = 25.0);
+	return 1;
+}
+
+DeleteHouseSaleSign(houseid)
+{
+	format(HouseInfo[houseid][hSignDesc], 64, "None");
+	HouseInfo[houseid][hSign][0] = 0.0;
+	HouseInfo[houseid][hSign][1] = 0.0;
+	HouseInfo[houseid][hSign][2] = 0.0;
+	HouseInfo[houseid][hSign][3] = 0.0;
+	HouseInfo[houseid][hSignExpire] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
+	SaveHouse(houseid);
+	return 1;
+}
+
+forward FuelCan(playerid, vehicleid);
+public FuelCan(playerid, vehicleid)
+{
+	PlayerInfo[playerid][mInventory][7]--;
+	VehicleFuel[vehicleid] = 100.0;
+	new string[128];
+	format(string, sizeof(string), "%s has used a fuel can to refill their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have used a fuel can to refill your vehicle.");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "[FUELCAN] %s(%d) used a fuel can. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][7]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "fuelcan");
+	return 1;
+}
+
+forward JumpStart(playerid, vehicleid);
+public JumpStart(playerid, vehicleid)
+{
+	PlayerInfo[playerid][mInventory][8]--;
+	RepairVehicle(vehicleid);
+	Vehicle_Armor(vehicleid);
+	if(IsTrailerAttachedToVehicle(vehicleid))
+	{
+		RepairVehicle(GetVehicleTrailer(vehicleid));
+		Vehicle_Armor(GetVehicleTrailer(vehicleid));
+	}
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,bonnet,boot,objective);
+	SetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,VEHICLE_PARAMS_ON,boot,objective);
+	new string[128];
+	format(string, sizeof(string), "%s has jump started their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been Jump Started!");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "[JUMPSTART] %s(%d) used a jump start. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][8]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "jumpstarting");
+	return 1;
+}
+
+forward EatBar(playerid);
+public EatBar(playerid)
+{
+	PlayerInfo[playerid][pHunger] = 100;
+	PlayerInfo[playerid][mInventory][4]--;
+	PlayerInfo[playerid][mCooldown][4] = 60;
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	SendClientMessageEx(playerid, -1, "You have consumed a energy bar, effects will last for 1 hour.");
+	SendClientMessageEx(playerid, -1, "Your hunger has been filled, fitness increase has a 50%% boost and health will decrease slower when in a injured state.");
+	new string[128];
+	format(string, sizeof(string), "[ENERGYBAR] %s(%d) used a energy bar. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][4]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "eatingbar");
+	return 1;
 }

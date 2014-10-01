@@ -86,7 +86,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		MAX_HOUSES 					(5500)
 #define 		MAX_OWNABLE_HOUSES 			(2)
 #define 		MAX_GATES 					(4000)
-#define 		MAX_EVENTPOINTS 			(50)
+#define 		MAX_EVENTPOINTS 			(100)
 #define 		INVALID_HOUSE_ID			(-1)
 #define			MAX_TURFS					(150)
 #define			MAX_ARENAS					(10)
@@ -114,6 +114,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
 #define 		MAX_ITEMS 					(41)
+#define			MAX_MICROITEMS				(16)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001
@@ -648,6 +649,7 @@ native gpci(playerid, serial[], maxlen);
 
 #define         DIALOG_SUSPECTMENU          (3791)
 #define			DIALOG_REPORTTEAMNAME		(3792)
+#define			DIALOG_REPORT_HSIGN			(3793)
 
 #define         DIALOG_DEDICATEDPLAYER      (3800)
 
@@ -906,6 +908,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_BMEALSTORE			(5093)
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
+#define			DIALOG_ENERGYBARS			(5096)
 
 #define			DIALOG_DOC_ELEVATOR			(5500)
 #define			DIALOG_DOC_CP				(5550)
@@ -930,6 +933,11 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_SETEXAMINE			(6008)
 
 #define			DIALOG_HOLSTER				(6009)
+
+#define			DIALOG_MICROSHOP			(6010)
+#define			DIALOG_MICROSHOP2			(6011)
+#define			DIALOG_MICROSHOP3			(6012)
+#define			DIALOG_EDITMICROSHOP		(6013)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

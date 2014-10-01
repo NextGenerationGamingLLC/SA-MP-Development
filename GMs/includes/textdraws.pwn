@@ -2334,6 +2334,18 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawTextSize(playerid, ShopNotice[playerid], 186.000000, 63.000000);
 	PlayerTextDrawSetSelectable(playerid, ShopNotice[playerid], 0);
 	
+	MicroNotice[playerid] = CreatePlayerTextDraw(playerid,16.000000, 160.000000, "_");
+	PlayerTextDrawBackgroundColor(playerid,MicroNotice[playerid], 255);
+	PlayerTextDrawFont(playerid,MicroNotice[playerid], 1);
+	PlayerTextDrawLetterSize(playerid,MicroNotice[playerid], 0.159999, 1.000000);
+	PlayerTextDrawColor(playerid,MicroNotice[playerid], -1);
+	PlayerTextDrawSetOutline(playerid,MicroNotice[playerid], 1);
+	PlayerTextDrawSetProportional(playerid,MicroNotice[playerid], 1);
+	PlayerTextDrawUseBox(playerid,MicroNotice[playerid], 1);
+	PlayerTextDrawBoxColor(playerid,MicroNotice[playerid], 85);
+	PlayerTextDrawTextSize(playerid,MicroNotice[playerid], 183.000000, 0.000000);
+	PlayerTextDrawSetSelectable(playerid,MicroNotice[playerid], 0);
+
 	//LEO Textdraws
 	BackupText[playerid] = CreatePlayerTextDraw(playerid, 505 ,179 , "~r~Backup call active");
 	PlayerTextDrawFont(playerid,BackupText[playerid] , 1);

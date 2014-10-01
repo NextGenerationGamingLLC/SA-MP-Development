@@ -2085,6 +2085,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
+				if(Homes[playerid] > 0 && AdvertType[playerid] == 1)
+				{
+					PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[6]);
+					PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+				}
 				strcpy(szAdvert[playerid], inputtext, 128);
 				StripColorEmbedding(szAdvert[playerid]);
 				GivePlayerCash(playerid, -iLength);
@@ -2250,7 +2256,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pAccountRestricted]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this option while being restricted.");
 						ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 					}
-					case 3: { // Med Kits
+					case 3: { // Energy Bars
+						ShowBackpackMenu(playerid, DIALOG_ENERGYBARS, "- {02B0F5}Energy Bars");
+					}
+					case 4: { // Med Kits
 						if(PlayerInfo[playerid][pBItems][5] > 0) {
 							ShowBackpackMenu(playerid, DIALOG_BMEDKIT, "- {02B0F5}Confirm med kit use");
 						}
@@ -8162,7 +8171,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == 7484) //This is now the default dialog for job centers in any lockers AKA VIP & Famed
 	{
-		if(!response) return 1;
+		if(!response) return DeletePVar(playerid, "m_Item");
 		switch(listitem)
 		{
 			case 0: // Detective
@@ -8184,18 +8193,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			case 4: // Bodyguard
 			{
 				SetPVarInt(playerid, "jobSelection", 8);
+				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 7);
 			}
 			case 5: // Mechanic
 			{
 				SetPVarInt(playerid, "jobSelection", 7);
+				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 9);
 			}
 			case 6: // Arms Dealer
 			{
 				SetPVarInt(playerid, "jobSelection", 9);
+				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 12);
 			}
 			case 7: // Boxer
 			{
 				SetPVarInt(playerid, "jobSelection", 12);
+				if(GetPVarInt(playerid, "m_Item") == 1) SetPVarInt(playerid, "jobSelection", 20);
 			}
 			case 8: // Drugs Smuggler
 			{
@@ -8222,23 +8235,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "jobSelection", 21);
 			}
 		}
+		if(GetPVarInt(playerid, "m_Item") == 1)
+		{
+			if(GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")) == 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your skill level for this job is already at its highest.");
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[1], GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[1]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[1]));
+			return ShowPlayerDialog(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+		}
+		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0) strcat(string, "Micro Shop: Change a Job"); else strcat(string, "Locker: Job Center");
 		if(PlayerInfo[playerid][pFamed] > 0 && PlayerInfo[playerid][pDonateRank] < 3)
 		{
-			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, "Locker: Job Center", "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
+			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
 		}
 		else if(PlayerInfo[playerid][pDonateRank] == 2)
 		{
-			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, "Locker: Job Center", "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
+			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2", "Proceed", "Cancel");
 		}
 		else if(PlayerInfo[playerid][pDonateRank] >= 3)
 		{
-			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, "Locker: Job Center", "Job Slot 1\nJob Slot 2\nJob Slot 3", "Proceed", "Cancel");
+			ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1\nJob Slot 2\nJob Slot 3", "Proceed", "Cancel");
 		}
+		else ShowPlayerDialog(playerid, 7485, DIALOG_STYLE_LIST, string, "Job Slot 1", "Proceed", "Cancel");
 	}
 	if(dialogid == 7485)
 	{
-		if(!response) return 1;
-
+		if(!response) return DeletePVar(playerid, "m_Item");
+		if(GetPVarType(playerid, "m_Item") && GetPVarInt(playerid, "m_Item") == 0)
+		{
+			SetPVarInt(playerid, "m_Response", listitem);
+			format(string, sizeof(string), "Item: %s - %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[0], GetJobName(GetPVarInt(playerid, "jobSelection")), number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[0]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[0]));
+			return ShowPlayerDialog(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+		}
 		switch(listitem)
 		{
 			case 0:
@@ -15094,9 +15120,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 			}
-			else
+			if(listitem == 1)
 			{
 				ShowPlayerDialog(playerid, DIALOG_EDITSHOPBUSINESS, DIALOG_STYLE_LIST, "Edit Business Shop", "Add Business\nEdit Business\nView Businesses Sold", "Select", "Exit");
+			}
+			if(listitem == 2)
+			{
+				new szDialog[512];
+				for(new i; i < MAX_MICROITEMS; i++)
+				{
+					format(szDialog, sizeof(szDialog), "%s\n%s (Credits: %s)", szDialog, mItemName[i], number_format(MicroItems[i]));
+				}
+				ShowPlayerDialog(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_LIST, "Edit Micro Shop Prices", szDialog, "Edit", "Exit");
 			}
 		}
 	}
@@ -15388,7 +15423,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", Selected[playerid][listitem]);
+			SetPVarInt(playerid, "checkingsale", Selected[playerid][listitem]);
 			mysql_function_query(MainPipeline, string, true, "CheckSales2", "i", playerid);
+		}
+	}
+	if(dialogid == DIALOG_VIEWSALE2)
+	{
+		if(response)
+		{
+			format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", GetPVarInt(playerid, "checkingsale"));
+			mysql_function_query(MainPipeline, string, true, "CheckSales3", "i", playerid);
 		}
 	}
 	if(dialogid == DIALOG_CREATEPIN2)
@@ -17975,7 +18019,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				new resultline[1024], header[64], pvtstring[128], adminstring[128], advisorstring[128];
+				new resultline[1024], header[64], pvtstring[256], adminstring[128], advisorstring[128];
 				
 				if (PlayerInfo[playerid][pAdmin] >= 2)
 				{
@@ -18048,11 +18092,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				new resultline[1024], header[64], pvtstring[128];
-				if(PlayerInfo[playerid][pAdmin] >= 2)
-				{
-					format(pvtstring, sizeof(pvtstring), "Gift Box Tokens: %s\n", number_format(PlayerInfo[targetid][pGoldBoxTokens]));
-				}
+				new resultline[1024], header[64];
 
 				format(header, sizeof(header), "Showing Inventory of %s", GetPlayerNameEx(targetid));
 				format(resultline, sizeof(resultline),"Lock: %d\n\
@@ -18065,22 +18105,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Boombox: %d\n\
 				Mailbox: %d\n\
 				Metal Detector: %d\n\
-				Junk Metal: %d\n\
-				New Coin: %d\n\
-				Old Coin: %d\n\
-				Broken Watch: %d\n\
-				Old Key: %d\n\
-				Gold Watch: %d\n\
-				Gold Nuggets: %d\n\
-				Silver Nuggets: %d\n\
-				Treasure Chests: %d\n\
+				Energy Bars: %d\n\
+				House Sale Sign: %d\n\
+				Fuel Canisters: %d\n\
+				Jump Starts: %d\n\
+				Restricted Car Colors: %d\n\
+				Restricted Skins: %d\n\
 				Rim Kits: %d\n\
-				Restricted Vehicle Voucher: %d\n\
 				Platinum VIP Voucher: %d\n\
 				Checks: %s\n\
 				Additional Vehicle Slots: %s\n\
-				Additional Toy Slots: %s\n\
-				%s",
+				Additional Toy Slots: %s",
 				PlayerInfo[targetid][pLock],
 				PlayerInfo[targetid][pFirstaid],
 				PlayerInfo[targetid][pRccam],
@@ -18091,25 +18126,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[targetid][pBoombox],
 				PlayerInfo[targetid][pMailbox],
 				PlayerInfo[targetid][pMetalDetector],
-				GetPVarInt(targetid, "junkmetal"),
-				GetPVarInt(targetid, "newcoin"),
-				GetPVarInt(targetid, "oldcoin"),
-				GetPVarInt(targetid, "brokenwatch"),
-				GetPVarInt(targetid, "oldkey"),
-				GetPVarInt(targetid, "goldwatch"),
-				GetPVarInt(targetid, "goldnugget"),
-				GetPVarInt(targetid, "silvernugget"),
-				GetPVarInt(targetid, "treasure"),
+				PlayerInfo[targetid][mInventory][4],
+				PlayerInfo[playerid][mInventory][6],
+				PlayerInfo[playerid][mInventory][7],
+				PlayerInfo[playerid][mInventory][8],
+				PlayerInfo[playerid][mInventory][9],
+				PlayerInfo[playerid][mInventory][13],
 				PlayerInfo[targetid][pRimMod],
-				PlayerInfo[targetid][pCarVoucher],
 				PlayerInfo[targetid][pPVIPVoucher],
 				number_format(PlayerInfo[targetid][pChecks]),
 				number_format(PlayerInfo[targetid][pVehicleSlot]),
-				number_format(PlayerInfo[targetid][pToySlot]),
-				pvtstring);
-				#if defined zombiemode
-				format(resultline, sizeof(resultline), "%s\n\
-				Cure Vials: %d", resultline, PlayerInfo[targetid][pVials]);
+				number_format(PlayerInfo[targetid][pToySlot]));
+				if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d", resultline, PlayerInfo[targetid][pVials]);
 				ShowPlayerDialog(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
 			}
 			else DeletePVar(playerid, "ShowInventory");
@@ -19136,7 +19164,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				PlayerInfo[reportid][pFreeAdsLeft]--;
 				format(szString, sizeof(szString), "Platinum VIP: You have used a free advertisement, you have %d left for today.", PlayerInfo[reportid][pFreeAdsLeft]);
-				SendClientMessageEx(reportid, COLOR_YELLOW, szString);				
+				SendClientMessageEx(reportid, COLOR_YELLOW, szString);
 			}
 			else if(PlayerInfo[reportid][pDonateRank] == 2)
 			{
@@ -19184,6 +19212,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			format(advert, sizeof(advert), "%s -- (%d)", advert, GetPlayerSQLId(reportid));
 			Log("logs/pads.log", advert);
+
+			if(Homes[reportid] > 0 && AdvertType[reportid] == 1)
+			{
+				PlayerTextDrawSetString(reportid, MicroNotice[reportid], ShopMsg[6]);
+				PlayerTextDrawShow(reportid, MicroNotice[reportid]);
+				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", reportid, _:MicroNotice[reportid]);
+			}
 			
 			DeletePVar(reportid, "PriorityAdText");
 			DeletePVar(playerid, "ReporterID");
@@ -20176,6 +20211,511 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	
 		SetTimerEx("UnholsterWeapon", time, false, "ii", playerid, listitem);
+	}
+	if(dialogid == DIALOG_MICROSHOP)
+	{
+		if(response)
+		{
+			new stringg[512];
+			if(listitem == 0)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDouble EXP Tokens (Credits: {FFD700}%s{FFFFFF})", mItemName[0], number_format(MicroItems[0]), mItemName[1], number_format(MicroItems[1]), number_format(ShopItems[9][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Job & Experience", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 1);
+			}
+			if(listitem == 1)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", mItemName[2], number_format(MicroItems[2]), mItemName[3], number_format(MicroItems[3]));
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - VIP", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 2);
+			}
+			if(listitem == 2)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})", mItemName[4], number_format(MicroItems[4]));
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Food", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 3);
+			}
+			if(listitem == 3)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\nHouse Move (Credits: {FFD700}%s{FFFFFF})\nHouse Interior Change (Credits: {FFD700}%s{FFFFFF})", mItemName[6], number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - House", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 4);
+			}
+			if(listitem == 4)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDeluxe Car Alarm (Credits: {FFD700}%s{FFFFFF})\nAdditional Vehicle Slots (Credits: {FFD700}%s{FFFFFF})", 
+				mItemName[7], number_format(MicroItems[7]), mItemName[8], number_format(MicroItems[8]), mItemName[9], number_format(MicroItems[9]), number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Vehicle", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 5);
+			}
+			if(listitem == 5)
+			{
+				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\
+				\nFireworks x5 (Credits: {FFD700}%s{FFFFFF})\n100 Paintball Tokens (Credits: {FFD700}%s{FFFFFF})\nAdditional Toy Slots (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", 
+				mItemName[10], number_format(MicroItems[10]), mItemName[12], number_format(MicroItems[12]), mItemName[13], number_format(MicroItems[13]), mItemName[5], number_format(MicroItems[5]), number_format(ShopItems[10][sItemPrice]), 
+				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), mItemName[14], number_format(MicroItems[14]), mItemName[15], number_format(MicroItems[15])/*, mItemName[11], number_format(MicroItems[11])*/);
+				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Miscellaneous", stringg, "Select", "Exit");
+				SetPVarInt(playerid, "m_listitem", 6);
+			}
+		}
+	}
+	if(dialogid == DIALOG_MICROSHOP2)
+	{
+		if(!response) return cmd_microshop(playerid, "");
+		if(response)
+		{
+			new item;
+			switch(GetPVarInt(playerid, "m_listitem")-1)
+			{
+				case 0://Job & Experience
+				{
+					if(listitem == 0) item = 0;
+					if(listitem == 1) item = 1;
+					if(listitem == 2) item = 100;//EXP Token
+				}
+				case 1://VIP
+				{
+					if(listitem == 0) item = 2;
+					if(listitem == 1) item = 3;
+				}
+				case 2://Food
+				{
+					if(listitem == 0) item = 4;
+				}
+				case 3://House
+				{
+					if(listitem == 0) item = 6;
+					if(listitem == 1) item = 101;//House Move
+					if(listitem == 2) item = 102;//House Interior Change
+				}
+				case 4://Vehicle
+				{
+					if(listitem == 0) item = 7;
+					if(listitem == 1) item = 8;
+					if(listitem == 2) item = 9;
+					if(listitem == 3) item = 103;//Deluxe Car Alarm
+					if(listitem == 4) item = 104;//Additional Vehicle Slot
+				}
+				case 5://Misc
+				{
+					if(listitem == 0) item = 10;
+					
+					if(listitem == 1) item = 12;
+					if(listitem == 2) item = 13;
+					if(listitem == 3) item = 5;
+					if(listitem == 4) item = 105;//Fireworks x5
+					if(listitem == 5) item = 106;//100 Paintball Tokens
+					if(listitem == 6) item = 107;//Additional Toy Slot
+					if(listitem == 7) item = 14;
+					if(listitem == 8) item = 15;
+					//if(listitem == 9) item = 11; //Phone Change (TODO)
+				}
+			}
+			if(item == 100)//EXP Token
+			{
+				SetPVarInt(playerid, "MiscShop", 4);
+				format(string, sizeof(string), "Item: Double EXP Token\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[9][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[9][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 101)//House Move
+			{
+				format(string, sizeof(string),"Item: House Move\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[16][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[16][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_HOUSESHOP4, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 102)//House Interior Change
+			{
+				format(string, sizeof(string),"Item: House Interior Change\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[15][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[15][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_HOUSESHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 103)//Deluxe Car Alarm
+			{
+				SetPVarInt(playerid, "MiscShop", 18);
+				format(string, sizeof(string), "Item: Deluxe Car Alarm\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[39][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[39][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 104)//Additional Vehicle Slot
+			{
+				SetPVarInt(playerid, "MiscShop", 7);
+				format(string, sizeof(string), "Item: Additional Vehicle Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[23][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[23][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 105)//Fireworks x5
+			{
+				SetPVarInt(playerid, "MiscShop", 5);
+				format(string, sizeof(string), "Item: Fireworks x5\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[10][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[10][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 106)//100 Paintball Tokens
+			{
+				SetPVarInt(playerid, "MiscShop", 3);
+				format(string, sizeof(string), "Item: 100 Paintball Tokens\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[8][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[8][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 107)//Additional Toy Slot
+			{
+				SetPVarInt(playerid, "MiscShop", 8);
+				format(string, sizeof(string), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
+				return ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			SetPVarInt(playerid, "m_Item", item);
+			if(item == 0)//Change a Job
+			{
+				if(gettime() < PlayerInfo[playerid][mCooldown][item])
+				{
+					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				PlayerInfo[playerid][mCooldown][item] = 0;
+				return ShowPlayerDialog(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Center", "Detective\nLawyer\nWhore\nDrugs Dealer\nBodyguard\nMechanic\nArms Dealer\nBoxer\nDrugs Smuggler\nTaxi Driver\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Proceed", "Cancel");
+			}
+			if(item == 1)//Job Boost
+			{
+				if(PlayerInfo[playerid][mPurchaseCount][item])
+				{
+					format(string, sizeof(string), "You currently have a active job boost, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				return ShowPlayerDialog(playerid, 7484, DIALOG_STYLE_LIST, "Micro Shop: Job Boost", "Detective\nLawyer\nWhore\nDrugs Dealer\nMechanic\nArms Dealer\nBoxer\nShipment Contractor", "Proceed", "Cancel");
+			}
+			if(item == 2)//Buddy Invites Reset
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be Silver VIP+ to purchase this item.");
+				if(PlayerInfo[playerid][pBuddyInvites]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have Buddy Invites available, please use them before purchasing this item.");
+				if(gettime() < PlayerInfo[playerid][mCooldown][item])
+				{
+					format(string, sizeof(string), "You have purchased this item in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				PlayerInfo[playerid][mCooldown][item] = 0;
+			}
+			if(item == 3)//Buddy Invite Extension
+			{
+				if(!PlayerInfo[playerid][pBuddyInvited]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on a Buddy Invite to purchase this item.");
+				if(gettime() < PlayerInfo[playerid][mCooldown][item])
+				{
+					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				PlayerInfo[playerid][mCooldown][item] = 0;
+			}
+			if(item == 4)//Energy Bars
+			{
+				if(1 <= PlayerInfo[playerid][mInventory][4] <= 4)
+				{
+					format(string, sizeof(string), "You currently have %d energy bars on hand, they are sold in bulks of 4 which is also the max on hand.", PlayerInfo[playerid][mInventory][4]);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					if(!PlayerInfo[playerid][pBackpack]) SendClientMessageEx(playerid, COLOR_GRAD2, "If you would like to be able to hold more, purchase a backpack via /miscshop");
+					else SendClientMessageEx(playerid, COLOR_GRAD2, "As you have a backpack you can store your on hand energy bars and try again.");
+					return 1;
+				}
+			}
+			if(item == 6 && PlayerInfo[playerid][mInventory][item]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You currently have a House Sale Sign in your inventory, please use it before purchasing another.");  //House Sale Sign
+			if(item == 10)//Priority Ads
+			{
+				if(gettime() < PlayerInfo[playerid][mCooldown][item])
+				{
+					format(string, sizeof(string), "You have purchased this item 2 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				PlayerInfo[playerid][mCooldown][item] = 0;
+			}
+			if(item == 12)//Quick Bank Access
+			{
+				if(PlayerInfo[playerid][mPurchaseCount][item])
+				{
+					format(string, sizeof(string), "You currently have a active Quick Bank Access, please wait for it to expire in %d minute(s) to purchase again.", PlayerInfo[playerid][mCooldown][item]);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+			}
+			if(item == 13)//Restricted Skin
+			{
+				if(gettime() < PlayerInfo[playerid][mCooldown][item])
+				{
+					format(string, sizeof(string), "You have purchased this item 3 times in the past 24 hours, please wait %s to purchase it again.", ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					return cmd_microshop(playerid, "");
+				}
+				PlayerInfo[playerid][mCooldown][item] = 0;
+			}
+			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", mItemName[item], number_format(PlayerInfo[playerid][pCredits]), number_format(MicroItems[item]), number_format(PlayerInfo[playerid][pCredits]-MicroItems[item]));
+			ShowPlayerDialog(playerid, DIALOG_MICROSHOP3, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+		}
+	}
+	if(dialogid == DIALOG_MICROSHOP3)
+	{
+		if(!response) return cmd_microshop(playerid, "");
+		if(response)
+		{
+			new item = GetPVarInt(playerid, "m_Item");
+			if(PlayerInfo[playerid][pCredits] < MicroItems[item]) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			AmountSoldMicro[item]++;
+			AmountMadeMicro[item] += MicroItems[item];
+			new asString[128], amString[128];
+			for(new m; m < MAX_MICROITEMS; m++)
+			{
+				format(asString, sizeof(asString), "%s%d", asString, AmountSoldMicro[m]);
+				format(amString, sizeof(amString), "%s%d", amString, AmountMadeMicro[m]);
+				if(m != MAX_MICROITEMS-1) strcat(asString, "|"), strcat(amString, "|");
+			}
+			new szQuery[512];
+			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSoldMicro` = '%s', `AmountMadeMicro` = '%s' WHERE `Month` > NOW() - INTERVAL 1 MONTH", asString, amString);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			GivePlayerCredits(playerid, -MicroItems[item], 1);
+			printf("MicroPrice%d: %d", item, MicroItems[item]);
+			
+			format(string, sizeof(string), "[MICROSHOP] [User: %s(%i)] [IP: %s] [Credits: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), mItemName[item], number_format(MicroItems[item]));
+			Log("logs/micro.log", string), print(string);
+			format(string, sizeof(string), "You have purchased \"%s\" for %s credits.", mItemName[item], number_format(MicroItems[item]));
+			SendClientMessageEx(playerid, COLOR_CYAN, string);
+			if(item == 0)//Change a Job
+			{
+				if(GetPVarInt(playerid, "m_Response") == 0) PlayerInfo[playerid][pJob] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your first job!");
+				if(GetPVarInt(playerid, "m_Response") == 1) PlayerInfo[playerid][pJob2] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your second job!");
+				if(GetPVarInt(playerid, "m_Response") == 2) PlayerInfo[playerid][pJob3] = GetPVarInt(playerid, "jobSelection"), SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed your third job!");
+				PlayerInfo[playerid][mInventory][item]++;
+				if(++PlayerInfo[playerid][mPurchaseCount][item] == 3) PlayerInfo[playerid][mCooldown][item] = gettime()+86400, PlayerInfo[playerid][mPurchaseCount][item] = 0;
+			}
+			if(item == 1)//Job Boost
+			{
+				new skill;
+				switch(GetPVarInt(playerid, "jobSelection"))
+				{	//Point to enum
+					case 1: skill = pInfo:pDetSkill;
+					case 2: skill = pInfo:pLawSkill;
+					case 3: skill = pInfo:pSexSkill;
+					case 4: skill = pInfo:pDrugsSkill;
+					case 7: skill = pInfo:pMechSkill;
+					case 9: skill = pInfo:pArmsSkill;
+					case 12: skill = pInfo:pBoxSkill;
+					case 20: skill = pInfo:pTruckSkill;
+				}
+				PlayerInfo[playerid][mBoost][0] = GetPVarInt(playerid, "jobSelection");
+				PlayerInfo[playerid][mBoost][1] = PlayerInfo[playerid][pInfo:skill];
+				PlayerInfo[playerid][pInfo:skill] = 401;
+				PlayerInfo[playerid][mPurchaseCount][item] = 1;//Set Active
+				PlayerInfo[playerid][mCooldown][item] = 120;//2 Hours
+				format(string, sizeof(string), "[JOBBOOST] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetJobName(GetPVarInt(playerid, "jobSelection")), GetPVarInt(playerid, "jobSelection"), PlayerInfo[playerid][mBoost][1], GetJobLevel(playerid, GetPVarInt(playerid, "jobSelection")));
+				Log("logs/micro.log", string);
+				format(string, sizeof(string), "Job Boost for the %s job is now active and will expire in 60 minutes.", GetJobName(GetPVarInt(playerid, "jobSelection")));
+				SendClientMessageEx(playerid, -1, string);
+			}
+			if(item == 2)//Buddy Invites Reset
+			{
+				PlayerInfo[playerid][pVIPInviteDay] = 0;
+				PlayerInfo[playerid][pBuddyInvites] += 3;
+				PlayerInfo[playerid][mCooldown][item] = gettime()+86400;
+			}
+			if(item == 3)//Buddy Invite Extension
+			{
+				PlayerInfo[playerid][pTempVIP] += 180;
+				if(++PlayerInfo[playerid][mPurchaseCount][item] == 3) PlayerInfo[playerid][mCooldown][item] = gettime()+86400, PlayerInfo[playerid][mPurchaseCount][item] = 0;
+			}
+			if(item == 4)//Energy Bars
+			{
+				PlayerInfo[playerid][mInventory][item] += 4;
+				SendClientMessageEx(playerid, -1, "To eat a energy bar type /eatbar");
+			}
+			if(item == 5)//Gift Reset Voucher
+			{
+				PlayerInfo[playerid][pGiftVoucher]++;
+				SendClientMessageEx(playerid, -1, "Use /myvouchers to access your gift reset voucher.");
+			}
+			if(item == 6)//House Sale Sign
+			{
+				PlayerInfo[playerid][mInventory][item] = 1;
+				SendClientMessageEx(playerid, -1, "To place down your sign type /placesign, To edit your sign type /editsign");
+			}
+			if(item == 7)//Fuel Canister
+			{
+				PlayerInfo[playerid][mInventory][item]++;
+				SendClientMessageEx(playerid, -1, "To use a fuel can get near a vehicle and type /fuelcan");
+			}
+			if(item == 8)//Jump Start
+			{
+				PlayerInfo[playerid][mInventory][item]++;
+				SendClientMessageEx(playerid, -1, "To jump start a vehicle type /jumpstart");
+			}
+			if(item == 9) //Restricted Car Colors
+			{
+				PlayerInfo[playerid][mInventory][item]++;
+				SendClientMessageEx(playerid, -1, "To paint a vehicle a restricted car color type /rcarcolor");
+			}
+			if(item == 10)//Priority Ads
+			{
+				PlayerInfo[playerid][pAdvertVoucher] += 3;
+				if(++PlayerInfo[playerid][mPurchaseCount][item] == 2) PlayerInfo[playerid][mCooldown][item] = gettime()+86400;
+				SendClientMessageEx(playerid, -1, "3 Advertisement vouchers have been added to your account.");
+			}
+			if(item == 11)//Number Change
+			{
+				//TODO
+			}
+			if(item == 12)//Quick Bank Access
+			{
+				PlayerInfo[playerid][mPurchaseCount][item] = 1;
+				PlayerInfo[playerid][mCooldown][item] = 15;
+				SendClientMessageEx(playerid, -1, "You can now use /balance /withdraw /deposit /wiretransfer from anywhere for 15 minutes.");
+			}
+			if(item == 13)//Restricted Skin
+			{
+				PlayerInfo[playerid][mInventory][item]++;
+				if(++PlayerInfo[playerid][mPurchaseCount][item] == 3) PlayerInfo[playerid][mCooldown][item] = gettime()+86400;
+				SendClientMessageEx(playerid, -1, "Head over to a clothing store and select any restricted skin.");
+			}
+			if(item == 14) AddFlag(playerid, INVALID_PLAYER_ID, "Dynamic Door Move (Credits)"), SendReportToQue(playerid, "Dynamic Door Move (Credits)", 2, 2), SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the Dynamic Door Move issued.");
+			if(item == 15) AddFlag(playerid, INVALID_PLAYER_ID, "Dynamic Door Interior Change (Credits)"), SendReportToQue(playerid, "Dynamic Door Interior Change (Credits)", 2, 2), SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the Dynamic Door Interior Change issued.");
+			DeletePVar(playerid, "m_listitem");
+			DeletePVar(playerid, "m_Item");
+			DeletePVar(playerid, "m_Response");
+		}
+	}
+	if(dialogid == DIALOG_EDITMICROSHOP)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "mEditingPrice"))
+			{
+				SetPVarInt(playerid, "mEditingPrice", listitem);
+				format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %s.", mItemName[listitem], number_format(MicroItems[listitem]));
+				return ShowPlayerDialog(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
+			}
+			else
+			{
+				if(!GetPVarType(playerid, "mEditingPriceValue"))
+				{
+					new price;
+					if(sscanf(inputtext, "d", price) || price <= 0)
+					{
+						format(string, sizeof(string), "The price can't be below 1.\n\nYou are currently editing the price of %s. The current credit cost is %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
+						return ShowPlayerDialog(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_INPUT, "Editing Price - Error", string, "Change", "Back");
+					}
+					else
+					{
+						SetPVarInt(playerid, "mEditingPriceValue", price);
+						format(string,sizeof(string),"Are you sure you want to edit the cost of %s?\n\nOld Cost: %s\nNew Cost: %s", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]), number_format(price));
+						return ShowPlayerDialog(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_MSGBOX, "Confirmation", string, "Confirm", "Cancel");
+					}
+				}
+				else
+				{
+					if(GetPVarInt(playerid, "mEditingPriceValue") == 0) SetPVarInt(playerid, "mEditingPriceValue", 999999);
+					MicroItems[GetPVarInt(playerid, "mEditingPrice")] = GetPVarInt(playerid, "mEditingPriceValue");
+					format(string, sizeof(string), "You have successfully edited the price of %s to %s.", mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(GetPVarInt(playerid, "mEditingPriceValue")));
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					format(string, sizeof(string), "[EDITMICROSHOPPRICES] [User: %s(%i)] [IP: %s] [%s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), mItemName[GetPVarInt(playerid, "mEditingPrice")], number_format(MicroItems[GetPVarInt(playerid, "mEditingPrice")]));
+					Log("logs/editshop.log", string), print(string);
+					g_mysql_SavePrices();
+					DeletePVar(playerid, "mEditingPrice");
+					DeletePVar(playerid, "mEditingPriceValue");
+				}
+			}
+		}
+		else
+		{
+			if(GetPVarType(playerid, "mEditingPriceValue")) SendClientMessageEx(playerid, COLOR_GREY, "You have canceled the price change.");
+			DeletePVar(playerid, "mEditingPrice");
+			DeletePVar(playerid, "mEditingPriceValue");
+		}
+	}
+	if(dialogid == DIALOG_REPORT_HSIGN)
+	{
+		new Player = GetPVarInt(playerid, "hSignTextChange");
+		if(!GetPVarType(Player, "hSignRequest")) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't requesting a namechange!");
+		if(response)
+		{
+			new desc[64];
+			GetPVarString(Player, "hSignRequestText", desc, 64);
+			format(HouseInfo[GetPVarInt(Player, "hSignRequest")][hSignDesc], 64, "%s", g_mysql_ReturnEscaped(desc, MainPipeline));
+			SaveHouse(GetPVarInt(Player, "hSignRequest"));
+			SendClientMessageEx(Player, COLOR_YELLOW, "Your house sale sign text has been approved.");
+			format(string, sizeof(string), " You have approved %s's house sale sign text change on House ID: %d", GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
+			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			format(string, sizeof(string), "%s changed House ID: %d sale sign text to \"%s\", owned by: %s(%d)", GetPlayerNameEx(playerid), GetPVarInt(Player, "hSignRequest"), desc, GetPlayerNameEx(Player), GetPlayerSQLId(Player));
+			Log("logs/house.log", string);
+			format(string, sizeof(string), "%s has approved %s's house sale sign text on House ID: %d", GetPlayerNameEx(playerid), GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
+			ABroadCast(COLOR_YELLOW, string, 2);
+		}
+		else
+		{
+			SendClientMessageEx(Player, COLOR_YELLOW, "Your request to modify your house sale sign text has been denied.");
+			format(string, sizeof(string), " You have denied %s's house sale sign text modification request.", GetPlayerNameEx(Player));
+			SendClientMessageEx(playerid,COLOR_YELLOW,string);
+			format(string, sizeof(string), "%s has denied %s's house sale sign text modification request", GetPlayerNameEx(playerid), GetPlayerNameEx(Player));
+			ABroadCast(COLOR_YELLOW, string, 2);
+		}
+		DeletePVar(Player, "hSignRequest");
+		DeletePVar(Player, "hSignTextChange");
+	}
+	if(dialogid == DIALOG_ENERGYBARS)
+	{
+		if(response)
+		{
+			if(!IsBackpackAvailable(playerid)) {
+				DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+				return 1;
+			}
+			if(!GetPVarType(playerid, "bnwd"))
+			{
+				SetPVarInt(playerid, "bnwd", listitem);
+				return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "");
+			}
+			new str[148];
+			if(GetPVarInt(playerid, "bnwd"))//Deposit
+			{
+				new amount, maxbars;
+				switch(PlayerInfo[playerid][pBackpack])
+				{
+					case 1: maxbars = 8;
+					case 2: maxbars = 12;
+					case 3: maxbars = 16;
+				}
+				if(sscanf(inputtext, "d", amount)) return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}");
+				if(amount < 1) return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
+				if(amount > maxbars-PlayerInfo[playerid][pBItems][11]) 
+				{
+					format(str, sizeof(str), "{B20400}Wrong input, you can only store %d Energy Bars{A9C4E4}\nEnergy Bars available left to store {FFF600}%d{A9C4E4}", maxbars, maxbars-PlayerInfo[playerid][pBItems][11]);
+					return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, str);
+				}
+				if(PlayerInfo[playerid][mInventory][4] >= amount) PlayerInfo[playerid][mInventory][4] -= amount;
+				else return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}\nYou don't have that many Energy Bars");
+				PlayerInfo[playerid][pBItems][11] += amount;
+				format(string, sizeof(string), "You have deposited %d energy bars in your backpack.", amount);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "[EBARS] %s(%d) (IP:%s) deposited %d energy bars (%d bars Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, PlayerInfo[playerid][pBItems][11], PlayerInfo[playerid][pBackpack]);
+				Log("logs/backpack.log", string);
+			}
+			else//Withdraw
+			{
+				new amount;
+				if(sscanf(inputtext, "d", amount)) return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}");
+				if(amount < 1) return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
+				if(amount > PlayerInfo[playerid][pBItems][11]) 
+				{
+					format(str, sizeof(str), "{B20400}Wrong input, you only have %d Energy Bars{A9C4E4}\nEnergy Bars trying to withdraw {FFF600}%d{A9C4E4}", PlayerInfo[playerid][pBItems][11], amount);
+					return ShowBackpackMenu(playerid, DIALOG_ENERGYBARS*2, str);
+				}
+				PlayerInfo[playerid][pBItems][11] -= amount;
+				PlayerInfo[playerid][mInventory][4] += amount;
+				format(string, sizeof(string), "You have withdrawn %d energy bars from your backpack.", amount);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "[EBARS] %s(%d) (IP:%s) withdrawn %d energy bars (%d bars Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, PlayerInfo[playerid][pBItems][11], PlayerInfo[playerid][pBackpack]);
+				Log("logs/backpack.log", string);
+			}
+			ShowBackpackMenu(playerid, DIALOG_ENERGYBARS, "- {02B0F5}Energy Bars");
+		}
+		else
+		{
+			if(GetPVarType(playerid, "bnwd")) ShowBackpackMenu(playerid, DIALOG_ENERGYBARS, "- {02B0F5}Energy Bars");
+			else ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
+		}
 	}
 	return 1;
 }

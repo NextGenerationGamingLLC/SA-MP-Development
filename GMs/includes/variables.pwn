@@ -1228,6 +1228,7 @@ new fireworktog = 1;
 new PlayerText:VLPTextDraws[MAX_PLAYERS][4];
 
 new PlayerText:ShopNotice[MAX_PLAYERS];
+new PlayerText:MicroNotice[MAX_PLAYERS];
 new ShopReminder = 1;
 new NGGShop;
 new Float:shop_vertices[] = {
@@ -1246,6 +1247,40 @@ new restarting;
 new PassComplexCheck;
 new PlayerShots[MAX_PLAYERS];
 new GarageInfo[MAX_GARAGES][garInfo];
+new MicroItems[MAX_MICROITEMS],
+	AmountSoldMicro[MAX_MICROITEMS], 
+	AmountMadeMicro[MAX_MICROITEMS];
+new mItemName[MAX_MICROITEMS][] = {
+	{"Job Change"},
+	{"Job Boost"},
+	{"Buddy Invites Reset"},
+	{"Buddy Invite Extension"},
+	{"Energy Bars"},
+	{"Gift Reset Voucher"},
+	{"House Sale Sign"},
+	{"Fuel Canister"},
+	{"Jump Start"},
+	{"Restricted Car Colors"},
+	{"Priority Ads"},
+	{"Number Change (TODO)"},
+	{"Quick Bank Access"},
+	{"Restricted Skin Voucher"},
+	{"Dynamic Door Move"},
+	{"Dynamic Door Interior Change"}
+};
+new ShopMsg[11][] = {
+	{"Need to get a job quick?~n~Get a Job Change to change your job instantly!~n~~b~~h~~h~/microshop"},
+	{"Do you want the level 5 perks of your job right now?~n~Purchase a Job Boost!~n~~b~~h~~h~/microshop"},
+	{"Want to make your car stand out?~n~Get a restricted car color without being a VIP member!~n~~b~~h~~h~/microshop"},
+	{"Want to get a restricted skin you couldn't otherwise have?~n~Purchase a Restricted Skin Voucher to do just that!~n~~b~~h~~h~/microshop"},
+	{"Your buddy invite is going to run out soon!~n~Want to extend the time? Get a Buddy Invite Extension!~n~~b~~h~~h~/microshop"},
+	{"Are you super hungry?~n~Eat an Energy Bar to tie you over until your next meal!~n~~b~~h~~h~/microshop"},
+	{"Selling your house?~n~Get a For Sale sign for your front yard!~n~~b~~h~~h~/microshop"},
+	{"Stranded without gasoline?~n~Purchase a fuel can to get going again!~n~~b~~h~~h~/microshop"},
+	{"Engine won't start?~n~Get a Jump Start to get moving again!~n~~b~~h~~h~/microshop"},
+	{"Trying to move a large sum of money?~n~Don't want to be taxed? Get a Quick Bank Access pass!~n~~b~~h~~h~/microshop"},
+	{"You're not exercising to your full potential!~n~Try an energy bar!~n~~b~~h~~h~/microshop"}
+};
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 

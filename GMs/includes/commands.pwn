@@ -3930,7 +3930,12 @@ CMD:beginswimming(playerid, params[])
 	SetPlayerCheckpoint(playerid, 2892.5071, -2261.9607, 1.4645, 2.0);
 	SendClientMessageEx(playerid, COLOR_WHITE, "Proceed to the first checkpoint to begin exercising.");
 	SendClientMessageEx(playerid, COLOR_WHITE, "Type /stopswimming to exit your current activity.");
-
+	if(!PlayerInfo[playerid][mCooldown][4])
+	{
+		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
+		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+		SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+	}
 	return 1;
 }
 
@@ -4065,7 +4070,12 @@ CMD:beginparkour(playerid, params[])
 	SetPVarInt(playerid, "_BikeParkourSlot", pos);
 	new pickup = CreateDynamicPickup(1318, 23, 2833.8757, -2256.8293, 95.9497, .playerid = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = 0);
 	SetPVarInt(playerid, "_BikeParkourPickup", pickup);
-
+	if(!PlayerInfo[playerid][mCooldown][4])
+	{
+		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
+		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+		SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+	}
 	return 1;
 }
 
@@ -5879,7 +5889,7 @@ CMD:colorcar(playerid, params[]) {
 	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a vehicle.");
 	else if(PlayerInfo[playerid][pSpraycan] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your spraycan is empty.");
 	if(sscanf(params, "ii", iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /colorcar [ID 1] [ID 2]. Colors must be an ID.");
-	else if((PlayerInfo[playerid][pDonateRank] == 0) && (iColors[0] > 126 || iColors[1] > 126)) return SendClientMessageEx(playerid, COLOR_GREY, "Only VIPs can use special color IDs above 126.");
+	else if((PlayerInfo[playerid][pDonateRank] == 0) && (iColors[0] > 127 || iColors[1] > 127)) return SendClientMessageEx(playerid, COLOR_GREY, "Only VIPs can use special color IDs above 127.");
 	else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
 	new szMessage[60];
 	for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
@@ -6734,7 +6744,7 @@ CMD:help(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 
 	switch(PlayerInfo[playerid][pJob])
 	{
@@ -26746,7 +26756,7 @@ CMD:buddyinvite(playerid, params[])
 	if(days < daytime && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pBuddyInvites] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	PlayerInfo[giveplayerid][pDonateRank] = 1;
-	PlayerInfo[giveplayerid][pTempVIP] = 3;
+	PlayerInfo[giveplayerid][pTempVIP] = 180;
 	PlayerInfo[giveplayerid][pBuddyInvited] = 1;
 	format(string, sizeof(string), "You have invited %s to become a Bronze VIP for 3 hours.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -31007,6 +31017,12 @@ CMD:awithdraw(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money as a 3 percent fee.", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+		{
+			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
+			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+		}
 	}
 	PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-amount;
 	GivePlayerCash(playerid,amount);
@@ -31048,6 +31064,12 @@ CMD:adeposit(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+		{
+			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
+			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+		}
 	}
 	GivePlayerCash(playerid,-amount);
 	new curfunds = PlayerInfo[playerid][pAccount];
@@ -31117,6 +31139,12 @@ CMD:awiretransfer(playerid, params[])
 					PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 					format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+					{
+						PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
+						PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+						SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+					}
 				}
 				GivePlayerCashEx(playerid, TYPE_BANK, -amount);
 				GivePlayerCashEx(giveplayerid, TYPE_BANK, amount);
@@ -31162,161 +31190,149 @@ CMD:awiretransfer(playerid, params[])
 CMD:withdraw(playerid, params[])
 {
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(PlayerInfo[playerid][mPurchaseCount][12] || (IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422) && GetPlayerVirtualWorld(playerid) != 0))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
-		return 1;
-	}
-    if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
-	new string[128], amount;
+		if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
+		new string[128], amount;
+		
+		if(sscanf(params, "d", amount))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /withdraw [amount]");
+			format(string, sizeof(string), "  You have $%d in your account.", PlayerInfo[playerid][pAccount]);
+			SendClientMessageEx(playerid, COLOR_GRAD3, string);
+			return 1;
+		}
 
-	if(sscanf(params, "d", amount))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /withdraw [amount]");
-		format(string, sizeof(string), "  You have $%d in your account.", PlayerInfo[playerid][pAccount]);
-		SendClientMessageEx(playerid, COLOR_GRAD3, string);
-		return 1;
+		if (amount > PlayerInfo[playerid][pAccount] || amount < 1)
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "   You don't have that much!");
+			return 1;
+		}
+		if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+		SetPVarInt(playerid, "LastTransaction", gettime());
+		GivePlayerCash(playerid,amount);
+		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-amount;
+		format(string, sizeof(string), "  You have withdrawn $%s from your account. Current balance: $%s ", number_format(amount), number_format(PlayerInfo[playerid][pAccount]));
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		OnPlayerStatsUpdate(playerid);
 	}
-
-	if (amount > PlayerInfo[playerid][pAccount] || amount < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You don't have that much!");
-		return 1;
-	}
-	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-    SetPVarInt(playerid, "LastTransaction", gettime());
-	GivePlayerCash(playerid,amount);
-	PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-amount;
-	format(string, sizeof(string), "  You have withdrawn $%s from your account. Current balance: $%s ", number_format(amount), number_format(PlayerInfo[playerid][pAccount]));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	OnPlayerStatsUpdate(playerid);
+	else SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 	return 1;
 }
 
 CMD:deposit(playerid, params[])
 {
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(PlayerInfo[playerid][mPurchaseCount][12] || (IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422) && GetPlayerVirtualWorld(playerid) != 0))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
-		return 1;
-	}
-    if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
-	new string[128], amount;
+		if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
+		new string[128], amount;
 
-	if(sscanf(params, "d", amount))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deposit [amount]");
-		format(string, sizeof(string), "  You have $%d in your account.", PlayerInfo[playerid][pAccount]);
-		SendClientMessageEx(playerid, COLOR_GRAD3, string);
-		return 1;
-	}
+		if(sscanf(params, "d", amount))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deposit [amount]");
+			format(string, sizeof(string), "  You have $%d in your account.", PlayerInfo[playerid][pAccount]);
+			SendClientMessageEx(playerid, COLOR_GRAD3, string);
+			return 1;
+		}
 
-	if (amount > GetPlayerCash(playerid) || amount < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You don't have that much.");
-		return 1;
+		if (amount > GetPlayerCash(playerid) || amount < 1)
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "   You don't have that much.");
+			return 1;
+		}
+		if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+		SetPVarInt(playerid, "LastTransaction", gettime());
+		GivePlayerCash(playerid,-amount);
+		new curfunds = PlayerInfo[playerid][pAccount];
+		PlayerInfo[playerid][pAccount]=amount+PlayerInfo[playerid][pAccount];
+		SendClientMessageEx(playerid, COLOR_WHITE, "|___ BANK STATEMENT ___|");
+		format(string, sizeof(string), "  Old Balance: $%s", number_format(curfunds));
+		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		format(string, sizeof(string), "  Deposit: $%s", number_format(amount));
+		SendClientMessageEx(playerid, COLOR_GRAD4, string);
+		SendClientMessageEx(playerid, COLOR_GRAD6, "|-----------------------------------------|");
+		format(string, sizeof(string), "  New Balance: $%s", number_format(PlayerInfo[playerid][pAccount]));
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		OnPlayerStatsUpdate(playerid);
 	}
-	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-    SetPVarInt(playerid, "LastTransaction", gettime());
-	GivePlayerCash(playerid,-amount);
-	new curfunds = PlayerInfo[playerid][pAccount];
-	PlayerInfo[playerid][pAccount]=amount+PlayerInfo[playerid][pAccount];
-	SendClientMessageEx(playerid, COLOR_WHITE, "|___ BANK STATEMENT ___|");
-	format(string, sizeof(string), "  Old Balance: $%s", number_format(curfunds));
-	SendClientMessageEx(playerid, COLOR_GRAD2, string);
-	format(string, sizeof(string), "  Deposit: $%s", number_format(amount));
-	SendClientMessageEx(playerid, COLOR_GRAD4, string);
-	SendClientMessageEx(playerid, COLOR_GRAD6, "|-----------------------------------------|");
-	format(string, sizeof(string), "  New Balance: $%s", number_format(PlayerInfo[playerid][pAccount]));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	OnPlayerStatsUpdate(playerid);
+	else SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 	return 1;
 }
 
 CMD:balance(playerid, params[])
 {
-	new string[128];
-	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
+	if(PlayerInfo[playerid][mPurchaseCount][12] || (IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422) && GetPlayerVirtualWorld(playerid) != 0))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
-		return 1;
+		new string[128];
+		if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
+		format(string, sizeof(string), "You have $%s in your account.", number_format(PlayerInfo[playerid][pAccount]));
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	}
-	if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
-	format(string, sizeof(string), "You have $%s in your account.", number_format(PlayerInfo[playerid][pAccount]));
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	else SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 	return 1;
 }
 
 CMD:wiretransfer(playerid, params[])
 {
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-	if(PlayerInfo[playerid][pLevel] < 3)
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3!");
+	if(PlayerInfo[playerid][mPurchaseCount][12] || (IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422) && GetPlayerVirtualWorld(playerid) != 0))
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3!");
-		return 1;
-	}
-	if(GetPlayerVirtualWorld(playerid) == 0 || !IsPlayerInRangeOfPoint(playerid, 15.0, 2308.7346, -11.0134, 26.7422))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
-		return 1;
-	}
-	if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
-    if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
-	new string[128], giveplayerid, amount;
-	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wiretransfer [player] [amount]");
+		if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
+		if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
+		if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
+		new string[128], giveplayerid, amount;
+		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wiretransfer [player] [amount]");
 
 
-	if (IsPlayerConnected(giveplayerid))
-	{
-		if(giveplayerid != INVALID_PLAYER_ID)
+		if (IsPlayerConnected(giveplayerid))
 		{
-			if(gPlayerLogged{giveplayerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "* The player you are trying to transfer money to is not logged in!");
-			new playermoney = PlayerInfo[playerid][pAccount] ;
-			if (amount > 0 && playermoney >= amount)
+			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-				GivePlayerCashEx(playerid, TYPE_BANK, -amount);
-				GivePlayerCashEx(giveplayerid, TYPE_BANK, amount);
-				/*PlayerInfo[playerid][pAccount] -= amount;
-				PlayerInfo[giveplayerid][pAccount] += amount;*/
-				format(string, sizeof(string), "   You have transferred $%s to %s's account.", number_format(amount), GetPlayerNameEx(giveplayerid),giveplayerid);
-				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
-				format(string, sizeof(string), "   You have recieved $%s to into your account from %s.", number_format(amount), GetPlayerNameEx(playerid), playerid);
-				SendClientMessageEx(giveplayerid, COLOR_GRAD1, string);
-				new ip[32], ipex[32];
-				GetPlayerIp(playerid, ip, sizeof(ip));
-				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-				format(string, sizeof(string), "[BANK] %s(%d) (IP:%s) has transferred $%s to %s(%d) (IP:%s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex);
-				if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
-				format(string, sizeof(string), "[BANK] %s (IP:%s) has transferred $%s to %s(IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
-				if(amount >= 500000)
+				if(gPlayerLogged{giveplayerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "* The player you are trying to transfer money to is not logged in!");
+				new playermoney = PlayerInfo[playerid][pAccount] ;
+				if (amount > 0 && playermoney >= amount)
 				{
-					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
+					GivePlayerCashEx(playerid, TYPE_BANK, -amount);
+					GivePlayerCashEx(giveplayerid, TYPE_BANK, amount);
+					/*PlayerInfo[playerid][pAccount] -= amount;
+					PlayerInfo[giveplayerid][pAccount] += amount;*/
+					format(string, sizeof(string), "   You have transferred $%s to %s's account.", number_format(amount), GetPlayerNameEx(giveplayerid),giveplayerid);
+					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					format(string, sizeof(string), "   You have recieved $%s to into your account from %s.", number_format(amount), GetPlayerNameEx(playerid), playerid);
+					SendClientMessageEx(giveplayerid, COLOR_GRAD1, string);
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "[BANK] %s(%d) (IP:%s) has transferred $%s to %s(%d) (IP:%s).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex);
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2) Log("logs/adminpay.log", string); else Log("logs/pay.log", string);
+					format(string, sizeof(string), "[BANK] %s (IP:%s) has transferred $%s to %s(IP:%s).", GetPlayerNameEx(playerid), ip, number_format(amount), GetPlayerNameEx(giveplayerid), ipex);
+					if(amount >= 500000)
 					{
-						format(string, sizeof(string), "[BANK] %s has transferred $%s to %s", GetPlayerNameEx(playerid), number_format(amount), GetPlayerNameEx(giveplayerid));
-						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(giveplayerid), true)) strcat(string, " (1)");
-						ABroadCast(COLOR_YELLOW,string, 4);
+						if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pAdmin] >= 2)
+						{
+							format(string, sizeof(string), "[BANK] %s has transferred $%s to %s", GetPlayerNameEx(playerid), number_format(amount), GetPlayerNameEx(giveplayerid));
+							if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(giveplayerid), true)) strcat(string, " (1)");
+							ABroadCast(COLOR_YELLOW,string, 4);
+						}
+						else ABroadCast(COLOR_YELLOW,string,2);
 					}
-					else ABroadCast(COLOR_YELLOW,string,2);
+					PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
+					SetPVarInt(playerid, "LastTransaction", gettime());
+					/*OnPlayerStatsUpdate(playerid);
+					OnPlayerStatsUpdate(giveplayerid);*/
 				}
-				PlayerPlaySound(giveplayerid, 1052, 0.0, 0.0, 0.0);
-				SetPVarInt(playerid, "LastTransaction", gettime());
-				/*OnPlayerStatsUpdate(playerid);
-				OnPlayerStatsUpdate(giveplayerid);*/
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   Invalid transaction amount.");
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   Invalid transaction amount.");
+				}
 			}
 		}
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	else SendClientMessageEx(playerid, COLOR_GREY, "You are not at the bank!");
 	return 1;
 }
 
@@ -43024,7 +43040,24 @@ CMD:ar(playerid, params[])
 
 			SetPVarInt(playerid, "RFLNameChange",Reports[reportid][ReportFrom]);
 		    return 1;
-		}		
+		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "hSignRequest")) {
+			new hSignTxt[64];
+			GetPVarString(Reports[reportid][ReportFrom], "hSignRequestText", hSignTxt, 64);
+			ShowPlayerDialog(playerid, DIALOG_REPORT_HSIGN, DIALOG_STYLE_MSGBOX, "{00BFFF}House Sale Sign Text Change", hSignTxt, "Approve", "Deny");
+
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			ABroadCast(COLOR_ORANGE, string, 2);
+			PlayerInfo[playerid][pAcceptReport]++;
+			ReportCount[playerid]++;
+			ReportHourCount[playerid]++;
+			Reports[reportid][BeingUsed] = 0;
+			Reports[reportid][TimeToExpire] = 0;
+			strmid(Reports[reportid][Report], "None", 0, 4, 4);
+			DeletePVar(Reports[reportid][ReportFrom], "HasReport");
+			SetPVarInt(playerid, "hSignTextChange", Reports[reportid][ReportFrom]);
+			return 1;
+		}
 		format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		AddReportToken(playerid); // Report Tokens
@@ -43418,6 +43451,7 @@ CMD:buyclothes(playerid, params[])
     format(string, sizeof(string), "Note: Clothes changes cost %s", number_format(Businesses[biz][bItemPrices][0]));
     SetPVarInt(playerid, "SkinChangeCost", Businesses[biz][bItemPrices][0]);
 	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	if(PlayerInfo[playerid][mInventory][13] && PlayerInfo[playerid][pDonateRank] < 2) SendClientMessageEx(playerid, -1, "You have Restricted Skin tokens in your inventory, if you select a restricted skin you will use a token and no additional fees will come.");
 	ShowModelSelectionMenu(playerid, SkinList, "Change your clothes.");
 	return 1;
 }
@@ -43762,8 +43796,8 @@ CMD:userimkit(playerid, params[])
 
 CMD:sellcredits(playerid, params[])
 {
-	return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
-/*	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	//return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
 	new
 	    Player,
 	    Credits,
@@ -43830,7 +43864,7 @@ CMD:sellcredits(playerid, params[])
 	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
 	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
 	}
-	return 1;*/
+	return 1;
 }
 
 CMD:togglehealthcare(playerid, params[])
@@ -43931,7 +43965,7 @@ CMD:editshop(playerid, params[])
 
 	if (strcmp(params, SecurityCode) == 0)
 	{
-	    ShowPlayerDialog(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Edit Shop", "Edit Shop Prices\nEdit Business Shop", "Select", "Exit");
+		ShowPlayerDialog(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Edit Shop", "Edit Shop Prices\nEdit Business Shop\nEdit Micro Shop", "Select", "Exit");
 	    if(GetPVarType(playerid, "CodeAttempts")) DeletePVar(playerid, "CodeAttempts");
 	}
 	else
@@ -48473,7 +48507,7 @@ CMD:getcrack(playerid, params[])
 	return 1;
 }
 
-/*CMD:holster(playerid, params[])
+CMD:holster(playerid, params[])
 {
 	new string[128];
     if(!GetPVarType(playerid, "WeaponsHolstered"))
@@ -48498,7 +48532,7 @@ CMD:getcrack(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must disable tackling before unholstering");
 		}
 	}
-}*/
+}
 
 
 CMD:tackle(playerid, params[])
@@ -48516,8 +48550,8 @@ CMD:tackle(playerid, params[])
 		}
 		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
 	    {
-	        //cmd_holster(playerid, params);
-			UnholsterWeapon(playerid, 0);
+	        cmd_holster(playerid, params);
+			//UnholsterWeapon(playerid, 0);
 		}
         if(GetPVarInt(playerid, "TackleMode") == 0)
         {
@@ -48528,6 +48562,7 @@ CMD:tackle(playerid, params[])
 		{
 	        SetPVarInt(playerid, "TackleMode", 0);
 	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon.");
+			cmd_holster(playerid, params);
 			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
 		}
 	}
@@ -58100,6 +58135,12 @@ CMD:listbitems(playerid, params[])
 				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
+			
+			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
+			{
+				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+			}
 			new sent;
 			for (new i = 6; i < 11; i++)
 			{
@@ -58181,6 +58222,12 @@ CMD:bsearch(playerid, params[])
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
 			{
 				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+			}
+			
+			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
+			{
+				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			new sent;
@@ -60786,6 +60833,239 @@ CMD:dpdraw(playerid, params[])
 		else 
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "Nobody online can win!");
+		}
+	}
+	return 1;
+}
+
+CMD:microshop(playerid, params[])
+{
+	DeletePVar(playerid, "m_listitem");
+	DeletePVar(playerid, "m_Item");
+	DeletePVar(playerid, "m_Response");
+	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialog(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous", "Select", "Exit");
+	else SetPVarInt(playerid, "OpenShop", 11), PinLogin(playerid);
+	return 1;
+}
+
+CMD:placesign(playerid, params[])
+{
+	if(!PlayerInfo[playerid][mInventory][6]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any house sale signs in your inventory, visit /microshop to purchase");
+	new h = InRangeOfWhichHouse(playerid, 10);
+	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at a 10 meter radius from your house to place it down.");
+	if(HouseInfo[h][hSignExpire]) return SendClientMessageEx(playerid, COLOR_GREY, "This house already has a house sale sign attached to it, type /editsign to adjust its position or text.");
+	if(GetPVarType(playerid, "signID")) return SendClientMessageEx(playerid, COLOR_GREY, "Please complete placing down your current house sale sign before attempting to place another.");
+	ClearCheckpoint(playerid);
+	new Float:pos[4];
+	GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+	GetPlayerFacingAngle(playerid, pos[3]);
+	SetPVarInt(playerid, "house", h);
+	SetPVarInt(playerid, "editingsign", 1);
+	SetPVarInt(playerid, "signID", CreateDynamicObject(19471, pos[0]+1, pos[1], pos[2], 0, 0, pos[3], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)));
+	EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
+	SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+	SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
+	SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+	return 1;
+}
+
+CMD:editsign(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4)
+	{
+		new h, option[10], desc[64];
+		if(sscanf(params, "ds[10]S()[64]", h, option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign [houseid] [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Available options: text, position");
+		if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "This house doesn't have a House Sale Sign attached, /placesign to place one down.");
+		if(!strcmp(option, "text", true))
+		{
+			if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Description text cannot be empty and no longer than 64 characters.");
+			new string[128];
+			format(HouseInfo[h][hSignDesc], 64, "%s", g_mysql_ReturnEscaped(desc, MainPipeline));
+			format(string, sizeof(string), "%s has edited house ID: %d sale sign text to %s", GetPlayerNameEx(playerid), h, HouseInfo[h][hSignDesc]);
+			Log("logs/hedit.log", string);
+		}
+		if(!strcmp(option, "position", true))
+		{
+			ClearCheckpoint(playerid);
+			SetPVarInt(playerid, "house", h);
+			SetPVarInt(playerid, "editingsign", 3);
+			SetPVarInt(playerid, "signID", HouseInfo[h][hSignObj]);
+			EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
+			SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+			SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
+			SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+		}
+		return 1;
+	}
+	if(GetPVarType(playerid, "editingsign")) return SendClientMessageEx(playerid, COLOR_GREY, "You are already editing your house sign.");
+	new h = InRangeOfWhichHouse(playerid, 10);
+	if(h == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at a 10 meter radius from your house to edit your house sign.");
+	if(HouseInfo[h][hSignExpire] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "This house doesn't have a House Sale Sign attached, /placesign to place one down.");
+	new option[10], desc[64];
+	if(sscanf(params, "s[10]S()[64]", option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Available options: text, position");
+	if(!strcmp(option, "text", true))
+	{
+		if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
+		if(isnull(desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign text [decription]");
+		if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Description text cannot be empty and no longer than 64 characters.");
+		new string[128];
+		SetPVarInt(playerid, "hSignRequest", h);
+		SetPVarString(playerid, "hSignRequestText", desc);
+		format(string, sizeof(string), "You have requested a House Sale Sign Text Change for house ID: %d, please wait until a General Admin approves it.", h);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		format(string, sizeof(string), "House Sale Sign Text Change (HID: %d)", h);
+		SendReportToQue(playerid, string, 2, 4);
+	}
+	if(!strcmp(option, "position", true))
+	{
+		ClearCheckpoint(playerid);
+		SetPVarInt(playerid, "house", h);
+		SetPVarInt(playerid, "editingsign", 2);
+		SetPVarInt(playerid, "signID", HouseInfo[h][hSignObj]);
+		EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
+		SendClientMessageEx(playerid, 0xFFFFAAAA, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
+		SetPlayerCheckpoint(playerid, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], 20);
+		SendClientMessageEx(playerid, COLOR_GREY, "Keep the object within the checkpoint to place successfully.");
+	}
+	return 1;
+}
+
+CMD:readsign(playerid, params[])
+{
+	for(new i; i < MAX_HOUSES; i++)
+	{
+		if(!HouseInfo[i][hSignExpire]) continue;
+		if(IsPlayerInRangeOfPoint(playerid, 5, HouseInfo[i][hSign][0], HouseInfo[i][hSign][1], HouseInfo[i][hSign][2]))
+		{
+			if(isnull(HouseInfo[i][hSignDesc])) format(HouseInfo[i][hSignDesc], 64, "None");
+			return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Sale Sign", HouseInfo[i][hSignDesc], "Close", "");
+		}
+	}
+	SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of any house sale sign.");
+	return 1;
+}
+
+CMD:fuelcan(playerid, params[])
+{
+	if(!PlayerInfo[playerid][mInventory][7]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Fuel Cans in your inventory, visit /microshop to purchase.");
+	if(GetPVarInt(playerid, "fuelcan") == 1) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	new string[72];
+	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
+	SetTimerEx("FuelCan", 10000, false, "ii", playerid, closestcar);
+	SetPVarInt(playerid, "fuelcan", 1);
+	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
+	return 1;
+}
+
+CMD:jumpstart(playerid, params[])
+{
+	if(!PlayerInfo[playerid][mInventory][8]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Jump Start's in your inventory, visit /microshop to purchase.");
+	if(GetPVarInt(playerid, "jumpstarting") == 1) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not jump start while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	if(!IsABike(closestcar) && !IsAPlane(closestcar))
+	{
+		new engine,lights,alarm,doors,bonnet,boot,objective;
+		GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
+		if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to jump start it.");
+	}
+	new string[61];
+	format(string, sizeof(string), "%s begins to jump start their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
+	SetTimerEx("JumpStart", 10000, false, "ii", playerid, closestcar);
+	SetPVarInt(playerid, "jumpstarting", 1);
+	GameTextForPlayer(playerid, "~w~Jump Starting...", 10000, 3);
+	return 1;
+}
+
+CMD:rcarcolor(playerid, params[])
+{
+	if(!PlayerInfo[playerid][mInventory][9]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Restricted Car Colors in your inventory, visit /microshop to purchase.");
+	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a vehicle.");
+	new iColors[2];
+	if(sscanf(params, "dd", iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rcarcolor [color1] [color2]. Colors must be an ID.");
+	if(!(128 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (Restricted color IDs start at 128, and end at 255).");
+	new szMessage[128];
+	for(new i = 0; i < MAX_PLAYERVEHICLES; i++)
+	{
+		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][i][pvId]))
+		{
+			PlayerVehicleInfo[playerid][i][pvColor1] = iColors[0], PlayerVehicleInfo[playerid][i][pvColor2] = iColors[1];
+			ChangeVehicleColor(PlayerVehicleInfo[playerid][i][pvId], PlayerVehicleInfo[playerid][i][pvColor1], PlayerVehicleInfo[playerid][i][pvColor2]);
+			PlayerInfo[playerid][mInventory][9]--;
+			g_mysql_SaveVehicle(playerid, i);
+			format(szMessage, sizeof(szMessage), "[RCARCOLOR] %s(%d) used a restricted car color. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][9]);
+			Log("logs/micro.log", szMessage);
+			format(szMessage, sizeof(szMessage), "You have changed the colors of your vehicle to ID %d, %d.", iColors[0], iColors[1]);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+		}
+	}
+	SendClientMessageEx(playerid, COLOR_GREY, "You need to be inside a vehicle that you own.");
+	return 1;
+}
+
+CMD:eatbar(playerid, params[])
+{
+	if(!PlayerInfo[playerid][mInventory][4]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Energy Bars in your inventory, visit /microshop to purchase.");
+	if(GetPVarInt(playerid, "eatingbar") == 1) return 1;
+	new string[128];
+	if(PlayerInfo[playerid][mCooldown][4]) 
+	{
+		format(string, sizeof(string), "You currently have a active Energy Bar, please wait for it to expire in %d minute(s) to consume again.", PlayerInfo[playerid][mCooldown][4]);
+		return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	}
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 3.0, 1, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "%s chews on a energy bar", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SetPVarInt(playerid, "eatingbar", 1);
+	SetTimerEx("EatBar", 2000, false, "i", playerid);
+	return 1;
+}
+
+CMD:activeitems(playerid, params[])
+{
+	new string[128];
+	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have an active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have an active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "You currently have an Quick Bank Access for another %d minute(s).", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
+	return 1;
+}
+
+CMD:cooldowns(playerid, params[])
+{
+	new string[128];
+	for(new item; item < MAX_MICROITEMS; item++)
+	{
+		if(gettime() < PlayerInfo[playerid][mCooldown][item])
+		{
+			format(string, sizeof(string), "You can purchase another \"%s\" in %s.", mItemName[item], ConvertTimeS(PlayerInfo[playerid][mCooldown][item]-gettime()));
+			SendClientMessageEx(playerid, -1, string);
+		}
+	}
+	return 1;
+}
+
+CMD:mnear(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	SendClientMessageEx(playerid, COLOR_RED, "* Listing all mailboxes within 30 meters of you...");
+	for(new i, szMessage[32]; i < MAX_HOUSES; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]))
+		{
+			format(szMessage, sizeof(szMessage), "ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]));
+			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
 	}
 	return 1;

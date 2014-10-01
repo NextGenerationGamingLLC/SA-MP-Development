@@ -318,7 +318,57 @@ task SyncUp[60000]()
 				}
 			}
 			else DeletePVar(i, "debtMsg");
-		}	
+			
+			if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
+			{
+				format(string, sizeof(string), "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
+				SendClientMessageEx(i, COLOR_GREY, string);
+				format(string, sizeof(string), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
+				Log("logs/micro.log", string);
+				new skill;
+				switch(PlayerInfo[i][mBoost][0])
+				{
+					case 1: skill = pInfo:pDetSkill;
+					case 2: skill = pInfo:pLawSkill;
+					case 3: skill = pInfo:pSexSkill;
+					case 4: skill = pInfo:pDrugsSkill;
+					case 7: skill = pInfo:pMechSkill;
+					case 9: skill = pInfo:pArmsSkill;
+					case 12: skill = pInfo:pBoxSkill;
+					case 20: skill = pInfo:pTruckSkill;
+				}
+				PlayerInfo[i][pInfo:skill] = PlayerInfo[i][mBoost][1];
+				PlayerInfo[i][mPurchaseCount][1] = 0;
+				PlayerInfo[i][mCooldown][1] = 0;
+				PlayerInfo[i][mBoost][0] = 0;
+				PlayerInfo[i][mBoost][1] = 0;
+			}
+			if(PlayerInfo[i][mCooldown][4] && --PlayerInfo[i][mCooldown][4] <= 0)
+			{
+				SendClientMessageEx(i, COLOR_GREY, "Your Energy Bar has expired!");
+				PlayerInfo[i][mCooldown][4] = 0;
+			}
+			if(PlayerInfo[i][mPurchaseCount][12] && --PlayerInfo[i][mCooldown][12] <= 0)
+			{
+				SendClientMessageEx(i, COLOR_GREY, "Your Quick Bank Access has expired!");
+				PlayerInfo[i][mPurchaseCount][12] = 0;
+				PlayerInfo[i][mCooldown][12] = 0;
+			}
+			if(PlayerInfo[i][pBuddyInvited] == 1 && --PlayerInfo[i][pTempVIP] <= 0)
+			{
+				PlayerInfo[i][pTempVIP] = 0;
+				PlayerInfo[i][pBuddyInvited] = 0;
+				PlayerInfo[i][pDonateRank] = 0;
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
+				SetPlayerToTeamColor(i);
+			}
+			if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15)
+			{
+				PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[4]);
+				PlayerTextDrawShow(i, MicroNotice[i]);
+				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+			}
+		}
 	}
 }
 
@@ -344,6 +394,7 @@ task SaveAccountsUpdate[900000]()
 // TickRate: 5 Minutes.
 task ProductionUpdate[300000]()
 {
+	new string[128];
 	// Dump Accounts to /accdump/ for Crash Recovery.
 	// g_mysql_DumpAccounts();
 
@@ -379,7 +430,6 @@ task ProductionUpdate[300000]()
 			VIPGiftsTimeLeft -= 5;
 			if(VIPGiftsTimeLeft > 0)
 			{
-				new string[128];
 				format(string, sizeof(string), "%s would like for you to come to Club VIP for free gifts and great times [%d minutes remains]", VIPGiftsName, VIPGiftsTimeLeft);
 				SendVIPMessage(COLOR_LIGHTGREEN, string);
 			}
@@ -388,13 +438,22 @@ task ProductionUpdate[300000]()
 		{
 			VIPGiftsTimeLeft = 0;
 			VIPGifts = 0;
-			new string[128];
 			format(string, sizeof(string), "Club VIP is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
 			SendVIPMessage(COLOR_LIGHTGREEN, string);
 		}
 	}
 	SaveFamilies();
 	ResetElevatorQueue();
+	for(new h; h < MAX_HOUSES; h++)
+	{
+		if(HouseInfo[h][hSignExpire] && gettime() >= HouseInfo[h][hSignExpire]) 
+		{
+			format(string, sizeof(string), "[EXPIRE] House Sale Sign Expired - Housed ID: %d", h);
+			ABroadCast(COLOR_YELLOW, string, 4);
+			Log("logs/house.log", string);
+			DeleteHouseSaleSign(h);
+		}
+	}
 }
 
 // Timer Name: playerTabbedLoop()
@@ -984,7 +1043,13 @@ task EMSUpdate[5000]()
 
 					new Float:health;
 					GetPlayerHealth(i,health);
-					SetPlayerHealth(i, health-1);
+					if(PlayerInfo[i][mCooldown][4])
+					{
+						if(!GetPVarType(i, "_energybar")) SetPVarInt(i, "_energybar", 60);
+						if(GetPVarType(i, "_energybar") && GetPVarInt(i, "_energybar")) SetPVarInt(i, "_energybar", GetPVarInt(i, "_energybar")-1);
+						else SetPlayerHealth(i, health-1);
+					}
+					else SetPlayerHealth(i, health-1);
 					if(GetPVarInt(i, "EMSAttempt") == -1)
 					{
 						if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), ApplyAnimation(i, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
@@ -2044,6 +2109,9 @@ task ServerHeartbeat[1000]() {
 						if (PlayerInfo[i][pHunger] == 0)
 						{
 							SendClientMessageEx(i, COLOR_RED, "You hear your stomach rumble - you need to eat!");
+							PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[5]);
+							PlayerTextDrawShow(i, MicroNotice[i]);
+							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
 						}
 					}
 
@@ -2510,7 +2578,13 @@ task ServerMicrobeat[500]() {
 					{
 						SetVehicleHealth(iVehicle, 251.0);
 						GetVehicleParamsEx(iVehicle, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
-						if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(iVehicle,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+						if(arrVehParams[0] == VEHICLE_PARAMS_ON)
+						{
+							SetVehicleParamsEx(iVehicle,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+							PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[8]);
+							PlayerTextDrawShow(i, MicroNotice[i]);
+							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+						}
 						GameTextForPlayer(i, "~r~Totalled!", 2500, 3);
 						arr_Engine{iVehicle} = 0;
 					}

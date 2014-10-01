@@ -123,6 +123,12 @@ public OnPlayerLoad(playerid)
 			{
 				PlayerVehicleInfo[playerid][v][pvMods][m] = 0;
 			}
+			PlayerVehicleInfo[playerid][v][pvCrashFlag] = 0;
+			PlayerVehicleInfo[playerid][v][pvCrashVW] = 0;
+			PlayerVehicleInfo[playerid][v][pvCrashX] = 0.0;
+			PlayerVehicleInfo[playerid][v][pvCrashY] = 0.0;
+			PlayerVehicleInfo[playerid][v][pvCrashZ] = 0.0;
+			PlayerVehicleInfo[playerid][v][pvCrashAngle] = 0.0;
 		}
 		for(new v = 0; v < MAX_PLAYERTOYS; v++)
 		{
@@ -359,10 +365,17 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pExamineDesc][0] = 0;
 		PlayerInfo[playerid][pFavStation][0] = 0;
 		PlayerInfo[playerid][pReg] = 1;
-		for(new i = 0; i < 11; i++)
+		for(new i = 0; i < 12; i++) PlayerInfo[playerid][pBItems][i] = 0;
+		for(new i = 0; i < MAX_MICROITEMS; i++)
 		{
-			PlayerInfo[playerid][pBItems][i] = 0;
+			PlayerInfo[playerid][mInventory][i] = 0;
+			PlayerInfo[playerid][mPurchaseCount][i] = 0;
+			PlayerInfo[playerid][mCooldown][i] = 0;
 		}
+		PlayerInfo[playerid][mBoost][0] = 0;
+		PlayerInfo[playerid][mBoost][1] = 0;
+		PlayerInfo[playerid][mShopCounter] = 0;
+		PlayerInfo[playerid][mNotice] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -1000,5 +1013,11 @@ public OnPlayerLoad(playerid)
 	defer CheckVehiclesLeftSpawned(playerid);
 	format(szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
+	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have a active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mCooldown][4] && PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have a active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "You currently have a active Quick Bank Access for another %d minute(s).", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hSignExpire]) format(string, sizeof(string), "Your first house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSignExpire]) format(string, sizeof(string), "Your second house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSignExpire]) format(string, sizeof(string), "Your third house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
 	return 1;
 }
