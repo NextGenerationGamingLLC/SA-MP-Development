@@ -53,6 +53,7 @@ enum eGroupData {
 	g_iCones,
 	g_iFlares,
 	g_iBarrels,
+	g_iLadders,
 	g_iBudget,
 	g_iBudgetPayment,
 	Float: g_fCratePos[3],
@@ -360,6 +361,18 @@ enum Cone
 }
 
 enum Spikes
+{
+	Float:sX,
+	Float:sY,
+	Float:sZ,
+	sObjectID,
+	sPickupID,
+	sDeployedBy[MAX_PLAYER_NAME],
+	sDeployedByStatus,
+	sDeployedAt[MAX_ZONE_NAME]
+}
+
+enum Ladder
 {
 	Float:sX,
 	Float:sY,

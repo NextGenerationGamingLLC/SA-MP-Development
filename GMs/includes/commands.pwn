@@ -338,10 +338,9 @@ CMD:usekit(playerid, params[]) {
 	{
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
-		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		new string[128];
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 10.0);
-		if( vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 10 )
+		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 10)
 		{
 		    if(CrateVehicleLoad[vehicleid][vCarVestKit] > 0)
 		    {
@@ -362,27 +361,32 @@ CMD:usekit(playerid, params[]) {
             	CrateVehicleLoad[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no med kits available in this vehicle."); 
 		}
-		if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBEquipped])
+		else if(IsBackpackAvailable(playerid))
 		{
-			if(PlayerInfo[playerid][pBItems][5] > 0)
+			if(PlayerInfo[playerid][pBackpack] > 0 && PlayerInfo[playerid][pBEquipped])
 			{
-				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
-					return SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
-				}
-				else 
+				if(PlayerInfo[playerid][pBItems][5] > 0)
 				{
-					defer FinishMedKit(playerid);
-					SetPVarInt(playerid, "BackpackMedKit", 1);
-					ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
-					format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are taking a Med Kit from your backpack, please wait.");
-					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "You have already requested to use a medic kit.");
+					}
+					else 
+					{
+						defer FinishMedKit(playerid);
+						SetPVarInt(playerid, "BackpackMedKit", 1);
+						ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+						format(string, sizeof(string), "{FF8000}** {C2A2DA}%s opens a backpack and takes out a Kevlar Vest & First Aid Kit inside.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are taking a Med Kit from your backpack, please wait.");
+						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					}
 				}
+				else return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no med kits available in your backpack.");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You have no kits inside your backpack.");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not near a vehicle.");
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not near a vehicle or have a backup equipped!");
 	}
 	return 1;
 }
@@ -3777,6 +3781,7 @@ CMD:online(playerid, params[]) {
 			if(IsPlayerConnected(i))
 			{
 				if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
+				else format(badge, sizeof(badge), "");
 				if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
 					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
@@ -21371,109 +21376,126 @@ CMD:deploy(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
 	{
-		new type, object[12];
+		new type, object[12], string[128];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades)]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
+		
+		new iGroup = PlayerInfo[playerid][pMember];
+		
 		if(strcmp(object, "cade", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 			{
-				for(new i; i < sizeof(Barricades); i++)
+				for(new i; i < MAX_BARRICADES; i++)
 				{
-					if(Barricades[i][sX] == 0 && Barricades[i][sY] == 0 && Barricades[i][sZ] == 0)
+					if(Barricades[iGroup][i][sX] == 0 && Barricades[iGroup][i][sY] == 0 && Barricades[iGroup][i][sZ] == 0)
 					{
-						new Float: f_TempAngle, string[128];
+						new Float: f_TempAngle;
 
-						GetPlayerPos(playerid, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ]);
+						GetPlayerPos(playerid, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
 						switch(type)
 						{
 							case 0:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(981, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ] + 2);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(981, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ] + 2);
 							}
 							case 1:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(4504, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
-								SetPlayerPos(playerid, Barricades[i][sX] + 10, Barricades[i][sY] + 10, Barricades[i][sZ] + 5);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4504, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
 							}
 							case 2:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(4505, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
-								SetPlayerPos(playerid, Barricades[i][sX] + 10, Barricades[i][sY] + 10, Barricades[i][sZ] + 5);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4505, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
 							}
 							case 3:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(4514, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] + 1.2394, 0.0, 0.0, f_TempAngle + 270);
-								SetPlayerPos(playerid, Barricades[i][sX] + 10, Barricades[i][sY] + 10, Barricades[i][sZ] + 5);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4514, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.2394, 0.0, 0.0, f_TempAngle + 270);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
 							}
 							case 4:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(4526, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] + 0.7227, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 10, Barricades[i][sY] + 10, Barricades[i][sZ] + 5);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4526, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 0.7227, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
 							}
 							case 5:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(978, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(978, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 6:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(979, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(979, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 7:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(3091, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.30, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(3091, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.30, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 8:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(1425, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1425, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 9:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(1459, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1459, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 10:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(1423, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1423, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 11:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(1424, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ]);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1424, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+							}
+							case 12:
+							{
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(8548, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.00, 0.0, 0.0, f_TempAngle);
+								SetDynamicObjectMaterial(Barricades[iGroup][i][sObjectID], 0, 967, "cj_barr_set_1", "Stop2_64", 0);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							default:
 							{
-								Barricades[i][sObjectID] = CreateDynamicObject(981, Barricades[i][sX], Barricades[i][sY], Barricades[i][sZ], 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[i][sX] + 2, Barricades[i][sY] + 2, Barricades[i][sZ] + 2);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(981, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ] + 2);
 							}
 						}
-						GetPlayer3DZone(playerid, Barricades[i][sDeployedAt], MAX_ZONE_NAME);
-						Barricades[i][sDeployedBy] = GetPlayerNameEx(playerid);
-						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barricades[i][sDeployedByStatus] = 1;
-						else Barricades[i][sDeployedByStatus] = 0;
+						GetPlayer3DZone(playerid, Barricades[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						Barricades[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barricades[iGroup][i][sDeployedByStatus] = 1;
+						else Barricades[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Barricade ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "HQ: A barricade has been deployed by %s at %s.", GetPlayerNameEx(playerid), Barricades[i][sDeployedAt]);
-						//foreach(new x: Player)
-						/*for(new x = 0; x < MAX_PLAYERS; ++x)
+						format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
+						for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
 							{
-								if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
-							}	
-						}*/
+								if(GetPVarInt(x, "togRadio") == 0)
+								{
+									if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+									if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
+									{
+										new szBigEar[128];
+										format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+										SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+									}
+								}
+							}
+						}
 						return 1;
 					}
 				}
@@ -21485,37 +21507,43 @@ CMD:deploy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 			{
-				for(new i; i < sizeof(SpikeStrips); i++)
+				for(new i; i < MAX_SPIKES; i++)
 				{
-					if(SpikeStrips[i][sX] == 0 && SpikeStrips[i][sY] == 0 && SpikeStrips[i][sZ] == 0)
+					if(SpikeStrips[iGroup][i][sX] == 0 && SpikeStrips[iGroup][i][sY] == 0 && SpikeStrips[iGroup][i][sZ] == 0)
 					{
-						new
-							Float: f_TempAngle,
-							string[128];
+						new Float: f_TempAngle;
 
-						GetPlayerPos(playerid, SpikeStrips[i][sX], SpikeStrips[i][sY], SpikeStrips[i][sZ]);
+						GetPlayerPos(playerid, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
-						SpikeStrips[i][sObjectID] = CreateDynamicObject(2899, SpikeStrips[i][sX], SpikeStrips[i][sY], SpikeStrips[i][sZ]-0.8, 0.0, 0.0, f_TempAngle);
-						SpikeStrips[i][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[i][sX], SpikeStrips[i][sY], SpikeStrips[i][sZ]);
-						GetPlayer3DZone(playerid, SpikeStrips[i][sDeployedAt], MAX_ZONE_NAME);
-						SpikeStrips[i][sDeployedBy] = GetPlayerNameEx(playerid);
-						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) SpikeStrips[i][sDeployedByStatus] = 1;
-						else SpikeStrips[i][sDeployedByStatus] = 0;
+						SpikeStrips[iGroup][i][sObjectID] = CreateDynamicObject(2899, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]-0.8, 0.0, 0.0, f_TempAngle);
+						SpikeStrips[iGroup][i][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[iGroup][i][sX], SpikeStrips[iGroup][i][sY], SpikeStrips[iGroup][i][sZ]);
+						GetPlayer3DZone(playerid, SpikeStrips[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						SpikeStrips[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) SpikeStrips[iGroup][i][sDeployedByStatus] = 1;
+						else SpikeStrips[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Spike ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "HQ: A spike has been deployed by %s at %s.", GetPlayerNameEx(playerid), SpikeStrips[i][sDeployedAt]);
-						//foreach(new x: Player)
-						/*for(new x = 0; x < MAX_PLAYERS; ++x)
+						format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
+						for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
 							{
-								if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
-							}	
-						}*/
+								if(GetPVarInt(x, "togRadio") == 0)
+								{
+									if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+									if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
+									{
+										new szBigEar[128];
+										format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+										SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+									}
+								}
+							}
+						}
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more spikestrips, limit is " #MAX_SPIKES# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more spike strips, limit is " #MAX_SPIKES# ".");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 		}
@@ -21523,21 +21551,19 @@ CMD:deploy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 			{
-				for(new i; i < sizeof(Flares); i++)
+				for(new i; i < MAX_FLARES; i++)
 				{
-					if(Flares[i][sX] == 0 && Flares[i][sY] == 0 && Flares[i][sZ] == 0)
+					if(Flares[iGroup][i][sX] == 0 && Flares[iGroup][i][sY] == 0 && Flares[iGroup][i][sZ] == 0)
 					{
-						new
-							Float: f_TempAngle,
-							string[128];
+						new Float: f_TempAngle;
 
-						GetPlayerPos(playerid, Flares[i][sX], Flares[i][sY], Flares[i][sZ]);
+						GetPlayerPos(playerid, Flares[iGroup][i][sX], Flares[iGroup][i][sY], Flares[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
-						Flares[i][sObjectID] = CreateDynamicObject(18728, Flares[i][sX], Flares[i][sY], Flares[i][sZ]-2.4, 0.0, 0.0, f_TempAngle);
-						GetPlayer3DZone(playerid, Flares[i][sDeployedAt], MAX_ZONE_NAME);
-						Flares[i][sDeployedBy] = GetPlayerNameEx(playerid);
-						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Flares[i][sDeployedByStatus] = 1;
-						else Flares[i][sDeployedByStatus] = 0;
+						Flares[iGroup][i][sObjectID] = CreateDynamicObject(18728, Flares[iGroup][i][sX], Flares[iGroup][i][sY], Flares[iGroup][i][sZ]-2.4, 0.0, 0.0, f_TempAngle);
+						GetPlayer3DZone(playerid, Flares[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						Flares[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Flares[iGroup][i][sDeployedByStatus] = 1;
+						else Flares[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Flare ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						return 1;
@@ -21551,21 +21577,19 @@ CMD:deploy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 			{
-				for(new i; i < sizeof(Cones); i++)
+				for(new i; i < MAX_CONES; i++)
 				{
-					if(Cones[i][sX] == 0 && Cones[i][sY] == 0 && Cones[i][sZ] == 0)
+					if(Cones[iGroup][i][sX] == 0 && Cones[iGroup][i][sY] == 0 && Cones[iGroup][i][sZ] == 0)
 					{
-						new
-							Float: f_TempAngle,
-							string[128];
+						new Float: f_TempAngle;
 
-						GetPlayerPos(playerid, Cones[i][sX], Cones[i][sY], Cones[i][sZ]);
+						GetPlayerPos(playerid, Cones[iGroup][i][sX], Cones[iGroup][i][sY], Cones[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
-						Cones[i][sObjectID] = CreateDynamicObject(1238, Cones[i][sX], Cones[i][sY], Cones[i][sZ]-0.7, 0.0, 0.0, f_TempAngle);
-						GetPlayer3DZone(playerid, Cones[i][sDeployedAt], MAX_ZONE_NAME);
-						Cones[i][sDeployedBy] = GetPlayerNameEx(playerid);
-						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Cones[i][sDeployedByStatus] = 1;
-						else Cones[i][sDeployedByStatus] = 0;
+						Cones[iGroup][i][sObjectID] = CreateDynamicObject(1238, Cones[iGroup][i][sX], Cones[iGroup][i][sY], Cones[iGroup][i][sZ]-0.7, 0.0, 0.0, f_TempAngle);
+						GetPlayer3DZone(playerid, Cones[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						Cones[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Cones[iGroup][i][sDeployedByStatus] = 1;
+						else Cones[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Cone ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						return 1;
@@ -21579,27 +21603,52 @@ CMD:deploy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 			{
-				for(new i; i < sizeof(Barrels); i++)
+				for(new i; i < MAX_BARRELS; i++)
 				{
-					if(Barrels[i][sX] == 0 && Barrels[i][sY] == 0 && Barrels[i][sZ] == 0)
+					if(Barrels[iGroup][i][sX] == 0 && Barrels[iGroup][i][sY] == 0 && Barrels[iGroup][i][sZ] == 0)
 					{
-						new
-							Float: f_TempAngle,
-							string[128];
+						new Float: f_TempAngle;
 
-						GetPlayerPos(playerid, Barrels[i][sX], Barrels[i][sY], Barrels[i][sZ]);
+						GetPlayerPos(playerid, Barrels[iGroup][i][sX], Barrels[iGroup][i][sY], Barrels[iGroup][i][sZ]);
 						GetPlayerFacingAngle(playerid, f_TempAngle);
-						Barrels[i][sObjectID] = CreateDynamicObject(1237, Barrels[i][sX], Barrels[i][sY], Barrels[i][sZ]-1, 0.0, 0.0, f_TempAngle);
-						GetPlayer3DZone(playerid, Barrels[i][sDeployedAt], MAX_ZONE_NAME);
-						Barrels[i][sDeployedBy] = GetPlayerNameEx(playerid);
-						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barrels[i][sDeployedByStatus] = 1;
-						else Barrels[i][sDeployedByStatus] = 0;
+						Barrels[iGroup][i][sObjectID] = CreateDynamicObject(1237, Barrels[iGroup][i][sX], Barrels[iGroup][i][sY], Barrels[iGroup][i][sZ]-1, 0.0, 0.0, f_TempAngle);
+						GetPlayer3DZone(playerid, Barrels[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						Barrels[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barrels[iGroup][i][sDeployedByStatus] = 1;
+						else Barrels[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Barrel ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						return 1;
 					}
 				}
-				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barrels, limit is " #MAX_BARRELS# ".");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barrels limit is " #MAX_BARRELS# ".");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "ladder", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
+			{
+				for(new i; i < MAX_LADDERS; i++)
+				{
+					if(Ladders[iGroup][i][sX] == 0 && Ladders[iGroup][i][sY] == 0 && Ladders[iGroup][i][sZ] == 0)
+					{
+						new Float: f_TempAngle;
+
+						GetPlayerPos(playerid, Ladders[iGroup][i][sX], Ladders[iGroup][i][sY], Ladders[iGroup][i][sZ]);
+						GetPlayerFacingAngle(playerid, f_TempAngle);
+						Ladders[iGroup][i][sObjectID] = CreateDynamicObject(1437, Ladders[iGroup][i][sX], Ladders[iGroup][i][sY], Ladders[iGroup][i][sZ] + 0.20, 340.0, 0.0, f_TempAngle);
+						GetPlayer3DZone(playerid, Ladders[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						SetPlayerPos(playerid, Ladders[iGroup][i][sX], Ladders[iGroup][i][sY], Ladders[iGroup][i][sZ] + 0.50);
+						Ladders[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Ladders[iGroup][i][sDeployedByStatus] = 1;
+						else Ladders[iGroup][i][sDeployedByStatus] = 0;
+						format(string,sizeof(string),"Ladder ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more ladders, limit is " #MAX_LADDERS# ".");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 		}
@@ -21616,36 +21665,47 @@ CMD:destroy(playerid, params[])
 		if(sscanf(params, "s[12]d", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroy [object] [ID]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
+		
+		new iGroup = PlayerInfo[playerid][pMember];
+		
 		if(strcmp(object, "cade", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 			{
-				if(!(0 <= type < sizeof(Barricades)) || (Barricades[type][sX] == 0 && Barricades[type][sY] == 0 && Barricades[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barricade ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barricades[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barricade that an Administrator deployed.");
+				if(!(0 <= type < sizeof(Barricades)) || (Barricades[iGroup][type][sX] == 0 && Barricades[iGroup][type][sY] == 0 && Barricades[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barricade ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barricades[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barricade that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Barricades[type][sObjectID]);
-					Barricades[type][sX] = 0;
-					Barricades[type][sY] = 0;
-					Barricades[type][sZ] = 0;
-					Barricades[type][sObjectID] = INVALID_OBJECT_ID;
-					Barricades[type][sDeployedBy] = INVALID_PLAYER_ID;
-					Barricades[type][sDeployedByStatus] = 0;
+					DestroyDynamicObject(Barricades[iGroup][type][sObjectID]);
+					Barricades[iGroup][type][sX] = 0;
+					Barricades[iGroup][type][sY] = 0;
+					Barricades[iGroup][type][sZ] = 0;
+					Barricades[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Barricades[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Barricades[iGroup][type][sDeployedByStatus] = 0;
 					format(string, sizeof(string), "Barricade ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					format(string, sizeof(string), "HQ: A barricade has been destroyed by %s at %s.", GetPlayerNameEx(playerid), Barricades[type][sDeployedAt]);
-					//foreach(new x: Player)
-					for(new x = 0; x < MAX_PLAYERS; ++x)
+					format(string, sizeof(string), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
+					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
-						if(IsPlayerConnected(x))
+						if(IsPlayerConnected(i))
 						{
-							if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
-						}	
+							if(GetPVarInt(i, "togRadio") == 0)
+							{
+								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
+								{
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+								}
+							}
+						}
 					}
 					return 1;
 				}
@@ -21656,30 +21716,37 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 			{
-				if(!(0 <= type < sizeof(SpikeStrips)) || (SpikeStrips[type][sX] == 0 && SpikeStrips[type][sY] == 0 && SpikeStrips[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
+				if(!(0 <= type < sizeof(SpikeStrips)) || (SpikeStrips[iGroup][type][sX] == 0 && SpikeStrips[iGroup][type][sY] == 0 && SpikeStrips[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(SpikeStrips[type][sObjectID]);
-					DestroyDynamicPickup(SpikeStrips[type][sPickupID]);
-					SpikeStrips[type][sX] = 0;
-					SpikeStrips[type][sY] = 0;
-					SpikeStrips[type][sZ] = 0;
-					SpikeStrips[type][sObjectID] = INVALID_OBJECT_ID;
-					SpikeStrips[type][sDeployedBy] = INVALID_PLAYER_ID;
-					SpikeStrips[type][sDeployedByStatus] = 0;
+					DestroyDynamicObject(SpikeStrips[iGroup][type][sObjectID]);
+					DestroyDynamicPickup(SpikeStrips[iGroup][type][sPickupID]);
+					SpikeStrips[iGroup][type][sX] = 0;
+					SpikeStrips[iGroup][type][sY] = 0;
+					SpikeStrips[iGroup][type][sZ] = 0;
+					SpikeStrips[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					SpikeStrips[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-
-					format(string, sizeof(string), "HQ: A spike has been destroyed by %s at %s.", GetPlayerNameEx(playerid), SpikeStrips[type][sDeployedAt]);
-					//foreach(new x: Player)
-					for(new x = 0; x < MAX_PLAYERS; ++x)
+					format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
+					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
-						if(IsPlayerConnected(x))
+						if(IsPlayerConnected(i))
 						{
-							if(PlayerInfo[x][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(x, TEAM_BLUE_COLOR, string);
-						}	
+							if(GetPVarInt(i, "togRadio") == 0)
+							{
+								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
+								{
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+								}
+							}
+						}
 					}
 					return 1;
 				}
@@ -21690,18 +21757,18 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 			{
-				if(!(0 <= type < sizeof(Flares)) || (Flares[type][sX] == 0 && Flares[type][sY] == 0 && Flares[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid flare ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a flare that an Administrator deployed.");
+				if(!(0 <= type < sizeof(Flares)) || (Flares[iGroup][type][sX] == 0 && Flares[iGroup][type][sY] == 0 && Flares[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid flare ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a flare that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Flares[type][sObjectID]);
-					Flares[type][sX] = 0;
-					Flares[type][sY] = 0;
-					Flares[type][sZ] = 0;
-					Flares[type][sObjectID] = INVALID_OBJECT_ID;
-					Flares[type][sDeployedBy] = INVALID_PLAYER_ID;
-					Flares[type][sDeployedByStatus] = 0;
+					DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
+					Flares[iGroup][type][sX] = 0;
+					Flares[iGroup][type][sY] = 0;
+					Flares[iGroup][type][sZ] = 0;
+					Flares[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Flares[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Flares[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Flare ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
@@ -21713,18 +21780,18 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 			{
-				if(!(0 <= type < sizeof(Cones)) || (Cones[type][sX] == 0 && Cones[type][sY] == 0 && Cones[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid cone ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a cone that an Administrator deployed.");
+				if(!(0 <= type < sizeof(Cones)) || (Cones[iGroup][type][sX] == 0 && Cones[iGroup][type][sY] == 0 && Cones[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid cone ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a cone that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Cones[type][sObjectID]);
-					Cones[type][sX] = 0;
-					Cones[type][sY] = 0;
-					Cones[type][sZ] = 0;
-					Cones[type][sObjectID] = INVALID_OBJECT_ID;
-					Cones[type][sDeployedBy] = INVALID_PLAYER_ID;
-					Cones[type][sDeployedByStatus] = 0;
+					DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
+					Cones[iGroup][type][sX] = 0;
+					Cones[iGroup][type][sY] = 0;
+					Cones[iGroup][type][sZ] = 0;
+					Cones[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Cones[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Cones[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Cone ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
@@ -21736,19 +21803,42 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 			{
-				if(!(0 <= type < sizeof(Barrels)) || (Barrels[type][sX] == 0 && Barrels[type][sY] == 0 && Barrels[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barrel ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barrel that an Administrator deployed.");
+				if(!(0 <= type < sizeof(Barrels)) || (Barrels[iGroup][type][sX] == 0 && Barrels[iGroup][type][sY] == 0 && Barrels[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barrel ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barrel that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Barrels[type][sObjectID]);
-					Barrels[type][sX] = 0;
-					Barrels[type][sY] = 0;
-					Barrels[type][sZ] = 0;
-					Barrels[type][sObjectID] = INVALID_OBJECT_ID;
-					Barrels[type][sDeployedBy] = INVALID_PLAYER_ID;
-					Barrels[type][sDeployedByStatus] = 0;
+					DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
+					Barrels[iGroup][type][sX] = 0;
+					Barrels[iGroup][type][sY] = 0;
+					Barrels[iGroup][type][sZ] = 0;
+					Barrels[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Barrels[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Barrels[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Barrel ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "ladder", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
+			{
+				if(!(0 <= type < sizeof(Ladders)) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid ladder ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
+				else
+				{
+					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
+					DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
+					Ladders[iGroup][type][sX] = 0;
+					Ladders[iGroup][type][sY] = 0;
+					Ladders[iGroup][type][sZ] = 0;
+					Ladders[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Ladders[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Ladders[iGroup][type][sDeployedByStatus] = 0;
+					format(string,sizeof(string),"Ladder ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
 				}
@@ -21764,12 +21854,13 @@ CMD:cades(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades] != -1 && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 	{
+		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed barricades:");
-		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Barricades); i++)
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRICADES; i++)
 		{
-			if(Barricades[i][sX] != 0 && Barricades[i][sY] != 0 && Barricades[i][sZ] != 0) // Checking for next available ID.
+			if(Barricades[iGroup][i][sX] != 0 && Barricades[iGroup][i][sY] != 0 && Barricades[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Barricade #%d | Deployed location: %s | Deployed by: %s", i, Barricades[i][sDeployedAt], Barricades[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Barricade #%d | Deployed location: %s | Deployed by: %s", i, Barricades[iGroup][i][sDeployedAt], Barricades[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -21783,13 +21874,15 @@ CMD:cades(playerid, params[])
 
 CMD:spikes(playerid, params[])
 {
-	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
+	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
+	{
+		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed spikes:");
-		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(SpikeStrips); i++)
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_SPIKES; i++)
 		{
-			if(SpikeStrips[i][sX] != 0 && SpikeStrips[i][sY] != 0 && SpikeStrips[i][sZ] != 0) // Checking for next available ID.
+			if(SpikeStrips[iGroup][i][sX] != 0 && SpikeStrips[iGroup][i][sY] != 0 && SpikeStrips[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Spike ID: %d | Deployed location: %s | Deployed by: %s", i, SpikeStrips[i][sDeployedAt], SpikeStrips[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Spike ID: %d | Deployed location: %s | Deployed by: %s", i, SpikeStrips[iGroup][i][sDeployedAt], SpikeStrips[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -21801,12 +21894,13 @@ CMD:flares(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 	{
+		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed flares:");
-		for(new i, string[58 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Flares); i++)
+		for(new i, string[58 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_FLARES; i++)
 		{
-			if(Flares[i][sX] != 0 && Flares[i][sY] != 0 && Flares[i][sZ] != 0) // Checking for next available ID.
+			if(Flares[iGroup][i][sX] != 0 && Flares[iGroup][i][sY] != 0 && Flares[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Flare ID: %d | Deployed location: %s | Deployed by: %s", i, Flares[i][sDeployedAt], Flares[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Flare ID: %d | Deployed location: %s | Deployed by: %s", i, Flares[iGroup][i][sDeployedAt], Flares[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -21822,12 +21916,13 @@ CMD:cones(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 	{
+		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed cones:");
-		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Cones); i++)
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_CONES; i++)
 		{
-			if(Cones[i][sX] != 0 && Cones[i][sY] != 0 && Cones[i][sZ] != 0) // Checking for next available ID.
+			if(Cones[iGroup][i][sX] != 0 && Cones[iGroup][i][sY] != 0 && Cones[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Cone ID: %d | Deployed location: %s | Deployed by: %s", i, Cones[i][sDeployedAt], Cones[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Cone ID: %d | Deployed location: %s | Deployed by: %s", i, Cones[iGroup][i][sDeployedAt], Cones[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -21843,12 +21938,35 @@ CMD:barrels(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 	{
+		new iGroup = PlayerInfo[playerid][pMember];
 		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed barrels:");
-		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Barrels); i++)
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRELS; i++)
 		{
-			if(Barrels[i][sX] != 0 && Barrels[i][sY] != 0 && Barrels[i][sZ] != 0) // Checking for next available ID.
+			if(Barrels[iGroup][i][sX] != 0 && Barrels[iGroup][i][sY] != 0 && Barrels[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
-				format(string, sizeof(string), "HQ: Barrel ID: %d | Deployed location: %s | Deployed by: %s", i, Barrels[i][sDeployedAt], Barrels[i][sDeployedBy]);
+				format(string, sizeof(string), "HQ: Barrel ID: %d | Deployed location: %s | Deployed by: %s", i, Barrels[iGroup][i][sDeployedAt], Barrels[iGroup][i][sDeployedBy]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+	}
+	return 1;
+}
+
+CMD:ladders(playerid, params[])
+{
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
+	{
+		new iGroup = PlayerInfo[playerid][pMember];
+		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed ladders:");
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_LADDERS; i++)
+		{
+			if(Ladders[iGroup][i][sX] != 0 && Ladders[iGroup][i][sY] != 0 && Ladders[iGroup][i][sZ] != 0) // Checking for next available ID.
+			{
+				format(string, sizeof(string), "HQ: Ladder ID: %d | Deployed location: %s | Deployed by: %s", i, Ladders[iGroup][i][sDeployedAt], Ladders[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -22169,7 +22287,7 @@ CMD:dvstorage(playerid, params[])
 		{
 			if(IsPlayerInRangeOfPoint(playerid, 100.0, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]))
 			{		
-				new vstring[2500];
+				new vstring[3000];
 				for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
 				{
 					new iModelID = DynVehicleInfo[i][gv_iModel];
@@ -30544,7 +30662,8 @@ CMD:dept(playerid, params[])
 				{
 					new szRadio[128], RadioBubble[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
 					GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
-					format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(szRadio, sizeof(szRadio), "** [%s] %s %s %s: %s **", PlayerInfo[playerid][pBadge], szEmployer, szRank, GetPlayerNameEx(playerid), params);
+					else format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
 					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
 					//foreach(new i: Player)
@@ -31821,7 +31940,7 @@ CMD:acceptcall(playerid, params[])
 		{
 			if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[callid][MainZone], true) == 0)
 			{
-				new Float: carPos[3], targetid = Calls[callid][CallFrom], targetslot = GetPlayerVehicle(Calls[callid][CallFrom], Calls[callid][CallVehicleId]);
+				new Float: Pos[3], Float: carPos[3], targetid = Calls[callid][CallFrom], targetslot = GetPlayerVehicle(Calls[callid][CallFrom], Calls[callid][CallVehicleId]);
 				if(Calls[callid][CallVehicleId] != INVALID_VEHICLE_ID && Calls[callid][Type] == 4) {
 					switch(PlayerVehicleInfo[targetid][targetslot][pvAlarm]) {
 						case 1: {
@@ -31881,6 +32000,7 @@ CMD:acceptcall(playerid, params[])
 						}
 					}	
 				}
+				PlayCrimeReportForPlayer(playerid, Calls[callid][CallFrom], 8);
 				AddCallToken(playerid);
 				format(string, sizeof(string), "%s has accepted your call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(playerid));
 				SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, string);
@@ -31893,6 +32013,8 @@ CMD:acceptcall(playerid, params[])
 				SetPlayerAttachedObject(Calls[callid][CallFrom], 8, 330, 6);
 				SetPlayerSpecialAction(Calls[callid][CallFrom], SPECIAL_ACTION_USECELLPHONE);
 				PlayerInfo[playerid][pCallsAccepted]++;
+				GetPlayerPos(Calls[callid][CallFrom], Pos[0], Pos[1], Pos[2]);
+				SetPlayerCheckpoint(playerid, Pos[0], Pos[1], Pos[2], 15.0);
 				
 				
 				Calls[callid][RespondingID] = playerid;
@@ -32680,6 +32802,7 @@ CMD:gedit(playerid, params[])
 
 		    if(value == 0)
 		    {
+				GateInfo[gateid][gHID] = INVALID_HOUSE_ID;
 		        GateInfo[gateid][gPosX] = 0.0;
 		        GateInfo[gateid][gPosY] = 0.0;
 		        GateInfo[gateid][gPosZ] = 0.0;
@@ -52594,14 +52717,14 @@ CMD:contract(playerid, params[])
 			PlayerInfo[giveplayerid][pHeadValue] += moneys;
 			strmid(PlayerInfo[giveplayerid][pContractBy], GetPlayerNameEx(playerid), 0, strlen(GetPlayerNameEx(playerid)), MAX_PLAYER_NAME);
 			strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
-			format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
+			format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			SendGroupMessage(2, COLOR_YELLOW, string);
-			format(string, sizeof(string), "* You placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(giveplayerid), moneys, detail);
+			format(string, sizeof(string), "* You placed a contract on %s for $%s, details: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "<< %s has placed a contract on %s for $%d, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
+			format(string, sizeof(string), "<< %s has placed a contract on %s for $%s, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			Log("logs/contracts.log", string);
-			format(string, sizeof(string), "%s has placed a contract on %s for $%d, details: %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), moneys, detail);
-			ABroadCast(COLOR_YELLOW,string,4);
+			format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
+			ABroadCast(COLOR_YELLOW, string, 2);
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 		}
 		else

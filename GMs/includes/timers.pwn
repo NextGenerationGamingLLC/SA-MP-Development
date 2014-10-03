@@ -2778,13 +2778,13 @@ timer FinishMedKit[5000](playerid)
 		GetPlayerIp(playerid, ip, sizeof(ip));
 		format(string, sizeof(string), "[MEDKIT] %s(%d) (IP:%s) used a medkit (%d Kits Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, PlayerInfo[playerid][pBItems][5], PlayerInfo[playerid][pBackpack]);
 		Log("logs/backpack.log", string);
+		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt");
 	}
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage or tried entering a car during the 5 seconds, therefore you couldn't use the Med Kit.");
 		SetPVarInt(playerid, "BackpackDisabled", 60);
 	}
-	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	DeletePVar(playerid, "BackpackMedKit");
 	return 1;
 }

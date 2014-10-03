@@ -6211,8 +6211,66 @@ public OnFilterScriptInit()
 	CreateDynamicObject(983,2285.8000000,22.1000000,26.1000000,0.0000000,0.0000000,326.7490000, .worldid = 0, .streamdistance = 100); //object(fenceshit3) (14)
 	CreateDynamicObject(1233,2286.0000000,18.2000000,27.0000000,0.0000000,0.0000000,72.0000000, .worldid = 0, .streamdistance = 100); //object(noparkingsign1) (7)
 
-
-
+	// Ivy's Bar/Casino Exterior
+	CreateDynamicObject(1566, 1402.40540, -1385.83118, 19.74930,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(1566, 1396.14709, -1385.81299, 19.74930,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	CreateDynamicObject(3851, 1411.53394, -1385.86255, 20.98290,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(3851, 1411.59204, -1385.84094, 15.18870,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(3851, 1424.00000, -1385.86255, 20.98290,   0.00000, 0.00000, 90.00000, .streamdistance = 100);
+	CreateDynamicObject(3920, 1415.52527, -1389.81372, 18.55502,   10.00000, 0.00000, 180.00000, .streamdistance = 100);
+	CreateDynamicObject(3920, 1394.61353, -1385.73486, 17.30060,   10.00000, 0.00000, 180.00000, .streamdistance = 100);
+	CreateDynamicObject(3920, 1407.21252, -1385.74072, 17.30060,   10.00000, 0.00000, 180.00000, .streamdistance = 100);
+	CreateDynamicObject(3920, 1394.5540, -1390.2053, 12.8964,   10.00000, 0.00000, 180.00000, .streamdistance = 100);
+	CreateDynamicObject(3920, 1412.06714, -1390.24976, 12.89640,   10.00000, 0.00000, 180.00000, .streamdistance = 100);
+	CreateDynamicObject(3055, 1422.75073, -1385.85596, 14.72850,   0.00000, 0.00000, 0.00000, .streamdistance = 150);
+	new poison_door1 = CreateDynamicObject(19354, 1391.8721, -1385.7638, 14.1380,   0.00000, 0.00000, 90.0, .streamdistance = 100);
+	SetDynamicObjectMaterial(poison_door1, 0, 10101, "2notherbuildsfe", "flatdoor01_law", 0);
+	new poison_door2 = CreateDynamicObject(19354, 1397.3171, -1385.7638, 14.1380,   0.00000, 0.00000, 90.0, .streamdistance = 100);
+	SetDynamicObjectMaterial(poison_door2, 0, 10101, "2notherbuildsfe", "flatdoor01_law", 0);
+	new poison_door3 = CreateDynamicObject(19354, 1403.3722, -1385.7638, 14.1380,   0.00000, 0.00000, 90.0, .streamdistance = 100);
+	SetDynamicObjectMaterial(poison_door3, 0, 10101, "2notherbuildsfe", "flatdoor01_law", 0);
+	new poison_text2 = CreateDynamicObject(3281, 1403.0713, -1390.0035, 19.4034,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	SetDynamicObjectMaterialText(poison_text2, 0, "Vilachi Casino", OBJECT_MATERIAL_SIZE_256x128, "Arial", 35, 1, 0xFFFFFFFF, 0xFF000000, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	new poison_text = CreateDynamicObject(3281, 1390.9792, -1390.0035, 19.4016,   0.00000, 0.00000, 0.00000, .streamdistance = 100);
+	SetDynamicObjectMaterialText(poison_text, 0, "The Poison Ivy", OBJECT_MATERIAL_SIZE_256x128, "Arial", 35, 1, 0xFFFFFFFF, 0xFF000000, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	new poison_walls[14], poison_walls_2, poison_walls_3, poison_walls_4[5], poison_fence[6];
+	poison_walls[0] = CreateDynamicObject(3499, 1388.56226, -1389.19019, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[1] = CreateDynamicObject(3499, 1399.96777, -1389.26086, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[2] = CreateDynamicObject(3499, 1427.28638, -1386.02710, 12.93230,   0.00000, 0.00000, 90.00000, .streamdistance = 150);
+	poison_walls[3] = CreateDynamicObject(3499, 1393.71289, -1389.18408, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[4] = CreateDynamicObject(3499, 1406.18103, -1389.22021, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[5] = CreateDynamicObject(3499, 1427.13037, -1389.12109, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[6] = CreateDynamicObject(3499, 1418.61536, -1386.02710, 12.93230,   0.00000, 0.00000, 90.00000, .streamdistance = 150);
+	poison_walls[7] = CreateDynamicObject(3499, 1412.15015, -1389.17908, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[8] = CreateDynamicObject(3499, 1418.62976, -1389.12109, 17.70680,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	poison_walls[9] = CreateDynamicObject(3783, 1423.33765, -1383.52197, 16.19210,   90.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_walls[10] = CreateDynamicObject(3783, 1399.52124, -1383.54004, 20.62909,   90.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_walls[11] = CreateDynamicObject(3783, 1399.52722, -1383.52197, 16.19210,   90.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_walls[12] = CreateDynamicObject(3783, 1423.33765, -1383.54004, 20.62910,   90.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_walls[13] = CreateDynamicObject(3499, 1388.5623, -1386.02710, 12.93230,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
+	for(new i = 0; i < sizeof(poison_walls); i++)
+	{
+		SetDynamicObjectMaterial(poison_walls[i], 0, 4006, "lanblokd", "citywall1", 0xFFFAEBD7);
+		SetDynamicObjectMaterial(poison_walls[i], 1, 4006, "lanblokd", "citywall1", 0xFFDC143C);
+	}
+	poison_walls_2 = CreateDynamicObject(8558, 1407.82837, -1387.62842, 22.26280,   15.00000, 0.00000, 0.00000, .streamdistance = 150);
+	SetDynamicObjectMaterial(poison_walls_2, 0, 6102, "gazlaw1", "law_gazwhite1", 0xFFDC143C);
+	SetDynamicObjectMaterial(poison_walls_2, 2, 5986, "chateau_lawn", "shingles2", 0);
+	poison_walls_3 = CreateDynamicObject(8558, 1407.82837, -1387.38245, 16.88170,   0.00000, 0.00000, 0.00000, .streamdistance = 150);
+	SetDynamicObjectMaterial(poison_walls_3, 0, 6102, "gazlaw1", "law_gazwhite1", 0xFFDC143C);
+	SetDynamicObjectMaterial(poison_walls_3, 2, 19378, "all_walls", "mp_diner_woodwall", 0xFFFFFFFF);
+	poison_walls_4[0] = CreateDynamicObject(18766, 1430.63733, -1387.90491, 12.1640,   90.00000, 0.00000, 0.00000, .streamdistance = 100);
+	poison_walls_4[1] = CreateDynamicObject(18766, 1400.64990, -1387.90491, 12.12800,   90.00000, 0.00000, 0.00000, .streamdistance = 100);
+	poison_walls_4[2] = CreateDynamicObject(18766, 1410.64185, -1387.90491, 12.12400,   90.00000, 0.00000, 0.00000, .streamdistance = 100);
+	poison_walls_4[3] = CreateDynamicObject(18766, 1420.63159, -1387.90491, 12.13600,   90.00000, 0.00000, 0.00000, .streamdistance = 100);
+	poison_walls_4[4] = CreateDynamicObject(18766, 1390.64941, -1387.90491, 12.08000,   90.00000, 0.00000, 0.00000, .streamdistance = 100);
+	for(new i = 0; i < sizeof(poison_walls_4); i++) SetDynamicObjectMaterial(poison_walls_4[i], 0, 5704, "melrose07_lawn", "crazypave", 0);
+	poison_fence[0] = CreateDynamicObject(982, 1405.79456, -1390.35376, 13.30350,   0.00000, 0.00000, 90.00000, .streamdistance = 200);
+	poison_fence[1] = CreateDynamicObject(982, 1400.99365, -1390.36365, 13.30350,   0.00000, 0.00000, 90.00000, .streamdistance = 200);
+	poison_fence[2] = CreateDynamicObject(982, 1427.87012, -1377.06238, 19.08210,   0.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_fence[3] = CreateDynamicObject(982, 1400.58362, -1389.87634, 19.08210,   0.00000, 0.00000, 90.00000, .streamdistance = 150);
+	poison_fence[4] = CreateDynamicObject(982, 1387.78247, -1377.06726, 19.08210,   0.00000, 0.00000, 0.00000, .streamdistance = 150);
+	poison_fence[5] = CreateDynamicObject(982, 1414.98706, -1389.90942, 19.08210,   0.00000, 0.00000, 90.00000, .streamdistance = 150);
 
 
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)

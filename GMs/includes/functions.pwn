@@ -3386,6 +3386,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Cones:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Ladders:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
 		{EEEEEE}Edit Locker Stock (%i)\n\
 		{EEEEEE}Edit Locker Weapons (%i defined)\n",
@@ -3393,6 +3394,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCones],
 		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares],
 		(arrGroupData[iGroupID][g_iBarrels] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarrels],
+		(arrGroupData[iGroupID][g_iLadders] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iLadders],
 		(arrGroupData[iGroupID][g_iCrateIsland] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCrateIsland],
 		arrGroupData[iGroupID][g_iLockerStock],
 		Array_Count(arrGroupData[iGroupID][g_iLockerGuns], MAX_GROUP_WEAPONS)
@@ -7046,27 +7048,30 @@ forward OnPlayerPickUpDynamicPickup(playerid, pickupid);
 public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {	
 	new vehicleid = GetPlayerVehicleID(playerid);
-	for(new x = 0; x < sizeof(SpikeStrips); ++x)
+	for(new iGroup; iGroup < MAX_GROUPS; iGroup++)
 	{
-		if(SpikeStrips[x][sX] != 0 && pickupid == SpikeStrips[x][sPickupID])
+		for(new x = 0; x < MAX_SPIKES; ++x)
 		{
-			DestroyDynamicPickup(SpikeStrips[x][sPickupID]);
-			SpikeStrips[x][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[x][sX], SpikeStrips[x][sY], SpikeStrips[x][sZ]);
-			if(GetVehicleDistanceFromPoint(vehicleid, SpikeStrips[x][sX], SpikeStrips[x][sY], SpikeStrips[x][sZ]) <= 6.0) 
+			if(SpikeStrips[iGroup][x][sX] != 0 && pickupid == SpikeStrips[iGroup][x][sPickupID])
 			{
-				new Float:pos[4];
-				GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
-				GetVehicleZAngle(vehicleid, pos[3]);
-				// TODO: This should be more specific to the vehicle
-				// TODO: Bike tires should be checked differently
-
-				if(GetDistanceBetweenPoints(pos[0], pos[1], pos[2], SpikeStrips[x][sX], SpikeStrips[x][sY], SpikeStrips[x][sZ]) <= 4)
+				DestroyDynamicPickup(SpikeStrips[iGroup][x][sPickupID]);
+				SpikeStrips[iGroup][x][sPickupID] = CreateDynamicPickup(19300, 14, SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]);
+				if(GetVehicleDistanceFromPoint(vehicleid, SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]) <= 6.0) 
 				{
-						// Pop Front
-					SetVehicleTireState(vehicleid, 0, 0, 0, 0);
+					new Float:pos[4];
+					GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
+					GetVehicleZAngle(vehicleid, pos[3]);
+					// TODO: This should be more specific to the vehicle
+					// TODO: Bike tires should be checked differently
+
+					if(GetDistanceBetweenPoints(pos[0], pos[1], pos[2], SpikeStrips[iGroup][x][sX], SpikeStrips[iGroup][x][sY], SpikeStrips[iGroup][x][sZ]) <= 4)
+					{
+							// Pop Front
+						SetVehicleTireState(vehicleid, 0, 0, 0, 0);
+					}
 				}
-			}
-		}	
+			}	
+		}
 	}
 	if (GetPVarInt(playerid, "_BikeParkourStage") > 0)
 	{
@@ -14066,7 +14071,6 @@ stock ShowEditMenu(playerid)
 	new toys = 99999;			
 	for(new i; i < 11; i++)
 	{
-		printf("Toy%d %d", i, PlayerHoldingObject[playerid][i]);
 		if(PlayerHoldingObject[playerid][i] == iIndex+1)
 		{
 			toys = i;
@@ -14687,7 +14691,7 @@ public SyncTime()
 		SendClientMessageToAllEx(COLOR_WHITE, string);
 		new query[300];
 		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
-		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "");
+		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", INVALID_PLAYER_ID, string);
 		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
 			if(IsPlayerConnected(i))
@@ -14707,8 +14711,8 @@ public SyncTime()
 						{
 							SetPVarInt(i, "pBirthday", 1);
 							PlayerInfo[i][pLastBirthday] = gettime();
-							format(string, sizeof(string), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[i][pLastBirthday], GetPlayerNameExt(i));
-							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+							format(query, sizeof(query), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[i][pLastBirthday], GetPlayerNameExt(i));
+							mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 						}
 					}
 					else
@@ -19875,6 +19879,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						{
 							if((type == 0 || type == 4) && IsACop(i))
 							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
 								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
@@ -19882,6 +19887,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 							}
 							if(type == 1 && IsAMedic(i))
 							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
 								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
@@ -19889,6 +19895,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 							}
 							if(type == 2 && IsACop(i))
 							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
 								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
@@ -19896,6 +19903,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 							}
 							if(type == 3 && (IsACop(i) || IsATowman(i)))
 							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
 								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
@@ -26639,10 +26647,10 @@ ShowDocPrisonControls(playerid, icontrolid)
 		case 4:
 		{
 			// area controls
-			format(string, sizeof(string), "Café (%s)\n\
+			format(string, sizeof(string), "CafÃ©%s)\n\
 			Cell-block (%s)\n\
 			Cell-block Corridor (%s)\n\
-			Café Kitchen (%s)\n\
+			CafÃ© Kitchen (%s)\n\
 			Courtyard Access (%s)\n\
 			Isolation Door 1 (%s)\n\
 			Isolation Door 2 (%s)\n\
@@ -27460,6 +27468,14 @@ stock GroupLog(groupid, string[])
 	new month, day, year, file[32];
 	getdate(year, month, day);
 	format(file, sizeof(file), "grouplogs/%d/%d-%02d-%02d.log", groupid, year, month, day);
+	return Log(file, string);
+}
+
+stock FamilyLog(familyid, string[])
+{
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", familyid, year, month, day);
 	return Log(file, string);
 }
 

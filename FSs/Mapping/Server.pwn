@@ -20108,6 +20108,194 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3264,-2162.9000000,-1291.9000000,3557.5000000,0.0000000,0.0000000,200.0000000); //object(privatesign3) (1)
 	CreateDynamicObject(3264,-2147.9000000,-1452.5000000,3552.7000000,0.0000000,0.0000000,199.9950000); //object(privatesign3) (2)
 	
+	//FDSA Station - Idlewood (Ivy)
+	CreateDynamicObject(19458, 1946.79236, -1802.95959, 12.48580,   0.00000, 90.00000, 90.00000);
+	CreateDynamicObject(19458, 1937.16199, -1802.95959, 12.48580,   0.00000, 90.00000, 90.00000);
+	CreateDynamicObject(19458, 1946.79236, -1802.95959, 12.48580,   0.00000, 90.00000, 90.00000);
+	CreateDynamicObject(19378, 1946.2833, -1809.2940, 16.0337,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19378, 1937.6088, -1809.3000, 16.0377,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19378, 1937.6436, -1806.0944, 16.0257,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(14877, 1943.6000, -1802.9266, 14.0093,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(19458, 1946.6000, -1802.9456, 13.2011,   35.00000, 90.00000, 90.00000);
+	CreateDynamicObject(19377, 1946.2833, -1809.3000, 16.0057,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1937.6088, -1809.3000, 16.0177,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1937.6436, -1806.0944, 16.0157,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1946.33716, -1817.43628, 16.01850,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1937.60620, -1817.4303, 16.02850,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(1688, 1934.4208, -1800.2118, 13.5605,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19466, 1932.33069, -1802.76685, 17.73306,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19466, 1951.49097, -1812.62134, 17.95734,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19377, 1937.57263, -1806.06384, 19.40660,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1937.57263, -1809.31836, 19.38260,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1946.34094, -1809.31836, 19.38860,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(19377, 1946.34094, -1806.06384, 19.39660,   0.00000, 90.00000, 0.00000);
+	CreateDynamicObject(14782, 1935.56091, -1801.75952, 13.55255,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(7090, 1934.27405, -1801.23364, 17.23400,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(14535, 1935.33044, -1809.85681, 18.13880,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(14782, 1935.56091, -1801.75952, 17.1255,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(1491, 1942.06238, -1813.13721, 15.96650,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(1491, 1942.04419, -1806.86584, 15.96650,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(1491, 1942.08313, -1810.00757, 15.96650,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(2527, 1947.26379, -1812.53699, 16.06890,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2527, 1949.43225, -1812.54517, 16.06890,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2527, 1948.34875, -1812.54187, 16.06890,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2136, 1944.03162, -1813.55774, 16.12050,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2136, 1946.01477, -1813.54919, 16.12050,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2528, 1950.78223, -1813.64880, 16.12060,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(2603, 1950.90674, -1805.86267, 16.52121,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2603, 1945.88086, -1805.83215, 16.52121,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2603, 1948.34888, -1805.85132, 16.52121,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2603, 1945.88086, -1805.83215, 17.43030,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2603, 1950.90674, -1805.86267, 17.43030,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2603, 1948.34888, -1805.85132, 17.43030,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(947, 1905.72034, -1815.52148, 14.83389,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(11631, 1950.75745, -1808.46558, 17.34117,   0.00000, 0.00000, 270.00000);
+	CreateDynamicObject(11665, 1943.77917, -1806.30225, 16.84017,   0.00000, 0.00000, 89.61316);
+	CreateDynamicObject(1671, 1949.65442, -1808.65771, 16.62201,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(1703, 1945.96375, -1810.22888, 16.10060,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(1703, 1949.82532, -1810.15430, 16.10060,   0.00000, 0.00000, 180.00000);
+	CreateDynamicObject(640, 1939.56555, -1798.00806, 13.27330,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(640, 1944.97974, -1798.00806, 13.27330,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(18762, 1901.03638, -1816.66516, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1901.03638, -1807.17944, 13.53060,   0.00000, 0.00000, 0.06000);
+	CreateDynamicObject(18762, 1901.03638, -1797.45667, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1917.23560, -1797.63879, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1932.13635, -1797.59778, 13.53060,   0.00000, 0.00000, -5.88000);
+	CreateDynamicObject(18762, 1913.32446, -1818.54053, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1922.93054, -1820.22681, 13.53060,   0.00000, 0.00000, 0.06000);
+	CreateDynamicObject(18762, 1942.00232, -1822.05627, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18980, 1932.24194, -1801.27832, 6.96990,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1951.67786, -1822.15747, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18980, 1951.65955, -1801.14832, 6.96990,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18980, 1941.79443, -1801.22534, 6.96990,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(18762, 1925.81946, -1797.61829, 13.53060,   0.00000, 0.00000, 0.06000);
+	CreateDynamicObject(18762, 1932.62817, -1822.10413, 13.53060,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3928, 1946.79468, -1807.62109, 19.52640,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(3928, 1937.40649, -1807.71228, 19.52640,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(8614, 1937.48486, -1815.05286, 18.27950,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(8614, 1946.77197, -1823.16785, 14.82350,   0.00000, 0.00000, 0.00000);
+    CreateDynamicObject(19461, 1942.47241, -1798.68567, 13.34550,   0.00000, 0.00000, 89.94000);
+	new ivy_firestation_walls[38], ivy_firestation_floor, ivy_firestation_overhang[4], ivy_firestation_text, ivy_firestation_text2;
+	ivy_firestation_walls[0] = CreateDynamicObject(19388, 1932.43005, -1802.80334, 14.21450,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[1] = CreateDynamicObject(19388, 1951.60803, -1802.79822, 14.21450,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[2] = CreateDynamicObject(19450, 1937.16956, -1801.28149, 14.21450,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[3] = CreateDynamicObject(19450, 1946.80896, -1801.28149, 14.21450,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[4] = CreateDynamicObject(19450, 1946.8098, -1822.1786, 14.2145,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[5] = CreateDynamicObject(19450, 1937.1801, -1822.1786, 14.2145,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[6] = CreateDynamicObject(19431, 1951.6080, -1812.5363, 14.2145,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[7] = CreateDynamicObject(19450, 1943.49194, -1804.63306, 14.2145,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[8] = CreateDynamicObject(19431, 1932.4301, -1812.5363, 14.2145,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[9] = CreateDynamicObject(19431, 1932.4301, -1821.4524, 14.2145,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[10] = CreateDynamicObject(19431, 1951.6080, -1821.4752, 14.2145,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[11] = CreateDynamicObject(19358, 1938.76453, -1802.94995, 14.21450,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[12] = CreateDynamicObject(19450, 1946.80896, -1801.28149, 17.7147,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[13] = CreateDynamicObject(19450, 1937.16956, -1801.28149, 17.7147,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[14] = CreateDynamicObject(19450, 1946.7939, -1814.1038, 17.7147,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[15] = CreateDynamicObject(19404, 1951.52258, -1812.53198, 17.71470,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[16] = CreateDynamicObject(19450, 1951.52661, -1806.16467, 17.71470,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[17] = CreateDynamicObject(19450, 1932.40161, -1809.32605, 17.71470,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[18] = CreateDynamicObject(19450, 1937.1600, -1814.1038, 17.7147,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[19] = CreateDynamicObject(19404, 1932.40161, -1802.90796, 17.71470,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[20] = CreateDynamicObject(4642, 1930.7168, -1798.3879, 14.2712,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[21] = CreateDynamicObject(4642, 1912.1421, -1798.3883, 14.2732,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[22] = CreateDynamicObject(19450, 1927.64575, -1821.25757, 14.21450,   0.00000, 0.00000, 78.99630);
+	ivy_firestation_walls[23] = CreateDynamicObject(19358, 1927.4144, -1797.5808, 14.2145,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[24] = CreateDynamicObject(19450, 1905.82190, -1797.42529, 14.21450,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[25] = CreateDynamicObject(19450, 1901.06348, -1802.18201, 14.21450,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[26] = CreateDynamicObject(19450, 1901.06348, -1811.79236, 14.21450,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[27] = CreateDynamicObject(19450, 1908.66187, -1817.96436, 14.21450,   0.00000, 0.00000, 80.55460);
+	ivy_firestation_walls[28] = CreateDynamicObject(19450, 1918.16541, -1819.54541, 14.21450,   0.00000, 0.00000, 80.55460);
+	ivy_firestation_walls[29] = CreateDynamicObject(19358, 1902.54651, -1816.93298, 14.21450,   0.00000, 0.00000, 80.55460);
+	ivy_firestation_walls[30] = CreateDynamicObject(19358, 1932.25806, -1799.58777, 14.21050,   0.00000, 0.00000, 6.26330);
+	ivy_firestation_walls[31] = CreateDynamicObject(19358, 1915.4871, -1797.5078, 14.2145,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[32] = CreateDynamicObject(19450, 1938.2711, -1809.1532, 17.7147, 0.0, 0.0, 0.0);
+	ivy_firestation_walls[33] = CreateDynamicObject(19450, 1946.79407, -1804.55835, 17.71470,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[34] = CreateDynamicObject(19450, 1946.7941, -1810.8600, 17.7147,   0.00000, 0.00000, 90.00000);
+	ivy_firestation_walls[35] = CreateDynamicObject(19388, 1942.03015, -1812.40063, 17.71470,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[36] = CreateDynamicObject(19388, 1942.0359, -1809.2606, 17.7147,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_walls[37] = CreateDynamicObject(19388, 1942.0361, -1806.1076, 17.7147,   0.00000, 0.00000, 0.00000);
+	ivy_firestation_floor = CreateDynamicObject(5489, 1932.59375, -1782.10156, 12.50000, 0.00000, 0.00000, 0.00000);
+	for(new i = 0; i < sizeof(ivy_firestation_walls); i++)
+	{
+		SetDynamicObjectMaterial(ivy_firestation_walls[i], 0, 12855, "cunte_cop", "sw_brick05", 0);
+		SetDynamicObjectMaterial(ivy_firestation_walls[i], 3, 12855, "cunte_cop", "sw_brick05", 0);
+	}
+	SetDynamicObjectMaterial(ivy_firestation_floor, 4, 4821, "union_las", "tarmacplain_bank", 0);
+	ivy_firestation_overhang[0] = CreateDynamicObject(3498, 1951.61353, -1807.97595, 15.69360,   0.00000, 90.00000, 90.00000);
+	ivy_firestation_overhang[1] = CreateDynamicObject(3498, 1932.44116, -1808.01233, 15.69360,   0.00000, 90.00000, 90.00000);
+	ivy_firestation_overhang[2] = CreateDynamicObject(3498, 1951.61353, -1817.00745, 15.69360,   0.00000, 90.00000, 90.00000);
+	ivy_firestation_overhang[3] = CreateDynamicObject(3498, 1932.44116, -1817.04285, 15.69360,   0.00000, 90.00000, 90.00000);
+	for(new i = 0; i < sizeof(ivy_firestation_overhang); i++)
+	{
+		SetDynamicObjectMaterial(ivy_firestation_overhang[i], 0, 3458, "vgncarshade1", "corr_roof1", 0);
+		SetDynamicObjectMaterial(ivy_firestation_overhang[i], 1, 3458, "vgncarshade1", "corr_roof1", 0);
+	}
+	ivy_firestation_text = CreateDynamicObject(19358, 1944.7527, -1798.6133, 13.8627,   0.00000, 0.00000, 90.00000);
+	SetDynamicObjectMaterialText(ivy_firestation_text, 0, "IDLEWOOD", OBJECT_MATERIAL_SIZE_256x128, "Arial", 45, 0, 0xFFFFFFFF, 0, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	ivy_firestation_text2 = CreateDynamicObject(19358, 1939.79797, -1798.57251, 13.86272,   0.00000, 0.00000, 90.00000);
+	SetDynamicObjectMaterialText(ivy_firestation_text2, 0, "F.D.S.A.", OBJECT_MATERIAL_SIZE_256x128, "Arial", 45, 0, 0xFFFFFFFF, 0, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	
+	//SA/TR Border - SA Toll
+	new Border_SS[10];
+	CreateDynamicObject(8556, -476.68, 586.47, 20.41,   0.00, 0.00, 249.00);
+	CreateDynamicObject(1312, -465.54, 588.18, 20.23,   0.00, 0.00, 249.50);
+	CreateDynamicObject(1312, -483.90, 595.24, 20.05,   0.00, 0.00, 249.50);
+	CreateDynamicObject(966, -473.74, 581.46, 16.02,   0.00, 0.00, 69.00);
+	CreateDynamicObject(966, -479.99, 590.24, 16.02,   0.00, 0.00, 249.00);
+	CreateDynamicObject(979, -492.85, 578.76, 16.68,   0.00, 359.50, 9.89);
+	CreateDynamicObject(979, -475.31, 574.31, 16.84,   0.00, 359.50, 338.00);
+	CreateDynamicObject(979, -467.43, 569.57, 16.92,   0.00, 359.50, 320.00);
+	CreateDynamicObject(979, -484.00, 577.82, 16.76,   0.00, 359.50, 338.00);
+	CreateDynamicObject(979, -461.02, 594.46, 16.94,   0.00, 0.00, 194.86);
+	CreateDynamicObject(979, -469.85, 594.80, 16.94,   0.00, 0.00, 160.86);
+	CreateDynamicObject(979, -478.68, 597.86, 16.94,   0.00, 0.00, 160.86);
+	CreateDynamicObject(979, -486.59, 602.42, 16.94,   0.00, 0.00, 139.16);
+	CreateDynamicObject(1237, -473.60, 582.59, 16.11,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -478.74, 589.67, 16.11,   0.00, 0.00, 0.00);
+	CreateDynamicObject(8556, -1668.62, 543.20, 41.72,   0.00, 0.00, 315.00);
+	CreateDynamicObject(966, -1673.05, 541.28, 37.24,   0.00, 0.00, 315.00);
+	CreateDynamicObject(966, -1664.21, 545.13, 37.24,   0.00, 0.00, 135.00);
+	CreateDynamicObject(979, -1669.67, 525.03, 38.09,   0.00, 0.00, 58.24);
+	CreateDynamicObject(979, -1664.47, 532.78, 38.09,   0.00, 0.00, 53.95);
+	CreateDynamicObject(979, -1657.93, 539.19, 38.09,   0.00, 0.00, 34.88);
+	CreateDynamicObject(979, -1650.12, 544.32, 38.26,   0.00, 358.00, 31.53);
+	CreateDynamicObject(979, -1687.09, 541.12, 38.09,   0.00, 0.00, 204.09);
+	CreateDynamicObject(979, -1679.54, 546.30, 38.09,   0.00, 0.00, 224.77);
+	CreateDynamicObject(979, -1672.89, 552.88, 38.09,   0.00, 0.00, 224.77);
+	CreateDynamicObject(979, -1668.43, 560.62, 38.26,   0.00, 2.00, 255.37);
+	CreateDynamicObject(1237, -1658.85, 539.71, 37.23,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -1678.27, 546.63, 37.24,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1312, -1665.72, 554.13, 41.58,   0.00, 0.00, 315.50);
+	CreateDynamicObject(3749, -407.51, 1013.87, 13.43,   0.00, 0.00, 55.26);
+	CreateDynamicObject(966, -403.17, 1010.86, 10.13,   0.00, 0.00, 51.53);
+	CreateDynamicObject(5837, -406.80, 1013.26, 11.58,   0.00, 0.00, 146.63);
+	CreateDynamicObject(966, -410.46, 1015.61, 10.13,   0.00, 0.00, 240.36);
+	CreateDynamicObject(983, -410.11, 1007.30, 10.66,   0.00, 0.00, 53.72);
+	CreateDynamicObject(1237, -401.69, 1009.74, 9.89,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -411.87, 1016.47, 9.87,   0.00, 0.00, 0.00);
+	CreateDynamicObject(8556, -542.35, 1999.32, 63.79,   0.00, 0.00, 230.30);
+	CreateDynamicObject(966, -545.66, 2006.01, 59.18,   0.00, 0.00, 230.30);
+	CreateDynamicObject(966, -539.05, 1992.56, 59.18,   0.00, 0.00, 50.30);
+	CreateDynamicObject(1237, -540.26, 2011.63, 59.18,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -545.20, 2004.90, 59.25,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -544.24, 1986.81, 59.19,   0.00, 0.00, 0.00);
+	CreateDynamicObject(1237, -539.09, 1993.49, 59.28,   0.00, 0.00, 0.00);
+	CreateDynamicObject(19124, -556.65, 1993.05, 60.84,   0.00, 0.00, 0.00);
+	CreateDynamicObject(19124, -545.67, 1984.40, 60.84,   0.00, 0.00, 0.00);
+	CreateDynamicObject(19124, -527.71, 2006.02, 60.84,   0.00, 0.00, 0.00);
+	CreateDynamicObject(19124, -538.53, 2015.08, 60.84,   0.00, 0.00, 0.00);
+	Border_SS[0] = CreateDynamicObject(8548, -473.62, 582.58, 18.53,   0.00, 0.00, 248.00);
+	Border_SS[1] = CreateDynamicObject(8548, -478.73, 589.66, 18.53,   0.00, 0.00, 68.00);
+	Border_SS[2] = CreateDynamicObject(8548, -1658.83, 539.71, 39.66,   0.00, 0.00, 315.00);
+	Border_SS[3] = CreateDynamicObject(8548, -1678.24, 546.65, 39.66,   0.00, 0.00, 135.00);
+	Border_SS[4] = CreateDynamicObject(8548, -401.66, 1009.72, 12.31,   0.00, 0.00, 54.65);
+	Border_SS[5] = CreateDynamicObject(8548, -411.88, 1016.45, 12.31,   0.00, 0.00, 243.71);
+	Border_SS[6] = CreateDynamicObject(8548, -545.20, 2004.91, 61.68,   0.00, 0.00, 50.30);
+	Border_SS[7] = CreateDynamicObject(8548, -540.22, 2011.63, 61.68,   0.00, 0.00, 50.30);
+	Border_SS[8] = CreateDynamicObject(8548, -539.11, 1993.50, 61.68,   0.00, 0.00, 230.30);
+	Border_SS[9] = CreateDynamicObject(8548, -544.24, 1986.87, 61.68,   0.00, 0.00, 230.30);
+	for(new x = 0; x < sizeof(Border_SS); x++) SetDynamicObjectMaterial(Border_SS[x], 0, 967, "cj_barr_set_1", "Stop2_64", 0);
+	
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{
 	    if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0)
@@ -20278,6 +20466,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 5449, 2124.8906, -1023.3594, 53.6875, 0.25);
 		RemoveBuildingForPlayer(playerid, 1440, 1141.9844, -1346.1094, 13.2656, 0.25);
 		RemoveBuildingForPlayer(playerid, 1440, 1148.6797, -1385.1875, 13.2656, 0.25);
+		RemoveBuildingForPlayer(playerid, 1290, -1673.3047, 540.3672, 42.6172, 0.25);
 		
 		/*
 			########    ###     ######  ######## ####  #######  ##    ## 
@@ -20408,6 +20597,25 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1294, 1738.8594, -1813.2500, 16.9063, 0.25); 
 		//SA News
 		RemoveBuildingForPlayer(playerid, 1226, 778.8594, -1391.1563, 16.3125, 0.25);
+		//FDSA Station - Idlewood (Ivy)
+		RemoveBuildingForPlayer(playerid, 5489, 1932.5938, -1782.1016, 12.5000, 0.25);
+		RemoveBuildingForPlayer(playerid, 5533, 1932.5938, -1782.1016, 12.5000, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1917.3203, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1912.0547, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1906.7734, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1927.8516, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1922.5859, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1938.3906, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1933.1250, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 5681, 1921.4844, -1778.9141, 18.5781, 0.25);
+		RemoveBuildingForPlayer(playerid, 1308, 1951.6172, -1824.0234, 12.7031, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1951.6094, -1821.1250, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1951.6094, -1815.8594, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1951.6094, -1810.5938, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1951.6094, -1805.3281, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1948.9844, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1943.6875, -1797.4219, 13.8125, 0.25);
+		RemoveBuildingForPlayer(playerid, 1412, 1951.6094, -1800.0625, 13.8125, 0.25);
 
 
 		/*

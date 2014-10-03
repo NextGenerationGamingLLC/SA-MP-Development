@@ -60,6 +60,7 @@ Group_DisbandGroup(iGroupID) {
 	arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iFlares] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iBarrels] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iBudget] = 0;
 	arrGroupData[iGroupID][g_iBudgetPayment] = 0;
 	arrGroupData[iGroupID][g_fCratePos][0] = 0;
@@ -148,12 +149,12 @@ SaveGroup(iGroupID) {
 	);
 	format(szQuery, sizeof szQuery, "%s\
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
-		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, \
+		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
 		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = %d",
 		szQuery,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
-		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels],
+		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
 		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess]);
 
@@ -6988,6 +6989,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "Barrels", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iBarrels] = strval(szResult);
+			
+			cache_get_field_content(iIndex, "Ladders", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iLadders] = strval(szResult);
 
 			cache_get_field_content(iIndex, "DutyColour", szResult, MainPipeline);
 			arrGroupData[iIndex][g_hDutyColour] = strval(szResult);
@@ -8871,10 +8875,10 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	return ShowPlayerDialog(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
 }
 
-forward GetShiftInfo();
-public GetShiftInfo()
+forward GetShiftInfo(playerid, szMessage[]);
+public GetShiftInfo(playerid, szMessage[])
 {
-	new rows, fields, fieldname[24], szResult[32], string[128], shift[4], needs, signedup;
+	new rows, fields, fieldname[24], szResult[32], string[1288], shift[4], needs, signedup;
 	cache_get_data(rows, fields, MainPipeline);
 	
 	if(rows)
@@ -8888,12 +8892,24 @@ public GetShiftInfo()
 	if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
 	else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
 
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	if(playerid == INVALID_PLAYER_ID)
 	{
-		if(IsPlayerConnected(i))
+		if(needs - signedup > 0) format(string, sizeof(string), "%s The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+		else format(string, sizeof(string), "%s The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
-			if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
+			}
 		}
+	}
+	else if(playerid != INVALID_PLAYER_ID)
+	{
+		if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+		else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	return 1;
 }

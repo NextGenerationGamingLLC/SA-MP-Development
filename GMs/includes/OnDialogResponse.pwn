@@ -689,7 +689,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Enter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
 				}
-				case 6 .. 17: {
+				case 6 .. 18: {
 
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
@@ -703,11 +703,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 18: {
+				case 19: {
 					format(szTitle, sizeof szTitle, "Edit Group Locker Stock {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Specify a value. Locker stock is used for weapons, and can be replenished using crates.", "Confirm", "Cancel");
 				}
-				case 19: {
+				case 20: {
 
 					new
 						szDialog[(32 + 8) * MAX_GROUP_WEAPONS];
@@ -720,7 +720,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Weapons {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 20: {
+				case 21: {
 
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
@@ -732,7 +732,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Paychecks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
 				}
-				case 21: {
+				case 22: {
 
 					new
 						szDialog[(GROUP_MAX_DIV_LEN + 8) * MAX_GROUP_DIVS];
@@ -744,7 +744,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Divisions {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 22: {
+				case 23: {
 
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
@@ -756,7 +756,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Ranks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 23: {
+				case 24: {
 
 					new
 						szDialog[MAX_GROUP_LOCKERS * 32];
@@ -768,19 +768,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Lockers {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_LOCKERS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 24: {
+				case 25: {
 					format(szTitle, sizeof szTitle, "Edit Group Crate Delivery Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_CRATEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Are you sure you want to move the crate delivery to your position?\n\nIf not, cancel and move to your desired location.", "Cancel", "Confirm");
 				}
-				case 25: {
+				case 26: {
 					format(szTitle, sizeof szTitle, "Edit Group Locker Cost Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_COSTTYPE, DIALOG_STYLE_LIST, szTitle, "Locker Stock\nGroup Budget\nPlayer Money", "OK", "Cancel");
 				}
-				case 26: {
+				case 27: {
 					format(szTitle, sizeof szTitle, "Edit the Garage Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_GARAGEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Please click on 'Confirm' to change the garage location to your current position.\n\nIf you do not wish to move it to your position, click on 'Cancel'.", "Cancel", "Confirm");
 				}
-				case 27: {
+				case 28: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -792,7 +792,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Tackle Access");
 					ShowPlayerDialog(playerid, DIALOG_GROUP_TACKLEACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 28: {
+				case 29: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -804,7 +804,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Wheel Clamps Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_WHEELCLAMPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 29: {
+				case 30: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1004,7 +1004,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: arrGroupData[iGroupID][g_iSpikeStrips] = listitem;
 			}
 
-			format(string, sizeof(string), "%s has set the minimum rank for spikes (/deployspikes) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iSpikeStrips], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iSpikeStrips]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s has set the minimum rank for spikes (/deploy spikes) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iSpikeStrips], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iSpikeStrips]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1020,7 +1020,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: arrGroupData[iGroupID][g_iBarricades] = listitem;
 			}
 
-			format(string, sizeof(string), "%s has set the minimum rank for cades (/deploycades) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarricades], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarricades]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s has set the minimum rank for cades (/deploy cades) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarricades], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarricades]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1036,7 +1036,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: arrGroupData[iGroupID][g_iCones] = listitem;
 			}
 
-			format(string, sizeof(string), "%s has set the minimum rank for cones (/deploycone) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCones], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCones]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s has set the minimum rank for cones (/deploy cone) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCones], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCones]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1052,7 +1052,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: arrGroupData[iGroupID][g_iFlares] = listitem;
 			}
 
-			format(string, sizeof(string), "%s has set the minimum rank for flares (/deployflares) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFlares], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFlares]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s has set the minimum rank for flares (/deploy flares) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFlares], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFlares]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1068,7 +1068,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: arrGroupData[iGroupID][g_iBarrels] = listitem;
 			}
 
-			format(string, sizeof(string), "%s has set the minimum rank for barrels (/deploybarrel) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarrels], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarrels]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			format(string, sizeof(string), "%s has set the minimum rank for barrels (/deploy barrel) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarrels], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarrels]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			Log("logs/editgroup.log", string);
+
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		
+		case DIALOG_GROUP_LADDERS: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
+				default: arrGroupData[iGroupID][g_iLadders] = listitem;
+			}
+
+			format(string, sizeof(string), "%s has set the minimum rank for ladders (/deploy ladder) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iLadders], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iLadders]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);

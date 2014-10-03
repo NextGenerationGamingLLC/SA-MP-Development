@@ -634,6 +634,52 @@ public OnPlayerUpdate(playerid)
 			}
 		}
 	}
+	/*new gOPUtick, LastFireCheck[MAX_PLAYERS];
+	gOPUtick = GetTickCount();
+    if((gOPUtick - LastFireCheck[playerid]) > 220)
+    {
+        switch(GetPlayerCameraMode(playerid))
+        {
+            case 7, 8, 46, 51:
+            {
+                for(new x; x < MAX_PLAYERTOYS; x++)
+				{
+					if(IsPlayerAttachedObjectSlotUsed(playerid, x))
+					{
+						if(x == 9 && PlayerInfo[playerid][pBEquipped])
+							break;
+						RemovePlayerAttachedObject(playerid, x);
+					}
+					printf("Remove: %d - %d, %d", x, PlayerHoldingObject[playerid][x+1], PlayerToyInfo[playerid][x][ptModelID]);
+				}
+            }
+            default:
+            {
+                for(new x; x < MAX_PLAYERTOYS; x++)
+				{
+					if(PlayerHoldingObject[playerid][x+1] != 0)
+					{
+						if(x == 9 && PlayerInfo[playerid][pBEquipped])
+							break;
+						SetPlayerAttachedObject(playerid, x,
+							PlayerToyInfo[playerid][x][ptModelID],
+							PlayerToyInfo[playerid][x][ptBone],
+							PlayerToyInfo[playerid][x][ptPosX],
+							PlayerToyInfo[playerid][x][ptPosY],
+							PlayerToyInfo[playerid][x][ptPosZ],
+							PlayerToyInfo[playerid][x][ptRotX],
+							PlayerToyInfo[playerid][x][ptRotY],
+							PlayerToyInfo[playerid][x][ptRotZ],
+							PlayerToyInfo[playerid][x][ptScaleX],
+							PlayerToyInfo[playerid][x][ptScaleY],
+							PlayerToyInfo[playerid][x][ptScaleZ]
+						);
+					}
+					printf("Attach: %d - %d, %d", x, PlayerHoldingObject[playerid][x+1], PlayerToyInfo[playerid][x][ptModelID]);
+				}
+            }
+        }
+    }*/
 	return 1;
 }
 
@@ -3426,6 +3472,57 @@ public OnPlayerDisconnect(playerid, reason)
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
 				}
+				if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+				{
+					new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
+					GetPlayerGroupInfo(playerid, rank, division, employer);
+					if(IsACop(playerid))
+					{
+						if(PlayerInfo[playerid][pDuty])
+						{
+							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
+							for(new i = 0; i < MAX_PLAYERS; ++i)
+							{
+								if(IsPlayerConnected(i))
+								{
+									if(GetPVarInt(i, "togRadio") == 0)
+									{
+										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+							}
+						}
+						format(string, sizeof string, "%s%s %s has timed out.", badge, rank, GetPlayerNameEx(playerid));
+						GroupLog(PlayerInfo[playerid][pMember], string);
+					}
+					else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
+					{
+						if(PlayerInfo[playerid][pDuty])
+						{
+							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
+							for(new i = 0; i < MAX_PLAYERS; ++i)
+							{
+								if(IsPlayerConnected(i))
+								{
+									if(GetPVarInt(i, "togRadio") == 0)
+									{
+										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+							}
+						}
+						format(string, sizeof string, "%s%s %s has lost connection.", badge, rank, GetPlayerNameEx(playerid));
+						GroupLog(PlayerInfo[playerid][pMember], string);
+					}
+					else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+					{
+						format(string, sizeof(string), "** (%i) %s %s has lost connection **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
+						format(string, sizeof string, "%s %s has lost connection.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						FamilyLog(PlayerInfo[playerid][pFMember], string);
+					}
+				}
 			}
 			case 1:
 			{
@@ -3488,6 +3585,57 @@ public OnPlayerDisconnect(playerid, reason)
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
+				}
+				if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+				{
+					new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
+					GetPlayerGroupInfo(playerid, rank, division, employer);
+					if(IsACop(playerid))
+					{
+						if(PlayerInfo[playerid][pDuty])
+						{
+							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
+							for(new i = 0; i < MAX_PLAYERS; ++i)
+							{
+								if(IsPlayerConnected(i))
+								{
+									if(GetPVarInt(i, "togRadio") == 0)
+									{
+										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+							}
+						}
+						format(string, sizeof string, "%s%s %s has logged out.", badge, rank, GetPlayerNameEx(playerid));
+						GroupLog(PlayerInfo[playerid][pMember], string);
+					}
+					else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
+					{
+						if(PlayerInfo[playerid][pDuty])
+						{
+							format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
+							for(new i = 0; i < MAX_PLAYERS; ++i)
+							{
+								if(IsPlayerConnected(i))
+								{
+									if(GetPVarInt(i, "togRadio") == 0)
+									{
+										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+							}
+						}
+						format(string, sizeof string, "%s%s has logged in.", badge, GetPlayerNameEx(playerid));
+						GroupLog(PlayerInfo[playerid][pMember], string);
+					}
+					else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+					{
+						format(string, sizeof(string), "** (%i) %s %s has logged in **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
+						format(string, sizeof string, "%s %s has logged in.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+						FamilyLog(PlayerInfo[playerid][pFMember], string);
+					}
 				}
 			}
 			case 2:
@@ -5845,38 +5993,91 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			return 1;
 		}
 	}
-	else if(!IsPlayerInAnyVehicle(playerid) && newkeys & KEY_CTRL_BACK)
+	else if(!IsPlayerInAnyVehicle(playerid))
 	{
-
-	    new Float:pos[3];
-	    GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
-	    if(pos[1] < -1301.4 && pos[1] > -1303.2417 && pos[0] < 1786.2131 && pos[0] > 1784.1555)
-		{    // He is using the elevator button
-		    PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-		    ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
-	        ShowElevatorDialog(playerid, 1);
-		}
-		else    // Is he in a floor button?
+		if(newkeys & KEY_CTRL_BACK)
 		{
-		    if(pos[1] > -1301.4 && pos[1] < -1299.1447 && pos[0] < 1785.6147 && pos[0] > 1781.9902)
-		    {
-		        // He is most likely using it, check floor:
-				new i=20;
-				while(pos[2] < GetDoorsZCoordForFloor(i) + 3.5 && i > 0)
-				    i --;
-
-				if(i == 0 && pos[2] < GetDoorsZCoordForFloor(0) + 2.0)
-				    i = -1;
-
-				if(i <= 19)
+			new Float:pos[3];
+			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+			if(pos[1] < -1301.4 && pos[1] > -1303.2417 && pos[0] < 1786.2131 && pos[0] > 1784.1555)
+			{    // He is using the elevator button
+				PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
+				ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+				ShowElevatorDialog(playerid, 1);
+			}
+			else    // Is he in a floor button?
+			{
+				if(pos[1] > -1301.4 && pos[1] < -1299.1447 && pos[0] < 1785.6147 && pos[0] > 1781.9902)
 				{
-				    PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-		    		ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
-					CallElevator(playerid, i + 1);
-					GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
+					// He is most likely using it, check floor:
+					new i=20;
+					while(pos[2] < GetDoorsZCoordForFloor(i) + 3.5 && i > 0)
+						i --;
+
+					if(i == 0 && pos[2] < GetDoorsZCoordForFloor(0) + 2.0)
+						i = -1;
+
+					if(i <= 19)
+					{
+						PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
+						ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+						CallElevator(playerid, i + 1);
+						GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
+					}
 				}
-		    }
+			}
 		}
+	    /*else if(PRESSED(KEY_HANDBRAKE))
+		{
+	        if(GetPlayerWeapon(playerid) == WEAPON_ROCKETLAUNCHER || GetPlayerWeapon(playerid) == WEAPON_SNIPER
+				 || GetPlayerWeapon(playerid) == WEAPON_CAMERA || GetPlayerWeapon(playerid) == WEAPON_HEATSEEKER)
+			{
+			    for(new i = 0; i < 11; i++)
+			    {
+					printf("Toy %d - %d", i, PlayerHoldingObject[playerid][i]);
+					if(i == 9 && PlayerInfo[playerid][pBEquipped])
+					{
+						RemovePlayerAttachedObject(playerid, 9);
+						break;
+					}
+					RemovePlayerAttachedObject(playerid, i);
+				}
+			}
+		}
+		else if(RELEASED(KEY_HANDBRAKE))
+	 	{
+	 	    for(new i = 1; i < 11; i++)
+		    {
+		        if(PlayerHoldingObject[playerid][i] != 0 || PlayerInfo[playerid][pBEquipped])
+				{
+					if(i == 10 && PlayerInfo[playerid][pBEquipped])
+					{
+						switch(PlayerInfo[playerid][pBackpack])
+						{
+							case 1: SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+							case 2: SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+							case 3: SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
+						}
+						break;
+					}
+					new toy = i - 1;
+					printf("Toy %d - i: %d, PlayerHoldingObject: %d", toy, i, PlayerHoldingObject[playerid][i]);
+					SetPlayerAttachedObject(playerid, toy,
+						PlayerToyInfo[playerid][toy][ptModelID],
+						PlayerToyInfo[playerid][toy][ptBone],
+						PlayerToyInfo[playerid][toy][ptPosX],
+						PlayerToyInfo[playerid][toy][ptPosY],
+						PlayerToyInfo[playerid][toy][ptPosZ],
+						PlayerToyInfo[playerid][toy][ptRotX],
+						PlayerToyInfo[playerid][toy][ptRotY],
+						PlayerToyInfo[playerid][toy][ptRotZ],
+						PlayerToyInfo[playerid][toy][ptScaleX],
+						PlayerToyInfo[playerid][toy][ptScaleY],
+						PlayerToyInfo[playerid][toy][ptScaleZ]
+					);
+				}
+			}
+	 	}*/
 	}
 	else if(IsKeyJustDown(128, newkeys, oldkeys))
 	{

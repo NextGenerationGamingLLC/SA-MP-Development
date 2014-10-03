@@ -634,8 +634,13 @@ public OnPlayerLoad(playerid)
 			TextDrawSetProportional(PriorityReport[playerid], 1);
 			TextDrawSetShadow(PriorityReport[playerid], 1);
 
+			new year, month, day, tmphour, tmpminute, tmpsecond, query[300];
+			gettime(tmphour, tmpminute, tmpsecond);
+			FixHour(tmphour);
+			getdate(year, month, day);	
 			format(string, sizeof(string), "SERVER: You are logged in as a %s{FFFFFF}.", GetStaffRank(playerid));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
+			mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", playerid, string);
 			format(string, sizeof(string), "SERVER: %s has logged in as a %s{FFFFFF}.", GetPlayerNameEx(playerid), GetStaffRank(playerid));
 		}
 
@@ -646,6 +651,58 @@ public OnPlayerLoad(playerid)
 			{
 				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pAdmin] >= PlayerInfo[playerid][pAdmin]) SendClientMessageEx(i, COLOR_WHITE, string);
 			}	
+		}
+	}
+	
+	if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+	{
+		new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
+		if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
+		GetPlayerGroupInfo(playerid, rank, division, employer);
+		if(IsACop(playerid))
+		{
+			if(PlayerInfo[playerid][pDuty])
+			{
+				format(string, sizeof(string), "** %s%s %s is in service **", badge, rank, GetPlayerNameEx(playerid));
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(GetPVarInt(i, "togRadio") == 0)
+						{
+							if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+						}
+					}
+				}
+			}
+			format(string, sizeof string, "%s%s has logged in.", badge, GetPlayerNameEx(playerid));
+			GroupLog(PlayerInfo[playerid][pMember], string);
+		}
+		else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
+		{
+			if(PlayerInfo[playerid][pDuty])
+			{
+				format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(GetPVarInt(i, "togRadio") == 0)
+						{
+							if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+						}
+					}
+				}
+			}
+			format(string, sizeof string, "%s%s has logged in.", badge, GetPlayerNameEx(playerid));
+			GroupLog(PlayerInfo[playerid][pMember], string);
+		}
+		else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+		{
+			format(string, sizeof(string), "** (%i) %s %s has logged in **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+			SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
+			format(string, sizeof string, "%s %s has logged in.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+			FamilyLog(PlayerInfo[playerid][pFMember], string);
 		}
 	}
 	

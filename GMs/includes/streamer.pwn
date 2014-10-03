@@ -615,7 +615,7 @@ public LoadStreamerDynamicObjects()
 	SetDynamicObjectMaterialText(VIPLogo, 0, "{842787}VIP LOUNGE", 90, "Impact", 56, 1, 0xFFFFFFFF, 0, 1);
 
 	new FCTS = CreateDynamicObject(19482, -58.9155, -1118.4808, 7.4781, 0.0000, 0.0000, 160.3858);
-	SetDynamicObjectMaterialText(FCTS, 0, "{880000}Flint County Towing Services\n{000000}CALL 1715 OR 2112", 110, "Impact", 40, 1, 0xFF000000, 0, 1);
+	SetDynamicObjectMaterialText(FCTS, 0, "{880000}Flint County Towing Services", 110, "Impact", 40, 1, 0xFF000000, 0, 1);
 	new TR = CreateDynamicObject(19482, -2328.9254, 2313.8192, 16.7774, 0.0000, 0.0000, 90.0);
 	SetDynamicObjectMaterialText(TR, 0, "The People's Plaza", 70, "Georgia", 24, 1, 0xFFFFFFFF, 0, 1);
 	

@@ -46,6 +46,10 @@
 			/*  ---------------- NATIVES ----------------- */
 native WP_Hash(buffer[], len, const str[]);
 native gpci(playerid, serial[], maxlen);
+#define PRESSED(%0) \
+    (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
+#define RELEASED(%0) \
+    (((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
@@ -190,11 +194,12 @@ native gpci(playerid, serial[], maxlen);
 #define			MAX_GROUP_TYPES             10
 #define         MAX_LOCKER_STOCK        	1500
 #define         MAX_CRATES             		20
-#define 		MAX_SPIKES 					20
-#define 		MAX_CONES 					20
-#define 		MAX_FLARES 					20
-#define 		MAX_BARRICADES 				30
-#define 		MAX_BARRELS 				45
+#define 		MAX_SPIKES 					4
+#define 		MAX_CONES 					10
+#define 		MAX_FLARES 					10
+#define 		MAX_BARRICADES 				10
+#define 		MAX_BARRELS 				10
+#define 		MAX_LADDERS 				5
 #define         MAX_AUCTIONS                10
 #define         MAX_PLANTS                  300
 #define         MAX_BUSINESSSALES           100
@@ -584,7 +589,6 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_GROUP_LOCKERPOS		(3369)
 #define 		DIALOG_GROUP_CRATEPOS		(3370)
 #define 		DIALOG_GROUP_LOCKERS		(3371)
-
 #define 		DIALOG_GROUP_RADIOACC		(3372)
 #define 		DIALOG_GROUP_DEPTRADIOACC	(3373)
 #define 		DIALOG_GROUP_INTRADIOACC	(3374)
@@ -596,24 +600,20 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_GROUP_CONES			(3380)
 #define 		DIALOG_GROUP_FLARES			(3381)
 #define 		DIALOG_GROUP_BARRELS		(3382)
-#define 		DIALOG_GROUP_CRATE			(3383)
-#define 		DIALOG_GROUP_LISTPAY		(3384)
-#define 		DIALOG_GROUP_EDITPAY		(3385)
-
-#define 		DIALOG_GROUP_LOCKERDELETECONF		(3386)
-#define 		DIALOG_GROUP_LOCKERACTION			(3387)
-#define 		DIALOG_GROUP_COSTTYPE				(3388)
-
-#define			DIALOG_GROUP_GARAGEPOS				(3389)
-
-#define 		DIALOG_GROUP_JURISDICTION_ADD		(3390)
-#define 		DIALOG_GROUP_JURISDICTION_ADD2		(3391)
-#define 		DIALOG_GROUP_JURISDICTION_LIST		(3392)
-#define 		DIALOG_GROUP_JURISDICTION_REMOVE	(3393)
-
-#define			DIALOG_GROUP_GARAGERANGE			(3394)
-
-#define			DIALOG_GROUP_TACKLEACCESS			(3395)
+#define 		DIALOG_GROUP_LADDERS		(3383)
+#define 		DIALOG_GROUP_CRATE			(3384)
+#define 		DIALOG_GROUP_LISTPAY		(3385)
+#define 		DIALOG_GROUP_EDITPAY		(3386)
+#define 		DIALOG_GROUP_LOCKERDELETECONF		(3387)
+#define 		DIALOG_GROUP_LOCKERACTION			(3388)
+#define 		DIALOG_GROUP_COSTTYPE				(3389)
+#define			DIALOG_GROUP_GARAGEPOS				(3390)
+#define 		DIALOG_GROUP_JURISDICTION_ADD		(3391)
+#define 		DIALOG_GROUP_JURISDICTION_ADD2		(3392)
+#define 		DIALOG_GROUP_JURISDICTION_LIST		(3393)
+#define 		DIALOG_GROUP_JURISDICTION_REMOVE	(3394)
+#define			DIALOG_GROUP_GARAGERANGE			(3395)
+#define			DIALOG_GROUP_TACKLEACCESS			(3396)
 #define			DIALOG_GROUP_WHEELCLAMPS			(3400)
 #define			DIALOG_GROUP_DOCACCESS				(3401)
 
