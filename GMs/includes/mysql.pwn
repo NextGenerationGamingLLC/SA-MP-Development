@@ -811,7 +811,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 				new
 					szPass[129],
 					szResult[129],
-					szBuffer[129];
+					szBuffer[129],
+					salt[11];
 
 				cache_get_field_content(i, "Username", szResult, MainPipeline, MAX_PLAYER_NAME);
 				if(strcmp(szResult, GetPlayerNameExt(extraid), true) != 0)
@@ -820,7 +821,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					return 1;
 				}
 				cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
+				cache_get_field_content(i, "Salt", salt, MainPipeline, 11);
 				GetPVarString(extraid, "PassAuth", szBuffer, sizeof(szBuffer));
+				if(!isnull(salt)) strcat(szBuffer, salt);
 				WP_Hash(szPass, sizeof(szPass), szBuffer);
 				/*if(cache_get_field_content_int(i, "Online", MainPipeline)) {
 					SendClientMessage(extraid, COLOR_RED, "SERVER: This account has already logged in.");
@@ -1438,7 +1441,7 @@ stock g_mysql_AccountLoginCheck(playerid)
 
 	new string[128];
 
-	format(string, sizeof(string), "SELECT `Username`, `Key`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	format(string, sizeof(string), "SELECT `Username`, `Key`, `Salt`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
@@ -1481,11 +1484,14 @@ stock g_mysql_AccountOnlineReset()
 // Description: Creates a new account in the database.
 stock g_mysql_CreateAccount(playerid, accountPassword[])
 {
-	new string[256];
+	new string[300];
 	new passbuffer[129];
-	WP_Hash(passbuffer, sizeof(passbuffer), accountPassword);
+	new salt[11];
+	randomString(salt);
+	format(string, sizeof(string), "%s%s", accountPassword, salt);
+	WP_Hash(passbuffer, sizeof(passbuffer), string);
 
-	format(string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`) VALUES (NOW(), NOW(), '%s','%s')", GetPlayerNameExt(playerid), passbuffer);
+	format(string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`, `Salt`) VALUES (NOW(), NOW(), '%s', '%s', '%s')", GetPlayerNameExt(playerid), passbuffer, salt);
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }

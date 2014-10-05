@@ -19566,7 +19566,7 @@ stock RenderHouseMailbox(h)
 		HouseInfo[h][hMailObjectId] = CreateDynamicObject((HouseInfo[h][hMailType] == 1) ? 1478 : 3407, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ], 0, 0, HouseInfo[h][hMailA]);
 		new string[10];
 		format(string, sizeof(string), "HID: %d",h);
-		HouseInfo[h][hMailTextID] = CreateDynamic3DTextLabel(string, 0xFFFFFF88, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ]+0.5,10.0, .testlos = 1, .streamdistance = 10.0);
+		HouseInfo[h][hMailTextID] = CreateDynamic3DTextLabel(string, 0xFFFFFF88, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ]+0.5,10.0, .streamdistance = 10.0);
 	}
 }
 
@@ -27541,7 +27541,7 @@ GetDPRankName(playerid)
 {
 	new rank[23];
 	
-	if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 1) 
+	if(PlayerInfo[playerid][pAdmin] >= 4 && (PlayerInfo[playerid][pTogReports] == 1 || GetPVarInt(playerid, "Undercover") == 1))
 	{
 		rank = "Dedicated Player";
 	}
@@ -27800,4 +27800,9 @@ public EatBar(playerid)
 	Log("logs/micro.log", string);
 	DeletePVar(playerid, "eatingbar");
 	return 1;
+}
+
+stock randomString(strDest[], strLen = 10)
+{
+	while(strLen--) strDest[strLen] = random(2) ? (random(26) + (random(2) ? 'a' : 'A')) : (random(10) + '0');
 }

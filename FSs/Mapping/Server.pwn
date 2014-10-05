@@ -6922,8 +6922,6 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19121, -82.87, -1139.53, 0.66,   0.00, 0.00, 0.00);
 	CreateDynamicObject(967, -50.14, -1129.62, 0.00,   0.00, 0.00, -195.00);
 	CreateDynamicObject(1496, -53.93, -1110.47, 0.10,   0.00, 0.00, 250.45);
-	new FCTS = CreateDynamicObject(19482, -58.9155, -1118.4808, 7.4781, 0.0000, 0.0000, 160.3858);
-	SetDynamicObjectMaterialText(FCTS, 0, "{880000}Flint County Towing Services\n{000000}CALL 1715 OR 2112", 110, "Impact", 40, 1, 0xFF000000, 0, 1);
 	CreateDynamicObject(973,-81.2673340,-1035.6870117,23.1946087,0.0000000,350.0000000,118.2124023); //object(sub_roadbarrier) (2)
 	CreateDynamicObject(973,-77.7092209,-1043.9134521,21.2885914,0.0000000,345.9969482,108.3933716); //object(sub_roadbarrier) (3)
 	CreateDynamicObject(973,-73.1513138,-1051.1198730,18.8970280,0.0000000,343.8602295,136.4427185); //object(sub_roadbarrier) (4)
@@ -20175,7 +20173,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(8614, 1937.48486, -1815.05286, 18.27950,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(8614, 1946.77197, -1823.16785, 14.82350,   0.00000, 0.00000, 0.00000);
     CreateDynamicObject(19461, 1942.47241, -1798.68567, 13.34550,   0.00000, 0.00000, 89.94000);
-	new ivy_firestation_walls[38], ivy_firestation_floor, ivy_firestation_overhang[4], ivy_firestation_text, ivy_firestation_text2;
+	new ivy_firestation_walls[38], /*ivy_firestation_floor, */ivy_firestation_overhang[4], ivy_firestation_text, ivy_firestation_text2;
 	ivy_firestation_walls[0] = CreateDynamicObject(19388, 1932.43005, -1802.80334, 14.21450,   0.00000, 0.00000, 0.00000);
 	ivy_firestation_walls[1] = CreateDynamicObject(19388, 1951.60803, -1802.79822, 14.21450,   0.00000, 0.00000, 0.00000);
 	ivy_firestation_walls[2] = CreateDynamicObject(19450, 1937.16956, -1801.28149, 14.21450,   0.00000, 0.00000, 90.00000);
@@ -20214,13 +20212,13 @@ public OnFilterScriptInit()
 	ivy_firestation_walls[35] = CreateDynamicObject(19388, 1942.03015, -1812.40063, 17.71470,   0.00000, 0.00000, 0.00000);
 	ivy_firestation_walls[36] = CreateDynamicObject(19388, 1942.0359, -1809.2606, 17.7147,   0.00000, 0.00000, 0.00000);
 	ivy_firestation_walls[37] = CreateDynamicObject(19388, 1942.0361, -1806.1076, 17.7147,   0.00000, 0.00000, 0.00000);
-	ivy_firestation_floor = CreateDynamicObject(5489, 1932.59375, -1782.10156, 12.50000, 0.00000, 0.00000, 0.00000);
+	//ivy_firestation_floor = CreateDynamicObject(5489, 1932.59375, -1782.10156, 12.50000, 0.00000, 0.00000, 0.00000);
 	for(new i = 0; i < sizeof(ivy_firestation_walls); i++)
 	{
 		SetDynamicObjectMaterial(ivy_firestation_walls[i], 0, 12855, "cunte_cop", "sw_brick05", 0);
 		SetDynamicObjectMaterial(ivy_firestation_walls[i], 3, 12855, "cunte_cop", "sw_brick05", 0);
 	}
-	SetDynamicObjectMaterial(ivy_firestation_floor, 4, 4821, "union_las", "tarmacplain_bank", 0);
+	//SetDynamicObjectMaterial(ivy_firestation_floor, 4, 4821, "union_las", "tarmacplain_bank", 0);
 	ivy_firestation_overhang[0] = CreateDynamicObject(3498, 1951.61353, -1807.97595, 15.69360,   0.00000, 90.00000, 90.00000);
 	ivy_firestation_overhang[1] = CreateDynamicObject(3498, 1932.44116, -1808.01233, 15.69360,   0.00000, 90.00000, 90.00000);
 	ivy_firestation_overhang[2] = CreateDynamicObject(3498, 1951.61353, -1817.00745, 15.69360,   0.00000, 90.00000, 90.00000);
@@ -20598,8 +20596,8 @@ stock RemoveBuildingsFromPlayer(playerid)
 		//SA News
 		RemoveBuildingForPlayer(playerid, 1226, 778.8594, -1391.1563, 16.3125, 0.25);
 		//FDSA Station - Idlewood (Ivy)
-		RemoveBuildingForPlayer(playerid, 5489, 1932.5938, -1782.1016, 12.5000, 0.25);
-		RemoveBuildingForPlayer(playerid, 5533, 1932.5938, -1782.1016, 12.5000, 0.25);
+		//RemoveBuildingForPlayer(playerid, 5489, 1932.5938, -1782.1016, 12.5000, 0.25);
+		//RemoveBuildingForPlayer(playerid, 5533, 1932.5938, -1782.1016, 12.5000, 0.25);
 		RemoveBuildingForPlayer(playerid, 1412, 1917.3203, -1797.4219, 13.8125, 0.25);
 		RemoveBuildingForPlayer(playerid, 1412, 1912.0547, -1797.4219, 13.8125, 0.25);
 		RemoveBuildingForPlayer(playerid, 1412, 1906.7734, -1797.4219, 13.8125, 0.25);

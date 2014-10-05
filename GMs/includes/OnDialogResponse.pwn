@@ -7310,11 +7310,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			new
 				szBuffer[129],
-				szQuery[256];
+				szQuery[256],
+				salt[11];
 
-			WP_Hash(szBuffer, sizeof(szBuffer), inputtext);
 			SetPVarString(playerid, "PassChange", inputtext);
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s' WHERE `id` = '%i'", szBuffer, PlayerInfo[playerid][pId]);
+			randomString(salt);
+			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
+			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
+			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 
@@ -7336,12 +7339,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			new
 				szBuffer[129],
-				szQuery[256];
-
-			WP_Hash(szBuffer, sizeof(szBuffer), inputtext);
+				szQuery[256],
+				salt[11];
+				
 			SetPVarString(playerid, "PassChange", inputtext);
+			randomString(salt);
+			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
+			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
 
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s' WHERE `id` = '%i'", szBuffer, PlayerInfo[playerid][pId]);
+			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 		}

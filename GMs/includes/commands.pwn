@@ -14256,21 +14256,33 @@ CMD:exit(playerid, params[])
 
 CMD:home(playerid, params[])
 {
-    if(CheckPointCheck(playerid))
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	if(!Homes[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't own a home!"), GameTextForPlayer(playerid, "~w~You are homeless", 5000, 1);
+	new home;
+	if(sscanf(params, "d", home) || !(1 <= home <= 3)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /home [1, 2 or 3]");
+	switch(home)
 	{
-        SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-        return 1;
-    }
-    if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID)
-	{
-        SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorZ], 4.0);
-        GameTextForPlayer(playerid, "~w~Waypoint set ~r~Home", 5000, 1);
-        gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
-    }
-    else
-	{
-        GameTextForPlayer(playerid, "~w~You are homeless", 5000, 1);
-    }
+		case 1:
+		{
+			if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorZ], 4.0);
+			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey]);
+		}
+		case 2:
+		{
+			if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorZ], 4.0);
+			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey2]);
+		}
+		case 3:
+		{
+			if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not own a house in that slot.");
+			SetPlayerCheckpoint(playerid,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorZ], 4.0);
+			SetPVarInt(playerid, "hInviteHouse", PlayerInfo[playerid][pPhousekey3]);
+		}
+	}
+	GameTextForPlayer(playerid, "~w~Waypoint set ~r~Home", 5000, 1);
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOME;
     return 1;
 }
 
@@ -23574,8 +23586,10 @@ CMD:changeuserpassword(playerid, params[])
     new string[128], accountName[20], password[64], query[512];
     if(sscanf(params, "s[20]s[64]", accountName, password)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /changeuserpassword [player name] [new password]");
 
-    new passbuffer[129];
-    WP_Hash(passbuffer, sizeof(passbuffer), password);
+    new passbuffer[129], salt[11];
+	randomString(salt);
+	format(string, sizeof(string), "%s%s", password, salt);
+    WP_Hash(passbuffer, sizeof(passbuffer), string);
 
 	format(string, sizeof(string), "Attempting to change %s's password...", accountName);
     SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -23586,7 +23600,7 @@ CMD:changeuserpassword(playerid, params[])
 	new tmpName[24];
 	mysql_escape_string(accountName, tmpName, MainPipeline);
 
-    format(query,sizeof(query),"UPDATE `accounts` SET `Key`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2",passbuffer,tmpName);
+    format(query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2",passbuffer,tmpName,salt);
 	mysql_function_query(MainPipeline, query, false, "OnChangeUserPassword", "i", playerid);
 	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
 	return 1;
@@ -42179,7 +42193,7 @@ CMD:viewmotd(playerid, params[])
 	if(sscanf(params, "s[16]", option)) 
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /viewmotd [option]");
-		strcat(string, "Available Options: global");
+		strcat(string, "Available Options: global, player");
 		if(PlayerInfo[playerid][pDonateRank] >= 1) strcat(string, ", vip");
 		if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) strcat(string, ", family");
 		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) strcat(string, ", group");
@@ -42188,6 +42202,7 @@ CMD:viewmotd(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	if(strcmp(option, "global", true) == 0) return SendClientMessageEx(playerid, COLOR_YELLOW, GlobalMOTD);
+	if(strcmp(option, "player", true) == 0) return SendClientMessageEx(playerid, COLOR_YELLOW, pMOTD);
 	if(strcmp(option, "vip", true) == 0 && PlayerInfo[playerid][pDonateRank] >= 1) return SendClientMessageEx(playerid, COLOR_VIP, VIPMOTD);
 	if(strcmp(option, "family", true) == 0 && PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
 	{
@@ -60587,31 +60602,15 @@ CMD:deleteflag(playerid, params[])
 
 CMD:dp(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pDedicatedPlayer] > 0) 
-	{
-		if(PlayerInfo[playerid][pDedicatedEnabled] != 1)
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must enable Dedicated chat before using it. (/togdp)");
-
-		else if(PlayerInfo[playerid][pDedicatedMuted] != 0 || PlayerInfo[playerid][pDedicatedWarn] != 0)
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently muted from the Dedicated chat.");
-
-		else if(GetPVarInt(playerid, "LastDPChat") > gettime()) 
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 seconds between messages.");
-		
-		else
-		{
-			new szMessage[128];
-			
-			format(szMessage, sizeof(szMessage), "%s %s: %s", GetDPRankName(playerid), GetPlayerNameEx(playerid), params);
-		
-			SendDedicatedMessage(0x2FC660FF, szMessage);
-			SetPVarInt(playerid, "LastDPChat", gettime()+5);
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
-	}
+	if(PlayerInfo[playerid][pAdmin] < 4 && !PlayerInfo[playerid][pDedicatedPlayer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
+	if(PlayerInfo[playerid][pDedicatedEnabled] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must enable Dedicated chat before using it. (/togdp)");
+	if(PlayerInfo[playerid][pDedicatedMuted] != 0 || PlayerInfo[playerid][pDedicatedWarn] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently muted from the Dedicated chat.");
+	if(GetPVarInt(playerid, "LastDPChat") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 seconds between messages.");
+	new szMessage[128];
+	if(sscanf(params, "s[128", szMessage)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /dp [message]");
+	format(szMessage, sizeof(szMessage), "%s %s: %s", GetDPRankName(playerid), GetPlayerNameEx(playerid), szMessage);
+	SendDedicatedMessage(0x2FC660FF, szMessage);
+	SetPVarInt(playerid, "LastDPChat", gettime()+5);
 	return 1;
 }
 
@@ -61190,6 +61189,82 @@ CMD:mnear(playerid, params[])
 			format(szMessage, sizeof(szMessage), "ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
+	}
+	return 1;
+}
+
+CMD:hstatus(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new hid;
+	if(sscanf(params, "i", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hstatus [hid]");
+	new string[128];
+	format(string,sizeof(string),"|___________ House Status (ID: %d) (OwnerID: %d)___________|", hid, HouseInfo[hid][hOwnerID]);
+	SendClientMessageEx(playerid, COLOR_GREEN, string);
+	format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", HouseInfo[hid][hExteriorX], HouseInfo[hid][hExteriorY], HouseInfo[hid][hExteriorZ], HouseInfo[hid][hInteriorX], HouseInfo[hid][hInteriorY], HouseInfo[hid][hInteriorZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Money: %d | Pot: %d | Crack: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Mailbox - Type: %d | X: %f | Y: %f | Z: %f", HouseInfo[hid][hMailType], HouseInfo[hid][hMailX], HouseInfo[hid][hMailY], HouseInfo[hid][hMailZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Closet - X: %f | Y: %f | Z: %f", HouseInfo[hid][hClosetX], HouseInfo[hid][hClosetY], HouseInfo[hid][hClosetZ]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Sale Sign - X: %f | Y: %f | Z: %f", HouseInfo[hid][hSign][0], HouseInfo[hid][hSign][1], HouseInfo[hid][hSign][2]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Sale Sign - Description: %s | Expires in: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("None"));
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	return 1;
+}
+
+CMD:hnear(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new option;
+		if(!sscanf(params, "d", option)) 
+		{
+			new string[64];
+			format(string, sizeof(string), "* Listing all houses within 30 meters of you in VW %d...", option);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
+			{
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
+				{
+					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+				}
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
+				{
+					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+				}
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_RED, "* Listing all houses within 30 meters of you...");
+			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
+			{
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]))
+				{
+					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntVW], HouseInfo[i][hIntIW]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+				}
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]))
+				{
+					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtVW], HouseInfo[i][hExtIW]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+				}
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	}
 	return 1;
 }
