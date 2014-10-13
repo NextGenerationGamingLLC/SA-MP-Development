@@ -1643,3 +1643,9 @@ enum eStructureFires {
 	iFireStrength,
 	Float:fFirePos[3],
 }
+
+enum FallIntoFun
+{
+	FIFHours,
+	FIFChances
+}

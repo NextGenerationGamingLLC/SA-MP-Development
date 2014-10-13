@@ -54,16 +54,13 @@ CMD:togchancegambler(playerid, params[])
 
 CMD:gamblechances(playerid, params[])
 {
-	if(chancegambler == 1)
+	if(FIFEnabled == 1)
 	{
-		new iChances = PlayerInfo[playerid][pRewardDrawChance] / 3;
-		
+		new iChances = FIFInfo[playerid][FIFChances];
 		if(iChances < 1)
-			return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any chances.");
-			
-		if(!IsPlayerInRangeOfPoint(playerid, 20, 1479.1448,-1675.6207,14.0469))
-			return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at pershing square.");
-						
+			return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any chances to gamble.");
+		if(!IsPlayerInRangeOfPoint(playerid, 20, FIFGamble[0], FIFGamble[1], FIFGamble[2]))
+			return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the chance gambler location.");
 		ShowPlayerDialog(playerid, DIALOG_ROLL, DIALOG_STYLE_MSGBOX, "Chance Gambler! - All or Nothing","You must roll a number greater than 4 to double your chances.", "Roll", "Cancel");
 	}
 	else return 0;
@@ -27138,7 +27135,7 @@ CMD:travel(playerid, params[])
 
 CMD:setcode(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 99999)
+	if (PlayerInfo[playerid][pAdmin] >= 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		new code[32], string[128], bypass;
 		if (sscanf(params, "s[32]d", code, bypass))
@@ -61265,6 +61262,52 @@ CMD:hnear(playerid, params[])
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	}
+	return 1;
+}
+
+CMD:fifmenu(playerid, params[])
+{
+	if(PlayerInfo[playerid][pPR] >= 2 || PlayerInfo[playerid][pAdmin] >= 1338)
+	{
+		new FIFString[256];
+		if(FIFEnabled == 0)
+		{
+			format(FIFString, sizeof(FIFString), "{00FF00}Enable Fall Into Fun{FFFFFF}\nSet Hour Type");
+		}
+		else 
+		{
+			format(FIFString, sizeof(FIFString), "{B70000}Disable Fall Into Fun{FFFFFF}\nSet Hour Type");
+		}
+		if(FIFGP3 == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+	
+		}
+		if(FIFTimeWarrior == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Time Warrior{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Time Warrior{FFFFFF}", FIFString);
+	
+		}
+		if(FIFGThurs == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Golden Thursday{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Golden Thursday{FFFFFF}", FIFString);
+	
+		}
+		format(FIFString,sizeof(FIFString), "%s\nSet Chance Gambler Position", FIFString);
+		ShowPlayerDialog(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Fall Into Fun Menu", FIFString, "Select", "Cancel");
 	}
 	return 1;
 }
