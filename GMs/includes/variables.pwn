@@ -1283,6 +1283,18 @@ new ShopMsg[11][] = {
 	{"You're not exercising to your full potential!~n~Try an energy bar!~n~~b~~h~~h~/microshop"}
 };
 
+// Fall Into Fun
+new FIFInfo[MAX_PLAYERS][FallIntoFun],
+	FIFType = 1,
+	FIFGP3,
+	FIFEnabled,
+	FIFTimeWarrior,
+	Float:FIFGamble[3],
+	FIFPickup,
+	Text3D:FIFText,
+	FIFGThurs,
+	GThursChances;
+
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
 // Dynamic Gift Box Stuff

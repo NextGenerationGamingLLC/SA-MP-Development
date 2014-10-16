@@ -79,8 +79,6 @@
 #define SERVER_GM_TEXT "NG:RP v3.0.145"
 
 
-
-
 #include <a_samp>
 #undef  MAX_PLAYERS
 #define MAX_PLAYERS (700)

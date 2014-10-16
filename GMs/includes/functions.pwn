@@ -2878,6 +2878,74 @@ PayDay(i) {
 					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:ShopNotice[i]);
 				}
 			}
+			if(FIFEnabled == 1)
+			{
+				FIFInfo[i][FIFHours] += 1;
+				if((FIFInfo[i][FIFHours] % 3) == 0)
+				{
+					if(FIFGThurs == 1)
+					{
+						GThursChances += 1;
+						if(GThursChances == 23)
+						{
+							PlayerInfo[i][pGVIPVoucher] += 1;
+							SendClientMessageEx(i, COLOR_WHITE, "You have won a 1 Month Gold VIP Voucher for Fall Into Fun! To claim it, type /myvouchers.");
+							GThursChances = 0;
+							format(string, sizeof(string), "%s won a 1 Month GVIP Voucher", GetPlayerNameEx(i));
+							Log("logs/fif.log", string);
+						}
+					}
+					if(FIFTimeWarrior == 1)
+					{
+						if(FIFInfo[i][FIFHours] % 32 == 0)
+						{
+							PlayerInfo[i][pGoldBoxTokens] += 1;
+							SendClientMessageEx(i, COLOR_WHITE, "You have won a Gold Box Token for Fall Into Fun! To claim it, type /getrewardgift.");
+							format(string, sizeof(string), "%s won a Gold Box Token", GetPlayerNameEx(i));
+							Log("logs/fif.log", string);
+						}
+					}
+					if(FIFGP3 == 1 && PlayerInfo[i][pDonateRank] >= 3)
+					{
+						FIFInfo[i][FIFChances] += 3;
+						format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+						SendClientMessageEx(i, COLOR_WHITE, string);
+						format(string, sizeof(string), "%s won 3 FIF Chances", GetPlayerNameEx(i));
+						Log("logs/fif.log", string);
+					}
+					else
+					{
+						switch(FIFType)
+						{
+							case 1:
+							{
+								FIFInfo[i][FIFChances] += 1;
+								format(string,sizeof(string), "You have earned 1 FIF Chance! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, string);
+								format(string, sizeof(string), "%s won 1 FIF Chance.", GetPlayerNameEx(i));
+								Log("logs/fif.log", string);
+							}
+							case 2:
+							{
+								FIFInfo[i][FIFChances] += 2;
+								format(string,sizeof(string), "You have earned 2 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, string);
+								format(string, sizeof(string), "%s won 2 FIF Chances.", GetPlayerNameEx(i));
+								Log("logs/fif.log", string);
+							}
+							case 3:
+							{
+								FIFInfo[i][FIFChances] += 3;
+								format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+								SendClientMessageEx(i, COLOR_WHITE, string);
+								format(string, sizeof(string), "%s won 3 FIF Chances.", GetPlayerNameEx(i));
+								Log("logs/fif.log", string);
+							}
+						}
+					}
+				}
+				g_mysql_SaveFIF(i);
+			}
 		}
 		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");
 	}
@@ -17276,7 +17344,7 @@ stock StopAudioStreamForPlayerEx(playerid, reset = 0)
 stock Misc_Save() {
 
 	new
-		szFileStr[32],
+		szFileStr[50],
 		File: iFileHandle = fopen("serverConfig.ini", io_write);
 
 	ini_SetInteger(iFileHandle, szFileStr, "RaceLaps", RaceTotalLaps);
@@ -17300,7 +17368,14 @@ stock Misc_Save() {
 	ini_SetInteger(iFileHandle, szFileStr, "TRTax", TRTax);
 	ini_SetInteger(iFileHandle, szFileStr, "TRTaxVal", TRTaxValue);
 	ini_SetInteger(iFileHandle, szFileStr, "SpeedingTickets", SpeedingTickets);
-
+	ini_SetInteger(iFileHandle, szFileStr, "FIFType", FIFType);
+	ini_SetInteger(iFileHandle, szFileStr, "FIFEnabled", FIFEnabled);
+	ini_SetInteger(iFileHandle, szFileStr, "FIFGP3", FIFGP3);
+	ini_SetInteger(iFileHandle, szFileStr, "FIFTimeWarrior", FIFTimeWarrior);
+	ini_SetFloat(iFileHandle, szFileStr, "FIFGambleX", FIFGamble[0]);
+	ini_SetFloat(iFileHandle, szFileStr, "FIFGambleY", FIFGamble[1]);
+	ini_SetFloat(iFileHandle, szFileStr, "FIFGambleZ", FIFGamble[2]);
+	ini_SetInteger(iFileHandle, szFileStr, "FIFGThurs", FIFGThurs);
 	if(iRewardPlay) {
 		ini_SetInteger(iFileHandle, szFileStr, "RewardPlay", true);
 	}
@@ -17354,11 +17429,23 @@ stock Misc_Load() {
 		else if(ini_GetValue(szFileStr, "TRTax", szResult, sizeof(szResult)))												TRTax = strval(szResult);
 		else if(ini_GetValue(szFileStr, "TRTaxVal", szResult, sizeof(szResult)))											TRTaxValue = strval(szResult);
 		else if(ini_GetValue(szFileStr, "SpeedingTickets", szResult, sizeof(szResult)))										SpeedingTickets = strval(szResult);
-
+		else if(ini_GetValue(szFileStr, "FIFType", szResult, sizeof(szResult)))												FIFType = strval(szResult);
+		else if(ini_GetValue(szFileStr, "FIFEnabled", szResult, sizeof(szResult)))											FIFEnabled = strval(szResult);
+		else if(ini_GetValue(szFileStr, "FIFGP3", szResult, sizeof(szResult)))												FIFGP3 = strval(szResult);
+		else if(ini_GetValue(szFileStr, "FIFTimeWarrior", szResult, sizeof(szResult)))										FIFTimeWarrior = strval(szResult);
+		else if(ini_GetValue(szFileStr, "FIFGambleX", szResult, sizeof(szResult)))											FIFGamble[0] = floatstr(szResult);
+		else if(ini_GetValue(szFileStr, "FIFGambleY", szResult, sizeof(szResult)))											FIFGamble[1] = floatstr(szResult);
+		else if(ini_GetValue(szFileStr, "FIFGambleZ", szResult, sizeof(szResult)))											FIFGamble[2] = floatstr(szResult);
+		else if(ini_GetValue(szFileStr, "FIFGThurs", szResult, sizeof(szResult)))											FIFGThurs = strval(szResult);
 	}
 	if(iRewardBox) {
 		iRewardObj = CreateDynamicObject(19055, fObjectPos[0], fObjectPos[1], fObjectPos[2], 0.0, 0.0, 0.0, .streamdistance = 100.0);
 		tRewardText = CreateDynamic3DTextLabel("Gold Reward Gift Box\n{FFFFFF}/getrewardgift{F3FF02} to claim your gift!", COLOR_YELLOW, fObjectPos[0], fObjectPos[1], fObjectPos[2], 10.0, .testlos = 1, .streamdistance = 50.0);
+	}
+	if(FIFEnabled == 1)
+	{
+		FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], 0);
+		FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
 	}
 	fclose(iFileHandle);
 	printf("[MiscLoad] Misc Loaded");
@@ -17627,10 +17714,15 @@ stock ShowStats(playerid,targetid)
 		GetPlayerPos(targetid, px, py, pz);
 		new zone[MAX_ZONE_NAME];
 		GetPlayer3DZone(targetid, zone, sizeof(zone));
-		
+		new fifstr[128];
+		if(FIFEnabled)
+		{
+			format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
+		}
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
+		%s\
 		%s\
 		%s\
 		%s\
@@ -17657,6 +17749,7 @@ stock ShowStats(playerid,targetid)
 		famedrank,
 		dprank,
 		drank,
+		fifstr,
 		PlayerInfo[targetid][pLevel],
 		sext,
 		PlayerInfo[targetid][pBirthDate],

@@ -1649,3 +1649,9 @@ enum eHospitalBedData {
 	iCountDown[MAX_HOSPITALBEDS],
 	iTimer[MAX_HOSPITALBEDS]
 }
+
+enum FallIntoFun
+{
+	FIFHours,
+	FIFChances
+}

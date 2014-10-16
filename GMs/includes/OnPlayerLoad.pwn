@@ -376,6 +376,8 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][mBoost][1] = 0;
 		PlayerInfo[playerid][mShopCounter] = 0;
 		PlayerInfo[playerid][mNotice] = 0;
+		FIFInfo[playerid][FIFHours] = 0;
+		FIFInfo[playerid][FIFChances] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)

@@ -728,6 +728,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					g_mysql_LoadPVehicles(extraid);
 					LoadPlayerNonRPPoints(extraid);
 					g_mysql_LoadPlayerToys(extraid);
+					g_mysql_LoadFIFInfo(extraid);
 				
 					SetPVarInt(extraid, "pSQLID", PlayerInfo[extraid][pId]);
 
@@ -1404,6 +1405,24 @@ public OnQueryFinish(resultid, extraid, handleid)
 		    else
 		    {    
 				SendClientMessageEx(extraid, COLOR_RED, "Error - This account does not exist.");
+			}
+		}
+		case LOADFIF_THREAD:
+		{
+			if(IsPlayerConnected(extraid))
+			{
+				if(!rows)
+				{
+					new szQuery[128];
+					format(szQuery,sizeof(szQuery),"INSERT INTO `FallIntoFun` SET `player` = %d",  GetPlayerSQLId(extraid));
+					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					return 1;
+				}
+				new szResult[128];
+				cache_get_field_content(0, "FIFHours", szResult, MainPipeline);
+				FIFInfo[extraid][FIFHours] =  strval(szResult);
+				cache_get_field_content(0, "FIFChances", szResult, MainPipeline);
+				FIFInfo[extraid][FIFChances] = strval(szResult);
 			}
 		}
 	}
@@ -8918,4 +8937,24 @@ public GetShiftInfo(playerid, szMessage[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	return 1;
+}
+
+// g_mysql_LoadFIFInfo(playerid)
+// Description: Load the player's Fall Into Fun Info
+stock g_mysql_LoadFIFInfo(playerid)
+{
+	new szQuery[128];
+	format(szQuery, sizeof(szQuery), "SELECT * FROM `FallIntoFun` WHERE `player` = %d", PlayerInfo[playerid][pId]);
+	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", LOADFIF_THREAD, playerid, g_arrQueryHandle{playerid});
+	return 1;
+}
+
+stock g_mysql_SaveFIF(playerid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		new szQuery[128];
+		format(szQuery, sizeof(szQuery), "UPDATE `FallIntoFun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
+		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	}
 }

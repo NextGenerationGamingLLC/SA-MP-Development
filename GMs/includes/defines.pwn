@@ -939,6 +939,9 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_MICROSHOP3			(6012)
 #define			DIALOG_EDITMICROSHOP		(6013)
 
+#define			DIALOG_FIFMENU				(6014)
+#define			DIALOG_FIFMENU2				(6015)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 
@@ -1119,6 +1122,7 @@ native gpci(playerid, serial[], maxlen);
 #define			LOADGIFTBOX_THREAD				23
 #define			LOADPNONRPOINTS_THREAD			24
 #define			OFFLINE_DEDICATED_THREAD		30
+#define			LOADFIF_THREAD					31
 #define 		Flag_Query_Display  			1
 #define 		Flag_Query_Offline  			2
 #define 		Flag_Query_Count    			3
