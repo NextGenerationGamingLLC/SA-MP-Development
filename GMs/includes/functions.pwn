@@ -3174,10 +3174,10 @@ IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float:
     return ((fPosX * fPosX) + (fPosY * fPosY) + (fPosZ * fPosZ)) < (fDist * fDist);
 }
 
-PreloadAnimLib(playerid, animlib[])
+/*PreloadAnimLib(playerid, animlib[])
 {
 	ApplyAnimation(playerid,animlib,"null",0.0,0,0,0,0,0,1);
-}
+}*/
 
 ReadyToCapture(pointid)
 {
@@ -3570,6 +3570,7 @@ public InitiateGamemode()
 	ResetNews();
 	ResetVariables();
 	FixServerTime();
+	LoadVactionsHelper();
 	SetTimer("RotateWheel",3*1000,0);
 	SetTimer("WarmupLock", 15000, 0);
 	SetTimer("MailDeliveryTimer", 60000, 1);
@@ -5890,7 +5891,7 @@ public OtherTimerEx(playerid, type)
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 				if(GetPVarInt(playerid, "HospitalTimer") == 0)
 				{
-					HospitalSpawn(playerid);
+					//HospitalSpawn(playerid);
 				}
 			}
 		}
@@ -6685,7 +6686,7 @@ public CopGetUp(playerid)
 	DeletePVar(playerid, "Tackling");
     SendClientMessageEx(playerid, COLOR_GRAD2, "It will be 30 seconds before you can tackle again.");
 	TogglePlayerControllable(playerid, 1);
-	PreloadAnimLib(playerid, "SUNBATHE");
+	//PreloadAnimLib(playerid, "SUNBATHE");
 	ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 	return 1;
 }
@@ -6693,7 +6694,7 @@ public CopGetUp(playerid)
 stock TacklePlayer(playerid, tacklee)
 {
 	new string[128], Float: posx, Float: posy, Float: posz, group[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
-	PreloadAnimLib(playerid, "PED");
+	//PreloadAnimLib(playerid, "PED");
 	format(string, sizeof(string), "** %s leaps at %s, tackling them.", GetPlayerNameEx(playerid), GetPlayerNameEx(tacklee));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetPVarInt(tacklee, "IsTackled", playerid);
@@ -11279,498 +11280,6 @@ stock IsAtATM(playerid)
 	return 0;
 }
 
-stock HospitalSpawn(playerid)
-{
-	if(GetPVarInt(playerid, "MedicBill") == 1 && PlayerInfo[playerid][pJailTime] == 0)
-	{
-		switch(PlayerInfo[playerid][pHospital]) {
-			case 1:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -1500);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 1500;
-							format(str, sizeof(str), "%s has their medical fees, adding $1,500 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $1,500. Have a nice day!");
-				SetPlayerPos(playerid, 1175.0586,-1324.2463,14.5938);
-				SetPlayerFacingAngle(playerid, 268.9748);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 2:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -1500);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 1500;
-							format(str, sizeof(str), "%s has their medical fees, adding $1,500 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $1,500. Have a nice day!");
-				SetPlayerPos(playerid, 2034.2269,-1404.3459,17.2617);
-				SetPlayerFacingAngle(playerid, 179.4258);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 3:
-			{
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -500);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 500;
-							format(str, sizeof(str), "%s has their medical fees, adding $500 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $500. Have a nice day!");
-				SetPlayerPos(playerid, 1241.4888,325.9947,19.7555);
-				SetPlayerFacingAngle(playerid, 345.0);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 4:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -250);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 250;
-							format(str, sizeof(str), "%s has their medical fees, adding $250 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $250. Have a nice day!");
-				SetPlayerPos(playerid, -320.3253, 1049.2809, 20.3403);
-				SetPlayerFacingAngle(playerid, 179.4258);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 5:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -250);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $250. Have a nice day!");
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 250;
-							format(str, sizeof(str), "%s has their medical fees, adding $250 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SetPlayerPos(playerid, -2656.9661,623.1429,14.4531);
-				SetPlayerFacingAngle(playerid, 180);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 6: {
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -1500);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 1500;
-							format(str, sizeof(str), "%s has their medical fees, adding $1,500 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SetPlayerPos(playerid, 1175.0586,-1324.2463,14.5938);
-				SetPlayerFacingAngle(playerid, 268.9748);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 7:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -250);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 250;
-							format(str, sizeof(str), "%s has their medical fees, adding $250 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $250. Have a nice day!");
-				if(GetPVarInt(playerid, "VIPSpawn") > 0 && GetPVarInt(playerid, "VIPSpawn") < 4)
-				{
-					PlayerInfo[playerid][pVIPSpawn] = 0;
-					switch(GetPVarInt(playerid, "VIPSpawn"))
-					{
-						case 1:
-						{
-							SetPlayerVirtualWorld(playerid, 0);
-							SetPlayerInterior(playerid, 1);
-							Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
-							SetPlayerFacingAngle(playerid, 266.41);	
-							SetCameraBehindPlayer(playerid);
-							TogglePlayerControllable(playerid, 1);	
-							PlayerInfo[playerid][pVW] = 0;
-							PlayerInfo[playerid][pInt] = 1;
-						}
-						case 2:
-						{
-							SetPlayerVirtualWorld(playerid, 2);
-							SetPlayerInterior(playerid, 1);
-							Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
-							SetPlayerFacingAngle(playerid, 266.41);	
-							SetCameraBehindPlayer(playerid);
-							TogglePlayerControllable(playerid, 1);		
-							PlayerInfo[playerid][pVW] = 2;
-							PlayerInfo[playerid][pInt] = 1;
-						}
-						case 3:
-						{
-							SetPlayerVirtualWorld(playerid, 2);
-							SetPlayerInterior(playerid, 1);
-							SetPlayerPos(playerid, 1774.6427,1413.1003,2015.1140);
-							Player_StreamPrep(playerid, 1774.6427,1413.1003,2015.1140, FREEZE_TIME);
-							SetPlayerFacingAngle(playerid, 88.7804);	
-							SetCameraBehindPlayer(playerid);
-							TogglePlayerControllable(playerid, 1);		
-							PlayerInfo[playerid][pVW] = 2;
-							PlayerInfo[playerid][pInt] = 1;
-						}
-					}
-				}
-				else
-				{
-					Player_StreamPrep(playerid, 2785.553955, 2394.641845, 1240.531127, FREEZE_TIME);
-					SetPlayerFacingAngle(playerid, 266.41);
-					SetPlayerInterior(playerid, 1);
-					SetCameraBehindPlayer(playerid);
-					TogglePlayerControllable(playerid, 1);
-					//DeathDrop(playerid);
-				}
-				PlayerInfo[playerid][pHospital] = 0;
-				DeletePVar(playerid, "VIPSpawn");
-			}			
-			case 8:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -250);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 250;
-							format(str, sizeof(str), "%s has their medical fees, adding $250 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $250. Have a nice day!");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Platinum VIP: You have spawned at your home.");
-
-				for(new i = 0; i < sizeof(HouseInfo); i++)
-				{
-					if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || PlayerInfo[playerid][pPhousekey3] == i)
-					{
-						Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-						SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
-						SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-						GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
-						PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
-						PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
-						SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
-						if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
-						break;
-					}
-				}
-
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 9:
-			{
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "DOC: Have a nice day.");
-				new Float:X, Float:Y, Float:Z;
-				GetDynamicObjectPos(Carrier[0], X, Y, Z);
-				SetPlayerPos(playerid, (X-0.377671),(Y-10.917018),11.6986);
-				SetPlayerFacingAngle(playerid, 0);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 10:
-			{
-			    if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -250);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 250;
-							format(str, sizeof(str), "%s has their medical fees, adding $250 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $250. Have a nice day!");
-				SetPlayerPos(playerid, -1514.809204, 2526.305175, 55.759651);
-				SetPlayerFacingAngle(playerid, 357.79);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 11:
-			{
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "DOC: Your Medical Bill is free of charge. Have a nice day!");
-				SetPlayerPos(playerid, -1680.8573, 284.6186, 7.1875);
-				SetCameraBehindPlayer(playerid);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 12:
-			{
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "DOC: Your Medical Bill is free of charge. Have a nice day!");
-				SetPlayerPos(playerid, 1607.4916, 1817.4746, 10.8203);
-				SetCameraBehindPlayer(playerid);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 13: //Famed Lounge
-			{
-                if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "DOC: Your Medical Bill is free of charge. Have a nice day!");
-				SetPlayerPos(playerid, 914.8001, 1427.6847, -81.1762);
-				SetCameraBehindPlayer(playerid);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-				//DeathDrop(playerid);
-			}
-			case 14: //DeMorgan
-			{
-				if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "DOC: Your Medical Bill is free of charge. Have a nice day!");
-				SetPlayerPos(playerid, 230.8369, 1980.1620, 17.6406);
-				SetPlayerFacingAngle(playerid, 0);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-			}
-			case 15: //TR - Bayside
-			{
-				if(PlayerInfo[playerid][pSHealth] > 0) {
-					SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);
-				}
-				SetPlayerHealth(playerid, 50.0);
-				DeletePVar(playerid, "MedicBill");
-				GivePlayerCash(playerid, -500);
-				for(new z; z < MAX_GROUPS; z++)
-				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
-					{
-						if(arrGroupData[z][g_iGroupType] == 5)
-						{
-							new str[128], file[32], month, day, year;
-							getdate(year,month,day);
-							Tax += 500;
-							format(str, sizeof(str), "%s has their medical fees, adding $500 to the vault.", GetPlayerNameEx(playerid));
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-							Log(file, str);
-							break;
-						}
-					}
-				}
-				Misc_Save();
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Your hospital bill comes to $500. Have a nice day!");
-				SetPlayerPos(playerid, -2486.7124,2234.5493,4.8438);
-				SetPlayerFacingAngle(playerid, -90);
-				PlayerInfo[playerid][pHospital] = 0;
-				SetCameraBehindPlayer(playerid);
-				TogglePlayerControllable(playerid, 1);
-			}
-		}
-		if(!GetPVarType(playerid, "HealthCareActive"))
-  			PlayerInfo[playerid][pHunger] = 50;
-		else
-			PlayerInfo[playerid][pHunger] = 83;
-
-		if(!GetPVarType(playerid, "HealthCareActive"))
-			SetPlayerHealth(playerid, 50);
-		else
-			SetPlayerHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
-
-		if(!PlayerInfo[playerid][pInsurance]) {
-			SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "You have been charged extra money for not being insured!");
-			GameTextForPlayer( playerid, "~w~You are presently uninsured, ~n~buy insurance!", 5000, 6 );
-		}
-		PlayerInfo[playerid][pHydration] = 100;
-		if(PlayerInfo[playerid][pDonateRank] >= 3)
-		{
-			SetPlayerHealth(playerid, 100.0);
-			PlayerInfo[playerid][pHunger] = 100;
-		}
-		DeletePVar(playerid, "VIPSpawn");
-	}
-
-}
-
 stock SetPlayerSpawn(playerid)
 {
     if(IsPlayerConnected(playerid))
@@ -12164,616 +11673,23 @@ stock SetPlayerSpawn(playerid)
   				return 1;
 			}
 			#endif
+			if(PlayerInfo[playerid][pWantedLevel] > 0 && (PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE))
+			{
+				new wantedplace;
+				
+				switch(random(3))
+				{
+					case 0: {wantedplace = HOSPITAL_COUNTYGEN;}
+					case 1: {wantedplace = HOSPITAL_SANFIERRO;}
+					case 2: {wantedplace = HOSPITAL_ALLSAINTS;}
+				}
+				DeliverPlayerToHospital(playerid, wantedplace);
+			}
+			else
+			{
+				DeliverPlayerToHospital(playerid, PlayerInfo[playerid][pInsurance]);
+			}
 			
-			
-			SendClientMessageEx( playerid, TEAM_CYAN_COLOR, "Before you are discharged, hospital staff will confiscate your weapons." );
-			PlayerInfo[playerid][pDuty] = 0;
-			PlayerInfo[playerid][pVW] = 0;
-			PlayerInfo[playerid][pInt] = 0;
-			PlayerInfo[playerid][pHunger] = 50;
-
-			//Tazer & Cuff reset
-			PlayerInfo[playerid][pHasCuff] = 0;
-			PlayerInfo[playerid][pHasTazer] = 0;
-
-			// decrease fitness by 8
-			if (PlayerInfo[playerid][pFitness] >= 6)
-				PlayerInfo[playerid][pFitness] -= 6;
-			else
-				PlayerInfo[playerid][pFitness] = 0;
-
-			SetPlayerVirtualWorld(playerid, 0);
-			/*new cut = deathcost; //PlayerInfo[playerid][pLevel]*deathcost;
-			GivePlayerCash(playerid, -cut); GetPlayerDistanceFromPoint(iPlayerTwo, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-			format(string, sizeof(string), "Your hospital bill comes to $%d. Have a nice day!", cut);
-			SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);*/
-			ResetPlayerWeapons(playerid);
-
-			if( GetPVarInt( playerid, "EventToken" ) == 1 )
-			{
-				//SendClientMessageEx( playerid, COLOR_WHITE, "As you've just come from an event, your weapons have been refunded." );
-			}
-			else
-			{
-				ResetPlayerWeaponsEx(playerid);
-			}
-
-			SetPVarInt(playerid, "MedicBill", 1);
-			SetPlayerInterior(playerid, 0);
-			new string[70+MAX_PLAYER_NAME];
-			if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && !GetPVarType(playerid, "VIPSpawn"))
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				TogglePlayerControllable(playerid, false);
-				ShowPlayerDialog(playerid, DIALOG_VIPSPAWN, DIALOG_STYLE_LIST, "Spawn at VIP", "Los Santos VIP\nSan Fierro VIP\nLas Ventures VIP\nDon't spawn at VIP this time", "Select", "Close");
-				return 1;
-			}
-			else if(PlayerInfo[playerid][pVIPSpawn] == 1 && GetPVarInt(playerid, "VIPSpawn") > 0 && GetPVarInt(playerid, "VIPSpawn") < 4)
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				if(PlayerInfo[playerid][pWantedLevel] > 1)
-				{
-					switch(GetPVarInt(playerid, "VIPSpawn"))
-					{
-						case 1:
-						{
-							format(string, sizeof(string), " Club VIP (Los Santos) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-						case 2:
-						{
-							format(string, sizeof(string), " Club VIP (San Fierro) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-						case 3:
-						{
-							format(string, sizeof(string), " Club VIP (Las Ventures) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-					}
-					SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPVarInt(playerid, "HospitalTimer", 60);
-				PlayerInfo[playerid][pHospital] = 7;
-			}			
-			else if(PlayerInfo[playerid][pWantedLevel] > 1 && PlayerInfo[playerid][pInsurance] > 5 && (GetPVarInt(playerid, "VIPSpawn") != 1 && GetPVarInt(playerid, "VIPSpawn") != 2 && GetPVarInt(playerid, "VIPSpawn") != 3))
-			{
-				new randhos = Random(1, 6);
-				switch (randhos)
-   				{
-    				case 1:
-  	    			{
-						SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-						format(string, sizeof(string), " County General Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						SetPlayerCameraPos(playerid,1999.5308,-1449.3281,13.5594+6.0);
-						SetPlayerCameraLookAt(playerid,2036.2179,-1410.3223,17.1641);
-						SetPlayerPos(playerid, 1999.5308,-1449.3281,10.5594);
-						PlayerInfo[playerid][pHospital] = 2;
-					}
-					case 2:
-					{
-						SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-						format(string, sizeof(string), " All Saints Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
-						SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
-						SetPlayerPos(playerid, 1188.4574,-1309.2242,10.5625); // Warp the player
-						PlayerInfo[playerid][pHospital] = 1;
-					}
-					case 3:
-					{
-						SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-						format(string, sizeof(string), " Red County Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						SetPlayerCameraPos(playerid,1248.4147,338.8385,19.4063+6.0);
-						SetPlayerCameraLookAt(playerid,1241.4449,326.3389,19.7555);
-						SetPlayerPos(playerid, 1248.4147,338.8385,19.4063);
-						PlayerInfo[playerid][pHospital] = 3;
-					}
-					case 4:
-					{
-						SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-						format(string, sizeof(string), " Fort Carson Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						SetPlayerCameraPos(playerid,-314.0242,1060.7919,19.5938+6.0);
-						SetPlayerCameraLookAt(playerid,-320.0992,1049.0341,20.3403);
-						SetPlayerPos(playerid, -314.0242,1060.7919,19.5938);
-						PlayerInfo[playerid][pHospital] = 4;
-					}
-					case 5:
-					{
-						SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-						format(string, sizeof(string), " San Fierro Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						SetPlayerCameraPos(playerid,-2571.2766,558.7813,68.1754);
-						SetPlayerCameraLookAt(playerid,-2619.2883,596.2850,49.0966);
-						SetPlayerPos(playerid, -2653.6685,626.6485,4.8930);
-						PlayerInfo[playerid][pHospital] = 5;
-					}
-				}
-				SendGroupMessage(1, DEPTRADIO, string);
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 1)
-			{
-				SetPlayerCameraPos(playerid,1999.5308,-1449.3281,13.5594+6.0);
-				SetPlayerCameraLookAt(playerid,2036.2179,-1410.3223,17.1641);
-				SetPlayerPos(playerid, 1999.5308,-1449.3281,10.5594);
-				PlayerInfo[playerid][pHospital] = 2;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 2)
-			{
-				SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
-				SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
-				SetPlayerPos(playerid, 1188.4574,-1309.2242,10.5625); // Warp the player
-				PlayerInfo[playerid][pHospital] = 1;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 3)
-			{
-				SetPlayerCameraPos(playerid,1237.849243, 352.657409, 23.576650);
-				SetPlayerCameraLookAt(playerid,1239.147705, 348.883331, 23.311220);
-				SetPlayerPos(playerid, 1248.4147,338.8385,16.0);
-				PlayerInfo[playerid][pHospital] = 3;
-			}
-   			else if(PlayerInfo[playerid][pInsurance] == 4)
-			{
-				SetPlayerCameraPos(playerid,-314.0242,1060.7919,19.5938+6.0);
-				SetPlayerCameraLookAt(playerid,-320.0992,1049.0341,20.3403);
-				SetPlayerPos(playerid, -314.0242,1060.7919,19.5938);
-				PlayerInfo[playerid][pHospital] = 4;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 5)
-			{
-				SetPlayerCameraPos(playerid,-2571.2766,558.7813,68.1754);
-				SetPlayerCameraLookAt(playerid,-2619.2883,596.2850,49.0966);
-				SetPlayerPos(playerid, -2653.6685,626.6485,4.8930);
-				PlayerInfo[playerid][pHospital] = 5;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 6)
-			{
-			    if(PlayerInfo[playerid][pDonateRank] >= 3)
-			    {
-					SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-					SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-					SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-					PlayerInfo[playerid][pHospital] = 7;
-				}
-				else
-				{
-					PlayerInfo[playerid][pInsurance] = 0;
-			        SetPlayerSpawn(playerid);
-				}
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 7)
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				PlayerInfo[playerid][pHospital] = 8;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 8)
-			{
-
-			    new Float:X, Float:Y, Float:Z;
-				GetDynamicObjectPos(Carrier[0], X, Y, Z);
-				SetPlayerCameraPos(playerid,(X-100),(Y-100),30);
-				SetPlayerCameraLookAt(playerid,X, Y, Z);
-				SetPlayerPos(playerid, (X-0.377671),(Y-10.917018),0);
-				PlayerInfo[playerid][pHospital] = 9;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 9)
-			{
-				SetPlayerCameraPos(playerid, -1529.847167, 2539.394042, 62.038913);
-				SetPlayerCameraLookAt(playerid, -1514.883300, 2527.161132, 55.743553);
-				SetPlayerPos(playerid, -1514.809204, 2526.305175, 51.865501);
-				PlayerInfo[playerid][pHospital] = 10;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 10)
-			{
-				if(!IsACop(playerid))
-				{
-			        PlayerInfo[playerid][pInsurance] = 0;
-			        SetPlayerSpawn(playerid);
-				}
-				else
-				{
-					SetPlayerPos(playerid,-1633.0745, 266.1379, 1.2124);
-					SetPlayerCameraPos(playerid, -1633.7493, 266.4792, 28.4621);
-					SetPlayerCameraLookAt(playerid, -1634.6990, 266.8079, 28.1269);
-					TogglePlayerControllable(playerid, 0);
-					PlayerInfo[playerid][pHospital] = 11;
-				}
-			}
-            else if(PlayerInfo[playerid][pInsurance] == 11)
-			{
-				SetPlayerCameraPos(playerid, 1575.5074, 1862.8700, 22.8418);
-				SetPlayerCameraLookAt(playerid, 1607.4342, 1826.3204, 10.8203);
-				SetPlayerPos(playerid, 1578.7942, 1862.1686, 3.6148);
-				PlayerInfo[playerid][pHospital] = 12;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 12)
-			{
-				SetPlayerCameraPos(playerid, 922.253, 1430.680, -80.411);
-    			SetPlayerCameraLookAt(playerid,917.2774,1425.5016,-80.7928);
-				SetPlayerPos(playerid, 922.4749, 1430.8566, -85.9349);
-				PlayerInfo[playerid][pHospital] = 13;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 13) //DeMorgan
-			{
-				SetPlayerCameraPos(playerid, 241.085021, 2018.862182, 24.019464);
-				SetPlayerCameraLookAt(playerid, 239.654739, 2015.127685, 23.928848);
-				SetPlayerPos(playerid, 226.7881,1981.7726,11.6014);
-				PlayerInfo[playerid][pHospital] = 14;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 14) //TR - Bayside
-			{
-				SetPlayerCameraPos(playerid, -2472.393310, 2255.071777, 8.939566);
-				SetPlayerCameraLookAt(playerid, -2475.382324, 2252.422119, 9.152222);
-				SetPlayerPos(playerid, -2486.7124,2234.5493,1.0);
-				PlayerInfo[playerid][pHospital] = 15;
-			}
-   			if(PlayerInfo[playerid][pInsurance] == 0 && (GetPVarInt(playerid, "VIPSpawn") != 1 && GetPVarInt(playerid, "VIPSpawn") != 2 && GetPVarInt(playerid, "VIPSpawn") != 3))
-			{
-				new randhos = Random(1,3);
- 				switch (randhos)
-   				{
-    				case 1:
-  	    			{
-    					if(PlayerInfo[playerid][pWantedLevel] >= 1)
-						{
-				    		SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-				    		format(string, sizeof(string), " All Saints Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    		SendGroupMessage(1, DEPTRADIO, string);
-						}
-
-						SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
-						SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
-						SetPlayerPos(playerid, 1188.4574,-1309.2242,10.5625); // Warp the player
-						PlayerInfo[playerid][pHospital] = 6;
-  	    			}
-    	    		case 2:
-	    	    	{
-    			    	if(PlayerInfo[playerid][pWantedLevel] >= 1)
-						{
-				    		SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-				    		format(string, sizeof(string), " County General Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    		SendGroupMessage(1, DEPTRADIO, string);
-						}
-
-						SetPlayerCameraPos(playerid,1999.5308,-1449.3281,13.5594+6.0);
-						SetPlayerCameraLookAt(playerid,2036.2179,-1410.3223,17.1641);
-						SetPlayerPos(playerid, 1999.5308,-1449.3281,10.5594);
-						PlayerInfo[playerid][pHospital] = 2;
-   					}
-   				}
-			}
-			TogglePlayerControllable(playerid, 0);
-			SetPlayerHealth(playerid, 0.5);
-			if(PlayerInfo[playerid][pDonateRank] >= 4)
-			{
-			 	SetPVarInt(playerid, "HospitalTimer", 5);
-			   	SetPVarInt(playerid, "HealthCareActive", 1);
-			}
-			else if(PlayerInfo[playerid][pHealthCare] == 0)
-			{
-			    SendClientMessageEx(playerid, COLOR_CYAN, "You currently have standard health care, type /togglehealthcare to purchase better health care.");
-				if(GetPVarInt(playerid, "VIPSpawn") != 1 && GetPVarInt(playerid, "VIPSpawn") != 2 && GetPVarInt(playerid, "VIPSpawn") != 3)
-				{
-					SetPVarInt(playerid, "HospitalTimer", 35);
-				}	
-			}
-			else if(PlayerInfo[playerid][pHealthCare] == 1)
-			{
-			    if(PlayerInfo[playerid][pCredits] >= ShopItems[18][sItemPrice])
-			    {
-			        GivePlayerCredits(playerid, -ShopItems[18][sItemPrice], 1);
-			        printf("Price18: %d", 1);
-			    	SetPVarInt(playerid, "HealthCareActive", 1);
-
-                    AmountSold[18]++;
-                    AmountMade[18] += ShopItems[18][sItemPrice];
-			    	//ShopItems[18][sSold]++;
-					//ShopItems[18][sMade] += ShopItems[18][sItemPrice];
-					new szQuery[128];
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold18` = '%d', `AmountMade18` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[18], AmountMade[18]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-					format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Adv][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[18][sItemPrice]));
-					Log("logs/credits.log", string), print(string);
-				}
-				else
-				{
-				    SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
-				}
-			    SetPVarInt(playerid, "HospitalTimer", 35);
-			}
-			else
-			{
-			    if(PlayerInfo[playerid][pCredits] >= ShopItems[19][sItemPrice])
-			    {
-			        GivePlayerCredits(playerid, -ShopItems[19][sItemPrice], 1);
-			        printf("Price19: %d", 2);
-			    	SetPVarInt(playerid, "HospitalTimer", 5);
-			    	SetPVarInt(playerid, "HealthCareActive", 1);
-                    AmountSold[19]++;
-					AmountMade[19] += ShopItems[19][sItemPrice];
-			    	//ShopItems[19][sSold]++;
-					//ShopItems[19][sMade] += ShopItems[19][sItemPrice];
-					new szQuery[128];
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold19` = '%d', `AmountMade19` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[19], AmountMade[19]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-			    	format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Super][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[19][sItemPrice]));
-					Log("logs/credits.log", string), print(string);
-				}
-				else
-				{
-				    SetPVarInt(playerid, "HospitalTimer", 35);
-				    SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
-				}
-			}
-			SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
-			return 1;
-		}
-		if(PlayerInfo[playerid][pHospital] == 0)
-		{
-			SetPlayerPos(playerid,PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z]);
-			//PlayerInfo[playerid][pInterior] = PlayerInfo[playerid][pInt];
-			SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
-			SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pPos_r]);
-			SetPlayerInterior(playerid,PlayerInfo[playerid][pInt]);
-			if(PlayerInfo[playerid][pHealth] < 1) PlayerInfo[playerid][pHealth] = 100;
-			SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
-			if(PlayerInfo[playerid][pArmor] > 0) {
-				SetPlayerArmor(playerid, PlayerInfo[playerid][pArmor]);
-			}
-			SetCameraBehindPlayer(playerid);
-			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
-		}
-		else
-		{
-		    PlayerInfo[playerid][pDuty] = 0;
-			PlayerInfo[playerid][pVW] = 0;
-			PlayerInfo[playerid][pInt] = 0;
-			SetPlayerVirtualWorld(playerid, 0);
-			if( GetPVarInt( playerid, "EventToken" ) == 1 )
-			{
-				//SendClientMessageEx( playerid, COLOR_WHITE, "As you've just come from an event, your weapons have been refunded." );
-			}
-			else
-			{
-				ResetPlayerWeaponsEx(playerid);
-			}
-
-			SetPVarInt(playerid, "MedicBill", 1);
-			new string[70+MAX_PLAYER_NAME];
-			if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && !GetPVarType(playerid, "VIPSpawn"))
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				TogglePlayerControllable(playerid, false);
-				ShowPlayerDialog(playerid, DIALOG_VIPSPAWN, DIALOG_STYLE_LIST, "Spawn at VIP", "Los Santos VIP\nSan Fierro VIP\nLas Ventures VIP\nDon't spawn at VIP this time", "Select", "Close");
-				return 1;
-			}
-			else if(PlayerInfo[playerid][pVIPSpawn] == 1 && GetPVarInt(playerid, "VIPSpawn") > 0 && GetPVarInt(playerid, "VIPSpawn") < 4)
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				if(PlayerInfo[playerid][pWantedLevel] > 1)
-				{
-					switch(GetPVarInt(playerid, "VIPSpawn"))
-					{
-						case 1:
-						{
-							format(string, sizeof(string), " Club VIP (Los Santos) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-						case 2:
-						{
-							format(string, sizeof(string), " Club VIP (San Fierro) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-						case 3:
-						{
-							format(string, sizeof(string), " Club VIP (Las Ventures) has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-						}
-					}
-					SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPVarInt(playerid, "HospitalTimer", 60);
-				PlayerInfo[playerid][pHospital] = 7;
-			}			
-			if(PlayerInfo[playerid][pInsurance] == 1)
-			{
-			    if(PlayerInfo[playerid][pWantedLevel] >= 1)
-				{
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "The police have been informed of your current location and are on their way.");
-				    format(string, sizeof(string), " County General Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPlayerCameraPos(playerid,1999.5308,-1449.3281,13.5594+6.0);
-				SetPlayerCameraLookAt(playerid,2036.2179,-1410.3223,17.1641);
-				SetPlayerPos(playerid, 1999.5308,-1449.3281,10.5594);
-				PlayerInfo[playerid][pHospital] = 2;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 2)
-			{
-			    if(PlayerInfo[playerid][pWantedLevel] >= 1)
-				{
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "The police have been informed of your current location and are on their way.");
-				    format(string, sizeof(string), " All Saints Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
-				SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
-				SetPlayerPos(playerid, 1188.4574,-1309.2242,10.5625); // Warp the player
-				PlayerInfo[playerid][pHospital] = 1;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 3)
-			{
-			    if(PlayerInfo[playerid][pWantedLevel] >= 1)
-				{
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "The police have been informed of your current location and are on their way.");
-				    format(string, sizeof(string), " Red County Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPlayerCameraPos(playerid,1248.4147,338.8385,19.4063+6.0);
-				SetPlayerCameraLookAt(playerid,1241.4449,326.3389,19.7555);
-				SetPlayerPos(playerid, 1248.4147,338.8385,19.4063);
-				PlayerInfo[playerid][pHospital] = 3;
-			}
-   			else if(PlayerInfo[playerid][pInsurance] == 4)
-			{
-			    if(PlayerInfo[playerid][pWantedLevel] >= 1)
-				{
-				    SendClientMessageEx(playerid, COLOR_YELLOW, "The police have been informed of your current location and are on their way.");
-				    format(string, sizeof(string), " Fort Carson Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPlayerCameraPos(playerid,-314.0242,1060.7919,19.5938+6.0);
-				SetPlayerCameraLookAt(playerid,-320.0992,1049.0341,20.3403);
-				SetPlayerPos(playerid, -314.0242,1060.7919,19.5938);
-				PlayerInfo[playerid][pHospital] = 4;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 5)
-			{
-			    if(PlayerInfo[playerid][pWantedLevel] >= 1)
-				{
-				    SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-				    format(string, sizeof(string), " San Fierro Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    SendGroupMessage(1, DEPTRADIO, string);
-				}
-				SetPlayerCameraPos(playerid,-2571.2766,558.7813,68.1754);
-				SetPlayerCameraLookAt(playerid,-2619.2883,596.2850,49.0966);
-				SetPlayerPos(playerid, -2653.6685,626.6485,4.8930);
-				PlayerInfo[playerid][pHospital] = 5;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 6)
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				PlayerInfo[playerid][pHospital] = 7;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 7)
-			{
-				SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-				SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-				SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-				PlayerInfo[playerid][pHospital] = 8;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 8)
-			{
-			    new Float:X, Float:Y, Float:Z;
-				GetDynamicObjectPos(Carrier[0], X, Y, Z);
-				SetPlayerCameraPos(playerid,(X-100),(Y-100),30);
-				SetPlayerCameraLookAt(playerid,X, Y, Z);
-				SetPlayerPos(playerid, (X-0.377671),(Y-10.917018),0);
-				PlayerInfo[playerid][pHospital] = 9;
-			}
-			else if(PlayerInfo[playerid][pInsurance] == 9)
-			{
-				SetPlayerCameraPos(playerid, -1529.847167, 2539.394042, 62.038913);
-				SetPlayerCameraLookAt(playerid, -1514.883300, 2527.161132, 55.743553);
-				SetPlayerPos(playerid, -1514.809204, 2526.305175, 51.865501);
-				PlayerInfo[playerid][pHospital] = 10;
-			}
-   			if(PlayerInfo[playerid][pInsurance] == 0 && (GetPVarInt(playerid, "VIPSpawn") != 1 && GetPVarInt(playerid, "VIPSpawn") != 2 && GetPVarInt(playerid, "VIPSpawn") != 3))
-			{
-				new randhos = Random(1,3);
- 				switch(randhos)
-   				{
-    				case 1:
-  	    			{
-    					if(PlayerInfo[playerid][pWantedLevel] >= 1)
-						{
-				    		SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-				    		format(string, sizeof(string), " All Saints Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    		SendGroupMessage(1, DEPTRADIO, string);
-						}
-
-						SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
-						SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
-						SetPlayerPos(playerid, 1188.4574,-1309.2242,10.5625); // Warp the player
-						PlayerInfo[playerid][pHospital] = 6;
-  	    			}
-    	    		case 2:
-	    	    	{
-    			    	if(PlayerInfo[playerid][pWantedLevel] >= 1)
-						{
-				    		SendClientMessageEx(playerid, COLOR_YELLOW, " The police has been warned that you are wanted and they are on their way.");
-				    		format(string, sizeof(string), " County General Hospital has reported %s as a wanted person.", GetPlayerNameEx(playerid));
-				    		SendGroupMessage(1, DEPTRADIO, string);
-						}
-
-						SetPlayerCameraPos(playerid,1999.5308,-1449.3281,13.5594+6.0);
-						SetPlayerCameraLookAt(playerid,2036.2179,-1410.3223,17.1641);
-						SetPlayerPos(playerid, 1999.5308,-1449.3281,10.5594);
-						PlayerInfo[playerid][pHospital] = 2;
-   					}
-   				}
-			}
-			TogglePlayerControllable(playerid, 0);
-			SetPlayerHealth(playerid, 0.5);
-			if(PlayerInfo[playerid][pDonateRank] >= 4)
-			{
-			   	SetPVarInt(playerid, "HospitalTimer", 5);
-			   	SetPVarInt(playerid, "HealthCareActive", 1);
-			}
-			else if(PlayerInfo[playerid][pHealthCare] == 0)
-			{
-			    SendClientMessageEx(playerid, COLOR_CYAN, "You currently have standard health care, type /togglehealthcare to purchase better health care.");
-				if(GetPVarInt(playerid, "VIPSpawn") != 1 && GetPVarInt(playerid, "VIPSpawn") != 2 && GetPVarInt(playerid, "VIPSpawn") != 3)
-				{
-					SetPVarInt(playerid, "HospitalTimer", 35);
-				}	
-			}
-			else if(PlayerInfo[playerid][pHealthCare] == 1)
-			{
-			    if(PlayerInfo[playerid][pCredits] >= ShopItems[18][sItemPrice])
-			    {
-			        GivePlayerCredits(playerid, -ShopItems[18][sItemPrice], 1);
-			        printf("Price18: %d", 1);
-			    	SetPVarInt(playerid, "HealthCareActive", 1);
-                    AmountSold[18]++;
-					AmountMade[18] += ShopItems[18][sItemPrice];
-			    	//ShopItems[18][sSold]++;
-					//ShopItems[18][sMade] += ShopItems[18][sItemPrice];
-					new szQuery[128];
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold18` = '%d', `AmountMade18` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[18], AmountMade[18]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-					format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Adv][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[18][sItemPrice]));
-					Log("logs/credits.log", string), print(string);
-				}
-				else
-				{
-				    SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
-				}
-			    SetPVarInt(playerid, "HospitalTimer", 35);
-			}
-			else
-			{
-			    if(PlayerInfo[playerid][pCredits] >= ShopItems[19][sItemPrice])
-			    {
-			        GivePlayerCredits(playerid, -ShopItems[19][sItemPrice], 1);
-			        printf("Price19: %d", ShopItems[19][sItemPrice]);
-			    	SetPVarInt(playerid, "HospitalTimer", 5);
-			    	SetPVarInt(playerid, "HealthCareActive", 1);
-                    AmountSold[19]++;
-					AmountMade[19] += ShopItems[19][sItemPrice];
-			    	//ShopItems[19][sSold]++;
-					//ShopItems[19][sMade] += ShopItems[19][sItemPrice];
-					new szQuery[128];
-				 	format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold19` = '%d', `AmountMade19` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[19], AmountMade[19]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-			    	format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Super][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[19][sItemPrice]));
-					Log("logs/credits.log", string), print(string);
-				}
-				else
-				{
-				    SetPVarInt(playerid, "HospitalTimer", 35);
-				    SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
-				}
-			}
-			SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 		}
 		new Float: x, Float: y, Float: z;
 		GetPlayerPos(playerid, x, y, z);
@@ -12941,38 +11857,6 @@ stock IsAtArrestPoint(playerid, type)
 					}
 				}
 			}
-		}
-	}
-	return 0;
-}
-
-stock IsAtDeliverPatientPoint(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(IsPlayerInRangeOfPoint(playerid, 3.0,1142.4733,-1326.3633,13.6259) || IsPlayerInRangeOfPoint(playerid, 5.0, 1165.1564,-1368.8240,26.6502) || IsPlayerInRangeOfPoint(playerid, 3.0,2027.0599,-1410.6870,16.9922) || IsPlayerInRangeOfPoint(playerid, 5.0, 2024.5742,-1382.7844,48.3359))
-		{//ALLSAINTS, ALL SAINTS ROOF, COUNTY GENERAL, COUNTY ROOF
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 4.0, 1227.2339,306.4730,19.7028) || IsPlayerInRangeOfPoint(playerid, 5.0, 1233.3384,316.4022,24.7578) || IsPlayerInRangeOfPoint(playerid, 3.0,-339.2989,1055.8138,19.7392) || IsPlayerInRangeOfPoint(playerid, 5.0, -334.1560,1051.4434,26.0125))
-		{//RED COUNTY, RED COUNTY ROOF, FORT CARSON, Fortcarson ROOF
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 5.0, -2695.5725,639.4147,14.4531) || IsPlayerInRangeOfPoint(playerid, 5.0, -2656.0339,615.2567,66.0938))
-		{//SF, SF ROOF
-		    return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 5.0, -1528.814331, 2540.706054, 55.835937) || IsPlayerInRangeOfPoint(playerid, 5.0, -2482.4338,2231.1106,4.8463) || IsPlayerInRangeOfPoint(playerid, 5.0, 225.3467,1981.8497,17.6406))
-		{//El Quebrados , Bayside, Demorgan
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 5.0, 1446.7561, -276.9353, 1.1067))
-		{// Red County near SASD Boat Patrol HQ
-			return 1;
-		}
-		else if(IsPlayerInRangeOfPoint(playerid, 5.0, 1579.58, 1768.88, 10.82))
-		{// Las Venturas Hospital
-			return 1;
 		}
 	}
 	return 0;
@@ -17830,8 +16714,8 @@ stock SaveAllAccountsUpdate()
 stock ClearTackle(playerid)
 {
     TogglePlayerControllable(playerid, 1);
-	PreloadAnimLib(playerid, "SUNBATHE");
-	PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
+	//PreloadAnimLib(playerid, "SUNBATHE");
+	//PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
     ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, 0, 1, 1, 0, 0, 1);
 	SetPVarInt(playerid, "CantBeTackledCount", 15); // cant be tackled again for 15 seconds
 	DeletePVar(GetPVarInt(playerid, "IsTackled"), "Tackling");
@@ -18689,24 +17573,9 @@ stock ShowStats(playerid,targetid)
 			case 0: nation = "San Andreas";
 			case 1: nation = "Tierra Robada";
 		}
-		new insur[20];
-		switch(PlayerInfo[targetid][pInsurance])
-		{
-			case 1: insur = "County General";
-			case 2: insur = "All Saints";
-			case 3: insur = "Montgomery";
-			case 4: insur = "Fort Carson";
-			case 5: insur = "San Fierro";
-			case 6: insur = "Club VIP";
-			case 7: insur = "Home Care";
-			case 9: insur = "El Quebrados";
-			case 10: insur = "SAAS Base Hospital";
-			case 11: insur = "Las Venturas";
-			case 12: insur = "Famed Room";
-			case 13: insur = "DeMorgan";
-			case 14: insur = "Bayside";
-			default: insur = "None";
-		}
+		new insur[32];
+		insur = GetHospitalName(PlayerInfo[targetid][pInsurance]);
+
 		new staffrank[64];
 		if(PlayerInfo[targetid][pHelper] > 0 || PlayerInfo[targetid][pWatchdog] > 0 || PlayerInfo[targetid][pSEC] > 0 || PlayerInfo[targetid][pAdmin] == 1 || (PlayerInfo[targetid][pAdmin] > 1 && PlayerInfo[playerid][pAdmin] <= PlayerInfo[targetid][pAdmin])) format(staffrank, sizeof(staffrank), "%s", GetStaffRank(targetid));
 		else staffrank = "";
@@ -27805,4 +26674,263 @@ public EatBar(playerid)
 stock randomString(strDest[], strLen = 10)
 {
 	while(strLen--) strDest[strLen] = random(2) ? (random(26) + (random(2) ? 'a' : 'A')) : (random(10) + '0');
+}
+
+DeliverPlayerToHospital(playerid, iHospital)
+{
+	TogglePlayerControllable(playerid, 0);
+	SetPlayerInterior(playerid, 1);
+	PlayerInfo[playerid][pInt] = 1;
+	PlayerInfo[playerid][pHospital] = 1;
+	new string[128];
+	
+	new index = GetFreeHospitalBed(iHospital);
+	arrHospitalBedData[iHospital][bBedOccupied][index] = true;
+	
+	SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "i", playerid);
+	
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		SetPlayerPos(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, DocHospitalSpawns[index][3]);
+		SetPlayerVirtualWorld(playerid, 0);
+		PlayerInfo[playerid][pVW] = 0;
+	}
+	else 
+	{
+		SetPlayerPos(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, 180);
+		SetPlayerVirtualWorld(playerid, iHospital);
+		PlayerInfo[playerid][pVW] = iHospital;
+	}
+	SetPVarInt(playerid, "_SpawningAtHospital", 1);
+	
+	if(GetPVarInt(playerid, "_HospitalBeingDelivered") == 1) // if player is delivered
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 10;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been delivered to the hospital by an ambulance.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You will now be treated at the hospital for your injuries.");
+	}
+	else if(PlayerInfo[playerid][pWantedLevel] >= 1) // if player wanted
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 140;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
+		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
+		SendGroupMessage(1, DEPTRADIO, string);
+	}
+	else if(PlayerInfo[playerid][pHealthCare] > 0) // if player has credit insurance
+	{
+		if(PlayerInfo[playerid][pHealthCare] == 1) arrHospitalBedData[iHospital][iCountDown][index] = 8;
+		else if(PlayerInfo[playerid][pHealthCare] == 2) arrHospitalBedData[iHospital][iCountDown][index] = 4;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have advanced healthcare toggled, you will spawn faster as a result.");
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
+	}
+	else // if player has regular insurance
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 40;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Want to spawn faster? Enable advanced healthcare using /togglehealthcare.");
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
+	}
+	ShowCountdownTextdraw(playerid);
+	valstr(string, arrHospitalBedData[iHospital][iCountDown][index]);
+	PlayerTextDrawSetString(playerid, Hosptimecount[playerid], string);
+	arrHospitalBedData[iHospital][iTimer][index] = SetTimerEx("ReleaseFromHospital", 1000, true, "iii", playerid, iHospital, index);
+	
+	return 1;
+}
+
+forward Hospital_StreamIn(playerid);
+public Hospital_StreamIn(playerid)
+{
+	TogglePlayerControllable(playerid, 1);
+	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0, 1);
+	
+	return 1;
+}
+
+GetFreeHospitalBed(iHospital)
+{
+	new iFree;
+	
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		for(new i = 0; i < MAX_DOCHOSPITALBEDS; i++)
+		{
+			if(arrHospitalBedData[iHospital][bBedOccupied][i] == false)
+			{
+				iFree = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		for(new i = 0; i < MAX_HOSPITALBEDS; i++)
+		{
+			if(arrHospitalBedData[iHospital][bBedOccupied][i] == false)
+			{
+				iFree = i;
+				break;
+			}
+		}
+	}
+	return iFree;
+}
+
+GetHospitalName(iHospital)
+{
+	new string[32];
+	switch(iHospital)
+	{
+		case HOSPITAL_ALLSAINTS: string = "All Saints";
+		case HOSPITAL_COUNTYGEN: string = "County General";
+		case HOSPITAL_SANFIERRO: string = "San Fierro";
+		case HOSPITAL_REDCOUNTY: string = "Red County";
+		case HOSPITAL_ELQUEBRADOS: string = "El Quebrados";
+		case HOSPITAL_LASVENTURAS: string = "Las Venturas";
+		case HOSPITAL_FORTCARSON: string = "Fort Carson";
+		case HOSPITAL_ANGELPINE: string = "Angel Pine";
+		case HOSPITAL_BAYSIDE: string = "Bayside";
+		case HOSPITAL_DEMORGAN: string = "DeMorgan";
+		case HOSPITAL_DOCJAIL: string = "DOC Jail";
+		case HOSPITAL_LSVIP: string = "LS VIP";
+		case HOSPITAL_SFVIP: string = "SF VIP";
+		case HOSPITAL_LVVIP: string = "LV VIP";
+		case HOSPITAL_HOMECARE: string = "Homecare";
+	}
+	
+	return string;
+}
+
+forward ReleaseFromHospital(playerid, iHospital, iBed);
+public ReleaseFromHospital(playerid, iHospital, iBed)
+{
+	new string[128],
+	file[32], month, day, year;
+	getdate(year,month,day);
+	
+	arrHospitalBedData[iHospital][iCountDown][iBed]--;
+	if(arrHospitalBedData[iHospital][iCountDown][iBed] == 0)
+	{
+		ClearAnimations(playerid);
+		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
+		DeletePVar(playerid, "_SpawningAtHospital");
+		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
+		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
+		DestroyCountdownTextdraw(playerid);
+		
+		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) // if they have homecare, set them at home for free
+		{
+			// set them to their house entrance location....
+			// using house spawn system from previous insurance system
+			for(new i = 0; i < sizeof(HouseInfo); i++)
+			{
+				if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i)
+				{
+					Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+					SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
+					SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+					GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+					PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
+					PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
+					SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
+					if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
+					break;
+				}
+			}
+			
+			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+		}
+		else
+		{
+			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+			SendClientMessageEx(playerid, COLOR_RED, string);
+		}
+		
+		PlayerInfo[playerid][pHospital] = 0;
+		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
+		Tax += HospitalSpawnInfo[iHospital][0];
+		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
+	}
+	else
+	{
+		valstr(string, arrHospitalBedData[iHospital][iCountDown][iBed]);
+		PlayerTextDrawSetString(playerid, Hosptimecount[playerid], string);
+	}
+	
+	return 1;
+}
+
+ShowCountdownTextdraw(playerid)
+{
+	Hosptimeleftlbl[playerid] = CreatePlayerTextDraw(playerid, 255.000000, 432.000000, "Time left:");
+	PlayerTextDrawAlignment(playerid, Hosptimeleftlbl[playerid], 2);
+	PlayerTextDrawBackgroundColor(playerid, Hosptimeleftlbl[playerid], 255);
+	PlayerTextDrawFont(playerid, Hosptimeleftlbl[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, Hosptimeleftlbl[playerid], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid, Hosptimeleftlbl[playerid], 16777215);
+	PlayerTextDrawSetOutline(playerid, Hosptimeleftlbl[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, Hosptimeleftlbl[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, Hosptimeleftlbl[playerid], 1);
+	
+	Hosptimecount[playerid] = CreatePlayerTextDraw(playerid, 313.000000, 432.000000, "**");
+	PlayerTextDrawAlignment(playerid, Hosptimecount[playerid], 2);
+	PlayerTextDrawBackgroundColor(playerid, Hosptimecount[playerid], 255);
+	PlayerTextDrawFont(playerid, Hosptimecount[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, Hosptimecount[playerid], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid, Hosptimecount[playerid], -16776961);
+	PlayerTextDrawSetOutline(playerid, Hosptimecount[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, Hosptimecount[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, Hosptimecount[playerid], 1);
+	
+	Hospitalunitslbl[playerid] = CreatePlayerTextDraw(playerid, 361.000000, 432.000000, "seconds");
+	PlayerTextDrawAlignment(playerid, Hosptimecount[playerid], 2);
+	PlayerTextDrawBackgroundColor(playerid, Hospitalunitslbl[playerid], 255);
+	PlayerTextDrawFont(playerid, Hospitalunitslbl[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, Hospitalunitslbl[playerid], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid, Hospitalunitslbl[playerid], -16776961);
+	PlayerTextDrawSetOutline(playerid, Hospitalunitslbl[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, Hospitalunitslbl[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, Hospitalunitslbl[playerid], 1);
+	
+	return 1;
+}
+
+DestroyCountdownTextdraw(playerid)
+{
+	PlayerTextDrawDestroy(playerid, Hosptimeleftlbl[playerid]);
+	PlayerTextDrawDestroy(playerid, Hosptimecount[playerid]);
+	PlayerTextDrawDestroy(playerid, Hospitalunitslbl[playerid]);
+	return 1;
+}
+
+IsAtDeliverPatientPoint(playerid)
+{
+	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2])) return true;
+	}
+	
+	return 0;
+}
+
+GetClosestDeliverPatientPoint(playerid)
+{
+	new iPoint;
+	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
+	{
+		if(IsAtDeliverPatientPoint(playerid))
+		{
+			iPoint = i;
+			break;
+		}
+	}
+	return iPoint;
 }

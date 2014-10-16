@@ -1643,3 +1643,9 @@ enum eStructureFires {
 	iFireStrength,
 	Float:fFirePos[3],
 }
+
+enum eHospitalBedData {
+	bool:bBedOccupied[MAX_HOSPITALBEDS],
+	iCountDown[MAX_HOSPITALBEDS],
+	iTimer[MAX_HOSPITALBEDS]
+}

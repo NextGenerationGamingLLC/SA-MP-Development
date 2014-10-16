@@ -21,10 +21,10 @@
 									 Miguel (s0nic)
 								
 								**   Development Staff:
-									 Brendan
 									 Donuts
 									 Austin
 									 Dom
+									 Connor
 									 Farva
 
 				Past Developers:
@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.143"
+#define SERVER_GM_TEXT "NG:RP v3.0.145"
 
 
 
@@ -107,6 +107,7 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
+#include "./includes/vactions.pwn"
 
 #pragma unused DynamicBusiness
 

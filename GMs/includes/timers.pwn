@@ -2046,7 +2046,10 @@ task ServerHeartbeat[1000]() {
 					}
 					else
 					{
-						PlayerCuffedTime[i] -= 1;
+						if(playerTabbed[i] == 0)
+						{
+							PlayerCuffedTime[i] -= 1;
+						}
 					}
 				}
 				if(PlayerCuffed[i] == 2)
@@ -2090,7 +2093,10 @@ task ServerHeartbeat[1000]() {
 					}
 					else
 					{
-						PlayerCuffedTime[i] -= 1;
+						if(playerTabbed[i] == 0)
+						{
+							PlayerCuffedTime[i] -= 1;
+						}
 					}
 				}
 				UpdateSpeedCamerasForPlayer(i);

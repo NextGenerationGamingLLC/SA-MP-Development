@@ -372,7 +372,8 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 321.43, 303.96, 999.14+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2112, 5, -1); //
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 1533.6, -1760.9, 2264.4+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2345, 18, -1); //
 	CreateDynamic3DTextLabel("Back Entrance", COLOR_DBLUE, -2033.7502,-154.8784,35.3203+0.6, 4.0); // Prison
-	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,225.3467,1981.8497,17.6406+0.6,4.0);//Deliverpt (DeMorgan)
+	
+	/*CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,225.3467,1981.8497,17.6406+0.6,4.0);//Deliverpt (DeMorgan)
    	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-1528.814331, 2540.706054, 55.835937+0.6,4.0);///Deliverpt (TR - El Quebrados)
    	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1142.4733,-1326.3633,13.6259+0.6,4.0);///Deliverpt (All Saints)
    	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,2027.0599,-1410.6870,16.9922+0.6,4.0);///Deliverpt (County General)
@@ -386,11 +387,12 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1579.58,1768.88,10.82+0.6,4.0); // /deliverpt (LV Hospital)
    	CreateDynamic3DTextLabel("Emergency Room\n/deliverpt",COLOR_DBLUE,-2695.5725,639.4147,14.4531+0.6,4.0);///Deliverpt (SF)
 	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-2482.4338,2231.1106,4.8463+0.6,4.0);///Deliverpt (TR - Bayside)
-   	CreateDynamic3DTextLabel("/deliver",COLOR_DBLUE,1991.7953,-2321.2532,13.5469+0.6,4.0);// Deliver
-   	CreateDynamic3DTextLabel("/healme \nTo cure your disease",COLOR_DBLUE,1179.4012451172,-1331.5632324219,2423.0461425781+0.6,4.0);// /healme
-   	CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,1169.7209472656,-1348.3218994141,2423.0461425781+0.6,4.0);// Insurance
-   	CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,2785.586914, 2400.224853, 1240.531127+0.6,8.0);// GVIP Insurance
-   	CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,912.1003,1429.9298,-81.1762+0.6,4.0);// Famed Room Insurance
+   	CreateDynamic3DTextLabel("/deliver",COLOR_DBLUE,1991.7953,-2321.2532,13.5469+0.6,4.0);// Deliver 
+	*/
+	//CreateDynamic3DTextLabel("/healme \nTo cure your disease",COLOR_DBLUE,1179.4012451172,-1331.5632324219,2423.0461425781+0.6,4.0);// /healme
+   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,1169.7209472656,-1348.3218994141,2423.0461425781+0.6,4.0);// Insurance
+   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,2785.586914, 2400.224853, 1240.531127+0.6,8.0);// GVIP Insurance
+   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,912.1003,1429.9298,-81.1762+0.6,4.0);// Famed Room Insurance
 	CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
     CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
 	CreateDynamic3DTextLabel("Type /getlicense to \nacquire a license.",COLOR_YELLOW,366.54,159.09,1008.38+0.5,8.0);// Licenses.
@@ -499,6 +501,18 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Monument to the Battles of Bayside", COLOR_YELLOW, -2333.5400, 2262.8799, 4.8137, 20.0);
 	CreateDynamic3DTextLabel("Monument to the Revolution", COLOR_YELLOW, -2325.9256, 2338.7119, 4.8137, 20.0);
 	CreateDynamic3DTextLabel("Monument to the Civil Services and Mechanist Union of Tierra Robada", COLOR_YELLOW, -2356.6712, 2222.0739, 4.8137, 20.0);
+	
+	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
+	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
+	CreateDynamicPickup(1239, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
+	CreateDynamicPickup(1239, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
+	
+	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
+	{
+		CreateDynamic3DTextLabel("EMS Delivery Point\n/deliverpt", COLOR_YELLOW, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2], 10);
+		CreateDynamicPickup(1240, 23, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2], -1);
+	}
+	
 	print("[Streamer] Dynamic 3D Text Labels has been loaded.");
 	return 1;
 }

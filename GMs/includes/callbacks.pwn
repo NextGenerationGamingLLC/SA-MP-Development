@@ -761,6 +761,14 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 	if(gPlayerLogged{playerid} && GetPVarInt(playerid, "EventToken") == 0)
 	{
 		PlayerInfo[playerid][pInt] = newinteriorid;
+		if(newinteriorid != 0)
+		{
+			SetPlayerWeather(playerid, 0);
+		}
+		else
+		{
+			SetPlayerWeather(playerid, gWeather);
+		}
 	}
 	//foreach(new i: Player) {
 	for(new i = 0; i < MAX_PLAYERS; ++i)
@@ -2158,6 +2166,13 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			SetPVarInt(playerid, "KillShotCooldown", gettime());		
 		}
 	}
+	if(PlayerInfo[damagedid][pHospital] == 1)
+	{
+		new Float:hp;
+		GetPlayerHealth(damagedid, hp);
+		SetPlayerHealth(damagedid, hp+amount);
+		return 1;
+	}
     if(pTazer{playerid} == 1)
 	{
 	    if(weaponid !=  23) {
@@ -2187,6 +2202,14 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		    if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1)
 			{
 			    SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tazed!");
+			    new Float:hp;
+	  		    GetPlayerHealth(damagedid, hp);
+	  		    SetPlayerHealth(damagedid, hp+amount);
+				return 1;
+			}
+			if(PlayerInfo[damagedid][pHospital] == 1)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
 			    new Float:hp;
 	  		    GetPlayerHealth(damagedid, hp);
 	  		    SetPlayerHealth(damagedid, hp+amount);
@@ -2461,7 +2484,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				if(gettime() > GetPVarInt(playerid, "timeWepVeh"))
 				{
 					new szString[128];
-					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponize vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
+					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponized vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
 					ABroadCast(COLOR_YELLOW, szString, 2);
 					SetPVarInt(playerid, "timeWepVeh", gettime()+5);
 				}	
@@ -2657,6 +2680,9 @@ public OnPlayerConnect(playerid)
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
+	
+	gPlayerUsingLoopingAnim[playerid] = 0;
+	gPlayerAnimLibsPreloaded[playerid] = 0;
 
 	SetPVarInt(playerid, "IsInArena", -1);
 	SetPVarInt(playerid, "ArenaNumber", -1);
@@ -4074,6 +4100,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 	SpawnKick[playerid] = 0;
 	if(IsPlayerConnected(playerid) && IsPlayerConnected(killerid))
 	{
+		if(gPlayerUsingLoopingAnim[playerid])
+		{
+			gPlayerUsingLoopingAnim[playerid] = 0;
+			TextDrawHideForPlayer(playerid,txtAnimHelper);
+		}
+		
 		SetPVarInt(playerid, "PlayerOwnASurf", 0);
 	    #if defined zombiemode
     	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
@@ -4568,6 +4600,145 @@ public OnPlayerSpawn(playerid)
 	}
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
+	
+	if(!gPlayerAnimLibsPreloaded[playerid])
+	{
+	    PreloadAnimLib(playerid,"AIRPORT");
+		PreloadAnimLib(playerid,"Attractors");
+		PreloadAnimLib(playerid,"BAR");
+		PreloadAnimLib(playerid,"BASEBALL");
+		PreloadAnimLib(playerid,"BD_FIRE");
+		PreloadAnimLib(playerid,"benchpress");
+        PreloadAnimLib(playerid,"BF_injection");
+        PreloadAnimLib(playerid,"BIKED");
+        PreloadAnimLib(playerid,"BIKEH");
+        PreloadAnimLib(playerid,"BIKELEAP");
+        PreloadAnimLib(playerid,"BIKES");
+        PreloadAnimLib(playerid,"BIKEV");
+        PreloadAnimLib(playerid,"BIKE_DBZ");
+        PreloadAnimLib(playerid,"BMX");
+        PreloadAnimLib(playerid,"BOX");
+        PreloadAnimLib(playerid,"BSKTBALL");
+        PreloadAnimLib(playerid,"BUDDY");
+        PreloadAnimLib(playerid,"BUS");
+        PreloadAnimLib(playerid,"CAMERA");
+        PreloadAnimLib(playerid,"CAR");
+        PreloadAnimLib(playerid,"CAR_CHAT");
+        PreloadAnimLib(playerid,"CASINO");
+        PreloadAnimLib(playerid,"CHAINSAW");
+        PreloadAnimLib(playerid,"CHOPPA");
+        PreloadAnimLib(playerid,"CLOTHES");
+        PreloadAnimLib(playerid,"COACH");
+        PreloadAnimLib(playerid,"COLT45");
+        PreloadAnimLib(playerid,"COP_DVBYZ");
+        PreloadAnimLib(playerid,"CRIB");
+        PreloadAnimLib(playerid,"DAM_JUMP");
+        PreloadAnimLib(playerid,"DANCING");
+        PreloadAnimLib(playerid,"DILDO");
+        PreloadAnimLib(playerid,"DODGE");
+        PreloadAnimLib(playerid,"DOZER");
+        PreloadAnimLib(playerid,"DRIVEBYS");
+        PreloadAnimLib(playerid,"FAT");
+        PreloadAnimLib(playerid,"FIGHT_B");
+        PreloadAnimLib(playerid,"FIGHT_C");
+        PreloadAnimLib(playerid,"FIGHT_D");
+        PreloadAnimLib(playerid,"FIGHT_E");
+        PreloadAnimLib(playerid,"FINALE");
+        PreloadAnimLib(playerid,"FINALE2");
+        PreloadAnimLib(playerid,"Flowers");
+        PreloadAnimLib(playerid,"FOOD");
+        PreloadAnimLib(playerid,"Freeweights");
+        PreloadAnimLib(playerid,"GANGS");
+        PreloadAnimLib(playerid,"GHANDS");
+        PreloadAnimLib(playerid,"GHETTO_DB");
+        PreloadAnimLib(playerid,"goggles");
+        PreloadAnimLib(playerid,"GRAFFITI");
+        PreloadAnimLib(playerid,"GRAVEYARD");
+        PreloadAnimLib(playerid,"GRENADE");
+        PreloadAnimLib(playerid,"GYMNASIUM");
+        PreloadAnimLib(playerid,"HAIRCUTS");
+        PreloadAnimLib(playerid,"HEIST9");
+        PreloadAnimLib(playerid,"INT_HOUSE");
+        PreloadAnimLib(playerid,"INT_OFFICE");
+        PreloadAnimLib(playerid,"INT_SHOP");
+        PreloadAnimLib(playerid,"JST_BUISNESS");
+        PreloadAnimLib(playerid,"KART");
+        PreloadAnimLib(playerid,"KISSING");
+        PreloadAnimLib(playerid,"KNIFE");
+        PreloadAnimLib(playerid,"LAPDAN1");
+        PreloadAnimLib(playerid,"LAPDAN2");
+        PreloadAnimLib(playerid,"LAPDAN3");
+        PreloadAnimLib(playerid,"LOWRIDER");
+        PreloadAnimLib(playerid,"MD_CHASE");
+        PreloadAnimLib(playerid,"MEDIC");
+        PreloadAnimLib(playerid,"MD_END");
+        PreloadAnimLib(playerid,"MISC");
+        PreloadAnimLib(playerid,"MTB");
+        PreloadAnimLib(playerid,"MUSCULAR");
+        PreloadAnimLib(playerid,"NEVADA");
+        PreloadAnimLib(playerid,"ON_LOOKERS");
+        PreloadAnimLib(playerid,"OTB");
+        PreloadAnimLib(playerid,"PARACHUTE");
+        PreloadAnimLib(playerid,"PARK");
+        PreloadAnimLib(playerid,"PAULNMAC");
+        PreloadAnimLib(playerid,"PED");
+        PreloadAnimLib(playerid,"PLAYER_DVBYS");
+        PreloadAnimLib(playerid,"PLAYIDLES");
+        PreloadAnimLib(playerid,"POLICE");
+        PreloadAnimLib(playerid,"POOL");
+        PreloadAnimLib(playerid,"POOR");
+        PreloadAnimLib(playerid,"PYTHON");
+        PreloadAnimLib(playerid,"QUAD");
+        PreloadAnimLib(playerid,"QUAD_DBZ");
+        PreloadAnimLib(playerid,"RIFLE");
+        PreloadAnimLib(playerid,"RIOT");
+        PreloadAnimLib(playerid,"ROB_BANK");
+        PreloadAnimLib(playerid,"ROCKET");
+        PreloadAnimLib(playerid,"RUSTLER");
+        PreloadAnimLib(playerid,"RYDER");
+        PreloadAnimLib(playerid,"SCRATCHING");
+        PreloadAnimLib(playerid,"SHAMAL");
+        PreloadAnimLib(playerid,"SHOTGUN");
+        PreloadAnimLib(playerid,"SILENCED");
+        PreloadAnimLib(playerid,"SKATE");
+        PreloadAnimLib(playerid,"SPRAYCAN");
+        PreloadAnimLib(playerid,"STRIP");
+        PreloadAnimLib(playerid,"SUNBATHE");
+        PreloadAnimLib(playerid,"SWAT");
+        PreloadAnimLib(playerid,"SWEET");
+        PreloadAnimLib(playerid,"SWIM");
+        PreloadAnimLib(playerid,"SWORD");
+        PreloadAnimLib(playerid,"TANK");
+        PreloadAnimLib(playerid,"TATTOOS");
+        PreloadAnimLib(playerid,"TEC");
+        PreloadAnimLib(playerid,"TRAIN");
+        PreloadAnimLib(playerid,"TRUCK");
+        PreloadAnimLib(playerid,"UZI");
+        PreloadAnimLib(playerid,"VAN");
+        PreloadAnimLib(playerid,"VENDING");
+        PreloadAnimLib(playerid,"VORTEX");
+        PreloadAnimLib(playerid,"WAYFARER");
+        PreloadAnimLib(playerid,"WEAPONS");
+        PreloadAnimLib(playerid,"WUZI");
+        PreloadAnimLib(playerid,"SNM");
+        PreloadAnimLib(playerid,"BLOWJOBZ");
+        PreloadAnimLib(playerid,"SEX");
+   		PreloadAnimLib(playerid,"BOMBER");
+   		PreloadAnimLib(playerid,"RAPPING");
+    	PreloadAnimLib(playerid,"SHOP");
+   		PreloadAnimLib(playerid,"BEACH");
+   		PreloadAnimLib(playerid,"SMOKING");
+    	PreloadAnimLib(playerid,"FOOD");
+    	PreloadAnimLib(playerid,"ON_LOOKERS");
+    	PreloadAnimLib(playerid,"DEALER");
+		PreloadAnimLib(playerid,"CRACK");
+		PreloadAnimLib(playerid,"CARRY");
+		PreloadAnimLib(playerid,"COP_AMBIENT");
+		PreloadAnimLib(playerid,"PARK");
+		PreloadAnimLib(playerid,"INT_HOUSE");
+		PreloadAnimLib(playerid,"FOOD");
+		gPlayerAnimLibsPreloaded[playerid] = 1;
+	}
 
  	if(sobeitCheckvar[playerid] == 0)
 	{
@@ -5725,6 +5896,12 @@ public OnPlayerEnterCheckpoint(playerid)
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
+	if(!gPlayerUsingLoopingAnim[playerid]) return 1;
+	if(IsKeyJustDown(KEY_SPRINT,newkeys,oldkeys))
+	{
+	    StopLoopingAnim(playerid);
+        TextDrawHideForPlayer(playerid,txtAnimHelper);
+    }
 	if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED) ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,0,1,1,0,0);
 	if(newkeys & KEY_SECONDARY_ATTACK)
 	{

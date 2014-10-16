@@ -4316,7 +4316,7 @@ CMD:spawnathome(playerid, params[])
 	{
         if(PlayerInfo[playerid][pDonateRank] >= 4)
 		{
-            PlayerInfo[playerid][pInsurance] = 7;
+            PlayerInfo[playerid][pInsurance] = HOSPITAL_HOMECARE;
             SendClientMessageEx( playerid, COLOR_YELLOW, "Platinum VIP: You will now spawn at your house after deaths." );
         }
         else
@@ -4613,241 +4613,6 @@ CMD:postdirectory(playerid, params[])
 	    SendClientMessage(playerid, COLOR_GREY, "USAGE: /postdirectory [on/off]");
     }
 	return 1;
-}
-
-CMD:buyinsurance(playerid, params[])
-{
-    if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 1) {
-        if (GetPlayerCash(playerid) >= 4000) {
-            if (PlayerInfo[playerid][pInsurance] != 1) {
-                GivePlayerCash(playerid, -4000);
-                PlayerInfo[playerid][pInsurance] = 1;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $1,500 + a one-time transfer fee of $2,500, you will now be healed at County General Hospital for $1,500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at County General Hospital!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 2) {
-        if (GetPlayerCash(playerid) >= 4000) {
-            if (PlayerInfo[playerid][pInsurance] != 2) {
-                GivePlayerCash(playerid, -4000);
-                PlayerInfo[playerid][pInsurance] = 2;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $1,500 + a one-time transfer fee of $2,500, you will now be healed at All Saints Hospital for $1,500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at All Saints Hospital!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 5) {
-        if (GetPlayerCash(playerid) >= 3000) {
-            if (PlayerInfo[playerid][pInsurance] != 3) {
-                GivePlayerCash(playerid, -3000);
-                PlayerInfo[playerid][pInsurance] = 3;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at Montgomery Hospital for $500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Montgomery Hospital!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 4) {
-
-        if (GetPlayerCash(playerid) >= 3000) {
-            if (PlayerInfo[playerid][pInsurance] != 4) {
-                if(PlayerInfo[playerid][pInsurance] >= 1) {
-                    PlayerInfo[playerid][pInsurance] = 4;
-                    SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance switched, you have switched to Fort Carson Insurance for free.");
-                    return 1;
-                }
-                GivePlayerCash(playerid, -250);
-                PlayerInfo[playerid][pInsurance] = 4;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased. You have paid $250, and will now be healed at Fort Carson for $250.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Fort Carson!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 6) {
-        if (GetPlayerCash(playerid) >= 3000) {
-            if (PlayerInfo[playerid][pInsurance] != 5) {
-                GivePlayerCash(playerid, -3000);
-                PlayerInfo[playerid][pInsurance] = 5;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at San Fierro Medical Center for $500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at San Fierro Medical Center!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,3.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 99) {
-        if (GetPlayerCash(playerid) >= 3000) {
-            if (PlayerInfo[playerid][pInsurance] != 9) {
-                GivePlayerCash(playerid, -3000);
-                PlayerInfo[playerid][pInsurance] = 9;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at El Quebrados Hospital for $250.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at El Quabrados Medical Center!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-   	else if(IsPlayerInRangeOfPoint(playerid, 2.0, 1169.5385, -1348.0225, 2423.0461) && PlayerInfo[playerid][pVW] == 8) {
-   	    if(PlayerInfo[playerid][pMember] == 11) // SAAS
-   	    {
-	    	if (GetPlayerCash(playerid) >= 0) {
-	    	    if (PlayerInfo[playerid][pInsurance] != 10) {
-	        	    PlayerInfo[playerid][pInsurance] = 10;
-	        	    SendClientMessageEx(playerid, COLOR_WHITE, "Insurance free of charge, you will now be healed at the SAAS Base Hospital.");
-	        	    return 1;
-	        	}
-	        	else {
-	        	    SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at SAAS Base Hospital!");
-	        	}
-			}
-	    	else {
-	    	    SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-	    	}
-		}
-    }
-    /*else if(IsPlayerInRangeOfPoint(playerid,2.0,1169.7209472656,-1348.3218994141,2423.0461425781) && PlayerInfo[playerid][pVW] == 7 &&
-    (PlayerInfo[playerid][pMember] == 11 || PlayerInfo[playerid][pLeader] == 11)) {
-        if (PlayerInfo[playerid][pInsurance] != 8) {
-            PlayerInfo[playerid][pInsurance] = 8;
-            SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance changed, you will now be healed at the USS Nimitz.");
-            return 1;
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at the USS Nimitz!");
-        }
-    }*/
-    else if(IsPlayerInRangeOfPoint(playerid,4.0,2785.586914, 2400.224853, 1240.531127) && PlayerInfo[playerid][pDonateRank] >= 3) {
-        if (GetPlayerCash(playerid) >= 3000) {
-            if (PlayerInfo[playerid][pInsurance] != 6) {
-                GivePlayerCash(playerid, -3000);
-                PlayerInfo[playerid][pInsurance] = 6;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at Club VIP for $500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Club VIP!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, 1169.6624, -1348.2397, 2423.0461) && PlayerInfo[playerid][pVW] == 11720)
-	{
-	    if(GetPlayerCash(playerid) >= 3000)
-		{
-            if(PlayerInfo[playerid][pInsurance] != 11)
-			{
-                GivePlayerCash(playerid, -3000);
-                PlayerInfo[playerid][pInsurance] = 11;
-                SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at Las Venturas Hospital for $500.");
-                return 1;
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Las Venturas Hospital!");
-            }
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, 912.1003, 1429.9298, -81.1762))
-	{
-		if(PlayerInfo[playerid][pFamed] >= 2)
-		{
-			if(GetPlayerCash(playerid) >= 3000)
-			{
-				if(PlayerInfo[playerid][pInsurance] != 12)
-				{
-					GivePlayerCash(playerid, -3000);
-					PlayerInfo[playerid][pInsurance] = 12;
-					SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at the Famed Room for $500.");
-					return 1;
-				}
-				else {
-					SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at the Famed Room!");
-				}
-			}
-			else {
-				SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-			}
-		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD4, "You must be COS+ to get insurance in the famed room!");
-    }
-	else if(IsPlayerInRangeOfPoint(playerid, 2.0, 1169.6624, -1348.2397, 2423.0461) && PlayerInfo[playerid][pVW] == 13) { // DeMorgan
-		if(PlayerInfo[playerid][pMember] == 11) // SAAS
-		{
-			if (GetPlayerCash(playerid) >= 0) {
-				if (PlayerInfo[playerid][pInsurance] != 13) {
-					PlayerInfo[playerid][pInsurance] = 13;
-					SendClientMessageEx(playerid, COLOR_WHITE, "Insurance free of charge, you will now be healed at DeMorgan Hospital.");
-					return 1;
-				}
-				else {
-					SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Demorgan Hospital!");
-				}
-			}
-			else {
-				SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-			}
-		}
-	}
-	else if(IsPlayerInRangeOfPoint(playerid, 2.0, 1169.6624, -1348.2397, 2423.0461) && PlayerInfo[playerid][pVW] == 14) // TR - Bayside
-	{
-		if(GetPlayerCash(playerid) >= 3000)
-		{
-			if(PlayerInfo[playerid][pInsurance] != 14)
-			{
-				GivePlayerCash(playerid, -3000);
-				PlayerInfo[playerid][pInsurance] = 14;
-				SendClientMessageEx(playerid, COLOR_WHITE, "   Insurance purchased, you paid $500 + a one-time transfer fee of $2,500, you will now be healed at Bayside Hospital for $500.");
-				return 1;
-			}
-			else {
-				SendClientMessageEx(playerid, COLOR_GRAD4, "You already have insurance at Bayside Hospital!");
-			}
-		}
-		else {
-			SendClientMessageEx(playerid, COLOR_GRAD4, "You don't have enough money for this insurance!");
-		}
-	}
-    else {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not at any hospital!");
-    }
-    return 1;
 }
 
 CMD:fixr(playerid, params[])
@@ -21491,7 +21256,7 @@ CMD:deploy(playerid, params[])
 						else Barricades[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Barricade ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
+						/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
 						for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
@@ -21507,7 +21272,7 @@ CMD:deploy(playerid, params[])
 									}
 								}
 							}
-						}
+						}*/
 						return 1;
 					}
 				}
@@ -21535,7 +21300,7 @@ CMD:deploy(playerid, params[])
 						else SpikeStrips[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Spike ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
+						/*format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
 						for(new x = 0; x < MAX_PLAYERS; ++x)
 						{
 							if(IsPlayerConnected(x))
@@ -21551,7 +21316,7 @@ CMD:deploy(playerid, params[])
 									}
 								}
 							}
-						}
+						}*/
 						return 1;
 					}
 				}
@@ -23965,132 +23730,6 @@ CMD:givekeys(playerid, params[])
     return 1;
 }
 
-CMD:deliverpt(playerid, params[])
-{
-    if(IsAMedic(playerid))
-	{
-        if(IsPlayerInAnyVehicle(playerid))
-		{
-			new string[128], giveplayerid;
-		    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deliverpt [player]");
-
-            new carid = GetPlayerVehicleID(playerid);
-            new caridex = GetPlayerVehicleID(giveplayerid);
-            if(IsAnAmbulance(carid))
-			{
-                if(carid == caridex)
-				{
-                    if(IsAtDeliverPatientPoint(playerid))
-					{
-                        if(playerid == giveplayerid)
-						{
-                            SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot deliver yourself to the hospital!");
-                            return 1;
-                        }
-                        if(GetPVarInt(giveplayerid, "Injured") == 0)
-						{
-                            return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not injured!");
-                        }
-                        if(playerTabbed[giveplayerid] >= 1)
-						{
-                            SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
-                            return 1;
-                        }
-                        SetPlayerHealth(giveplayerid, 100);
-                        if(GetPVarType(giveplayerid, "STD"))
-						{
-							DeletePVar(giveplayerid, "STD");
-                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the hospital's help!");
-                        }
-                        GivePlayerCash(giveplayerid, -1000);
-                        Tax += 1000;
-                        GivePlayerCash(playerid,5000);
-                        KillEMSQueue(giveplayerid);
-                        SetPVarInt(giveplayerid, "MedicBill", 0);
-                        SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        format(string,sizeof(string),"You received $5000 for successfully delivering the patient!");
-                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
-                        SetPlayerPos(giveplayerid, 1169.7588,-1351.5490,2423.0461);
-                        Streamer_UpdateEx(giveplayerid, 1169.7588,-1351.5490,2423.0461);
-                        Player_StreamPrep(giveplayerid, 1169.7588,-1351.5490,2423.0461,FREEZE_TIME);
-                        SetPlayerInterior(giveplayerid, 1);
-                        PlayerInfo[giveplayerid][pInt] = 1;
-                        PlayerInfo[playerid][pPatientsDelivered]++;
-                        format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-						SendGroupMessage(3, TEAM_MED_COLOR, string);
-						PlayerInfo[giveplayerid][pHydration] = 100;
-						new Float:X, Float:Y, Float:Z;
-                        GetDynamicObjectPos(Carrier[0], X, Y, Z);
-                        if(IsPlayerInRangeOfPoint(playerid, 5.0,1142.4733,-1326.3633,13.6259) || IsPlayerInRangeOfPoint(playerid, 5.0, 1165.1564,-1368.8240,26.6502)) // All Saints
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 2);
-                            PlayerInfo[giveplayerid][pVW] = 2;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 5.0,2027.0599,-1410.6870,16.9922) || IsPlayerInRangeOfPoint(playerid, 5.0, 2024.5742,-1382.7844,48.3359)) // County General
-					 	{
-                            SetPlayerVirtualWorld(giveplayerid, 1);
-                            PlayerInfo[giveplayerid][pVW] = 1;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 5.0,1227.2339,306.4730,19.7028) || IsPlayerInRangeOfPoint(playerid, 5.0, 1233.3384,316.4022,24.7578)) // Montgomery
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 5);
-                            PlayerInfo[giveplayerid][pVW] = 5;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 5.0,-339.2989,1055.8138,19.7392) || IsPlayerInRangeOfPoint(playerid, 5.0, -334.1560,1051.4434,26.0125)) // Fort Carson
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 4);
-                            PlayerInfo[giveplayerid][pVW] = 4;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 5.0,-2695.5725,639.4147,14.4531) || IsPlayerInRangeOfPoint(playerid, 5.0, -2656.0339,615.2567,66.0938)) // SF
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 6);
-                            PlayerInfo[giveplayerid][pVW] = 6;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 250,X, Y, Z))
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 7);
-                            PlayerInfo[giveplayerid][pVW] = 7;
-                        }
-                        else if(IsPlayerInRangeOfPoint(playerid, 5.0,-1528.814331, 2540.706054, 55.835937)) // El Quebrados
-						{
-                            SetPlayerVirtualWorld(giveplayerid, 99);
-                            PlayerInfo[giveplayerid][pVW] = 99;
-                        }
-						else if(IsPlayerInRangeOfPoint(playerid, 5.0, 1579.58,1768.88,10.82)) // LV
-						{
-							SetPlayerVirtualWorld(giveplayerid, 11720);
-							PlayerInfo[giveplayerid][pVW] = 11720;
-						}
-						else if(IsPlayerInRangeOfPoint(playerid, 5.0, 225.3467,1981.8497,17.6406)) // Demorgan
-						{
-							SetPlayerVirtualWorld(giveplayerid, 13);
-							PlayerInfo[giveplayerid][pVW] = 13;
-						}
-						else if(IsPlayerInRangeOfPoint(playerid, 5.0, -2482.4338,2231.1106,4.8463)) // TR - Bayside
-						{
-							SetPlayerVirtualWorld(giveplayerid, 14);
-							PlayerInfo[giveplayerid][pVW] = 14;
-						}
-                    }
-                    else
-					{
-                        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a deliver point - look out near the hospitals.");
-                    }
-                }
-                else
-				{
-                    SendClientMessageEx(playerid, COLOR_GRAD2, "Patient must be in your car in order to deliver him.");
-                }
-            }
-            else
-			{
-                SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in an FDSA vehicle.");
-            }
-        }
-    }
-    return 1;
-}
-
 CMD:loadpt(playerid, params[])
 {
     if(IsAMedic(playerid))
@@ -24401,7 +24040,7 @@ CMD:vcheck(playerid, params[])
             }
             SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
         }
-        else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid))
+        else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
 		    new dynveh = DynVeh[closestcar];
             //foreach(new i: Player)
@@ -25363,15 +25002,15 @@ CMD:setinsurance(playerid, params[])
 		if(sscanf(params, "ud", giveplayerid, insurance))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setinsurance [player] [insurance]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Insurances: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Insurances: 0 - 14");
 			return 1;
 		}
 
-		if(insurance >= 0 && insurance <= 9)
+		if(insurance >= 0 && insurance <= 14)
 		{
-			format(string, sizeof(string), " Your insurance has been changed to %d.", insurance);
+			format(string, sizeof(string), " Your insurance has been changed to %s.", GetHospitalName(insurance));
 			SendClientMessageEx(giveplayerid,COLOR_YELLOW,string);
-			format(string, sizeof(string), " You have changed %s's insurance to %d.", GetPlayerNameEx(giveplayerid), insurance);
+			format(string, sizeof(string), " You have changed %s's insurance to %s.", GetPlayerNameEx(giveplayerid), GetHospitalName(insurance));
 			SendClientMessageEx(playerid,COLOR_YELLOW,string);
 			PlayerInfo[giveplayerid][pInsurance] = insurance;
 			return 1;
@@ -25642,7 +25281,7 @@ CMD:setcapping(playerid, params[]) {
 	}
 	return 1;
 }
-
+/*
 CMD:hosp(playerid, params[]) {
 	return cmd_hospital(playerid, params);
 }
@@ -25657,8 +25296,14 @@ CMD:hospital(playerid, params[])
 			if(PlayerInfo[playerid][pHospital] > 0)
 			{
 				DeletePVar(playerid, "HospitalTimer");
-				HospitalSpawn(playerid);
+				//HospitalSpawn(playerid);
 				PlayerInfo[playerid][pHospital] = 0;
+				ClearAnimations(playerid);
+				DeletePVar(playerid, "_SpawningAtHospital");
+				arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
+				KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
+				DestroyCountdownTextdraw(playerid);
+				TogglePlayerControllable(playerid, 1);
 				return SendClientMessageEx(playerid, COLOR_GREY, "You have released yourself from the hospital.");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hospital [player]");
@@ -25673,7 +25318,7 @@ CMD:hospital(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been forced out of the hospital by an Admin.");
 					DeletePVar(giveplayerid, "HospitalTimer");
-					HospitalSpawn(giveplayerid);
+					//HospitalSpawn(giveplayerid);
 					PlayerInfo[giveplayerid][pHospital] = 0;
 					DeletePVar(giveplayerid, "MedicBill");
 				}
@@ -25683,7 +25328,7 @@ CMD:hospital(playerid, params[])
 		}
 	}
 	return 1;
-}
+}*/
 
 CMD:revive(playerid, params[])
 {
@@ -31075,7 +30720,7 @@ CMD:su(playerid, params[]) {
 		else if(!IsPlayerConnected(iTargetID)) {
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 		}
-		else if(IsACop(iTargetID)) {
+		else if(IsACop(iTargetID) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance])) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
 		}
 		else if(PlayerInfo[iTargetID][pWantedLevel] >= 6) {
@@ -49071,11 +48716,11 @@ CMD:detain(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD1, "The seat ID cannot be above 3 or below 1.");
 				return 1;
 			}
-			if(IsACop(giveplayerid))
+			/*if(IsACop(giveplayerid))
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You can't detain other law enforcement officers.");
 				return 1;
-			}
+			}*/
 			if(IsPlayerInAnyVehicle(giveplayerid))
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "That person is in a car - get them out first.");
@@ -58716,7 +58361,7 @@ CMD:bopen(playerid, params[])
 CMD:backpackhelp(playerid, params[])
 {
 	new bdialog[565];
-	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 2 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
+	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 1 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", bdialog, number_format(ShopItems[37][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
 	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", bdialog);
@@ -61267,4 +60912,120 @@ CMD:hnear(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	}
 	return 1;
+}
+
+CMD:buyinsurance(playerid, params[])
+{
+	new string[128],
+		iHospitalVW = GetPlayerVirtualWorld(playerid),
+		file[32], 
+		month, 
+		day, 
+		year;
+		
+	getdate(year,month,day);
+	
+	if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
+	{
+		PlayerInfo[playerid][pInsurance] = iHospitalVW;
+		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
+		Tax += HospitalSpawnInfo[iHospitalVW][1];
+		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
+	}
+	else if(IsPlayerInRangeOfPoint(playerid, 2.00, 555.8644,1485.1359,6000.4258)) // doc hospital purchase point
+	{
+		PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
+		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+		Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
+		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
+	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "ERROR: You are not in range of a hospital counter.");
+	return 1;
+}
+
+CMD:deliverpt(playerid, params[])
+{
+    if(IsAMedic(playerid))
+	{
+        if(IsPlayerInAnyVehicle(playerid))
+		{
+			new string[128], giveplayerid;
+		    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deliverpt [player]");
+
+            new carid = GetPlayerVehicleID(playerid);
+            new caridex = GetPlayerVehicleID(giveplayerid);
+            if(IsAnAmbulance(carid))
+			{
+                if(carid == caridex)
+				{
+                    if(IsAtDeliverPatientPoint(playerid))
+					{
+                        if(playerid == giveplayerid)
+						{
+                            SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot deliver yourself to the hospital!");
+                            return 1;
+                        }
+                        if(GetPVarInt(giveplayerid, "Injured") == 0)
+						{
+                            return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not injured!");
+                        }
+                        if(playerTabbed[giveplayerid] >= 1)
+						{
+                            SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
+                            return 1;
+                        }
+                        SetPlayerHealth(giveplayerid, 100);
+                        if(GetPVarType(giveplayerid, "STD"))
+						{
+							DeletePVar(giveplayerid, "STD");
+                            SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the hospital's help!");
+                        }
+                        GivePlayerCash(giveplayerid, -1000);
+						GivePlayerCash(playerid,2500);
+                        Tax += 1000;
+						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
+                        format(string,sizeof(string),"You received $2500 for successfully delivering the patient!");
+                        SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
+						
+                        KillEMSQueue(giveplayerid);
+                        SetPVarInt(giveplayerid, "_HospitalBeingDelivered", 1);
+						DeletePVar(giveplayerid, "Injured");
+                        
+						new iHospitalDeliver = GetClosestDeliverPatientPoint(playerid);
+						new iHospital = HospitalDeliveryPointsInfo[iHospitalDeliver][0];
+						
+						
+						DeliverPlayerToHospital(giveplayerid, iHospital);
+                        PlayerInfo[playerid][pPatientsDelivered]++;
+                        
+						format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						SendGroupMessage(3, TEAM_MED_COLOR, string);
+						
+						PlayerInfo[giveplayerid][pHydration] = 100;
+					}
+                    else
+					{
+                        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a deliver point - look out near the hospitals.");
+                    }
+                }
+                else
+				{
+                    SendClientMessageEx(playerid, COLOR_GRAD2, "Patient must be in your car in order to deliver him.");
+                }
+            }
+            else
+			{
+                SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in an FDSA vehicle.");
+            }
+        }
+    }
+    return 1;
 }

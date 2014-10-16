@@ -1143,3 +1143,26 @@ native gpci(playerid, serial[], maxlen);
 //OnGangTagQueryFinish Threads
 #define			LOAD_GANGTAGS					1
 #define			SAVE_GANGTAG					2
+
+// hospital misc definitions
+#define		MAX_HOSPITALS				(15)
+#define		MAX_HOSPITALBEDS			(10)
+#define		MAX_DOCHOSPITALBEDS			(4)
+#define		MAX_DELIVERY_POINTS			(16)
+
+// hospital location definitions
+#define		HOSPITAL_ALLSAINTS			(0)
+#define		HOSPITAL_COUNTYGEN			(1)
+#define		HOSPITAL_SANFIERRO			(2)
+#define		HOSPITAL_REDCOUNTY			(3)
+#define 	HOSPITAL_ELQUEBRADOS		(4)
+#define 	HOSPITAL_LASVENTURAS		(5)
+#define		HOSPITAL_FORTCARSON			(6)
+#define		HOSPITAL_ANGELPINE			(7)
+#define		HOSPITAL_BAYSIDE			(8)
+#define		HOSPITAL_DEMORGAN			(9)
+#define 	HOSPITAL_DOCJAIL			(10)
+#define		HOSPITAL_LSVIP				(11)
+#define		HOSPITAL_SFVIP				(12)
+#define		HOSPITAL_LVVIP				(13)
+#define		HOSPITAL_HOMECARE			(14)

@@ -13955,7 +13955,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			if(!vehicleCountCheck(playerid))
+			{
+				TogglePlayerControllable(playerid, 1);
 				return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: You cannot own any additional vehicles. You may purchase additional vehicle slots through /vstorage.");
+			}
 				
 			if(Businesses[d][bPurchaseX] == 0.0 && Businesses[d][bPurchaseY] == 0.0 && Businesses[d][bPurchaseZ] == 0.0)
 			{
