@@ -2151,7 +2151,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
 
-	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
+	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER || weaponid == WEAPON_COLT45 || weaponid == WEAPON_RIFLE || weaponid == WEAPON_SILENCED))
 	{
 		if(damagedid == GoChase[playerid] && bodypart == BODY_PART_HEAD)
 		{
@@ -3320,6 +3320,13 @@ public OnPlayerDisconnect(playerid, reason)
 		        DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
 		    }
 		}
+		
+		// added to prevent trucks holding shit after logging out. hotfix #1069
+		if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
+		{
+			SetVehicleToRespawn(TruckUsed[playerid]);
+		}
+		
 		if (GetPVarType(playerid, "_BoxingFight"))
 		{
 			new fighterid = GetPVarInt(playerid, "_BoxingFight") - 1;

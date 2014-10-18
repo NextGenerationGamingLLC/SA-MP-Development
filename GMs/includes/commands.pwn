@@ -4620,7 +4620,7 @@ CMD:fixr(playerid, params[])
 
 CMD:time(playerid, params[])
 {
-	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
 	
 	new string[128], mtext[20], thour, suffix[3], year, month,day;
     getdate(year, month, day);
@@ -23401,10 +23401,10 @@ CMD:writecheck(playerid, params[])
      	new playermoney = PlayerInfo[playerid][pAccount];
       	if(monies > 0 && playermoney >= monies)
 		{
-			GivePlayerCashEx(playerid, TYPE_BANK, -monies);
-			GivePlayerCashEx(giveplayerid, TYPE_BANK, monies);
-			/*PlayerInfo[playerid][pAccount] = PlayerInfo[playerid][pAccount] - monies;
-     		PlayerInfo[giveplayerid][pCheckCash] = PlayerInfo[giveplayerid][pCheckCash]+monies;*/
+			//GivePlayerCashEx(playerid, TYPE_BANK, -monies);
+			//GivePlayerCashEx(giveplayerid, TYPE_BANK, monies);
+			PlayerInfo[playerid][pAccount] = PlayerInfo[playerid][pAccount] - monies;
+     		PlayerInfo[giveplayerid][pCheckCash] = PlayerInfo[giveplayerid][pCheckCash]+monies;
        		if(PlayerInfo[playerid][pDonateRank] == 0)
 			{
    				new fee = (monies*8)/100;
@@ -48859,7 +48859,11 @@ CMD:find(playerid, params[]) {
 		else if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
 		}
-		else if(PhoneOnline[iTargetID] == 0 && PlayerInfo[iTargetID][pPnumber] != 0 || PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember])
+		else if (PlayerInfo[iTargetID][pPnumber] == 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "This person does not have a phone.");
+		}
+		else if(PhoneOnline[iTargetID] == 0 || PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember])
 		{
 			switch(PlayerInfo[playerid][pDetSkill]) {
 				case 0 .. 50: {
@@ -61043,7 +61047,7 @@ CMD:deliverpt(playerid, params[])
 						DeletePVar(giveplayerid, "Injured");
                         
 						new iHospitalDeliver = GetClosestDeliverPatientPoint(playerid);
-						new iHospital = HospitalDeliveryPointsInfo[iHospitalDeliver][0];
+						new iHospital = ReturnDeliveryPoint(iHospitalDeliver);
 						
 						
 						DeliverPlayerToHospital(giveplayerid, iHospital);

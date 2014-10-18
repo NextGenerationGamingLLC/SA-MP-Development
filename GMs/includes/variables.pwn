@@ -2655,11 +2655,11 @@ new Float:HospitalDeliveryPoints[MAX_DELIVERY_POINTS][3] = {
 	{-2482.4338,2231.1106,4.8463},
 	{225.3467,1981.8497,17.6406},
 	{1579.58, 1768.88, 10.82},
-	{0.0, 0.0, 0.0}, 
-	{0.0, 0.0, 0.0}
+	{-2196.9641,-2303.8191,30.6250}, 
+	{-2043.2212,-198.8035,15.0703}
 };
 
-new HospitalDeliveryPointsInfo[MAX_DELIVERY_POINTS][1] = {
+/*new HospitalDeliveryPointsInfo[MAX_DELIVERY_POINTS] = {
 {HOSPITAL_ALLSAINTS},
 {HOSPITAL_ALLSAINTS},
 {HOSPITAL_COUNTYGEN},
@@ -2676,7 +2676,7 @@ new HospitalDeliveryPointsInfo[MAX_DELIVERY_POINTS][1] = {
 {HOSPITAL_LASVENTURAS},
 {0},
 {0}
-};
+};*/
 
 // 1D - Hospital Spawn Price 2D - insurance purchase price
 // edit to however you like

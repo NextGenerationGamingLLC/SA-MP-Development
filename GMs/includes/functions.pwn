@@ -11752,6 +11752,8 @@ stock SetPlayerSpawn(playerid)
 					case 2: {wantedplace = HOSPITAL_ALLSAINTS;}
 				}
 				DeliverPlayerToHospital(playerid, wantedplace);
+				
+				return 1;
 			}
 			else
 			{
@@ -27019,11 +27021,40 @@ GetClosestDeliverPatientPoint(playerid)
 	new iPoint;
 	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
 	{
-		if(IsAtDeliverPatientPoint(playerid))
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2]))
 		{
 			iPoint = i;
 			break;
 		}
 	}
+	return iPoint;
+}
+
+ReturnDeliveryPoint(iDPID)
+{
+	// if you're going to add a new hospital delivery point, add the corresponding hospital ID to here.
+	
+	new iPoint;
+	
+	switch(iDPID)
+	{
+		case 0: iPoint = HOSPITAL_ALLSAINTS;
+		case 1: iPoint = HOSPITAL_ALLSAINTS;
+		case 2: iPoint = HOSPITAL_COUNTYGEN;
+		case 3: iPoint = HOSPITAL_COUNTYGEN;
+		case 4: iPoint = HOSPITAL_REDCOUNTY;
+		case 5: iPoint = HOSPITAL_REDCOUNTY;
+		case 6: iPoint = HOSPITAL_FORTCARSON;
+		case 7: iPoint = HOSPITAL_FORTCARSON;
+		case 8: iPoint = HOSPITAL_SANFIERRO;
+		case 9: iPoint = HOSPITAL_SANFIERRO;
+		case 10: iPoint = HOSPITAL_ELQUEBRADOS;
+		case 11: iPoint = HOSPITAL_BAYSIDE;
+		case 12: iPoint = HOSPITAL_DEMORGAN;
+		case 13: iPoint = HOSPITAL_LASVENTURAS;
+		case 14: iPoint = HOSPITAL_ANGELPINE; // to be changed
+		case 15: iPoint = HOSPITAL_DOCJAIL; // to be changed
+	}
+	
 	return iPoint;
 }

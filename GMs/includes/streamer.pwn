@@ -299,6 +299,8 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1240, 23, 1579.58,1768.88,10.82, -1);// Deliverpt (LV Hospital)
 	CreateDynamicPickup(1240, 23, -2482.4338,2231.1106,4.8463, -1);// Deliverpt (TR - Bayside)
 	CreateDynamicPickup(1240, 23, 225.3467,1981.8497,17.6406, -1); //Deliverpt (DeMorgan)
+	CreateDynamicPickup(1240, 23, -2043.2212,-198.8035,15.0703, -1); // deliverpt doc
+	CreateDynamicPickup(1240, 23, -2196.9641,-2303.8191,30.6250, -1); // deliverpt angel pine
 	CreateDynamicPickup(1239, 23, 366.54, 159.09, 1008.38, -1); // LICENSES @ CITY HALL
 	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
 	CreateDynamicPickup(1239, 23, -2412.5095, 2240.7227, 4.8137); //Trucker registration (TR)
@@ -504,8 +506,8 @@ public LoadStreamerDynamic3DTextLabels()
 	
 	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
 	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
-	CreateDynamicPickup(1239, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
-	CreateDynamicPickup(1239, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
+	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
+	CreateDynamicPickup(1240, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
 	
 	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
 	{
