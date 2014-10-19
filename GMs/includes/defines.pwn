@@ -832,6 +832,8 @@ native gpci(playerid, serial[], maxlen);
 #define         DIALOG_911TOWING			(4960)
 #define         DIALOG_911PICKLOCK			(4961)
 #define         DIALOG_911PICKLOCK2			(4962)
+#define			DIALOG_911FIRE				(4963)
+#define			DIALOG_NEWSHOTLINE			(4964)
 
 #define         DIALOG_SELLCREDITS          (4965)
 #define         DIALOG_RIMMOD               (4970)

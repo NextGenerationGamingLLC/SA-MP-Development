@@ -12239,6 +12239,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					ShowPlayerDialog(playerid, DIALOG_911PICKLOCK, DIALOG_STYLE_LIST, "Vehicle Burglary Report", vstring, "Track", "Cancel");
 				}
+				case 5: ShowPlayerDialog(playerid, DIALOG_911FIRE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require the fire bridgade.", "Enter", "End Call");
 			}
 		}
 	}
@@ -12307,6 +12308,40 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "Has911Call", 1);
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");
+			}
+		}
+	}
+	else if(dialogid == DIALOG_911FIRE)
+	{
+		if(response)
+		{
+			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_911FIRE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Sorry, I don't quite understand. Why do you need assistance?", "Enter", "End Call");
+			else
+			{
+				GetPlayer2DZone(playerid, zone, MAX_ZONE_NAME);
+				GetPlayerMainZone(playerid, mainzone, MAX_ZONE_NAME);
+				SendCallToQueue(playerid, inputtext, zone, mainzone, 5);
+				SetPVarInt(playerid, "Has911Call", 1);
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Dispatch: We have alerted all units in the area.");
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Thank you for reporting this incident");
+			}
+		}
+	}
+	else if(dialogid == DIALOG_NEWSHOTLINE)
+	{
+		if(response)
+		{
+			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
+			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "I'm sorry, may I have a bit more information.", "Enter", "End Call");
+			else
+			{
+				GetPlayer2DZone(playerid, zone, MAX_ZONE_NAME);
+				GetPlayerMainZone(playerid, mainzone, MAX_ZONE_NAME);
+				SendCallToQueue(playerid, inputtext, zone, mainzone, 6);
+				SetPVarInt(playerid, "Has911Call", 1);
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Autoanswer: Thank you for calling the news hotline.");
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "We will be with you shortly.");
 			}
 		}
 	}

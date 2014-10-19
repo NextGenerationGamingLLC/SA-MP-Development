@@ -634,6 +634,11 @@ public OnPlayerUpdate(playerid)
 			}
 		}
 	}
+	// night vision and thermal goggle fixes added by Dom
+	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45)
+	{	
+		if((newkeys & KEY_FIRE) && (!IsPlayerInAnyVehicle(playerid))) return 0;
+	}
 	/*new gOPUtick, LastFireCheck[MAX_PLAYERS];
 	gOPUtick = GetTickCount();
     if((gOPUtick - LastFireCheck[playerid]) > 220)
@@ -5903,6 +5908,7 @@ public OnPlayerEnterCheckpoint(playerid)
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
+	if(PlayerInfo[playerid][pHospital] > 0) return 1;
 	if(!gPlayerUsingLoopingAnim[playerid]) return 1;
 	if(IsKeyJustDown(KEY_SPRINT,newkeys,oldkeys))
 	{

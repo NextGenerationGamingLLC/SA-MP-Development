@@ -18873,6 +18873,21 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
 								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 							}
+							if(type == 5 && (IsACop(i) || IsAMedic(i)))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 6 && (IsAReporter(i)))
+							{
+								format(string, sizeof(string), "Hotline: Caller: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, COLOR_PINK, string);
+								format(string, sizeof(string), "Hotline: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, COLOR_PINK, string);
+							}
 						}
 					}
 				}

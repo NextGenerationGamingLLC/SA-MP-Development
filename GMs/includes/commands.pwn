@@ -19992,7 +19992,7 @@ CMD:viewbudget(playerid, params[])
 {
 	new i = PlayerInfo[playerid][pMember];
 	new string[128];
-	if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7 || arrGroupData[i][g_iGroupType] == 4)
+	if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7 || arrGroupData[i][g_iGroupType] == 4 || arrGroupData[i][g_iGroupType] == 2 || arrGroupData[i][g_iGroupType] == 8)
 	{
 	    SendClientMessage(playerid, 0x008EFC00, "            BALANCE SHEET            ");
 		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -20118,7 +20118,7 @@ CMD:gdonate(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS))
 	{
-		if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7 || arrGroupData[iGroupID][g_iGroupType] == 4)
+		if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7 || arrGroupData[iGroupID][g_iGroupType] == 4 || arrGroupData[iGroupID][g_iGroupType] == 8 || arrGroupData[iGroupID][g_iGroupType] == 2 )
 		{
 			new string[128], moneys;
 			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gdonate [amount]");
@@ -31174,7 +31174,7 @@ CMD:call(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "Your phone is off.");
 		return 1;
 	}
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
@@ -31185,7 +31185,15 @@ CMD:call(playerid, params[])
 		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 		else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
 		else 
-			ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)", "Select", "End Call");
+			ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
+		return 1;
+	}
+	if(phonenumb == 08001800)
+	{
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
+		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
+		else 
+			ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "Please let us know briefly about your news.", "Enter", "End Call");
 		return 1;
 	}
 	if(phonenumb == PlayerInfo[playerid][pPnumber])
@@ -31400,7 +31408,7 @@ CMD:pickup(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are already on a call...");
 		return 1;
 	}
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	//foreach(new i: Player)
@@ -31475,7 +31483,8 @@ CMD:calls(playerid, params[])
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
 		new string[128];
-		SendClientMessageEx(playerid, COLOR_DBLUE, "____________________ 911 CALLS ____________________");
+		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 4) SendClientMessageEx(playerid, COLOR_PINK, "____________________ HOTLINE ____________________");
+		else SendClientMessageEx(playerid, COLOR_DBLUE, "____________________ 911 CALLS ____________________");
 		for(new i = 999; i >= 0; i--) // Why in hell would we run 4 unnecessary loops here?
 		{
 			if(Calls[i][BeingUsed] == 1)
@@ -31507,6 +31516,16 @@ CMD:calls(playerid, params[])
 						else if(Calls[i][Type] == 4 && IsACop(playerid))
 						{
 							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
+						else if(Calls[i][Type] == 5 && (IsACop(playerid) || IsAMedic(playerid)))
+						{
+							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+						}
+						else if(Calls[i][Type] == 6 && (IsAReporter(playerid)))
+						{
+							format(string, sizeof(string), "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 							SendClientMessageEx(playerid, COLOR_WHITE, string);
 						}
 					}
@@ -45374,7 +45393,7 @@ CMD:usesprunk(playerid, params[])
 	if(PlayerInfo[playerid][pSprunk] > 0)
 	{
 		if(GetPVarInt(playerid, "UsingSprunk") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already drinking a sprunk can.");
-		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1)
+		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			return 1;
@@ -45408,7 +45427,7 @@ CMD:usecigar(playerid, params[])
 {
 	if(PlayerInfo[playerid][pCigar] > 0)
 	{
-		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1 )
+		if( PlayerCuffed[playerid] >= 1 || GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0)
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			return 1;
@@ -52436,7 +52455,7 @@ CMD:locker(playerid, params[]) {
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5 || arrGroupData[iGroupID][g_iGroupType] == 8) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
