@@ -825,12 +825,12 @@ public LoadStreamerDynamicObjects()
 	DocCellsFloor2[13] = CreateDynamicObject(19302, 550.84277, 1462.28821, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 13 - floor 2
 	DocCellsFloor2[14] = CreateDynamicObject(19302, 556.91632, 1462.26819, 6004.63135,   0.00000, 0.00000, 180.00000);  // cell 14 - floor 2
 	
-	DocIsolationCells[0] = CreateDynamicObject(1498, 562.73242, 1454.49622, 5995.95801,   0.00000, 0.00000, 90.0000); // isolation cell 1
-	DocIsolationCells[1] = CreateDynamicObject(1498, 562.73242, 1451.27612, 5995.95801,   0.00000, 0.00000, 90.00000); // isolation cell 2
-	DocIsolationCells[2] = CreateDynamicObject(1498, 560.25751, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 3
-	DocIsolationCells[3] = CreateDynamicObject(1498, 557.04352, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 4
-	DocIsolationCells[4] = CreateDynamicObject(1498, 553.84729, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 5
-	DocIsolationCells[5] = CreateDynamicObject(1498, 550.66852, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 6
+	DocIsolationCells[0] = CreateDynamicObject(1495, 562.73242, 1454.49622, 5995.95801,   0.00000, 0.00000, 90.0000); // isolation cell 1
+	DocIsolationCells[1] = CreateDynamicObject(1495, 562.73242, 1451.27612, 5995.95801,   0.00000, 0.00000, 90.00000); // isolation cell 2
+	DocIsolationCells[2] = CreateDynamicObject(1495, 560.25751, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 3
+	DocIsolationCells[3] = CreateDynamicObject(1495, 557.04352, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 4
+	DocIsolationCells[4] = CreateDynamicObject(1495, 553.84729, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 5
+	DocIsolationCells[5] = CreateDynamicObject(1495, 550.66852, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 6
 	
 	SFPDObject[0] =	CreateDynamicObject(976,-1636.02539062,701.49707031,19994.54101562,0.00000000,0.00000000,90.00000000, .interiorid = 3); //object(phils_compnd_gate) (1)
 	SFPDObject[1] =	CreateDynamicObject(976,-1635.99414062,696.53320312,19994.55078125,0.00000000,0.00000000,270.00000000, .interiorid = 3); //object(phils_compnd_gate) (2)

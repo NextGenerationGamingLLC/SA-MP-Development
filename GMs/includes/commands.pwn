@@ -48882,7 +48882,7 @@ CMD:find(playerid, params[]) {
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "This person does not have a phone.");
 		}
-		else if(PhoneOnline[iTargetID] == 0 || PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember])
+		else if(PhoneOnline[iTargetID] == 0)
 		{
 			switch(PlayerInfo[playerid][pDetSkill]) {
 				case 0 .. 50: {
@@ -59703,7 +59703,7 @@ CMD:inmates(playerid, params[])
 	return 1;
 }
 
-CMD:joinjailboxing(playerid, params[])
+/*CMD:joinjailboxing(playerid, params[])
 {
 	if(IsPlayerAtJailBoxing(playerid))
 	{
@@ -59726,7 +59726,7 @@ CMD:leavejailboxing(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have withdrawn yourself from the boxing arena queue.");
 	}
 	return 1;
-}
+}*/
 
 CMD:startbrawl(playerid, params[])
 {

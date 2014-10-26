@@ -329,7 +329,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 3:
 				{
-					if(IsAMedic(playerid) || IsAGovernment(playerid)) {
+					if(IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid)) {
 						if(GetPVarInt(playerid, "MedVestKit") == 1) {
 							return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
 						}

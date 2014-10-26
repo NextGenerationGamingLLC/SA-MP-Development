@@ -26246,7 +26246,7 @@ CallDocElevator(playerid, level)
 	return 1;
 }
 
-GetClosestJailBoxingRing(iTargetID)
+/*GetClosestJailBoxingRing(iTargetID)
 {
 	new iClosest;
 	for(new i = 0; i < MAX_JAIL_BOXINGS; i++)
@@ -26299,7 +26299,7 @@ SetPlayerIntoJailBoxing(iTargetID)
 		}
 	}
 	else SendClientMessageEx(iTargetID, COLOR_WHITE, "You cannot join this arena at the moment.");
-}
+}*/
 
 RemoveFromJailBoxing(iTargetID)
 {

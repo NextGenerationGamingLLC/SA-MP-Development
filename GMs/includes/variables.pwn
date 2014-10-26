@@ -1103,13 +1103,13 @@ new bool:bDocCellsFloorOpen[2] = false;
 new bool:bDocLockdown = false;
 new arrJailBoxingData[MAX_JAIL_BOXINGS][eJailBoxing];
 
-new Float:JailBoxingPos[MAX_JAIL_BOXINGS][3] = {
+/*new Float:JailBoxingPos[MAX_JAIL_BOXINGS][3] = {
 {571.4730,1414.6787,6000.8008},
 {571.0892,1406.3739,6000.8008},
 {558.7887,1424.7054,6000.8008},
 {-2040.8381,-233.3212,36.2392},
 {-2061.5261,-234.1297,36.2392}
-};
+};*/
 
 new Float:JailPhonePos[5][3] = {
 {551.50531, 1423.10657, 6000.12012},
@@ -2681,9 +2681,9 @@ new Float:HospitalDeliveryPoints[MAX_DELIVERY_POINTS][3] = {
 // 1D - Hospital Spawn Price 2D - insurance purchase price
 // edit to however you like
 new HospitalSpawnInfo[MAX_HOSPITALS][2] = {
-{1000,2500},
-{1000,2500},
-{1000,2500},
+{3000,2500},
+{3000,2500},
+{2000,2500},
 {1000,2500},
 {1000,2500},
 {1000,2500},
