@@ -83,6 +83,9 @@ public OnVehicleSpawn(vehicleid) {
 						}
 					}
 				}
+				new zyear, zmonth, zday;
+				getdate(zyear, zmonth, zday);
+				if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVehicleID, PlayerVehicleInfo[i][v][pvHealth]);
 				new string[128];
 				format(string, sizeof(string), "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
 				SendClientMessageEx(i, COLOR_GRAD1, string);
@@ -2156,6 +2159,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if (damagedid == INVALID_PLAYER_ID) return 1;
 	if (playerid == INVALID_PLAYER_ID) return 1;
 
+	if(zombieevent && GetPVarInt(playerid, "z50Cal") == 1 && PlayerInfo[playerid][mInventory][17] && (weaponid == WEAPON_SNIPER || weaponid == WEAPON_RIFLE))
+	{
+		if(bodypart == BODY_PART_HEAD && GetPVarInt(damagedid, "pIsZombie")) SetPlayerHealth(damagedid, 0);
+		if(PlayerInfo[playerid][mInventory][17]) PlayerInfo[playerid][mInventory][17]--;
+		DeletePVar(playerid, "z50Cal");
+	}
 	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER || weaponid == WEAPON_COLT45 || weaponid == WEAPON_RIFLE || weaponid == WEAPON_SILENCED))
 	{
 		if(damagedid == GoChase[playerid] && bodypart == BODY_PART_HEAD)
@@ -3301,6 +3310,7 @@ public OnPlayerDisconnect(playerid, reason)
 				PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
 				PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
 				PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
+				GetVehicleHealth(PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvHealth]);
 				PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
 				g_mysql_SaveVehicle(ownerid, slot);
 			}
@@ -3848,6 +3858,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerVehicleInfo[playerid][v][pvCrashY] = pos[1];
 						PlayerVehicleInfo[playerid][v][pvCrashZ] = pos[2];
 						PlayerVehicleInfo[playerid][v][pvCrashAngle] = pos[3];
+						GetVehicleHealth(PlayerVehicleInfo[playerid][v][pvId], PlayerVehicleInfo[playerid][v][pvHealth]);
 						g_mysql_SaveVehicle(playerid, v);
 					}
 				}
@@ -5023,6 +5034,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
 			PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 			PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
+			GetVehicleHealth(PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvHealth]);
 			PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
 			g_mysql_SaveVehicle(ownerid, slot);
@@ -5909,8 +5921,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
 	if(PlayerInfo[playerid][pHospital] > 0) return 1;
-	if(!gPlayerUsingLoopingAnim[playerid]) return 1;
-	if(IsKeyJustDown(KEY_SPRINT,newkeys,oldkeys))
+	if(gPlayerUsingLoopingAnim[playerid] && IsKeyJustDown(KEY_SPRINT,newkeys,oldkeys))
 	{
 	    StopLoopingAnim(playerid);
         TextDrawHideForPlayer(playerid,txtAnimHelper);
@@ -6956,6 +6967,15 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		new vehicleid = newcar;
 		if(IsVIPcar(vehicleid))
 		{
+			if(zombieevent)
+			{
+				RemovePlayerFromVehicle(playerid);
+				new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+				defer NOPCheck(playerid);
+				return SendClientMessageEx(playerid, -1, "You can't use this vehicle during the Zombie Event!");
+			}
 		    if(PlayerInfo[playerid][pDonateRank] > 0)
 			{
 				SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: This is a VIP vehicle from the VIP garage, therefore it has unlimited fuel.");
@@ -7063,7 +7083,15 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(GetCarBusiness(newcar) != INVALID_BUSINESS_ID && PlayerInfo[playerid][pAdmin] < 1337)
         {
-
+			if(zombieevent)
+			{
+				RemovePlayerFromVehicle(playerid);
+				new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+				defer NOPCheck(playerid);
+				return SendClientMessageEx(playerid, -1, "You can't purchase a vehicle at any dealership during the Zombie Event!");
+			}
             new
 				iBusiness = GetCarBusiness(newcar),
 				iSlot = GetBusinessCarSlot(newcar),
@@ -7209,7 +7237,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		return 0;
 	}
 	
-	if(PlayerInfo[playerid][pAdmin] < 1337)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 	{
 		if(++CommandSpamTimes[playerid] >= 5) {
 			CommandSpamTimes[playerid] = 0;

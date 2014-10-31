@@ -2891,17 +2891,7 @@ PayDay(i) {
 							PlayerInfo[i][pGVIPVoucher] += 1;
 							SendClientMessageEx(i, COLOR_WHITE, "You have won a 1 Month Gold VIP Voucher for Fall Into Fun! To claim it, type /myvouchers.");
 							GThursChances = 0;
-							format(string, sizeof(string), "%s won a 1 Month GVIP Voucher", GetPlayerNameEx(i));
-							Log("logs/fif.log", string);
-						}
-					}
-					if(FIFTimeWarrior == 1)
-					{
-						if(FIFInfo[i][FIFHours] % 32 == 0)
-						{
-							PlayerInfo[i][pGoldBoxTokens] += 1;
-							SendClientMessageEx(i, COLOR_WHITE, "You have won a Gold Box Token for Fall Into Fun! To claim it, type /getrewardgift.");
-							format(string, sizeof(string), "%s won a Gold Box Token", GetPlayerNameEx(i));
+							format(string, sizeof(string), "%s(%d) won a 1 Month GVIP Voucher", GetPlayerNameEx(i), GetPlayerSQLId(i));
 							Log("logs/fif.log", string);
 						}
 					}
@@ -2910,7 +2900,7 @@ PayDay(i) {
 						FIFInfo[i][FIFChances] += 3;
 						format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
 						SendClientMessageEx(i, COLOR_WHITE, string);
-						format(string, sizeof(string), "%s won 3 FIF Chances", GetPlayerNameEx(i));
+						format(string, sizeof(string), "%s(%d) won 3 FIF Chances", GetPlayerNameEx(i), GetPlayerSQLId(i));
 						Log("logs/fif.log", string);
 					}
 					else
@@ -2922,7 +2912,7 @@ PayDay(i) {
 								FIFInfo[i][FIFChances] += 1;
 								format(string,sizeof(string), "You have earned 1 FIF Chance! You now have %d chances!", FIFInfo[i][FIFChances]);
 								SendClientMessageEx(i, COLOR_WHITE, string);
-								format(string, sizeof(string), "%s won 1 FIF Chance.", GetPlayerNameEx(i));
+								format(string, sizeof(string), "%s(%d) won 1 FIF Chance.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 2:
@@ -2930,7 +2920,7 @@ PayDay(i) {
 								FIFInfo[i][FIFChances] += 2;
 								format(string,sizeof(string), "You have earned 2 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
 								SendClientMessageEx(i, COLOR_WHITE, string);
-								format(string, sizeof(string), "%s won 2 FIF Chances.", GetPlayerNameEx(i));
+								format(string, sizeof(string), "%s(%d) won 2 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 							case 3:
@@ -2938,10 +2928,20 @@ PayDay(i) {
 								FIFInfo[i][FIFChances] += 3;
 								format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
 								SendClientMessageEx(i, COLOR_WHITE, string);
-								format(string, sizeof(string), "%s won 3 FIF Chances.", GetPlayerNameEx(i));
+								format(string, sizeof(string), "%s(%d) won 3 FIF Chances.", GetPlayerNameEx(i), GetPlayerSQLId(i));
 								Log("logs/fif.log", string);
 							}
 						}
+					}
+				}
+				if(FIFTimeWarrior == 1)
+				{
+					if(FIFInfo[i][FIFHours] % 32 == 0)
+					{
+						PlayerInfo[i][pGoldBoxTokens] += 1;
+						SendClientMessageEx(i, COLOR_WHITE, "You have won a Gold Box Token for Fall Into Fun! To claim it, type /getrewardgift.");
+						format(string, sizeof(string), "%s(%d) won a Gold Box Token", GetPlayerNameEx(i), GetPlayerSQLId(i));
+						Log("logs/fif.log", string);
 					}
 				}
 				g_mysql_SaveFIF(i);
@@ -5079,9 +5079,12 @@ public SetVehicleEngine(vehicleid, playerid)
 		if(f_vHealth < 350.0) return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - it's totalled!");
 		if(IsRefuelableVehicle(vehicleid) && !IsVIPcar(vehicleid) && !IsAdminSpawnedVehicle(vehicleid) && VehicleFuel[vehicleid] <= 0.0)
 		{
-			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[7]);
-			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
-			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+			if(!PlayerInfo[playerid][pShopNotice])
+			{
+				PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[7]);
+				PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+			}
 			return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - there's no fuel in the tank!");
 		}
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
@@ -6146,7 +6149,7 @@ public Player_StreamPrep(iPlayer, Float: fPosX, Float: fPosY, Float: fPosZ, iTim
 		default: {
 			//GameTextForPlayer(iPlayer, "~r~Loaded!", 1000, 3);
 			HideNoticeGUIFrame(iPlayer);
-			TogglePlayerControllable(iPlayer, true);
+			if(!PlayerInfo[iPlayer][pHospital]) TogglePlayerControllable(iPlayer, true);
 
 			if(GetPlayerState(iPlayer) == PLAYER_STATE_DRIVER && !GetPVarType(iPlayer, "ShopTP"))
 				SetVehiclePos(GetPlayerVehicleID(iPlayer), fPosX, fPosY, fPosZ);
@@ -7957,12 +7960,13 @@ public AttemptPurify(playerid)
 forward DragPlayer(dragger, dragee);
 public DragPlayer(dragger, dragee)
 {
+	if(!IsPlayerConnected(dragger)) SendClientMessageEx(dragee, COLOR_GRAD2, "The player that was dragging you has disconnected.");
 	if(!IsPlayerConnected(dragee))
 	{
 		SetPVarInt(dragger, "DraggingPlayer", INVALID_PLAYER_ID);
 		SendClientMessageEx(dragger, COLOR_GRAD2, "The player you were dragging has disconnected.");
 	}
-	if(GetPVarInt(dragger, "DraggingPlayer") != INVALID_PLAYER_ID)
+	if(GetPVarType(dragger, "DraggingPlayer") && GetPVarInt(dragger, "DraggingPlayer") != INVALID_PLAYER_ID)
 	{
 		new Float:dX, Float:dY, Float:dZ;
 		GetPlayerPos(dragger, dX, dY, dZ);
@@ -11741,7 +11745,7 @@ stock SetPlayerSpawn(playerid)
   				return 1;
 			}
 			#endif
-			if(PlayerInfo[playerid][pWantedLevel] > 0 && (PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE))
+			if(PlayerInfo[playerid][pWantedLevel] > 0 && (PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE || PlayerInfo[playerid][pInsurance] == HOSPITAL_FAMED))
 			{
 				new wantedplace;
 				
@@ -11757,9 +11761,21 @@ stock SetPlayerSpawn(playerid)
 			}
 			else
 			{
-				DeliverPlayerToHospital(playerid, PlayerInfo[playerid][pInsurance]);
+				return DeliverPlayerToHospital(playerid, PlayerInfo[playerid][pInsurance]);
 			}
 			
+		}
+		if(!PlayerInfo[playerid][pHospital])
+		{
+			SetPlayerPos(playerid,PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z]);
+			SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
+			SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pPos_r]);
+			SetPlayerInterior(playerid,PlayerInfo[playerid][pInt]);
+			if(PlayerInfo[playerid][pHealth] < 1) PlayerInfo[playerid][pHealth] = 100;
+			SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
+			if(PlayerInfo[playerid][pArmor] > 0) SetPlayerArmor(playerid, PlayerInfo[playerid][pArmor]);
+			SetCameraBehindPlayer(playerid);
+			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
 		}
 		new Float: x, Float: y, Float: z;
 		GetPlayerPos(playerid, x, y, z);
@@ -16462,6 +16478,7 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 			PlayerVehicleInfo[playerid][v][pvImpounded] = 1;
 			SetVehiclePos(PlayerVehicleInfo[playerid][v][pvId], 0, 0, 0); // Attempted desync fix
 		}
+		GetVehicleHealth(PlayerVehicleInfo[playerid][v][pvId], PlayerVehicleInfo[playerid][v][pvHealth]);
 		if(PlayerVehicleInfo[playerid][v][pvBeingPickLocked] > 0) {
 			new extraid = PlayerVehicleInfo[playerid][v][pvBeingPickLockedBy];
 			SetPVarInt(extraid, "LockPickVehicleSQLId", PlayerVehicleInfo[playerid][v][pvSlotId]);
@@ -17787,12 +17804,8 @@ stock ShowInventory(playerid,targetid)
 {
 	if(IsPlayerConnected(targetid))
 	{
-		new resultline[1024], header[64], pnumber[20], pvtstring[128];
+		new resultline[1024], header[64], pnumber[20];
 		if(PlayerInfo[targetid][pPnumber] == 0) pnumber = "None"; else format(pnumber, sizeof(pnumber), "%d", PlayerInfo[targetid][pPnumber]);
-		if (PlayerInfo[playerid][pAdmin] >= 2)
-		{
-			format(pvtstring, sizeof(pvtstring), "Gift Box Tokens: %s\n", number_format(PlayerInfo[targetid][pGoldBoxTokens]));
-		}
 
 		new totalwealth;
 		totalwealth = PlayerInfo[targetid][pAccount] + GetPlayerCash(targetid);
@@ -17861,11 +17874,11 @@ stock ShowInventory(playerid,targetid)
 		format(resultline, sizeof(resultline),"%s\n\
 		Tool Box Usages: %d\n\
 		Crowbar: %d\n\
-		%s",
+		Gold Giftbox Tokens: %s",
 		resultline,
 		PlayerInfo[targetid][pToolBox],
 		PlayerInfo[targetid][pCrowBar],
-		pvtstring);
+		number_format(PlayerInfo[targetid][pGoldBoxTokens]));
 		ShowPlayerDialog(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;
@@ -19019,6 +19032,9 @@ stock UnZombie(playerid)
   	DeletePVar(playerid, "pZombieBit");
   	SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
    	SetPlayerToTeamColor(playerid);
+	new string[64];
+	format(string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	return 1;
 }
 #endif
@@ -22022,6 +22038,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
@@ -22039,6 +22056,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
@@ -22703,6 +22721,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
@@ -22720,6 +22739,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
@@ -23384,6 +23404,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
@@ -23401,6 +23422,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
@@ -24065,6 +24087,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPaintballToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPaintballToken][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPaintTokens] += dgVar[dgPaintballToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d Paintball Token(s)!", dgVar[dgPaintballToken][2]);
@@ -24082,6 +24105,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgVIPToken][1] == value) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgVIPToken][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pTokens] += dgVar[dgVIPToken][2];
 						format(string, sizeof(string), "Congratulations, you have won a %d VIP Token(s)!", dgVar[dgVIPToken][2]);
@@ -24440,6 +24464,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				}
 				else if(gift == 8)
 				{
+					if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid);
 					PlayerInfo[giveplayerid][pPaintTokens] += 10;
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won 10 paintball tokens!");
 					format(string, sizeof(string), "* %s was just gifted 10 paintball tokens, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -24448,6 +24473,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				else if(gift == 9)
 				{
 					if(PlayerInfo[giveplayerid][pDonateRank] < 1) return GiftPlayer(playerid, giveplayerid);
+					if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid);
 					PlayerInfo[giveplayerid][pTokens] += 5;
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won 5 VIP tokens!");
 					format(string, sizeof(string), "* %s was just gifted 5 VIP tokens, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -24510,6 +24536,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				{
 					if(PlayerInfo[giveplayerid][pDonateRank] > 0)
 					{
+						if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid);
 						PlayerInfo[giveplayerid][pTokens] += 15;
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won 15 VIP tokens!");
 						format(string, sizeof(string), "* %s was just gifted 15 VIP tokens, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -24641,6 +24668,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				else if(gift == 3)
 				{
 					if(PlayerInfo[giveplayerid][pDonateRank] < 1) return GiftPlayer(playerid, giveplayerid);
+					if(PlayerInfo[giveplayerid][pDonateRank] >= 4) return GiftPlayer(playerid, giveplayerid);
 					PlayerInfo[giveplayerid][pTokens] += 50;
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won 50 VIP tokens!");
 					format(string, sizeof(string), "* %s was just gifted 50 VIP tokens, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -26319,7 +26347,7 @@ public StartJailBoxing(iArenaID)
 	
 	foreach(Player, i)
 	{
-		if(GetPVarInt(i, "_InJailBoxing") - 1 == iArenaID)
+		if(GetPVarType(i, "_InJailBoxing") && GetPVarInt(i, "_InJailBoxing") - 1 == iArenaID)
 		iRangePoint = i;
 		break;
 	}
@@ -26722,19 +26750,29 @@ DeleteHouseSaleSign(houseid)
 	return 1;
 }
 
-forward FuelCan(playerid, vehicleid);
-public FuelCan(playerid, vehicleid)
+forward FuelCan(playerid, vehicleid, amount);
+public FuelCan(playerid, vehicleid, amount)
 {
-	PlayerInfo[playerid][mInventory][7]--;
-	VehicleFuel[vehicleid] = 100.0;
 	new string[128];
+	if(GetPVarInt(playerid, "fuelcan") == 1)
+	{
+		PlayerInfo[playerid][mInventory][7]--;
+		format(string, sizeof(string), "[FUELCAN] %s(%d) used a fuel can. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][7]);
+		Log("logs/micro.log", string);
+	}
+	if(GetPVarInt(playerid, "fuelcan") == 2)
+	{
+		format(string, sizeof(string), "[ZFUELCAN] %s(%d) used a fuel can with %d%% fuel.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][zFuelCan]);
+		Log("logs/micro.log", string);
+		PlayerInfo[playerid][zFuelCan] = 0;
+	}
+	VehicleFuel[vehicleid] += float(amount);
+	if(VehicleFuel[vehicleid] > 100) VehicleFuel[vehicleid] = 100.0;
 	format(string, sizeof(string), "%s has used a fuel can to refill their vehicle.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have used a fuel can to refill your vehicle.");
 	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
-	format(string, sizeof(string), "[FUELCAN] %s(%d) used a fuel can. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][7]);
-	Log("logs/micro.log", string);
 	DeletePVar(playerid, "fuelcan");
 	return 1;
 }
@@ -26789,6 +26827,7 @@ stock randomString(strDest[], strLen = 10)
 DeliverPlayerToHospital(playerid, iHospital)
 {
 	TogglePlayerControllable(playerid, 0);
+	SetPlayerHealth(playerid, 0.5);
 	SetPlayerInterior(playerid, 1);
 	PlayerInfo[playerid][pInt] = 1;
 	PlayerInfo[playerid][pHospital] = 1;
@@ -26827,29 +26866,78 @@ DeliverPlayerToHospital(playerid, iHospital)
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
 		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 		SendGroupMessage(1, DEPTRADIO, string);
+	}
+	else if(PlayerInfo[playerid][pDonateRank] >= 4)
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 5;
+		SetPVarInt(playerid, "HealthCareActive", 1);
 	}
 	else if(PlayerInfo[playerid][pHealthCare] > 0) // if player has credit insurance
 	{
-		if(PlayerInfo[playerid][pHealthCare] == 1) arrHospitalBedData[iHospital][iCountDown][index] = 8;
-		else if(PlayerInfo[playerid][pHealthCare] == 2) arrHospitalBedData[iHospital][iCountDown][index] = 4;
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have advanced healthcare toggled, you will spawn faster as a result.");
+		if(PlayerInfo[playerid][pHealthCare] == 1)
+		{
+			if(PlayerInfo[playerid][pCredits] >= ShopItems[18][sItemPrice])
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				GivePlayerCredits(playerid, -ShopItems[18][sItemPrice], 1);
+				printf("Price18: %d", 1);
+				SetPVarInt(playerid, "HealthCareActive", 1);
+
+				AmountSold[18]++;
+				AmountMade[18] += ShopItems[18][sItemPrice];
+				new szQuery[128];
+				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold18` = '%d', `AmountMade18` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[18], AmountMade[18]);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+				format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Adv][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[18][sItemPrice]));
+				Log("logs/credits.log", string), print(string);
+			}
+			else
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				DeletePVar(playerid, "HealthCareActive");
+				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for advanced health care.");
+			}
+		}
+		else if(PlayerInfo[playerid][pHealthCare] == 2)
+		{
+			if(PlayerInfo[playerid][pCredits] >= ShopItems[19][sItemPrice])
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 5;
+				GivePlayerCredits(playerid, -ShopItems[19][sItemPrice], 1);
+				printf("Price19: %d", 2);
+				SetPVarInt(playerid, "HealthCareActive", 1);
+				AmountSold[19]++;
+				AmountMade[19] += ShopItems[19][sItemPrice];
+				new szQuery[128];
+				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold19` = '%d', `AmountMade19` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[19], AmountMade[19]);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+				format(string, sizeof(string), "[AHC] [User: %s(%i)][IP: %s][Credits: %s][Super][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[19][sItemPrice]));
+				Log("logs/credits.log", string), print(string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have advanced healthcare toggled, you will spawn faster as a result.");
+			}
+			else
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				DeletePVar(playerid, "HealthCareActive");
+				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
+			}
+		}
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 	}
 	else // if player has regular insurance
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 40;
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Want to spawn faster? Enable advanced healthcare using /togglehealthcare.");
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 	}
-	ShowCountdownTextdraw(playerid);
-	valstr(string, arrHospitalBedData[iHospital][iCountDown][index]);
-	PlayerTextDrawSetString(playerid, Hosptimecount[playerid], string);
-	arrHospitalBedData[iHospital][iTimer][index] = SetTimerEx("ReleaseFromHospital", 1000, true, "iii", playerid, iHospital, index);
-	
+	format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][index]);
+	PlayerTextDrawHide(playerid, HospTime[playerid]);
+	PlayerTextDrawSetString(playerid, HospTime[playerid], string);
+	PlayerTextDrawShow(playerid, HospTime[playerid]);
+	arrHospitalBedData[iHospital][iTimer][index] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, index);
 	return 1;
 }
 
@@ -26911,6 +26999,7 @@ GetHospitalName(iHospital)
 		case HOSPITAL_SFVIP: string = "SF VIP";
 		case HOSPITAL_LVVIP: string = "LV VIP";
 		case HOSPITAL_HOMECARE: string = "Homecare";
+		case HOSPITAL_FAMED: string = "Famed Lounge";
 	}
 	
 	return string;
@@ -26919,19 +27008,26 @@ GetHospitalName(iHospital)
 forward ReleaseFromHospital(playerid, iHospital, iBed);
 public ReleaseFromHospital(playerid, iHospital, iBed)
 {
+	if(!IsPlayerConnected(playerid))
+	{
+		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
+		return 1;
+	}
+	if(GetPVarInt(playerid, "_SpawningAtHospital") == 2)
+	{
+		arrHospitalBedData[iHospital][iCountDown][iBed] = 0;
+	}
 	new string[128],
 	file[32], month, day, year;
 	getdate(year,month,day);
 	
-	arrHospitalBedData[iHospital][iCountDown][iBed]--;
-	if(arrHospitalBedData[iHospital][iCountDown][iBed] == 0)
+	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
 	{
-		ClearAnimations(playerid);
 		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 		DeletePVar(playerid, "_SpawningAtHospital");
 		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
 		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
-		DestroyCountdownTextdraw(playerid);
+		PlayerTextDrawHide(playerid, HospTime[playerid]);
 		
 		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) // if they have homecare, set them at home for free
 		{
@@ -26968,56 +27064,30 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
 		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
 		Log(file, string);
+		if(!GetPVarType(playerid, "HealthCareActive")) PlayerInfo[playerid][pHunger] = 50;
+		else PlayerInfo[playerid][pHunger] = 83;
+		if(!GetPVarType(playerid, "HealthCareActive")) SetPlayerHealth(playerid, 50);
+		else SetPlayerHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
+		PlayerInfo[playerid][pHydration] = 100;
+		if(PlayerInfo[playerid][pDonateRank] >= 3)
+		{
+			SetPlayerHealth(playerid, 100.0);
+			PlayerInfo[playerid][pHunger] = 100;
+		}
+		DeletePVar(playerid, "VIPSpawn");
 	}
 	else
 	{
-		valstr(string, arrHospitalBedData[iHospital][iCountDown][iBed]);
-		PlayerTextDrawSetString(playerid, Hosptimecount[playerid], string);
+		format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][iBed]);
+		PlayerTextDrawHide(playerid, HospTime[playerid]);
+		PlayerTextDrawSetString(playerid, HospTime[playerid], string);
+		PlayerTextDrawShow(playerid, HospTime[playerid]);
+		new Float:curhealth;
+		GetPlayerHealth(playerid, curhealth);
+		SetPlayerHealth(playerid, curhealth+1);
+		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
 	}
 	
-	return 1;
-}
-
-ShowCountdownTextdraw(playerid)
-{
-	Hosptimeleftlbl[playerid] = CreatePlayerTextDraw(playerid, 255.000000, 432.000000, "Time left:");
-	PlayerTextDrawAlignment(playerid, Hosptimeleftlbl[playerid], 2);
-	PlayerTextDrawBackgroundColor(playerid, Hosptimeleftlbl[playerid], 255);
-	PlayerTextDrawFont(playerid, Hosptimeleftlbl[playerid], 1);
-	PlayerTextDrawLetterSize(playerid, Hosptimeleftlbl[playerid], 0.500000, 1.000000);
-	PlayerTextDrawColor(playerid, Hosptimeleftlbl[playerid], 16777215);
-	PlayerTextDrawSetOutline(playerid, Hosptimeleftlbl[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, Hosptimeleftlbl[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, Hosptimeleftlbl[playerid], 1);
-	
-	Hosptimecount[playerid] = CreatePlayerTextDraw(playerid, 313.000000, 432.000000, "**");
-	PlayerTextDrawAlignment(playerid, Hosptimecount[playerid], 2);
-	PlayerTextDrawBackgroundColor(playerid, Hosptimecount[playerid], 255);
-	PlayerTextDrawFont(playerid, Hosptimecount[playerid], 1);
-	PlayerTextDrawLetterSize(playerid, Hosptimecount[playerid], 0.500000, 1.000000);
-	PlayerTextDrawColor(playerid, Hosptimecount[playerid], -16776961);
-	PlayerTextDrawSetOutline(playerid, Hosptimecount[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, Hosptimecount[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, Hosptimecount[playerid], 1);
-	
-	Hospitalunitslbl[playerid] = CreatePlayerTextDraw(playerid, 361.000000, 432.000000, "seconds");
-	PlayerTextDrawAlignment(playerid, Hosptimecount[playerid], 2);
-	PlayerTextDrawBackgroundColor(playerid, Hospitalunitslbl[playerid], 255);
-	PlayerTextDrawFont(playerid, Hospitalunitslbl[playerid], 1);
-	PlayerTextDrawLetterSize(playerid, Hospitalunitslbl[playerid], 0.500000, 1.000000);
-	PlayerTextDrawColor(playerid, Hospitalunitslbl[playerid], -16776961);
-	PlayerTextDrawSetOutline(playerid, Hospitalunitslbl[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, Hospitalunitslbl[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, Hospitalunitslbl[playerid], 1);
-	
-	return 1;
-}
-
-DestroyCountdownTextdraw(playerid)
-{
-	PlayerTextDrawDestroy(playerid, Hosptimeleftlbl[playerid]);
-	PlayerTextDrawDestroy(playerid, Hosptimecount[playerid]);
-	PlayerTextDrawDestroy(playerid, Hospitalunitslbl[playerid]);
 	return 1;
 }
 
@@ -27072,4 +27142,23 @@ ReturnDeliveryPoint(iDPID)
 	}
 	
 	return iPoint;
+}
+
+forward ScrapMetal(playerid, vehicleid);
+public ScrapMetal(playerid, vehicleid)
+{
+	PlayerInfo[playerid][mInventory][16]--;
+	new Float:vHP;
+	GetVehicleHealth(vehicleid, vHP);
+	SetVehicleHealth(vehicleid, vHP+500.0);
+	new string[128];
+	format(string, sizeof(string), "%s has added scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessage(playerid, COLOR_WHITE, "Your have applied scrap metal to your vehicle giving it +500HP!");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "[ZSCRAPMETAL] %s(%d) used a Scrap Metal. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][16]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "zscrapmetal");
+	return 1;
 }

@@ -378,6 +378,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][mNotice] = 0;
 		FIFInfo[playerid][FIFHours] = 0;
 		FIFInfo[playerid][FIFChances] = 0;
+		PlayerInfo[playerid][zFuelCan] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -1078,5 +1079,7 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hSignExpire]) format(string, sizeof(string), "Your first house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
 	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSignExpire]) format(string, sizeof(string), "Your second house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
 	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSignExpire]) format(string, sizeof(string), "Your third house has a active House Sale Sign for another %s", ConvertTimeS(HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSignExpire]-gettime())), SendClientMessageEx(playerid, -1, string);
+	if(zombieevent && PlayerInfo[playerid][mInventory][18]) format(string, sizeof(string), "You currently have a antibiotic flowing through your bloodstream protecting you from %d zombie bite(s).", PlayerInfo[playerid][mInventory][18]), SendClientMessageEx(playerid, -1, string);
+	if((PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) && !PlayerInfo[playerid][pDonateRank]) PlayerInfo[playerid][pInsurance] = random(2);
 	return 1;
 }

@@ -311,9 +311,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					new result[128];
 					cache_get_field_content(i, "TotalSoldMicro", result, MainPipeline);
-					sscanf(result, "p<|>e<dddddddddddddddd>", AmountSoldMicro);
+					sscanf(result, "p<|>e<dddddddddddddddddddd>", AmountSoldMicro);
 					cache_get_field_content(i, "AmountMadeMicro", result, MainPipeline);
-					sscanf(result, "p<|>e<dddddddddddddddd>", AmountMadeMicro);
+					sscanf(result, "p<|>e<dddddddddddddddddddd>", AmountMadeMicro);
 					for(new m = 0; m < MAX_MICROITEMS; m++)
 					{
 						printf("TotalSoldMicro%d: %d | AmountMadeMicro%d: %d", m, AmountSoldMicro[m], m, AmountMadeMicro[m]);
@@ -687,7 +687,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "CarLockPickSkill", szResult, MainPipeline); PlayerInfo[extraid][pCarLockPickSkill] = strval(szResult);
 					cache_get_field_content(row,  "LockPickVehCount", szResult, MainPipeline); PlayerInfo[extraid][pLockPickVehCount] = strval(szResult);
 					cache_get_field_content(row,  "LockPickTime", szResult, MainPipeline); PlayerInfo[extraid][pLockPickTime] = strval(szResult);
-					cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
+					//cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
 					cache_get_field_content(row,  "BM", szResult, MainPipeline); PlayerInfo[extraid][pBM] = strval(szResult);
 					
 					cache_get_field_content(row,  "Isolated", szResult, MainPipeline); PlayerInfo[extraid][pIsolated] = strval(szResult);
@@ -705,17 +705,17 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "pDedicatedWarn", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedWarn] = strval(szResult);
 
 					cache_get_field_content(row,  "mInventory", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mInventory]);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mInventory]);
 					cache_get_field_content(row,  "mPurchaseCounts", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mPurchaseCount]);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mPurchaseCount]);
 					new result[256];
 					cache_get_field_content(row,  "mCooldowns", result, MainPipeline); 
-					sscanf(result, "p<|>e<dddddddddddddddd>", PlayerInfo[extraid][mCooldown]);
+					sscanf(result, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mCooldown]);
 					cache_get_field_content(row,  "mBoost", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dd>", PlayerInfo[extraid][mBoost]);
 					cache_get_field_content(row,  "mShopNotice", szResult, MainPipeline);
 					sscanf(szResult, "p<|>dd", PlayerInfo[extraid][mShopCounter], PlayerInfo[extraid][mNotice]);
-					
+					PlayerInfo[extraid][zFuelCan] = cache_get_field_content_int(row,  "zFuelCan", MainPipeline);
 					GetPartnerName(extraid);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
@@ -1048,6 +1048,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 						
 						cache_get_field_content(i,  "pvLocksLeft", szResult, MainPipeline);
 						PlayerVehicleInfo[extraid][i][pvLocksLeft] = strval(szResult);
+						
+						PlayerVehicleInfo[extraid][i][pvHealth] = cache_get_field_content_float(i, "pvHealth", MainPipeline);
 						
 						new szLog[128];
 						format(szLog, sizeof(szLog), "[VEHICLELOAD] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerVehicleInfo[extraid][i][pvModelId], PlayerVehicleInfo[extraid][i][pvSlotId]);
@@ -1414,7 +1416,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				if(!rows)
 				{
 					new szQuery[128];
-					format(szQuery,sizeof(szQuery),"INSERT INTO `FallIntoFun` SET `player` = %d",  GetPlayerSQLId(extraid));
+					format(szQuery,sizeof(szQuery),"INSERT INTO `FallIntoFun` SET `player` = %d", PlayerInfo[extraid][pId]);
 					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 					return 1;
 				}
@@ -1638,6 +1640,9 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	format(query, sizeof(query), "%s `pvAlarm` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
 	format(query, sizeof(query), "%s `pvLastLockPickedBy` = '%s',", query, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy], MainPipeline));
 	format(query, sizeof(query), "%s `pvLocksLeft` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) format(query, sizeof(query), "%s `pvHealth` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvHealth]);
 	
 	for(new m = 0; m < MAX_MODS; m++)
 	{
@@ -2385,7 +2390,7 @@ stock SaveDynamicMapIcon(mapiconid)
 		DMPInfo[mapiconid][dmpPosX],
 		DMPInfo[mapiconid][dmpPosY],
 		DMPInfo[mapiconid][dmpPosZ],
-		mapiconid
+		DMPInfo[mapiconid][dmpSQLId]
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -3391,7 +3396,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);	
 	
-	new mistring[32], mpstring[32], mcstring[256];
+	new mistring[64], mpstring[64], mcstring[256];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
@@ -3406,7 +3411,9 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mBoost", mpstring);
 	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "zFuelCan", PlayerInfo[playerid][zFuelCan]);
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
+	g_mysql_SaveFIF(playerid);
 	return 1;
 }
 
@@ -4422,9 +4429,9 @@ public CheckSales3(index)
 				Total += cache_get_field_content_int(0, szField, MainPipeline);
 			}
 			cache_get_field_content(0, "TotalSoldMicro", szDialog, MainPipeline);
-			sscanf(szDialog, "p<|>e<dddddddddddddddd>", mSolds);
+			sscanf(szDialog, "p<|>e<dddddddddddddddddddd>", mSolds);
 			cache_get_field_content(0, "AmountMadeMicro", szDialog, MainPipeline);
-			sscanf(szDialog, "p<|>e<dddddddddddddddd>", mAmount);
+			sscanf(szDialog, "p<|>e<dddddddddddddddddddd>", mAmount);
 			szDialog[0] = 0;
 			for(new m; m < MAX_MICROITEMS; m++)
 			{

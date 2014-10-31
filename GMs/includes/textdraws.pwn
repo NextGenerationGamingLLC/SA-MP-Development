@@ -2450,6 +2450,15 @@ stock CreatePlayerTextDraws(playerid)
 	
 	_vhudVisible[playerid] = 0;
 
+	HospTime[playerid] = CreatePlayerTextDraw(playerid,250.000000, 430.000000, "Time Left: ~r~60 ~w~seconds");
+	PlayerTextDrawBackgroundColor(playerid, HospTime[playerid], 255);
+	PlayerTextDrawFont(playerid, HospTime[playerid], 1);
+	PlayerTextDrawLetterSize(playerid, HospTime[playerid], 0.380000, 1.000000);
+	PlayerTextDrawColor(playerid, HospTime[playerid], -1);
+	PlayerTextDrawSetOutline(playerid, HospTime[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, HospTime[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, HospTime[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, HospTime[playerid], 0);
 	return 1;
 }
 

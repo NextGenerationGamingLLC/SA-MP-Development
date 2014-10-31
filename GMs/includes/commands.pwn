@@ -2009,21 +2009,14 @@ CMD:getvials(playerid, params[])
 {
 	if(zombieevent == 1)
 	{
-      	if(IsAMedic(playerid) && IsAnAmbulance(GetPlayerVehicleID(playerid)))
-		{
-		    if(PlayerInfo[playerid][pVials] > 0)
-				return SendClientMessageEx(playerid, COLOR_GREY, "You already have vials.");
-
-			new string[128];
-		    PlayerInfo[playerid][pVials] += 5;
-		    SendClientMessageEx(playerid, COLOR_GREEN, "You have received 5 vials.");
-		    format(string, sizeof(string), "* %s takes 5 vials from the vehicle.", GetPlayerNameEx(playerid));
-			ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		}
-		else
-		{
-		    SendClientMessageEx(playerid, COLOR_GREY, "You aren't in a medic or in an ambulance.");
-		}
+		if(!IsAMedic(playerid) && PlayerInfo[playerid][pMember] != 11) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't a Medic!");
+		if(!IsAnAmbulance(GetPlayerVehicleID(playerid)) && GetVehicleModel(GetPlayerVehicleID(playerid)) != 470) return SendClientMessageEx(playerid, COLOR_GREY, "You aren't in an ambulance!");
+		if(PlayerInfo[playerid][pVials] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You already have vials.");
+		new string[128];
+		PlayerInfo[playerid][pVials] += 5;
+		SendClientMessageEx(playerid, COLOR_GREEN, "You have received 5 vials.");
+		format(string, sizeof(string), "* %s takes 5 vials from the vehicle.", GetPlayerNameEx(playerid));
+		ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	return 1;
 }
@@ -2088,6 +2081,15 @@ CMD:bite(playerid, params[])
 			    			SendClientMessageEx(playerid, COLOR_GREY, string);
 			    			return 1;
 						}
+					}
+					if(PlayerInfo[i][mInventory][18])
+					{
+						PlayerInfo[i][mInventory][18]--;
+						SetPVarInt(i, "LastBiteTime", gettime()+15);
+						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
+						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						SendClientMessageEx(i, COLOR_GREY, "You were not affected by the zombies bite due to the antibiotic in your bloodstream!");
+						return SendClientMessageEx(playerid, COLOR_GREY, "They have a antibiotic in their bloodstream! Your bite had no effect on them!");
 					}
 					GetPlayerHealth(i, hp);
 					SetPlayerHealth(i, hp - 30);
@@ -3123,7 +3125,7 @@ CMD:businesshelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /buybizlevel /binvite /buninvite /bouninvite /bgiverank /resign /bsafe");
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /binventory /offeritem /resupply /checkresupply /cancelresupply /minrank");
 	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /employeepayset /employeeautopay /editgasprice /editprices /bizlock");
-	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /bauto /bonline /bpanic /sellbiz /b(iz)r(adio)");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"*** BUSINESS *** /bauto /bonline /bpanic /b(iz)r(adio)");
 	if(IsValidBusinessID(PlayerInfo[playerid][pBusiness]))
 	{
 		if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP || Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_OLDCARDEALERSHIP) {
@@ -3765,9 +3767,9 @@ CMD:auctions(playerid, params[]) {
 }
 
 CMD:online(playerid, params[]) {
-    if(PlayerInfo[playerid][pLeader] >= 0)
+	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
-
+		if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, -1, "You are not a member of any group!");
 		new
 			badge[11],
 			szDialog[1024];
@@ -3787,7 +3789,7 @@ CMD:online(playerid, params[]) {
 					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 				}
-				else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pLeader]) switch(PlayerInfo[i][pDuty]) {
+				else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
 					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
 					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
 				}
@@ -3932,7 +3934,7 @@ CMD:beginswimming(playerid, params[])
 	SetPlayerCheckpoint(playerid, 2892.5071, -2261.9607, 1.4645, 2.0);
 	SendClientMessageEx(playerid, COLOR_WHITE, "Proceed to the first checkpoint to begin exercising.");
 	SendClientMessageEx(playerid, COLOR_WHITE, "Type /stopswimming to exit your current activity.");
-	if(!PlayerInfo[playerid][mCooldown][4])
+	if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
 	{
 		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
 		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -4072,7 +4074,7 @@ CMD:beginparkour(playerid, params[])
 	SetPVarInt(playerid, "_BikeParkourSlot", pos);
 	new pickup = CreateDynamicPickup(1318, 23, 2833.8757, -2256.8293, 95.9497, .playerid = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = 0);
 	SetPVarInt(playerid, "_BikeParkourPickup", pickup);
-	if(!PlayerInfo[playerid][mCooldown][4])
+	if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
 	{
 		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
 		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -5148,6 +5150,7 @@ CMD:impound(playerid, params[]) {
 
 						PlayerVehicleInfo[iTargetOwner][iVehIndex][pvImpounded] = 1;
 						PlayerVehicleInfo[iTargetOwner][iVehIndex][pvSpawned] = 0;
+						GetVehicleHealth(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId], PlayerVehicleInfo[iTargetOwner][iVehIndex][pvHealth]);
 						PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId] = INVALID_PLAYER_VEHICLE_ID;
 						DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
 						SetVehiclePos(iVehTowed, 0, 0, 0); // Attempted desync fix
@@ -5233,6 +5236,7 @@ CMD:aimpound(playerid, params[]) {
 
 				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvImpounded] = 1;
 				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvSpawned] = 0;
+				GetVehicleHealth(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId], PlayerVehicleInfo[iTargetOwner][iVehIndex][pvHealth]);
 				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId] = INVALID_PLAYER_VEHICLE_ID;
 				DestroyVehicle(iVehTowed);
                 g_mysql_SaveVehicle(iTargetOwner, iVehIndex);
@@ -6957,7 +6961,9 @@ CMD:car(playerid, params[])
 
 CMD:refuel(playerid, params[])
 {
-
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, -1, "You can't use Gas Stations during the Zombie Event!");
     if (GetPVarType(playerid, "Refueling"))
 	{
 	    SetPVarInt(playerid, "Refueling", -1);
@@ -12417,6 +12423,7 @@ CMD:sellgun(playerid, params[])
 	}
 	if(PlayerInfo[giveplayerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 	if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive weapons at the moment.");
+	if(zombieevent && GetPVarType(giveplayerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't have guns.");
     if(strcmp(x_weapon,"dildo",true) == 0) {
         if(PlayerInfo[playerid][pArmsSkill] < 400) return SendClientMessageEx(playerid, COLOR_GREY, " You are not the required level to create that!");
         if(PlayerInfo[playerid][pMats] > 24) {
@@ -14464,7 +14471,7 @@ CMD:quitevent(playerid, params[])
 
 CMD:eventreset(playerid, params[])
 {
-    if( PlayerInfo[ playerid ][ pAdmin ] >= 1337 ) {
+    if( PlayerInfo[ playerid ][ pAdmin ] >= 1337 || PlayerInfo[playerid][pShopTech] >= 3) {
         new string[128];
         if( EventKernel[EventAdvisor] >= 1 ) {
             EventKernel[EventAdvisor] = 0;
@@ -15002,6 +15009,9 @@ CMD:gotopaynspray(playerid, params[])
 
 CMD:repaircar(playerid, params[])
 {
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, -1, "You can't use Pay N' Spray's during the Zombie Event!");
 	if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		for(new i; i < MAX_PAYNSPRAYS; i++)
@@ -24999,11 +25009,12 @@ CMD:setinsurance(playerid, params[])
 		if(sscanf(params, "ud", giveplayerid, insurance))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setinsurance [player] [insurance]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Insurances: 0 - 14");
+			format(string, sizeof(string), "Available Insurances: 0 - %d", MAX_HOSPITALS-1);
+			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			return 1;
 		}
 
-		if(insurance >= 0 && insurance <= 14)
+		if(insurance >= 0 && insurance <= MAX_HOSPITALS-1)
 		{
 			format(string, sizeof(string), " Your insurance has been changed to %s.", GetHospitalName(insurance));
 			SendClientMessageEx(giveplayerid,COLOR_YELLOW,string);
@@ -25278,7 +25289,7 @@ CMD:setcapping(playerid, params[]) {
 	}
 	return 1;
 }
-/*
+
 CMD:hosp(playerid, params[]) {
 	return cmd_hospital(playerid, params);
 }
@@ -25292,15 +25303,8 @@ CMD:hospital(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pHospital] > 0)
 			{
-				DeletePVar(playerid, "HospitalTimer");
-				//HospitalSpawn(playerid);
-				PlayerInfo[playerid][pHospital] = 0;
 				ClearAnimations(playerid);
-				DeletePVar(playerid, "_SpawningAtHospital");
-				arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
-				KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
-				DestroyCountdownTextdraw(playerid);
-				TogglePlayerControllable(playerid, 1);
+				SetPVarInt(playerid, "_SpawningAtHospital", 2);
 				return SendClientMessageEx(playerid, COLOR_GREY, "You have released yourself from the hospital.");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hospital [player]");
@@ -25314,10 +25318,8 @@ CMD:hospital(playerid, params[])
 					format(string, sizeof(string), " You have forced %s out of the hospital.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been forced out of the hospital by an Admin.");
-					DeletePVar(giveplayerid, "HospitalTimer");
-					//HospitalSpawn(giveplayerid);
-					PlayerInfo[giveplayerid][pHospital] = 0;
-					DeletePVar(giveplayerid, "MedicBill");
+					ClearAnimations(giveplayerid);
+					SetPVarInt(giveplayerid, "_SpawningAtHospital", 2);
 				}
 				else SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not in the hospital!");
 			}
@@ -25325,7 +25327,7 @@ CMD:hospital(playerid, params[])
 		}
 	}
 	return 1;
-}*/
+}
 
 CMD:revive(playerid, params[])
 {
@@ -26043,7 +26045,7 @@ CMD:dropgun(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dropgun [weapon name]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: sdpistol, shotgun, 9mm, mp5, uzi, tec9, rifle, deagle, ak47, m4, spas12, sniper, camera");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: flowers, knuckles, baseballbat, cane, shovel, poolcue, golfclub, katana, dildo, parachute, goggles");
 		if (IsAHitman(playerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Available Names: knife");
@@ -26494,6 +26496,20 @@ CMD:dropgun(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
 		}
 	}
+	else if(strcmp(params, "goggles", true) == 0)
+	{
+		if(PlayerInfo[playerid][pGuns][11] == 44 || PlayerInfo[playerid][pGuns][11] == 45)
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have dropped your goggles.");
+			format(string, sizeof(string), "* %s has dropped their goggles.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			RemovePlayerWeapon(playerid, 44);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
+		}
+	}
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You have entered an invalid weapon name.");
@@ -26910,9 +26926,9 @@ CMD:dynamicgift(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_RED, "Due to the Dynamic Giftbox being enabled, you may view the content inside the giftbox.");
 				
-				if(PlayerInfo[playerid][pAdmin] == 99999) 
+				if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3) 
 				{
-					SendClientMessageEx(playerid, COLOR_RED, "Executive Admin Note: You must fill up the giftbox with /dgedit.");
+					SendClientMessageEx(playerid, COLOR_RED, "Note: You must fill up the giftbox with /dgedit.");
 				}
 				ShowPlayerDynamicGiftBox(playerid);
 			}
@@ -26983,18 +26999,20 @@ CMD:getgift(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pLevel] >= 3)
 			{
-				if(PlayerInfo[playerid][pGiftTime] > 0)
+				if(PlayerInfo[playerid][pGiftTime] > 0 && (IsDynamicGiftBoxEnabled == false || (IsDynamicGiftBoxEnabled == true && !dgGoldToken)))
 				{
 				    format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
 	    			ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
 					return 1;
 				}
-				format(string, sizeof(string), "* %s reaches inside the bag of gifts with their eyes closed.", GetPlayerNameEx(playerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				
 				if(IsDynamicGiftBoxEnabled == true)
 				{
+					if(dgGoldToken)
+					{
+						if(!PlayerInfo[playerid][pGoldBoxTokens]) return SendClientMessageEx(playerid, COLOR_GREY, "You have no Gold Giftbox tokens!");
+						PlayerInfo[playerid][pGoldBoxTokens]--;
+					}
 					GiftPlayer(MAX_PLAYERS, playerid, 1);
 				}
 				else if(IsDynamicGiftBoxEnabled == false)
@@ -27012,6 +27030,8 @@ CMD:getgift(playerid, params[])
 
 					SendClientMessageEx(playerid, COLOR_GRAD2, "* Your hunger has been refilled!  Merry christmas!");
 				}
+				format(string, sizeof(string), "* %s reaches inside the bag of gifts with their eyes closed.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			}
 			else
 			{
@@ -30792,7 +30812,7 @@ CMD:awithdraw(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money as a 3 percent fee.", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
-		if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+		if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 		{
 			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -30839,7 +30859,7 @@ CMD:adeposit(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
-		if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+		if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 		{
 			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -30914,7 +30934,7 @@ CMD:awiretransfer(playerid, params[])
 					PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 					format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					if((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8))
+					if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 					{
 						PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 						PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -32104,12 +32124,12 @@ CMD:ddnear(playerid, params[])
 			{
 				if(strcmp(DDoorsInfo[i][ddDescription], "None", true) != 0)
 				{
-					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]))
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && DDoorsInfo[i][ddInteriorVW] == option)
 					{
 						format(szMessage, sizeof(szMessage), "(Interior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]), DDoorsInfo[i][ddInteriorInt]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
-					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]))
+					if(IsPlayerInRangeOfPoint(playerid, 30, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && DDoorsInfo[i][ddExteriorVW] == option)
 					{
 						format(szMessage, sizeof(szMessage), "(Exterior) DDoor ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]), DDoorsInfo[i][ddExteriorInt]);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
@@ -35240,7 +35260,7 @@ CMD:prison(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin] || PlayerInfo[giveplayerid][pWatchdog] >= PlayerInfo[playerid][pWatchdog]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			SetPlayerArmedWeapon(giveplayerid, 0);
 			if(GetPVarInt(giveplayerid, "Injured") == 1)
 			{
@@ -36004,7 +36024,7 @@ CMD:jail(playerid, params[])
 		if(PlayerInfo[playerid][pSMod] < 1 && PlayerInfo[playerid][pAdmin] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 		if(IsPlayerConnected(giveplayerid))
 		{
-			if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= PlayerInfo[playerid][pWatchdog])) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && (PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2))) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			
 			if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 			ResetPlayerWeaponsEx(giveplayerid);
@@ -40754,7 +40774,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - Biz Mod *** /bedit /bname /bnext /bnear /gotobiz /goinbiz /creategaspump /editgaspump /deletegaspump /switchbiz");
 		if(PlayerInfo[playerid][pBM] >= 2) SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - DoBM *** /asellbiz");
 	}
-	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm");
+	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm /togdynamicgift /dgedit /viewgiftbox /freeweekend");
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoFM *** /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
@@ -42146,14 +42166,21 @@ CMD:adivorce(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
+			if(PlayerInfo[giveplayerid][pMarriedID] != -1)
+			{
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i) && PlayerInfo[i][pMarriedID] == GetPlayerSQLId(giveplayerid)) ClearMarriage(i);
+				}
+				format(string, sizeof(string), "UPDATE `accounts` SET `MarriedID` = -1 WHERE id = %d", PlayerInfo[giveplayerid][pMarriedID]);
+				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			}
 			ClearMarriage(giveplayerid);
 			format(string, sizeof(string), "* You've admin divorced %s.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "* You have been admin divorced by an admin.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-			DivorceOffer[giveplayerid] = playerid;
 			return 1;
-
 		}
 		else
 		{
@@ -43666,6 +43693,100 @@ CMD:sellcredits(playerid, params[])
 	return 1;
 }
 
+/* FOR NOV 1st -- Test before updating.
+CMD:sellcredits(playerid, params[])
+{
+	//return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
+	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+	new
+	    Player,
+	    Credits,
+	    Amount;
+
+    if(SellClosed == 1)
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits is currently disabled.");
+
+	if(PlayerInfo[playerid][pDonateRank] < 2 && !freeweekend)
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot initiate trades unless you are SVIP+!");
+
+	if(sscanf(params, "udd", Player, Credits, Amount))
+	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellcredits [Player] [Credits] [Amount]");
+
+	else if(!IsPlayerConnected(Player))
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+
+	else if(Credits < 0 || Amount < 0)
+	    return SendClientMessageEx(playerid, COLOR_GREY, "Amount/Price can't be below zero.");
+
+	else if(Player == playerid)
+	    return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell credits to yourself.");
+
+	else if(Credits > PlayerInfo[playerid][pCredits])
+	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many credits.");
+
+	else if(Credits < 51)
+	    return SendClientMessageEx(playerid, COLOR_GREY, "You need to trade at least 51 credits.");
+
+	else if (!ProxDetectorS(10.0, playerid, Player))
+		return SendClientMessageEx(playerid, COLOR_GREY, "That player isn't near you.");
+
+	else if(GetPVarType(Player, "CreditsAmount"))
+	    return SendClientMessageEx(playerid, COLOR_GREY, "That player already has been offered.");
+
+	else if(!GetPVarInt(playerid, "PinConfirmed"))
+		PinLogin(playerid);
+
+	else
+	{
+	    new szMessage[200], CreditsTaxed;
+		new year, month, day;
+		new TransactionFee;
+		
+		getdate(year, month, day);
+		SetPVarInt(Player, "CreditsFirstAmount", Credits);
+		
+		if(!freeweekend)
+		{
+			switch(PlayerInfo[playerid][pDonateRank]) {
+				case 2: {
+					CreditsTaxed = 2*Credits/100;
+					Credits = Credits-10;
+					Credits = Credits-CreditsTaxed;
+					TransactionFee = (10+CreditsTaxed);
+				}
+				case 3: {
+					CreditsTaxed = 2*Credits/100;
+					Credits = Credits-5;
+					Credits = Credits-CreditsTaxed;
+					TransactionFee = (5+CreditsTaxed);
+				}
+				case 4: {
+					CreditsTaxed = 0;
+					Credits = Credits-5;
+					TransactionFee = 5;
+				}
+				case 5: {
+					CreditsTaxed = 0;
+					Credits = Credits-5;
+					TransactionFee = 5;
+				}
+			}
+		}
+		
+	    SetPVarInt(Player, "CreditsOffer", Amount);
+	    SetPVarInt(Player, "CreditsAmount", Credits);
+	    SetPVarInt(Player, "CreditsSeller", playerid);
+	    SetPVarInt(playerid, "CreditsSeller", Player);
+
+	    format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
+	    SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+
+	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
+	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
+	}
+	return 1;
+}*/
+
 CMD:togglehealthcare(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHealthCare] == 0)
@@ -43835,7 +43956,7 @@ CMD:halloweenshop(playerid, params[])
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
 			new string[128];
-			format(string, sizeof(string), "Pumpkin Toy (Cost: 75 Credits | Stock: %d)\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
+			format(string, sizeof(string), "Pumpkin Toy (Cost: 150 Credits | Stock: %d)", PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
 			ShowPlayerDialog(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Select", "Exit");
 			return 1;
 		}
@@ -46061,6 +46182,7 @@ CMD:frisk(playerid, params[])
 			if (ProxDetectorS(8.0, playerid, giveplayerid))
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!"); return 1; }
+				if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return 1;
 
 				/*// Find the storageid of the storagedevice.
 				if(storageid == 1) {
@@ -52428,6 +52550,7 @@ CMD:locker(playerid, params[]) {
 		
 	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(zombieevent && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this as a Zombie.");
 	if(0 <= iGroupID < MAX_GROUPS)
 	{
 		for(new i; i < MAX_GROUPS; i++)
@@ -56589,7 +56712,7 @@ CMD:dgedit(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: FullArmor, Firstaid, DDFlag, GateFlag, Credits, PriorityAd, HealthNArmor, Giftreset, Material");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: Warning, Pot, Crack, PaintballToken, VIPToken, RespectPoint, CarVoucher, BuddyInvite, Laser");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: CustomToy, AdmuteReset, NewbieMuteReset, RestrictedCarVoucher, PlatVIPVoucher");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: AutoReset");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Available Choices: AutoReset, UseGoldTokens");
 		return SendClientMessageEx(playerid, COLOR_RED, "Available Types: 0 = Enable/Disable | 1 = Quantity available | 2 = Quantity Given | 3 = Category");
 	}
 	if(type < 0 || type > 3) 
@@ -56631,6 +56754,12 @@ CMD:dgedit(playerid, params[])
 	else if(strcmp(choice, "restrictedcarvoucher", true) == 0) var = dgRestrictedCarVoucher;
 	else if(strcmp(choice, "platvipvoucher", true) == 0) var = dgPlatinumVIPVoucher;
 	else if(strcmp(choice, "autoreset", true) == 0) return cmd_dgedit(playerid, "autoreset");
+	else if(strcmp(choice, "usegoldtokens", true) == 0)
+	{
+		if(dgGoldToken) dgGoldToken = 0, SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the use of a Gold Giftbox token to recieve a gift.");
+		else dgGoldToken = 1, SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the use of a Gold Giftbox token to recieve a gift.");
+		return 1;
+	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Choice!");
 	// Prepare the proper and approriate string
 	switch(type)
@@ -60630,7 +60759,7 @@ CMD:microshop(playerid, params[])
 	DeletePVar(playerid, "m_listitem");
 	DeletePVar(playerid, "m_Item");
 	DeletePVar(playerid, "m_Response");
-	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialog(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous", "Select", "Exit");
+	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialog(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous\nEvents", "Select", "Exit");
 	else SetPVarInt(playerid, "OpenShop", 11), PinLogin(playerid);
 	return 1;
 }
@@ -60745,7 +60874,7 @@ CMD:fuelcan(playerid, params[])
 	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
-	SetTimerEx("FuelCan", 10000, false, "ii", playerid, closestcar);
+	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, 100);
 	SetPVarInt(playerid, "fuelcan", 1);
 	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
 	return 1;
@@ -60825,7 +60954,8 @@ CMD:activeitems(playerid, params[])
 	new string[128];
 	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have an active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
 	if(PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have an active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);
-	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "You currently have an Quick Bank Access for another %d minute(s).", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
+	if(PlayerInfo[playerid][mPurchaseCount][12] && PlayerInfo[playerid][mCooldown][12]) format(string, sizeof(string), "You currently have a Quick Bank Access for another %d minute(s).", PlayerInfo[playerid][mCooldown][12]), SendClientMessageEx(playerid, -1, string);
+	if(zombieevent) format(string, sizeof(string), "You currently have a antibiotic flowing through your bloodstream protecting you from %d zombie bite(s).", PlayerInfo[playerid][mInventory][18]), SendClientMessageEx(playerid, -1, string);
 	return 1;
 }
 
@@ -60993,6 +61123,8 @@ CMD:buyinsurance(playerid, params[])
 	
 	if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
 	{
+		if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
+		if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
 		PlayerInfo[playerid][pInsurance] = iHospitalVW;
 		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
@@ -61094,4 +61226,227 @@ CMD:deliverpt(playerid, params[])
         }
     }
     return 1;
+}
+
+CMD:claimpoints(playerid, params[])
+{
+	new amount;
+	for(new i; i < MAX_EVENTPOINTS; i++)
+	{
+		if(EventPoints[i][epPosX] != 0.0) amount++;
+	}
+	new string[48];
+	format(string, sizeof(string), "There are %d available claim points on the map!", amount);
+	SendClientMessageEx(playerid, -1, string);
+	return 1;
+}
+
+CMD:prezombie(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(prezombie)
+	{
+		prezombie = 0;
+		SendClientMessageEx(playerid, -1, "You have successfully disabled the pre-zombie event sale.");
+	}
+	else
+	{
+		prezombie = 1;
+		SendClientMessageEx(playerid, -1, "You have successfully enabled the pre-zombie event sale.");
+	}
+	return 1;
+}
+
+CMD:zfuelcan(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][zFuelCan]) return SendClientMessage(playerid, COLOR_GREY, "You do not have a Fuel Can in your inventory!");
+	if(GetPVarInt(playerid, "fuelcan") == 2) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	new string[72];
+	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
+	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, PlayerInfo[playerid][zFuelCan]);
+	SetPVarInt(playerid, "fuelcan", 2);
+	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
+	return 1;
+}
+
+CMD:zscrapmetal(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][16]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Scrap Metal in your inventory, visit /microshop to purchase.");
+	if(GetPVarInt(playerid, "zscrapmetal") == 1) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use this while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	new Float:vHP;
+	GetVehicleHealth(closestcar, vHP);
+	if(vHP > 5000) return SendClientMessageEx(playerid, -1, "You cannot add scrapmetal when your vehicle's health is over 5000 HP!");
+	new string[71];
+	format(string, sizeof(string), "%s begins to apply scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+	SetTimerEx("ScrapMetal", 6000, false, "ii", playerid, closestcar);
+	SetPVarInt(playerid, "zscrapmetal", 1);
+	GameTextForPlayer(playerid, "~w~Applying...", 6000, 3);
+	return 1;
+}
+
+CMD:z50cal(playerid, params[])
+{
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][17]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any .50 Caliber Ammo in your inventory, visit /microshop to purchase.");
+	if((GetPlayerWeapon(playerid) != 33 || PlayerInfo[playerid][pGuns][6] != 33) && (GetPlayerWeapon(playerid) != 34 || PlayerInfo[playerid][pGuns][6] != 34)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only load a rifle or sniper rifle with .50 cal ammo.");
+	if(!GetPVarType(playerid, "z50Cal"))
+	{
+		SendClientMessageEx(playerid, -1, "You have loaded a .50 Caliber bullet into your weapon.");
+		SetPVarInt(playerid, "z50Cal", 1);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, -1, "You have unloaded a .50 Caliber bullet from your weapon.");
+		DeletePVar(playerid, "z50Cal");
+	}
+	ApplyAnimation(playerid, "RIFLE", "RIFLE_load", 4.0, 0, 0, 0, 0, 0, 1);
+	return 1;
+}
+
+CMD:zinject(playerid, params[])
+{
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mPurchaseCount][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Antibiotic Injections in your inventory, visit /microshop to purchase.");
+	if(PlayerInfo[playerid][mInventory][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You currently have a active antibiotic in your bloodstream!");
+	PlayerInfo[playerid][mPurchaseCount][18]--;
+	PlayerInfo[playerid][mInventory][18] = 3;
+	SendClientMessageEx(playerid, -1, "You have injected your self with a antibiotic! You will be immune from 3 zombie bites!");
+	return 1;
+}
+
+CMD:zopenkit(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][19]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Survivor Kits in your inventory, visit /microshop to purchase.");
+	new string[128], rand = random(75);
+	switch(rand)
+	{
+		case 0 .. 24://1 Scrap Metal & 2 Bullets
+		{
+			PlayerInfo[playerid][mInventory][16]++;
+			PlayerInfo[playerid][mInventory][17] += 2;
+			SendClientMessageEx(playerid, -1, "You found 1 Scrap Metal & 2 .50 Cal Bullets in your kit! Use /zscrapmetal and /z50cal to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 1 Scrap Metal & 2 .50 Cal Bullets in their kit!", GetPlayerNameEx(playerid));
+		}
+		case 25 .. 49://5 Bullets & 2 Antibiotic Injection
+		{
+			PlayerInfo[playerid][mInventory][17] += 5;
+			PlayerInfo[playerid][mPurchaseCount][18] += 2;
+			SendClientMessageEx(playerid, -1, "You found 5 .50 Cal Bullets & 2 Antibiotic Injections in your kit! Use /z50cal and /zinject to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 5 .50 Cal Bullets & 2 Antibiotic Injections in their kit!", GetPlayerNameEx(playerid));
+		}
+		case 50 .. 74://2 Engine Repair Kits & 1 Scrap Metal, 1 Antibiotic Injection
+		{
+			PlayerInfo[playerid][mInventory][8] += 2;
+			PlayerInfo[playerid][mInventory][16]++;
+			PlayerInfo[playerid][mPurchaseCount][18]++;
+			SendClientMessageEx(playerid, -1, "You found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in your kit! Use /jumpstart /zscrapmetal and /zinject to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in their kit!", GetPlayerNameEx(playerid));
+		}
+	}
+	Log("logs/micro.log", string);
+	PlayerInfo[playerid][mInventory][19]--;
+	return 1;
+}
+
+CMD:givez(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	new target, option[11], amount;
+	if(sscanf(params, "us[11]d", target, option, amount) || amount <= 0) return SendClientMessageEx(playerid, -1, "USAGE: /givez [player] [option] [amount]"), SendClientMessageEx(playerid, -1, "Available Options: jumpstart, fuelcan, scrapmetal, 50cal, inject, kit");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+	new string[128];
+	if(!strcmp(option, "jumpstart", true))
+	{
+		PlayerInfo[playerid][mInventory][8] += amount;
+		format(string, sizeof(string), "You have given %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Jump Start(s). /jumpstart to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Jump Start(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "fuelcan", true))
+	{
+		if(amount != 25 && amount != 50 && amount != 75) return SendClientMessageEx(playerid, -1, "Valid Amounts for fuel cans are 25, 50 and 75.");
+		PlayerInfo[target][zFuelCan] = amount;
+		format(string, sizeof(string), "You have given %s a fuelcan with %d fuel.", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you a fuelcan with %d fuel. /zfuelcan to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) a fuelcan with %d fuel.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "scrapmetal", true))
+	{
+		PlayerInfo[target][mInventory][16] += amount;
+		format(string, sizeof(string), "You have given %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Scrap Metal(s). /zscrapmetal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Scrap Metal(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "50cal", true))
+	{
+		PlayerInfo[target][mInventory][17] += amount;
+		format(string, sizeof(string), "You have given %s %d .50 Caliber Bullet(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d .50 Caliber Bullet(s). /z50cal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d .50 Caliber Bullet(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "inject", true))
+	{
+		PlayerInfo[target][mPurchaseCount][18] += amount;
+		format(string, sizeof(string), "You have given %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Antibiotic Injection(s). /zinject to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Antibiotic Injection(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "kit", true))
+	{
+		PlayerInfo[target][mInventory][19] += amount;
+		format(string, sizeof(string), "You have given %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Survivor Kit(s). /zopenkit to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Survivor Kit(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	Log("logs/micro.log", string);
+	return 1;
+}
+
+CMD:freeweekend(playerid, params[]) 
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 3) {
+		if(freeweekend) {
+			ShowPlayerDialog(playerid, DIALOG_FREEWEEKEND, DIALOG_STYLE_MSGBOX, "Free Weekend", "Would you like DISABLE the free weekend?", "Okay", "Cancel");
+		}
+		else {
+			ShowPlayerDialog(playerid, DIALOG_FREEWEEKEND, DIALOG_STYLE_MSGBOX, "Free Weekend", "Would you like ENABLE the free weekend?", "Okay", "Cancel");
+		}
+		return 1;
+	}
+	return 0;
 }

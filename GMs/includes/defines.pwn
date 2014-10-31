@@ -118,7 +118,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
 #define 		MAX_ITEMS 					(41)
-#define			MAX_MICROITEMS				(16)
+#define			MAX_MICROITEMS				(20)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
 #define 		TYPE_LAUNCH 				2001
@@ -944,6 +944,8 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_FIFMENU				(6014)
 #define			DIALOG_FIFMENU2				(6015)
 
+#define			DIALOG_FREEWEEKEND			(6016)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 
@@ -1151,7 +1153,7 @@ native gpci(playerid, serial[], maxlen);
 #define			SAVE_GANGTAG					2
 
 // hospital misc definitions
-#define		MAX_HOSPITALS				(15)
+#define		MAX_HOSPITALS				(16)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(4)
 #define		MAX_DELIVERY_POINTS			(16)
@@ -1172,3 +1174,4 @@ native gpci(playerid, serial[], maxlen);
 #define		HOSPITAL_SFVIP				(12)
 #define		HOSPITAL_LVVIP				(13)
 #define		HOSPITAL_HOMECARE			(14)
+#define		HOSPITAL_FAMED				(15)

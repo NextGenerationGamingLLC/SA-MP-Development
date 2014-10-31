@@ -1116,7 +1116,8 @@ enum pInfo
 	mCooldown[MAX_MICROITEMS],
 	mBoost[2], // Job | Skill
 	mShopCounter,
-	mNotice
+	mNotice,
+	zFuelCan
 };
 
 enum pvInfo

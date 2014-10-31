@@ -2101,7 +2101,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
-				if(Homes[playerid] > 0 && AdvertType[playerid] == 1)
+				if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
 				{
 					PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[6]);
 					PlayerTextDrawShow(playerid, MicroNotice[playerid]);
@@ -6711,6 +6711,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					VehicleSpawned[playerid]--;
 					PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
 					PlayerVehicleInfo[playerid][listitem][pvFuel] = VehicleFuel[iVehicleID];
+					GetVehicleHealth(PlayerVehicleInfo[playerid][listitem][pvId], PlayerVehicleInfo[playerid][listitem][pvHealth]);
 					DestroyVehicle(iVehicleID);
 					PlayerVehicleInfo[playerid][listitem][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, listitem);
@@ -6780,6 +6781,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				CheckPlayerVehiclesForDesync(playerid);
 				Vehicle_ResetData(iVeh);
 				VehicleFuel[iVeh] = PlayerVehicleInfo[playerid][listitem][pvFuel];
+				new zyear, zmonth, zday;
+				getdate(zyear, zmonth, zday);
+				if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVeh, PlayerVehicleInfo[playerid][listitem][pvHealth]);
 				if (VehicleFuel[iVeh] > 100.0) VehicleFuel[iVeh] = 100.0;
 				
 				if(PlayerVehicleInfo[playerid][listitem][pvCrashFlag] == 1 && PlayerVehicleInfo[playerid][listitem][pvCrashX] != 0.0)
@@ -15186,7 +15190,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(listitem == 2)
 			{
-				new szDialog[512];
+				new szDialog[1024];
 				for(new i; i < MAX_MICROITEMS; i++)
 				{
 					format(szDialog, sizeof(szDialog), "%s\n%s (Credits: %s)", szDialog, mItemName[i], number_format(MicroItems[i]));
@@ -17472,7 +17476,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(listitem == 0)
 			{
-				format(string, sizeof(string),"Item: Limited Edition Pumpkin Toy\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(75), number_format(PlayerInfo[playerid][pCredits]-75));
+				format(string, sizeof(string),"Item: Limited Edition Pumpkin Toy\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(150), number_format(PlayerInfo[playerid][pCredits]-150));
 				ShowPlayerDialog( playerid, DIALOG_HALLOWEENSHOP1, DIALOG_STYLE_MSGBOX, "Halloween Shop", string, "Purchase", "Exit" );
 			}
 			else
@@ -17488,18 +17492,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(PumpkinStock <= 0)
 				return SendClientMessageEx(playerid, COLOR_GREY, "This limited item has sold out!");
-			if(PlayerInfo[playerid][pCredits] < 75)
+			if(PlayerInfo[playerid][pCredits] < 150)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-			GivePlayerCredits(playerid, -75, 1);
+			GivePlayerCredits(playerid, -150, 1);
 			PumpkinStock--;
-			format(string, sizeof(string), "You have purchased the Pumpkin Toy for %s credits.", number_format(75));
+			format(string, sizeof(string), "You have purchased the Pumpkin Toy for %s credits.", number_format(150));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
 			
-			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Pumpkin Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(75));
+			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Pumpkin Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(150));
 			Log("logs/zombiecure.log", string), print(string);	
 			
 			new icount = GetPlayerToySlots(playerid);
@@ -18197,7 +18201,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				number_format(PlayerInfo[targetid][pChecks]),
 				number_format(PlayerInfo[targetid][pVehicleSlot]),
 				number_format(PlayerInfo[targetid][pToySlot]));
-				if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d", resultline, PlayerInfo[targetid][pVials]);
+				if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nScrap Metal: %d\n.50 Cal Ammo: %d\nAntibiotic Injections: %d\nSurvivor Kits: %d\nFuel Can: %d%% Fuel", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
 				ShowPlayerDialog(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
 			}
 			else DeletePVar(playerid, "ShowInventory");
@@ -19273,7 +19277,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(advert, sizeof(advert), "%s -- (%d)", advert, GetPlayerSQLId(reportid));
 			Log("logs/pads.log", advert);
 
-			if(Homes[reportid] > 0 && AdvertType[reportid] == 1)
+			if(Homes[reportid] > 0 && AdvertType[reportid] == 1 && !PlayerInfo[playerid][pShopNotice])
 			{
 				PlayerTextDrawSetString(reportid, MicroNotice[reportid], ShopMsg[6]);
 				PlayerTextDrawShow(reportid, MicroNotice[reportid]);
@@ -20281,32 +20285,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDouble EXP Tokens (Credits: {FFD700}%s{FFFFFF})", mItemName[0], number_format(MicroItems[0]), mItemName[1], number_format(MicroItems[1]), number_format(ShopItems[9][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Job & Experience", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 1);
 			}
 			if(listitem == 1)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", mItemName[2], number_format(MicroItems[2]), mItemName[3], number_format(MicroItems[3]));
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - VIP", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 2);
 			}
 			if(listitem == 2)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})", mItemName[4], number_format(MicroItems[4]));
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Food", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 3);
 			}
 			if(listitem == 3)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\nHouse Move (Credits: {FFD700}%s{FFFFFF})\nHouse Interior Change (Credits: {FFD700}%s{FFFFFF})", mItemName[6], number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - House", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 4);
 			}
 			if(listitem == 4)
 			{
 				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\nDeluxe Car Alarm (Credits: {FFD700}%s{FFFFFF})\nAdditional Vehicle Slots (Credits: {FFD700}%s{FFFFFF})", 
 				mItemName[7], number_format(MicroItems[7]), mItemName[8], number_format(MicroItems[8]), mItemName[9], number_format(MicroItems[9]), number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Vehicle", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 5);
 			}
 			if(listitem == 5)
 			{
@@ -20315,8 +20314,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				mItemName[10], number_format(MicroItems[10]), mItemName[12], number_format(MicroItems[12]), mItemName[13], number_format(MicroItems[13]), mItemName[5], number_format(MicroItems[5]), number_format(ShopItems[10][sItemPrice]), 
 				number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[28][sItemPrice]), mItemName[14], number_format(MicroItems[14]), mItemName[15], number_format(MicroItems[15])/*, mItemName[11], number_format(MicroItems[11])*/);
 				ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Miscellaneous", stringg, "Select", "Exit");
-				SetPVarInt(playerid, "m_listitem", 6);
 			}
+			if(listitem == 6)
+			{
+				if(prezombie || zombieevent)
+				{
+					format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})\n%s (Credits: {FFD700}%s{FFFFFF})", 
+					mItemName[16], number_format(MicroItems[16]), mItemName[17], number_format(MicroItems[17]), mItemName[18], number_format(MicroItems[18]), mItemName[19], number_format(MicroItems[19]));
+					ShowPlayerDialog(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - Events", stringg, "Select", "Exit");
+				}
+				if(!strlen(stringg)) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Microtransaction Shop - Events", "Nothing available to purchase at this time!", "Okay", "");
+			}
+			SetPVarInt(playerid, "m_listitem", listitem+1);
 		}
 	}
 	if(dialogid == DIALOG_MICROSHOP2)
@@ -20359,7 +20368,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 5://Misc
 				{
 					if(listitem == 0) item = 10;
-					
 					if(listitem == 1) item = 12;
 					if(listitem == 2) item = 13;
 					if(listitem == 3) item = 5;
@@ -20369,6 +20377,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(listitem == 7) item = 14;
 					if(listitem == 8) item = 15;
 					//if(listitem == 9) item = 11; //Phone Change (TODO)
+				}
+				case 6://Event
+				{
+					if(listitem == 0) item = 16;
+					if(listitem == 1) item = 17;
+					if(listitem == 2) item = 18;
+					if(listitem == 3) item = 19;
 				}
 			}
 			if(item == 100)//EXP Token
@@ -20632,6 +20647,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(item == 14) AddFlag(playerid, INVALID_PLAYER_ID, "Dynamic Door Move (Credits)"), SendReportToQue(playerid, "Dynamic Door Move (Credits)", 2, 2), SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the Dynamic Door Move issued.");
 			if(item == 15) AddFlag(playerid, INVALID_PLAYER_ID, "Dynamic Door Interior Change (Credits)"), SendReportToQue(playerid, "Dynamic Door Interior Change (Credits)", 2, 2), SendClientMessageEx(playerid, COLOR_CYAN, "Contact a senior admin to have the Dynamic Door Interior Change issued.");
+			if(item == 16)
+			{
+				SendClientMessageEx(playerid, -1, "Type /zscrapmetal to boost the vehicle health by 500 HP!");
+				PlayerInfo[playerid][mInventory][item]++;
+			}
+			if(item == 17)
+			{
+				SendClientMessageEx(playerid, -1, "Type /z50cal to use your .50 caliber ammo. Use the same command to toggle your .50 caliber ammo. This will only work for Rifles & Sniper Rifles");
+				PlayerInfo[playerid][mInventory][item] += 15;
+			}
+			if(item == 18)
+			{
+				SendClientMessageEx(playerid, -1, "Type /zinject to use the antibiotic.");
+				PlayerInfo[playerid][mPurchaseCount][item] += 3;
+			}
+			if(item == 19)
+			{
+				SendClientMessageEx(playerid, -1, "Type /zopenkit to open up the kit and see which variation of the Survivor kit you won.");
+				PlayerInfo[playerid][mInventory][item]++;
+			}
 			DeletePVar(playerid, "m_listitem");
 			DeletePVar(playerid, "m_Item");
 			DeletePVar(playerid, "m_Response");
@@ -20894,6 +20929,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 		Misc_Save();
+	}
+	if(dialogid == DIALOG_FREEWEEKEND)
+	{
+		if(!response) return 1;
+		if(freeweekend) {
+			freeweekend = 0;
+			SendClientMessageEx(playerid, COLOR_RED, "You have disabled the free weekend.");
+		}
+		else {
+			freeweekend = 1;
+			SendClientMessageEx(playerid, COLOR_RED, "You have enabled the free weekend.");
+		}
 	}
 	return 1;
 }

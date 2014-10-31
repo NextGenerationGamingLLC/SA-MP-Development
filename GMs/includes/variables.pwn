@@ -40,6 +40,7 @@ new ShopToggle = 0;
  
 #if defined zombiemode
 new zombieevent;
+new prezombie;
 #endif
 
 #if defined event_chancegambler
@@ -1267,7 +1268,11 @@ new mItemName[MAX_MICROITEMS][] = {
 	{"Quick Bank Access"},
 	{"Restricted Skin Voucher"},
 	{"Dynamic Door Move"},
-	{"Dynamic Door Interior Change"}
+	{"Dynamic Door Interior Change"},
+	{"Scrap Metal"},
+	{"x15 .50 Caliber Ammo (Sniper/Rifle)"},
+	{"Antibiotic Injection"},
+	{"Survivor Kits"}
 };
 new ShopMsg[11][] = {
 	{"Need to get a job quick?~n~Get a Job Change to change your job instantly!~n~~b~~h~~h~/microshop"},
@@ -1295,11 +1300,13 @@ new FIFInfo[MAX_PLAYERS][FallIntoFun],
 	FIFGThurs,
 	GThursChances;
 
+new freeweekend;
+
 new PlayerHoldingObject[MAX_PLAYERS][11];
 
 // Dynamic Gift Box Stuff
 new dgVar[dgItems][4];
-new dgAmount, dgTimer = -1, dgTimerTime;
+new dgAmount, dgTimer = -1, dgTimerTime, dgGoldToken;
 new bool: IsDynamicGiftBoxEnabled = false;
 
 new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
@@ -2695,14 +2702,13 @@ new HospitalSpawnInfo[MAX_HOSPITALS][2] = {
 {1000,2500},
 {1000,2500},
 {1000,2500},
+{1000,2500},
 {1000,2500}
 };
 
 new arrHospitalBedData[MAX_HOSPITALS][eHospitalBedData];
 
-new PlayerText:Hosptimecount[MAX_PLAYERS],
-	PlayerText:Hospitalunitslbl[MAX_PLAYERS],
-	PlayerText:Hosptimeleftlbl[MAX_PLAYERS];
+new PlayerText:HospTime[MAX_PLAYERS];
 	
 new gPlayerUsingLoopingAnim[MAX_PLAYERS];
 new gPlayerAnimLibsPreloaded[MAX_PLAYERS];

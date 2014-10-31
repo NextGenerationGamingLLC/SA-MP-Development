@@ -220,6 +220,7 @@ task SyncUp[60000]()
 						PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
 						PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
 						PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
+						GetVehicleHealth(PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvHealth]);
 						PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
 						g_mysql_SaveVehicle(ownerid, slot);
 					}
@@ -362,7 +363,7 @@ task SyncUp[60000]()
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
 				SetPlayerToTeamColor(i);
 			}
-			if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15)
+			if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15 && !PlayerInfo[i][pShopNotice])
 			{
 				PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[4]);
 				PlayerTextDrawShow(i, MicroNotice[i]);
@@ -2115,9 +2116,12 @@ task ServerHeartbeat[1000]() {
 						if (PlayerInfo[i][pHunger] == 0)
 						{
 							SendClientMessageEx(i, COLOR_RED, "You hear your stomach rumble - you need to eat!");
-							PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[5]);
-							PlayerTextDrawShow(i, MicroNotice[i]);
-							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+							if(!PlayerInfo[i][pShopNotice])
+							{
+								PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[5]);
+								PlayerTextDrawShow(i, MicroNotice[i]);
+								SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+							}
 						}
 					}
 
@@ -2587,9 +2591,12 @@ task ServerMicrobeat[500]() {
 						if(arrVehParams[0] == VEHICLE_PARAMS_ON)
 						{
 							SetVehicleParamsEx(iVehicle,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
-							PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[8]);
-							PlayerTextDrawShow(i, MicroNotice[i]);
-							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+							if(!PlayerInfo[i][pShopNotice])
+							{
+								PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[8]);
+								PlayerTextDrawShow(i, MicroNotice[i]);
+								SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+							}
 						}
 						GameTextForPlayer(i, "~r~Totalled!", 2500, 3);
 						arr_Engine{iVehicle} = 0;
