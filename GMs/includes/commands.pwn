@@ -257,7 +257,7 @@ CMD:speedcam(playerid, params[])
 }
 
 CMD:placekit(playerid, params[]) {
-	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -331,7 +331,7 @@ CMD:placekit(playerid, params[]) {
 }
 
 CMD:usekit(playerid, params[]) {
-	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -1867,12 +1867,20 @@ CMD:setarmorall(playerid, params[])
     return 1;
 }
 #if defined zombiemode
+CMD:zh(playerid, params[])
+{
+	return cmd_zombiehelp(playerid, params);
+}
+
 CMD:zombiehelp(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_GREY, "Commands: /buycure /bite /curevirus /getvials (For Medics)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /buycure /bite /curevirus /getvials (For Medics)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /buycure - 20 Credits (5x)  /zinject - 40 Credits (3x) /zopenkit - 30 Credits (1x)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /z50cal - 20 Credits (14x bullets) /zscrapmetal - 10 Credits)");
+	SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE HELP *** /bite /curevirus /getvials (For Medics)");
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Admin Commands: /zombieweather /zombieevent /makezombie /setvials /zombieannounce /unzombie");
+		SendClientMessageEx(playerid, COLOR_GREY, "*** ZOMBIE ADMIN ***: /zombieweather /zombieevent /makezombie /setvials /zombieannounce /unzombie");
 	}
 	return 1;
 }
@@ -2101,6 +2109,7 @@ CMD:bite(playerid, params[])
 					SetPlayerToTeamColor(i);
 					format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 					ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					SendClientMessageEx(i, COLOR_GREY, "Use /buycure to purchase a cure to heal yourself.");
 					//SendAudioToRange(66, 100, X, Y, Z, 5); RESCRIPT NEW SOUND
 					return 1;
 			    }
@@ -21515,7 +21524,7 @@ CMD:destroy(playerid, params[])
 					SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
+					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
 					for(new i = 0; i < MAX_PLAYERS; ++i)
 					{
 						if(IsPlayerConnected(i))
@@ -21531,7 +21540,7 @@ CMD:destroy(playerid, params[])
 								}
 							}
 						}
-					}
+					}*/
 					return 1;
 				}
 			}
@@ -43379,6 +43388,10 @@ CMD:leaveshop(playerid, params[]) {
 			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do this at this time!.");
 		if(gettime() - LastShot[playerid] < 60) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 60 seconds, you will not be teleported to your previous location.");
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "tmpX"), GetPVarFloat(playerid, "tmpY"), GetPVarFloat(playerid, "tmpZ"), 2500);
+		PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "tmpVW");
+		SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
+		PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "tmpInt");
+		SetPlayerInterior(playerid, PlayerInfo[playerid][pInt]);
 	}
 	return 1;
 }

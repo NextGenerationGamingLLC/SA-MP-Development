@@ -2116,7 +2116,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     /*new szString[144];
     format(szString, sizeof(szString), "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
     SendClientMessage(playerid, -1, szString);*/
-	if(weaponid == 24 || weaponid == 25 || weaponid == 26 || weaponid == 31)
+	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
 	{
 		++PlayerShots[playerid];
 	}

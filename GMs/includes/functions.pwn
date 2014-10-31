@@ -25432,7 +25432,7 @@ public Anti_Rapidfire()
 	for(new i = 0; i < MAX_PLAYERS; ++i)
 	{
 		new weaponid = GetPlayerWeapon(i);
-		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 31 && PlayerShots[i] > 20))
+		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10)/* || (weaponid == 31 && PlayerShots[i] > 20)*/)
 		{
 			format(string, sizeof(string), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
 			Log("logs/rapid.log", string);
@@ -26836,10 +26836,11 @@ DeliverPlayerToHospital(playerid, iHospital)
 	new index = GetFreeHospitalBed(iHospital);
 	arrHospitalBedData[iHospital][bBedOccupied][index] = true;
 	
-	SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "i", playerid);
+	SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "iii", playerid, iHospital, index);
 	
 	if(iHospital == HOSPITAL_DOCJAIL)
 	{
+		Streamer_UpdateEx(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
 		SetPlayerPos(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
 		SetPlayerFacingAngle(playerid, DocHospitalSpawns[index][3]);
 		SetPlayerVirtualWorld(playerid, 0);
@@ -26847,6 +26848,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 	}
 	else 
 	{
+		Streamer_UpdateEx(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
 		SetPlayerPos(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
 		SetPlayerFacingAngle(playerid, 180);
 		SetPlayerVirtualWorld(playerid, iHospital);
@@ -26941,9 +26943,20 @@ DeliverPlayerToHospital(playerid, iHospital)
 	return 1;
 }
 
-forward Hospital_StreamIn(playerid);
-public Hospital_StreamIn(playerid)
+forward Hospital_StreamIn(playerid, iHospital, index);
+public Hospital_StreamIn(playerid, iHospital, index)
 {
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		SetPlayerPos(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, DocHospitalSpawns[index][3]);
+	}
+	else 
+	{
+		SetPlayerPos(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, 180);
+	}
+	
 	TogglePlayerControllable(playerid, 1);
 	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0, 1);
 	
@@ -27137,8 +27150,8 @@ ReturnDeliveryPoint(iDPID)
 		case 11: iPoint = HOSPITAL_BAYSIDE;
 		case 12: iPoint = HOSPITAL_DEMORGAN;
 		case 13: iPoint = HOSPITAL_LASVENTURAS;
-		case 14: iPoint = HOSPITAL_ANGELPINE; // to be changed
-		case 15: iPoint = HOSPITAL_DOCJAIL; // to be changed
+		case 14: iPoint = HOSPITAL_ANGELPINE;
+		case 15: iPoint = HOSPITAL_DOCJAIL;
 	}
 	
 	return iPoint;
