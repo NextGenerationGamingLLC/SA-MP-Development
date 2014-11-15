@@ -59,6 +59,12 @@ public OnPlayerLoad(playerid)
 		return 1;
 	}
 
+	if(PlayerInfo[playerid][pDisabled] == 2)
+	{
+		ShowPlayerDialog(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
+		SetTimerEx("KickEx", 5000, 0, "i", playerid);
+		return 1;
+	}
 	if(PlayerInfo[playerid][pDisabled] != 0)
 	{
 		if( PlayerInfo[playerid][pBanAppealer] > 1) PlayerInfo[playerid][pBanAppealer] = 0;

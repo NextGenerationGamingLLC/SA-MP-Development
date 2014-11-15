@@ -2211,7 +2211,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
   		    SetPlayerHealth(damagedid, hp-amount);
 			return 1;
 		}
-		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
+		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1 && GetPVarInt(damagedid, "Injured") != 1)
 		{
 		    if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1)
 			{
@@ -3111,6 +3111,7 @@ public OnPlayerDisconnect(playerid, reason)
 		{	
 			if(Spectating[i] > 0 && Spectate[i] == playerid) {
 				SetPVarInt(i, "StartedWatching", 0);
+				SetPVarInt(i, "NextWatch", 0);
 				SetPVarInt(i, "SpecOff", 1);
 				Spectating[i] = 0;
 				SpecTime[i] = 0;

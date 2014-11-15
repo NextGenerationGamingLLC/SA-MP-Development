@@ -34,6 +34,7 @@
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
+	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialog(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];
 
@@ -16853,9 +16854,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			new Months = GetPVarInt(playerid, "BusinessMonths");
 			GivePlayerCredits(playerid, -Prices, 1);
-			Businesses[PlayerInfo[playerid][pBusiness]][bMonths] = (2592000*Months)+gettime()+259200;
+			new stamp = Businesses[PlayerInfo[playerid][pBusiness]][bMonths];
+			if(stamp-gettime() < 0)
+			{
+				Businesses[PlayerInfo[playerid][pBusiness]][bMonths] = (2592000*Months)+gettime()+259200;
+			}
+			else Businesses[PlayerInfo[playerid][pBusiness]][bMonths] = ((2592000*Months)+gettime()+259200)+stamp-gettime();
 
-			format(string, sizeof(string), "[Business Renewal(%i)] [Months: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]",PlayerInfo[playerid][pBusiness], Months, GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(Prices));
+			format(string, sizeof(string), "[Business Renewal(%i)] [Months: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s] -- %d | %d",PlayerInfo[playerid][pBusiness], Months, GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(Prices), stamp, Businesses[PlayerInfo[playerid][pBusiness]][bMonths]);
 			Log("logs/credits.log", string), print(string);
 
 			format(string, sizeof(string), "You have successfully payed %s credits to renew your business for %d months.", number_format(Prices), Months);
@@ -20252,14 +20258,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, -1, "You have cancelled yourself from setting your examine description.");
 		}
 	}
-	if(PlayerInfo[playerid][pVIPSpawn] == 1 && PlayerInfo[playerid][pDonateRank] == 2 && GetPVarInt(playerid, "MedicBill") == 1 && !GetPVarType(playerid, "VIPSpawn"))
-	{
-		SetPlayerCameraPos(playerid,2787.102050, 2392.162841, 1243.898681);
-		SetPlayerCameraLookAt(playerid,2801.281982, 2404.575683, 1240.531127);
-		SetPlayerPos(playerid, 2788.561523, 2387.321044, 1227.350219);
-		TogglePlayerControllable(playerid, false);
-		ShowPlayerDialog(playerid, DIALOG_VIPSPAWN, DIALOG_STYLE_LIST, "Spawn at VIP", "Los Santos VIP\nSan Fierro VIP\nLas Ventures VIP\nDon't spawn at VIP this time", "Select", "Close");
-	}
 	if(dialogid == DIALOG_HOLSTER && response)
 	{
 		new time;
@@ -20937,16 +20935,47 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		Misc_Save();
 	}
-	if(dialogid == DIALOG_FREEWEEKEND)
+	if(dialogid == DIALOG_MANAGECREDITS)
 	{
 		if(!response) return 1;
-		if(freeweekend) {
-			freeweekend = 0;
-			SendClientMessageEx(playerid, COLOR_RED, "You have disabled the free weekend.");
+		SetPVarInt(playerid, "ManageCreditsDiag", listitem);
+		switch(listitem) {
+			case 0: {
+				if(SellClosed) 
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like ENABLE the selling of credits?", "Okay", "Cancel");
+				else
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like DISABLE the selling of credits?", "Okay", "Cancel");
+			}
+			case 1: {
+				if(!freeweekend) 
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like ENABLE the free weekend?", "Okay", "Cancel");
+				else
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like DISABLE the free weekend?", "Okay", "Cancel");
+			}
+			case 2: {
+				if(!nonvipcredits) 
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like ENABLE the selling of credits for NON-VIPs?", "Okay", "Cancel");
+				else
+					ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS2, DIALOG_STYLE_MSGBOX, "Sale of Credits", "Would you like DISABLE the selling of credits for NON-VIPs?", "Okay", "Cancel");
+			}
 		}
-		else {
-			freeweekend = 1;
-			SendClientMessageEx(playerid, COLOR_RED, "You have enabled the free weekend.");
+	}
+	if(dialogid == DIALOG_MANAGECREDITS2)
+	{
+		if(!response) return 1;
+		switch(GetPVarInt(playerid, "ManageCreditsDiag")) {
+			case 0: {
+				if(!SellClosed) SellClosed = 1, SendClientMessageEx(playerid, COLOR_WHITE, "Selling of credits disabled.");
+				else SellClosed = 0, SendClientMessageEx(playerid, COLOR_WHITE, "Selling of credits enabled.");
+			}
+			case 1: {
+				if(!freeweekend) freeweekend = 1, SendClientMessageEx(playerid, COLOR_WHITE, "Free weekend enabled.");
+				else freeweekend = 0, SendClientMessageEx(playerid, COLOR_WHITE, "Free weekend disabled.");
+			}
+			case 2: {
+				if(!nonvipcredits) nonvipcredits = 1, SendClientMessageEx(playerid, COLOR_WHITE, "Selling of credits for Non-VIPs enabled.");
+				else nonvipcredits = 0, SendClientMessageEx(playerid, COLOR_WHITE, "Selling of credits for Non-VIPs disabled.");
+			}
 		}
 	}
 	return 1;

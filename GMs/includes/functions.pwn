@@ -6429,7 +6429,7 @@ public DeliverCrate(playerid)
             new Float: quantcalc = floatdiv(CrateInfo[CrateID][GunQuantity], 50);
             new Float: costcalc = (CRATE_COST * 1.2);
             new discount = floatround(floatmul(quantcalc, costcalc));
-			arrGroupData[group][g_iLockerStock] += floatround(CrateInfo[CrateID][GunQuantity] * 2);
+			arrGroupData[group][g_iLockerStock] += floatround(CrateInfo[CrateID][GunQuantity] * 2) * 10;
 			arrGroupData[group][g_iBudget] -= discount;
 			arrGroupData[group][g_iCratesOrder]--;
 			Tax += floatround(CRATE_COST * 1.2);
@@ -6537,7 +6537,7 @@ public LoadForklift(playerid)
 		Tax -= CRATE_COST;
 		Misc_Save();
 		HideCrate();
-		SetTimer("ShowCrate", 30000, 0);
+		SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
 		for(new i = 0; i < sizeof(CrateInfo); i++)
 		{
 		    if(!CrateInfo[i][crActive])
@@ -13660,7 +13660,7 @@ public SyncTime()
 		format(string, sizeof(string), "The time is now %s.", ConvertToTwelveHour(tmphour));
 		SendClientMessageToAllEx(COLOR_WHITE, string);
 		new query[300];
-		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
+		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
 		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", INVALID_PLAYER_ID, string);
 		for(new i = 0; i < MAX_PLAYERS; ++i)
 		{
@@ -13670,6 +13670,11 @@ public SyncTime()
 				{
 					if(tmphour == 0) ReportCount[i] = 0;
 					ReportHourCount[i] = 0;
+				}
+				if(PlayerInfo[i][pWatchdog])
+				{
+					if(tmphour == 0) WDReportCount[i] = 0;
+					WDReportHourCount[i] = 0;
 				}
 				if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
 				if(PlayerInfo[i][pDonateRank] >= 3)
@@ -17736,10 +17741,10 @@ stock ShowStats(playerid,targetid)
 		new zone[MAX_ZONE_NAME];
 		GetPlayer3DZone(targetid, zone, sizeof(zone));
 		new fifstr[128];
-		if(FIFEnabled)
-		{
-			format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
-		}
+		//if(FIFEnabled)
+		//{
+		format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
+		//}
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
@@ -19034,6 +19039,7 @@ stock UnZombie(playerid)
   	DeletePVar(playerid, "pZombieBit");
   	SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
    	SetPlayerToTeamColor(playerid);
+	SetPlayerHealth(playerid, 100);
 	new string[64];
 	format(string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
@@ -26833,6 +26839,15 @@ DeliverPlayerToHospital(playerid, iHospital)
 	SetPlayerInterior(playerid, 1);
 	PlayerInfo[playerid][pInt] = 1;
 	PlayerInfo[playerid][pHospital] = 1;
+	PlayerInfo[playerid][pDuty] = 0;
+	PlayerInfo[playerid][pHasCuff] = 0;
+	PlayerInfo[playerid][pHasTazer] = 0;
+	PlayerCuffed[playerid] = 0;
+	DeletePVar(playerid, "PlayerCuffed");
+	DeletePVar(playerid, "IsFrozen");
+	PlayerCuffedTime[playerid] = 0;
+	if(PlayerInfo[playerid][pFitness] >= 6) PlayerInfo[playerid][pFitness] -= 6;
+	else PlayerInfo[playerid][pFitness] = 0;
 	new string[128];
 	
 	new index = GetFreeHospitalBed(iHospital);

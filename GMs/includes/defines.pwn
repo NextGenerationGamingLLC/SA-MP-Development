@@ -192,8 +192,8 @@ native gpci(playerid, serial[], maxlen);
 // General constants.
 #define			MAX_GROUP_ALLEGIANCES		3
 #define			MAX_GROUP_TYPES             10
-#define         MAX_LOCKER_STOCK        	1500
-#define         MAX_CRATES             		20
+#define         MAX_LOCKER_STOCK        	10000
+#define         MAX_CRATES             		50
 #define 		MAX_SPIKES 					4
 #define 		MAX_CONES 					10
 #define 		MAX_FLARES 					10
@@ -944,7 +944,10 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_FIFMENU				(6014)
 #define			DIALOG_FIFMENU2				(6015)
 
-#define			DIALOG_FREEWEEKEND			(6016)
+#define			DIALOG_MANAGECREDITS		(6016)
+#define			DIALOG_MANAGECREDITS2		(6017)
+
+#define			DIALOG_DISABLED				(6018)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
@@ -1059,6 +1062,7 @@ native gpci(playerid, serial[], maxlen);
 #define COLOR_TR 0x56B9B900
 #define COLOR_BR 0xCD8500FF
 #define SHITTY_JUDICIALSHITHOTCH 0xFF66CC00
+#define CRATERADIO 0xA0B48DFF
 
 			/*  ---------------- ELEVATOR ----------------- */
 #define ELEVATOR_SPEED      (5.0)   // Movement speed of the elevator.
@@ -1175,3 +1179,6 @@ native gpci(playerid, serial[], maxlen);
 #define		HOSPITAL_LVVIP				(13)
 #define		HOSPITAL_HOMECARE			(14)
 #define		HOSPITAL_FAMED				(15)
+
+//General Timer Delays
+#define		CRATE_PRODUCTION_DELAY		5000

@@ -542,7 +542,7 @@ new PumpkinStock, HalloweenShop;
 
 new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];
 
-new CrateInfo[20][crateInfo];
+new CrateInfo[MAX_CRATES][crateInfo];
 
 new Train[3];
 
@@ -1249,6 +1249,7 @@ new restarting;
 new PassComplexCheck;
 new PlayerShots[MAX_PLAYERS];
 new GarageInfo[MAX_GARAGES][garInfo];
+#define MicroSpecifier "p<|>e<dddddddddddddddddddd>"
 new MicroItems[MAX_MICROITEMS],
 	AmountSoldMicro[MAX_MICROITEMS], 
 	AmountMadeMicro[MAX_MICROITEMS];
@@ -1300,7 +1301,8 @@ new FIFInfo[MAX_PLAYERS][FallIntoFun],
 	FIFGThurs,
 	GThursChances;
 
-new freeweekend;
+new freeweekend,
+	nonvipcredits;
 
 new PlayerHoldingObject[MAX_PLAYERS][11];
 

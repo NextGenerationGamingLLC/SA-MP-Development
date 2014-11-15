@@ -311,9 +311,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					new result[128];
 					cache_get_field_content(i, "TotalSoldMicro", result, MainPipeline);
-					sscanf(result, "p<|>e<dddddddddddddddddddd>", AmountSoldMicro);
+					sscanf(result, MicroSpecifier, AmountSoldMicro);
 					cache_get_field_content(i, "AmountMadeMicro", result, MainPipeline);
-					sscanf(result, "p<|>e<dddddddddddddddddddd>", AmountMadeMicro);
+					sscanf(result, MicroSpecifier, AmountMadeMicro);
 					for(new m = 0; m < MAX_MICROITEMS; m++)
 					{
 						printf("TotalSoldMicro%d: %d | AmountMadeMicro%d: %d", m, AmountSoldMicro[m], m, AmountMadeMicro[m]);
@@ -344,7 +344,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				}
 				new result[128];
 				cache_get_field_content(i, "MicroPrices", result, MainPipeline);
-				sscanf(result, "p<|>e<dddddddddddddddd>", MicroItems);
+				sscanf(result, MicroSpecifier, MicroItems);
 				for(new m = 0; m < MAX_MICROITEMS; m++)
 				{
 					if(MicroItems[m] == 0) MicroItems[m] = 99999999;
@@ -705,12 +705,12 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "pDedicatedWarn", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedWarn] = strval(szResult);
 
 					cache_get_field_content(row,  "mInventory", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mInventory]);
+					sscanf(szResult, MicroSpecifier, PlayerInfo[extraid][mInventory]);
 					cache_get_field_content(row,  "mPurchaseCounts", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mPurchaseCount]);
+					sscanf(szResult, MicroSpecifier, PlayerInfo[extraid][mPurchaseCount]);
 					new result[256];
 					cache_get_field_content(row,  "mCooldowns", result, MainPipeline); 
-					sscanf(result, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][mCooldown]);
+					sscanf(result, MicroSpecifier, PlayerInfo[extraid][mCooldown]);
 					cache_get_field_content(row,  "mBoost", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dd>", PlayerInfo[extraid][mBoost]);
 					cache_get_field_content(row,  "mShopNotice", szResult, MainPipeline);
@@ -3724,7 +3724,7 @@ public AddingBan(index, type)
     		{
     		    if(IsPlayerConnected(GetPVarInt(index, "BanningPlayer")))
     		    {
-    		    	new string[150], reason[64];
+    		    	new string[256], reason[64];
     		    	GetPVarString(index, "BanningReason", reason, sizeof(reason));
 
 		    	    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", GetPlayerIpEx(GetPVarInt(index, "BanningPlayer")), g_mysql_ReturnEscaped(reason, MainPipeline), GetPlayerNameEx(index));
@@ -3766,7 +3766,7 @@ public AddingBan(index, type)
 		    }
 		    else
 		    {
-		        new string[128], ip[32];
+		        new string[256], ip[32];
 		        GetPVarString(index, "BanIP", ip, sizeof(ip));
 		        format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "/banip", GetPlayerNameEx(index));
 				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -4429,9 +4429,9 @@ public CheckSales3(index)
 				Total += cache_get_field_content_int(0, szField, MainPipeline);
 			}
 			cache_get_field_content(0, "TotalSoldMicro", szDialog, MainPipeline);
-			sscanf(szDialog, "p<|>e<dddddddddddddddddddd>", mSolds);
+			sscanf(szDialog, MicroSpecifier, mSolds);
 			cache_get_field_content(0, "AmountMadeMicro", szDialog, MainPipeline);
-			sscanf(szDialog, "p<|>e<dddddddddddddddddddd>", mAmount);
+			sscanf(szDialog, MicroSpecifier, mAmount);
 			szDialog[0] = 0;
 			for(new m; m < MAX_MICROITEMS; m++)
 			{
@@ -5835,7 +5835,7 @@ public OnBanIP(index)
 	if(IsPlayerConnected(index))
 	{
 		new rows, fields;
-		new string[128], ip[32], id;
+		new string[256], ip[32], id;
 		cache_get_data(rows, fields, MainPipeline);
 		if(rows)
 		{
@@ -8715,7 +8715,7 @@ public WatchWatchlist(index)
 	}
 	if(result == 0) 
 	{
-		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!, ");
+		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!");
 	}
 	return true;
 }

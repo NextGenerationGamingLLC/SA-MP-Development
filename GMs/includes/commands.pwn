@@ -983,7 +983,8 @@ CMD:loadforklift(playerid, params[]) {
 		if(!CrateVehicleLoad[vehicleid][vForkLoaded])
 		{
 		    new CrateFound;
-		    if(IsPlayerInRangeOfPoint(playerid, 5, -2114.1, -1723.5, 11984.5))
+		    //if(IsPlayerInRangeOfPoint(playerid, 5, -2114.1, -1723.5, 11984.5))
+			if(IsPlayerInRangeOfPoint(playerid, 5, -2136.0332,-1572.6605,3551.0564))
 		    {
 				Streamer_Update(playerid);
 		        if(CountCrates() < MAXCRATES)
@@ -1112,8 +1113,8 @@ CMD:cratelimit(playerid, params[]) {
     {
 		new string[128];
 		new moneys;
-	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-20] (Limits the total production of crates)");
-		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-20] (Limits the total production of crates)");
+	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
+		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -24877,7 +24878,7 @@ CMD:banip(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		new string[150], ip[32], reason[64];
+		new string[256], ip[32], reason[64];
 		if(sscanf(params, "s[32]s[64]", ip, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /banip [ip] [reason]");
 		if(IsValidIP(ip)) return SendClientMessageEx(playerid, COLOR_WHITE, "That is not a valid IP address!");
 		format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, g_mysql_ReturnEscaped(reason, MainPipeline), GetPlayerNameEx(playerid));
@@ -38141,12 +38142,13 @@ CMD:gotoco(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
-		new Float: pos[3], int;
-		if(sscanf(params, "p<,>fffd", pos[0], pos[1], pos[2], int)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoco [x coordinate] [y coordinate] [z coordinate] [interior]");
+		new Float: pos[3], int, vw;
+		if(sscanf(params, "p<,>fffD(0)D(0)", pos[0], pos[1], pos[2], int, vw)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoco [x coordinate] [y coordinate] [z coordinate] [interior] [vw]");
 
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have been teleported to the coordinates specified.");
 		SetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 		SetPlayerInterior(playerid, int);
+		SetPlayerVirtualWorld(playerid, vw);
 	}
 	return 1;
 }
@@ -39253,7 +39255,12 @@ CMD:nextwatch(playerid, params[])
 		
 		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip a player yet, it hasn't been 3 minutes.");
+		else
+		{
+			new string[60];
+			format(string, sizeof(string), "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
+			return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		}
 	}
 	else
 	{
@@ -39293,7 +39300,12 @@ CMD:startwatch(playerid, params[])
 		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
 		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
 		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
-		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You cannot skip a player yet, it hasn't been 3 minutes.");
+		else
+		{
+			new string[60];
+			format(string, sizeof(string), "You can't skip a player yet, you have to wait %d seconds!", GetPVarInt(playerid, "NextWatch")-gettime());
+			return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		}
 	}
 	else
 	{
@@ -43656,123 +43668,48 @@ CMD:userimkit(playerid, params[])
 
 CMD:sellcredits(playerid, params[])
 {
-	//return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
 	new
-	    Player,
-	    Credits,
-	    Amount;
+		Player,
+		Credits,
+		Amount;
 
-    if(SellClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits are currently disabled.");
+	if(SellClosed == 1)
+		return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits is currently disabled.");
 
-	if(sscanf(params, "udd", Player, Credits, Amount))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellcredits [Player] [Credits] [Amount]");
-
-	else if(!IsPlayerConnected(Player))
-		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-
-	else if(Credits < 0 || Amount < 0)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Amount/Price can't be below zero.");
-
-	else if(Player == playerid)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell credits to yourself.");
-
-	else if(Credits > PlayerInfo[playerid][pCredits])
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many credits.");
-
-	else if(Credits < 51)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You need to trade at least 51 credits.");
-
-	else if (!ProxDetectorS(10.0, playerid, Player))
-		return SendClientMessageEx(playerid, COLOR_GREY, "That player isn't near you.");
-
-	else if(GetPVarType(Player, "CreditsAmount"))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "That player already has been offered.");
-
-	else if(!GetPVarInt(playerid, "PinConfirmed"))
-		PinLogin(playerid);
-
-	else
-	{
-	    new szMessage[200], CreditsTaxed;
-		new year, month, day;
-		new TransactionFee;
-		
-		getdate(year, month, day);
-		SetPVarInt(Player, "CreditsFirstAmount", Credits);
-		// FALL INTO FUN WEEK NO TAX
-		if(!(year == 2013 && month == 10 && day >= 13 && day <= 19))
-		{
-			CreditsTaxed = 2*Credits/100;
-			Credits = Credits-10; // .50 Flat Fee
-			Credits = Credits-CreditsTaxed;
-			TransactionFee = (10+CreditsTaxed);
-		}
-		else {
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "#FallIntoFun - No transaction fee until the 19th of October!");
-		}
-		
-	    SetPVarInt(Player, "CreditsOffer", Amount);
-	    SetPVarInt(Player, "CreditsAmount", Credits);
-	    SetPVarInt(Player, "CreditsSeller", playerid);
-	    SetPVarInt(playerid, "CreditsSeller", Player);
-
-	    format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
-	    SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-
-	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
-	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
-	}
-	return 1;
-}
-
-/* FOR NOV 1st -- Test before updating.
-CMD:sellcredits(playerid, params[])
-{
-	//return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits has been disabled, visit the forums for more information.");
-	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-	new
-	    Player,
-	    Credits,
-	    Amount;
-
-    if(SellClosed == 1)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Selling of credits is currently disabled.");
-
-	if(PlayerInfo[playerid][pDonateRank] < 2 && !freeweekend)
+	if(PlayerInfo[playerid][pDonateRank] < 2 && !nonvipcredits)
 		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot initiate trades unless you are SVIP+!");
 
 	if(sscanf(params, "udd", Player, Credits, Amount))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellcredits [Player] [Credits] [Amount]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellcredits [Player] [Credits] [Amount]");
 
 	else if(!IsPlayerConnected(Player))
 		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 
 	else if(Credits < 0 || Amount < 0)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "Amount/Price can't be below zero.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Amount/Price can't be below zero.");
 
 	else if(Player == playerid)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell credits to yourself.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell credits to yourself.");
 
 	else if(Credits > PlayerInfo[playerid][pCredits])
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many credits.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that many credits.");
 
 	else if(Credits < 51)
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You need to trade at least 51 credits.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "You need to trade at least 51 credits.");
 
 	else if (!ProxDetectorS(10.0, playerid, Player))
 		return SendClientMessageEx(playerid, COLOR_GREY, "That player isn't near you.");
 
 	else if(GetPVarType(Player, "CreditsAmount"))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "That player already has been offered.");
+		return SendClientMessageEx(playerid, COLOR_GREY, "That player already has been offered.");
 
 	else if(!GetPVarInt(playerid, "PinConfirmed"))
 		PinLogin(playerid);
 
 	else
 	{
-	    new szMessage[200], CreditsTaxed;
+		new szMessage[200], CreditsTaxed;
 		new year, month, day;
 		new TransactionFee;
 		
@@ -43782,7 +43719,7 @@ CMD:sellcredits(playerid, params[])
 		if(!freeweekend)
 		{
 			switch(PlayerInfo[playerid][pDonateRank]) {
-				case 2: {
+				case 0 .. 2: {
 					CreditsTaxed = 2*Credits/100;
 					Credits = Credits-10;
 					Credits = Credits-CreditsTaxed;
@@ -43794,12 +43731,7 @@ CMD:sellcredits(playerid, params[])
 					Credits = Credits-CreditsTaxed;
 					TransactionFee = (5+CreditsTaxed);
 				}
-				case 4: {
-					CreditsTaxed = 0;
-					Credits = Credits-5;
-					TransactionFee = 5;
-				}
-				case 5: {
+				case 4 .. 5: {
 					CreditsTaxed = 0;
 					Credits = Credits-5;
 					TransactionFee = 5;
@@ -43807,19 +43739,19 @@ CMD:sellcredits(playerid, params[])
 			}
 		}
 		
-	    SetPVarInt(Player, "CreditsOffer", Amount);
-	    SetPVarInt(Player, "CreditsAmount", Credits);
-	    SetPVarInt(Player, "CreditsSeller", playerid);
-	    SetPVarInt(playerid, "CreditsSeller", Player);
+		SetPVarInt(Player, "CreditsOffer", Amount);
+		SetPVarInt(Player, "CreditsAmount", Credits);
+		SetPVarInt(Player, "CreditsSeller", playerid);
+		SetPVarInt(playerid, "CreditsSeller", Player);
 
-	    format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
-	    SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		format(szMessage, 200, "You have offered %s {FFD700}%s{FFFFFF} credits for $%s. (Transaction Fee: %s)", GetPlayerNameEx(Player), number_format(Credits+TransactionFee), number_format(Amount), number_format(TransactionFee));
+		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
-	    format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
-	    ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
+		format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
+		ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
 	}
 	return 1;
-}*/
+}
 
 CMD:togglehealthcare(playerid, params[])
 {
@@ -48738,6 +48670,7 @@ CMD:cuff(playerid, params[])
 			if (ProxDetectorS(8.0, playerid, giveplayerid))
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
+				if(GetPVarInt(giveplayerid, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
 				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP)
 				{
 					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
@@ -61472,16 +61405,64 @@ CMD:givez(playerid, params[])
 	return 1;
 }
 
-CMD:freeweekend(playerid, params[]) 
+CMD:managecredits(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 3) {
-		if(freeweekend) {
-			ShowPlayerDialog(playerid, DIALOG_FREEWEEKEND, DIALOG_STYLE_MSGBOX, "Free Weekend", "Would you like DISABLE the free weekend?", "Okay", "Cancel");
-		}
-		else {
-			ShowPlayerDialog(playerid, DIALOG_FREEWEEKEND, DIALOG_STYLE_MSGBOX, "Free Weekend", "Would you like ENABLE the free weekend?", "Okay", "Cancel");
-		}
-		return 1;
-	}
+	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 3)
+		return ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
 	return 0;
+}
+
+CMD:togcr(playerid, params[])
+{
+	if(GetPVarInt(playerid, "togCrateRadio") == 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off your crate radio frequency, you may re-enable it by typing this command again.");
+		SetPVarInt(playerid, "togCrateRadio", 1);
+	}
+	else {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on your crate radio frequency.");
+		SetPVarInt(playerid, "togCrateRadio", 0);
+	}
+	return 1;
+}
+
+CMD:crateradio(playerid,params[]) return cmd_cr(playerid,params);
+CMD:cr(playerid, params[])
+{
+	new
+		iGroupID = PlayerInfo[playerid][pMember],
+		iRank = PlayerInfo[playerid][pRank];
+
+	if(0 <= iGroupID < MAX_GROUPS)
+	{
+		if(iRank >= arrGroupData[iGroupID][g_iDeptRadioAccess] && PlayerInfo[playerid][pLeader] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != 2)
+		{
+			if(GetPVarInt(playerid, "togCrateRadio") == 0)
+			{
+				if(!isnull(params))
+				{
+					new szRadio[128], RadioBubble[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
+					GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
+					format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
+					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
+					foreach(new i: Player)
+					{
+						if(GetPVarInt(i, "togCrateRadio") == 0)
+						{
+							if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pLeader] >= 0 && iRank >= arrGroupData[iGroupID][g_iDeptRadioAccess] && arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
+							{
+								SendClientMessageEx(i, CRATERADIO, szRadio);
+							}
+						}
+					}
+				}
+				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/c)rate(r)adio [crate chat]");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Your crate radio is currently turned off, turn it on by typing /togcr.");
+		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
+	return 1;
 }
