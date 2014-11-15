@@ -333,6 +333,7 @@ CMD:placekit(playerid, params[]) {
 CMD:usekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new string[128];
@@ -2208,10 +2209,17 @@ CMD:fix(playerid, params[])
 		{
   			format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
      		SendClientMessageEx(playerid, COLOR_GRAD1,string);
+     		return 1;
      	}
+     	else if(GetPVarInt(playerid, "IsInArena") >= 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+			return 1;
+		}
 		else if(GetPVarInt(playerid, "EventToken"))
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+			return 1;
 		}
 		else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen"))
 		{
@@ -2813,6 +2821,14 @@ CMD:joinarena(playerid, params[])
             SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
             return 1;
         }
+        if(pTazer{playerid} != 0)
+		{
+			new string[128];
+			RemovePlayerWeapon(playerid, 23);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+ 			pTazer{playerid} = 0;
+ 		}
 		if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
         if(PlayerInfo[playerid][pAdmin] > 2) {
             ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
@@ -2854,6 +2870,10 @@ CMD:exitarena(playerid, params[])
             SendClientMessageEx(playerid, COLOR_WHITE, "You cannot leave when there is less than 30 seconds left!");
             return 1;
         }
+        if(GetPVarInt(playerid, "commitSuicide") == 1) {
+        	DeletePVar(playerid, "commitSuicide");
+        	SendClientMessageEx(playerid, COLOR_GREY, "Exiting the arena cancelled your request to /kill.");
+        } 
         LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
     }
     else {
@@ -10533,6 +10553,7 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
+        	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
             if(GuardOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > GuardPrice[playerid]) {
                     if(IsPlayerConnected(GuardOffer[playerid])) {
@@ -45520,6 +45541,7 @@ CMD:untie(playerid, params[])
 
 CMD:usesprunk(playerid, params[])
 {
+	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
     #if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");

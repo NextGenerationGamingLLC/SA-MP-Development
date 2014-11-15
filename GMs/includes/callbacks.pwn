@@ -4458,7 +4458,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(GetPVarInt(playerid, "Injured") == 0)
 	{
-		if( GetPVarInt(playerid, "EventToken") >= 1 || GetPVarInt(playerid, "IsInArena") >= 0)
+		new arenaid = GetPVarInt(playerid, "IsInArena");
+		if(GetPVarInt(playerid, "EventToken") >= 1 || (arenaid >= 0 && (PaintBallArena[arenaid][pbGameType] < 4 || PaintBallArena[arenaid][pbGameType] > 5)))
 		{
 			DisablePlayerCheckpoint(playerid);
 			ResetPlayerWeapons(playerid);

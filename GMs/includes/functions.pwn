@@ -15360,6 +15360,8 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 	SetPVarFloat(playerid, "pbOldHealth", oldHealth);
 	SetPVarFloat(playerid, "pbOldArmor", oldArmor);
 
+	firstaidexpire(playerid);
+
  	PaintBallArena[arenaid][pbPlayers]++;
 
  	if(PaintBallArena[arenaid][pbGameType] == 3) {
