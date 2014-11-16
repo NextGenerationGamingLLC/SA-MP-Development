@@ -34,3 +34,54 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:lottoinfo(playerid, params[])
+{
+	new szMessage[128];
+	format(szMessage, sizeof(szMessage), "Next drawing is at %i:00, tickets sold %i, and total jackpot is $%s.", NextDrawing, TicketsSold, number_format(Jackpot));
+	SendClientMessage(playerid, COLOR_WHITE, szMessage);
+	return 1;
+}
+
+CMD:speclotto(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) {
+	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
+	}
+	else if(SpecLotto) {
+	    SendClientMessage(playerid, COLOR_GREY, "A special lottery has already been started.");
+	}
+	else {
+
+	    new
+	        prize[64],
+	        string[128];
+
+	    if(sscanf(params, "s[64]", prize)) {
+	        SendClientMessage(playerid, COLOR_GREY, "USAGE: /speclotto [text]");
+		}
+		else {
+		    SpecLotto = 1;
+		    LottoPrize = prize;
+		    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has started a special lottery. (Prize: %s)", GetPlayerNameEx(playerid), prize);
+			ABroadCast(COLOR_YELLOW, string, 4);
+			return 1;
+		}
+	}
+	return 1;
+}
+
+CMD:cancelspeclotto(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) {
+	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
+	}
+	else if(!SpecLotto) {
+	    SendClientMessage(playerid, COLOR_GREY, "No special lottery.");
+	}
+	else {
+	    SpecLotto = 0;
+	    LottoPrize = "";
+	}
+	return 1;
+}

@@ -137,6 +137,26 @@ CMD:animlist(playerid, params[])
 	return 1;
 }
 
+CMD:stopani(playerid, params[])
+{
+	if(StopaniFloats[playerid][0] != 0)
+	{
+	    SendClientMessageEx(playerid, COLOR_GREY, "You are already attempting to clear your animations!");
+		return 1;
+	}
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pBeingSentenced] != 0|| GetPVarType(playerid, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "Carryingfood") > 0 || GetPVarInt(playerid, "jailcuffs") == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	}
+	else
+	{
+	    GetPlayerPos(playerid, StopaniFloats[playerid][0], StopaniFloats[playerid][1], StopaniFloats[playerid][2]);
+		SetTimerEx("StopaniTimer", 10000, 0, "d", playerid);
+		SendClientMessageEx (playerid, COLOR_YELLOW, "Do not move for 10 seconds to have your animations cleared!");
+	}
+	return 1;
+}
+
 CMD:animhelp(playerid, params[])
 {
 	return cmd_animlist(playerid, params);

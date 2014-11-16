@@ -34,3 +34,13 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:fishhelp(playerid, params[])
+{
+    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** FISH HELP *** - type a command for more infomation.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /fish (Try to catch a fish)   /fishes (Show the fishes you have caught)");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /throwback (Throw the last fish you caught back)   /throwbackall");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /releasefish (Release one of your fishes)");
+    return 1;
+}

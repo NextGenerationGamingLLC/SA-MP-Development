@@ -34,3 +34,22 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+/*CMD:storagehelp(playerid, params[])
+{
+	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** HELP *** - type a command for more infomation.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** STORAGE *** /(vs)viewstorage /(es)equipstorage /personalwithdraw /personaldeposit /storagegive");
+	SendClientMessageEx(playerid, COLOR_GRAD3,"*** STORAGE *** /transferstorage");
+    return 1;
+}*/
+
+CMD:inv(playerid, params[]) {
+	return cmd_inventory(playerid, params);
+}
+
+CMD:inventory(playerid, params[])
+{
+	if(gPlayerLogged{playerid} != 0) ShowInventory(playerid, playerid);
+	return 1;
+}

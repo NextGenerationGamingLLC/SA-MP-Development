@@ -105,9 +105,9 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
-#include "./includes/core/vactions.pwn"
+//#include "./includes/core/vactions.pwn"
 
-/*
+
 //admin includes 
 #include "./includes/admin/admin.pwn"
 #include "./includes/admin/advisory.pwn"
@@ -156,9 +156,11 @@
 #include "./includes/dynamiccore/motds.pwn"
 #include "./includes/dynamiccore/paynsprays.pwn"
 #include "./includes/dynamiccore/textlables.pwn"
+#include "./includes/dynamiccore/impound.pwn"
+#include "./includes/dynamiccore/speedcamera.pwn"
 
 //event kernels includes
-#include "./includes/eventkernels/bday.pwn"
+//#include "./includes/eventkernels/bday.pwn"
 #include "./includes/eventkernels/event.pwn"
 #include "./includes/eventkernels/eventpoints.pwn"
 #include "./includes/eventkernels/fif.pwn"
@@ -185,8 +187,10 @@
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
 #include "./includes/group/turfspoints.pwn"
+#include "./includes/group/cratesystem.pwn"
 
 //job system includes
+#include "./includes/jobs/armsdealer.pwn"
 #include "./includes/jobs/bartender.pwn"
 #include "./includes/jobs/bodyguard.pwn"
 #include "./includes/jobs/boxing.pwn"
@@ -217,7 +221,7 @@
 #include "./includes/vehiclesystem/licenses.pwn"
 #include "./includes/vehiclesystem/tow.pwn"
 #include "./includes/vehiclesystem/vehiclecore.pwn"
-*/
+
 
 #pragma unused DynamicBusiness
 

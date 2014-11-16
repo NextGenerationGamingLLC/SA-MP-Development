@@ -34,3 +34,15 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:tokenhelp(playerid, params[])
+{
+    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** TOKEN HELP ***");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"VIP tokens can be traded for weapons at the VIP Locker.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"VIP tokens can be won at events or gifts.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"Weapons cost 1-5 tokens each, from melee weapons to high-powered firearms.");
+
+    SendClientMessageEx(playerid, COLOR_GRAD3,"If you wish to give other VIPs your tokens, use /givetokens.");
+    return 1;
+}

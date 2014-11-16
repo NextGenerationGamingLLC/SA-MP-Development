@@ -34,3 +34,18 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:tognews(playerid, params[])
+{
+	if (!gNews[playerid])
+	{
+		gNews[playerid] = 1;
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled news chat.");
+	}
+	else
+	{
+		gNews[playerid] = 0;
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled news chat.");
+	}
+	return 1;
+}

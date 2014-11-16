@@ -34,3 +34,18 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:clearallreports(playerid, params[])
+{
+    if (PlayerInfo[playerid][pAdmin] >= 1337) {
+        new string[128];
+        ClearReports();
+        SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all the active reports.");
+        format(string, sizeof(string), "AdmCmd: %s has cleared all the pending reports.", GetPlayerNameEx(playerid));
+        ABroadCast(COLOR_LIGHTRED, string, 2);
+    }
+    else {
+        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+    }
+    return 1;
+}

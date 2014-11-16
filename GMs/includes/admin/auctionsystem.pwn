@@ -34,3 +34,30 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:editauctions(playerid, params[]) {
+	if(PlayerInfo[playerid][pAdmin] >= 4) {
+		new
+		    szDialog[700];
+
+		for (new i; i < sizeof(Auctions); i++)
+    	{
+            format(szDialog, sizeof(szDialog), "%s\n Auction: %i | Item: %s | Highest Bid: $%i | Wining: %s(%i)", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid], Auctions[i][Wining], Auctions[i][Bidder]);
+    	}
+    	ShowPlayerDialog(playerid, DIALOG_ADMINAUCTIONS, DIALOG_STYLE_LIST, "Auctions", szDialog, "Edit", "Close");
+	}
+	return 1;
+}
+
+CMD:auctions(playerid, params[]) {
+
+	new
+		szDialog[500];
+
+    for (new i; i < sizeof(Auctions); i++)
+    {
+    	format(szDialog, sizeof(szDialog), "%s\n Auction: %i | Item: %s | Highest Bid: $%i", szDialog, i+1, Auctions[i][BiddingFor], Auctions[i][Bid]);
+    }
+	ShowPlayerDialog(playerid, DIALOG_AUCTIONS, DIALOG_STYLE_LIST, "Auctions", szDialog, "More Info", "Close");
+	return 1;
+}

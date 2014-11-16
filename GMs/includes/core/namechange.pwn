@@ -34,3 +34,56 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+/*CMD:nchange(playerid, params[]) return cmd_namechanges(playerid, params);
+
+CMD:namechanges(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 3)
+ 	{
+
+		new
+			nstring[64 + (MAX_PLAYER_NAME * 2)],
+			newname[ MAX_PLAYER_NAME ];
+
+  		SendClientMessageEx(playerid, COLOR_GREEN, "* Pending name changes:");
+   		foreach(new i: Player)
+		{
+			if(GetPVarType(i, "RequestingNameChange"))
+			{
+  				GetPVarString(i, "NewNameRequest", newname, MAX_PLAYER_NAME);
+				format(nstring, sizeof(nstring), "Current name: %s (ID: %d) | Requested name: %s | Price: %d", GetPlayerNameEx(i), i, newname, GetPVarInt(i, "NameChangeCost"));
+				SendClientMessageEx(playerid, COLOR_YELLOW, nstring);
+			}
+		}
+		SendClientMessageEx(playerid, COLOR_GREEN, "_____________________________________________________");
+	}
+	return 1;
+} */
+
+CMD:changename(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
+	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "   You are not in the Name Change Place!" );
+	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if((0 <= iGroupID < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange])
+	{
+		ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+	}
+	else if(gettime() >= PlayerInfo[playerid][pNextNameChange])
+	{
+		ShowPlayerDialog(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change", "Please enter your new desired name!\n\nNote: Name Changes are free every 120 days.", "Change", "Cancel");
+	}
+	else
+	{
+		if(GetPVarInt(playerid, "PinConfirmed"))
+		{
+			new string[128];
+			format(string, sizeof(string), "Please enter your new desired name!\n\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[40][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[40][sItemPrice]));
+			ShowPlayerDialog(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change", string, "Purchase", "Cancel");
+		}
+		else SetPVarInt(playerid, "OpenShop", 10), PinLogin(playerid);
+	}
+	return 1;
+}

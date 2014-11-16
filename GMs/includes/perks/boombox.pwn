@@ -34,3 +34,16 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:setboombox(playerid, params[])
+{
+	if(GetPVarType(playerid, "pBoomBox"))
+	{
+		ShowSetStation(playerid);
+    }
+	else
+	{
+	    SendClientMessage(playerid, COLOR_GRAD2, "You don't have a boombox out!");
+	}
+	return 1;
+}

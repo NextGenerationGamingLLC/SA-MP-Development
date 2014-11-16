@@ -34,3 +34,16 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+CMD:insurehelp(playerid, params[])
+{
+    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+    SendClientMessageEx(playerid, COLOR_WHITE,"*** INSURANCE HELP *** - type a command for more infomation.");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** INSURANCE *** /buyinsurance");
+    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** ALL SAINTS: $1,500 + Transfer (One Time) Fee of $2,500");
+    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** COUNTY: $1,500 + Transfer (One Time) Fee of $2,500");
+    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** RED COUNTY: $500 + Transfer (One Time) Fee of $2,500");
+    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** SAN FIERRO: $500 + Transfer (One Time) Fee of $2,500");
+    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** FORT CARSON: $250");
+    return 1;
+}
