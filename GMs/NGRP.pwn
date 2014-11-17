@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.155"
+#define SERVER_GM_TEXT "NG:RP v3.0.157"
 
 
 #include <a_samp>
@@ -98,14 +98,14 @@
 #include "./includes/variables.pwn"
 #include "./includes/timers.pwn"
 #include "./includes/functions.pwn"
-#include "./includes/commands.pwn"
+//#include "./includes/commands.pwn"
+#include "./includes/vehiclesystem/vehiclecore.pwn"
 #include "./includes/mysql.pwn"
 #include "./includes/OnPlayerLoad.pwn"
 #include "./includes/callbacks.pwn"
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
-//#include "./includes/core/vactions.pwn"
 
 
 //admin includes 
@@ -118,6 +118,7 @@
 #include "./includes/admin/reportsystem.pwn"
 #include "./includes/admin/serveroffences.pwn"
 #include "./includes/admin/vouchers.pwn"
+#include "./includes/admin/watchdogs.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"
@@ -147,6 +148,14 @@
 #include "./includes/core/vactions.pwn"
 #include "./includes/core/weapons.pwn"
 
+//vehicle system includes
+#include "./includes/vehiclesystem/drivingtest.pwn"
+#include "./includes/vehiclesystem/licenses.pwn"
+#include "./includes/vehiclesystem/speedo.pwn"
+#include "./includes/vehiclesystem/tow.pwn"
+#include "./includes/vehiclesystem/VLP.pwn"
+
+
 //dynamic core includes
 #include "./includes/dynamiccore/doors.pwn"
 #include "./includes/dynamiccore/garages.pwn"
@@ -155,9 +164,10 @@
 #include "./includes/dynamiccore/mapicons.pwn"
 #include "./includes/dynamiccore/motds.pwn"
 #include "./includes/dynamiccore/paynsprays.pwn"
-#include "./includes/dynamiccore/textlables.pwn"
+#include "./includes/dynamiccore/textlabels.pwn"
 #include "./includes/dynamiccore/impound.pwn"
 #include "./includes/dynamiccore/speedcamera.pwn"
+#include "./includes/dynamiccore/arrestpoints.pwn"
 
 //event kernels includes
 //#include "./includes/eventkernels/bday.pwn"
@@ -170,6 +180,7 @@
 #include "./includes/eventkernels/rfl.pwn"
 #include "./includes/eventkernels/xmas.pwn"
 #include "./includes/eventkernels/zombies.pwn"
+#include "./includes/eventkernels/valentine.pwn"
 
 //dynamic group system includes
 #include "./includes/group/citizenship.pwn"
@@ -188,6 +199,7 @@
 #include "./includes/group/towing.pwn"
 #include "./includes/group/turfspoints.pwn"
 #include "./includes/group/cratesystem.pwn"
+#include "./includes/group/callsystem.pwn"
 
 //job system includes
 #include "./includes/jobs/armsdealer.pwn"
@@ -195,6 +207,7 @@
 #include "./includes/jobs/bodyguard.pwn"
 #include "./includes/jobs/boxing.pwn"
 #include "./includes/jobs/craftsman.pwn"
+#include "./includes/jobs/detective.pwn"
 #include "./includes/jobs/drugs.pwn"
 #include "./includes/jobs/fishing.pwn"
 #include "./includes/jobs/jobcore.pwn"
@@ -208,6 +221,7 @@
 
 //perk system includes
 #include "./includes/perks/boombox.pwn"
+#include "./includes/perks/backpack.pwn"
 #include "./includes/perks/dedicated.pwn"
 #include "./includes/perks/famed.pwn"
 #include "./includes/perks/poker.pwn"
@@ -215,13 +229,6 @@
 #include "./includes/perks/tokens.pwn"
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
-
-//vehicle system includes
-#include "./includes/vehiclesystem/drivingtest.pwn"
-#include "./includes/vehiclesystem/licenses.pwn"
-#include "./includes/vehiclesystem/tow.pwn"
-#include "./includes/vehiclesystem/vehiclecore.pwn"
-
 
 #pragma unused DynamicBusiness
 

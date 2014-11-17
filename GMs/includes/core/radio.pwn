@@ -102,3 +102,69 @@ CMD:fixr(playerid, params[])
 	PlayerFixRadio(playerid);
 	return 1;
 }
+
+CMD:music(playerid, params[])
+{
+	if(PlayerInfo[playerid][pCDPlayer])
+	{
+		new choice[32];
+		if(sscanf(params, "s[32]", choice))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /music [name]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: On, Off, Next");
+			return 1;
+		}
+
+		if(strcmp(choice,"on",true) == 0)
+		{
+			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~g~Music person On", 5000, 5);
+			new channel = Music[playerid];
+			PlayerPlaySound(playerid, Songs[channel][0], 0.0, 0.0, 0.0);
+		}
+		else if(strcmp(choice,"off",true) == 0)
+		{
+			GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~r~Music person Off", 5000, 5);
+			PlayerFixRadio(playerid);
+			if(GetPVarType(playerid, "MusicIRadio"))
+			{
+			    StopAudioStreamForPlayerEx(playerid);
+			    DeletePVar(playerid, "MusicIRadio");
+			}
+		}
+		else if(strcmp(choice,"next",true) == 0)
+		{
+			if(Music[playerid] == 0) { Music[playerid] = 1; }
+			else if(Music[playerid] == 1) { Music[playerid] = 2; }
+			else if(Music[playerid] == 2) { Music[playerid] = 3; }
+			else if(Music[playerid] == 3) { Music[playerid] = 4; }
+			else if(Music[playerid] == 4) { Music[playerid] = 5; }
+			else if(Music[playerid] == 5) { Music[playerid] = 6; }
+			else if(Music[playerid] == 6) { Music[playerid] = 0; }
+			new channel = Music[playerid];
+			PlayerPlaySound(playerid, Songs[channel][0], 0.0, 0.0, 0.0);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   Unknown music command!");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a Music-Player!");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:mp3(playerid, params[])
+{
+	if(PlayerInfo[playerid][pCDPlayer] || PlayerInfo[playerid][pAdmin] >= 2)
+	{
+		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on foot to use your MP3 Player.");
+		
+		ShowSetStation(playerid, "MP3 Player - Choose a station");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a CD Player/MP3 Player.");
+	return 1;
+}	

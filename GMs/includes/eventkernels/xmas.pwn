@@ -102,3 +102,27 @@ CMD:carol(playerid, params[]) // Christmas Event
 	else SendClientMessageEx(playerid, COLOR_GREY, "It isn't Christmas Eve!");
 	return 1;
 }
+
+CMD:xmas(playerid, params[])
+{
+    if(PlayerInfo[playerid][pAdmin] >= 1338)
+   	{
+    	if(XMASGifts == 0)
+     	{
+     		XMASGifts = 1;
+			new string[128];
+			format( string, sizeof( string ), "%s would like for you to come to Pershing Square for free gifts and great times", GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, string);
+		}
+		else
+		{
+  			XMASGifts = 0;
+			new string[128];
+   			format( string, sizeof( string ), "AdmCmd: %s has disabled the /getgift command", GetPlayerNameEx(playerid));
+			ABroadCast( COLOR_LIGHTRED, string, 1337 );
+			format(string, sizeof(string), "Pershing Square is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
+			SendClientMessageToAllEx(COLOR_LIGHTGREEN, string);
+		}
+	}
+	return 1;
+}

@@ -534,3 +534,431 @@ CMD:pickplant(playerid, params[])
 	}
 	return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a plant.");
 }
+
+CMD:getcrate(playerid, params[])
+{
+	if (PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14)
+	{
+		SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Drug Smuggler!");
+		return 1;
+	}
+	new mypoint = -1;
+
+	new playername[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, playername, sizeof(playername));
+	for (new i=0; i<MAX_POINTS; i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && strcmp(Points[i][Name], "Drug Factory", true) == 0)
+		{
+			mypoint = i;
+		}
+	}
+	if (mypoint == -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, " You are not at the Drug Factory!");
+		return 1;
+	}
+	if(PlayerInfo[playerid][pCrates])
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You can't hold any more Drug Crates!");
+		return 1;
+	}
+	if(GetPlayerCash(playerid) > 1000)
+	{
+		SendClientMessageEx(playerid, COLOR_LIGHTRED,"What type of drugs would you like to smuggle? (Type crack or pot)");
+		SetPVarInt(playerid, "ChoosingDrugs", 1);
+		return 1;
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY," You can't afford the $1000!");
+		return 1;
+	}
+}
+
+CMD:getpot(playerid, params[])
+{
+	new string[128], amount;
+	if(sscanf(params, "d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpot [amount]");
+
+	new tel;
+	new price;
+	new level = PlayerInfo[playerid][pDrugsSkill];
+	if(level >= 0 && level <= 50)
+	{ tel = 100; if(amount < 1 || amount > 10) { SendClientMessageEx(playerid, COLOR_GREY, "   You cant go above 10 at your Skill Level!"); return 1; } }
+	else if(level >= 51 && level <= 100)
+	{ tel = 100; if(amount < 1 || amount > 20) { SendClientMessageEx(playerid, COLOR_GREY, "   You cant go above 20 at your Skill Level!"); return 1; } }
+	else if(level >= 101 && level <= 200)
+	{ tel = 100; if(amount < 1 || amount > 30) { SendClientMessageEx(playerid, COLOR_GREY, "   You cant go above 30 at your Skill Level!"); return 1; } }
+	else if(level >= 201 && level <= 400)
+	{ tel = 100; if(amount < 1 || amount > 40) { SendClientMessageEx(playerid, COLOR_GREY, "   You cant go above 40 at your Skill Level!"); return 1; } }
+	else if(level >= 401)
+	{ tel = 100; if(amount < 1 || amount > 50) { SendClientMessageEx(playerid, COLOR_GREY, "   You cant go above 50 at your Skill Level!"); return 1; } }
+	new mypoint = -1;
+	for (new i=0; i<MAX_POINTS; i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && Points[i][Type] == 3)
+		{
+			mypoint = i;
+		}
+	}
+	if (mypoint == -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the Drug House!");
+		return 1;
+	}
+	if ( PlayerInfo[playerid][pPot] >= 25)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have reached your pot limit of 25 pot.");
+		return 1;
+	}
+	if (PlayerInfo[playerid][pJob] == 4 || PlayerInfo[playerid][pJob2] == 4 || PlayerInfo[playerid][pJob3] == 4)
+	{
+		price = amount * tel;
+		if(Points[mypoint][Stock] < amount && PlayerInfo[playerid][pDonateRank] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "   This Drug House doesn't have that much pot!");
+		if(GetPlayerCash(playerid) > price)
+		{
+			format(string, sizeof(string), "* You bought %d grams for $%d.", amount, price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			GivePlayerCash(playerid, -price);
+			PlayerInfo[playerid][pPot] += amount;
+			if(PlayerInfo[playerid][pDonateRank] < 1)
+			{
+				Points[mypoint][Stock] -= amount;
+				format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[mypoint][Stock]);
+				UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
+			}
+			for(new i = 0; i < sizeof(FamilyInfo); i++)
+			{
+				if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+				{
+					FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+				}
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't afford the drugs!");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not a drug dealer.");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:getcrack(playerid, params[])
+{
+	new string[128], amount;
+	if(sscanf(params, "d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getcrack [amount]");
+
+	new tel;
+	new price;
+	new level = PlayerInfo[playerid][pDrugsSkill];
+	if(level >= 0 && level <= 50)
+	{
+		tel = 500;
+		if(amount < 1 || amount > 5)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   You can't go above 5 at your Skill Level!");
+			return 1;
+		}
+	}
+	else if(level >= 51 && level <= 100)
+	{ tel = 500; if(amount < 1 || amount > 5) { SendClientMessageEx(playerid, COLOR_GREY, "   You can't go above 10 at your Skill Level!"); return 1; } }
+	else if(level >= 101 && level <= 200)
+	{ tel = 500; if(amount < 1 || amount > 15) { SendClientMessageEx(playerid, COLOR_GREY, "   You can't go above 15 at your Skill Level!"); return 1; } }
+	else if(level >= 201 && level <= 400)
+	{ tel = 500; if(amount < 1 || amount > 20) { SendClientMessageEx(playerid, COLOR_GREY, "   You can't go above 20 at your Skill Level!"); return 1; } }
+	else if(level >= 401)
+	{ tel = 500; if(amount < 1 || amount > 25) { SendClientMessageEx(playerid, COLOR_GREY, "   You can't go above 25 at your Skill Level!"); return 1; } }
+	new mypoint = -1;
+	for (new i=0; i<MAX_POINTS; i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && Points[i][Type] == 4)
+		{
+			mypoint = i;
+		}
+	}
+	if (mypoint == -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, " You are not at the Crack Lab!");
+		return 1;
+	}
+	if ( PlayerInfo[playerid][pCrack] >= 25)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, " You have reached your crack limit of 25 crack.");
+		return 1;
+	}
+	if (PlayerInfo[playerid][pJob] == 4 || PlayerInfo[playerid][pJob2] == 4 || PlayerInfo[playerid][pJob3] == 4)
+	{
+		price = amount * tel;
+		if(Points[mypoint][Stock] < amount && PlayerInfo[playerid][pDonateRank] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "   This Crack Lab doesn't have that much crack!");
+		if(GetPlayerCash(playerid) > price)
+		{
+			format(string, sizeof(string), "* You bought %d grams for $%d.", amount, price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			GivePlayerCash(playerid, -price);
+			PlayerInfo[playerid][pCrack] += amount;
+			if(PlayerInfo[playerid][pDonateRank] < 1) Points[mypoint][Stock] = Points[mypoint][Stock]-amount;
+			format(string, sizeof(string), " CRACK AVAILABLE: %d/500.", Points[mypoint][Stock]);
+			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
+			for(new i = 0; i < sizeof(FamilyInfo); i++)
+			{
+				if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+				{
+					FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+				}
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   You cant afford the Drugs!");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You're not a drug dealer.");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:usepot(playerid, params[])
+{
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	#if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	#endif
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0) {
+   		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	}
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
+	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		return 1;
+	}
+	if(PlayerBoxing[playerid] > 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You can't use drugs while you're fighting.");
+		return 1;
+	}
+	if(UsedWeed[playerid] == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 5 seconds before using more drugs.");
+		return 1;
+	}
+	new string[128], Float:health, healthint, storageid;
+
+	/*if(sscanf(params, "d", storageid)) {
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /usepot [storageid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
+		return 1;
+	}
+
+	if(storageid < 0 || storageid > 1) {
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /usepot [storageid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
+		return 1;
+	}
+
+	// Find the storageid of the storagedevice.
+	if(storageid == 1) {
+		new bool:itemEquipped = false;
+		for(new i = 0; i < 3; i++)
+		{
+			if(StorageInfo[playerid][i][sAttached] == 1) {
+				storageid = i+1;
+				itemEquipped = true;
+			}
+		}
+		if(itemEquipped == false) return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a storage device equipped!");
+	}*/
+
+	if(storageid == 0 && PlayerInfo[playerid][pPot] > 1 || (storageid > 0) && StorageInfo[playerid][storageid-1][sPot] > 1)
+	{
+		GetPlayerHealth(playerid, health);
+		healthint = floatround(health, floatround_round);
+		if(healthint >= 100 )
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+			return 1;
+		}
+		if(PlayerStoned[playerid] > 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are too stoned to use pot.");
+		PlayerStoned[playerid] += 1;
+		if(PlayerStoned[playerid] == 3)
+		{
+			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
+		}
+		if(healthint > 80)
+		{
+			SetPlayerHealth(playerid, 100);
+		}
+		else
+		{
+			SetPlayerHealth(playerid, health + 20.0);
+		}
+		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of pot!");
+		format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
+		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+		if(storageid == 0) {
+			PlayerInfo[playerid][pPot] -= 2;
+		} else {
+			StorageInfo[playerid][storageid-1][sPot] -= 2;
+		}
+
+		UsedWeed[playerid] = 1;
+		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
+		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
+		switch(GetPVarInt(playerid, "STD")) {
+			case 1:
+			{
+				DeletePVar(playerid, "STD");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the Drugs!");
+			}
+			case 2:
+			{
+				SetPVarInt(playerid, "STD", 1);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You reduced the STI to chlamydia because of the drugs!");
+			}
+			case 3:
+			{
+				SetPVarInt(playerid, "STD", 2);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You reduced the STI to gonorrhea because of the drugs!");
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any pot left!");
+	}
+	return 1;
+}
+
+CMD:usecrack(playerid, params[])
+{
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+    #if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	#endif
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0) {
+   		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	}
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
+	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		return 1;
+	}
+	if(PlayerBoxing[playerid] > 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You can't use drugs while you're fighting.");
+		return 1;
+	}
+	if(UsedCrack[playerid] == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 5 seconds before using more drugs.");
+		return 1;
+	}
+	new Float:armour;
+	GetPlayerArmour(playerid, armour);
+	if(armour >= 100)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
+		return 1;
+	}
+
+	new storageid;
+	/*if(sscanf(params, "d", storageid)) {
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /usecrack [storageid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
+		return 1;
+	}
+
+	if(storageid < 0 || storageid > 1) {
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /usecrack [storageid]");
+		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");
+		return 1;
+	}
+
+	// Find the storageid of the storagedevice.
+	if(storageid == 1) {
+		new bool:itemEquipped = false;
+		for(new i = 0; i < 3; i++)
+		{
+			if(StorageInfo[playerid][i][sAttached] == 1) {
+				storageid = i+1;
+				itemEquipped = true;
+			}
+		}
+		if(itemEquipped == false) return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have a storage device equipped!");
+	}*/
+
+	if(storageid == 0 && PlayerInfo[playerid][pCrack] > 1 || (storageid > 0) && StorageInfo[playerid][storageid-1][sCrack] > 1)
+	{
+		if(PlayerStoned[playerid] > 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are too stoned to use crack.");
+		PlayerStoned[playerid] += 1;
+		if(PlayerStoned[playerid] == 3)
+		{
+			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
+		}
+		new string[128], Float:PlayersArmour;
+		GetPlayerArmour(playerid, PlayersArmour);
+		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of crack!");
+		format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
+		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+		if(storageid == 0) {
+			PlayerInfo[playerid][pCrack] -= 2;
+		} else {
+			StorageInfo[playerid][storageid-1][sCrack] -= 2;
+		}
+		if(CurrentArmor[playerid] < PlayersArmour && GetPVarInt(playerid, "IsInArena") == 0)
+	    {
+	    	format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
+			ABroadCast( COLOR_YELLOW, string, 2 );
+			format(string, sizeof(string), "%s(%d) (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
+			Log("logs/hack.log", string);
+	        return 1;
+	    }
+		UsedCrack[playerid] = 1;
+		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
+		if(PlayersArmour > 90)
+		{
+			SetPlayerArmor(playerid, 100);
+		}
+		else
+		{
+			SetPlayerArmor(playerid, PlayersArmour + 10.0);
+		}
+		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
+		switch(GetPVarInt(playerid, "STD")) {
+			case 1:
+			{
+				DeletePVar(playerid, "STD");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with an STI anymore because of the drugs!");
+			}
+			case 2:
+			{
+				SetPVarInt(playerid, "STD", 1);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You reduced the STI to chlamydia because of the drugs!");
+			}
+			case 3:
+			{
+				SetPVarInt(playerid, "STD", 2);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You reduced the STI to gonorrhea because of the drugs!");
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any crack left!");
+	}
+	return 1;
+}

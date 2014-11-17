@@ -137,3 +137,36 @@ CMD:destroytable(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:shoptable(playerid, params[])
+{
+	if (PlayerInfo[playerid][pShopTech] < 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command.");
+		return 1;
+	}
+
+	new giveplayerid, invoice;
+	if(sscanf(params, "ui", giveplayerid, invoice)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shoptable [player] [invoice #]");
+	new string[128];
+
+	if(PlayerInfo[giveplayerid][pTable] == 1)
+	{
+	    PlayerInfo[giveplayerid][pTable] = 0;
+    	format(string, sizeof(string), "Your poker table has been taken by Shop Tech %s. ", GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has taken %s(%d) poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
+		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		Log("logs/shoplog.log", string);
+	}
+	else
+	{
+		PlayerInfo[giveplayerid][pTable] = 1;
+    	format(string, sizeof(string), "You have been given a poker table from Shop Tech %s. ", GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		format(string, sizeof(string), "[SHOPPOKERTABLE] %s has given %s(%d) a poker table - Invoice %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), invoice);
+		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		Log("logs/shoplog.log", string);
+	}
+	return 1;
+}

@@ -474,3 +474,98 @@ CMD:skill(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:jobhelp(playerid, params[]) {
+    return ShowPlayerDialog(playerid, JOBHELPMENU, DIALOG_STYLE_LIST, "Which job do you need help with?","Detective\nLawyer\nWhore\nDrug Dealer\nMechanic\nBodyguard\nArms Dealer\nBoxer\nTaxi Driver\nDrug Smuggling\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Select", "Cancel");
+}
+
+CMD:quitjob(playerid, params[])
+{
+	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pFamed] >= 1)
+	{
+		new jobid;
+		if(sscanf(params, "d", jobid))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [jobid]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available: 1, 2, 3 (secondary VIP/Famed)");
+			return 1;
+		}
+
+		switch(jobid)
+		{
+		case 1:
+			{
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
+				PlayerInfo[playerid][pJob] = 0;
+			}
+		case 2:
+			{
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your secondary Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob2] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
+				PlayerInfo[playerid][pJob2] = 0;
+			}
+		case 3:
+			{
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third Job.");
+				if(PlayerInfo[playerid][pJob] == 2)
+				{
+					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+					SetPVarInt(playerid, "LawyerDuty", 0);
+				}
+				if(PlayerInfo[playerid][pJob3] == 7)
+				{
+					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+					SetPVarInt(playerid, "MechanicDuty", 0);
+				}
+				PlayerInfo[playerid][pJob3] = 0;
+			}
+		default:
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /quitjob [jobid]");
+				SendClientMessageEx(playerid, COLOR_GREY, "Available: 1, 2, 3 (secondary VIP/Famed)");
+			}
+		}
+	}
+	else
+	{
+		if(PlayerInfo[playerid][pJob] > 0 )
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
+			if(PlayerInfo[playerid][pJob] == 2)
+			{
+				if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+				SetPVarInt(playerid, "LawyerDuty", 0);
+			}
+			if(PlayerInfo[playerid][pJob] == 7)
+			{
+				if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+				SetPVarInt(playerid, "MechanicDuty", 0);
+			}
+			PlayerInfo[playerid][pJob] = 0;
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   You don't even have a Job!");
+		}
+	}
+	return 1;
+}

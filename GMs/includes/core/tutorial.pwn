@@ -53,3 +53,9 @@ CMD:rules(playerid, params[])
 CMD:faq(playerid, params[]) {
 	return ShowPlayerDialog(playerid, FAQMENU, DIALOG_STYLE_LIST, "Frequently Asked Questions","Locks\nSkins & Toys\nATMs\nFactions\nGangs\nHitmen\nWebsite, Teamspeak and Other Information\nFurther Help", "Select", "Cancel");
 }
+
+CMD:next(playerid, params[])
+{
+	TutorialStep(playerid);
+	return 1;
+}

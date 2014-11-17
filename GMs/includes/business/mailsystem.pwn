@@ -318,3 +318,18 @@ CMD:postdirectory(playerid, params[])
     }
 	return 1;
 }
+
+CMD:mnear(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	SendClientMessageEx(playerid, COLOR_RED, "* Listing all mailboxes within 30 meters of you...");
+	for(new i, szMessage[32]; i < MAX_HOUSES; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]))
+		{
+			format(szMessage, sizeof(szMessage), "ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hMailX], HouseInfo[i][hMailY], HouseInfo[i][hMailZ]));
+			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+		}
+	}
+	return 1;
+}

@@ -302,3 +302,355 @@ CMD:b(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:accent(playerid, params[])
+{
+	new accent;
+	if(sscanf(params, "d", accent))
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accent [accent ID]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Normal [1], British [2], Asian [4], Scottish [6], Irish [7], Russian [8]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: American [9], Spanish [10], Southern [11], Italian [13], Gangsta [14], Australian [15], Arabic [16]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Balkan [17], Canadian [18], Jamaican [19], Israeli [20], Dutch [21], Brazilian [22], German [23], Turkish [24]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Kiwi [25], French [26], Korean [27], Thai [28], Swedish [29], Danish [30], Norwegian [31]");
+		return 1;
+	}
+
+	switch(accent)
+	{
+		case 1:
+		{
+			PlayerInfo[playerid][pAccent] = 1;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Normal accent, use /accent to change it." );
+		}
+		case 2:
+		{
+			PlayerInfo[playerid][pAccent] = 2;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the British accent, use /accent to change it." );
+		}
+		case 3:
+		{
+			PlayerInfo[playerid][pAccent] = 3;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Japanese accent, use /accent to change it." );
+		}
+		case 4:
+		{
+			PlayerInfo[playerid][pAccent] = 4;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Chinese accent, use /accent to change it." );
+		}
+		case 5:
+		{
+			PlayerInfo[playerid][pAccent] = 5;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Korean accent, use /accent to change it." );
+		}
+		case 6:
+		{
+			PlayerInfo[playerid][pAccent] = 6;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Scottish accent, use /accent to change it." );
+		}
+		case 7:
+		{
+			PlayerInfo[playerid][pAccent] = 7;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Irish accent, use /accent to change it." );
+		}
+		case 8:
+		{
+			PlayerInfo[playerid][pAccent] = 8;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Russian accent, use /accent to change it." );
+		}
+		case 9:
+		{
+			PlayerInfo[playerid][pAccent] = 9;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the American accent, use /accent to change it." );
+		}
+		case 10:
+		{
+			PlayerInfo[playerid][pAccent] = 10;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Spanish accent, use /accent to change it." );
+		}
+		case 11:
+		{
+			PlayerInfo[playerid][pAccent] = 11;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Texan accent, use /accent to change it." );
+		}
+		case 12:
+		{
+			PlayerInfo[playerid][pAccent] = 12;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Cuban accent, use /accent to change it." );
+		}
+		case 13:
+		{
+			PlayerInfo[playerid][pAccent] = 13;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Italian accent, use /accent to change it." );
+		}
+		case 14:
+		{
+			PlayerInfo[playerid][pAccent] = 14;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Gangsta accent, use /accent to change it." );
+		}
+		case 15:
+		{
+			PlayerInfo[playerid][pAccent] = 15;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Australian accent, use /accent to change it." );
+		}
+		case 16:
+		{
+			PlayerInfo[playerid][pAccent] = 16;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Arabic accent, use /accent to change it." );
+		}
+		case 17:
+		{
+			PlayerInfo[playerid][pAccent] = 17;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Balkan accent, use /accent to change it." );
+		}
+		case 18:
+		{
+			PlayerInfo[playerid][pAccent] = 18;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Canadian accent, use /accent to change it." );
+		}
+		case 19:
+		{
+			PlayerInfo[playerid][pAccent] = 19;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Jamaican accent, use /accent to change it." );
+		}
+		case 20:
+		{
+			PlayerInfo[playerid][pAccent] = 20;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Israeli accent, use /accent to change it." );
+		}
+		case 21:
+	    {
+	        PlayerInfo[playerid][pAccent] = 21;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Dutch accent, use /accent to change it." );
+	    }
+		case 22:
+	    {
+	        PlayerInfo[playerid][pAccent] = 22;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Brazilian accent, use /accent to change it." );
+	    }
+   		case 23:
+	    {
+	        PlayerInfo[playerid][pAccent] = 23;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the German accent, use /accent to change it." );
+	    }
+	    case 24:
+	    {
+	        PlayerInfo[playerid][pAccent] = 24;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Turkish accent, use /accent to change it." );
+	    } 
+		case 25:
+	    {
+	        PlayerInfo[playerid][pAccent] = 25;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Kiwi accent, use /accent to change it." );
+	    }
+		case 26:
+	    {
+	        PlayerInfo[playerid][pAccent] = 26;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the French accent, use /accent to change it." );
+	    }
+		case 27:
+	    {
+	        PlayerInfo[playerid][pAccent] = 27;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Korean accent, use /accent to change it." );
+	    }
+		case 28:
+	    {
+	        PlayerInfo[playerid][pAccent] = 28;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Thai accent, use /accent to change it." );
+	    }
+		case 29:
+		{
+			PlayerInfo[playerid][pAccent] = 29;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Swedish accent, use /accent to change it." );
+		}
+		case 30:
+		{
+			PlayerInfo[playerid][pAccent] = 30;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Danish accent, use /accent to change it." );
+		}
+		case 31:
+		{
+			PlayerInfo[playerid][pAccent] = 31;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You will now speak in the Norwegian accent, use /accent to change it." );
+		}
+	}
+	return 1;
+}
+
+CMD:pr(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(PlayerInfo[playerid][pRadio] == 1)
+	{
+		if(isnull(params))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pr [chat]");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: Type /setfreq to set the frequency of your portable radio.");
+			return 1;
+		}
+		if(PlayerInfo[playerid][pRadioFreq] >= 1 || PlayerInfo[playerid][pRadioFreq] <= -1)
+		{
+			if(GetPVarInt(playerid, "Injured") != 0||PlayerCuffed[playerid]!=0||PlayerInfo[playerid][pHospital]!=0 || PlayerInfo[playerid][pJailTime] > 0)
+			{
+				SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
+				return 1;
+			}
+			RadioBroadCast(playerid, params);
+			return 1;
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "The frequency of your radio is set to 0, you can not broadcast over that frequency.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
+	}
+	return 1;
+}
+
+CMD:setfreq(playerid, params[])
+{
+	new string[128], frequency;
+	if(sscanf(params, "d", frequency))
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setfreq [frequency]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "HINT: Set the frequency of your radio to 0 if you don't want to hear anything.");
+		return 1;
+	}
+
+	if(frequency > 9999999 || frequency < -9999999) { SendClientMessageEx(playerid, COLOR_GREY, "Frequency can not be lower than -9999999 or higher than 9999999!"); return 1; }
+	if (PlayerInfo[playerid][pRadio] == 1)
+	{
+		PlayerInfo[playerid][pRadioFreq] = frequency;
+		format(string, sizeof(string), "You have set the frequency of your portable radio to %d khz.",frequency);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
+	}
+	return 1;
+}
+
+CMD:togchatbox(playerid, params[])
+{
+	switch(ActiveChatbox[playerid])
+	{
+		case 1:
+		{
+			ClearChatbox(playerid);
+			ActiveChatbox[playerid] = 0;
+		}
+		case 0:
+		{
+			ActiveChatbox[playerid] = 1;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have turned the chatbox back on!");
+		}
+	}
+	return 1;
+}
+
+CMD:ame(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ame [action]");
+	new string[128];
+	format(string, sizeof(string), "%s %s", GetPlayerNameEx(playerid), params);
+	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 15.0, 5000);
+	format(string, sizeof(string), "{FF8000}> {C2A2DA}%s", params);
+	SendClientMessageEx(playerid, COLOR_PURPLE, string);
+	return 1;
+}
+
+CMD:lme(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lme [action]");
+	new string[128];
+	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
+	ProxDetectorWrap(playerid, string, 92, 15, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	return 1;
+}
+
+CMD:ldo(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ldo [action]");
+	else if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not be longer than 120 characters in length.");
+	new
+		iCount,
+		iPos,
+		iChar;
+	while((iChar = params[iPos++])) if(iChar == '@') iCount++;
+	if(iCount >= 5) return SendClientMessageEx(playerid, COLOR_GREY, "The specified message must not contain more than 4 '@' symbols.");
+
+	new string[150];
+	format(string, sizeof(string), "* %s (( %s ))", params, GetPlayerNameEx(playerid));
+	ProxDetectorWrap(playerid, string, 92, 15.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	return 1;
+}
+
+CMD:resetexamine(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return 1;
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetexamine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
+	format(PlayerInfo[target][pExamineDesc], 256, "None");
+	return SendClientMessageEx(playerid, COLOR_GREY, "You have successfully reset their examine description.");
+}
+
+CMD:se(playerid, params[]) return cmd_setexamine(playerid, params);
+CMD:setexamine(playerid, params[]) return ShowPlayerDialog(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
+
+CMD:examine(playerid, params[])
+{
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /examine [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");
+	if(!ProxDetectorS(5.0, playerid, target) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+	if(!strlen(PlayerInfo[target][pExamineDesc]) || !strcmp(PlayerInfo[target][pExamineDesc], "None", true)) return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't have a description set.");
+	if(strlen(PlayerInfo[target][pExamineDesc]) > 101)
+	{
+		new firstline[128], secondline[128];
+		strmid(firstline, PlayerInfo[target][pExamineDesc], 0, 101);
+		strmid(secondline, PlayerInfo[target][pExamineDesc], 101, 128);
+		format(firstline, sizeof(firstline), "* %s %s", GetPlayerNameEx(target), firstline);
+		format(secondline, sizeof(secondline), "...%s", secondline);
+		SendClientMessageEx(playerid, COLOR_PURPLE, firstline);
+		SendClientMessageEx(playerid, COLOR_PURPLE, secondline);
+	}
+	else
+	{
+		new string[128];
+		format(string, sizeof(string), "* %s %s", GetPlayerNameEx(target), PlayerInfo[target][pExamineDesc]);
+		SendClientMessageEx(playerid, COLOR_PURPLE, string);
+	}
+	return 1;
+}
+
+CMD:togpr(playerid, params[])
+{
+	if(PlayerInfo[playerid][pRadio] == 1)
+	{
+ 		if (gRadio{playerid} == 0)
+   		{
+   		    new string[128];
+     		gRadio{playerid} = 1;
+       		format(string,sizeof(string),"You have switched your portable radio on, and it is now broadcasting at %d khz.",PlayerInfo[playerid][pRadioFreq]);
+	        SendClientMessageEx(playerid,COLOR_WHITE,string);
+	    }
+	    else
+	    {
+     		gRadio{playerid} = 0;
+       		SendClientMessageEx(playerid,COLOR_WHITE,"You have switched off your portable radio.");
+	    }
+	}
+	else
+	{
+ 		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
+	}
+  	return 1;
+}

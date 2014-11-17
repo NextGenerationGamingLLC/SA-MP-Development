@@ -569,3 +569,892 @@ CMD:eventhelp(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:seteventpos(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
+	{
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		{
+			new string[128];
+
+			GetPlayerPos(playerid, EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ]);
+			EventKernel[EventInterior] = GetPlayerInterior(playerid);
+			EventKernel[EventWorld] = GetPlayerVirtualWorld(playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event position, type /seteventinfo to change the event properties.");
+			EventKernel[EventJoinStaff] = 1;
+			format(string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has started an event, type /eventstaff if you want to be in the event staff.", GetPlayerNameEx(playerid) );
+			ABroadCast(COLOR_YELLOW, string, 1);
+			CBroadCast(COLOR_YELLOW, string, 2);
+			for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pSEC] >= 1) SendClientMessageEx(i, COLOR_YELLOW, string);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You are not making an event, or you're not the correct admin level.");
+		}
+	}
+	return 1;
+}
+
+CMD:seteventtype(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
+	{
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		{
+			if(isnull(params))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventtype [type]");
+				SendClientMessageEx(playerid, COLOR_GREY, "Available names: DM, TDM, Infection");
+				return 1;
+			}
+
+			if(strcmp(params,"dm",true) == 0)
+			{
+				EventKernel[ EventType ] = 1;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to DM.");
+			}
+			else if(strcmp(params,"tdm",true) == 0)
+			{
+				EventKernel[ EventType ] = 2;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to TDM.");
+			}
+			else if(strcmp(params,"race",true) == 0)
+			{
+				EventKernel[ EventType ] = 3;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to Race.");
+			}
+			else if(strcmp(params,"infection",true) == 0)
+			{
+				EventKernel[ EventType ] = 4;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to infection.");
+			}
+			else if(strcmp(params,"none",true) == 0)
+			{
+				EventKernel[ EventType ] = 0;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to None.");
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:editevent(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
+	{
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		{
+			new choice[32], opstring[64];
+			if(EventKernel[EventType] == 1)
+			{
+			    if(sscanf(params, "s[32]S[64]", choice, opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
+					return 1;
+				}
+			}
+			else if(EventKernel[EventType] == 2)
+			{
+			    if(sscanf(params, "s[32]S[64]", choice, opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, CustomInterior, Team1Skin, Team2Skin, Team1Color, Team2Color");
+					SendClientMessageEx(playerid, COLOR_GREY, "Team1Spawn, Team2Spawn, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
+					return 1;
+				}
+			}
+			else if(EventKernel[EventType] == 3)
+			{
+			    if(sscanf(params, "s[32]S("")[64]", choice, opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Hours, CheckPoints, RaceType(Future Development), OnFoot(0/1)");
+					SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life Note: Set hours to something between 1-5 and don't touch the limit!");
+					SendClientMessageEx(playerid, COLOR_GREY, "Relay For Life Note: Enable OnFoot!");
+					return 1;
+				}
+			}
+			else if(EventKernel[EventType] == 4)
+			{
+			    if(sscanf(params, "s[32]S[64]", choice, opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent [name]");
+					SendClientMessageEx(playerid, COLOR_GREY, "Available names: Jointext, Limit, Health, Armor, Gun1, Gun2, Gun3, Gun4, Gun5");
+					return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You need to set the event type first!");
+				return 1;
+			}
+
+			if(strcmp(choice, "jointext",true) == 0)
+			{
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent jointext [text]");
+					return 1;
+				}
+				strmid(EventKernel[EventInfo], opstring, 0, strlen(opstring), 64);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event join text.");
+			}
+			else if(strcmp(choice, "health", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 3 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent health [health]");
+					return 1;
+				}
+				new Float: health;
+				health = floatstr(opstring);
+				EventKernel[EventHealth] = health;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event health.");
+			}
+			else if(strcmp(choice, "armor", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent armor [armor]");
+					return 1;
+				}
+				new Float: armor;
+				armor = floatstr(opstring);
+				if(armor == 100) armor = 99;
+				EventKernel[EventArmor] = armor;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event armor.");
+			}
+			else if(strcmp(choice, "team1skin", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team1skin [skinid]");
+					return 1;
+				}
+
+				new skin;
+				skin = strval(opstring);
+				EventKernel[EventTeamSkin][0] = skin;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 skin.");
+			}
+			else if(strcmp(choice, "team2skin", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team2skin [skinid]");
+					return 1;
+				}
+
+				new skin;
+				skin = strval(opstring);
+				EventKernel[EventTeamSkin][1] = skin;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 skin.");
+			}
+			else if(strcmp(choice, "team1color", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!strlen(opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team1color [color]");
+					SendClientMessageEx(playerid, COLOR_GREY, "black | white | blue | red | green | purple | yellow | lightblue |");
+					SendClientMessageEx(playerid, COLOR_GREY, "darkgreen | darkblue | darkgrey | brown | darkbrown | darkred | pink ");
+					return 1;
+				}
+				EventKernel[EventTeamColor][0] = GetColorCode(opstring);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 1 color.");
+			}
+			else if(strcmp(choice, "team2color", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!strlen(opstring))
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent team2color [color]");
+					SendClientMessageEx(playerid, COLOR_GREY, "black | white | blue | red | green | purple | yellow | lightblue |");
+					SendClientMessageEx(playerid, COLOR_GREY, "darkgreen | darkblue | darkgrey | brown | darkbrown | darkred | pink ");
+					return 1;
+				}
+				EventKernel[EventTeamColor][1] = GetColorCode(opstring);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event team 2 color.");
+			}
+			else if(strcmp(choice, "team1spawn", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+				GetPlayerPos(playerid, EventKernel[ EventTeamPosX1 ], EventKernel[ EventTeamPosY1 ], EventKernel[ EventTeamPosZ1 ] );
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 1's spawn position.");
+			}
+			else if(strcmp(choice, "team2spawn", true) == 0)
+			{
+				if(EventKernel[EventType] != 2)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					return 1;
+				}
+				GetPlayerPos(playerid, EventKernel[ EventTeamPosX2 ], EventKernel[ EventTeamPosY2 ], EventKernel[ EventTeamPosZ2 ]);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted team 2's spawn position.");
+			}
+			else if(strcmp(choice, "limit", true) == 0)
+			{
+			    if(EventKernel[EventTime] != 0)
+			        return SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event, everyone is free to join. If you want to enable this please set the hours to 0.");
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent limit [limit 0-60]");
+					return 1;
+				}
+
+				new limit;
+				limit = strval(opstring);
+				if(limit < 0 || limit > 120) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event limit higher than 120 or below 0");
+				EventKernel[EventLimit] = limit;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the players in event limit.");
+			}
+			else if(strcmp(choice, "hours", true) == 0)
+			{
+			    if(EventKernel[EventType] != 3)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					return 1;
+				}
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent hours [hours 0-5]");
+					return 1;
+				}
+
+				new hours, seconds;
+				hours = strval(opstring);
+				if(hours < 0 || hours > 5) return SendClientMessageEx(playerid, COLOR_RED, "You cannot adjust the event hours higher than 5 or below 0");
+				seconds = hours*3600;
+				EventKernel[EventTime] = seconds;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event hours that the event will be active for, timer will start once you fully start the event.");
+                SendClientMessageEx(playerid, COLOR_GREY, "NOTE: If you set the event hours to 0 the event will finish once the last racer goes into the last checkpoint.");
+				if(hours != 0)
+					SendClientMessageEx(playerid, COLOR_YELLOW, "The feature players in event limit(/editevent limit) is now disabled since you changed the hours more than 0.");
+			}
+   			else if(strcmp(choice, "checkpoints", true) == 0)
+			{
+				if(EventKernel[EventType] != 3)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This feature is not available for this event type.");
+					return 1;
+				}
+				ConfigEventCPs[playerid][0] = 1;
+				ConfigEventCPs[playerid][1] = 0;
+				ConfigEventCPs[playerid][2] = 0;
+				ConfigEventCPId[playerid] = 0;
+				new string[279];
+				format(string,sizeof(string),"Welcome to the race checkpoint configuration system!\nThis is a quick guide on the steps you need to follow to successfully get the race checkpoints done.\nFirst and most important you need to remember to make the checkpoints in order, from the start line to the end line.");
+				ShowPlayerDialog(playerid,RCPINTRO,DIALOG_STYLE_MSGBOX,"Race Checkpoints Introduction",string,"Next","Skip");
+			}
+			else if(strcmp(choice, "onfoot", true) == 0)
+			{
+				if(EventKernel[EventFootRace])
+				{
+				    EventKernel[EventFootRace] = 0;
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off the onfoot feature, people can use vehicles(Future development, please don't use not working proprely)");
+				}
+				else {
+				    EventKernel[EventFootRace] = 1;
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on the onfoot feature, people cannot use vehicles.");
+				}
+			}
+			else if(strcmp(choice, "gun1", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					return 1;
+				}
+
+				new weapon;
+				weapon = strval(opstring);
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				EventKernel[EventWeapons][0] = weapon;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 1.");
+			}
+			else if(strcmp(choice, "gun2", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					return 1;
+				}
+
+				new weapon;
+				weapon = strval(opstring);
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				EventKernel[EventWeapons][1] = weapon;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 2.");
+			}
+			else if(strcmp(choice, "gun3", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					return 1;
+				}
+
+				new weapon;
+				weapon = strval(opstring);
+				if(weapon == 16 || weapon == 18 || weapon == 35 || weapon == 37 || weapon == 38 || weapon == 39) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				EventKernel[EventWeapons][2] = weapon;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 3.");
+			}
+			else if(strcmp(choice, "gun4", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					return 1;
+				}
+
+				new weapon;
+				weapon = strval(opstring);
+				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				EventKernel[EventWeapons][3] = weapon;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 4.");
+			}
+			else if(strcmp(choice, "gun5", true) == 0)
+			{
+				if(EventKernel[EventType] != 1 && EventKernel[EventType] != 2 && EventKernel[EventType] != 4)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "This name is not available for this event type.");
+					return 1;
+				}
+
+				if(!opstring[0])
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent gun1 [weaponid]");
+					return 1;
+				}
+
+				new weapon;
+				weapon = strval(opstring);
+				if(weapon == 35 || weapon == 37 || weapon == 38) return SendClientMessageEx(playerid, COLOR_WHITE, "This weapon cannot be set as an event weapon!");
+				EventKernel[EventWeapons][4] = weapon;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event gun 5.");
+			}
+			else if(strcmp(choice, "custominterior", true) == 0)
+			{
+				if(!opstring[0]) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editevent custominterior [0/1]");
+				
+				EventKernel[EventCustomInterior] = strval(opstring);
+				
+				new szstring[128];
+				format(szstring, sizeof(szstring), "You have set the Custom Interior Value to %d.", strval(opstring));
+				SendClientMessageEx(playerid, COLOR_WHITE, szstring);
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:seteventviponly(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4)
+	{
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		{
+			if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventviponly [0/1]");
+
+			if(PlayerInfo[playerid][pDonateRank] == 5 && PlayerInfo[playerid][pAdmin] == 0)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "Error: You're not allowed to change this value!");
+				return 1;
+			}
+
+			if(strcmp(params,"0",true) == 0)
+			{
+				EventKernel[ VipOnly ] = 0;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to not VIP Only.");
+			}
+			else if(strcmp(params,"1",true) == 0)
+			{
+				EventKernel[ VipOnly ] = 1;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully adjusted the event type to VIP Only.");
+			}
+
+		}
+	}
+	return 1;
+}
+
+CMD:seteventinfo(playerid, params[])
+{
+	if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
+	{
+		if( EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 )
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventtype /editevent /seteventviponly (once ready, type /startevent)");
+			return 1;
+		}
+	}
+	return 1;
+}
+
+CMD:endevent(playerid, params[])
+{
+	new Float: health, Float:armor;
+	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if(EventKernel[EventStatus] != 0)
+		{
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					if( GetPVarInt( i, "eventStaff" ) == 1)
+					{
+						ResetPlayerWeapons( i );
+						DeletePVar(i, "EventToken");
+						for(new w = 0; w < 12; w++)
+							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
+						SetPlayerWeapons(i);
+						SetPlayerToTeamColor(i);
+						SetPlayerSkin(i, PlayerInfo[i][pModel]);
+						SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
+						SetPlayerVirtualWorld(i, EventLastVW[i]);
+						SetPlayerFacingAngle(i, EventFloats[i][0]);
+						SetPlayerInterior(i,EventLastInt[i]);
+						Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
+						if(EventKernel[EventType] == 4)
+						{
+							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
+							SetPlayerToTeamColor(i);
+						}
+						
+						for(new d = 0; d < 6; d++)
+						{
+							EventFloats[i][d] = 0.0;
+						}
+						EventLastVW[i] = 0;
+						EventLastInt[i] = 0;
+						RemovePlayerWeapon(i, 38);
+						health = GetPVarFloat(i, "pPreGodHealth");
+						SetPlayerHealth(i,health);
+						armor = GetPVarFloat(i, "pPreGodArmor");
+						SetPlayerArmor(i, armor);
+						DeletePVar(i, "pPreGodHealth");
+						DeletePVar(i, "pPreGodArmor");
+						SetPVarInt(i, "eventStaff", 0);
+						SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
+					}	
+					else if( GetPVarInt( i, "EventToken" ) == 1 )
+					{
+						if(EventKernel[EventType] == 3)  {
+							if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
+								DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+							}
+							DisablePlayerCheckpoint(i);
+						} 
+						else if(EventKernel[EventType] == 4) {
+							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
+						}
+						ResetPlayerWeapons( i );
+						for(new w = 0; w < 12; w++)
+							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
+						SetPlayerWeapons(i);
+						SetPlayerToTeamColor(i);
+						SetPlayerSkin(i, PlayerInfo[i][pModel]);
+						SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
+						Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
+						SetPlayerVirtualWorld(i, EventLastVW[i]);
+						SetPlayerFacingAngle(i, EventFloats[i][0]);
+						SetPlayerInterior(i,EventLastInt[i]);
+						SetPlayerHealth(i, EventFloats[i][4]);
+						if(EventFloats[i][5] > 0) {
+							SetPlayerArmor(i, EventFloats[i][5]);
+						}
+						for(new d = 0; d < 6; d++)
+						{
+							EventFloats[i][d] = 0.0;
+						}
+						EventLastVW[i] = 0;
+						EventLastInt[i] = 0;
+						DeletePVar(i, "EventToken");
+						SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
+					}
+				}	
+			}
+			EventKernel[ EventPositionX ] = 0;
+			EventKernel[ EventPositionY ] = 0;
+			EventKernel[ EventPositionZ ] = 0;
+			EventKernel[ EventTeamPosX1 ] = 0;
+			EventKernel[ EventTeamPosY1 ] = 0;
+			EventKernel[ EventTeamPosZ1 ] = 0;
+			EventKernel[ EventTeamPosX2 ] = 0;
+			EventKernel[ EventTeamPosY2 ] = 0;
+			EventKernel[ EventTeamPosZ2 ] = 0;
+			EventKernel[ EventStatus ] = 0;
+			EventKernel[ EventType ] = 0;
+			EventKernel[ EventHealth ] = 0;
+			EventKernel[ EventLimit ] = 0;
+			EventKernel[ EventPlayers ] = 0;
+			EventKernel[ EventTime ] = 0;
+			EventKernel[ EventWeapons ][0] = 0;
+			EventKernel[ EventWeapons ][1] = 0;
+			EventKernel[ EventWeapons ][2] = 0;
+			EventKernel[ EventWeapons ][3] = 0;
+			EventKernel[ EventWeapons ][4] = 0;
+			for(new i = 0; i < 20; i++)
+			{
+				EventRCPU[i] = 0;
+				EventRCPX[i] = 0.0;
+				EventRCPY[i] = 0.0;
+				EventRCPZ[i] = 0.0;
+				EventRCPS[i] = 0.0;
+				EventRCPT[i] = 0;
+			}
+			EventKernel[EventCreator] = INVALID_PLAYER_ID;
+			EventKernel[VipOnly] = 0;
+			EventKernel[EventJoinStaff] = 0;
+			for(new i; i < sizeof(EventKernel[EventStaff]); i++) {
+				EventKernel[EventStaff][i] = INVALID_PLAYER_ID;
+			}	
+			EventKernel[EventCustomInterior] = 0;
+			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been finished by an Administrator." );
+		}
+		else
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "There isn't an active event at the moment." );
+		}
+	}
+	return 1;
+}
+ 
+CMD:startevent(playerid, params[])
+{
+	if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
+	{
+		new string[128];
+
+		if( EventKernel[ EventStatus ] == 0)
+		{
+			if(PlayerInfo[playerid][pAdmin] >= 4)
+			{
+				if(EventKernel[ EventHealth ] == 0)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event health!" );
+					return 1;
+				}
+				if((EventKernel[ EventPositionX ] == 0 || EventKernel[ EventPositionY ] == 0 || EventKernel[ EventPositionZ ] == 0) && EventKernel[EventType] != 3)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event position!" );
+					return 1;
+				}
+				if( (EventKernel[ EventTeamPosX1 ] == 0 || EventKernel[ EventTeamPosY1 ] == 0 || EventKernel[ EventTeamPosZ1 ] == 0) && EventKernel[ EventType ] == 2)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set team 1's spawn position!" );
+					return 1;
+				}
+				if( (EventKernel[ EventTeamPosX2 ] == 0 || EventKernel[ EventTeamPosY2 ] == 0 || EventKernel[ EventTeamPosZ2 ] == 0) && EventKernel[ EventType ] == 2)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set team 2's spawn position!" );
+					return 1;
+				}
+				if(EventKernel[ EventLimit ] == 0)
+				{
+					EventKernel[ EventLimit ] = 60;
+				}
+				EventKernel[ EventStatus ] = 1;
+				SendClientMessageEx( playerid, COLOR_GRAD2, "You have started an event, use /announceevent to announce the event to the whole server." );
+				//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pDonateRank] >= 3)
+						{
+							SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP feature: An event has been started! /joinevent to join early");
+						}
+					}	
+				}
+
+				return 1;
+			}
+			else if( EventKernel[EventCreator] == playerid)
+			{
+				if(EventKernel[ EventHealth ] == 0)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event health!" );
+					return 1;
+				}
+				if((EventKernel[ EventPositionX ] == 0 || EventKernel[ EventPositionY ] == 0 || EventKernel[ EventPositionZ ] == 0) && EventKernel[EventType] != 3)
+				{
+					SendClientMessageEx( playerid, COLOR_GRAD2, "You did not set the event position!" );
+					return 1;
+				}
+				if(EventKernel[ EventLimit ] == 0)
+				{
+					EventKernel[ EventLimit ] = 60;
+				}
+				EventKernel[ EventStartRequest ] = 1;
+				SendClientMessageEx( playerid, COLOR_GRAD2, "You have requested the event to start, please wait until a Senior Admin approves it." );
+				if(EventKernel[EventType] != 3)
+				{
+					format( string, sizeof( string ), "Event Position: x:%f y:%f z:%f.", EventKernel[EventPositionX], EventKernel[EventPositionY], EventKernel[EventPositionZ] );
+					ABroadCast( COLOR_GRAD2, string, 4 );
+					format( string, sizeof( string ), "Event Jointext: %s EventLimit: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
+					ABroadCast( COLOR_GRAD2, string, 4 );
+					format( string, sizeof( string ), "Event Health: %f Event Armor: %f.", EventKernel[EventHealth], EventKernel[EventArmor] );
+					ABroadCast( COLOR_GRAD2, string, 4 );
+					if(EventKernel[EventWeapons][0] != 0)
+					{
+						format( string, sizeof( string ), "Event Gun1: %d.", EventKernel[EventWeapons][0] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					if(EventKernel[EventWeapons][1] != 0)
+					{
+						format( string, sizeof( string ), "Event Gun2: %d.", EventKernel[EventWeapons][1] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					if(EventKernel[EventWeapons][2] != 0)
+					{
+						format( string, sizeof( string ), "Event Gun3: %d.", EventKernel[EventWeapons][2] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					if(EventKernel[EventWeapons][3] != 0)
+					{
+						format( string, sizeof( string ), "Event Gun4: %d.", EventKernel[EventWeapons][3] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					if(EventKernel[EventWeapons][4] != 0)
+					{
+      					format( string, sizeof( string ), "Event Gun5: %d.", EventKernel[EventWeapons][4] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					if(EventKernel[EventType] == 2)
+					{
+						format( string, sizeof( string ), "Event Team 1 Color: %d Event Team 1 Skin: %d.", EventKernel[EventTeamColor][0], EventKernel[EventTeamSkin][0] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+						format( string, sizeof( string ), "Event Team 2 Color: %d Event Team 2 Skin: %d.", EventKernel[EventTeamColor][1], EventKernel[EventTeamSkin][1] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+				}
+				else {
+				    if(EventKernel[EventTime] != 0) {
+				    	format( string, sizeof( string ), "Event Jointext: %s EventTimeLimit: %d.", EventKernel[EventInfo], EventKernel[EventTime] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					else {
+						format( string, sizeof( string ), "Event Jointext: %s EventLimit: %d.", EventKernel[EventInfo], EventKernel[EventLimit] );
+						ABroadCast( COLOR_GRAD2, string, 4 );
+					}
+					ABroadCast( COLOR_GRAD2, "This is a race type event, to view the race checkpoints use /edit checkpoints", 4 );
+				}
+				format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s would like to start the event, do you approve? /approveevent or /denyevent.", GetPlayerNameEx(playerid) );
+				ABroadCast( COLOR_YELLOW, string, 4 );
+			}
+		}
+		else
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+		}
+	}
+
+	return 1;
+}
+
+CMD:beginevent(playerid, params[])
+{
+	if( PlayerInfo[ playerid ][ pAdmin ] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if( EventKernel[ EventStatus ] == 3 )
+		{
+		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: This feature is not available with the configuration setup for this event.");
+			EventKernel[ EventStatus ] = 4;
+   			new zombiemade;
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					if( GetPVarType( i, "EventToken" ) == 1 )
+					{
+						if( EventKernel[ EventType ] == 1 )
+						{
+							//GivePlayerEventWeapons( i );
+							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+							if(GetPVarInt(i, "eventStaff") < 1) {
+								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+							}	
+							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
+								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+							}
+							GivePlayerEventWeapons( i );
+						}
+						else if( EventKernel[ EventType ] == 2 )
+						{
+							//GivePlayerEventWeapons( i );
+							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+							if(GetPVarInt(i, "eventStaff") < 1) {
+								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+							}
+							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
+								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+							}	
+							GivePlayerEventWeapons( i );
+						}
+						else if( EventKernel[ EventType ] == 4 )
+						{
+							if(zombiemade == 0)
+							{
+								SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
+								SetPlayerHealth(playerid, 30);
+								RemoveArmor(playerid);
+								SetPlayerSkin(playerid, 134);
+								SetPlayerColor(playerid, 0x0BC43600);
+								SetPVarInt(playerid, "pEventZombie", 1);
+								zombiemade=1;
+								continue;
+							}
+							else
+							{
+								//GivePlayerEventWeapons( i );
+								SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
+								if(GetPVarInt(i, "eventStaff") < 1) {
+									SetPlayerHealth( i, EventKernel[ EventHealth ] );
+								}	
+								if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
+									SetPlayerArmor( i, EventKernel[ EventArmor ]);
+								}
+								GivePlayerEventWeapons( i );
+							}
+						}
+					}
+					else
+					{
+						SendClientMessageEx( i, COLOR_WHITE, "The event has now started. If you wish to join next time, please use /joinevent." );
+					}
+				}	
+			}
+		}
+		else
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+		}
+	}
+	return 1;
+}
+
+CMD:announceevent(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if( EventKernel[ EventStatus ] == 1)
+		{
+			EventKernel[ EventStatus ] = 2;
+			SendClientMessageEx(playerid, COLOR_GRAD2, "To lock the event use /lockevent");
+			if(EventKernel[VipOnly] == 1) SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* A VIP only event has been started by an Administrator, VIP's type /joinevent to participate." );
+			else SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* An event has been started by an Administrator, type /joinevent to participate." );
+		}
+		else
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+		}
+	}
+	return 1;
+}
+
+CMD:lockevent(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if( EventKernel[ EventStatus ] == 2 )
+		{
+		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: This feature is not available with the configuration setup for this event.");
+			EventKernel[ EventStatus ] = 3;
+			SendClientMessageEx( playerid, COLOR_GRAD2, "You have locked an event, use /beginevent to officially start the event." );
+			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been locked by an Administrator." );
+		}
+		else
+		{
+			SendClientMessageEx( playerid, COLOR_WHITE, "There is already an active event (use /endevent)." );
+		}
+	}
+	return 1;
+}
+
+CMD:event(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	{
+		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "There are currently no active events.");
+		new string[128];
+		format(string, sizeof(string), "[Event] %s: %s", GetPlayerNameEx(playerid), params);
+		for(new i; i < MAX_PLAYERS; i++)
+		{
+			if(!IsPlayerConnected(i)) continue;
+			if(GetPVarInt(i, "EventToken") || PlayerInfo[i][pAdmin] >= 2 || EventKernel[EventCreator] == i || GetPVarInt(i, "eventStaff"))
+			{
+				SendClientMessageEx(i, COLOR_OOC, string);
+			}
+		}
+	}
+	return 1;
+}

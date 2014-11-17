@@ -530,3 +530,426 @@ CMD:deliver(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:warrant(playerid, params[])
+{
+	if(!IsAJudge(playerid))
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+	}
+	if(PlayerInfo[playerid][pRank] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
+
+	new string[128], crime[64], giveplayerid;
+	if(sscanf(params, "us[64]", giveplayerid, crime)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warrant [player] [crime]");
+
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't place warrants on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+		if(!isnull(PlayerInfo[giveplayerid][pWarrant])) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person has active warrants already.");
+		format(PlayerInfo[giveplayerid][pWarrant], 64, crime);
+		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", GetPlayerNameEx(giveplayerid));
+		SendGroupMessage(1, DEPTRADIO, string);
+		format(string, sizeof(string), "%s", crime);
+		SendGroupMessage(1, DEPTRADIO, string);
+		return 1;
+	}
+	return 1;
+}
+
+CMD:warrantwd(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+ 	}
+	if(PlayerInfo[playerid][pMember] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+  	}
+
+  	new string[128], giveplayerid;
+  	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warrantwd [player]");
+
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't remove warrants on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+ 		if(strlen(PlayerInfo[giveplayerid][pWarrant]) == 0) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person doesn't have any active warrants.");
+		format(PlayerInfo[giveplayerid][pWarrant], 128, "");
+		format(string, sizeof(string), "You have successfully recalled %s's warrant.", GetPlayerNameEx(giveplayerid));
+  		SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		return 1;
+	}
+	return 1;
+}
+
+CMD:warrantarrest(playerid, params[])
+{
+    new string[256];
+
+    if(IsACop(playerid))
+	{
+	    if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to do this!");
+        if(!IsAtArrestPoint(playerid, 3))
+		{
+  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a warrant arrest point.");
+	    	return 1;
+		}
+
+		new suspect = GetClosestPlayer(playerid);
+		if(IsPlayerConnected(suspect))
+		{
+			if(ProxDetectorS(5.0, playerid,suspect))
+			{
+				if(strlen(PlayerInfo[suspect][pWarrant]) < 1)
+				{
+	   				SendClientMessageEx(playerid, COLOR_GREY, "The person must have active warrants.");
+				    return 1;
+				}
+				format(string, sizeof(string), "* You warrant arrested %s!", GetPlayerNameEx(suspect));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				ResetPlayerWeaponsEx(suspect);
+				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
+				SendGroupMessage(6, DEPTRADIO, string);
+				SetPlayerInterior(suspect, 1);
+				PlayerInfo[suspect][pInt] = 1;
+				SetPlayerVirtualWorld(suspect, 0);
+				PlayerInfo[suspect][pVW] = 0;
+				new rand = random(sizeof(WarrantJail));
+				SetPlayerFacingAngle(suspect, 0);
+				SetPlayerPos(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2]);
+				if(rand != 0) courtjail[suspect] = 2;
+				else courtjail[suspect] = 1;
+				SetCameraBehindPlayer(suspect);
+				DeletePVar(suspect, "IsFrozen");
+				PlayerCuffed[suspect] = 0;
+				DeletePVar(suspect, "PlayerCuffed");
+				PlayerCuffedTime[suspect] = 0;
+				PhoneOnline[suspect] = 1;
+				PlayerInfo[suspect][pArrested] += 1;
+				SetPlayerFree(suspect,playerid, "was warrant arrested");
+				PlayerInfo[suspect][pWantedLevel] = 0;
+				SetPlayerToTeamColor(suspect);
+				SetPlayerWantedLevel(suspect, 0);
+				WantLawyer[suspect] = 1;
+				ClearAnimations(suspect);
+				PlayerInfo[suspect][pBeingSentenced] = 60;
+				SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
+				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");
+				Player_StreamPrep(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2], FREEZE_TIME);
+				
+			}
+		}
+		else
+		{
+  			SendClientMessageEx(playerid, COLOR_GREY, "   No-one close enough to arrest.");
+	    	return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+   		return 1;
+	}
+	return 1;
+}
+
+CMD:adjourn(playerid, params[])
+{
+	new string[128], giveplayerid;
+
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjourn [player]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+	    if(PlayerInfo[giveplayerid][pBeingSentenced])
+	    {
+	    	PlayerInfo[giveplayerid][pBeingSentenced] = 0;
+	    	TogglePlayerControllable(giveplayerid, 1);
+	    	DeletePVar(giveplayerid, "IsFrozen");
+			PhoneOnline[giveplayerid] = 0;
+			format(PlayerInfo[giveplayerid][pWarrant], 128, "");
+	    	format(string, sizeof(string), "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
+	    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    	format(string, sizeof(string), "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
+	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be on the courtroom being sentenced");
+	}
+	return 1;
+}
+
+CMD:sentence(playerid, params[]) {
+
+	new giveplayerid;
+
+    if(!IsAJudge(playerid)) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	}
+	else if(PlayerInfo[playerid][pRank] < 3) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+	}
+	else if(sscanf(params, "u", giveplayerid)) {
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sentence [player]");
+	}
+	else if(IsPlayerConnected(giveplayerid)) {
+		if(giveplayerid == playerid) {
+			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+		}
+ 		else if(PlayerInfo[giveplayerid][pBeingSentenced]) {
+			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
+	    	TogglePlayerControllable(giveplayerid, 0);
+	    	SetPVarInt(giveplayerid, "IsFrozen", 1);
+			PhoneOnline[giveplayerid] = 1;
+			PlayerInfo[giveplayerid][pWarrant][0] = 0;
+			SetPlayerPos(giveplayerid, 1384.0507,-1688.8254,13.5341);
+			SetPlayerInterior(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
+			new string[58 + MAX_PLAYER_NAME];
+  			format(string, sizeof(string), "You have released %s from the courtroom.", GetPlayerNameEx(giveplayerid));
+    		SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    	format(string, sizeof(string), "%s has released you from the courtroom, you can now leave.", GetPlayerNameEx(playerid));
+	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced.");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	return 1;
+}
+
+CMD:trial(playerid, params[])
+{
+	new string[128], giveplayerid;
+
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trial [player]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+	    if(PlayerInfo[giveplayerid][pBeingSentenced])
+	    {
+	    	PlayerInfo[giveplayerid][pBeingSentenced] += 10;
+	    	format(string, sizeof(string), "You have extended %s's courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBeingSentenced]);
+	    	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    	format(string, sizeof(string), "%s has extended your courtroom time by 10 minutes, courtroom time: %d", GetPlayerNameEx(playerid), PlayerInfo[giveplayerid][pBeingSentenced]);
+	    	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "The person needs to be in the courtroom being sentenced");
+	}
+	return 1;
+}
+
+CMD:subpoena(playerid, params[])
+{
+	new string[128], dates[32], message[64], giveplayerid;
+
+    if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 1+ can do this.");
+	if(sscanf(params, "us[32]s[64]", giveplayerid, dates, message)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /subpoena [player] [date] [message]");
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+	    SendClientMessageEx(giveplayerid, COLOR_WHITE, "|___________ Important Message from the Courts ___________|");
+	    format(string, sizeof(string), "You have been summoned for a Court Appearance on the day of %s for the following reason(s): %s", dates, message);
+		SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, "|_________________________________________________________|");
+		format(string, sizeof(string), "You have summoned %s for a Court Appearance", GetPlayerNameEx(giveplayerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+	}
+	return 1;
+}
+
+CMD:judgejail(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+	}
+	if(PlayerInfo[playerid][pRank] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
+
+	new string[128], giveplayerid, jailtime, reason[64];
+	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgejail [player] [time (minutes)] [reason]");
+
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+		if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+		if(jailtime < 0)
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 1 minute!");
+		}
+		if(jailtime > 360)
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 6 Hours / 360 Minutes");
+		}
+		PlayerInfo[giveplayerid][pJudgeJailType] = 1;
+		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
+		format(string, sizeof(string), "You have sentenced %s to fulfill %d minutes in jail, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "You have been sentenced to fulfill %d minutes in jail by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		if(IsACop(giveplayerid))
+		{
+		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
+			PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
+			PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
+			PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
+			PlayerInfo[giveplayerid][pDuty] = 0;
+			if(!IsValidSkin(GetPlayerSkin(giveplayerid)))
+			{
+			    new rand = random(sizeof(CIV));
+				SetPlayerSkin(giveplayerid,CIV[rand]);
+				PlayerInfo[giveplayerid][pModel] = CIV[rand];
+			}
+			player_remove_vip_toys(giveplayerid);
+			SetPlayerToTeamColor(giveplayerid);
+			pTazer{giveplayerid} = 0;
+		}
+	}
+	return 1;
+}
+
+CMD:judgeprison(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+	}
+	if(PlayerInfo[playerid][pRank] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
+
+	new string[128], giveplayerid, jailtime, reason[64];
+	if(sscanf(params, "uds[64]", giveplayerid, jailtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgeprison [player] [time (mins)] [reason]");
+
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(IsPlayerConnected(giveplayerid))
+	{
+	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+		if(jailtime < 0)
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 1 minute!");
+		}
+		if(jailtime > 360)
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 6 Hours / 360 Minutes");
+		}
+		PlayerInfo[giveplayerid][pJudgeJailType] = 2;
+		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
+		format(string, sizeof(string), "You have sentenced %s to fulfill %d minutes in prison, reason: %s", GetPlayerNameEx(giveplayerid), jailtime, reason);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "You have been sentenced to fulfill %d minutes in prison by %s, reason: %s", jailtime, GetPlayerNameEx(playerid), reason);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		if(IsACop(giveplayerid))
+		{
+		    SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE,"* You have been auto-removed from your faction by being sentenced to jail, you are now a civilian again.");
+			PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
+			PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
+			PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
+			PlayerInfo[giveplayerid][pDuty] = 0;
+			if(!IsValidSkin(GetPlayerSkin(giveplayerid)))
+			{
+			    new rand = random(sizeof(CIV));
+				SetPlayerSkin(giveplayerid,CIV[rand]);
+				PlayerInfo[giveplayerid][pModel] = CIV[rand];
+			}
+			player_remove_vip_toys(giveplayerid);
+			SetPlayerToTeamColor(giveplayerid);
+   			pTazer{giveplayerid} = 0;
+		}
+	}
+	return 1;
+}
+
+CMD:judgefine(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+	}
+	if(PlayerInfo[playerid][pRank] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
+
+	new giveplayerid, judgefine, reason[64], totalwealth;
+
+	if(sscanf(params, "uds[64]", giveplayerid, judgefine, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgefine [player] [amount] [reason]");
+	totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
+	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+	if(!(1 <= judgefine <= 2000000)) return SendClientMessageEx(playerid, COLOR_GREY, "Fine amount cannot be lower than $1 or higher than $2,000,000!");
+	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already in debt - contact an administrator.");
+	if(IsPlayerConnected(giveplayerid))
+	{
+	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+		SetPVarInt(playerid, "judgefine", judgefine);
+		SetPVarInt(playerid, "jfined", giveplayerid);
+		SetPVarString(playerid, "jreason", reason);
+		Group_ListGroups(playerid, DIALOG_JFINECONFIRM);
+	}
+	return 1;
+}
+
+CMD:probation(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+        return 1;
+    }
+    if(PlayerInfo[playerid][pRank] < 3)
+	{
+        SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+        return 1;
+    }
+
+	new string[128], giveplayerid, probtime, reason[64];
+	if(sscanf(params, "uds[64]", giveplayerid, probtime, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /probation [player] [time 1-360 Minutes] [reason and terms]");
+
+    if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
+    if(IsPlayerConnected(giveplayerid))
+	{
+        if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+        if(probtime < 1 && probtime > 360) return SendClientMessageEx(playerid, COLOR_GRAD5, "Time cannot be lower 1 minute or higher than 360 minutes!");
+        PlayerInfo[giveplayerid][pProbationTime] = probtime;
+        format(string, sizeof(string), "You have set %s in probation for %d minutes, reason and terms: %s", GetPlayerNameEx(giveplayerid), probtime, reason);
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        format(string, sizeof(string), "You have been set in probation for %d minutes by %s, reason and terms: %s", probtime, GetPlayerNameEx(playerid), reason);
+        SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+    }
+    return 1;
+}
+
+CMD:viewassets(playerid, params[])
+{
+  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
+	new giveplayerid, string[128];
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewassets [player]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	
+	format(string, sizeof(string), "%s's assets | Vehicle: %d - House: %d - Bank: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	return true;
+}

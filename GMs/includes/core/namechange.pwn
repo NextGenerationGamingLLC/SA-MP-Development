@@ -87,3 +87,15 @@ CMD:changename(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:nextnamechange(playerid, params[])
+{
+	if(PlayerInfo[playerid][pNextNameChange] == 0 || gettime() >= PlayerInfo[playerid][pNextNameChange]) return SendClientMessageEx(playerid, -1, "You can change your name for free now.");
+	else
+	{
+		new string[128];
+		format(string, sizeof(string), "Your next free name change will be on %s", date(PlayerInfo[playerid][pNextNameChange], 4));
+		SendClientMessageEx(playerid, -1, string);
+	}
+	return 1;
+}

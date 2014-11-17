@@ -445,3 +445,131 @@ CMD:search(playerid, params[])
     }
 	return 1;
 }
+
+CMD:selltreasure(playerid, params[])
+{
+	new choice[32], amount;
+    if(sscanf(params, "s[32]d", choice, amount))
+	{
+	    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /selltreasure [name] [amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: junkmetal ($150), newcoin ($50), oldcoin ($100), brokenwatch ($5), oldkey ($20), goldwatch ($50000)");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: goldnugget ($100000), silvernugget ($25000), treasurechest ($1000000)");
+		return 1;
+	}
+	else if(!IsPlayerInRangeOfPoint(playerid, 3 , 164.9517, -1779.5931, 4.3000)) {
+	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not at a treasure sell point.");
+	}
+	else if(amount < 0) {
+		return SendClientMessageEx(playerid, COLOR_GREY, "You can't sell negative of an item.");
+	}
+	new szMessage[128];
+	if(strcmp(choice, "junkmetal", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "junkmetal") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d junk metals for $%d.", amount, amount*150);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*150);
+	        SetPVarInt(playerid, "junkmetal", GetPVarInt(playerid, "junkmetal")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "newcoin", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "newcoin") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d new coins for $%d.", amount, amount*50);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*50);
+	        SetPVarInt(playerid, "newcoin", GetPVarInt(playerid, "newcoin")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "oldcoin", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "oldcoin") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d old coins for $%d.", amount, amount*100);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*100);
+	        SetPVarInt(playerid, "oldcoin", GetPVarInt(playerid, "oldcoin")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "brokenwatch", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "brokenwatch") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d broken watchs for $%d.", amount, amount*5);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*5);
+	        SetPVarInt(playerid, "brokenwatch", GetPVarInt(playerid, "brokenwatch")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "oldkey", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "oldkey") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d old keys for $%d.", amount, amount*20);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*20);
+	        SetPVarInt(playerid, "oldkey", GetPVarInt(playerid, "oldkey")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "goldwatch", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "goldwatch") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d gold watchs for $%d.", amount, amount*50000);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*50000);
+	        SetPVarInt(playerid, "goldwatch", GetPVarInt(playerid, "goldwatch")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "goldnugget", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "goldnugget") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d gold nuggets for $%d.", amount, amount*100000);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*100000);
+	        SetPVarInt(playerid, "goldnugget", GetPVarInt(playerid, "goldnugget")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "silvernugget", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "silvernugget") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d silver nuggets for $%d.", amount, amount*25000);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*25000);
+	        SetPVarInt(playerid, "silvernugget", GetPVarInt(playerid, "silvernugget")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	else if(strcmp(choice, "treasurechest", true) == 0) {
+	    if(amount <= GetPVarInt(playerid, "treasurechest") && amount > 0) {
+	        format(szMessage, 128, "You have sold %d treasure chests for $%d.", amount, amount*1000000);
+	        SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+	        GivePlayerCash(playerid, amount*1000000);
+	        SetPVarInt(playerid, "treasure", GetPVarInt(playerid, "treasure")-amount);
+	        SaveTreasureInventory(playerid);
+	    }
+	    else {
+	        SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough of that item to sell.");
+	    }
+	}
+	return 1;
+}

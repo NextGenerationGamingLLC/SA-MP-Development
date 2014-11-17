@@ -525,3 +525,279 @@ CMD:scores(playerid, params[])
     }
     return 1;
 }
+
+CMD:lockarena(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		return 1;
+	}
+
+	new string[128], arenaid;
+	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lockarena [arenaid]");
+
+	arenaid--;
+
+	if(arenaid < 0 || arenaid > MAX_ARENAS-1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have entered a invalid arenaid.");
+		return 1;
+	}
+	//foreach(new p: Player)
+	for(new p = 0; p < MAX_PLAYERS; ++p)
+	{
+		if(IsPlayerConnected(p))
+		{
+			new cid = GetPVarInt(p, "IsInArena");
+			if(cid == arenaid)
+			{
+				if(PaintBallArena[cid][pbBidMoney] > 0)
+				{
+					GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
+					format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
+					SendClientMessageEx(p, COLOR_WHITE, string);
+				}
+				if(arenaid == GetPVarInt(p, "ArenaNumber"))
+				{
+					switch(PaintBallArena[arenaid][pbGameType])
+					{
+					case 1:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3)
+							{
+								PlayerInfo[p][pPaintTokens] += 3;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+								SendClientMessageEx(p, COLOR_WHITE, string);
+							}
+						}
+					case 2:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3)
+							{
+								PlayerInfo[p][pPaintTokens] += 4;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+								SendClientMessageEx(p, COLOR_WHITE, string);
+							}
+						}
+					case 3:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3)
+							{
+								PlayerInfo[p][pPaintTokens] += 5;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, string);
+							}
+						}
+					case 4:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3)
+							{
+								PlayerInfo[p][pPaintTokens] += 5;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, string);
+							}
+						}
+					case 5:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3)
+							{
+								PlayerInfo[p][pPaintTokens] += 6;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+								SendClientMessageEx(p, COLOR_WHITE, string);
+							}
+						}
+					}
+				}
+				LeavePaintballArena(p, cid);
+			}
+		}	
+	}
+	ResetPaintballArena(arenaid);
+	PaintBallArena[arenaid][pbLocked] = 2;
+	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+	ABroadCast(COLOR_YELLOW, string, 2);
+	format(string, sizeof(string), "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+	SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+	return 1;
+}
+
+CMD:unlockarena(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		return 1;
+	}
+
+	new string[128], arenaid;
+	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unlockarena [arenaid]");
+
+	arenaid--;
+
+	if(arenaid < 0 || arenaid > MAX_ARENAS-1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have entered a invalid arenaid.");
+		return 1;
+	}
+	if(PaintBallArena[arenaid][pbLocked] == 2)
+	{
+		ResetPaintballArena(arenaid);
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has unlocked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+		ABroadCast(COLOR_YELLOW, string, 2);
+		format(string, sizeof(string), "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+		SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+	}
+	return 1;
+}
+
+CMD:givepainttokens(playerid, params[])
+{
+	new string[128], giveplayerid, amount;
+	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givepainttokens [player] [amount]");
+
+	if(IsPlayerConnected(giveplayerid))
+	{
+		if(PlayerInfo[playerid][pAdmin] < 4)
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+			return 1;
+		}
+		PlayerInfo[giveplayerid][pPaintTokens] += amount;
+
+		format(string, sizeof(string), "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+		format(string, sizeof(string), "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
+		ABroadCast(COLOR_YELLOW, string, 2);
+
+	}
+	return 1;
+}
+
+CMD:savepbvehicle(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "You did not select an arena yet.");
+	new arenaid = GetPVarInt(playerid, "ArenaNumber");
+	new vehslot = GetPVarInt(playerid, "PBVeh");
+	new string[128];
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new Float: vPosX, Float: vPosY, Float: vPosZ, Float: vPosA, vID;
+		vID = GetPlayerVehicleID(playerid);
+		GetVehiclePos(vID, vPosX, vPosY, vPosZ);
+		GetVehicleZAngle(vID, vPosA);
+		switch(vehslot)
+		{
+			case 1:
+			{
+				PaintBallArena[arenaid][pbVeh1Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh1X] = vPosX;
+				PaintBallArena[arenaid][pbVeh1Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh1Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh1A] = vPosA;
+			}
+			case 2:
+			{
+				PaintBallArena[arenaid][pbVeh2Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh2X] = vPosX;
+				PaintBallArena[arenaid][pbVeh2Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh2Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh2A] = vPosA;
+			}
+			case 3:
+			{
+				PaintBallArena[arenaid][pbVeh3Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh3X] = vPosX;
+				PaintBallArena[arenaid][pbVeh3Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh3Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh3A] = vPosA;
+			}
+			case 4:
+			{
+				PaintBallArena[arenaid][pbVeh4Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh4X] = vPosX;
+				PaintBallArena[arenaid][pbVeh4Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh4Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh4A] = vPosA;
+			}
+			case 5:
+			{
+				PaintBallArena[arenaid][pbVeh5Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh5X] = vPosX;
+				PaintBallArena[arenaid][pbVeh5Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh5Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh5A] = vPosA;
+			}
+			case 6:
+			{
+				PaintBallArena[arenaid][pbVeh6Model] = GetVehicleModel(vID);
+				PaintBallArena[arenaid][pbVeh6X] = vPosX;
+				PaintBallArena[arenaid][pbVeh6Y] = vPosY;
+				PaintBallArena[arenaid][pbVeh6Z] = vPosZ;
+				PaintBallArena[arenaid][pbVeh6A] = vPosA;
+			}
+		}
+	}
+	else
+	{
+		switch(vehslot)
+		{
+			case 1:
+			{
+				PaintBallArena[arenaid][pbVeh1Model] = 0;
+				PaintBallArena[arenaid][pbVeh1X] = 0.0;
+				PaintBallArena[arenaid][pbVeh1Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh1Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh1A] = 0.0;
+			}
+			case 2:
+			{
+				PaintBallArena[arenaid][pbVeh2Model] = 0;
+				PaintBallArena[arenaid][pbVeh2X] = 0.0;
+				PaintBallArena[arenaid][pbVeh2Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh2Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh2A] = 0.0;
+			}
+			case 3:
+			{
+				PaintBallArena[arenaid][pbVeh3Model] = 0;
+				PaintBallArena[arenaid][pbVeh3X] = 0.0;
+				PaintBallArena[arenaid][pbVeh3Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh3Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh3A] = 0.0;
+			}
+			case 4:
+			{
+				PaintBallArena[arenaid][pbVeh4Model] = 0;
+				PaintBallArena[arenaid][pbVeh4X] = 0.0;
+				PaintBallArena[arenaid][pbVeh4Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh4Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh4A] = 0.0;
+			}
+			case 5:
+			{
+				PaintBallArena[arenaid][pbVeh5Model] = 0;
+				PaintBallArena[arenaid][pbVeh5X] = 0.0;
+				PaintBallArena[arenaid][pbVeh5Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh5Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh5A] = 0.0;
+			}
+			case 6:
+			{
+				PaintBallArena[arenaid][pbVeh6Model] = 0;
+				PaintBallArena[arenaid][pbVeh6X] = 0.0;
+				PaintBallArena[arenaid][pbVeh6Y] = 0.0;
+				PaintBallArena[arenaid][pbVeh6Z] = 0.0;
+				PaintBallArena[arenaid][pbVeh6A] = 0.0;
+			}
+		}
+	}
+	format(string, sizeof(string), "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	SavePaintballArena(arenaid);
+	PaintballEditArenaMenu(playerid);
+	return 1;
+}

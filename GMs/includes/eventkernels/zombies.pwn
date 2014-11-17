@@ -414,3 +414,199 @@ CMD:trickortreat(playerid, params[])
 	else SendClientMessageEx(playerid, COLOR_GREY, "It isn't Halloween!");
 	return 1;
 }
+
+CMD:prezombie(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(prezombie)
+	{
+		prezombie = 0;
+		SendClientMessageEx(playerid, -1, "You have successfully disabled the pre-zombie event sale.");
+	}
+	else
+	{
+		prezombie = 1;
+		SendClientMessageEx(playerid, -1, "You have successfully enabled the pre-zombie event sale.");
+	}
+	return 1;
+}
+
+CMD:zfuelcan(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][zFuelCan]) return SendClientMessage(playerid, COLOR_GREY, "You do not have a Fuel Can in your inventory!");
+	if(GetPVarInt(playerid, "fuelcan") == 2) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	new string[72];
+	format(string, sizeof(string), "%s begins refilling their vehicle with a fuel can.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "SCRATCHING", "scdldlp", 4.0, 1, 0, 0, 0, 0, 1);
+	SetTimerEx("FuelCan", 10000, false, "iii", playerid, closestcar, PlayerInfo[playerid][zFuelCan]);
+	SetPVarInt(playerid, "fuelcan", 2);
+	GameTextForPlayer(playerid, "~w~Refueling...", 10000, 3);
+	return 1;
+}
+
+CMD:zscrapmetal(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][16]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Scrap Metal in your inventory, visit /microshop to purchase.");
+	if(GetPVarInt(playerid, "zscrapmetal") == 1) return 1;
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use this while inside the vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	new closestcar = GetClosestCar(playerid);
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
+	new Float:vHP;
+	GetVehicleHealth(closestcar, vHP);
+	if(vHP > 5000) return SendClientMessageEx(playerid, -1, "You cannot add scrapmetal when your vehicle's health is over 5000 HP!");
+	new string[71];
+	format(string, sizeof(string), "%s begins to apply scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+	SetTimerEx("ScrapMetal", 6000, false, "ii", playerid, closestcar);
+	SetPVarInt(playerid, "zscrapmetal", 1);
+	GameTextForPlayer(playerid, "~w~Applying...", 6000, 3);
+	return 1;
+}
+
+CMD:z50cal(playerid, params[])
+{
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][17]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any .50 Caliber Ammo in your inventory, visit /microshop to purchase.");
+	if((GetPlayerWeapon(playerid) != 33 || PlayerInfo[playerid][pGuns][6] != 33) && (GetPlayerWeapon(playerid) != 34 || PlayerInfo[playerid][pGuns][6] != 34)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only load a rifle or sniper rifle with .50 cal ammo.");
+	if(!GetPVarType(playerid, "z50Cal"))
+	{
+		SendClientMessageEx(playerid, -1, "You have loaded a .50 Caliber bullet into your weapon.");
+		SetPVarInt(playerid, "z50Cal", 1);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, -1, "You have unloaded a .50 Caliber bullet from your weapon.");
+		DeletePVar(playerid, "z50Cal");
+	}
+	ApplyAnimation(playerid, "RIFLE", "RIFLE_load", 4.0, 0, 0, 0, 0, 0, 1);
+	return 1;
+}
+
+CMD:zinject(playerid, params[])
+{
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mPurchaseCount][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Antibiotic Injections in your inventory, visit /microshop to purchase.");
+	if(PlayerInfo[playerid][mInventory][18]) return SendClientMessageEx(playerid, COLOR_GREY, "You currently have a active antibiotic in your bloodstream!");
+	PlayerInfo[playerid][mPurchaseCount][18]--;
+	PlayerInfo[playerid][mInventory][18] = 3;
+	SendClientMessageEx(playerid, -1, "You have injected your self with a antibiotic! You will be immune from 3 zombie bites!");
+	return 1;
+}
+
+CMD:zopenkit(playerid, params[])
+{
+	new zyear, zmonth, zday;
+	getdate(zyear, zmonth, zday);
+	if(!zombieevent && !(zmonth == 10 && zday == 31) && !(zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, COLOR_GREY, "There is currently no active Zombie Event!");
+	if(!PlayerInfo[playerid][mInventory][19]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Survivor Kits in your inventory, visit /microshop to purchase.");
+	new string[128], rand = random(75);
+	switch(rand)
+	{
+		case 0 .. 24://1 Scrap Metal & 2 Bullets
+		{
+			PlayerInfo[playerid][mInventory][16]++;
+			PlayerInfo[playerid][mInventory][17] += 2;
+			SendClientMessageEx(playerid, -1, "You found 1 Scrap Metal & 2 .50 Cal Bullets in your kit! Use /zscrapmetal and /z50cal to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 1 Scrap Metal & 2 .50 Cal Bullets in their kit!", GetPlayerNameEx(playerid));
+		}
+		case 25 .. 49://5 Bullets & 2 Antibiotic Injection
+		{
+			PlayerInfo[playerid][mInventory][17] += 5;
+			PlayerInfo[playerid][mPurchaseCount][18] += 2;
+			SendClientMessageEx(playerid, -1, "You found 5 .50 Cal Bullets & 2 Antibiotic Injections in your kit! Use /z50cal and /zinject to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 5 .50 Cal Bullets & 2 Antibiotic Injections in their kit!", GetPlayerNameEx(playerid));
+		}
+		case 50 .. 74://2 Engine Repair Kits & 1 Scrap Metal, 1 Antibiotic Injection
+		{
+			PlayerInfo[playerid][mInventory][8] += 2;
+			PlayerInfo[playerid][mInventory][16]++;
+			PlayerInfo[playerid][mPurchaseCount][18]++;
+			SendClientMessageEx(playerid, -1, "You found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in your kit! Use /jumpstart /zscrapmetal and /zinject to use your items.");
+			format(string, sizeof(string), "[ZOPEKIT] %s found 2 Engine Repair Kits, 1 Scrap Metal & 1 Antibiotic Injection in their kit!", GetPlayerNameEx(playerid));
+		}
+	}
+	Log("logs/micro.log", string);
+	PlayerInfo[playerid][mInventory][19]--;
+	return 1;
+}
+
+CMD:givez(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	new target, option[11], amount;
+	if(sscanf(params, "us[11]d", target, option, amount) || amount <= 0) return SendClientMessageEx(playerid, -1, "USAGE: /givez [player] [option] [amount]"), SendClientMessageEx(playerid, -1, "Available Options: jumpstart, fuelcan, scrapmetal, 50cal, inject, kit");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");
+	new string[128];
+	if(!strcmp(option, "jumpstart", true))
+	{
+		PlayerInfo[playerid][mInventory][8] += amount;
+		format(string, sizeof(string), "You have given %s %d Jump Start(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Jump Start(s). /jumpstart to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Jump Start(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "fuelcan", true))
+	{
+		if(amount != 25 && amount != 50 && amount != 75) return SendClientMessageEx(playerid, -1, "Valid Amounts for fuel cans are 25, 50 and 75.");
+		PlayerInfo[target][zFuelCan] = amount;
+		format(string, sizeof(string), "You have given %s a fuelcan with %d fuel.", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you a fuelcan with %d fuel. /zfuelcan to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) a fuelcan with %d fuel.", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "scrapmetal", true))
+	{
+		PlayerInfo[target][mInventory][16] += amount;
+		format(string, sizeof(string), "You have given %s %d Scrap Metal(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Scrap Metal(s). /zscrapmetal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Scrap Metal(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "50cal", true))
+	{
+		PlayerInfo[target][mInventory][17] += amount;
+		format(string, sizeof(string), "You have given %s %d .50 Caliber Bullet(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d .50 Caliber Bullet(s). /z50cal to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d .50 Caliber Bullet(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "inject", true))
+	{
+		PlayerInfo[target][mPurchaseCount][18] += amount;
+		format(string, sizeof(string), "You have given %s %d Antibiotic Injection(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Antibiotic Injection(s). /zinject to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Antibiotic Injection(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	if(!strcmp(option, "kit", true))
+	{
+		PlayerInfo[target][mInventory][19] += amount;
+		format(string, sizeof(string), "You have given %s %d Survivor Kit(s).", GetPlayerNameEx(target), amount);
+		SendClientMessageEx(playerid, -1, string);
+		format(string, sizeof(string), "%s has given you %d Survivor Kit(s). /zopenkit to use this item.", GetPlayerNameEx(playerid), amount);
+		SendClientMessageEx(target, -1, string);
+		format(string, sizeof(string), "[GIVEZ] %s has given %s(%d) %d Survivor Kit(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), GetPlayerSQLId(target), amount);
+	}
+	Log("logs/micro.log", string);
+	return 1;
+}

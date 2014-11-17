@@ -381,3 +381,197 @@ CMD:claim(playerid, params[])
     }
     return 1;
 }
+
+CMD:setcapping(playerid, params[]) {
+	if(PlayerInfo[playerid][pAdmin] >= 4) {
+		if(isnull(params)) {
+			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setcapping [ping]");
+		}
+
+		new
+			iPingas = strval(params);
+
+		if(!(250 <= iPingas <= 1000)) {
+			return SendClientMessageEx(playerid, COLOR_WHITE, "The specified ping limit can not be lower than 250 or higher than 1000.");
+		}
+
+		new
+			szMessage[58 + MAX_PLAYER_NAME];
+
+		format(szMessage, sizeof(szMessage), "AdmCmd: %s has adjusted the /capture ping limit to %d.", GetPlayerNameEx(playerid), iPingas);
+		ABroadCast(COLOR_LIGHTRED, szMessage, 4);
+		pointpinglimit = iPingas;
+	}
+	return 1;
+}
+
+CMD:gotofpoint(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] > 2) 
+	{
+		new points, string[128];
+		if(sscanf(params, "d", points)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotofpoint [pointid]");
+		if(points < 1 || points > 9) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid point id!");
+		
+		SetPlayerPos(playerid, Points[points][Pointx], Points[points][Pointy], Points[points][Pointz]), SetPlayerVirtualWorld(playerid, Points[points][pointVW]);
+		format(string, sizeof(string), "You have teleported to family point %d", points);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
+	return 1;
+}	
+CMD:capture(playerid, params[])
+{
+    if(servernumber == 2)
+	{
+	    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
+	    return 1;
+	}
+	new string[128];
+	new myvw = GetPlayerVirtualWorld(playerid);
+
+	new mypoint = -1;
+	if(GetPVarInt(playerid,"Injured") == 1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, " You can not capture while injured!");
+		return 1;
+	}
+	if (PlayerInfo[playerid][pFMember] == INVALID_FAMILY_ID || PlayerInfo[playerid][pRank] < 5)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, " You are not high rank enough to capture!");
+		return 1;
+	}
+	for (new i=0; i<MAX_POINTS; i++)
+	{
+		if (IsPlayerInRangeOfPoint(playerid, 1.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]))
+		{
+			if(myvw == Points[i][pointVW])
+			{
+				mypoint = i;
+			}
+		}		
+	}
+	if (mypoint == -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, " You are not at the capture place!");
+		return 1;
+	}
+	if (Points[mypoint][Vulnerable] > 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, " This point is not ready for takeover.");
+		return 1;
+	}
+	if (Points[mypoint][TimeToClaim])
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, " This point is already being captured!");
+		return 1;
+	}
+	if(GetPlayerPing(playerid) > pointpinglimit)
+	{
+		format(string,sizeof(string), " You can not capture with %d+ ping!", pointpinglimit);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		return 1;
+	}
+	format(string,sizeof(string), " %s is attempting to capture the point (VW: %d).", GetPlayerNameEx(playerid), Points[mypoint][pointVW]);
+	ProxDetector(70.0, playerid, string, COLOR_RED,COLOR_RED,COLOR_RED,COLOR_RED,COLOR_RED);
+	GetPlayerPos(playerid, Points[mypoint][Capturex], Points[mypoint][Capturey], Points[mypoint][Capturez]);
+
+	Points[mypoint][ClaimerId] = playerid;
+	Points[mypoint][TimeToClaim] = 1;
+	Points[mypoint][TimeLeft] = 10;
+	SetTimerEx("ProgressTimer", 1000, 0, "d", mypoint);
+	return 1;
+}
+
+CMD:points(playerid, params[])
+{
+	new string[128];
+
+	for(new i; i < MAX_POINTS; i++)
+	{
+		if (Points[i][Type] >= 0)
+		{
+			if(Points[i][pointID] != 0)
+			{
+				format(string, sizeof(string), "Point ID: %d | Name: %s | Owner: %s | Captured By: %s | Hours: %d",
+				Points[i][pointID], Points[i][Name],Points[i][Owner],Points[i][CapperName],Points[i][Vulnerable]);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:pointtime(playerid, params[])
+{
+	new point, string[128];
+	if(sscanf(params, "i", point)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
+	
+	if(point < 1 || point > 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid ID!");
+	
+	if(Points[point-1][TakeOverTimerStarted])
+	{
+		if(Points[point-1][TakeOverTimer] > 0)
+		{
+			format(string, sizeof(string), "Time left until fully captured: %d minutes.", Points[point-1][TakeOverTimer]);
+			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
+	}	
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
+	return 1;
+}
+
+CMD:pedit(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] >= 2)
+	{
+		new string[128], hours;
+		if(sscanf(params, "d", hours))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pedit [hours]");
+			SendClientMessageEx(playerid, COLOR_GREY, "HINT: Stand close to a point to set the hours.");
+			return 1;
+		}
+
+		for(new h = 0; h < sizeof(Points); h++)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 3.0, Points[h][Pointx], Points[h][Pointy], Points[h][Pointz]))
+			{
+				if(hours < 1|| hours > 24)
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "You can not set the point time lower than 1 or higher than 24!");
+				}
+				else if(hours >= 1|| hours <= 24)
+				{
+					format(string, sizeof(string), "You have set this point's time to %d hours !", hours);
+					Points[h][Vulnerable] = hours;
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					UpdatePoints();
+				}
+			}
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	return 1;
+}
+
+CMD:pointfix(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] >= 2)
+	{
+		for(new h = 0; h < sizeof(Points); h++)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 3.0, Points[h][Pointx], Points[h][Pointy], Points[h][Pointz]))
+			{
+				Points[h][TimeToClaim] = 0;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have fixed the point, players can now attempt to capture the point!");
+				UpdatePoints();
+				return 1;
+			}
+		}
+		SendClientMessageEx(playerid, COLOR_GREY, "Error: You need to stand close to the capture point to fix it.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+	return 1;
+}

@@ -2804,3 +2804,338 @@ CMD:accept(playerid, params[])
     return 1;
 }
 
+CMD:cancel(playerid, params[])
+{
+	new string[128], choice[32];
+	if(sscanf(params, "s[32]", choice))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Pot, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Divorce, Drink, House, Shipment, Help, Firstaid");
+		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer");
+		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
+		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
+		return 1;
+	}
+
+	if(strcmp(choice,"sex",true) == 0) {	
+		if(GetPVarType(playerid, "SexOfferTo")) { 
+			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID; 
+			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0; 
+			DeletePVar(playerid, "SexOfferTo");
+		}
+		else {
+			SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0; 
+		}
+	}
+	else if(strcmp(choice,"mats",true) == 0) { MatsOffer[playerid] = INVALID_PLAYER_ID; MatsStorageID[playerid] = -1; MatsPrice[playerid] = 0; MatsAmount[playerid] = 0; }
+	else if(strcmp(choice,"pot",true) == 0) { PotOffer[playerid] = INVALID_PLAYER_ID; PotStorageID[playerid] = -1; PotPrice[playerid] = 0; PotGram[playerid] = 0; }
+	else if(strcmp(choice,"crack",true) == 0) { CrackOffer[playerid] = INVALID_PLAYER_ID; CrackStorageID[playerid] = -1; CrackPrice[playerid] = 0; CrackGram[playerid] = 0; }
+	else if(strcmp(choice,"weapon",true) == 0) { GunOffer[playerid] = INVALID_PLAYER_ID; GunStorageID[playerid] = -1; GunId[playerid] = 0; }
+	else if(strcmp(choice,"craft",true) == 0) { CraftOffer[playerid] = INVALID_PLAYER_ID; CraftId[playerid] = 0; }
+	else if(strcmp(choice,"repair",true) == 0) {	
+		if(GetPVarType(playerid, "RepairOfferTo")) { 
+			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID; 
+			RepairPrice[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
+			RepairCar[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
+			DeletePVar(playerid, "RepairOfferTo");
+		}
+		else {
+			RepairOffer[playerid] = INVALID_PLAYER_ID; RepairPrice[playerid] = 0; RepairCar[playerid] = 0;
+		}
+	}
+	else if(strcmp(choice,"lawyer",true) == 0) { WantLawyer[playerid] = 0; CallLawyer[playerid] = 0; }
+	else if(strcmp(choice,"bodyguard",true) == 0) { GuardOffer[playerid] = INVALID_PLAYER_ID; GuardPrice[playerid] = 0; }
+	else if(strcmp(choice,"live",true) == 0) { LiveOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"refill",true) == 0) { RefillOffer[playerid] = INVALID_PLAYER_ID; RefillPrice[playerid] = 0; }
+	else if(strcmp(choice,"car",true) == 0) { VehicleOffer[playerid] = INVALID_PLAYER_ID; VehiclePrice[playerid] = 0; VehicleId[playerid] = -1; }
+	else if(strcmp(choice,"house",true) == 0) { HouseOffer[playerid] = INVALID_PLAYER_ID; HousePrice[playerid] = 0; House[playerid] = 0; }
+	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"witness",true) == 0) { MarryWitnessOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"marriage",true) == 0) { DeletePVar(ProposeOffer[playerid], "marriagelastname"), ProposeOffer[playerid] = INVALID_PLAYER_ID, DeletePVar(playerid, "marriagelastname"); }
+	else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
+	else if(strcmp(choice,"firstaid",true) == 0) 
+	{
+		if(GetPVarInt(playerid, "usingfirstaid"))
+		{
+			KillTimer(GetPVarInt(playerid, "firstaid5"));
+			SetPVarInt(playerid, "usingfirstaid", 0);
+		}
+	}
+	else if(strcmp(choice,"shipment",true) == 0)
+	{
+ 		DeletePVar(playerid, "LoadTruckTime");
+		DeletePVar(playerid, "TruckDeliver");
+		TruckUsed[playerid] = INVALID_VEHICLE_ID;
+		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+ 		DisablePlayerCheckpoint(playerid);
+	}
+	else if(strcmp(choice,"help", true) == 0)
+	{
+	    if(GetPVarInt(playerid, "COMMUNITY_ADVISOR_REQUEST") == 1)
+	    {
+		    DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST");
+			DeletePVar(playerid, "HelpTime");
+			DeletePVar(playerid, "HelpReason");
+		}
+		else {
+		    SendClientMessageEx(playerid, COLOR_GRAD2, "You did not requested help.");
+		    return 1;
+		}
+	}
+	else if(strcmp(choice,"contract",true) == 0)
+	{
+		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
+			new Float:health;
+			GetPlayerHealth(playerid, health);
+			new hpint = floatround( health, floatround_round );
+			if (hpint >=  80)
+			{
+				HitToGet[playerid] = INVALID_PLAYER_ID;
+				HitOffer[playerid] = INVALID_PLAYER_ID;
+				GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
+				GotHit[GoChase[playerid]] = 0;
+				GoChase[playerid] = INVALID_PLAYER_ID;
+				DeletePVar(playerid, "HitCooldown");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
+		
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
+	}
+	else if(strcmp(choice,"ticket",true) == 0) { TicketOffer[playerid] = INVALID_PLAYER_ID; TicketMoney[playerid] = 0; }
+	else if(strcmp(choice,"medic",true) == 0) { if(IsPlayerConnected(MedicCall)) { if(MedicCall == playerid) { MedicCall = INVALID_PLAYER_ID; } else { SendClientMessageEx(playerid, COLOR_GREY, "   You are not the current Caller!"); return 1; } } }
+	else if(strcmp(choice,"mechanic",true) == 0) { if(IsPlayerConnected(MechanicCall)) { if(MechanicCall == playerid) { MechanicCall = INVALID_PLAYER_ID; } else { SendClientMessageEx(playerid, COLOR_GREY, "   You are not the current Caller!"); return 1; } } }
+	else if(strcmp(choice,"help",true) == 0) { if(GetPVarInt(playerid, "COMMUNITY_ADVISOR_REQUEST")) { DeletePVar(playerid, "COMMUNITY_ADVISOR_REQUEST"); } else { SendClientMessageEx(playerid, COLOR_GREY, "   You are not the current Caller!"); return 1; } }
+	else if(strcmp(choice,"taxi",true) == 0)
+	{
+		if(TransportDuty[playerid] == 1 && TaxiCallTime[playerid] > 0)
+		{
+			GameTextForPlayer(TaxiAccepted[playerid], "~w~Taxi Driver~n~~r~Canceled the call", 5000, 1);
+			DeletePVar(TaxiAccepted[playerid], "TaxiCall");
+			TaxiAccepted[playerid] = INVALID_PLAYER_ID;
+			GameTextForPlayer(playerid, "~w~You have~n~~r~Canceled the call", 5000, 1);
+			TaxiCallTime[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+		}
+		else
+		{
+			if(GetPVarInt(playerid, "TaxiCall")) DeletePVar(playerid, "TaxiCall");
+			else {
+				//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(TaxiAccepted[i] != INVALID_PLAYER_ID && TaxiAccepted[i] == playerid)
+						{
+								GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Canceled the call", 5000, 1);
+								TaxiCallTime[i] = 0;
+								DeletePVar(TaxiAccepted[i], "TaxiCall");
+								TaxiAccepted[i] = INVALID_PLAYER_ID;
+								DisablePlayerCheckpoint(i);
+						}
+					}	
+				}
+			}
+		}
+	}
+	else if(strcmp(choice,"bus",true) == 0)
+	{
+		if(TransportDuty[playerid] == 2 && BusCallTime[playerid] > 0)
+		{
+			GameTextForPlayer(BusAccepted[playerid], "~w~Bus Driver~n~~r~Canceled the call", 5000, 1);
+			DeletePVar(BusAccepted[playerid], "BusCall");
+			BusAccepted[playerid] = INVALID_PLAYER_ID;
+			GameTextForPlayer(playerid, "~w~You have~n~~r~Canceled the call", 5000, 1);
+			BusCallTime[playerid] = 0;
+			DisablePlayerCheckpoint(playerid);
+		}
+		else
+		{
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					if(BusAccepted[i] != INVALID_PLAYER_ID && BusAccepted[i] == playerid)
+					{
+						GameTextForPlayer(i, "~w~Bus Caller~n~~r~Canceled the call", 5000, 1);
+						BusCallTime[i] = 0;
+						DeletePVar(BusAccepted[i], "BusCall");
+						BusAccepted[i] = INVALID_PLAYER_ID;
+						DisablePlayerCheckpoint(i);
+					}
+				}	
+			}
+		}
+	}
+	else if(strcmp(choice,"foodoffer",true) == 0) {
+		new offeredTo = GetPVarInt(playerid, "OfferedMealTo");
+		DeletePVar(offeredTo, "OfferedMeal");
+		DeletePVar(offeredTo, "OfferedMealBy");
+		DeletePVar(playerid, "OfferingMeal");
+		DeletePVar(playerid, "OfferedMealTo");
+	}
+	else { return 1; }
+	format(string, sizeof(string), "* You have canceled: %s.", choice);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	return 1;
+}
+
+CMD:refill(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
+	{
+		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a mechanic.");
+	}
+
+	new string[128];
+	if(gettime() < PlayerInfo[playerid][pMechTime])
+	{
+		format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
+		return SendClientMessageEx(playerid, COLOR_GRAD1,string);
+	}
+	new giveplayerid, money;
+	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /refill [player] [price]");
+
+	if(!(money >= 1 && money < 100000))
+	{
+		return SendClientMessageEx(playerid, COLOR_GREY, "Invalid price specified - can't be lower than 1 or higher than $99,999.");
+	}
+	if(IsPlayerConnected(giveplayerid))
+	{
+		if(ProxDetectorS(8.0, playerid, giveplayerid) && IsPlayerInAnyVehicle(giveplayerid))
+		{
+
+			new Float: fueltogive;
+			switch(PlayerInfo[playerid][pMechSkill])
+			{
+			case 0 .. 49: fueltogive = 2.0;
+			case 50 .. 99: fueltogive = 4.0;
+			case 100 .. 199: fueltogive = 6.0;
+			case 200 .. 399: fueltogive = 8.0;
+			default: fueltogive = 10.0;
+			}
+			if(giveplayerid == playerid)
+			{
+				if(PlayerInfo[playerid][pMechSkill] >= 400)
+				{
+					new vehicleid = GetPlayerVehicleID(playerid);
+					VehicleFuel[vehicleid] = VehicleFuel[vehicleid] + fueltogive;
+					if(VehicleFuel[vehicleid] > 100.0) VehicleFuel[vehicleid] = 100.0;
+					format(string, sizeof(string), "* %s has refilled their vehicle.", GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					format(string, sizeof(string), "* You added %.2f fuel to your car.",fueltogive);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					for(new vehicleslot = 0; vehicleslot < MAX_PLAYERVEHICLES; vehicleslot++)
+					{
+						if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][vehicleslot][pvId]))
+						{
+							if(vehicleslot != -1) {
+								format(string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+								mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+							}
+						}
+					}
+					return 1;
+				}
+				SendClientMessageEx(playerid, COLOR_GREY, "You can't offer a refill to yourself."); return 1;
+			}
+			format(string, sizeof(string), "* You offered %s to add %.2f fuel to their car for $%d.",GetPlayerNameEx(giveplayerid),fueltogive,money);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "* Car Mechanic %s wants to add %.2f fuel to your car for $%d, type /accept refill to accept.",GetPlayerNameEx(playerid),fueltogive,money);
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			PlayerInfo[playerid][pMechTime] = gettime()+60;
+			RefillOffer[giveplayerid] = playerid;
+			RefillPrice[giveplayerid] = money;
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "That person is not near you, or isn't in a car.");
+		}
+	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	return 1;
+}
+
+
+CMD:repair(playerid, params[])
+{
+	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Car Mechanic!");
+		return 1;
+	}
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not repair while inside the vehicle.");
+
+	new string[128];
+	if(gettime() < PlayerInfo[playerid][pMechTime])
+	{
+		format(string, sizeof(string), "You must wait %d seconds!", PlayerInfo[playerid][pMechTime]-gettime());
+		SendClientMessageEx(playerid, COLOR_GRAD1,string);
+		return 1;
+	}
+	if(GetPVarInt(playerid, "EventToken")) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	}
+	new giveplayerid, money;
+	if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /repair [player] [price]");
+
+	if(PlayerInfo[playerid][pTire] > 0)
+	{
+		if(money < 1 || money > 10000) { SendClientMessageEx(playerid, COLOR_GREY, "   Price not lower then $1 or above $10,000!"); return 1; }
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(giveplayerid != INVALID_PLAYER_ID)
+			{
+			    new closestcar = GetClosestCar(playerid);
+
+	  			if(IsPlayerInRangeOfVehicle(playerid, closestcar, 8.0))
+	  			{
+					if(ProxDetectorS(8.0, playerid, giveplayerid)&& IsPlayerInAnyVehicle(giveplayerid))
+					{
+						if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "   Can't do that!"); return 1; }
+	                    if(!IsABike(closestcar) && !IsAPlane(closestcar))
+						{
+							new engine,lights,alarm,doors,bonnet,boot,objective;
+							GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
+							if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
+							{
+								SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle hood must be opened in order to repair it.");
+								return 1;
+							}
+						}
+						format(string, sizeof(string), "* You offered %s to fix their car for $%d .",GetPlayerNameEx(giveplayerid),money);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						format(string, sizeof(string), "* Car Mechanic %s wants to repair your car for $%d, (type /accept repair) to accept.",GetPlayerNameEx(playerid),money);
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						PlayerInfo[playerid][pMechTime] = gettime()+60;
+						SetPVarInt(playerid, "RepairOfferTo", giveplayerid);
+						RepairOffer[giveplayerid] = playerid;
+						RepairPrice[giveplayerid] = money;
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "   That person is not near you / not in a car.");
+					}
+				}
+				else
+				{
+				    SendClientMessageEx(playerid, COLOR_GREY, "   You are not near any vehicle.");
+				}
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   That person is offline.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You do not have any tires, buy one from a craftsman.");
+	}
+	return 1;
+}

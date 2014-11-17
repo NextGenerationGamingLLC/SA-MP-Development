@@ -383,3 +383,1411 @@ CMD:clearcargo(playerid, params[])
  	}
     return 1;
 }
+
+CMD:backup(playerid, params[])
+{
+    if(IsACop(playerid) || IsAMedic(playerid))
+	{
+	    new code[10],
+		zone[MAX_ZONE_NAME],
+		string[128];
+	    GetPlayer3DZone(playerid, zone, sizeof(zone));
+		if(sscanf(params, "s[10]", code) && (Backup[playerid] == 0 || Backup[playerid] == 2)) {
+			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "* %s is requesting backup at %s. {AA3333}Respond Code 3 [Lights and Sirens].", GetPlayerNameEx(playerid), zone);
+            ShowBackupActiveForPlayer(playerid);
+			Backup[playerid] = 1;
+
+			foreach(Player, i)
+			{
+				if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember])
+				{
+      				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
+					SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type '/backup' again to lower your request to code 2.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /nobackup to clear your backup request.");
+			if(BackupClearTimer[playerid] != 0)
+			{
+				KillTimer(BackupClearTimer[playerid]);
+				BackupClearTimer[playerid] = 0;
+			}
+			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+		}
+		else if(strcmp(code, "code2", true) == 0 && (Backup[playerid] == 0 || Backup[playerid] == 1))
+		{
+			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "* %s is requesting backup at %s. {00FF33}Respond Code 2 [No Lights and Sirens].", GetPlayerNameEx(playerid), zone);
+            ShowBackupActiveForPlayer(playerid);
+			Backup[playerid] = 2;
+
+			foreach(Player, i)
+			{
+				if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember])
+				{
+      				SetPlayerMarkerForPlayer(i, playerid, 0x00FF33AA);
+					SendClientMessageEx(i,  arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /backup again to upgrade your request to code 3.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /nobackup to clear your backup request.");
+			if(BackupClearTimer[playerid] != 0)
+			{
+				KillTimer(BackupClearTimer[playerid]);
+				BackupClearTimer[playerid] = 0;
+			}
+			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+		}
+		else if(code[0] && !(strcmp(code, "code2", true) == 0))
+		{
+		    return SendClientMessageEx(playerid, COLOR_GREY, "Incorrect parameter - type /backup or /backup code2 only");
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "  You already have an active backup request! Type /nobackup to cancel.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer or medic!");
+	}
+	return 1;
+}
+
+CMD:backupall(playerid, params[])
+{
+    if(IsACop(playerid) || IsAMedic(playerid))
+	{
+	    new
+			zone[MAX_ZONE_NAME],
+			string[128];
+	    GetPlayer3DZone(playerid, zone, sizeof(zone));
+		if(Backup[playerid] == 0 || Backup[playerid] == 1)
+		{
+			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "* %s is requesting backup at %s. {AA3333}Respond Code 3A [Lights and Sirens].", GetPlayerNameEx(playerid), zone);
+            ShowBackupActiveForPlayer(playerid);
+			Backup[playerid] = 3;
+			foreach(Player, i)
+			{
+				if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
+				{
+      				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
+					SendClientMessageEx(i, DEPTRADIO, string);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /nobackup to clear your backup request.");
+			if(BackupClearTimer[playerid] != 0)
+			{
+				KillTimer(BackupClearTimer[playerid]);
+				BackupClearTimer[playerid] = 0;
+			}
+			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "  You already have an active backup request! Type /nobackup to cancel.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer or medic!");
+	}
+	return 1;
+}
+
+CMD:backupint(playerid, params[])
+{
+    if(IsACop(playerid) || IsAMedic(playerid))
+	{
+	    new
+			zone[MAX_ZONE_NAME],
+			string[128];
+	    GetPlayer3DZone(playerid, zone, sizeof(zone));
+		if(Backup[playerid] == 0 || Backup[playerid] == 1)
+		{
+			format(string, sizeof(string), "* %s requests backup over their radio.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(string, sizeof(string), "* %s is requesting international backup at %s. {AA3333}Respond Code 3A [Lights and Sirens].", GetPlayerNameEx(playerid), zone);
+            ShowBackupActiveForPlayer(playerid);
+			Backup[playerid] = 4;
+			foreach(Player, i)
+			{
+				if(IsACop(i))
+				{
+      				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
+					SendClientMessageEx(i, DEPTRADIO, string);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "Type /nobackup to clear your backup request.");
+			if(BackupClearTimer[playerid] != 0)
+			{
+				KillTimer(BackupClearTimer[playerid]);
+				BackupClearTimer[playerid] = 0;
+			}
+			BackupClearTimer[playerid] = SetTimerEx("BackupClear", 300000, false, "ii", playerid, 1);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "  You already have an active backup request! Type /nobackup to cancel.");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer or medic!");
+	}
+	return 1;
+}
+
+CMD:nobackup(playerid, params[])
+{
+    BackupClear(playerid, 0);
+	return 1;
+}
+
+CMD:vmdc(playerid, params[])
+{
+    if(IsACop(playerid) || IsATowman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
+    {
+        new string[128], giveplayerid;
+        if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vmdc [player]");
+
+   		if(IsPlayerConnected(giveplayerid))
+    	{
+	        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
+			format(string, sizeof(string), "*** %s' Vehicles  ***", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+	        for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+         	{
+			    if(PlayerVehicleInfo[giveplayerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+				{
+    				format(string, sizeof(string), "Vehicle registration: %d | Vehicle Name: %s | Ticket: $%d.",PlayerVehicleInfo[giveplayerid][i][pvId],GetVehicleName(PlayerVehicleInfo[giveplayerid][i][pvId]),PlayerVehicleInfo[giveplayerid][i][pvTicket]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    		}
+				else if(PlayerVehicleInfo[giveplayerid][i][pvImpounded])
+				{
+    				format(string, sizeof(string), "Vehicle registration: Voided (impounded) | Vehicle Name: %s | Ticket: $%d.",VehicleName[PlayerVehicleInfo[giveplayerid][i][pvModelId]-400],PlayerVehicleInfo[giveplayerid][i][pvTicket]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+	    		}
+	    	}
+	    	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
+   		}
+    }
+	return 1;
+}
+
+CMD:vticket(playerid, params[])
+{
+    if(IsACop(playerid) || IsATowman(playerid))
+    {
+        if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vticket [vehicle registration]");
+
+        if(PlayerInfo[playerid][pTicketTime] != 0)
+		{
+            SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
+            return 1;
+        }
+
+        new Float: x, Float: y, Float: z, vehicleid = strval(params);
+        GetVehiclePos(vehicleid, x, y, z);
+        if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))
+		{
+            if(vehicleid != INVALID_VEHICLE_ID)
+			{
+                //foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						new v = GetPlayerVehicle(i, vehicleid);
+						if(v != -1)
+						{
+							new string[62 + MAX_PLAYER_NAME];
+							PlayerVehicleInfo[i][v][pvTicket] += 1000;
+							PlayerInfo[playerid][pTicketTime] = 60;
+							format(string, sizeof(string), "You have issued a $1000 ticket on %s's %s.",GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							return 1;
+						}
+					}	
+                }
+                SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle does not have any registration!");
+            }
+        }
+        else return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
+    }
+    return 1;
+}
+
+CMD:vcheck(playerid, params[])
+{
+    if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
+	{
+        new carid = GetPlayerVehicleID(playerid);
+        new closestcar = GetClosestCar(playerid, carid);
+        if(IsTrailerAttachedToVehicle(carid))
+		{
+            new carbeingtowed = GetVehicleTrailer(carid);
+            new dynveh = DynVeh[carbeingtowed];
+			//foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					new v = GetPlayerVehicle(i, carbeingtowed);
+
+					if(v != -1)
+					{
+						new string[78 + MAX_PLAYER_NAME];
+						format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}	
+            }
+            if(dynveh != -1)
+			{
+			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
+			    {
+					new string[78 + MAX_PLAYER_NAME];
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    return 1;
+				}
+				else if(DynVehicleInfo[dynveh][gv_igID] == -1 && DynVehicleInfo[dynveh][gv_ifID] != 0)
+			    {
+					new string[78 + MAX_PLAYER_NAME];
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", carbeingtowed, GetVehicleName(carbeingtowed), FamilyInfo[DynVehicleInfo[dynveh][gv_ifID]][FamilyName]);
+                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    return 1;
+				}
+            }
+            SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
+        }
+        else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
+		{
+		    new dynveh = DynVeh[closestcar];
+            //foreach(new i: Player)
+			for(new i = 0; i < MAX_PLAYERS; ++i)
+			{
+				if(IsPlayerConnected(i))
+				{
+
+					new v = GetPlayerVehicle(i, closestcar);
+					if(v != -1)
+					{
+						new string[78 + MAX_PLAYER_NAME];
+						format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}	
+            }
+            if(dynveh != -1)
+			{
+			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
+			    {
+					new string[78 + MAX_PLAYER_NAME];
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    return 1;
+				}
+				else if(DynVehicleInfo[dynveh][gv_igID] == -1 && DynVehicleInfo[dynveh][gv_ifID] != 0)
+			    {
+					new string[78 + MAX_PLAYER_NAME];
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), FamilyInfo[DynVehicleInfo[dynveh][gv_ifID]][FamilyName]);
+                    SendClientMessageEx(playerid, COLOR_WHITE, string);
+                    return 1;
+				}
+            }
+            SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
+        }
+        else SendClientMessageEx(playerid, COLOR_GRAD1, "ERROR: You are not towing a vehicle/near to another vehicle.");
+    }
+    else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+    return 1;
+}
+
+CMD:su(playerid, params[]) {
+	if(IsACop(playerid)) {
+		if(PlayerInfo[playerid][pJailTime] > 0) {
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+		}
+
+		new
+			iTargetID;
+
+		if(sscanf(params, "u", iTargetID)) {
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
+		}
+		else if(!IsPlayerConnected(iTargetID)) {
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		}
+		else if(IsACop(iTargetID) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance])) {
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
+		}
+		else if(PlayerInfo[iTargetID][pWantedLevel] >= 6) {
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Target is already most wanted.");
+		}
+		else {
+		    SetPVarInt(playerid, "suspect_TargetID", iTargetID);
+		    ShowPlayerCrimeDialog(playerid);
+		}
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
+	return 1;
+}
+
+CMD:ram(playerid, params[])
+{
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid))
+	{
+		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+			return 1;
+		}
+		if( PlayerCuffed[playerid] >= 1 )
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			return 1;
+		}
+
+		new string[128];
+		for(new i = 0; i < sizeof(HouseInfo); i++)
+		{
+			if (IsPlayerInRangeOfPoint(playerid,3,HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && PlayerInfo[playerid][pVW] == HouseInfo[i][hExtVW])
+			{
+				format(string, sizeof(string), "* %s breaches the door, and enters.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
+				SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+				GameTextForPlayer(playerid, "~r~Breached the door", 5000, 1);
+				PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
+				PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
+				SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
+				if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
+				return 1;
+			}
+		}
+		if(PlayerInfo[playerid][pRank] > 3)
+		{
+			for(new i = 0; i < sizeof(DDoorsInfo); i++)
+			{
+				if (IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] && DDoorsInfo[i][ddVIP] > 0)
+				{
+					SetPlayerInterior(playerid,DDoorsInfo[i][ddInteriorInt]);
+					PlayerInfo[playerid][pInt] = DDoorsInfo[i][ddInteriorInt];
+					PlayerInfo[playerid][pVW] = DDoorsInfo[i][ddInteriorVW];
+					SetPlayerVirtualWorld(playerid, DDoorsInfo[i][ddInteriorVW]);
+					if(DDoorsInfo[i][ddVehicleAble] > 0 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
+						SetVehiclePos(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
+						SetVehicleZAngle(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorA]);
+						if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
+							SetPVarInt(playerid, "tpJustEntered", 1);
+						SetVehicleVirtualWorld(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorVW]);
+						LinkVehicleToInterior(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorInt]);
+					}
+					else {
+						SetPlayerPos(playerid,DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
+						SetPlayerFacingAngle(playerid,DDoorsInfo[i][ddInteriorA]);
+						SetCameraBehindPlayer(playerid);
+					}
+					if(DDoorsInfo[i][ddCustomInterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ], FREEZE_TIME);
+					return 1;
+				}
+			}
+		}
+	    for(new i = 0; i < sizeof(Businesses); i++) {
+	        if (IsPlayerInRangeOfPoint(playerid,3,Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
+		        if (Businesses[i][bExtPos][1] == 0.0) return 1;
+				format(string, sizeof(string), "* %s breaches the door, and enters.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPlayerInterior(playerid,Businesses[i][bInt]);
+		        if(Businesses[i][bVW] == 0) SetPlayerVirtualWorld(playerid, BUSINESS_BASE_VW + i), PlayerInfo[playerid][pVW] = BUSINESS_BASE_VW + i;
+		        else SetPlayerVirtualWorld(playerid, Businesses[i][bVW]), PlayerInfo[playerid][pVW] = Businesses[i][bVW];
+		        SetPlayerPos(playerid,Businesses[i][bIntPos][0],Businesses[i][bIntPos][1],Businesses[i][bIntPos][2]);
+			    SetPlayerFacingAngle(playerid, Businesses[i][bIntPos][3]);
+		        SetCameraBehindPlayer(playerid);
+				GameTextForPlayer(playerid, "~r~Breached the door", 5000, 1);
+				return 1;
+	        }
+	    }
+		if (IsPlayerInRangeOfPoint(playerid,4.0,648.7888,-1360.7708,13.5875))
+		{
+			format(string, sizeof(string), "* %s breaches the door, and enters.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SetPlayerInterior(playerid,1);
+			PlayerInfo[playerid][pInt] = 1;
+			SetPlayerVirtualWorld(playerid, 4225);
+			PlayerInfo[playerid][pVW] = 4225;
+			SetPlayerPos(playerid,626.4980,21.4223,1107.9686);
+			SetPlayerFacingAngle(playerid, 178.6711);
+			Player_StreamPrep(playerid, 626.4980,21.4223,1107.9686, FREEZE_TIME);
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+	}
+	return 1;
+}
+
+CMD:take(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		new string[128], choice[32], giveplayerid;
+		if(sscanf(params, "s[32]u", choice, giveplayerid))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /take [name] [player]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Potseeds, OpiumSeeds, DrugCrates.");
+			return 1;
+		}
+		if(PlayerInfo[playerid][pAdmin] < 2 && (PlayerInfo[giveplayerid][pJailTime] && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot take items from a OOC Prisoner.");
+		if (playerid == giveplayerid)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You cannot take things from yourself!");
+			return 1;
+		}
+		else if(strcmp(choice,"opiumseeds",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's opiumseeds.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pOpiumSeeds] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"potseeds",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's potseeds.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your potseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's potseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pWSeeds] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"drugcrates",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's Drug Crates.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pCrates] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"Syringes",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's syringes.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pSyringes] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"Rawopium",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's raw opium.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pRawOpium] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"Heroin",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's Heroin.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pHeroin] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"radio",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's radio.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pRadio] = 0;
+					PlayerInfo[giveplayerid][pRadioFreq] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"weapons",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's weapons.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your weapons.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's weapons.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					ResetPlayerWeaponsEx(giveplayerid);
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"pot",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's pot.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pPot] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"crack",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's crack.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away your crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pCrack] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else if(strcmp(choice,"materials",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's materials.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s as taken away your materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					PlayerInfo[giveplayerid][pMats] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   Invalid item specified.");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You're not a law enforcement officer.");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:tackle(playerid, params[])
+{
+	#if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't tackle humans!");
+	#endif
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTackleAccess])
+	{
+		if(GetPVarInt(playerid, "ReTackleCooldown") != 0 && gettime() < GetPVarInt(playerid, "ReTackleCooldown") + 30)
+		{
+			new string[128];
+			format(string, sizeof(string), "You must wait %d seconds before you can enable tackle mode again!", GetPVarInt(playerid, "ReTackleCooldown") + 30 - gettime());
+			return SendClientMessageEx(playerid, COLOR_GRAD2, string);
+		}
+		if(GetPVarInt(playerid, "WeaponsHolstered") == 0) //Unholstered
+	    {
+	        cmd_holster(playerid, params);
+			//UnholsterWeapon(playerid, 0);
+		}
+        if(GetPVarInt(playerid, "TackleMode") == 0)
+        {
+	        SetPVarInt(playerid, "TackleMode", 1);
+	        return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've enabled tackling.  Aim at the suspect and hit enter to initiate the tackle.");
+		}
+		else
+		{
+	        SetPVarInt(playerid, "TackleMode", 0);
+	        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You've disabled tackling. You may now unholster your weapon.");
+			cmd_holster(playerid, params);
+			return SetPVarInt(playerid, "ReTackleCooldown", gettime());
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not allowed to use this command.");
+}
+
+CMD:tazer(playerid, params[])
+{
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
+    #if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	#endif
+	if(IsACop(playerid))
+	{
+		new string[128];
+		if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+
+		if(IsPlayerInAnyVehicle(playerid))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while you're in a vehicle.");
+			return 1;
+		}
+
+		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+			return 1;
+		}
+		if(GetPVarInt( playerid, "EventToken") != 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't use the tazer while you're in an event.");
+			return 1;
+		}
+		if(PlayerCuffedTime[playerid] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return 1;
+		}
+		if(GetPVarInt(playerid, "Injured") == 1)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return 1;
+		}
+
+		if(PlayerInfo[playerid][pJailTime] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+			return 1;
+		}
+		if(PlayerCuffed[playerid] >= 1) {
+			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while tazed/cuffed.");
+			return 1;
+		}
+		if(PlayerInfo[playerid][pHasTazer] < 1)
+		{
+		    SendClientMessage(playerid, COLOR_WHITE, "You do not have a tazer!");
+		    return 1;
+		}
+
+		if(pTazer{playerid} == 0)
+		{
+			pTazerReplace{playerid} = PlayerInfo[playerid][pGuns][2];
+			if(PlayerInfo[playerid][pGuns][2] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][2]);
+			format(string, sizeof(string), "* %s unholsters their tazer.", GetPlayerNameEx(playerid));
+			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			GivePlayerValidWeapon(playerid, 23, 60000);
+			pTazer{playerid} = 1;
+		}
+		else
+		{
+			RemovePlayerWeapon(playerid, 23);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			pTazer{playerid} = 0;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:vradar(playerid, params[])
+{
+	if (!IsPlayerInAnyVehicle(playerid))
+		return SendClientMessageEx(playerid, 0xFF0000FF, "You cannot use a dashboard radar outside of a vehicle.");
+
+	if(!IsACop(playerid))
+	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
+
+	switch (CarRadars[playerid])
+	{
+		case 0: // player has not deployed dashboard radar
+		{
+			CarRadars[playerid] = 1;
+			PlayerTextDrawShow(playerid, _crTextTarget[playerid]);
+			PlayerTextDrawShow(playerid, _crTextSpeed[playerid]);
+			PlayerTextDrawShow(playerid, _crTickets[playerid]);
+
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are now using your dashboard radar, use /vradar again to disable it.");
+			SetPVarInt(playerid, "_lastTicketWarning", 0);
+		}
+
+		case 1..2: // dashboard radar has been deployed
+		{
+			CarRadars[playerid] = 0;
+			PlayerTextDrawHide(playerid, _crTextTarget[playerid]);
+			PlayerTextDrawHide(playerid, _crTextSpeed[playerid]);
+			PlayerTextDrawHide(playerid, _crTickets[playerid]);
+			
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are no longer using your dashboard radar.");
+			DeletePVar(playerid, "_lastTicketWarning");
+		}
+	}
+
+	return 1;
+}
+
+CMD:radargun(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		new string[128];
+		if(IsPlayerInAnyVehicle(playerid))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while you're in a vehicle.");
+			return 1;
+		}
+
+		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+			return 1;
+		}
+		if(GetPVarInt( playerid, "EventToken") != 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't use the tazer while you're in an event.");
+			return 1;
+		}
+
+		if(GetPVarInt(playerid, "Injured") == 1)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return 1;
+		}
+
+		if(PlayerInfo[playerid][pJailTime] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+			return 1;
+		}
+		if(PlayerCuffed[playerid] >= 1) {
+			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while tazed/cuffed.");
+			return 1;
+		}
+
+		new SpeedRadar = GetPVarInt(playerid, "SpeedRadar");
+		if(SpeedRadar == 0)
+		{
+			SetPVarInt(playerid, "RadarReplacement", PlayerInfo[playerid][pGuns][9]);
+			if(PlayerInfo[playerid][pGuns][9] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][9]);
+			format(string, sizeof(string), "* %s takes out a LIDAR speed gun.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			GivePlayerValidWeapon(playerid, 43, 60000);
+			SetPVarInt(playerid, "SpeedRadar", 1);
+		}
+		else
+		{
+			RemovePlayerWeapon(playerid, 43);
+			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"), 60000);
+			format(string, sizeof(string), "* %s puts away their LIDAR speed gun.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			DeletePVar(playerid, "SpeedRadar");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:cuff(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		if(GetPVarInt(playerid, "Injured") == 1 || PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+			return 1;
+		}
+
+		if(PlayerInfo[playerid][pHasCuff] < 1)
+		{
+		    SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any pair of cuffs on you!");
+		    return 1;
+		}
+
+		new string[128], giveplayerid, Float:health, Float:armor;
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cuff [player]");
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			{
+				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
+				if(GetPVarInt(giveplayerid, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
+				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP)
+				{
+					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
+					TogglePlayerControllable(giveplayerid, 0);
+					ClearAnimations(giveplayerid);
+					GetPlayerHealth(giveplayerid, health);
+					GetPlayerArmour(giveplayerid, armor);
+					SetPVarFloat(giveplayerid, "cuffhealth",health);
+					SetPVarFloat(giveplayerid, "cuffarmor",armor);
+					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
+					ApplyAnimation(giveplayerid,"ped","cower",1,1,0,0,0,0,1);
+					PlayerCuffed[giveplayerid] = 2;
+					SetPVarInt(giveplayerid, "PlayerCuffed", 2);
+					SetPVarInt(giveplayerid, "IsFrozen", 1);
+					//Frozen[giveplayerid] = 1;
+					PlayerCuffedTime[giveplayerid] = 300;
+				}
+				else if(GetPVarType(giveplayerid, "IsTackled"))
+				{
+				    format(string, sizeof(string), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, giveplayerid);
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't restrained!");
+					return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				return 1;
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+	}
+	return 1;
+}
+
+CMD:uncuff(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		new string[128], giveplayerid;
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /uncuff [player]");
+
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			{
+				/*if(PlayerInfo[giveplayerid][pJailTime] >= 1)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "You can't uncuff a jailed player.");
+					return 1;
+				} */
+				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't uncuff yourself."); return 1; }
+				if(PlayerCuffed[giveplayerid]>1)
+				{
+					DeletePVar(giveplayerid, "IsFrozen");
+					format(string, sizeof(string), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
+					TogglePlayerControllable(giveplayerid, 1);
+					ClearAnimations(giveplayerid);
+					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
+					PlayerCuffed[giveplayerid] = 0;
+                    PlayerCuffedTime[giveplayerid] = 0;
+                    SetPlayerHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
+                    SetPlayerArmor(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
+                    DeletePVar(giveplayerid, "cuffhealth");
+					DeletePVar(giveplayerid, "PlayerCuffed");
+					DeletePVar(giveplayerid, "jailcuffs");
+				}
+				else if(GetPVarInt(giveplayerid, "jailcuffs") == 1)
+				{
+					DeletePVar(giveplayerid, "IsFrozen");
+					format(string, sizeof(string), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* You uncuffed %s.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
+					ClearAnimations(giveplayerid);
+					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
+					DeletePVar(giveplayerid, "jailcuffs");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't cuffed.");
+					return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+				return 1;
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
+	}
+	return 1;
+}
+
+CMD:detain(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		if(IsPlayerInAnyVehicle(playerid))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while you're in a vehicle.");
+			return 1;
+		}
+
+		new string[128], giveplayerid, seat;
+		if(sscanf(params, "ud", giveplayerid, seat)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /detain [player] [seatid 1-3]");
+
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(seat < 1 || seat > 3)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The seat ID cannot be above 3 or below 1.");
+				return 1;
+			}
+			/*if(IsACop(giveplayerid))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You can't detain other law enforcement officers.");
+				return 1;
+			}*/
+			if(IsPlayerInAnyVehicle(giveplayerid))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "That person is in a car - get them out first.");
+				return 1;
+			}
+			if (ProxDetectorS(8.0, playerid, giveplayerid))
+			{
+				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot detain yourself!"); return 1; }
+				if(PlayerCuffed[giveplayerid] == 2)
+				{
+					new carid = gLastCar[playerid];
+					if(IsSeatAvailable(carid, seat))
+					{
+						new Float:pos[6];
+						GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+						GetPlayerPos(giveplayerid, pos[3], pos[4], pos[5]);
+						GetVehiclePos( carid, pos[0], pos[1], pos[2]);
+						if (floatcmp(floatabs(floatsub(pos[0], pos[3])), 10.0) != -1 &&
+								floatcmp(floatabs(floatsub(pos[1], pos[4])), 10.0) != -1 &&
+								floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
+						format(string, sizeof(string), "* You were detained by %s .", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+						format(string, sizeof(string), "* You detained %s .", GetPlayerNameEx(giveplayerid));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
+						ClearAnimations(giveplayerid);
+						TogglePlayerControllable(giveplayerid, false);
+						IsPlayerEntering{giveplayerid} = true;
+						PutPlayerInVehicle(giveplayerid, carid, seat);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "That seat isn't available!");
+						return 1;
+					}
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't cuffed.");
+					return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, " You're not close enough to the person or your car!");
+				return 1;
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			return 1;
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+	}
+	return 1;
+}
+
+CMD:drag(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+		new string[128], giveplayerid;
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /drag [playerid]");
+
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(GetPVarInt(giveplayerid, "PlayerCuffed") == 2)
+			{
+				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, " You must be out of the vehicle to use this command.");
+				if(GetPVarInt(giveplayerid, "BeingDragged") == 1)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, " That person is already being dragged. ");
+					return 1;
+				}
+                new Float:dX, Float:dY, Float:dZ;
+				GetPlayerPos(giveplayerid, dX, dY, dZ);
+				if(!IsPlayerInRangeOfPoint(playerid, 5.0, dX, dY, dZ))
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, " That suspect is not near you.");
+					return 1;
+				}
+				format(string, sizeof(string), "* %s is now dragging you.", GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "* You are now dragging %s, you may move them now.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
+				SetPVarInt(giveplayerid, "BeingDragged", 1);
+				SetPVarInt(playerid, "DraggingPlayer", giveplayerid);
+				SetTimerEx("DragPlayer", 1000, 0, "ii", playerid, giveplayerid);
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, " The specified person is not cuffed !");
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You are not a Law Enforcement Official!");
+		return 1;
+	}
+	return 1;
+}
+
+CMD:wanted(playerid, params[])
+{
+	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
+	{
+		new string[128], x;
+
+		SendClientMessageEx(playerid, COLOR_GREEN, "Current Wanted Suspects:");
+		//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pWantedLevel] >= 1)
+				{
+					format(string, sizeof(string), "%s%s: %d", string,GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel]);
+					x++;
+					if(x > 3) {
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+						x = 0;
+						format(string, sizeof(string), " ");
+					} else {
+						format(string, sizeof(string), "%s, ", string);
+					}
+				}
+			}	
+		}
+		if(x <= 3 && x > 0)
+		{
+			string[strlen(string)-2] = '.';
+			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "   You're not a lawyer or a law enforcement officer!");
+	}
+	return 1;
+}
+
+CMD:ticket(playerid, params[])
+{
+	if(IsACop(playerid))
+	{
+
+		new string[128], giveplayerid, moneys, reason[64];
+		if(sscanf(params, "uds[64]", giveplayerid, moneys, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ticket [player] [price] [reason]");
+
+		if(giveplayerid == playerid)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket yourself.");
+			return 1;
+		}
+
+		if(moneys < 1 || moneys > 100000) { SendClientMessageEx(playerid, COLOR_GREY, "The ticket price can't be below $1 or higher then $100,000."); return 1; }
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(giveplayerid != INVALID_PLAYER_ID)
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					if(giveplayerid == playerid) return 1;
+
+					format(string, sizeof(string), "* You gave %s a ticket costing $%d, reason: %s", GetPlayerNameEx(giveplayerid), moneys, reason);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has given you a ticket costing $%d, reason: %s", GetPlayerNameEx(playerid), moneys, reason);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s writes up a ticket and gives it to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
+					TicketOffer[giveplayerid] = playerid;
+					TicketMoney[giveplayerid] = moneys;
+					return 1;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+			}
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+			return 1;
+		}
+	}
+	return 1;
+}
+
+CMD:wheelclamp(playerid, params[])
+{
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWheelClamps]) {
+		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 5.0),
+			szMessage[24 + 51 + MAX_PLAYER_NAME];
+		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 5 && !IsPlayerInAnyVehicle(playerid)) {
+			if(IsAPlane(vehicleid) || IsWeaponizedVehicle(GetVehicleModel(vehicleid)) || IsABike(vehicleid) || IsABoat(vehicleid))
+				return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't place wheel clamps on this vehicle. ))");
+			if(WheelClamp{vehicleid}) {
+				WheelClamp{vehicleid} = 0;
+				format(szMessage, sizeof(szMessage), "* %s has removed a Wheel Clamp from the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You have removed the Wheel Clamp from this vehicle's front tire. ))");
+			}
+			else {
+				SetPVarInt(playerid, "wheelclampvehicle", vehicleid);
+				SetPVarInt(playerid, "wheelclampcountdown", 10);
+				format(szMessage, sizeof(szMessage), "* %s is attempting to place a Wheel Clamp in the %s's front tire.", GetPlayerNameEx(playerid), GetVehicleName(vehicleid), vehicleid);
+				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now placing a Wheel Clamp in the vehicle's front tire, please wait. ))");
+			}
+			
+		} 
+		else
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are not near any car.");
+	}
+	else
+		SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command.");
+	return 1;
+}

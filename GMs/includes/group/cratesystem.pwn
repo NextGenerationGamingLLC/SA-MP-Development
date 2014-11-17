@@ -934,3 +934,106 @@ CMD:alockdown(playerid, params[]) {
 	}
 	return 1;
 }*/
+
+CMD:ordercrates(playerid, params[])
+{
+	new iGroupID = PlayerInfo[playerid][pMember], string[128];
+	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] >= (Group_GetMaxRank(iGroupID) - 4))
+	{
+		if(arrGroupData[iGroupID][g_iLockerCostType] == 0)
+		{
+			new moneys;
+			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ordercrates [order amount]");
+			if(!(0 <= moneys <= (MAX_LOCKER_STOCK/100))) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot order more than 15 crates!");
+			format(string, sizeof(string), "You now have a total of %d of crates on order for %s.", moneys, arrGroupData[iGroupID][g_szGroupName]);
+			SendClientMessage(playerid, COLOR_GRAD2, string);
+			arrGroupData[iGroupID][g_iCratesOrder] = moneys;
+			format(string, sizeof(string), "%s has just placed a Crate Order for %s.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+			SendGroupMessage(1, TEAM_BLUE_COLOR, string);
+			return 1;
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Your group does not require crates.");
+	}
+    else return SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
+}
+
+CMD:viewcrateorders(playerid, params[])
+{
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
+	{
+		new
+			szDialogStr[MAX_GROUPS * (GROUP_MAX_NAME_LEN + 32)],
+			iCount;
+
+		while(iCount < MAX_GROUPS) {
+		    if(arrGroupData[iCount][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
+		    {
+		        if(arrGroupData[iCount][g_iCratesOrder] > 0)
+		        {
+					if(arrGroupData[iCount][g_szGroupName][0])
+						format(szDialogStr, sizeof szDialogStr, "%s\n(%i) {%s}%s{FFFFFF} - %d Crates [Current Stock: %d]", szDialogStr, iCount+1, Group_NumToDialogHex(arrGroupData[iCount][g_hDutyColour]), arrGroupData[iCount][g_szGroupName], arrGroupData[iCount][g_iCratesOrder], arrGroupData[iCount][g_iLockerStock]);
+				}
+			}
+			++iCount;
+		}
+		if(!szDialogStr[0]) format(szDialogStr, sizeof(szDialogStr), "No orders to fill.");
+		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Group List", szDialogStr, "Select", "Cancel");
+	}
+    else return SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
+}
+
+CMD:togcr(playerid, params[])
+{
+	if(GetPVarInt(playerid, "togCrateRadio") == 0)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off your crate radio frequency, you may re-enable it by typing this command again.");
+		SetPVarInt(playerid, "togCrateRadio", 1);
+	}
+	else {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on your crate radio frequency.");
+		SetPVarInt(playerid, "togCrateRadio", 0);
+	}
+	return 1;
+}
+
+CMD:crateradio(playerid,params[]) return cmd_cr(playerid,params);
+CMD:cr(playerid, params[])
+{
+	new
+		iGroupID = PlayerInfo[playerid][pMember],
+		iRank = PlayerInfo[playerid][pRank];
+
+	if(0 <= iGroupID < MAX_GROUPS)
+	{
+		if(iRank >= arrGroupData[iGroupID][g_iDeptRadioAccess] && PlayerInfo[playerid][pLeader] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != 2)
+		{
+			if(GetPVarInt(playerid, "togCrateRadio") == 0)
+			{
+				if(!isnull(params))
+				{
+					new szRadio[128], RadioBubble[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
+					GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
+					format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
+					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
+					foreach(new i: Player)
+					{
+						if(GetPVarInt(i, "togCrateRadio") == 0)
+						{
+							if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pLeader] >= 0 && iRank >= arrGroupData[iGroupID][g_iDeptRadioAccess] && arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
+							{
+								SendClientMessageEx(i, CRATERADIO, szRadio);
+							}
+						}
+					}
+				}
+				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/c)rate(r)adio [crate chat]");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Your crate radio is currently turned off, turn it on by typing /togcr.");
+		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
+	return 1;
+}

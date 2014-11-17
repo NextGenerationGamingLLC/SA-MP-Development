@@ -25356,34 +25356,6 @@ ClearCheckpoint(playerid) {
  	return;
 }
 
-ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {
-	CreateVLPTextDraws(playerid);
-	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
-	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
-	Get3DZone(CarPos[0], CarPos[1], CarPos[2], tdCarLocation, sizeof(tdCarLocation));
-	format(tdMessage, sizeof(tdMessage), "%s", tdCarLocation);
-	PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][1], tdMessage);
-	switch(TYPE) {
-		case 0: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to lock pick vehicle");
-			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "LockPickCountdown"), 1));
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
-		}
-		case 1: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to crack the trunk");
-			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "CrackTrunkCountdown"), 1));
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
-		}
-		case 2: {
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Deliver Vehicle");
-			format(tdMessage, sizeof(tdMessage), "00:%d", GetPVarInt(playerid, "DeliveringVehicleTime"));
-			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
-		}
-	}
-	for(new i = 0; i < 4; i++)
-		PlayerTextDrawShow(playerid, VLPTextDraws[playerid][i]);
-}
-
 UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {
 	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
 	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
@@ -27191,4 +27163,12 @@ public ScrapMetal(playerid, vehicleid)
 	Log("logs/micro.log", string);
 	DeletePVar(playerid, "zscrapmetal");
 	return 1;
+}
+
+IsPlayerInArea(playerid, Float:minx, Float:maxx, Float:miny, Float:maxy)
+{
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+    if (x > minx && x < maxx && y > miny && y < maxy) return 1;
+    return 0;
 }

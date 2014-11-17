@@ -83,3 +83,49 @@ CMD:chances(playerid, params[])
 	else return 0;
 	return 1;
 }
+
+CMD:fifmenu(playerid, params[])
+{
+	if(PlayerInfo[playerid][pPR] >= 2 || PlayerInfo[playerid][pAdmin] >= 1338)
+	{
+		new FIFString[256];
+		if(FIFEnabled == 0)
+		{
+			format(FIFString, sizeof(FIFString), "{00FF00}Enable Fall Into Fun{FFFFFF}\nSet Hour Type");
+		}
+		else 
+		{
+			format(FIFString, sizeof(FIFString), "{B70000}Disable Fall Into Fun{FFFFFF}\nSet Hour Type");
+		}
+		if(FIFGP3 == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Enable GVIP & PVIP x3{FFFFFF}", FIFString);
+	
+		}
+		if(FIFTimeWarrior == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Time Warrior{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Time Warrior{FFFFFF}", FIFString);
+	
+		}
+		if(FIFGThurs == 0)
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{00FF00}Enable Golden Thursday{FFFFFF}", FIFString);
+		}
+		else
+		{
+			format(FIFString, sizeof(FIFString), "%s\n{B70000}Disable Golden Thursday{FFFFFF}", FIFString);
+	
+		}
+		format(FIFString,sizeof(FIFString), "%s\nSet Chance Gambler Position", FIFString);
+		ShowPlayerDialog(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Fall Into Fun Menu", FIFString, "Select", "Cancel");
+	}
+	return 1;
+}

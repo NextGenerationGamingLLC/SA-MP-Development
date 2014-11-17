@@ -157,6 +157,110 @@ CMD:stopani(playerid, params[])
 	return 1;
 }
 
+CMD:shakehand(playerid, params[])
+{
+	new string[128], giveplayerid, style;
+	if(sscanf(params, "ud", giveplayerid, style)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shakehand [player] [style (1-8)]");
+
+	if(IsPlayerConnected(giveplayerid) || (PlayerInfo[giveplayerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 0))
+	{
+		if(giveplayerid == playerid)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't shake your own hand.");
+			return 1;
+		}
+		else if(PlayerInfo[giveplayerid][pAdmin] >= 2 && PlayerInfo[giveplayerid][pTogReports] != 1) {
+			SendClientMessageEx(playerid, COLOR_GREY, "You are unable to shake this hand.");
+			return 1;
+		}
+		if(style >= 1 && style < 9)
+		{
+			new Float: ppFloats[3];
+
+			GetPlayerPos(giveplayerid, ppFloats[0], ppFloats[1], ppFloats[2]);
+
+			if(!IsPlayerInRangeOfPoint(playerid, 5, ppFloats[0], ppFloats[1], ppFloats[2]))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You're too far away. You can't shake hands right now.");
+				return 1;
+			}
+
+			SetPVarInt(playerid, "shrequest", giveplayerid);
+			SetPVarInt(playerid, "shstyle", style);
+
+			format(string, sizeof(string), "You have requested to shake %s's hand, please wait for them to respond.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+			format(string, sizeof(string), "%s has requested to shake your hand, please use '/accept handshake' to approve the hand shake.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /shakehand [player] [style (1-8)]");
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	}
+	return 1;
+}
+
+CMD:time(playerid, params[])
+{
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	
+	new string[128], mtext[20], thour, suffix[3], year, month,day;
+    getdate(year, month, day);
+    if(month == 1) { mtext = "January"; }
+    else if(month == 2) { mtext = "February"; }
+    else if(month == 3) { mtext = "March"; }
+    else if(month == 4) { mtext = "April"; }
+    else if(month == 5) { mtext = "May"; }
+    else if(month == 6) { mtext = "June"; }
+    else if(month == 7) { mtext = "July"; }
+    else if(month == 8) { mtext = "August"; }
+    else if(month == 9) { mtext = "September"; }
+    else if(month == 10) { mtext = "October"; }
+    else if(month == 11) { mtext = "November"; }
+    else if(month == 12) { mtext = "December"; }
+	if(hour > 12 && hour < 24)
+	{
+		thour = hour - 12;
+		suffix = "PM";
+	}
+	else if(hour == 12)
+	{
+		thour = 12;
+		suffix = "PM";
+	}
+	else if(hour > 0 && hour < 12)
+	{
+		thour = hour;
+		suffix = "AM";
+	}
+	else if(hour == 0)
+	{
+		thour = 12;
+		suffix = "AM";
+	}
+
+	if (PlayerInfo[playerid][pJailTime] > 0)
+	{
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|~n~~w~Jail Time Left: ~r~%s", GetWeekday(1), mtext, day, year, thour, minuite, suffix, TimeConvert(PlayerInfo[playerid][pJailTime]));
+	}
+	else
+	{
+		format(string, sizeof(string), "~y~%s, %s %d, %d~n~~g~|~w~%d:%02d~g~%s|", GetWeekday(1), mtext, day, year, thour, minuite, suffix);
+	}
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		ApplyAnimation(playerid,"COP_AMBIENT","Coplook_watch", 4.0, 0, 0, 0, 0, 0, 1);
+	}
+    GameTextForPlayer(playerid, string, 5000, 1);
+    return 1;
+}
+
 CMD:animhelp(playerid, params[])
 {
 	return cmd_animlist(playerid, params);

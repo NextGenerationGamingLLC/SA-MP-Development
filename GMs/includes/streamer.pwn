@@ -1045,3 +1045,192 @@ public RemoveBuildings(playerid)
 	return 1;
 }
 
+CMD:pddoor(playerid, params[])
+{
+	new string[128];
+	if(IsACop(playerid))
+	{
+		if(isnull(params))
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /pddoor [open/close]");
+			
+		if(strcmp(params, "open", true) == 0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 2.0,1487.00000000,-1762.42504883,3284.23608398)) //Door 0
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[0],1487.00000000,-1762.42504883+1.25,3284.23608398,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1483.79003906,-1762.42504883,3284.23608398)) //Door 1
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[1],1483.79003906,-1762.42504883+1.25,3284.23608398,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1479.85998535,-1758.31994629,3284.23388672)) //Door 2
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[2],1479.85998535-1.25,-1758.31994629,3284.23388672,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1467.06701660,-1758.31994629,3284.23388672)) //Door 3
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[3],1467.06701660-1.25,-1758.31994629,3284.23388672,0.50);
+			}
+		}
+		else if(strcmp(params, "close", true) == 0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 2.0,1487.00000000,-1762.42504883,3284.23608398)) //Door 0
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[0],1487.00000000,-1762.42504883,3284.23608398,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1483.79003906,-1762.42504883,3284.23608398)) //Door 1
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[1],1483.79003906,-1762.42504883,3284.23608398,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1479.85998535,-1758.31994629,3284.23388672)) //Door 2
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[2],1479.85998535,-1758.31994629,3284.23388672,0.50);
+
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1467.06701660,-1758.31994629,3284.23388672)) //Door 3
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaDoor[3],1467.06701660,-1758.31994629,3284.23388672,0.50);
+			}
+		}
+	}
+	else 
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
+	return true;
+}
+
+CMD:pdcell(playerid, params[])
+{
+	new string[128];
+	if(IsACop(playerid))
+	{
+		if(isnull(params))
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /pdcell [open/close]");
+		
+		if(strcmp(params, "open", true) == 0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.21484375,-1764.90002441,3284.25048828)) //Cell0
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[0], 1491.21484375-1.25,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41210938,-1764.90002441,3284.25048828)) //Cell1
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[1], 1494.41210938-1.25,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61132812,-1764.90002441,3284.25048828)) //Cell2
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[2], 1497.61132812-1.25,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81445312,-1764.90002441,3284.25048828)) //Cell3
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[3], 1500.81445312-1.25,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81994629,-1761.51000977,3284.25048828)) //Cell4
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[4], 1500.81994629-1.25,-1761.51000977,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.22094727,-1761.50000000,3284.25048828)) //Cell5
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[5], 1491.22094727-1.25,-1761.50000000,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41894531,-1761.51000977,3284.25048828)) //Cell6
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[6], 1494.41894531-1.25,-1761.51000977,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61999512,-1761.51000977,3284.25048828)) //Cell7
+			{
+				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[7], 1497.61999512-1.25,-1761.51000977,3284.25048828,0.50);
+			}
+		}
+		else if(strcmp(params, "close", true) == 0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.21484375,-1764.90002441,3284.25048828)) //Cell0
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[0], 1491.21484375,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41210938,-1764.90002441,3284.25048828)) //Cell1
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[1], 1494.41210938,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61132812,-1764.90002441,3284.25048828)) //Cell2
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[2], 1497.61132812,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81445312,-1764.90002441,3284.25048828)) //Cell3
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[3], 1500.81445312,-1764.90002441,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81994629,-1761.51000977,3284.25048828)) //Cell4
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[4], 1500.81994629,-1761.51000977,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.22094727,-1761.50000000,3284.25048828)) //Cell5
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[5], 1491.22094727,-1761.50000000,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41894531,-1761.51000977,3284.25048828)) //Cell6
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[6], 1494.41894531,-1761.51000977,3284.25048828,0.50);
+			}
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61999512,-1761.51000977,3284.25048828)) //Cell7
+			{
+				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
+				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				MoveDynamicObject(AkaCell[7], 1497.61999512,-1761.51000977,3284.25048828,0.50);
+			}
+		}
+	}
+	else
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
+	return true;
+}
