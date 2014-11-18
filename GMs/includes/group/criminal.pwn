@@ -35,6 +35,140 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock ClearGangTag(gangtag)
+{
+	GangTags[gangtag][gt_PosX] = 0.0;
+	GangTags[gangtag][gt_PosY] = 0.0;
+	GangTags[gangtag][gt_PosZ] = 0.0;
+	GangTags[gangtag][gt_PosRX] = 0.0;
+	GangTags[gangtag][gt_PosRY] = 0.0;
+	GangTags[gangtag][gt_PosRZ] = 0.0;
+	GangTags[gangtag][gt_VW] = 0;
+	GangTags[gangtag][gt_Int] = 0;
+	GangTags[gangtag][gt_ObjectID] = 1490;
+	GangTags[gangtag][gt_Family] = INVALID_FAMILY_ID;
+	GangTags[gangtag][gt_Used] = 0;
+	GangTags[gangtag][gt_Time] = 0;
+	if(IsValidDynamicObject(GangTags[gangtag][gt_Object]))
+	{
+		DestroyDynamicObject(GangTags[gangtag][gt_Object]);
+	}
+	return 1;
+}
+
+stock CreateGangTag(gangtag)
+{
+	if(GangTags[gangtag][gt_Used] == 0)
+	{
+		return 1;
+	}
+	if(IsValidDynamicObject(GangTags[gangtag][gt_Object]))
+	{
+		DestroyDynamicObject(GangTags[gangtag][gt_Object]);
+	}
+	new fam = GangTags[gangtag][gt_Family];
+	if(fam < 1 || fam == INVALID_FAMILY_ID)
+	{
+		GangTags[gangtag][gt_Object] = CreateDynamicObject(1490, GangTags[gangtag][gt_PosX], GangTags[gangtag][gt_PosY], GangTags[gangtag][gt_PosZ], GangTags[gangtag][gt_PosRX], GangTags[gangtag][gt_PosRY], GangTags[gangtag][gt_PosRZ], GangTags[gangtag][gt_VW], GangTags[gangtag][gt_Int], -1, 200.0);
+	}
+	else if(FamilyInfo[fam][gt_SPUsed] == 0)
+	{
+		GangTags[gangtag][gt_Object] = CreateDynamicObject(1490, GangTags[gangtag][gt_PosX], GangTags[gangtag][gt_PosY], GangTags[gangtag][gt_PosZ], GangTags[gangtag][gt_PosRX], GangTags[gangtag][gt_PosRY], GangTags[gangtag][gt_PosRZ], GangTags[gangtag][gt_VW], GangTags[gangtag][gt_Int], -1, 200.0);
+	}
+	else
+	{
+		GangTags[gangtag][gt_Object] = CreateDynamicObject(FamilyInfo[fam][gtObject], GangTags[gangtag][gt_PosX], GangTags[gangtag][gt_PosY], GangTags[gangtag][gt_PosZ], GangTags[gangtag][gt_PosRX], GangTags[gangtag][gt_PosRY], GangTags[gangtag][gt_PosRZ], GangTags[gangtag][gt_VW], GangTags[gangtag][gt_Int], -1, 200.0);
+	}
+	if(fam > 0 && fam != INVALID_FAMILY_ID && FamilyInfo[fam][gt_SPUsed] == 0)
+	{
+		SetDynamicObjectMaterialText(GangTags[gangtag][gt_Object], 0, FamilyInfo[fam][gt_Text], OBJECT_MATERIAL_SIZE_256x128, FamilyInfo[fam][gt_FontFace], FamilyInfo[fam][gt_FontSize], FamilyInfo[fam][gt_Bold], FamilyInfo[fam][gt_FontColor], 0, 1);
+	}	
+	return 1;
+}
+
+stock GetFreeGangTag()
+{
+	for(new i = 0; i < MAX_GANGTAGS; i++)
+	{
+		if(GangTags[i][gt_Used] == 0)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+stock ReCreateGangTags(fam)
+{
+	for(new i = 0; i < MAX_GANGTAGS; ++i)
+	{
+		if(GangTags[i][gt_Family] == fam)
+		{
+			CreateGangTag(i);
+		}
+	}
+}
+
+forward SprayWall(gangtag, playerid);
+public SprayWall(gangtag, playerid)
+{
+	if(!IsPlayerConnected(playerid))
+	{
+		GangTags[gangtag][gt_TimeLeft] = 0;
+		KillTimer(GangTags[gangtag][gt_Timer]);
+		DeletePVar(playerid, "gt_Spraying");
+		DeletePVar(playerid, "gt_Spray");
+		return 1;
+	}
+	if(!IsPlayerInRangeOfPoint(playerid, 3, GangTags[gangtag][gt_PosX], GangTags[gangtag][gt_PosY], GangTags[gangtag][gt_PosZ]))
+	{
+		GangTags[gangtag][gt_TimeLeft] = 0;
+		SendClientMessageEx(playerid, COLOR_WHITE, "You failed spraying the tag because you moved away from it.");
+		KillTimer(GangTags[gangtag][gt_Timer]);
+		DeletePVar(playerid, "gt_Spraying");
+		DeletePVar(playerid, "gt_Spray");
+		ClearAnimations(playerid);
+		return 1;
+	}
+	if(!GetPVarType(playerid, "gt_Spraying"))
+	{
+		GangTags[gangtag][gt_TimeLeft] = 0;
+		SendClientMessageEx(playerid, COLOR_WHITE, "You failed spraying the tag because you got attacked.");
+		KillTimer(GangTags[gangtag][gt_Timer]);
+		DeletePVar(playerid, "gt_Spraying");
+		DeletePVar(playerid, "gt_Spray");
+		ClearAnimations(playerid);
+		return 1;
+	}
+	if(playerTabbed[playerid] != 0)
+  	{
+		GangTags[gangtag][gt_TimeLeft] = 0;
+      	SendClientMessageEx(playerid, COLOR_WHITE, "You failed spraying the tag because you tabbed.");
+		KillTimer(GangTags[gangtag][gt_Timer]);
+		DeletePVar(playerid, "gt_Spraying");
+		DeletePVar(playerid, "gt_Spray");
+		ClearAnimations(playerid);
+		return 1;
+   	}
+	GangTags[gangtag][gt_TimeLeft]--;
+	if(GangTags[gangtag][gt_TimeLeft] == 0)
+	{
+		new string[128];
+		GangTags[gangtag][gt_Time] = 15;
+		GangTags[gangtag][gt_TimeLeft] = 0;
+		GangTags[gangtag][gt_Family] = PlayerInfo[playerid][pFMember];
+		GangTags[gangtag][gt_ObjectID] = FamilyInfo[PlayerInfo[playerid][pFMember]][gtObject];
+		CreateGangTag(gangtag);
+		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s successfully sprayed their family tag on the wall.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		DeletePVar(playerid, "gt_Spraying");
+		ClearAnimations(playerid);
+		SaveGangTag(gangtag);
+		KillTimer(GangTags[gangtag][gt_Timer]);
+	}
+	return 1;
+}
+
 CMD:togfamily(playerid, params[])
 {
 	return cmd_togfam(playerid, params);

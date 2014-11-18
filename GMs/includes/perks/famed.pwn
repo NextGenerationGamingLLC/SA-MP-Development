@@ -35,6 +35,47 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock GetFamedRankName(i)
+{
+	new string[128];
+	switch(i)
+	{
+		case 1: 
+		{
+			format(string, sizeof(string), "Old-School");
+		}
+		case 2: 
+		{
+			format(string, sizeof(string), "Chartered Old-School");
+		}
+		case 3: 
+		{
+			format(string, sizeof(string), "Famed");
+		}
+		case 4: 
+		{
+			format(string, sizeof(string), "Famed Commissioner");
+		}
+		case 5: 
+		{
+			format(string, sizeof(string), "Famed Moderator");
+		}
+		case 6: 
+		{
+			format(string, sizeof(string), "Vice Famed Chairman");
+		}
+		case 7: 
+		{
+			format(string, sizeof(string), "Famed Chairman");
+		}
+		default:
+		{
+			format(string, sizeof(string), "Unknown");
+		}
+	}
+	return string;
+}
+
 //======[Start of Famed Commands]=======
 
 CMD:fc(playerid, params[]) {

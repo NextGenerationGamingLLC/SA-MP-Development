@@ -35,6 +35,74 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ, VW)
+{
+	if(iServerFires < MAX_STRUCTURE_FIRES)
+	{
+		new szString[128], next = GetAvailableFireSlot();
+		arrStructureFires[next][iFireObj] = CreateDynamicObject(18691, FirePosX, FirePosY, FirePosZ - 1.5, 0,0,0, VW, .streamdistance = 300);
+		arrStructureFires[next][fFirePos][0] = FirePosX;
+		arrStructureFires[next][fFirePos][1] = FirePosY;
+		arrStructureFires[next][fFirePos][2] = FirePosZ;
+		arrStructureFires[next][iFireStrength] = MAX_FIRE_HEALTH;
+
+		format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[next][iFireStrength], MAX_FIRE_HEALTH, next);
+		arrStructureFires[next][szFireLabel] = CreateDynamic3DTextLabel(szString, 0xFFFFFFFFF, FirePosX, FirePosY, FirePosZ, 20, .worldid = VW);
+		++iServerFires;
+		if(!IsValidStructureFire(next)) DeleteStructureFire(next);
+	}
+}
+
+DeleteStructureFire(iFireID)
+{
+	if(arrStructureFires[iFireID][fFirePos][0] == 0) return 1;
+	for(new i = 0; i < 3; i++)
+	{
+		arrStructureFires[iFireID][fFirePos][i] = 0.0;
+	}
+	if(IsValidDynamicObject(arrStructureFires[iFireID][iFireObj])) DestroyDynamicObject(arrStructureFires[iFireID][iFireObj]);
+	if(IsValidDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel])) DestroyDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel]);
+	if(iServerFires) --iServerFires;
+	return 1;
+}
+
+IsValidStructureFire(iFireID)
+{
+	if(arrStructureFires[iFireID][fFirePos][0] != 0 && arrStructureFires[iFireID][fFirePos][1] != 0 && arrStructureFires[iFireID][fFirePos][2] != 0) return true;
+	else return false;
+}
+
+GetAvailableFireSlot()
+{
+	for(new i; i < MAX_STRUCTURE_FIRES; i++)
+	{
+		if(arrStructureFires[i][fFirePos][0] == 0.0) return i;
+	}
+	return -1;
+}
+
+forward OnEnterFire();
+public OnEnterFire()
+{
+	foreach(Player, i)
+	{
+		if(GetPVarType(i, "pGodMode")) continue;
+		for(new n = 0; n < MAX_STRUCTURE_FIRES; n++)
+		{
+			if(IsPlayerInRangeOfPoint(i, 1.7, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]) && Streamer_IsItemVisible(i, STREAMER_TYPE_OBJECT, arrStructureFires[n][iFireObj]))
+			{
+				if(IsValidStructureFire(n))
+				{
+					new Float:ftempHP;
+					GetPlayerHealth(i, ftempHP);
+					SetPlayerHealth(i, ftempHP - 5);
+				}
+			}
+		}
+	}
+	return 1;
+}
+
 CMD:fires(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;

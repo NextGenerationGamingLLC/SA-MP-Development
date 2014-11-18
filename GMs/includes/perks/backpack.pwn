@@ -35,6 +35,142 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock IsBackpackAvailable(playerid)
+{
+	#if defined zombiemode
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) 
+			return 0;
+	#endif
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "EMSAttempt") != 0 || HungerPlayerInfo[playerid][hgInEvent] != 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerInfo[playerid][pAccountRestricted] != 0) 
+		return 0;
+	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || WatchingTV[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped]) 
+		return 0;
+	
+	return 1;
+}
+
+stock GetBackpackFreeSlotGun(playerid) {
+	new slot;
+	for(new g = 6; g < 10; g++)
+	{
+		
+		if(PlayerInfo[playerid][pBItems][g] == 0)
+		{
+			slot = g;
+			break;
+		}
+	}
+	return slot;
+}
+
+ShowBackpackMenu(playerid, dialogid, extramsg[]) {
+	new dgString[312],
+		dgTitle[128],
+		string[15];
+	if(!IsBackpackAvailable(playerid)) {
+		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		return 1;
+	}
+	if(!GetPVarType(playerid, "BackpackOpen") || !GetPVarType(playerid, "BackpackProt")) {
+		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+		return 1;
+	}
+		
+	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
+	switch(dialogid) {
+		case DIALOG_OBACKPACK: {
+			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
+			if(PlayerInfo[playerid][pBItems][5] != 0) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
+			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+		}
+		case DIALOG_BFOOD: {
+			ShowPlayerDialog(playerid, DIALOG_BFOOD, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this meal now?", "Confirm", "Cancel");
+		}
+		case DIALOG_BMEDKIT: {
+			ShowPlayerDialog(playerid, DIALOG_BMEDKIT, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this Medical & Kevlar Vest kit now?", "Confirm", "Cancel");
+		}
+		case DIALOG_BNARCOTICS: {
+			format(dgString, sizeof(dgString), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
+			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+		}
+		case DIALOG_BNARCOTICS2: {
+			new pbi = GetPVarInt(playerid, "pbitemindex");
+			switch(pbi) {
+				case 1: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 2: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 3: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 4: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+			}
+			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+		}
+		case DIALOG_BNARCOTICS3: {
+			new pbi = GetPVarInt(playerid, "pbitemindex");
+			switch(pbi) {
+				case 1: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 2: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 3: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+				case 4: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
+			}
+			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s                                                        ", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
+			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
+		}
+		
+		case DIALOG_BGUNS: {
+			new weapname[20], itemcount;
+			for(new i = 6; i < 11; i++)
+			{
+				if(PlayerInfo[playerid][pBItems][i] > 0)
+				{
+					GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
+					format(dgString, sizeof(dgString), "%s%s (%i)\n", dgString, weapname, i);
+					format(string, sizeof(string), "ListItem%dSId", itemcount);
+					SetPVarInt(playerid, string, i);
+					itemcount++;
+				}
+			}
+			SetPVarInt(playerid, "DepositGunId", itemcount);
+			strcat(dgString, "Deposit a weapon");
+			ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+		}
+		case DIALOG_ENERGYBARS: {
+			DeletePVar(playerid, "bnwd");
+			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+		}
+		case DIALOG_ENERGYBARS*2: {
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d {02B0F5}Energy Bars%s", (GetPVarInt(playerid, "bnwd")) ? PlayerInfo[playerid][mInventory][4]:PlayerInfo[playerid][pBItems][11], (GetPVarInt(playerid, "bnwd")) ? (" on hand"):(""));
+			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s:", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
+			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
+		}
+	}
+	return 1;
+}
+
+stock GetBackpackName(backpackid) {
+	new bpName[16];
+	switch(backpackid) {
+		case 1: bpName = "Small Backpack";
+		case 2: bpName = "Medium Backpack";
+		case 3: bpName = "Large Backpack";
+	}
+	return bpName;
+}
+
+stock GetBackpackNarcoticsGrams(playerid) {
+	new grams;
+	grams = PlayerInfo[playerid][pBItems][1];
+	grams += PlayerInfo[playerid][pBItems][2];
+	grams += PlayerInfo[playerid][pBItems][3];
+	grams += PlayerInfo[playerid][pBItems][4];
+	return grams;
+}
+
+stock CountBackpackGuns(playerid) {
+	new count;
+	for(new i = 6; i < 11); i++)
+		if(PlayerInfo[playerid][pBItems][i] > 0)
+			count++;
+	return count;
+}
 
 CMD:shopbpack(playerid, params[]) {
 	if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] > 3) 

@@ -35,6 +35,25 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock CountRFLTeams()
+{
+	new var;
+	for(new i = 0; i < MAX_RFLTEAMS; i++)
+	{
+		if(RFLInfo[i][RFLused] != 0)
+		{
+			var++;
+		}
+	}
+	return var;
+}
+
+forward RFLCheckpointu(playerid);
+public RFLCheckpointu(playerid)
+{
+	SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
+}
+
 // Relay For Life
 CMD:setlapcount(playerid, params[]) 
 {

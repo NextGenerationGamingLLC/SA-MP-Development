@@ -35,6 +35,1569 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock ShowStorageEquipDialog(playerid)
+{
+	if(gPlayerLogged{playerid} != 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not logged in!");
+
+	new dialogstring[256];
+	new epstring[][] = { "Unequipped", "Equipped", "Not Owned" };
+
+	for(new i = 0; i < 3; i++)
+	{
+		format(dialogstring, sizeof(dialogstring), "%s%s", dialogstring, storagetype[i+1]);
+		if(StorageInfo[playerid][i][sStorage] != 1) format(dialogstring, sizeof(dialogstring), "%s (%s)\n", dialogstring, epstring[2]);
+		else format(dialogstring, sizeof(dialogstring), "%s (%s)\n", dialogstring, epstring[StorageInfo[playerid][i][sAttached]]);
+	}
+
+	ShowPlayerDialog(playerid, STORAGEEQUIP, DIALOG_STYLE_LIST, "Storage - Equip/Unequip", dialogstring, "Select", "Exit");
+	return 1;
+}
+
+/*stock ShowStorageDialog(playerid, fromplayerid, fromstorageid, itemid, amount, price, special)
+{
+	new titlestring[128], dialogstring[512];
+
+	SetPVarInt(playerid, "Storage_transaction", 1); // Prevent double transactions.
+	SetPVarInt(playerid, "Storage_fromplayerid", fromplayerid);
+	SetPVarInt(playerid, "Storage_fromstorageid", fromstorageid);
+	SetPVarInt(playerid, "Storage_itemid", itemid);
+	SetPVarInt(playerid, "Storage_amount", amount);
+	SetPVarInt(playerid, "Storage_price", price);
+	SetPVarInt(playerid, "Storage_special", special);
+
+	if(price == -1) format(titlestring, sizeof(titlestring), "Where do you want to store %d %s?", amount, itemtype[itemid]);
+	else format(titlestring, sizeof(titlestring), "You are buying %d %s for %d", amount, itemtype[itemid], price);
+
+	switch(itemid)
+	{
+		case 1:
+		{
+			format(dialogstring, sizeof(dialogstring), "Hand/Pocket - ($%d)\n", PlayerInfo[playerid][pCash]);
+			for(new i = 0; i < 3; i++)
+			{
+				if(StorageInfo[playerid][i][sAttached] == 1)
+				{
+					format(dialogstring, sizeof(dialogstring), "%s(%s) - ($%d/$%d)\n", dialogstring, storagetype[i+1], StorageInfo[playerid][i][sCash], limits[i+1][0]);
+				}
+			}
+
+			//format(dialogstring, sizeof(dialogstring), "Hand/Pocket - ($%d)\nBag - ($%d/$%d)\nBackpack - ($%d/$%d)\nBriefcase - ($%d/$%d)",
+				//PlayerInfo[playerid][pCash],
+				//StorageInfo[playerid][0][sCash],
+				//bbackpacklimit[itemid-1],
+				//StorageInfo[playerid][1][sCash],
+				//backpacklimit[itemid-1],
+				//StorageInfo[playerid][2][sCash],
+				//briefcaselimit[itemid-1]
+			//);
+		}
+		case 2:
+		{
+			format(dialogstring, sizeof(dialogstring), "Hand/Pocket - (%d)\n", PlayerInfo[playerid][pPot]);
+			for(new i = 0; i < 3; i++)
+			{
+				if(StorageInfo[playerid][i][sAttached] == 1)
+				{
+					format(dialogstring, sizeof(dialogstring), "%s(%s) - (%d/%d)\n", dialogstring, storagetype[i+1], StorageInfo[playerid][i][sPot], limits[i+1][0]);
+				}
+			}
+
+			//format(dialogstring, sizeof(dialogstring), "Hand/Pocket - (%d/%d)\nBag - (%d/%d)\nBackpack - (%d/%d)\nBriefcase - (%d/%d)",
+				//PlayerInfo[playerid][pPot],
+				//onhandlimit[itemid-1],
+				//StorageInfo[playerid][0][sPot],
+				//bbackpacklimit[itemid-1],
+				//StorageInfo[playerid][1][sPot],
+				//backpacklimit[itemid-1],
+				//StorageInfo[playerid][2][sPot],
+				//briefcaselimit[itemid-1]
+			//);
+		}
+		case 3:
+		{
+			format(dialogstring, sizeof(dialogstring), "Hand/Pocket - ($%d)\n", PlayerInfo[playerid][pCrack]);
+			for(new i = 0; i < 3; i++)
+			{
+				if(StorageInfo[playerid][i][sAttached] == 1)
+				{
+					format(dialogstring, sizeof(dialogstring), "%s(%s) - (%d/%d)\n", dialogstring, storagetype[i+1], StorageInfo[playerid][i][sCrack], limits[i+1][0]);
+				}
+			}
+
+			//format(dialogstring, sizeof(dialogstring), "Hand/Pocket - (%d/%d)\nBag - (%d/%d)\nBackpack - (%d/%d)\nBriefcase - (%d/%d)",
+				//PlayerInfo[playerid][pCrack],
+				//onhandlimit[itemid-1],
+				//StorageInfo[playerid][0][sCrack],
+				//bbackpacklimit[itemid-1],
+				//StorageInfo[playerid][1][sCrack],
+				//backpacklimit[itemid-1],
+				//StorageInfo[playerid][2][sCrack],
+				//briefcaselimit[itemid-1]
+			//);
+		}
+		case 4:
+		{
+			format(dialogstring, sizeof(dialogstring), "Hand/Pocket - (%d)\n", PlayerInfo[playerid][pMats]);
+			for(new i = 0; i < 3; i++)
+			{
+				if(StorageInfo[playerid][i][sAttached] == 1)
+				{
+					format(dialogstring, sizeof(dialogstring), "%s(%s) - (%d/%d)\n", dialogstring, storagetype[i+1], StorageInfo[playerid][i][sMats], limits[i+1][3]);
+				}
+			}
+
+			//format(dialogstring, sizeof(dialogstring), "Hand/Pocket - (%d/%d)\nBag - (%d/%d)\nBackpack - (%d/%d)\nBriefcase - (%d/%d)",
+				//PlayerInfo[playerid][pMats],
+				//onhandlimit[itemid-1],
+				//StorageInfo[playerid][0][sMats],
+				//bbackpacklimit[itemid-1],
+				//StorageInfo[playerid][1][sMats],
+				//backpacklimit[itemid-1],
+				//StorageInfo[playerid][2][sMats],
+				//briefcaselimit[itemid-1]
+			//);
+		}
+	}
+
+	ShowPlayerDialog(playerid, STORAGESTORE, DIALOG_STYLE_LIST, titlestring, dialogstring, "Choose", "Cancel");
+}
+
+stock DeathDrop(playerid)
+{
+	new storageid;
+	new bool:itemEquipped = false;
+	for(new i = 0; i < 3; i++)
+	{
+		if(StorageInfo[playerid][i][sAttached] == 1) {
+			storageid = i;
+			if(storageid != 0) itemEquipped = true; // Bag is exempted from death drops.
+		}
+	}
+
+	if(itemEquipped == true)
+	{
+
+		new rand = random(101);
+
+		switch (PlayerInfo[playerid][pDonateRank])
+		{
+			case 0: // Normal (50 Percent)
+			{
+				if(rand > 0 && rand <= 50) {
+					StorageInfo[playerid][storageid][sCash] = 0;
+					StorageInfo[playerid][storageid][sPot] = 0;
+					StorageInfo[playerid][storageid][sCrack] = 0;
+					StorageInfo[playerid][storageid][sMats] = 0;
+
+					return SendClientMessageEx(playerid, COLOR_RED, "You have lost all items within your storage device.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_YELLOW, "Luck is on your side today, you didn't lose any items within your storage device.");
+			}
+			case 1: // BVIP (40 Percent)
+			{
+				if(rand > 0 && rand <= 40) {
+					StorageInfo[playerid][storageid][sCash] = 0;
+					StorageInfo[playerid][storageid][sPot] = 0;
+					StorageInfo[playerid][storageid][sCrack] = 0;
+					StorageInfo[playerid][storageid][sMats] = 0;
+
+					return SendClientMessageEx(playerid, COLOR_RED, "You have lost all items within your storage device.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_YELLOW, "Luck is on your side today, you didn't lose any items within your storage device.");
+			}
+			case 2: // SVIP (30 Percent)
+			{
+				if(rand > 0 && rand <= 30) {
+					StorageInfo[playerid][storageid][sCash] = 0;
+					StorageInfo[playerid][storageid][sPot] = 0;
+					StorageInfo[playerid][storageid][sCrack] = 0;
+					StorageInfo[playerid][storageid][sMats] = 0;
+
+					return SendClientMessageEx(playerid, COLOR_RED, "You have lost all items within your storage device.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_YELLOW, "Luck is on your side today, you didn't lose any items within your storage device.");
+			}
+			case 3: // GVIP (20 Percent)
+			{
+				if(rand > 0 && rand <= 20) {
+					StorageInfo[playerid][storageid][sCash] = 0;
+					StorageInfo[playerid][storageid][sPot] = 0;
+					StorageInfo[playerid][storageid][sCrack] = 0;
+					StorageInfo[playerid][storageid][sMats] = 0;
+
+					return SendClientMessageEx(playerid, COLOR_RED, "You have lost all items within your storage device.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_YELLOW, "Luck is on your side today, you didn't lose any items within your storage device.");
+			}
+			case 4: // PVIP (No Chance)
+			{
+				return SendClientMessageEx(playerid, COLOR_YELLOW, "Since you are Platinum VIP, you lose nothing from storage device.");
+			}
+			case 5: // Moderator (No Chance)
+			{
+				return SendClientMessageEx(playerid, COLOR_YELLOW, "Since you are (Moderator) Platinum VIP, you lose nothing from storage device.");
+			}
+		}
+	}
+	return 1;
+}
+
+// Doc Usage:
+// playerid - Person Reciving the Item's Amount. (Who is storing the amount)
+// storageid - PlayerID's storage index. (Where to store sending amount)
+// fromplayerid - Person Giving the Item's Amount. (Notice: Use -1 if from a non-player, script-based etc.).
+// fromstorageid - FromStorageID's storage index. (Notice: Use -1 if from a non-player, script-based etc.)
+// itemid - ItemID index that is tradeing, used for both. (What is storing)
+// amount - The amount of ItemID that is tradeing, used for both. (What amount is storing)
+// price - The price of the transaction (in pCash), sent to playerid from sender. (Notice: Use -1 if no price is required)
+// special - Set this to 1 if function is being used by skills or other things. (Notice: Use -1 if no special is required)
+
+// ItemIDs:
+// 0 - Nothing
+// 1 - Cash
+// 2 - Pot
+// 3 - Crack
+// 4 - Materials
+
+// StorageIDs:
+// 0 - Pocket/OnHand
+// 1 - Bag
+// 2 - Backpack
+// 3 - Briefcase
+*/
+
+stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, amount, price, special)
+{
+	if(playerid == fromplayerid)
+	{
+		return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR! You cannot transfer from yourself to yourself");
+	}
+
+	storageid=0; fromstorageid=0; //temp
+	//printf("TransferStorage(playerid=%d, storageid=%d, fromplayerid=%d, fromstorageid=%d, itemid=%d, amount=%d, price=%d, special=%d)", playerid, storageid, fromplayerid, fromstorageid, itemid, amount, price, special);
+
+	if(GetPVarInt(playerid, "Storage_transaction") == 1)
+	{
+		if(fromplayerid != -1 && fromstorageid != -1) {
+			SendClientMessageEx(fromplayerid, COLOR_WHITE, "Player is busy with an existing transaction.");
+		}
+		return 0;
+	}
+
+	new string[128];
+
+	// Disable Prices for Cash Transfers
+	if(price != -1 && itemid == 1) price = -1;
+
+	// Ask the player where to store
+	if(storageid == -1)
+	{
+		//UNCOMMENT WHEN RE RELEASE
+		//ShowStorageDialog(playerid, fromplayerid, fromstorageid, itemid, amount, price, special);
+		return 0;
+	}
+
+	// Check if such item is equipped.
+	if(storageid > 0 && storageid < 4)
+	{
+		if(StorageInfo[playerid][storageid-1][sAttached] == 0)
+		{
+			format(string, sizeof(string), "You don't have the %s equipped!", storagetype[storageid]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			return 0;
+		}
+	}
+
+	if(fromplayerid != -1 && fromstorageid != -1)
+	{
+		if(!IsPlayerConnected(fromplayerid)) return 0;
+		if(amount < 0) return 0;
+
+		if(fromstorageid > 0 && fromstorageid < 4)
+		{
+			if(StorageInfo[fromplayerid][fromstorageid-1][sAttached] == 0)
+			{
+				format(string, sizeof(string), "You don't have the %s equipped!", storagetype[fromstorageid]);
+				SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+				return 0;
+			}
+		}
+	}
+
+    if(special == 1 && itemid == 2) // Pot Special "Selling"
+	{
+		ExtortionTurfsWarsZone(PotOffer[playerid], 1, PotPrice[playerid]);
+
+        GivePlayerCash(PotOffer[playerid], PotPrice[playerid]);
+		GivePlayerCash(playerid, -PotPrice[playerid]);
+
+  		if(PlayerInfo[PotOffer[playerid]][pDoubleEXP] > 0)
+		{
+			format(string, sizeof(string), "You have gained 2 drug dealer skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[PotOffer[playerid]][pDoubleEXP]);
+			SendClientMessageEx(PotOffer[playerid], COLOR_YELLOW, string);
+			PlayerInfo[PotOffer[playerid]][pDrugsSkill] += 2;
+		}
+		else
+		{
+			PlayerInfo[PotOffer[playerid]][pDrugsSkill] += 1;
+		}
+
+        if(PlayerInfo[PotOffer[playerid]][pDrugsSkill] == 50)
+        { SendClientMessageEx(PotOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 2, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[PotOffer[playerid]][pDrugsSkill] == 100)
+        { SendClientMessageEx(PotOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 3, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[PotOffer[playerid]][pDrugsSkill] == 200)
+        { SendClientMessageEx(PotOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 4, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[PotOffer[playerid]][pDrugsSkill] == 400)
+        { SendClientMessageEx(PotOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 5, you can buy more Grams and Cheaper."); }
+        OnPlayerStatsUpdate(playerid);
+        OnPlayerStatsUpdate(PotOffer[playerid]);
+		PotOffer[playerid] = INVALID_PLAYER_ID;
+		PotStorageID[playerid] = -1;
+        PotPrice[playerid] = 0;
+        PotGram[playerid] = 0;
+
+	}
+	if(special == 1 && itemid == 3) // Crack Special "Selling"
+	{
+		ExtortionTurfsWarsZone(CrackOffer[playerid], 1, CrackPrice[playerid]);
+
+        GivePlayerCash(CrackOffer[playerid], CrackPrice[playerid]);
+		GivePlayerCash(playerid, -CrackPrice[playerid]);
+
+		if(PlayerInfo[CrackOffer[playerid]][pDoubleEXP] > 0)
+		{
+			format(string, sizeof(string), "You have gained 2 drug dealer skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[CrackOffer[playerid]][pDoubleEXP]);
+			SendClientMessageEx(CrackOffer[playerid], COLOR_YELLOW, string);
+			PlayerInfo[CrackOffer[playerid]][pDrugsSkill] += 2;
+		}
+		else
+		{
+			PlayerInfo[CrackOffer[playerid]][pDrugsSkill] += 1;
+		}
+
+        PlayerInfo[playerid][pCrack] += CrackGram[playerid];
+        PlayerInfo[CrackOffer[playerid]][pCrack] -= CrackGram[playerid];
+        if(PlayerInfo[CrackOffer[playerid]][pDrugsSkill] == 50)
+        { SendClientMessageEx(CrackOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 2, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[CrackOffer[playerid]][pDrugsSkill] == 100)
+		{ SendClientMessageEx(CrackOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 3, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[CrackOffer[playerid]][pDrugsSkill] == 200)
+        { SendClientMessageEx(CrackOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 4, you can buy more Grams and Cheaper."); }
+        else if(PlayerInfo[CrackOffer[playerid]][pDrugsSkill] == 400)
+        { SendClientMessageEx(CrackOffer[playerid], COLOR_YELLOW, "* Your Drug Dealer Skill is now Level 5, you can buy more Grams and Cheaper."); }
+		OnPlayerStatsUpdate(playerid);
+        OnPlayerStatsUpdate(CrackOffer[playerid]);
+		CrackOffer[playerid] = INVALID_PLAYER_ID;
+		CrackStorageID[playerid] = -1;
+        CrackPrice[playerid] = 0;
+        CrackGram[playerid] = 0;
+	}
+	if(special == 2 && itemid == 2) // Pot Special "Getting"
+	{
+		new mypoint = -1;
+		for (new i=0; i<MAX_POINTS; i++)
+		{
+			if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && Points[i][Type] == 3)
+			{
+				new myvw = GetPlayerVirtualWorld(playerid);
+				if(myvw == Points[i][pointVW])
+				{
+					mypoint = i;
+				}	
+			}
+		}
+
+		if(PlayerInfo[playerid][pDonateRank] < 1)
+		{
+			Points[mypoint][Stock] -= amount;
+			format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[mypoint][Stock]);
+			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
+		}
+		for(new i = 0; i < sizeof(FamilyInfo); i++)
+		{
+			if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+			{
+				FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+			}
+		}
+	}
+	if(special == 2 && itemid == 3) // Crack Special "Getting"
+	{
+		new mypoint = -1;
+		for (new i=0; i<MAX_POINTS; i++)
+		{
+			if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && Points[i][Type] == 4)
+			{
+				new myvw = GetPlayerVirtualWorld(playerid);
+				if(myvw == Points[i][pointVW])
+				{
+					mypoint = i;
+				}	
+			}
+		}
+		if(PlayerInfo[playerid][pDonateRank] < 1)
+		{
+			Points[mypoint][Stock] -= amount;
+			format(string, sizeof(string), " CRACK AVAILABLE: %d/500.", Points[mypoint][Stock]);
+			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
+		}
+		for(new i = 0; i < sizeof(FamilyInfo); i++)
+		{
+			if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+			{
+				FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+			}
+		}
+	}
+	if(special == 2 && itemid == 4) // Materials Special "Getting"
+	{
+		DeletePVar(playerid, "Packages");
+		DeletePVar(playerid, "MatDeliver");
+		DisablePlayerCheckpoint(playerid);
+	}
+	if(special == 4 && itemid == 1) // House Withdraw - Cash
+	{
+		new houseid = GetPVarInt(playerid, "Special_HouseID");
+		DeletePVar(playerid, "Special_HouseID");
+
+		HouseInfo[houseid][hSafeMoney] -= amount;
+	}
+	if(special == 4 && itemid == 2) // House Withdraw - Pot
+	{
+		new houseid = GetPVarInt(playerid, "Special_HouseID");
+		DeletePVar(playerid, "Special_HouseID");
+
+		HouseInfo[houseid][hPot] -= amount;
+	}
+	if(special == 4 && itemid == 3) // House Withdraw - Crack
+	{
+		new houseid = GetPVarInt(playerid, "Special_HouseID");
+		DeletePVar(playerid, "Special_HouseID");
+
+		HouseInfo[houseid][hCrack] -= amount;
+	}
+	if(special == 4 && itemid == 4) // House Withdraw - Mats
+	{
+		new houseid = GetPVarInt(playerid, "Special_HouseID");
+		DeletePVar(playerid, "Special_HouseID");
+
+		HouseInfo[houseid][hMaterials] -= amount;
+	}
+	if(special == 5 && itemid == 1) // Family Safe Withdraw - Cash
+	{
+		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
+		DeletePVar(playerid, "Special_FamilyID");
+		getdate(year,month,day);
+
+		FamilyInfo[family][FamilyCash] -= amount;
+		format(string, sizeof(string), "%s has withdrawn $%s from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
+		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
+		Log(file, string);
+	}
+	if(special == 5 && itemid == 2 && (PlayerInfo[playerid][pPot] + amount <= onhandlimit[itemid-1])) // Family Safe Withdraw - Pot
+	{
+		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
+		DeletePVar(playerid, "Special_FamilyID");
+		getdate(year,month,day);
+
+		FamilyInfo[family][FamilyPot] -= amount;
+		format(string, sizeof(string), "%s has withdrawn %s pot from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
+		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
+		Log(file, string);
+	}
+	if(special == 5 && itemid == 3 && (PlayerInfo[playerid][pCrack] + amount <= onhandlimit[itemid-1])) // Family Safe Withdraw - Crack
+	{
+		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
+		DeletePVar(playerid, "Special_FamilyID");
+		getdate(year,month,day);
+
+		FamilyInfo[family][FamilyCrack] -= amount;
+		format(string, sizeof(string), "%s has withdrawn %s crack from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
+		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
+		Log(file, string);
+	}
+	if(special == 5 && itemid == 4) // Family Safe Withdraw - Materials
+	{
+		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
+		DeletePVar(playerid, "Special_FamilyID");
+		getdate(year,month,day);
+
+		FamilyInfo[family][FamilyMats] -= amount;
+		format(string, sizeof(string), "%s has withdrawn %s materials from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
+		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
+		Log(file, string);
+	}
+
+	switch(storageid)
+	{
+		case 0: // Pocket or On Hand
+		{
+			if(itemid == 1)
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCash] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCash] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				PlayerInfo[playerid][pCash] += amount;
+				OnPlayerStatsUpdate(playerid);
+				if(fromplayerid != -1) {
+        			OnPlayerStatsUpdate(fromplayerid);
+        		}
+				format(string, sizeof(string), "$%d has been transfered to your Pocket ($%d).", amount, PlayerInfo[playerid][pCash]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "$%d has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given $%s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given $%s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given $%s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given $%s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 2 && (PlayerInfo[playerid][pPot] + amount <= onhandlimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pPot] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				PlayerInfo[playerid][pPot] += amount;
+				//format(string, sizeof(string), "%d Pot has been transfered to your Pocket (%d/%d).", amount, PlayerInfo[playerid][pPot], onhandlimit[itemid-1]);
+				format(string, sizeof(string), "%d Pot has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pPot]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Pot has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 3 && (PlayerInfo[playerid][pCrack] + amount <= onhandlimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCrack] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				PlayerInfo[playerid][pCrack] += amount;
+				//format(string, sizeof(string), "%d Crack has been transfered to your Pocket (%d/%d).", amount, PlayerInfo[playerid][pCrack], onhandlimit[itemid-1]);
+				format(string, sizeof(string), "%d Crack has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pCrack]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Crack has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerIpEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 4 && (PlayerInfo[playerid][pMats] + amount <= onhandlimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pMats] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sMats] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				PlayerInfo[playerid][pMats] += amount;
+				//format(string, sizeof(string), "%d Materials has been transfered to your Pocket (%d/%d).", amount, PlayerInfo[playerid][pMats], onhandlimit[itemid-1]);
+				format(string, sizeof(string), "%d Materials has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pMats]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Materials has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			/*if(itemid == 4)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You need at least a Bag to be able to store Materials.");
+				return 0;
+			}*/
+
+			if(itemid == 1) format(string, sizeof(string), "Unable to transfer $%d to %s ($%d).", amount, storagetype[storageid], PlayerInfo[playerid][pCash]);
+			else if(itemid == 2) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], PlayerInfo[playerid][pPot], onhandlimit[itemid-1]);
+			else if(itemid == 3) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], PlayerInfo[playerid][pCrack], onhandlimit[itemid-1]);
+			else if(itemid == 4) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], PlayerInfo[playerid][pMats], onhandlimit[itemid-1]);
+
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
+		case 1: // Bag
+		{
+			if(StorageInfo[playerid][0][sStorage] == 0)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You do not own a Bag. You may purchase one at a 24/7 store.");
+				return 0;
+			}
+
+			if(itemid == 1 && (StorageInfo[playerid][0][sCash] + amount <= bbackpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCash] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCash] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][0][sCash] += amount;
+				format(string, sizeof(string), "$%d has been transfered to your Bag ($%d/$%d).", amount, StorageInfo[playerid][0][sCash], bbackpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "$%d has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 2 && (StorageInfo[playerid][0][sPot] + amount <= bbackpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pPot] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][0][sPot] += amount;
+				format(string, sizeof(string), "%d Pot has been transfered to your Bag (%d/%d).", amount, StorageInfo[playerid][0][sPot], bbackpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Pot has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 3 && (StorageInfo[playerid][0][sCrack] + amount <= bbackpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCrack] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][0][sCrack] += amount;
+				format(string, sizeof(string), "%d Crack has been transfered to your Bag (%d/%d).", amount, StorageInfo[playerid][0][sCrack], bbackpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Crack has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 4 && (StorageInfo[playerid][0][sMats] + amount <= bbackpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pMats] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sMats] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][0][sMats] += amount;
+				format(string, sizeof(string), "%d Materials has been transfered to your Bag (%d/%d).", amount, StorageInfo[playerid][0][sMats], bbackpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Materials has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+
+			if(itemid == 1) format(string, sizeof(string), "Unable to transfer $%d to %s ($%d/$%d).", amount, storagetype[storageid], StorageInfo[playerid][0][sCash], bbackpacklimit[itemid-1]);
+			else if(itemid == 2) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][0][sPot], bbackpacklimit[itemid-1]);
+			else if(itemid == 3) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][0][sCrack], bbackpacklimit[itemid-1]);
+			else if(itemid == 4) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][0][sMats], bbackpacklimit[itemid-1]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+		}
+		case 2: // Backpack
+		{
+			if(StorageInfo[playerid][1][sStorage] == 0)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You do not own a Backpack. You may purchase one on our E-Store.");
+				return 0;
+			}
+
+			if(itemid == 1 && (StorageInfo[playerid][1][sCash] + amount <= backpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCash] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCash] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][1][sCash] += amount;
+				format(string, sizeof(string), "$%d has been transfered to your Backpack ($%d/$%d).", amount, StorageInfo[playerid][1][sCash], backpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "$%d has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 2 && (StorageInfo[playerid][1][sPot] + amount <= backpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pPot] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][1][sPot] += amount;
+				format(string, sizeof(string), "%d Pot has been transfered to your Backpack (%d/%d).", amount, StorageInfo[playerid][1][sPot], backpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Pot has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 3 && (StorageInfo[playerid][1][sCrack] + amount <= backpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCrack] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][1][sCrack] += amount;
+				format(string, sizeof(string), "%d Crack has been transfered to your Backpack (%d/%d).", amount, StorageInfo[playerid][1][sCrack], backpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Crack has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 4 && (StorageInfo[playerid][1][sMats] + amount <= backpacklimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pMats] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sMats] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][1][sMats] += amount;
+				format(string, sizeof(string), "%d Materials has been transfered to your Backpack (%d/%d).", amount, StorageInfo[playerid][1][sMats], backpacklimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Materials has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 1) format(string, sizeof(string), "Unable to transfer $%d to %s ($%d/$%d).", amount, storagetype[storageid], StorageInfo[playerid][1][sCash], backpacklimit[itemid-1]);
+			else if(itemid == 2) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][1][sPot], backpacklimit[itemid-1]);
+			else if(itemid == 3) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][1][sCrack], backpacklimit[itemid-1]);
+			else if(itemid == 4) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][1][sMats], backpacklimit[itemid-1]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
+		case 3: // Briefcase
+		{
+			if(StorageInfo[playerid][2][sStorage] == 0)
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You do not own a Briefcase. You may purchase one on our E-Store.");
+				return 0;
+			}
+
+			if(itemid == 1 && (StorageInfo[playerid][2][sCash] + amount <= briefcaselimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCash] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCash] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCash] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][2][sCash] += amount;
+				format(string, sizeof(string), "$%d has been transfered to your Briefcase ($%d/$%d).", amount, StorageInfo[playerid][2][sCash], briefcaselimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "$%d has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 2 && (StorageInfo[playerid][2][sPot] + amount <= briefcaselimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sPot] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pPot] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][2][sPot] += amount;
+				format(string, sizeof(string), "%d Pot has been transfered to your Briefcase (%d/%d).", amount, StorageInfo[playerid][2][sPot], briefcaselimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Pot has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 3 && (StorageInfo[playerid][2][sCrack] + amount <= briefcaselimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sCrack] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pCrack] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][2][sCrack] += amount;
+				format(string, sizeof(string), "%d Crack has been transfered to your Briefcase. (%d/%d)", amount, StorageInfo[playerid][2][sCrack], briefcaselimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Crack has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+			if(itemid == 4 && (StorageInfo[playerid][2][sMats] + amount <= briefcaselimit[itemid-1]))
+			{
+				// Check if Sending Player has sufficient amount.
+				if(fromplayerid != -1 && fromstorageid != -1)
+				{
+					if(fromstorageid == 0)
+					{
+						if(PlayerInfo[fromplayerid][pMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+					else
+					{
+						if(StorageInfo[fromplayerid][fromstorageid-1][sMats] < amount)
+						{
+							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
+							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
+							return 0;
+						}
+					}
+
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pMats] -= amount;
+					else StorageInfo[fromplayerid][fromstorageid-1][sMats] -= amount;
+				}
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				StorageInfo[playerid][2][sMats] += amount;
+				format(string, sizeof(string), "%d Materials has been transfered to your Briefcase (%d/%d).", amount, StorageInfo[playerid][2][sMats], briefcaselimit[itemid-1]);
+				SendClientMessage(playerid, COLOR_WHITE, string);
+
+				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
+					format(string, sizeof(string), "%d Materials has been transfered from your %s to %s's %s.", amount, storagetype[fromstorageid], GetPlayerNameEx(playerid), storagetype[storageid]);
+					SendClientMessage(fromplayerid, COLOR_WHITE, string);
+
+					PlayerPlaySound(fromplayerid, 1052, 0.0, 0.0, 0.0);
+					format(string, sizeof(string), "* %s takes out some %s from their %s, and hands it to %s.", GetPlayerNameEx(fromplayerid), itemtype[itemid], storagetype[fromstorageid], GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ipplayerid[16], ipfromplayerid[16];
+					GetPlayerIp(playerid, ipplayerid, sizeof(ipplayerid));
+					GetPlayerIp(fromplayerid, ipfromplayerid, sizeof(ipfromplayerid));
+
+					if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[fromplayerid][pAdmin] >= 2)
+					{
+						format(string, sizeof(string), "[Admin] %s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/adminpay.log", string);
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s %s to %s", GetPlayerNameEx(fromplayerid), number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid));
+						if(!strcmp(GetPlayerIpEx(playerid),  GetPlayerIpEx(fromplayerid), true)) strcat(string, " (1)");
+						ABroadCast(COLOR_YELLOW, string, 4);
+					}
+					else
+					{
+						format(string, sizeof(string), "%s(%d) (IP:%s) has given %s %s to %s(%d) (IP:%s)", GetPlayerNameEx(fromplayerid), GetPlayerSQLId(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ipplayerid);
+						Log("logs/pay.log", string);
+						format(string, sizeof(string), "%s (IP:%s) has given %s %s to %s (IP:%s)", GetPlayerNameEx(fromplayerid), ipfromplayerid, number_format(amount), itemtype[itemid], GetPlayerNameEx(playerid), ipplayerid);
+						if(amount >= 100000 && PlayerInfo[fromplayerid][pLevel] <= 3 && itemid == 1) ABroadCast(COLOR_YELLOW, string, 2);
+						if(amount >= 1000000 && itemid == 1)	ABroadCast(COLOR_YELLOW,string,2);
+					}
+				}
+				return 1;
+			}
+
+			if(itemid == 1) format(string, sizeof(string), "Unable to transfer $%d to %s ($%d/$%d).", amount, storagetype[storageid], StorageInfo[playerid][2][sCash], briefcaselimit[itemid-1]);
+			else if(itemid == 2) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][2][sPot], briefcaselimit[itemid-1]);
+			else if(itemid == 3) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][2][sCrack], briefcaselimit[itemid-1]);
+			else if(itemid == 4) format(string, sizeof(string), "Unable to transfer %d %s to %s (%d/%d).", amount, itemtype[itemid], storagetype[storageid], StorageInfo[playerid][2][sMats], briefcaselimit[itemid-1]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
+	}
+	return 0;
+}
+
 /*CMD:storagehelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

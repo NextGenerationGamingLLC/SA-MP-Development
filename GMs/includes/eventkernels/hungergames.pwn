@@ -35,6 +35,26 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock NextAvailableBackpack()
+{
+	if(hgBackpackCount+1 == 200) return false;
+	return hgBackpackCount+1;
+}
+
+stock GetHungerBackpackName(id)
+{
+	new string[24];
+	switch(HungerBackpackInfo[id][hgBackpackType])
+	{
+		case 1: format(string, sizeof(string), "15 Percent Armour");
+		case 2: format(string, sizeof(string), "Random Weapon");
+		case 3: format(string, sizeof(string), "Full Hunger");
+		case 4: format(string, sizeof(string), "Full Health");
+		default: format(string, sizeof(string), "NULL");
+	}
+	return string;
+}
+
 CMD:createbackpack(playerid, params[])
 {
 	new type;

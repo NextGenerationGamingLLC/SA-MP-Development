@@ -36,6 +36,73 @@
 */
 
 #if defined zombiemode
+stock SpawnZombie(playerid)
+{
+	new Float:maxdis, Float:dis, tpto;
+	maxdis=9999.9;
+	SetPlayerSkin(playerid, 134);
+	SetPlayerHealth(playerid, 200);
+	SetPlayerInterior(playerid, 0);
+	SetPlayerVirtualWorld(playerid, 0);
+	for(new x;x<sizeof(ZombieSpawns);x++)
+	{
+        dis = GetPointDistanceToPoint(ZombieSpawns[x][0], ZombieSpawns[x][1], ZombieSpawns[x][2], GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
+        if((dis < maxdis) && (dis > 50.0))
+        {
+            tpto=x;
+            maxdis=dis;
+        }
+	}
+	SetPlayerPos(playerid, ZombieSpawns[tpto][0], ZombieSpawns[tpto][1], ZombieSpawns[tpto][2]);
+	SetPlayerFacingAngle(playerid, ZombieSpawns[tpto][3]);
+	ClearAnimations(playerid);
+	return 1;
+}
+
+stock MakeZombie(playerid)
+{
+    new Float:X, Float:Y, Float:Z, string[128];
+    GetPlayerPos(playerid, X, Y, Z);
+
+    if(IsPlayerConnected(GetPVarInt(playerid, "pZombieBiter")))
+	{
+		format(string, sizeof(string), "INSERT INTO zombiekills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(GetPVarInt(playerid, "pZombieBiter")));
+		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		DeletePVar(playerid, "pZombieBiter");
+	}
+
+	SendClientMessageEx(playerid, COLOR_RED, "You are now a zombie - use /bite to bite people!");
+ 	SetPVarInt(playerid, "pIsZombie", 1);
+  	DeletePVar(playerid, "pZombieBit");
+   	SetPlayerToTeamColor(playerid);
+
+	SetPlayerHealth(playerid, 200);
+	SetPlayerSkin(playerid, 134);
+
+	ResetPlayerWeaponsEx(playerid);
+
+ 	//SendAudioToRange(70, 100, X, Y, Z, 30); RESCRIPT NEW SOUND
+
+ 	format(string, sizeof(string), "INSERT INTO `zombie` (`id`) VALUES ('%d')", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	return 1;
+}
+
+stock UnZombie(playerid)
+{
+	DeletePVar(playerid, "pIsZombie");
+  	DeletePVar(playerid, "pZombieBit");
+  	SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
+   	SetPlayerToTeamColor(playerid);
+	SetPlayerHealth(playerid, 100);
+	new string[64];
+	format(string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	return 1;
+}
+#endif
+
+#if defined zombiemode
 CMD:zh(playerid, params[])
 {
 	return cmd_zombiehelp(playerid, params);

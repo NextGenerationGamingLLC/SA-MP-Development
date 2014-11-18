@@ -35,6 +35,30 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock IsAt247(playerid)
+{
+    new iBusiness = InBusiness(playerid);
+   	return (iBusiness != INVALID_BUSINESS_ID && (Businesses[iBusiness][bType] == BUSINESS_TYPE_STORE || Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION));
+}
+
+stock IsAtClothingStore(playerid)
+{
+    new iBusiness = InBusiness(playerid);
+   	return (iBusiness != INVALID_BUSINESS_ID && Businesses[iBusiness][bType] == BUSINESS_TYPE_CLOTHING);
+}
+
+stock IsAtRestaurant(playerid)
+{
+	new iBusiness = InBusiness(playerid);
+	return (iBusiness != INVALID_BUSINESS_ID && Businesses[iBusiness][bType] == BUSINESS_TYPE_RESTAURANT);
+}
+
+stock IsAtGym(playerid)
+{
+	new iBusiness = InBusiness(playerid);
+	return (iBusiness != INVALID_BUSINESS_ID && Businesses[iBusiness][bType] == BUSINESS_TYPE_GYM);
+}
+
 CMD:businessdate(playerid, params[]) {
 	new giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] < 2)

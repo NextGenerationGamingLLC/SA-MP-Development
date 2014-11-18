@@ -35,6 +35,50 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+toyCountCheck(playerid) {
+
+	new
+		iCount = GetPlayerToyCount(playerid),
+		special = GetSpecialPlayerToyCount(playerid);
+	if(iCount >= 10 + PlayerInfo[playerid][pToySlot] + special) return 0;
+	return 1;
+}
+
+GetPlayerToyCount(playerid)
+{
+	new toys = 0;
+	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptModelID]) ++toys;
+	return toys;
+}
+
+GetSpecialPlayerToyCount(playerid)
+{
+	new toys = 0;
+	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] == 1) ++toys;
+	return toys;
+}	
+
+GetFreeToySlot(playerid)
+{
+	for(new i = 0; i < 11; i++) {
+		if(i + 1 < 11) {
+			if(PlayerHoldingObject[playerid][i+1] == 0) {
+				return i+1;
+			}
+		}
+		else {
+			return -1;
+		}
+	}
+	return -1;
+}
+
+GetPlayerToySlots(playerid)
+{
+	new special =  GetSpecialPlayerToyCount(playerid);
+	return PlayerInfo[playerid][pToySlot] + 10 + special;
+}
+
 CMD:shopvest(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1 && PlayerInfo[playerid][pAdmin] < 1338)

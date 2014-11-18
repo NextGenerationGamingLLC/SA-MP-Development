@@ -35,6 +35,348 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+DeliverPlayerToHospital(playerid, iHospital)
+{
+	TogglePlayerControllable(playerid, 0);
+	SetPlayerHealth(playerid, 0.5);
+	SetPlayerInterior(playerid, 1);
+	PlayerInfo[playerid][pInt] = 1;
+	PlayerInfo[playerid][pHospital] = 1;
+	PlayerInfo[playerid][pDuty] = 0;
+	PlayerInfo[playerid][pHasCuff] = 0;
+	PlayerInfo[playerid][pHasTazer] = 0;
+	PlayerCuffed[playerid] = 0;
+	DeletePVar(playerid, "PlayerCuffed");
+	DeletePVar(playerid, "IsFrozen");
+	PlayerCuffedTime[playerid] = 0;
+	if(PlayerInfo[playerid][pFitness] >= 6) PlayerInfo[playerid][pFitness] -= 6;
+	else PlayerInfo[playerid][pFitness] = 0;
+	new string[128];
+	
+	new index = GetFreeHospitalBed(iHospital);
+	arrHospitalBedData[iHospital][bBedOccupied][index] = true;
+	
+	SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "iii", playerid, iHospital, index);
+	
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		Streamer_UpdateEx(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
+		SetPlayerPos(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, DocHospitalSpawns[index][3]);
+		SetPlayerVirtualWorld(playerid, 0);
+		PlayerInfo[playerid][pVW] = 0;
+	}
+	else 
+	{
+		Streamer_UpdateEx(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
+		SetPlayerPos(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, 180);
+		SetPlayerVirtualWorld(playerid, iHospital);
+		PlayerInfo[playerid][pVW] = iHospital;
+	}
+	SetPVarInt(playerid, "_SpawningAtHospital", 1);
+	
+	if(GetPVarInt(playerid, "_HospitalBeingDelivered") == 1) // if player is delivered
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 10;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been delivered to the hospital by an ambulance.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You will now be treated at the hospital for your injuries.");
+	}
+	else if(PlayerInfo[playerid][pWantedLevel] >= 1) // if player wanted
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 140;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
+		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		SendGroupMessage(1, DEPTRADIO, string);
+	}
+	else if(PlayerInfo[playerid][pDonateRank] >= 4)
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 5;
+		SetPVarInt(playerid, "HealthCareActive", 1);
+	}
+	else if(PlayerInfo[playerid][pHealthCare] > 0) // if player has credit insurance
+	{
+		if(PlayerInfo[playerid][pHealthCare] == 1)
+		{
+			if(PlayerInfo[playerid][pCredits] >= ShopItems[18][sItemPrice])
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				GivePlayerCredits(playerid, -ShopItems[18][sItemPrice], 1);
+				printf("Price18: %d", 1);
+				SetPVarInt(playerid, "HealthCareActive", 1);
+
+				AmountSold[18]++;
+				AmountMade[18] += ShopItems[18][sItemPrice];
+				new szQuery[128];
+				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold18` = '%d', `AmountMade18` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[18], AmountMade[18]);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+				format(string, sizeof(string), "[HC] [User: %s(%i)][IP: %s][Credits: %s][Adv][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[18][sItemPrice]));
+				Log("logs/credits.log", string), print(string);
+			}
+			else
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				DeletePVar(playerid, "HealthCareActive");
+				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for advanced health care.");
+			}
+		}
+		else if(PlayerInfo[playerid][pHealthCare] == 2)
+		{
+			if(PlayerInfo[playerid][pCredits] >= ShopItems[19][sItemPrice])
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 5;
+				GivePlayerCredits(playerid, -ShopItems[19][sItemPrice], 1);
+				printf("Price19: %d", 2);
+				SetPVarInt(playerid, "HealthCareActive", 1);
+				AmountSold[19]++;
+				AmountMade[19] += ShopItems[19][sItemPrice];
+				new szQuery[128];
+				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold19` = '%d', `AmountMade19` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[19], AmountMade[19]);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+				format(string, sizeof(string), "[AHC] [User: %s(%i)][IP: %s][Credits: %s][Super][Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[19][sItemPrice]));
+				Log("logs/credits.log", string), print(string);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have advanced healthcare toggled, you will spawn faster as a result.");
+			}
+			else
+			{
+				arrHospitalBedData[iHospital][iCountDown][index] = 40;
+				DeletePVar(playerid, "HealthCareActive");
+				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
+			}
+		}
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+	}
+	else // if player has regular insurance
+	{
+		arrHospitalBedData[iHospital][iCountDown][index] = 40;
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Want to spawn faster? Enable advanced healthcare using /togglehealthcare.");
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+	}
+	format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][index]);
+	PlayerTextDrawHide(playerid, HospTime[playerid]);
+	PlayerTextDrawSetString(playerid, HospTime[playerid], string);
+	PlayerTextDrawShow(playerid, HospTime[playerid]);
+	arrHospitalBedData[iHospital][iTimer][index] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, index);
+	return 1;
+}
+
+forward Hospital_StreamIn(playerid, iHospital, index);
+public Hospital_StreamIn(playerid, iHospital, index)
+{
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		SetPlayerPos(playerid, DocHospitalSpawns[index][0], DocHospitalSpawns[index][1], DocHospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, DocHospitalSpawns[index][3]);
+	}
+	else 
+	{
+		SetPlayerPos(playerid, HospitalSpawns[index][0], HospitalSpawns[index][1], HospitalSpawns[index][2]);
+		SetPlayerFacingAngle(playerid, 180);
+	}
+	
+	TogglePlayerControllable(playerid, 1);
+	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 1, 0, 0, 0, 0, 1);
+	
+	return 1;
+}
+
+GetFreeHospitalBed(iHospital)
+{
+	new iFree;
+	
+	if(iHospital == HOSPITAL_DOCJAIL)
+	{
+		for(new i = 0; i < MAX_DOCHOSPITALBEDS; i++)
+		{
+			if(arrHospitalBedData[iHospital][bBedOccupied][i] == false)
+			{
+				iFree = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		for(new i = 0; i < MAX_HOSPITALBEDS; i++)
+		{
+			if(arrHospitalBedData[iHospital][bBedOccupied][i] == false)
+			{
+				iFree = i;
+				break;
+			}
+		}
+	}
+	return iFree;
+}
+
+GetHospitalName(iHospital)
+{
+	new string[32];
+	switch(iHospital)
+	{
+		case HOSPITAL_ALLSAINTS: string = "All Saints";
+		case HOSPITAL_COUNTYGEN: string = "County General";
+		case HOSPITAL_SANFIERRO: string = "San Fierro";
+		case HOSPITAL_REDCOUNTY: string = "Red County";
+		case HOSPITAL_ELQUEBRADOS: string = "El Quebrados";
+		case HOSPITAL_LASVENTURAS: string = "Las Venturas";
+		case HOSPITAL_FORTCARSON: string = "Fort Carson";
+		case HOSPITAL_ANGELPINE: string = "Angel Pine";
+		case HOSPITAL_BAYSIDE: string = "Bayside";
+		case HOSPITAL_DEMORGAN: string = "DeMorgan";
+		case HOSPITAL_DOCJAIL: string = "DOC Jail";
+		case HOSPITAL_LSVIP: string = "LS VIP";
+		case HOSPITAL_SFVIP: string = "SF VIP";
+		case HOSPITAL_LVVIP: string = "LV VIP";
+		case HOSPITAL_HOMECARE: string = "Homecare";
+		case HOSPITAL_FAMED: string = "Famed Lounge";
+	}
+	
+	return string;
+}
+
+forward ReleaseFromHospital(playerid, iHospital, iBed);
+public ReleaseFromHospital(playerid, iHospital, iBed)
+{
+	if(!IsPlayerConnected(playerid))
+	{
+		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
+		return 1;
+	}
+	if(GetPVarInt(playerid, "_SpawningAtHospital") == 2)
+	{
+		arrHospitalBedData[iHospital][iCountDown][iBed] = 0;
+	}
+	new string[128],
+	file[32], month, day, year;
+	getdate(year,month,day);
+	
+	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
+	{
+		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
+		DeletePVar(playerid, "_SpawningAtHospital");
+		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
+		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
+		PlayerTextDrawHide(playerid, HospTime[playerid]);
+		
+		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) // if they have homecare, set them at home for free
+		{
+			// set them to their house entrance location....
+			// using house spawn system from previous insurance system
+			for(new i = 0; i < sizeof(HouseInfo); i++)
+			{
+				if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i)
+				{
+					Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+					SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
+					SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+					GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+					PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
+					PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
+					SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
+					if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
+					break;
+				}
+			}
+			
+			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+		}
+		else
+		{
+			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+			SendClientMessageEx(playerid, COLOR_RED, string);
+		}
+		
+		PlayerInfo[playerid][pHospital] = 0;
+		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
+		Tax += HospitalSpawnInfo[iHospital][0];
+		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
+		if(!GetPVarType(playerid, "HealthCareActive")) PlayerInfo[playerid][pHunger] = 50;
+		else PlayerInfo[playerid][pHunger] = 83;
+		if(!GetPVarType(playerid, "HealthCareActive")) SetPlayerHealth(playerid, 50);
+		else SetPlayerHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
+		PlayerInfo[playerid][pHydration] = 100;
+		if(PlayerInfo[playerid][pDonateRank] >= 3)
+		{
+			SetPlayerHealth(playerid, 100.0);
+			PlayerInfo[playerid][pHunger] = 100;
+		}
+		DeletePVar(playerid, "VIPSpawn");
+	}
+	else
+	{
+		format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][iBed]);
+		PlayerTextDrawHide(playerid, HospTime[playerid]);
+		PlayerTextDrawSetString(playerid, HospTime[playerid], string);
+		PlayerTextDrawShow(playerid, HospTime[playerid]);
+		new Float:curhealth;
+		GetPlayerHealth(playerid, curhealth);
+		SetPlayerHealth(playerid, curhealth+1);
+		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
+	}
+	
+	return 1;
+}
+
+IsAtDeliverPatientPoint(playerid)
+{
+	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2])) return true;
+	}
+	
+	return 0;
+}
+
+GetClosestDeliverPatientPoint(playerid)
+{
+	new iPoint;
+	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, HospitalDeliveryPoints[i][0], HospitalDeliveryPoints[i][1], HospitalDeliveryPoints[i][2]))
+		{
+			iPoint = i;
+			break;
+		}
+	}
+	return iPoint;
+}
+
+ReturnDeliveryPoint(iDPID)
+{
+	// if you're going to add a new hospital delivery point, add the corresponding hospital ID to here.
+	
+	new iPoint;
+	
+	switch(iDPID)
+	{
+		case 0: iPoint = HOSPITAL_ALLSAINTS;
+		case 1: iPoint = HOSPITAL_ALLSAINTS;
+		case 2: iPoint = HOSPITAL_COUNTYGEN;
+		case 3: iPoint = HOSPITAL_COUNTYGEN;
+		case 4: iPoint = HOSPITAL_REDCOUNTY;
+		case 5: iPoint = HOSPITAL_REDCOUNTY;
+		case 6: iPoint = HOSPITAL_FORTCARSON;
+		case 7: iPoint = HOSPITAL_FORTCARSON;
+		case 8: iPoint = HOSPITAL_SANFIERRO;
+		case 9: iPoint = HOSPITAL_SANFIERRO;
+		case 10: iPoint = HOSPITAL_ELQUEBRADOS;
+		case 11: iPoint = HOSPITAL_BAYSIDE;
+		case 12: iPoint = HOSPITAL_DEMORGAN;
+		case 13: iPoint = HOSPITAL_LASVENTURAS;
+		case 14: iPoint = HOSPITAL_ANGELPINE;
+		case 15: iPoint = HOSPITAL_DOCJAIL;
+	}
+	
+	return iPoint;
+}
+
 CMD:insurehelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

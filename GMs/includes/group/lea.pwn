@@ -35,6 +35,35 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock CuffTacklee(playerid, giveplayerid)
+{
+	new string[128], Float: health, Float: armor;
+    ClearTackle(giveplayerid);
+	format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
+	TogglePlayerControllable(giveplayerid, 0);
+	ClearAnimations(giveplayerid);
+	ClearAnimations(playerid);
+	GetPlayerHealth(giveplayerid, health);
+	GetPlayerArmour(giveplayerid, armor);
+	SetPVarFloat(giveplayerid, "cuffhealth",health);
+	SetPVarFloat(giveplayerid, "cuffarmor",armor);
+	SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
+	ApplyAnimation(giveplayerid,"ped","cower",1,1,0,0,0,0,1);
+	PlayerCuffed[giveplayerid] = 2;
+	SetPVarInt(giveplayerid, "PlayerCuffed", 2);
+	SetPVarInt(giveplayerid, "IsFrozen", 1);
+	//Frozen[giveplayerid] = 1;
+	PlayerCuffedTime[giveplayerid] = 300;
+	PlayerFacePlayer(playerid, giveplayerid);
+	return 1;
+}
+
 CMD:placekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{

@@ -35,6 +35,106 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock GetAdminRankName(i)
+{
+	new string[128];
+	switch(i)
+	{
+		case 2: 
+		{
+			format(string, sizeof(string), "Junior Admin");
+		}
+		case 3: 
+		{
+			format(string, sizeof(string), "General Admin");
+		}
+		case 4: 
+		{
+			format(string, sizeof(string), "Senior Admin");
+		}
+		case 1337: 
+		{
+			format(string, sizeof(string), "Head Admin");
+		}
+		case 1338: 
+		{
+			format(string, sizeof(string), "Lead Head Admin");
+		}
+		default:
+		{
+			format(string, sizeof(string), "Executive Admin");
+		}
+	}
+	return string;
+}
+
+stock StaffAccountCheck(playerid, ip[])
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT NULL FROM `accounts` WHERE (`IP` = '%s' OR `SecureIP` = '%s') AND `AdminLevel` > 0", ip, ip);
+	mysql_function_query(MainPipeline, string, false, "OnStaffAccountCheck", "i", playerid);
+}
+
+stock GetStaffRank(playerid)
+{
+	new string[43];
+	if(PlayerInfo[playerid][pSEC] > 0)
+	{
+		switch(PlayerInfo[playerid][pSEC])
+		{
+			case 1: format(string, sizeof(string), "{00FA9A}Regular Coordinator{FFFFFF}");
+			case 2: format(string, sizeof(string), "{00FA9A}Senior Coordinator{FFFFFF}");
+			case 3: format(string, sizeof(string), "{00FA9A}Assistant Chairman{FFFFFF}");
+			case 4: format(string, sizeof(string), "{00FA9A}Deputy Chairman{FFFFFF}");
+			case 5: format(string, sizeof(string), "{00FA9A}Chairman{FFFFFF}");
+		}
+	}
+	if(PlayerInfo[playerid][pWatchdog] > 0)
+	{
+		switch(PlayerInfo[playerid][pWatchdog])
+		{
+			case 1: format(string, sizeof(string), "{2267F0}Watchdog{FFFFFF}");
+			case 2: format(string, sizeof(string), "{2267F0}Senior Watchdog{FFFFFF}");
+			case 3: format(string, sizeof(string), "{2267F0}RP Specialist{FFFFFF}");
+			case 4: format(string, sizeof(string), "{2267F0}Director of RP Improvement{FFFFFF}");
+		}
+	}
+	
+	if(PlayerInfo[playerid][pHelper] > 0)
+	{
+		switch(PlayerInfo[playerid][pHelper])
+		{
+			case 1: format(string, sizeof(string), "{6495ED}Helper{FFFFFF}");
+			case 2: format(string, sizeof(string), "{00FFFF}Community Advisor{FFFFFF}");
+			case 3: format(string, sizeof(string), "{00FFFF}Senior Advisor{FFFFFF}");
+			case 4: format(string, sizeof(string), "{00FFFF}Chief Advisor{FFFFFF}");
+		}
+	}
+
+	if(PlayerInfo[playerid][pAdmin] == 1)
+	{
+		switch(PlayerInfo[playerid][pSMod])
+		{
+			case 0: format(string, sizeof(string), "{FFFF00}Server Moderator{FFFFFF}");
+			case 1: format(string, sizeof(string), "{FFFF00}Senior Server Moderator{FFFFFF}");
+		}
+	}
+	if(PlayerInfo[playerid][pAdmin] > 1)
+	{
+		switch(PlayerInfo[playerid][pAdmin])
+		{
+			case 2: format(string, sizeof(string), "{00FF00}Junior Administrator{FFFFFF}");
+			case 3: format(string, sizeof(string), "{00FF00}General Administrator{FFFFFF}");
+			case 4: format(string, sizeof(string), "{F4A460}Senior Administrator{FFFFFF}");
+			case 1337: format(string, sizeof(string), "{FF0000}Head Administrator{FFFFFF}");
+			case 1338: format(string, sizeof(string), "{298EFF}Lead Head Administrator{FFFFFF}");
+			case 99999: format(string, sizeof(string), "{298EFF}Executive Administrator{FFFFFF}");
+			default: format(string, sizeof(string), "Undefined Administrator (%d)", PlayerInfo[playerid][pAdmin]);
+		}
+	}
+	return string;
+}
+
 CMD:hhc(playerid, params[]) {
 	return cmd_hhcheck(playerid, params);
 }

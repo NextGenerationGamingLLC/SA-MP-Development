@@ -35,6 +35,36 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock GetVIPRankName(i)
+{
+	new string[128];
+	switch(i)
+	{
+		case 1: 
+		{
+			format(string, sizeof(string), "Bronze VIP");
+		}
+		case 2: 
+		{
+			format(string, sizeof(string), "Silver VIP");
+		}
+		case 3: 
+		{
+			format(string, sizeof(string), "Gold VIP");
+		}
+		case 4: 
+		{
+			format(string, sizeof(string), "Platinum VIP");
+		}
+		default:
+		{
+			format(string, sizeof(string), "VIP Moderator");
+		}
+	}
+	return string;
+}
+
+
 CMD:vipdate(playerid, params[]) {
 	new giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] < 2)
