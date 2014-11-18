@@ -169,6 +169,22 @@ public SprayWall(gangtag, playerid)
 	return 1;
 }
 
+stock SendFamilyMessage(family, color, string[])
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pMember] == family || PlayerInfo[i][pLeader] == family) {
+				if(!gFam[i]) {
+					SendClientMessageEx(i, color, string);
+				}
+			}
+		}	
+	}
+}
+
 CMD:togfamily(playerid, params[])
 {
 	return cmd_togfam(playerid, params);

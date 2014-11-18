@@ -35,6 +35,75 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock DisplayStampDialog(playerid)
+{
+	ShowPlayerDialog(playerid, DIALOG_POSTAMP, DIALOG_STYLE_LIST, "Buy a stamp", "Regular Mail		$100\nPriority Mail		$250\nPremium Mail		$500 (Gold VIP+)\nGovernment Mail	Free", "Next", "Cancel");
+}
+
+stock RenderHouseMailbox(h)
+{
+	DestroyDynamicObject(HouseInfo[h][hMailObjectId]);
+	DestroyDynamic3DTextLabel(HouseInfo[h][hMailTextID]);
+	if (HouseInfo[h][hMailX] != 0.0)
+	{
+		HouseInfo[h][hMailObjectId] = CreateDynamicObject((HouseInfo[h][hMailType] == 1) ? 1478 : 3407, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ], 0, 0, HouseInfo[h][hMailA]);
+		new string[10];
+		format(string, sizeof(string), "HID: %d",h);
+		HouseInfo[h][hMailTextID] = CreateDynamic3DTextLabel(string, 0xFFFFFF88, HouseInfo[h][hMailX], HouseInfo[h][hMailY], HouseInfo[h][hMailZ]+0.5,10.0, .streamdistance = 10.0);
+	}
+}
+
+stock RenderStreetMailbox(id)
+{
+	DestroyDynamicObject(MailBoxes[id][mbObjectId]);
+	DestroyDynamic3DTextLabel(MailBoxes[id][mbTextId]);
+	if(MailBoxes[id][mbPosX] != 0.0)
+	{
+	    new string[128];
+		MailBoxes[id][mbObjectId] = CreateDynamicObject(1258, MailBoxes[id][mbPosX], MailBoxes[id][mbPosY], MailBoxes[id][mbPosZ], 0.0, 0.0, MailBoxes[id][mbAngle], MailBoxes[id][mbVW], MailBoxes[id][mbInt], .streamdistance = 100.0);
+		format(string,sizeof(string),"Mailbox (ID: %d)\nType /sendmail to send a letter.", id);
+		MailBoxes[id][mbTextId] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, MailBoxes[id][mbPosX], MailBoxes[id][mbPosY], MailBoxes[id][mbPosZ] + 0.5, 10.0, .worldid = MailBoxes[id][mbVW], .testlos = 0, .streamdistance = 25.0);
+	}
+}
+
+stock HasMailbox(playerid)
+{
+	if (PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID &&	HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailX] != 0.0) return 1;
+	if (PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailX] != 0.0) return 1;
+	if (PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailX] != 0.0) return 1;
+	return 0;
+}
+
+stock GetFreeMailboxId()
+{
+    for (new i; i < MAX_MAILBOXES; i++) {
+		if (MailBoxes[i][mbPosX] == 0.0) return i;
+	}
+	return -1;
+}
+
+stock ClearHouseMailbox(houseid)
+{
+	HouseInfo[houseid][hMailX] = 0.0;
+	HouseInfo[houseid][hMailY] = 0.0;
+	HouseInfo[houseid][hMailZ] = 0.0;
+	HouseInfo[houseid][hMailA] = 0.0;
+	HouseInfo[houseid][hMailType] = 0;
+	SaveHouse(houseid);
+}
+
+stock ClearStreetMailbox(boxid)
+{
+	MailBoxes[boxid][mbVW] = 0;
+	MailBoxes[boxid][mbInt] = 0;
+	MailBoxes[boxid][mbModel] = 0;
+	MailBoxes[boxid][mbPosX] = 0.0;
+	MailBoxes[boxid][mbPosY] = 0.0;
+	MailBoxes[boxid][mbPosZ] = 0.0;
+	MailBoxes[boxid][mbAngle] = 0.0;
+	SaveMailbox(boxid);
+}
+
 CMD:mailhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Mail System Help");

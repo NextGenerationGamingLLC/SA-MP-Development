@@ -64,6 +64,19 @@ stock GetVIPRankName(i)
 	return string;
 }
 
+stock SendVIPMessage(color, string[])
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2) && PlayerInfo[i][pVIPTogged] == 1) {
+				SendClientMessageEx(i, color, string);
+			}
+		}	
+	}
+}
 
 CMD:vipdate(playerid, params[]) {
 	new giveplayerid;

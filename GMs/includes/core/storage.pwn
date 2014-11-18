@@ -1598,6 +1598,91 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 	return 0;
 }
 
+stock ShowInventory(playerid,targetid)
+{
+	if(IsPlayerConnected(targetid))
+	{
+		new resultline[1024], header[64], pnumber[20];
+		if(PlayerInfo[targetid][pPnumber] == 0) pnumber = "None"; else format(pnumber, sizeof(pnumber), "%d", PlayerInfo[targetid][pPnumber]);
+
+		new totalwealth;
+		totalwealth = PlayerInfo[targetid][pAccount] + GetPlayerCash(targetid);
+		if(PlayerInfo[targetid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey]][hSafeMoney];
+		if(PlayerInfo[targetid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey2]][hSafeMoney];
+		if(PlayerInfo[targetid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey3]][hSafeMoney];
+		
+		SetPVarInt(playerid, "ShowInventory", targetid);
+		format(header, sizeof(header), "Showing Inventory of %s", GetPlayerNameEx(targetid));
+		format(resultline, sizeof(resultline),"Total Wealth: $%s\n\
+		Cash: $%s\n\
+		Bank: $%s\n\
+		Phone Number: %s\n\
+		Radio Frequency: %dkhz\n\
+		VIP Tokens: %s\n\
+		Paintball Tokens: %s\n\
+		EXP Tokens: %s\n\
+		EXP Hours: %s\n\
+		Event Tokens: %s\n\
+		Materials: %s\n\
+		Crack: %s\n\
+		Pot: %s\n\
+		Heroin: %s\n\
+		Crates: %s\n\
+		Opium Seeds: %s\n\
+		Raw Opium: %s\n\
+		Syringes: %s\n\
+		Paper: %s\n\
+		Rope: %s\n\
+		Cigars: %s\n\
+		Sprunk Cans: %s\n\
+		Spraycans: %s\n\
+		Screwdrivers: %s\n\
+		SMSLog: %d\n\
+		Wristwatch: %d\n\
+		Surveillance: %d\n\
+		Tire: %d",
+		number_format(totalwealth),
+		number_format(GetPlayerCash(targetid)),
+		number_format(PlayerInfo[targetid][pAccount]),
+		pnumber,
+		PlayerInfo[targetid][pRadioFreq],
+		number_format(PlayerInfo[targetid][pTokens]),
+		number_format(PlayerInfo[targetid][pPaintTokens]),
+		number_format(PlayerInfo[targetid][pEXPToken]),
+		number_format(PlayerInfo[targetid][pDoubleEXP]),
+		number_format(PlayerInfo[targetid][pTrickortreat]),
+		number_format(PlayerInfo[targetid][pMats]),
+		number_format(PlayerInfo[targetid][pCrack]),
+		number_format(PlayerInfo[targetid][pPot]),
+		number_format(PlayerInfo[targetid][pHeroin]),
+		number_format(PlayerInfo[targetid][pCrates]),
+		number_format(PlayerInfo[targetid][pOpiumSeeds]),
+		number_format(PlayerInfo[targetid][pRawOpium]),
+		number_format(PlayerInfo[targetid][pSyringes]),
+		number_format(PlayerInfo[targetid][pPaper]),
+		number_format(PlayerInfo[targetid][pRope]),
+		number_format(PlayerInfo[targetid][pCigar]),
+		number_format(PlayerInfo[targetid][pSprunk]),
+		number_format(PlayerInfo[targetid][pSpraycan]),
+		number_format(PlayerInfo[targetid][pScrewdriver]),
+		PlayerInfo[targetid][pSmslog],
+		PlayerInfo[targetid][pWristwatch],
+		PlayerInfo[targetid][pSurveillance],
+		PlayerInfo[targetid][pTire]);
+		format(resultline, sizeof(resultline),"%s\n\
+		Tool Box Usages: %d\n\
+		Crowbar: %d\n\
+		Gold Giftbox Tokens: %s",
+		resultline,
+		PlayerInfo[targetid][pToolBox],
+		PlayerInfo[targetid][pCrowBar],
+		number_format(PlayerInfo[targetid][pGoldBoxTokens]));
+		ShowPlayerDialog(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
+	}
+	return 1;
+}
+
+
 /*CMD:storagehelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

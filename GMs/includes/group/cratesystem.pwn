@@ -35,6 +35,16 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock CountCrates()
+{
+	new count;
+	for(new i = 0; i < sizeof(CrateInfo); i++)
+	{
+	    if(CrateInfo[i][crActive]) count++;
+	}
+	return count;
+}
+
 CMD:crates(playerid, params[]) {
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])

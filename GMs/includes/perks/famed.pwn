@@ -76,6 +76,20 @@ stock GetFamedRankName(i)
 	return string;
 }
 
+stock SendFamedMessage(color, string[])
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pFamedTogged] == 1) {
+				SendClientMessageEx(i, color, string);
+			}
+		}	
+	}
+}
+
 //======[Start of Famed Commands]=======
 
 CMD:fc(playerid, params[]) {

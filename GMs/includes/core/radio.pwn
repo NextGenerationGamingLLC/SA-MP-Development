@@ -35,6 +35,23 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
+{
+	if(GetPVarType(playerid, "pAudioStream"))
+	{
+		SetPVarString(playerid, "pAudioStream", url);
+		StopAudioStreamForPlayerEx(playerid, 1);
+	}
+	else SetPVarString(playerid, "pAudioStream", url);
+    PlayAudioStreamForPlayer(playerid, url, posX, posY, posZ, distance, usepos);
+}
+
+stock StopAudioStreamForPlayerEx(playerid, reset = 0)
+{
+	if(reset == 0) DeletePVar(playerid, "pAudioStream");
+    StopAudioStreamForPlayer(playerid);
+}
+
 CMD:setstation(playerid, params[]) {
     if(!IsPlayerInAnyVehicle(playerid)) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be in a car to use a car radio.");

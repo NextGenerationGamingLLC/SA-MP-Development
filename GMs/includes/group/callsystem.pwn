@@ -35,6 +35,126 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicleid = INVALID_VEHICLE_ID)
+{
+    new bool:breakingloop = false, newid = INVALID_CALL_ID, string[128];
+
+	for(new i; i < MAX_CALLS; i++)
+	{
+		if(!breakingloop)
+		{
+			if(Calls[i][HasBeenUsed] == 0)
+			{
+				breakingloop = true;
+				newid = i;
+			}
+		}
+    }
+    if(newid != INVALID_CALL_ID)
+    {
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(0 <= PlayerInfo[i][pMember] < MAX_GROUPS)
+				{
+					for(new j; j < arrGroupData[PlayerInfo[i][pMember]][g_iJCount]; j++)
+					{
+						if(strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], area, true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], mainzone, true) == 0)
+						{
+							if((type == 0 || type == 4) && IsACop(i))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 1 && IsAMedic(i))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 2 && IsACop(i))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 3 && (IsACop(i) || IsATowman(i)))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 5 && (IsACop(i) || IsAMedic(i)))
+							{
+								PlayCrimeReportForPlayer(i, callfrom, 7);
+								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							}
+							if(type == 6 && (IsAReporter(i)))
+							{
+								format(string, sizeof(string), "Hotline: Caller: %s", GetPlayerNameEx(callfrom));
+								SendClientMessageEx(i, COLOR_PINK, string);
+								format(string, sizeof(string), "Hotline: Location: %s, Description: %s", area, description);
+								SendClientMessageEx(i, COLOR_PINK, string);
+							}
+						}
+					}
+				}
+			}
+     	}
+     	SetPVarInt(callfrom, "Has911Call", 1);
+		strmid(Calls[newid][Area], area, 0, strlen(area), 28);
+		strmid(Calls[newid][MainZone], mainzone, 0, strlen(mainzone), 28);
+		strmid(Calls[newid][Description], description, 0, strlen(description), 128);
+		Calls[newid][CallFrom] = callfrom;
+		Calls[newid][Type] = type;
+		Calls[newid][TimeToExpire] = 0;
+		Calls[newid][HasBeenUsed] = 1;
+		Calls[newid][BeingUsed] = 1;
+		Calls[newid][CallVehicleId] = vehicleid;
+		Calls[newid][CallExpireTimer] = SetTimerEx("CallTimer", 60000, 0, "d", newid);
+		new query[512];
+		format(query, sizeof(query), "INSERT INTO `911Calls` (Caller, Phone, Area, MainZone, Description, Type, Time) VALUES ('%s', %d, '%s', '%s', '%s', %d, UNIX_TIMESTAMP())", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber], g_mysql_ReturnEscaped(area, MainPipeline), mainzone, g_mysql_ReturnEscaped(description, MainPipeline), type);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+    }
+    else
+    {
+        ClearCalls();
+        SendCallToQueue(callfrom, description, area, mainzone, type, vehicleid);
+    }
+}
+
+stock ClearCalls()
+{
+	for(new i; i < MAX_CALLS; i++)
+	{
+	    if(Calls[i][BeingUsed] == 1) DeletePVar(Calls[i][CallFrom], "Has911Call");
+		strmid(Calls[i][Area], "None", 0, 4, 4);
+		strmid(Calls[i][MainZone], "None", 0, 4, 4);
+		strmid(Calls[i][Description], "None", 0, 4, 4);
+		Calls[i][RespondingID] = INVALID_PLAYER_ID;
+        Calls[i][CallFrom] = INVALID_PLAYER_ID;
+		Calls[i][Type] = -1;
+        Calls[i][TimeToExpire] = 0;
+        Calls[i][HasBeenUsed] = 0;
+        Calls[i][BeingUsed] = 0;
+		Calls[i][CallVehicleId] = INVALID_VEHICLE_ID;
+	}
+	return 1;
+}
+
 CMD:calls(playerid, params[])
 {
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)

@@ -35,6 +35,71 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock HigherBid(playerid)
+{
+	new
+    	AuctionItem = GetPVarInt(playerid, "AuctionItem");
+
+	if(Auctions[AuctionItem][InProgress] == 1) {
+		if(Auctions[AuctionItem][Bidder] != 0) {
+
+			new Player = ReturnUser(Auctions[AuctionItem][Wining]);
+			if(IsPlayerConnected(Player) && GetPlayerSQLId(Player) == Auctions[AuctionItem][Bidder])
+			{
+	  			GivePlayerCash(Player, Auctions[AuctionItem][Bid]);
+	    		SendClientMessageEx(Player, COLOR_WHITE, "Someone has outbid you, your money has been returned.");
+		    	new szMessage[128];
+		    	format(szMessage, sizeof(szMessage), "Amount of $%d has been returned to %s(%d) (IP:%s) for being outbid", Auctions[AuctionItem][Bid], GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player));
+				Log("logs/auction.log", szMessage);
+
+                GivePlayerCash(playerid, -GetPVarInt(playerid, "BidPlaced"));
+				Auctions[AuctionItem][Bid] = GetPVarInt(playerid, "BidPlaced");
+				Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
+				strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
+
+				format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+
+				format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
+				Log("logs/auction.log", szMessage);
+
+				SaveAuction(AuctionItem);
+
+				DeletePVar(playerid, "BidPlaced");
+				DeletePVar(playerid, "AuctionItem");
+			}
+			else
+			{
+	  			new query[128];
+	    		format(query, sizeof(query), "SELECT `Money` FROM `accounts` WHERE `id` = %d", Auctions[AuctionItem][Bidder]);
+	    		mysql_function_query(MainPipeline, query, true, "ReturnMoney", "i", playerid);
+		   }
+		}
+		else
+		{
+		    new
+		        szMessage[128];
+
+  			GivePlayerCash(playerid, -GetPVarInt(playerid, "BidPlaced"));
+			Auctions[AuctionItem][Bid] = GetPVarInt(playerid, "BidPlaced");
+			Auctions[AuctionItem][Bidder] = GetPlayerSQLId(playerid);
+			strcpy(Auctions[AuctionItem][Wining], GetPlayerNameExt(playerid), MAX_PLAYER_NAME);
+
+			format(szMessage, sizeof(szMessage), "You have placed a bid of $%i on %s.", GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor]);
+			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+
+			format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has placed a bid of $%i on %s(%i)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "BidPlaced"), Auctions[AuctionItem][BiddingFor], AuctionItem);
+			Log("logs/auction.log", szMessage);
+
+			SaveAuction(AuctionItem);
+
+			DeletePVar(playerid, "BidPlaced");
+			DeletePVar(playerid, "AuctionItem");
+		}
+	}
+	return 1;
+}
+
 CMD:editauctions(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4) {
 		new

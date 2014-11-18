@@ -35,6 +35,156 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
+{
+    new bool:breakingloop = false, newid = INVALID_REPORT_ID, string[128];
+
+	for(new i=0;i<MAX_REPORTS;i++)
+	{
+		if(!breakingloop)
+		{
+			if(Reports[i][HasBeenUsed] == 0)
+			{
+				breakingloop = true;
+				newid = i;
+			}
+		}
+    }
+    if(newid != INVALID_REPORT_ID)
+    {
+        switch(reportpriority)
+       	{
+   	    	case 1:
+   	    	{
+	        	//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0)
+						{
+							GameTextForPlayer(i, "~r~DM Alert", 1500, 1);
+						}
+					}	
+				}
+    		}
+ 	    	case 2:
+  	    	{
+        		//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
+						{
+							GameTextForPlayer(i, "~p~Priority Report", 1500, 1);
+						}
+					}	
+				}
+			}
+   			case 3..4:
+ 	    	{
+       			//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
+						{
+							TextDrawSetString(PriorityReport[i], "~y~New Report");
+							TextDrawShowForPlayer(i, PriorityReport[i]);
+							SetTimerEx("HideReportText", 2000, 0, "d", i);
+						}
+					}	
+				}
+    		}
+ 	    	case 5:
+  	    	{
+        		//foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
+						{
+							//GameTextForPlayer(i, "~w~~n~n~n~Priority 5 Item Pending", 1500, 3);
+							TextDrawSetString(PriorityReport[i], "~w~Priority 5 Item Pending");
+							TextDrawShowForPlayer(i, PriorityReport[i]);
+							SetTimerEx("HideReportText", 2000, 0, "d", i);
+						}
+					}	
+				}
+    		}
+     	}
+     	//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+					SendClientMessageEx(i, COLOR_REPORT, string);
+				}
+				else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+					SendClientMessageEx(i, COLOR_REPORT, string);
+				}
+			}	
+     	}
+     	SetPVarInt(reportfrom, "HasReport", 1);
+        if(reportlevel == 2)
+		{
+        	strmid(Reports[newid][Report], report, 0, strlen(report), 128);
+        	Reports[newid][ReportFrom] = reportfrom;
+        	Reports[newid][TimeToExpire] = 0;
+        	Reports[newid][HasBeenUsed] = 1;
+        	Reports[newid][BeingUsed] = 1;
+        	Reports[newid][ReportPriority] = reportpriority;
+        	Reports[newid][ReportExpireTimer] = SetTimerEx("ReportTimer", 60000, 0, "d", newid);
+		}
+		else
+		{
+		    strmid(Reports[newid][Report], report, 0, strlen(report), 128);
+        	Reports[newid][ReportFrom] = reportfrom;
+        	Reports[newid][TimeToExpire] = 0;
+        	Reports[newid][HasBeenUsed] = 1;
+        	Reports[newid][BeingUsed] = 1;
+        	Reports[newid][ReportPriority] = reportpriority;
+        	Reports[newid][ReportExpireTimer] = SetTimerEx("ReportTimer", 60000, 0, "d", newid);
+		}
+    }
+    else
+    {
+        ClearReports();
+        SendReportToQue(reportfrom, report, reportlevel, reportpriority);
+    }
+}
+
+stock ClearReports()
+{
+	for(new i=0;i<MAX_REPORTS;i++)
+	{
+	    if(Reports[i][BeingUsed] == 1) {
+			DeletePVar(Reports[i][ReportFrom], "HasReport");
+		}
+		if(GetPVarInt(Reports[i][ReportFrom], "AlertedThisPlayer"))
+		{
+			DeletePVar(Reports[i][ReportFrom], "AlertedThisPlayer");
+			DeletePVar(Reports[i][ReportFrom], "AlertType");
+			if(AlertTime[Reports[i][ReportFrom]] != 0) AlertTime[Reports[i][ReportFrom]] = 0;
+		}
+		strmid(Reports[i][Report], "None", 0, 4, 4);
+		Reports[i][CheckingReport] = INVALID_PLAYER_ID;
+        Reports[i][ReportFrom] = INVALID_PLAYER_ID;
+        Reports[i][TimeToExpire] = 0;
+        Reports[i][HasBeenUsed] = 0;
+        Reports[i][BeingUsed] = 0;
+        Reports[i][ReportPriority] = 0;
+        Reports[i][ReportLevel] = 0;
+	}
+	return 1;
+}
+
 CMD:clearallreports(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 1337) {

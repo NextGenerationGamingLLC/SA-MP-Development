@@ -59,6 +59,281 @@ stock IsAtGym(playerid)
 	return (iBusiness != INVALID_BUSINESS_ID && Businesses[iBusiness][bType] == BUSINESS_TYPE_GYM);
 }
 
+stock StopRefueling(playerid, iBusinessID, iPumpID)
+{
+
+	new
+		iCost = floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]),
+		iVehicleID = Businesses[iBusinessID][GasPumpVehicleID][iPumpID],
+		string[128];
+
+	format(string, sizeof(string), "Your vehicle's tank has been refilled for $%d.", iCost);
+
+	if( DynVeh[iVehicleID] != -1)
+	{
+	    DynVehicleInfo[DynVeh[iVehicleID]][gv_fFuel] = VehicleFuel[iVehicleID];
+	    DynVeh_Save(DynVeh[iVehicleID]);
+	}
+	if (DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] != INVALID_GROUP_ID)
+ 	{
+ 		new iGroupID = DynVehicleInfo[DynVeh[iVehicleID]][gv_igID];
+		arrGroupData[iGroupID][g_iBudget] -= iCost;
+		new str[128], file[32];
+        format(str, sizeof(str), "%s has refueled vehicle %d at a cost of $%d to %s's budget fund.", GetPlayerNameEx(playerid), iVehicleID, iCost, arrGroupData[iGroupID][g_szGroupName]);
+		new month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+		Log(file, str);
+ 		SendClientMessageEx(playerid, COLOR_GREY, "This is a group vehicle and the refueling cost has been paid by the government.");
+	}
+	else GivePlayerCash(playerid, -iCost);
+
+	Businesses[iBusinessID][bSafeBalance] += TaxSale(iCost);
+
+	KillTimer(Businesses[iBusinessID][GasPumpTimer][iPumpID]);
+
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+	new vehicleslot = GetPlayerVehicle(playerid, iVehicleID);
+
+	// Save Fuel to MySQL
+	if(vehicleslot != -1) {
+	    PlayerVehicleInfo[playerid][vehicleslot][pvFuel] = VehicleFuel[iVehicleID];
+		format(string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[iVehicleID], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	}
+
+	Businesses[iBusinessID][GasPumpVehicleID][iPumpID] = 0;
+
+	DeletePVar(playerid, "Refueling");
+
+	format(string,sizeof(string),"%s(%d) (IP: %s) has refueled their vehicle for $%d at %s (%d)",GetPlayerNameEx(playerid),GetPlayerSQLId(playerid),GetPlayerIpEx(playerid),iCost,Businesses[iBusinessID][bName], iBusinessID);
+	Log("logs/business.log", string);
+
+	return true;
+}
+
+stock GetCarBusiness(carid)
+{
+    for(new b = 0; b < MAX_BUSINESSES; b++)
+    {
+	    for(new i = 0; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++)
+	    {
+	        if (Businesses[b][bVehID][i] == carid) return b;
+	    }
+	}
+	return INVALID_BUSINESS_ID;
+}
+
+stock GetBusinessCarSlot(carid)
+{
+    for(new b = 0; b < MAX_BUSINESSES; b++)
+    {
+	    for(new i = 0; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++)
+	    {
+	        if (Businesses[b][bVehID][i] == carid) return i;
+	    }
+	}
+	return INVALID_BUSINESS_ID;
+}
+
+stock IsValidBusinessID(id)
+{
+	if(id == INVALID_BUSINESS_ID) return 0;
+	else if(id >= 0 && id < MAX_BUSINESSES) return 1;
+	return 0;
+}
+
+stock DestroyDynamicGasPump(iBusiness, iPump)
+{
+	DestroyDynamicObject(Businesses[iBusiness][GasPumpObjectID][iPump]);
+	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpInfoTextID][iPump]);
+	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpSaleTextID][iPump]);
+}
+
+stock CreateDynamicGasPump(iPlayerID = INVALID_PLAYER_ID, iBusiness, iPump)
+{
+	if (iPlayerID != INVALID_PLAYER_ID)
+	{
+		new Float: arr_fPos[4];
+		GetPlayerPos(iPlayerID, arr_fPos[0], arr_fPos[1], arr_fPos[2]);
+		GetPlayerFacingAngle(iPlayerID, arr_fPos[3]);
+		Businesses[iBusiness][GasPumpPosX][iPump] = arr_fPos[0];
+		Businesses[iBusiness][GasPumpPosY][iPump] = arr_fPos[1];
+		Businesses[iBusiness][GasPumpPosZ][iPump] = arr_fPos[2] + 0.4;
+		Businesses[iBusiness][GasPumpAngle][iPump] = arr_fPos[3];
+	}
+	new szLabel[148];
+	Businesses[iBusiness][GasPumpObjectID][iPump] = CreateDynamicObject(1676, Businesses[iBusiness][GasPumpPosX][iPump], Businesses[iBusiness][GasPumpPosY][iPump], Businesses[iBusiness][GasPumpPosZ][iPump], 0, 0, Businesses[iBusiness][GasPumpAngle][iPump], .worldid = 0, .streamdistance = 100);
+	format(szLabel, sizeof(szLabel), "{33AA33}Gas Pump\nID: %d\n{FFFF00}Type '/refuel' to refill your vehicle's tank.", iPump);
+	Businesses[iBusiness][GasPumpInfoTextID][iPump] = CreateDynamic3DTextLabel(szLabel, COLOR_YELLOW, Businesses[iBusiness][GasPumpPosX][iPump], Businesses[iBusiness][GasPumpPosY][iPump], Businesses[iBusiness][GasPumpPosZ][iPump] - 0.3, 10.00);
+	format(szLabel, sizeof(szLabel), "Price Per Gallon: $%.2f\nThis Sale: $0.00\nGallons: 0.000\nGas Available: %.2f/%.2f gallons", Businesses[iBusiness][bGasPrice], Businesses[iBusiness][GasPumpGallons][iPump], Businesses[iBusiness][GasPumpCapacity][iPump]);
+	Businesses[iBusiness][GasPumpSaleTextID][iPump] = CreateDynamic3DTextLabel(szLabel, COLOR_YELLOW, Businesses[iBusiness][GasPumpPosX][iPump], Businesses[iBusiness][GasPumpPosY][iPump], Businesses[iBusiness][GasPumpPosZ][iPump] + 0.7, 10.00);
+}
+
+stock RefreshBusinessPickup(i)
+{
+	DestroyDynamic3DTextLabel(Businesses[i][bDoorText]);
+  	DestroyDynamic3DTextLabel(Businesses[i][bStateText]);
+  	DestroyDynamic3DTextLabel(Businesses[i][bSupplyText]);
+  	DestroyDynamicPickup(Businesses[i][bPickup]);
+    if (!(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0)) {
+    	new string[128];
+		Businesses[i][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(i), 23, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]);
+        if (Businesses[i][bOwner] < 1) {
+			format(string,sizeof(string),"%s\n\nBusiness For Sale!\nCost: %s\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
+		}
+		else {
+		    if(Businesses[i][bType] != BUSINESS_TYPE_GYM) {
+				format(string,sizeof(string),"%s\n\n%s [Owner: %s]\nID: %d", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i);
+			}
+			else {
+			    format(string,sizeof(string),"%s\n\n%s [Owner: %s]\nID: %d\nGym Entrance: $%s", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i, number_format(Businesses[i][bGymEntryFee]));
+			}
+		}
+		Businesses[i][bDoorText] =	CreateDynamic3DTextLabel(string, BUSINESS_NAME_COLOR, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2] + 0.85, 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
+		Businesses[i][bStateText] =	CreateDynamic3DTextLabel((Businesses[i][bStatus]) ? ("Open") : ("Closed"), (Businesses[i][bStatus]) ? BUSINESS_OPEN_COLOR : BUSINESS_CLOSED_COLOR, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2] + 1.05, 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
+		if(Businesses[i][bSupplyPos][0] != 0.0)
+		{
+			format(string,sizeof(string),"%s\nSupply Delivery Point", Businesses[i][bName]);
+			Businesses[i][bSupplyText] = CreateDynamic3DTextLabel(string, BUSINESS_NAME_COLOR, Businesses[i][bSupplyPos][0], Businesses[i][bSupplyPos][1], Businesses[i][bSupplyPos][2], 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
+		}
+	}
+}
+
+
+stock GetBusinessDefaultPickup(business)
+{
+	switch (Businesses[business][bType]) {
+		case BUSINESS_TYPE_GASSTATION: return 1650;
+		case BUSINESS_TYPE_CLOTHING: return 1275;
+		case BUSINESS_TYPE_RESTAURANT: return 19094;
+		case BUSINESS_TYPE_SEXSHOP: return 321;
+		case BUSINESS_TYPE_BAR:
+		{
+		    new rnd = random(4);
+		    if (rnd == 0) return 1486;
+		    if (rnd == 1) return 1543;
+		    if (rnd == 2) return 1544;
+		    if (rnd == 3) return 1951;
+		}
+		case BUSINESS_TYPE_GYM: return 1318;
+		default: return 1274;
+	}
+	return 1318;
+}
+
+stock GetBusinessRankName(rank)
+{
+	new string[16];
+	switch (rank) {
+		case 0: string = "Trainee";
+		case 1: string = "Employee";
+		case 2: string = "Senior Employee";
+		case 3: string = "Manager";
+		case 4: string = "Co-Owner";
+		case 5: string = "Owner";
+		default: string = "Undefined";
+	}
+	return string;
+}
+
+stock GetBusinessTypeName(type)
+{
+	new string[20];
+	switch (type) {
+		case 1: string = "Gas Station";
+		case 2: string = "Clothing Store";
+		case 3: string = "Restaurant";
+		case 4: string = "Gun Shop";
+		case 5: string = "New Car Dealership";
+		case 6: string = "Used Car Dealership";
+		case 7: string = "Mechanic";
+		case 8: string = "24/7";
+		case 9: string = "Bar";
+		case 10: string = "Club";
+		case 11: string = "Sex Shop";
+		case 12: string = "Gym";
+		default: string = "Undefined";
+	}
+	return string;
+}
+
+stock GetInventoryType(businessid)
+{
+	new string[30];
+	if(businessid == INVALID_BUSINESS_ID) {
+        string = "Empty";
+		return string;
+	}
+	switch (Businesses[businessid][bType]) {
+		case BUSINESS_TYPE_NEWCARDEALERSHIP: string = "Vehicles";
+		case BUSINESS_TYPE_GASSTATION: string = "Petrol";
+		case BUSINESS_TYPE_GUNSHOP: string = "Illegal Materials";
+		case BUSINESS_TYPE_MECHANIC: string = "Car Parts";
+		case BUSINESS_TYPE_STORE: string = "24/7 Items";
+		case BUSINESS_TYPE_CLOTHING: string = "Clothing";
+		case BUSINESS_TYPE_RESTAURANT, BUSINESS_TYPE_BAR, BUSINESS_TYPE_CLUB: string = "Food & Beverages";
+		default: string = "Empty";
+	}
+	return string;
+}
+
+stock GetSupplyState(stateid)
+{
+	new string[28];
+	switch (stateid)	{
+		case 1: string = "{FFFF00}Pending Shipment";
+		case 2: string = "{FFAA00}Shipping";
+		case 3: string = "{00AA00}Delivered";
+		case 4: string = "{FF3333}Cancelled";
+		default: string = "Undefined";
+	}
+	return string;
+}
+
+stock InBusiness(playerid)
+{
+    if(GetPVarType(playerid, "BusinessesID")) return GetPVarInt(playerid, "BusinessesID");
+    else return INVALID_BUSINESS_ID;
+}
+
+stock GetClosestGasPump(playerid, &businessid, &pumpslot)
+{
+	new Float: minrange = 5.0, Float: range;
+
+	businessid = INVALID_BUSINESS_ID;
+
+    for(new b = 0; b < MAX_BUSINESSES; b++)
+    {
+	    for(new i = 0; i < MAX_BUSINESS_GAS_PUMPS; i++)
+	    {
+	        range = GetPlayerDistanceFromPoint(playerid, Businesses[b][GasPumpPosX][i], Businesses[b][GasPumpPosY][i], Businesses[b][GasPumpPosZ][i]);
+	 	    if (range < minrange)
+			{
+				businessid = b;
+				pumpslot = i;
+			    minrange = range;
+		    }
+	   	}
+ 	}
+}
+
+stock IsBusinessGasAble(iBusinessType) {
+ 	switch (iBusinessType) {
+ 		case 1,7,8: return 1;
+	}
+	return 0;
+}
+
+stock GetFreeGasPumpID(biz)
+{
+    for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) {
+		if (Businesses[biz][GasPumpPosX][i] == 0.0) return i;
+	}
+	return INVALID_GAS_PUMP;
+}
+
 CMD:businessdate(playerid, params[]) {
 	new giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] < 2)

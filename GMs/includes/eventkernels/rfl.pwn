@@ -54,6 +54,37 @@ public RFLCheckpointu(playerid)
 	SetPlayerCheckpoint(playerid, EventRCPX[ConfigEventCPId[playerid]], EventRCPY[ConfigEventCPId[playerid]], EventRCPZ[ConfigEventCPId[playerid]], EventRCPS[ConfigEventCPId[playerid]]);
 }
 
+forward WateringStation(playerid);
+public WateringStation(playerid)
+{
+    if(GetPVarInt(playerid, "EventToken") == 1 && GetPVarInt(playerid, "InWaterStationRCP") == 1)
+	{
+	    if(PlayerInfo[playerid][pHydration] < 100) {
+	    	PlayerInfo[playerid][pHydration] += 4;
+		} else {
+			KillTimer(GetPVarInt(playerid, "WSRCPTimerId"));
+	    	SetPVarInt(playerid, "WSRCPTimerId", 0);
+     		SetPVarInt(playerid, "InWaterStationRCP", 0);
+     		RCPIdCurrent[playerid]++;
+     		if(EventRCPT[RCPIdCurrent[playerid]] == 1) {
+	    	    DisablePlayerCheckpoint(playerid);
+				SetPlayerCheckpoint(playerid, EventRCPX[RCPIdCurrent[playerid]], EventRCPY[RCPIdCurrent[playerid]], EventRCPZ[RCPIdCurrent[playerid]], EventRCPS[RCPIdCurrent[playerid]]);
+			}
+			else if(EventRCPT[RCPIdCurrent[playerid]] == 4) {
+		   		DisablePlayerCheckpoint(playerid);
+		    	SetPlayerCheckpoint(playerid, EventRCPX[RCPIdCurrent[playerid]], EventRCPY[RCPIdCurrent[playerid]], EventRCPZ[RCPIdCurrent[playerid]], EventRCPS[RCPIdCurrent[playerid]]);
+			} else {
+			    DisablePlayerCheckpoint(playerid);
+			    SetPlayerCheckpoint(playerid, EventRCPX[RCPIdCurrent[playerid]], EventRCPY[RCPIdCurrent[playerid]], EventRCPZ[RCPIdCurrent[playerid]], EventRCPS[RCPIdCurrent[playerid]]);
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are now fully rehydrated you can continue to your next checkpoint.");
+		}
+	} else {
+        KillTimer(GetPVarInt(playerid, "WSRCPTimerId"));
+	}
+}
+
+
 // Relay For Life
 CMD:setlapcount(playerid, params[]) 
 {

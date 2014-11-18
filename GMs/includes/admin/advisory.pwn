@@ -35,6 +35,36 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+stock SendAdvisorMessage(color, string[])
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pDonateRank] == 5 || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
+			{
+				SendClientMessageEx(i, color, string);
+			}
+		}
+	}
+}
+
+stock SendDutyAdvisorMessage(color, string[])
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pHelper] >= 2 && GetPVarInt(i, "AdvisorDuty") == 1) {
+				SendClientMessageEx(i, color, string);
+			}
+		}	
+	}
+}
+
 CMD:advisors(playerid, params[])
 {
     new string[128];

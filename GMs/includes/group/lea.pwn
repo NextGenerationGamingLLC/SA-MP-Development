@@ -64,6 +64,117 @@ stock CuffTacklee(playerid, giveplayerid)
 	return 1;
 }
 
+stock ClearTackle(playerid)
+{
+    TogglePlayerControllable(playerid, 1);
+	//PreloadAnimLib(playerid, "SUNBATHE");
+	//PreloadAnimLib(GetPVarInt(playerid, "IsTackled"), "SUNBATHE");
+    ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.1, 0, 1, 1, 0, 0, 1);
+	SetPVarInt(playerid, "CantBeTackledCount", 15); // cant be tackled again for 15 seconds
+	DeletePVar(GetPVarInt(playerid, "IsTackled"), "Tackling");
+	DeletePVar(playerid, "IsTackled");
+	DeletePVar(playerid, "TackleCooldown");
+	DeletePVar(playerid, "TackledResisting");
+	DeletePVar(playerid, "IsFrozen");
+	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+	return 1;
+}
+
+forward DragPlayer(dragger, dragee);
+public DragPlayer(dragger, dragee)
+{
+	if(!IsPlayerConnected(dragger)) SendClientMessageEx(dragee, COLOR_GRAD2, "The player that was dragging you has disconnected.");
+	if(!IsPlayerConnected(dragee))
+	{
+		SetPVarInt(dragger, "DraggingPlayer", INVALID_PLAYER_ID);
+		SendClientMessageEx(dragger, COLOR_GRAD2, "The player you were dragging has disconnected.");
+	}
+	if(GetPVarType(dragger, "DraggingPlayer") && GetPVarInt(dragger, "DraggingPlayer") != INVALID_PLAYER_ID)
+	{
+		new Float:dX, Float:dY, Float:dZ;
+		GetPlayerPos(dragger, dX, dY, dZ);
+		floatsub(dX, 0.4);
+		floatsub(dY, 0.4);
+
+		SetPVarFloat(dragee, "DragX", dX);
+		SetPVarFloat(dragee, "DragY", dY);
+		SetPVarFloat(dragee, "DragZ", dZ);
+		SetPVarInt(dragee, "DragWorld", GetPlayerVirtualWorld(dragger));
+		SetPVarInt(dragee, "DragInt", GetPlayerInterior(dragger));
+		Streamer_UpdateEx(dragee, dX, dY, dZ);
+		SetPlayerPos(dragee, dX, dY, dZ);
+		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
+		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
+		ClearAnimations(dragee);
+		ApplyAnimation(dragee, "ped","cower",1,1,0,0,0,0,1);
+        SetTimerEx("DragPlayer", 1000, 0, "ii", dragger, dragee);
+	}
+	return 1;
+}
+
+forward CuffTackled(playerid, giveplayerid);
+public CuffTackled(playerid, giveplayerid)
+{
+	new string[128];
+	if(!GetPVarType(giveplayerid, "IsTackled"))
+	{
+	    return SendClientMessageEx(playerid, COLOR_GRAD1, "The suspect has escaped your tackle.  Tackle or Taze him again or get them to comply!");
+	}
+	if(GetPVarType(giveplayerid, "TackledResisting")) // If they haven't chosen - we assume they're resisting
+	{
+	    if(GetPVarInt(giveplayerid, "TackledResisting") == 1) // complying
+	    {
+			if(GetPVarType(giveplayerid, "IsTackled"))
+			{
+				return CuffTacklee(playerid, giveplayerid);
+			}
+		}
+	    if(GetPVarInt(giveplayerid, "TackledResisting") == 2) // resisting
+	    {
+	        new copcount;
+			//foreach(new j: Player)
+			for(new j = 0; j < MAX_PLAYERS; ++j)
+			{
+				if(IsPlayerConnected(j))
+				{
+					if(ProxDetectorS(4.0, giveplayerid, j) && IsACop(j) && j != giveplayerid)
+					{
+						copcount++;
+					}
+				}	
+			}
+	        format(string, sizeof(string), "* %s pushes and attempts to resist %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+    		ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	        new cuffchance = random(11);
+	        if(copcount >= 2 && copcount < 5) cuffchance = random(6);
+			else if(copcount >= 5) cuffchance = 1;
+			switch(cuffchance)
+			{
+			    case 0..4: // success
+			    {
+			        return CuffTacklee(playerid, giveplayerid);
+			    }
+				default: // fail
+				{
+					format(string, sizeof(string), "* %s pushes %s aside and is able to escape.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+    				ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+    				TogglePlayerControllable(playerid, 0);
+					ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+					SetTimerEx("CopGetUp", 3500, 0, "i", playerid);
+				 	ClearTackle(giveplayerid);
+				}
+			}
+	    }
+	}
+	else
+	{
+	    ShowPlayerDialog(giveplayerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+	    SetPVarInt(giveplayerid, "TackledResisting", 2);
+		CuffTackled(playerid, giveplayerid);
+	}
+	return 1;
+}
+
 CMD:placekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
