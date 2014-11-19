@@ -35,6 +35,914 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward UnholsterWeapon(playerid, iWeaponSlot);
+public UnholsterWeapon(playerid, iWeaponSlot)
+{
+	new string[128];
+	
+	if(iWeaponSlot == 0)
+	{
+		SetPVarInt(playerid, "WeaponsHolstered", 1);
+		format(string, sizeof(string), "* %s holsters their weapon.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+		
+	}
+	else
+	{
+		SetPVarInt(playerid, "WeaponsHolstered", 0);
+		format(string, sizeof(string), "* %s unholsters their %s.", GetPlayerNameEx(playerid), ReturnWeaponName(PlayerInfo[playerid][pGuns][iWeaponSlot]));
+	}
+	
+	SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][iWeaponSlot]);
+	PlayerInfo[playerid][pHolsteredWeapon] = iWeaponSlot;
+	
+	ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	
+	
+	
+	return 1;
+}
+
+ReturnWeaponName(iWeaponID) {
+
+	new
+		szName[32];
+
+	switch(iWeaponID) {
+		case 0: szName = "fist";
+		case 1: szName = "brass knuckles";
+		case 2: szName = "golf club";
+		case 3: szName = "nitestick";
+		case 4: szName = "knife";
+		case 5: szName = "baseball bat";
+		case 6: szName = "shovel";
+		case 7: szName = "pool cue";
+		case 8: szName = "katana";
+		case 9: szName = "chainsaw";
+		case 10: szName = "purple dildo";
+		case 11: szName = "white vibrator";
+		case 12: szName = "white vibrator";
+		case 13: szName = "silver vibrator";
+		case 14: szName = "flowers";
+		case 15: szName = "cane";
+		case 16: szName = "grenade";
+		case 17: szName = "tear gas";
+		case 18: szName = "molotov cocktail";
+		case 19: szName = "jetpack";
+		case 20: szName = "";
+		case 21: szName = "";
+		case 22: szName = "Colt .45";
+		case 23: szName = "silenced Colt .45";
+		case 24: szName = "Desert Eagle";
+		case 25: szName = "shotgun";
+		case 26: szName = "sawn-off shotgun";
+		case 27: szName = "SPAS-12";
+		case 28: szName = "Micro Uzi";
+		case 29: szName = "MP5";
+		case 30: szName = "AK-47";
+		case 31: szName = "M4A1";
+		case 32: szName = "TEC-9";
+		case 33: szName = "rifle";
+		case 34: szName = "sniper rifle";
+		case 35: szName = "RPG";
+		case 36: szName = "heatseeker";
+		case 37: szName = "flamethrower";
+		case 38: szName = "minigun";
+		case 39: szName = "satchel charge";
+		case 40: szName = "detonator";
+		case 41: szName = "spray can";
+		case 42: szName = "fire extinguisher";
+		case 43: szName = "camera";
+		case 44: szName = "nightvision goggles";
+		case 45: szName = "thermal goggles";
+		case 46: szName = "parachute";
+	}
+	return szName;
+}
+
+/*Weapon_ReturnSlot(iWeaponID) {
+	switch(iWeaponID) {
+		case 0, 1:
+			return 0;
+
+		case 2 .. 9:
+			return 1;
+
+		case 22 .. 24:
+			return 2;
+
+		case 25 .. 27:
+			return 3;
+			
+		case 28, 29, 32:
+			return 4;
+
+		case 30, 31:
+			return 5;
+
+		case 33, 34:
+			return 6;
+
+		case 35 .. 38:
+			return 7;
+
+		case 16 .. 18, 39, 40:
+			return 8;
+
+		case 41 .. 43:
+			return 9;
+
+		case 10 .. 15:
+			return 10;
+
+		case 44 .. 46:
+			return 11;
+	}
+	return -1;
+}*/
+
+OnPlayerChangeWeapon(playerid, newweapon)
+{
+	if(IsPlayerInDynamicArea(playerid, NGGShop)) SetPlayerArmedWeapon(playerid, 0);
+	if(pTazer{playerid} == 1) SetPlayerArmedWeapon(playerid,23);
+	if(GetPVarInt(playerid, "WeaponsHolstered") == 1)
+	{
+	    SetPlayerArmedWeapon(playerid, 0);
+	}
+	
+	/*if(Weapon_ReturnSlot(newweapon) != PlayerInfo[playerid][pHolsteredWeapon])
+	{
+		SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][PlayerInfo[playerid][pHolsteredWeapon]]);
+	}*/
+
+ 	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+	    new a = GetPVarInt(playerid, "IsInArena");
+	    if(PaintBallArena[a][pbGameType] == 3)
+	    {
+	        if(PaintBallArena[a][pbFlagNoWeapons] == 1)
+	        {
+	        	if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
+	        	{
+					SetPlayerArmedWeapon(playerid, 0);
+	        	}
+			}
+	    }
+	}
+	if(PlayerInfo[playerid][pAdmin] < 4)
+	{
+		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return 1;
+		if(GetPVarInt(playerid, "EventToken") != 0) return 1;
+		if(GetPlayerState(playerid) == PLAYER_STATE_NONE || GetPlayerState(playerid) == PLAYER_STATE_DRIVER || GetPlayerState(playerid) == PLAYER_STATE_WASTED || GetPlayerState(playerid) == PLAYER_STATE_SPAWNED || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return 1;
+
+		if( PlayerInfo[playerid][pGuns][1] != 2 && GetPlayerWeapon( playerid ) == 2)
+		{
+		    // Don't really care about golf club hacking do we?
+			//ExecuteHackerAction( playerid, newweapon );
+		}
+		else if( PlayerInfo[playerid][pGuns][1] != 3 && GetPlayerWeapon( playerid ) == 3)
+		{
+			ExecuteHackerAction( playerid, newweapon );
+		}
+		else if( PlayerInfo[playerid][pGuns][1] != 4 && GetPlayerWeapon( playerid ) == 4)
+		{
+			if(GetPVarInt(playerid, "IsInArena") >= 0) return 1;
+			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pMember] != 8)
+			{
+			    new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+	            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SendClientMessage(playerid, COLOR_LIGHTRED, String );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid), playerip, "Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+			ExecuteHackerAction( playerid, newweapon );
+		}
+		else if( PlayerInfo[playerid][pGuns][1] != 5 && GetPlayerWeapon( playerid ) == 5)
+		{
+			ExecuteHackerAction( playerid, newweapon );
+		}
+        else if( PlayerInfo[playerid][pGuns][1] != 6 && GetPlayerWeapon( playerid ) == 6)
+		{
+			ExecuteHackerAction( playerid, newweapon );
+		}
+		else if( PlayerInfo[playerid][pGuns][1] != 7 && GetPlayerWeapon( playerid ) == 7)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][1] != 8 && GetPlayerWeapon( playerid ) == 8)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][1] != 9 && GetPlayerWeapon( playerid ) == 9)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+		    {
+			    new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+	            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+			ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][2] != 22 && GetPlayerWeapon( playerid ) == 22)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+		    {
+			    new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+	            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][2] != 23 && GetPlayerWeapon( playerid ) == 23)
+        {
+            if(IsACop(playerid) || PlayerInfo[playerid][pMember] == 4 && PlayerInfo[playerid][pDivision] == 2 || PlayerInfo[playerid][pMember] == 4 && PlayerInfo[playerid][pRank] >= 5) {}
+            else
+            {
+            	if(PlayerInfo[playerid][pConnectHours] < 2)
+			    {
+				    new WeaponName[32];
+					GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+					new String[128];
+		            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+                    ABroadCast( COLOR_LIGHTRED, String, 2 );
+					SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+					//RemovePlayerWeapon(playerid, weaponid);
+					PlayerInfo[playerid][pBanned] = 3;
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+					PlayerInfo[playerid][pBanned] = 3;
+					Log("logs/ban.log", String);
+					new ip[32];
+					GetPlayerIp(playerid,ip,sizeof(ip));
+					SystemBan(playerid, "[System] (Weapon Hacking)");
+					MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+					SetTimerEx("KickEx", 1000, 0, "i", playerid);
+					TotalAutoBan++;
+				}
+            	ExecuteHackerAction( playerid, newweapon );
+            }
+        }
+        else if( PlayerInfo[playerid][pGuns][2] != 24 && GetPlayerWeapon( playerid ) == 24)
+        {
+            if(IsACop(playerid)) {}
+            else
+            {
+                if(PlayerInfo[playerid][pConnectHours] < 2)
+			    {
+				    new WeaponName[32];
+					GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+					new String[128];
+		            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+					ABroadCast( COLOR_LIGHTRED, String, 2 );
+					SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+					//RemovePlayerWeapon(playerid, weaponid);
+					PlayerInfo[playerid][pBanned] = 3;
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+					PlayerInfo[playerid][pBanned] = 3;
+					Log("logs/ban.log", String);
+					new ip[32];
+					GetPlayerIp(playerid,ip,sizeof(ip));
+					SystemBan(playerid, "[System] (Weapon Hacking)");
+					MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+					SetTimerEx("KickEx", 1000, 0, "i", playerid);
+					TotalAutoBan++;
+				}
+            	ExecuteHackerAction( playerid, newweapon );
+            }
+        }
+        else if( PlayerInfo[playerid][pGuns][3] != 25 && GetPlayerWeapon( playerid ) == 25)
+        {
+            if(IsACop(playerid)) {}
+            else
+            {
+                if(PlayerInfo[playerid][pConnectHours] < 2)
+			    {
+				    new WeaponName[32];
+					GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+					new String[128];
+		            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+					ABroadCast( COLOR_LIGHTRED, String, 2 );
+					SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+					//RemovePlayerWeapon(playerid, weaponid);
+					PlayerInfo[playerid][pBanned] = 3;
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+					PlayerInfo[playerid][pBanned] = 3;
+					Log("logs/ban.log", String);
+					new ip[32];
+					GetPlayerIp(playerid,ip,sizeof(ip));
+					SystemBan(playerid, "[System] (Weapon Hacking)");
+					MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+					SetTimerEx("KickEx", 1000, 0, "i", playerid);
+					TotalAutoBan++;
+				}
+            	ExecuteHackerAction( playerid, newweapon );
+            }
+        }
+        else if( PlayerInfo[playerid][pGuns][3] != 26 && GetPlayerWeapon( playerid ) == 26)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][3] != 27 && GetPlayerWeapon( playerid ) == 27)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][4] != 28 && GetPlayerWeapon( playerid ) == 28)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+                new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][4] != 29 && GetPlayerWeapon( playerid ) == 29)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][5] != 30 && GetPlayerWeapon( playerid ) == 30)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][4] != 32 && GetPlayerWeapon( playerid ) == 32)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][5] != 31 && GetPlayerWeapon( playerid ) == 31)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][6] != 33 && GetPlayerWeapon( playerid ) == 33)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][6] != 34 && GetPlayerWeapon( playerid ) == 34)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][7] != 35 && GetPlayerWeapon( playerid ) == 35)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+			new String[128];
+            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][7] != 36 && GetPlayerWeapon( playerid ) == 36)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+            new String[128];
+			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][7] != 37 && GetPlayerWeapon( playerid ) == 37)
+        {
+			new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+			new String[128];
+            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][7] != 38 && GetPlayerWeapon( playerid ) == 38)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+            new String[128];
+			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][8] != 16 && GetPlayerWeapon( playerid ) == 16)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+			new String[128];
+            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][8] != 17 && GetPlayerWeapon( playerid ) == 17)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][8] != 18 && GetPlayerWeapon( playerid ) == 18)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+			new String[128];
+            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][8] != 39 && GetPlayerWeapon( playerid ) == 39)
+        {
+            new WeaponName[32];
+			GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+			new String[128];
+            format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+			ABroadCast( COLOR_LIGHTRED, String, 2 );
+			SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+			//RemovePlayerWeapon(playerid, weaponid);
+			PlayerInfo[playerid][pBanned] = 3;
+			new playerip[32];
+			GetPlayerIp(playerid, playerip, sizeof(playerip));
+			format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+			PlayerInfo[playerid][pBanned] = 3;
+			Log("logs/ban.log", String);
+			new ip[32];
+			GetPlayerIp(playerid,ip,sizeof(ip));
+			SystemBan(playerid, "[System] (Weapon Hacking)");
+			MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+			SetTimerEx("KickEx", 1000, 0, "i", playerid);
+			TotalAutoBan++;
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][9] != 41 && GetPlayerWeapon( playerid ) == 41)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][9] != 42 && GetPlayerWeapon( playerid ) == 42)
+        {
+            if(PlayerInfo[playerid][pConnectHours] < 2)
+    		{
+		    	new WeaponName[32];
+				GetWeaponName(newweapon, WeaponName, sizeof(WeaponName));
+				new String[128];
+    			format( String, sizeof( String ), "AdmCmd: %s has been banned, reason: Weapon hacking (%s).", GetPlayerNameEx(playerid), WeaponName );
+				ABroadCast( COLOR_LIGHTRED, String, 2 );
+				SetPVarInt(playerid, "_HACK_WARNINGS", 0 );
+				//RemovePlayerWeapon(playerid, weaponid);
+				PlayerInfo[playerid][pBanned] = 3;
+				new playerip[32];
+				GetPlayerIp(playerid, playerip, sizeof(playerip));
+				format( String, sizeof( String ), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Weapon hacking (%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, WeaponName);
+				PlayerInfo[playerid][pBanned] = 3;
+				Log("logs/ban.log", String);
+				new ip[32];
+				GetPlayerIp(playerid,ip,sizeof(ip));
+				SystemBan(playerid, "[System] (Weapon Hacking)");
+				MySQLBan(GetPlayerSQLId(playerid),playerip,"Weapon Hacking", 1,"System");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				TotalAutoBan++;
+			}
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][9] != 43 && GetPlayerWeapon( playerid ) == 43)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][10] != 11 && GetPlayerWeapon( playerid ) == 11)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][10] != 12 && GetPlayerWeapon( playerid ) == 12)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][10] != 13 && GetPlayerWeapon( playerid ) == 13)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][10] != 14 && GetPlayerWeapon( playerid ) == 14)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][10] != 15 && GetPlayerWeapon( playerid ) == 15)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][11] != 44 && GetPlayerWeapon( playerid ) == 44)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][11] != 45 && GetPlayerWeapon( playerid ) == 45)
+        {
+            ExecuteHackerAction( playerid, newweapon );
+        }
+        else if( PlayerInfo[playerid][pGuns][11] != 46 && GetPlayerWeapon( playerid ) == 46)
+        {
+            PlayerInfo[playerid][pGuns][11] = 46;
+        }
+	}
+
+	if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
+	{
+		new gun,tmp;
+	 	GetPlayerWeaponData(playerid,4,gun,tmp);
+	  	#pragma unused tmp
+	   	if(gun)SetPlayerArmedWeapon(playerid,gun);
+	   	else SetPlayerArmedWeapon(playerid,0);
+	}
+	return 1;
+}
+
+Weapon_ReturnName(iModelID) {
+
+	new
+		szWepName[32] = "(none)";
+
+	switch(iModelID) {
+		case 0: szWepName = "punch";
+		case 1: szWepName = "Brass Knuckles";
+		case 2: szWepName = "Golf Club";
+		case 3: szWepName = "Nitestick";
+		case 4: szWepName = "Knife";
+		case 5: szWepName = "Baseball Bat";
+		case 6: szWepName = "Shovel";
+		case 7: szWepName = "Pool Cue";
+		case 8: szWepName = "Katana";
+		case 9: szWepName = "Chainsaw";
+		case 10: szWepName = "purple dildo";
+		case 11: szWepName = "small white vibrator";
+		case 12: szWepName = "large white vibrator";
+		case 13: szWepName = "silver vibrator";
+		case 14: szWepName = "bouquet of flowers";
+		case 15: szWepName = "Cane";
+		case 16: szWepName = "Grenade";
+		case 17: szWepName = "Tear Gas";
+		case 18: szWepName = "Molotov Cocktail";
+		case 19: szWepName = "Jetpack";
+		case 20: szWepName = "";
+		case 21: szWepName = "";
+		case 22: szWepName = "Colt .45";
+		case 23: szWepName = "Silenced Colt .45";
+		case 24: szWepName = "Desert Eagle";
+		case 25: szWepName = "Shotgun";
+		case 26: szWepName = "Sawn-off Shotgun";
+		case 27: szWepName = "SPAS-12";
+		case 28: szWepName = "Micro Uzi";
+		case 29: szWepName = "MP5";
+		case 30: szWepName = "AK-47";
+		case 31: szWepName = "M4A1";
+		case 32: szWepName = "TEC-9";
+		case 33: szWepName = "Rifle";
+		case 34: szWepName = "Sniper Rifle";
+		case 35: szWepName = "RPG";
+		case 36: szWepName = "Heat Seeker";
+		case 37: szWepName = "Flamethrower";
+		case 38: szWepName = "Minigun";
+		case 39: szWepName = "Satchel Charge";
+		case 40: szWepName = "Detonator";
+		case 41: szWepName = "Spray Can";
+		case 42: szWepName = "Fire Extinguisher";
+		case 43: szWepName = "Camera";
+		case 44: szWepName = "Nightvision Goggles";
+		case 45: szWepName = "Thermal Goggles";
+		case 46: szWepName = "Parachute";
+	}
+	return szWepName;
+}
+
 CMD:myguns(playerid, params[])
 {
 	new string[128], myweapons[13][2], weaponname[50], encryption[256], name[MAX_PLAYER_NAME];

@@ -6196,38 +6196,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			return 1;
 		}
 	}
-	else if(!IsPlayerInAnyVehicle(playerid) && newkeys & KEY_CTRL_BACK)
-	{
-		new Float:pos[3];
-		GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
-		if(pos[1] < -1301.4 && pos[1] > -1303.2417 && pos[0] < 1786.2131 && pos[0] > 1784.1555)
-		{    // He is using the elevator button
-			PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-			ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
-			ShowElevatorDialog(playerid, 1);
-		}
-		else    // Is he in a floor button?
-		{
-			if(pos[1] > -1301.4 && pos[1] < -1299.1447 && pos[0] < 1785.6147 && pos[0] > 1781.9902)
-			{
-				// He is most likely using it, check floor:
-				new i=20;
-				while(pos[2] < GetDoorsZCoordForFloor(i) + 3.5 && i > 0)
-					i --;
-
-				if(i == 0 && pos[2] < GetDoorsZCoordForFloor(0) + 2.0)
-					i = -1;
-
-				if(i <= 19)
-				{
-					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-					ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
-					CallElevator(playerid, i + 1);
-					GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
-				}
-			}
-		}
-	}
 	/*else if(!IsPlayerInAnyVehicle(playerid) && PRESSED(KEY_HANDBRAKE))
 	{
 		if(GetPlayerWeapon(playerid) == WEAPON_ROCKETLAUNCHER || GetPlayerWeapon(playerid) == WEAPON_SNIPER

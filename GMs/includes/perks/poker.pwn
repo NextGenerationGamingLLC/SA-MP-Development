@@ -826,6 +826,851 @@ AnaylzePokerHand(playerid, Hand[])
 	return pokerArray[0] + pokerArray[1];
 }
 
+forward PokerExit(playerid);
+public PokerExit(playerid)
+{
+	SetCameraBehindPlayer(playerid);
+	TogglePlayerControllable(playerid, 1);
+	ClearAnimations(playerid);
+	CancelSelectTextDraw(playerid);
+}
+
+forward PokerPulse(tableid);
+public PokerPulse(tableid)
+{
+	// Idle Animation Loop & Re-seater
+	for(new i = 0; i < 6; i++) {
+		new playerid = PokerTable[tableid][pkrSlot][i];
+
+		if(playerid != -1) {
+			// Disable Weapons
+			SetPlayerArmedWeapon(playerid,0);
+
+			new idleRandom = random(100);
+			if(idleRandom >= 90) {
+			    SetPlayerPosObjectOffset(PokerTable[tableid][pkrObjectID], playerid, PokerTableMiscObjOffsets[i][0], PokerTableMiscObjOffsets[i][1], PokerTableMiscObjOffsets[i][2]);
+				SetPlayerFacingAngle(playerid, PokerTableMiscObjOffsets[i][5]+90.0);
+				SetPlayerInterior(playerid, PokerTable[tableid][pkrInt]);
+				SetPlayerVirtualWorld(playerid, PokerTable[tableid][pkrVW]);
+
+				// Animation
+				if(GetPVarInt(playerid, "pkrActiveHand")) {
+					ApplyAnimation(playerid, "CASINO", "cards_loop", 4.1, 0, 1, 1, 1, 1, 1);
+				}
+			}
+		}
+	}
+
+	// 3D Text Label
+	Update3DTextLabelText(PokerTable[tableid][pkrText3DID], COLOR_YELLOW, " ");
+
+	if(PokerTable[tableid][pkrActivePlayers] >= 2 && PokerTable[tableid][pkrActive] == 2) {
+
+		// Count the number of active players with more than $0, activate the round if more than 1 gets counted.
+		new tmpCount = 0;
+		for(new i = 0; i < 6; i++) {
+			new playerid = PokerTable[tableid][pkrSlot][i];
+
+			if(playerid != -1) {
+				if(GetPVarInt(playerid, "pkrChips") > 0) {
+					tmpCount++;
+				}
+			}
+		}
+
+		if(tmpCount > 1) {
+			PokerTable[tableid][pkrActive] = 3;
+			PokerTable[tableid][pkrDelay] = PokerTable[tableid][pkrSetDelay];
+		}
+	}
+
+	if(PokerTable[tableid][pkrPlayers] < 2 && PokerTable[tableid][pkrActive] == 3) {
+		// Pseudo Code (Move Pot towards last player's chip count)
+
+		for(new i = 0; i < 6; i++) {
+			new playerid = PokerTable[tableid][pkrSlot][i];
+
+			if(playerid != -1) {
+				SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+PokerTable[tableid][pkrPot]);
+
+				LeavePokerTable(playerid);
+				ResetPokerTable(tableid);
+				JoinPokerTable(playerid, tableid);
+			}
+		}
+	}
+
+	// Winner Loop
+	if(PokerTable[tableid][pkrActive] == 4)
+	{
+		if(PokerTable[tableid][pkrDelay] == 20) {
+			new endBetsSoundID[] = {5826, 5827};
+			new randomEndBetsSoundID = random(sizeof(endBetsSoundID));
+			GlobalPlaySound(endBetsSoundID[randomEndBetsSoundID], PokerTable[tableid][pkrX], PokerTable[tableid][pkrY], PokerTable[tableid][pkrZ]);
+
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+				if(playerid != -1) {
+					PokerOptions(playerid, 0);
+				}
+			}
+		}
+
+		if(PokerTable[tableid][pkrDelay] > 0) {
+			PokerTable[tableid][pkrDelay]--;
+			if(PokerTable[tableid][pkrDelay] <= 5 && PokerTable[tableid][pkrDelay] > 0) {
+				for(new i = 0; i < 6; i++) {
+					new playerid = PokerTable[tableid][pkrSlot][i];
+
+					if(playerid != -1) PlayerPlaySound(playerid, 1139, 0.0, 0.0, 0.0);
+				}
+			}
+		}
+
+		if(PokerTable[tableid][pkrDelay] == 0) {
+			return ResetPokerRound(tableid);
+		}
+
+		if(PokerTable[tableid][pkrDelay] == 19) {
+			// Anaylze Cards
+			new resultArray[6];
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+				new cards[7];
+				if(playerid != -1) {
+					if(GetPVarInt(playerid, "pkrActiveHand")) {
+						cards[0] = GetPVarInt(playerid, "pkrCard1");
+						cards[1] = GetPVarInt(playerid, "pkrCard2");
+
+						new tmp = 0;
+						for(new c = 2; c < 7; c++) {
+							cards[c] = PokerTable[tableid][pkrCCards][tmp];
+							tmp++;
+						}
+
+						SetPVarInt(playerid, "pkrResult", AnaylzePokerHand(playerid, cards));
+					}
+				}
+			}
+
+			// Sorting Results (Highest to Lowest)
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+				if(playerid != -1) {
+					if(GetPVarInt(playerid, "pkrActiveHand")) {
+						resultArray[i] = GetPVarInt(playerid, "pkrResult");
+					}
+				}
+			}
+			BubbleSort(resultArray, sizeof(resultArray));
+
+			// Determine Winner(s)
+			for(new i = 0; i < 6; i++) {
+				if(resultArray[5] == resultArray[i])
+					PokerTable[tableid][pkrWinners]++;
+			}
+
+			// Notify Table of Winner & Give Rewards
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+				if(playerid != -1) {
+					if(PokerTable[tableid][pkrWinners] > 1) {
+						// Split
+						if(resultArray[5] == GetPVarInt(playerid, "pkrResult")) {
+							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+
+							SetPVarInt(playerid, "pkrWinner", 1);
+							SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+splitPot);
+
+							PlayerPlaySound(playerid, 5821, 0.0, 0.0, 0.0);
+						} else {
+							PlayerPlaySound(playerid, 31202, 0.0, 0.0, 0.0);
+						}
+					} else {
+						// Single Winner
+						if(resultArray[5] == GetPVarInt(playerid, "pkrResult")) {
+							SetPVarInt(playerid, "pkrWinner", 1);
+							SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+PokerTable[tableid][pkrPot]);
+							PokerTable[tableid][pkrWinnerID] = playerid;
+
+							new winnerSoundID[] = {5847, 5848, 5849, 5854, 5855, 5856};
+							new randomWinnerSoundID = random(sizeof(winnerSoundID));
+							PlayerPlaySound(playerid, winnerSoundID[randomWinnerSoundID], 0.0, 0.0, 0.0);
+						} else {
+							PlayerPlaySound(playerid, 31202, 0.0, 0.0, 0.0);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Game Loop
+	if(PokerTable[tableid][pkrActive] == 3)
+	{
+		if(PokerTable[tableid][pkrActiveHands] == 1 && PokerTable[tableid][pkrRound] == 1) {
+			PokerTable[tableid][pkrStage] = 0;
+			PokerTable[tableid][pkrActive] = 4;
+			PokerTable[tableid][pkrDelay] = 20+1;
+
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+
+				if(playerid != -1) {
+					if(GetPVarInt(playerid, "pkrActiveHand")) {
+						SetPVarInt(playerid, "pkrHide", 1);
+					}
+				}
+			}
+		}
+
+		// Delay Time Controller
+		if(PokerTable[tableid][pkrDelay] > 0) {
+			PokerTable[tableid][pkrDelay]--;
+			if(PokerTable[tableid][pkrDelay] <= 5 && PokerTable[tableid][pkrDelay] > 0) {
+				for(new i = 0; i < 6; i++) {
+					new playerid = PokerTable[tableid][pkrSlot][i];
+
+					if(playerid != -1) PlayerPlaySound(playerid, 1139, 0.0, 0.0, 0.0);
+				}
+			}
+		}
+
+		// Assign Blinds & Active Player
+		if(PokerTable[tableid][pkrRound] == 0 && PokerTable[tableid][pkrDelay] == 5)
+		{
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+
+				if(playerid != -1) {
+					SetPVarInt(playerid, "pkrStatus", 1);
+				}
+			}
+
+			PokerAssignBlinds(tableid);
+		}
+
+		// If no round active, start it.
+		if(PokerTable[tableid][pkrRound] == 0 && PokerTable[tableid][pkrDelay] == 0)
+		{
+			PokerTable[tableid][pkrRound] = 1;
+
+			for(new i = 0; i < 6; i++) {
+				new playerid = PokerTable[tableid][pkrSlot][i];
+
+				if(playerid != -1) {
+					SetPVarString(playerid, "pkrStatusString", " ");
+				}
+			}
+
+			// Shuffle Deck & Deal Cards & Allocate Community Cards
+			PokerShuffleDeck(tableid);
+			PokerDealHands(tableid);
+			PokerRotateActivePlayer(tableid);
+		}
+
+		// Round Logic
+
+		// Time Controller
+		for(new i = 0; i < 6; i++) {
+			new playerid = PokerTable[tableid][pkrSlot][i];
+			if(playerid != -1) {
+				if(GetPVarInt(playerid, "pkrActivePlayer")) {
+					SetPVarInt(playerid, "pkrTime", GetPVarInt(playerid, "pkrTime")-1);
+					if(GetPVarInt(playerid, "pkrTime") == 0) {
+						new name[24];
+						GetPlayerName(playerid, name, sizeof(name));
+
+						if(GetPVarInt(playerid, "pkrActionChoice")) {
+							DeletePVar(playerid, "pkrActionChoice");
+
+							ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+						}
+
+						PokerFoldHand(playerid);
+						PokerRotateActivePlayer(tableid);
+					}
+				}
+			}
+		}
+	}
+
+	// Update GUI
+	for(new i = 0; i < 6; i++) {
+		new playerid = PokerTable[tableid][pkrSlot][i];
+		new tmp, tmpString[128];
+		// Set Textdraw Offset
+		switch(i)
+		{
+			case 0: { tmp = 0; }
+			case 1: { tmp = 5; }
+			case 2: { tmp = 10; }
+			case 3: { tmp = 15; }
+			case 4: { tmp = 20; }
+			case 5: { tmp = 25; }
+		}
+
+		if(playerid != -1) {
+			// Debug
+		/*	new string[512];
+			format(string, sizeof(string), "Debug:~n~pkrActive: %d~n~pkrPlayers: %d~n~pkrActivePlayers: %d~n~pkrActiveHands: %d~n~pkrPos: %d~n~pkrDelay: %d~n~pkrRound: %d~n~pkrStage: %d~n~pkrActiveBet: %d~n~pkrRotations: %d",
+				PokerTable[tableid][pkrActive],
+				PokerTable[tableid][pkrPlayers],
+				PokerTable[tableid][pkrActivePlayers],
+				PokerTable[tableid][pkrActiveHands],
+				PokerTable[tableid][pkrPos],
+				PokerTable[tableid][pkrDelay],
+				PokerTable[tableid][pkrRound],
+				PokerTable[tableid][pkrStage],
+				PokerTable[tableid][pkrActiveBet],
+				PokerTable[tableid][pkrRotations]
+			);
+			format(string, sizeof(string), "%s~n~----------~n~", string);
+
+			new sstring[128];
+			GetPVarString(playerid, "pkrStatusString", sstring, 128);
+			format(string, sizeof(string), "%spkrTableID: %d~n~pkrCurrentBet: %d~n~pkrStatus: %d~n~pkrRoomLeader: %d~n~pkrRoomBigBlind: %d~n~pkrRoomSmallBlind: %d~n~pkrRoomDealer: %d~n~pkrActivePlayer: %d~n~pkrActiveHand: %d~n~pkrStatusString: %s",
+				string,
+				GetPVarInt(playerid, "pkrTableID")-1,
+				GetPVarInt(playerid, "pkrCurrentBet"),
+				GetPVarInt(playerid, "pkrStatus"),
+				GetPVarInt(playerid, "pkrRoomLeader"),
+				GetPVarInt(playerid, "pkrRoomBigBlind"),
+				GetPVarInt(playerid, "pkrRoomSmallBlind"),
+				GetPVarInt(playerid, "pkrRoomDealer"),
+				GetPVarInt(playerid, "pkrActivePlayer"),
+				GetPVarInt(playerid, "pkrActiveHand"),
+				sstring
+			);
+
+			PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][45], string); */
+
+			// Name
+			new name[MAX_PLAYER_NAME+1];
+			GetPlayerName(playerid, name, sizeof(name));
+			for(new td = 0; td < 6; td++) {
+				new pid = PokerTable[tableid][pkrSlot][td];
+
+				if(pid != -1) PlayerTextDrawSetString(pid, PlayerPokerUI[pid][0+tmp], name);
+			}
+
+			// Chips
+			if(GetPVarInt(playerid, "pkrChips") > 0) {
+				format(tmpString, sizeof(tmpString), "$%d", GetPVarInt(playerid, "pkrChips"));
+			} else {
+				format(tmpString, sizeof(tmpString), "~r~$%d", GetPVarInt(playerid, "pkrChips"));
+			}
+			for(new td = 0; td < 6; td++) {
+				new pid = PokerTable[tableid][pkrSlot][td];
+				if(pid != -1) PlayerTextDrawSetString(pid, PlayerPokerUI[pid][1+tmp], tmpString);
+			}
+
+			// Cards
+			for(new td = 0; td < 6; td++) {
+				new pid = PokerTable[tableid][pkrSlot][td];
+				if(pid != -1) {
+					if(GetPVarInt(playerid, "pkrActiveHand")) {
+						if(playerid != pid) {
+							if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] <= 19 && GetPVarInt(playerid, "pkrHide") != 1) {
+								format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1]);
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], tmpString);
+								format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1]);
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], tmpString);
+							} else {
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], DeckTextdrw[0]);
+								PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], DeckTextdrw[0]);
+							}
+						} else {
+							format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard1")+1]);
+							PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][2+tmp], tmpString);
+
+							format(tmpString, sizeof(tmpString), "%s", DeckTextdrw[GetPVarInt(playerid, "pkrCard2")+1]);
+							PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][3+tmp], tmpString);
+						}
+					} else {
+						PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], " ");
+						PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], " ");
+					}
+				}
+			}
+
+			// Status
+			if(PokerTable[tableid][pkrActive] < 3) {
+				format(tmpString, sizeof(tmpString), " ");
+			} else if(GetPVarInt(playerid, "pkrActivePlayer") && PokerTable[tableid][pkrActive] == 3) {
+				format(tmpString, sizeof(tmpString), "0:%d", GetPVarInt(playerid, "pkrTime"));
+			} else {
+				if(PokerTable[tableid][pkrActive] == 3 && PokerTable[tableid][pkrDelay] > 5) {
+					SetPVarString(playerid, "pkrStatusString", " ");
+				}
+
+				if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] == 19) {
+					if(PokerTable[tableid][pkrWinners] == 1) {
+						if(GetPVarInt(playerid, "pkrWinner")) {
+							format(tmpString, sizeof(tmpString), "+$%d", PokerTable[tableid][pkrPot]);
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						} else {
+							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						}
+					} else {
+						if(GetPVarInt(playerid, "pkrWinner")) {
+							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+							format(tmpString, sizeof(tmpString), "+$%d", splitPot);
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						} else {
+							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						}
+					}
+				}
+				if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] == 19) {
+					if(GetPVarInt(playerid, "pkrActiveHand") && GetPVarInt(playerid, "pkrHide") != 1) {
+						new resultString[64];
+						GetPVarString(playerid, "pkrResultString", resultString, 64);
+						format(tmpString, sizeof(tmpString), "%s", resultString);
+						SetPVarString(playerid, "pkrStatusString", resultString);
+					}
+				}
+
+				if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] == 10) {
+					if(PokerTable[tableid][pkrWinners] == 1) {
+						if(GetPVarInt(playerid, "pkrWinner")) {
+							format(tmpString, sizeof(tmpString), "+$%d", PokerTable[tableid][pkrPot]);
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						} else {
+							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						}
+					} else {
+						if(GetPVarInt(playerid, "pkrWinner")) {
+							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+							format(tmpString, sizeof(tmpString), "+$%d", splitPot);
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						} else {
+							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
+							SetPVarString(playerid, "pkrStatusString", tmpString);
+						}
+					}
+				}
+
+				GetPVarString(playerid, "pkrStatusString", tmpString, 128);
+			}
+
+			for(new td = 0; td < 6; td++) {
+				new pid = PokerTable[tableid][pkrSlot][td];
+				if(pid != -1) PlayerTextDrawSetString(pid, PlayerPokerUI[pid][4+tmp], tmpString);
+			}
+
+			// Pot
+			if(PokerTable[tableid][pkrDelay] > 0 && PokerTable[tableid][pkrActive] == 3) {
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
+			} else if(PokerTable[tableid][pkrActive] == 2) {
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
+			} else if(PokerTable[tableid][pkrActive] == 3) {
+				format(tmpString, sizeof(tmpString), "Pot: $%d", PokerTable[tableid][pkrPot]);
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
+			} else if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] < 19) {
+				if(PokerTable[tableid][pkrWinnerID] != -1) {
+					new winnerName[24];
+					GetPlayerName(PokerTable[tableid][pkrWinnerID], winnerName, sizeof(winnerName));
+					format(tmpString, sizeof(tmpString), "%s Won $%d", winnerName, PokerTable[tableid][pkrPot]);
+					if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
+				} else if(PokerTable[tableid][pkrWinners] > 1) {
+					new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+					format(tmpString, sizeof(tmpString), "%d Winners Won $%d", PokerTable[tableid][pkrWinners], splitPot);
+					if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
+				}
+			} else {
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
+			}
+			// Bet
+			if(PokerTable[tableid][pkrDelay] > 0 && PokerTable[tableid][pkrActive] == 3) {
+				format(tmpString, sizeof(tmpString), "Round Begins in ~r~%d~w~...", PokerTable[tableid][pkrDelay]);
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
+			} else if(PokerTable[tableid][pkrActive] == 2) {
+				format(tmpString, sizeof(tmpString), "Waiting for players...", PokerTable[tableid][pkrPot]);
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
+			} else if(PokerTable[tableid][pkrActive] == 3) {
+				format(tmpString, sizeof(tmpString), "Bet: $%d", PokerTable[tableid][pkrActiveBet]);
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
+			} else if(PokerTable[tableid][pkrActive] == 4) {
+				format(tmpString, sizeof(tmpString), "Round Ends in ~r~%d~w~...", PokerTable[tableid][pkrDelay]);
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], tmpString);
+			} else {
+				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][46], "Texas Holdem Poker");
+			}
+			// Community Cards
+			switch(PokerTable[tableid][pkrStage]) {
+				case 0: // Opening
+				{
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], "LD_CARD:cdback");
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], "LD_CARD:cdback");
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], "LD_CARD:cdback");
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], "LD_CARD:cdback");
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], "LD_CARD:cdback");
+				}
+				case 1: // Flop
+				{
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], "LD_CARD:cdback");
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], "LD_CARD:cdback");
+				}
+				case 2: // Turn
+				{
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], "LD_CARD:cdback");
+				}
+				case 3: // River
+				{
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1]);
+				}
+				case 4: // Win
+				{
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][31], DeckTextdrw[PokerTable[tableid][pkrCCards][0]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][32], DeckTextdrw[PokerTable[tableid][pkrCCards][1]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][33], DeckTextdrw[PokerTable[tableid][pkrCCards][2]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][34], DeckTextdrw[PokerTable[tableid][pkrCCards][3]+1]);
+					PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][35], DeckTextdrw[PokerTable[tableid][pkrCCards][4]+1]);
+				}
+			}
+		} else {
+			for(new td = 0; td < 6; td++) {
+				new pid = PokerTable[tableid][pkrSlot][td];
+
+				if(pid != -1) {
+					PlayerTextDrawSetString(pid, PlayerPokerUI[pid][0+tmp], " ");
+					PlayerTextDrawSetString(pid, PlayerPokerUI[pid][1+tmp], " ");
+					PlayerTextDrawSetString(pid, PlayerPokerUI[pid][2+tmp], " ");
+					PlayerTextDrawSetString(pid, PlayerPokerUI[pid][3+tmp], " ");
+					PlayerTextDrawSetString(pid, PlayerPokerUI[pid][4+tmp], " ");
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+ShowCasinoGamesMenu(playerid, dialogid)
+{
+	switch(dialogid)
+	{
+		case DIALOG_CGAMESCALLPOKER:
+		{
+			if(GetPVarInt(playerid, "pkrChips") > 0) {
+				SetPVarInt(playerid, "pkrActionChoice", 1);
+
+				new tableid = GetPVarInt(playerid, "pkrTableID")-1;
+				new actualBet = PokerTable[tableid][pkrActiveBet]-GetPVarInt(playerid, "pkrCurrentBet");
+
+				new szString[128];
+				if(actualBet > GetPVarInt(playerid, "pkrChips")) {
+					format(szString, sizeof(szString), "{FFFFFF}Are you sure you want to call $%d (All-In)?:", actualBet);
+					return ShowPlayerDialog(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "All-In", "Cancel");
+				}
+				format(szString, sizeof(szString), "{FFFFFF}Are you sure you want to call $%d?:", actualBet);
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "Call", "Cancel");
+			} else {
+				SendClientMessage(playerid, COLOR_WHITE, "DEALER: You do not have enough funds to call.");
+				new noFundsSoundID[] = {5823, 5824, 5825};
+				new randomNoFundsSoundID = random(sizeof(noFundsSoundID));
+				PlayerPlaySound(playerid, noFundsSoundID[randomNoFundsSoundID], 0.0, 0.0, 0.0);
+			}
+		}
+		case DIALOG_CGAMESRAISEPOKER:
+		{
+			new tableid = GetPVarInt(playerid, "pkrTableID")-1;
+
+			SetPVarInt(playerid, "pkrActionChoice", 1);
+
+			if(GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips") > PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2) {
+				SetPVarInt(playerid, "pkrActionChoice", 1);
+
+				new szString[128];
+				format(szString, sizeof(szString), "{FFFFFF}How much do you want to Raise? ($%d-$%d):", PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2, GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips"));
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "Raise", "Cancel");
+			} else if(GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips") == PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2) {
+				SetPVarInt(playerid, "pkrActionChoice", 1);
+
+				new szString[128];
+				format(szString, sizeof(szString), "{FFFFFF}How much do you want to Raise? (All-In):", PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2, GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips"));
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "All-In", "Cancel");
+			} else {
+				SendClientMessage(playerid, COLOR_WHITE, "DEALER: You do not have enough funds to raise.");
+				new noFundsSoundID[] = {5823, 5824, 5825};
+				new randomNoFundsSoundID = random(sizeof(noFundsSoundID));
+				PlayerPlaySound(playerid, noFundsSoundID[randomNoFundsSoundID], 0.0, 0.0, 0.0);
+			}
+
+		}
+		case DIALOG_CGAMESBUYINPOKER:
+		{
+			new szString[386];
+			format(szString, sizeof(szString), "{FFFFFF}Please input a buy-in amount for the table:\n\nCurrent Casino Chips: {00FF00}$%d{FFFFFF}\nCurrent Poker Chips: {00FF00}$%d{FFFFFF}\nBuy-In Maximum/Minimum: {00FF00}$%d{FFFFFF}/{00FF00}$%d{FFFFFF}", GetPlayerCash(playerid), GetPVarInt(playerid, "pkrChips"), PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMax], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMin]);
+			return ShowPlayerDialog(playerid, DIALOG_CGAMESBUYINPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (BuyIn Menu)", szString, "Buy In", "Leave");
+		}
+		case DIALOG_CGAMESADMINMENU:
+		{
+			return ShowPlayerDialog(playerid, DIALOG_CGAMESADMINMENU, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Admin Menu)", "{FFFFFF}Setup Poker Minigame...\nLine2\nCredits", "Select", "Close");
+		}
+		case DIALOG_CGAMESSELECTPOKER:
+		{
+			new szString[4096];
+			new szPlaced[64];
+
+			for(new i = 0; i < MAX_POKERTABLES; i++) {
+				if(PokerTable[i][pkrPlaced] == 1) { format(szPlaced, sizeof(szPlaced), "{00FF00}Active{FFFFFF}"); }
+				if(PokerTable[i][pkrPlaced] == 0) { format(szPlaced, sizeof(szPlaced), "{FF0000}Deactived{FFFFFF}"); }
+				format(szString, sizeof(szString), "%sPoker Table %d (%s)\n", szString, i, szPlaced, PokerTable[i][pkrPlayers]);
+			}
+			return ShowPlayerDialog(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szString, "Select", "Back");
+		}
+		case DIALOG_CGAMESSETUPPOKER:
+		{
+			new tableid = GetPVarInt(playerid, "tmpEditPokerTableID")-1;
+
+			if(PokerTable[tableid][pkrPlaced] == 0) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Place Table...", "Select", "Back");
+			} else {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Edit Table...\nDelete Table...", "Select", "Back");
+			}
+		}
+		case DIALOG_CGAMESCREDITS:
+		{
+			return ShowPlayerDialog(playerid, DIALOG_CGAMESCREDITS, DIALOG_STYLE_MSGBOX, "{FFFFFF}Casino Games - (Credits)", "{FFFFFF}Developed By: Dan 'GhoulSlayeR' Reed", "Back", "");
+		}
+		case DIALOG_CGAMESSETUPPGAME:
+		{
+			new tableid = GetPVarInt(playerid, "pkrTableID")-1;
+
+			if(GetPVarType(playerid, "pkrTableID")) {
+				new szString[512];
+
+				if(PokerTable[tableid][pkrPass][0] == EOS) {
+					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nLimit\t\t(%d)\nPassword\t(%s)\nRound Delay\t(%d)\nStart Game",
+						PokerTable[tableid][pkrBuyInMax],
+						PokerTable[tableid][pkrBuyInMin],
+						PokerTable[tableid][pkrBlind],
+						PokerTable[tableid][pkrBlind]/2,
+						PokerTable[tableid][pkrLimit],
+						"None",
+						PokerTable[tableid][pkrSetDelay]
+					);
+				} else {
+					format(szString, sizeof(szString), "{FFFFFF}Buy-In Max\t({00FF00}$%d{FFFFFF})\nBuy-In Min\t({00FF00}$%d{FFFFFF})\nBlind\t\t({00FF00}$%d{FFFFFF} / {00FF00}$%d{FFFFFF})\nLimit\t\t(%d)\nPassword\t(%s)\nRound Delay\t(%d)\nStart Game",
+						PokerTable[tableid][pkrBuyInMax],
+						PokerTable[tableid][pkrBuyInMin],
+						PokerTable[tableid][pkrBlind],
+						PokerTable[tableid][pkrBlind]/2,
+						PokerTable[tableid][pkrLimit],
+						PokerTable[tableid][pkrPass],
+						PokerTable[tableid][pkrSetDelay]
+					);
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Room)", szString, "Select", "Quit");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME2:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME2, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Max)", "{FFFFFF}Please input a Buy-In Max:", "Change", "Back");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME3:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME3, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Min)", "{FFFFFF}Please input a Buy-In Min:", "Change", "Back");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME4:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME4, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Blinds)", "{FFFFFF}Please input Blinds:\n\nNote: Small blinds are automatically half of a big blind.", "Change", "Back");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME5:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME5, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Limit)", "{FFFFFF}Please input a Player Limit (2-6):", "Change", "Back");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME6:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME6, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Password)", "{FFFFFF}Please input a Password:\n\nNote: Leave blank to have a public room", "Change", "Back");
+			}
+		}
+		case DIALOG_CGAMESSETUPPGAME7:
+		{
+			if(GetPVarType(playerid, "pkrTableID")) {
+				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME7, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Round Delay)", "{FFFFFF}Please input a Round Delay (15-120sec):", "Change", "Back");
+			}
+		}
+	}
+	return 1;
+}
+
+JoinPokerTable(playerid, tableid)
+{
+	// Check if there is room for the player
+	if(PokerTable[tableid][pkrPlayers] < PokerTable[tableid][pkrLimit])
+	{
+		// Check if table is not joinable.
+		if(PokerTable[tableid][pkrActive] == 1) {
+			SendClientMessage(playerid, COLOR_WHITE, "Someone is setting up this table, try again later.");
+			return 1;
+		}
+
+		// Find an open seat
+		for(new s; s < 6; s++) {
+			if(PokerTable[tableid][pkrSlot][s] == -1) {
+
+				SetPVarInt(playerid, "pkrTableID", tableid+1);
+				SetPVarInt(playerid, "pkrSlot", s);
+
+				// Occuply Slot
+				PokerTable[tableid][pkrPlayers] += 1;
+				PokerTable[tableid][pkrSlot][s] = playerid;
+
+				// Check & Start Game Loop if Not Active
+				if(PokerTable[tableid][pkrPlayers] == 1) {
+
+					// Player is Room Creator
+					SetPVarInt(playerid, "pkrRoomLeader", 1);
+					ShowCasinoGamesMenu(playerid, DIALOG_CGAMESSETUPPGAME);
+
+					PokerTable[tableid][pkrActive] = 1; // Warmup Phase
+					PokerTable[tableid][pkrPulseTimer] = SetTimerEx("PokerPulse", 1000, true, "i", tableid);
+
+					//PokerPulse(tableid);
+				} else { // Execute code for Non-Room Creators
+					ShowCasinoGamesMenu(playerid, DIALOG_CGAMESBUYINPOKER);
+					SelectTextDraw(playerid, COLOR_YELLOW);
+				}
+
+				CameraRadiusSetPos(playerid, PokerTable[tableid][pkrX], PokerTable[tableid][pkrY], PokerTable[tableid][pkrZ], 90.0, 4.7, 0.1);
+
+				new Float:tmpPos[3];
+				GetPlayerPos(playerid, tmpPos[0], tmpPos[1], tmpPos[2]);
+
+                SetPlayerInterior(playerid, PokerTable[tableid][pkrInt]);
+				SetPlayerVirtualWorld(playerid, PokerTable[tableid][pkrVW]);
+				SetPVarFloat(playerid, "pkrTableJoinX", tmpPos[0]);
+				SetPVarFloat(playerid, "pkrTableJoinY", tmpPos[1]);
+				SetPVarFloat(playerid, "pkrTableJoinZ", tmpPos[2]);
+
+				new string[128];
+				format(string, sizeof(string), "%s(%d) (IP:%s) has joined poker table (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), tableid);
+				Log("logs/poker.log", string);
+
+				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+				TogglePlayerControllable(playerid, 0);
+				SetPlayerPosObjectOffset(PokerTable[tableid][pkrObjectID], playerid, PokerTableMiscObjOffsets[s][0], PokerTableMiscObjOffsets[s][1], PokerTableMiscObjOffsets[s][2]);
+				SetPlayerFacingAngle(playerid, PokerTableMiscObjOffsets[s][5]+90.0);
+				ApplyAnimation(playerid, "CASINO", "cards_out", 4.1, 0, 1, 1, 1, 1, 1);
+
+				// Create GUI
+				CreatePokerGUI(playerid);
+				ShowPokerGUI(playerid, GUI_POKER_TABLE);
+
+				// Hide Action Bar
+				PokerOptions(playerid, 0);
+
+				return 1;
+			}
+		}
+	}
+	return 1;
+}
+
+LeavePokerTable(playerid)
+{
+	new tableid = GetPVarInt(playerid, "pkrTableID")-1;
+
+	// SFX
+	new leaveSoundID[2] = {5852, 5853};
+	new randomLeaveSoundID = random(sizeof(leaveSoundID));
+	PlayerPlaySound(playerid, leaveSoundID[randomLeaveSoundID], 0.0, 0.0, 0.0);
+
+	// Convert prkChips to cgChips
+	//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")+GetPVarInt(playerid, "pkrChips"));
+	GivePlayerCash(playerid, GetPVarInt(playerid, "pkrChips"));
+
+	new string[128];
+	format(string, sizeof(string), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);
+	Log("logs/poker.log", string);
+
+	// De-occuply Slot
+	PokerTable[tableid][pkrPlayers] -= 1;
+	if(GetPVarInt(playerid, "pkrStatus")) PokerTable[tableid][pkrActivePlayers] -= 1;
+	PokerTable[tableid][pkrSlot][GetPVarInt(playerid, "pkrSlot")] = -1;
+
+	// Check & Stop the Game Loop if No Players at the Table
+	if(PokerTable[tableid][pkrPlayers] == 0) {
+		KillTimer(PokerTable[tableid][pkrPulseTimer]);
+
+		new tmpString[64];
+		format(tmpString, sizeof(tmpString), "Poker Table %d", tableid);
+		Update3DTextLabelText(PokerTable[tableid][pkrText3DID], COLOR_YELLOW, tmpString);
+
+		ResetPokerTable(tableid);
+	}
+
+	if(PokerTable[tableid][pkrRound] == 0 && PokerTable[tableid][pkrDelay] < 5) {
+		ResetPokerRound(tableid);
+	}
+
+	SetPlayerInterior(playerid, PokerTable[tableid][pkrInt]);
+	SetPlayerVirtualWorld(playerid, PokerTable[tableid][pkrVW]);
+	SetPlayerPos(playerid, GetPVarFloat(playerid, "pkrTableJoinX"), GetPVarFloat(playerid, "pkrTableJoinY"), GetPVarFloat(playerid, "pkrTableJoinZ")+0.1);
+	SetCameraBehindPlayer(playerid);
+	TogglePlayerControllable(playerid, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
+	CancelSelectTextDraw(playerid);
+	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+
+	if(GetPVarInt(playerid, "pkrActiveHand")) {
+		PokerTable[tableid][pkrActiveHands]--;
+	}
+
+	// Destroy Poker Memory
+	DeletePVar(playerid, "pkrWinner");
+	DeletePVar(playerid, "pkrCurrentBet");
+	DeletePVar(playerid, "pkrChips");
+	DeletePVar(playerid, "pkrTableJoinX");
+	DeletePVar(playerid, "pkrTableJoinY");
+	DeletePVar(playerid, "pkrTableJoinZ");
+	DeletePVar(playerid, "pkrTableID");
+	DeletePVar(playerid, "pkrSlot");
+	DeletePVar(playerid, "pkrStatus");
+	DeletePVar(playerid, "pkrRoomLeader");
+	DeletePVar(playerid, "pkrRoomBigBlind");
+	DeletePVar(playerid, "pkrRoomSmallBlind");
+	DeletePVar(playerid, "pkrRoomDealer");
+	DeletePVar(playerid, "pkrCard1");
+	DeletePVar(playerid, "pkrCard2");
+	DeletePVar(playerid, "pkrActivePlayer");
+	DeletePVar(playerid, "pkrActiveHand");
+	DeletePVar(playerid, "pkrHide");
+
+	// Destroy GUI
+	DestroyPokerGUI(playerid);
+
+	// Delay Exit Call
+	SetTimerEx("PokerExit", 250, false, "d", playerid);
+
+	return 1;
+}
+
 CMD:jointable(playerid, params[])
 {
 	if(PlayerInfo[playerid][pConnectHours] < 5) {

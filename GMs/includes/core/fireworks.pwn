@@ -35,6 +35,71 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward Firework(playerid, type);
+public Firework(playerid, type)
+{
+	if(!IsPlayerConnected(playerid))
+	{
+	    DestroyDynamicObject(Rocket[playerid]);
+	    DestroyDynamicObject(RocketLight[playerid]);
+	    DestroyDynamicObject(RocketSmoke[playerid]);
+	    return 1;
+	}
+    new Float:x, Float:y, Float:z;
+    x = GetPVarFloat(playerid, "fxpos");
+    y = GetPVarFloat(playerid, "fypos");
+    z = GetPVarFloat(playerid, "fzpos");
+    if (type == TYPE_COUNTDOWN)
+    {
+        new string[128];
+		format(string, sizeof(string), "STAND BACK! 5 seconds till launch!", GetPlayerNameEx(playerid));
+	    ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
+	    SetTimerEx("Firework", 5000, 0, "ii", playerid, TYPE_LAUNCH);
+    }
+	else if(type == TYPE_LAUNCH)
+	{
+	    CreateExplosion(x ,y, z, 12, 5);
+		new time = MoveDynamicObject(Rocket[playerid], x, y, z + RocketHeight, 10);
+		MoveDynamicObject(RocketLight[playerid], x, y, z + 2 + RocketHeight, 10);
+		MoveDynamicObject(RocketSmoke[playerid], x, y, z + RocketHeight, 10);
+		SetTimerEx("Firework", time, 0, "ii", playerid, TYPE_EXPLODE);
+	}
+	else if(type == TYPE_EXPLODE)
+	{
+	    z += RocketHeight;
+	    if (RocketExplosions[playerid] == 0)
+		{
+		    DestroyDynamicObject(Rocket[playerid]);
+		    DestroyDynamicObject(RocketLight[playerid]);
+		    DestroyDynamicObject(RocketSmoke[playerid]);
+		    CreateExplosion(x ,y, z, 4, 10);
+		    CreateExplosion(x ,y, z, 5, 10);
+		    CreateExplosion(x ,y, z, 6, 10);
+		}
+		else if (RocketExplosions[playerid] >= MAX_FIREWORKS)
+		{
+		    for (new i = 0; i <= FireworkSpread; i++)
+		    {
+		    	CreateExplosion(x + float(i - (FireworkSpread / 2)), y, z, 7, 10);
+		    	CreateExplosion(x, y + float(i - (FireworkSpread / 2)), z, 7, 10);
+		    	CreateExplosion(x, y, z + float(i - (FireworkSpread / 2)), 7, 10);
+		    }
+		    RocketExplosions[playerid] = -1;
+		    return 1;
+		}
+		else
+		{
+			x += float(random(FireworkSpread) - (FireworkSpread / 2));
+			y += float(random(FireworkSpread) - (FireworkSpread / 2));
+			z += float(random(FireworkSpread) - (FireworkSpread / 2));
+		    CreateExplosion(x, y, z, 7, 10);
+		}
+		RocketExplosions[playerid]++;
+  		SetTimerEx("Firework", 250, 0, "ii", playerid, TYPE_EXPLODE);
+	}
+	return 1;
+}
+
 CMD:placefirework(playerid, params[])
 {
 	if(fireworktog == 0 || GetPVarInt(playerid, "camerasc") == 1 || GetPVarInt(playerid, "rccam") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot currently launch fireworks.");

@@ -35,6 +35,164 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+vehicleSpawnCountCheck(playerid) {
+	switch(PlayerInfo[playerid][pDonateRank]) {
+		case 0, 1, 2: if(VehicleSpawned[playerid] >= 2) return 0;
+		case 3: if(VehicleSpawned[playerid] >= 3) return 0;
+		case 4, 5: if(VehicleSpawned[playerid] >= 5) return 0;
+		default: return 0;
+	}
+	return 1;
+}
+
+vehicleCountCheck(playerid) {
+
+	new
+		iCount = GetPlayerVehicleCount(playerid);
+
+	switch(PlayerInfo[playerid][pDonateRank]) {
+		case 0: if(iCount >= 5 + PlayerInfo[playerid][pVehicleSlot]) return 0;
+		case 1: if((iCount >= 6 + PlayerInfo[playerid][pVehicleSlot]) || (PlayerInfo[playerid][pTempVIP] > 0 && iCount >= 5 + PlayerInfo[playerid][pVehicleSlot])) return 0;
+		case 2: if(iCount >= 7 + PlayerInfo[playerid][pVehicleSlot]) return 0;
+		case 3: if(iCount >= 8 + PlayerInfo[playerid][pVehicleSlot]) return 0;
+		case 4, 5: if(iCount >= 10 + PlayerInfo[playerid][pVehicleSlot]) return 0;
+		default: return 0;
+	}
+	return 1;
+}
+
+GetPlayerVehicleCount(playerid)
+{
+	new cars = 0;
+	for(new i = 0; i < MAX_PLAYERVEHICLES; i++) if(PlayerVehicleInfo[playerid][i][pvModelId]) ++cars;
+	return cars;
+}
+
+GetPlayerVehicleSlots(playerid)
+{
+	switch(PlayerInfo[playerid][pDonateRank]) {
+		case 0: return 5 + PlayerInfo[playerid][pVehicleSlot];
+		case 1:
+		{
+			if(PlayerInfo[playerid][pTempVIP] > 0)
+			{
+				return 5 +  PlayerInfo[playerid][pVehicleSlot];
+			}
+			else
+			{
+				return 6 + PlayerInfo[playerid][pVehicleSlot];
+			}
+		}
+		case 2: return 7 + PlayerInfo[playerid][pVehicleSlot];
+		case 3: return 8 + PlayerInfo[playerid][pVehicleSlot];
+		case 4, 5: return 10 + PlayerInfo[playerid][pVehicleSlot];
+		default: return 0;
+	}
+	return 0;
+}
+
+CheckPlayerVehiclesForDesync(playerid) {
+	for(new i = 0; i != MAX_PLAYERVEHICLES; ++i) {
+		if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID && GetVehicleModel(PlayerVehicleInfo[playerid][i][pvId]) != PlayerVehicleInfo[playerid][i][pvModelId]) {
+			UnloadPlayerVehicles(playerid);
+			LoadPlayerVehicles(playerid);
+			return SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicles were de-synced; they have been respawned to ensure no conflicts arise.");
+	    }
+	}
+	return 1;
+}
+
+Vehicle_ResetData(iVehicleID) {
+	if(GetVehicleModel(iVehicleID)) {
+		for(new cv = 0; cv < 6; cv++)
+	    {
+			CrateVehicleLoad[iVehicleID][vCrateID][cv] = -1;
+		}
+		Vehicle_Armor(iVehicleID);
+		LockStatus{iVehicleID} = 0;
+		VehicleStatus{iVehicleID} = 0;
+		WheelClamp{iVehicleID} = 0;
+		arr_Engine{iVehicleID} = 0;
+		stationidv[iVehicleID][0] = 0;
+		TruckContents{iVehicleID} = 0;
+		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
+		VehicleFuel[iVehicleID] = 100.0;
+		
+		//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(TruckUsed[i] == iVehicleID)
+				{
+					DeletePVar(i, "LoadTruckTime");
+					DeletePVar(i, "TruckDeliver");
+					TruckUsed[i] = INVALID_VEHICLE_ID;
+					gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+					DisablePlayerCheckpoint(i);
+				}
+				if(LockStatus{iVehicleID}) {
+					if(PlayerInfo[i][pLockCar] == iVehicleID) {
+						PlayerInfo[i][pLockCar] = INVALID_VEHICLE_ID;
+					}
+				}
+				if(VehicleBomb{iVehicleID} == 1) {
+					if(PlacedVehicleBomb[i] == iVehicleID) {
+						VehicleBomb{iVehicleID} = 0;
+						PlacedVehicleBomb[i] = INVALID_VEHICLE_ID;
+						PickUpC4(i);
+						PlayerInfo[i][pC4Used] = 0;
+						PlayerInfo[i][pC4Get] = 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+Vehicle_Armor(iVehicleID) {
+	if(DynVeh[iVehicleID] != -1 && iVehicleID == DynVehicleInfo[DynVeh[iVehicleID]][gv_iSpawnedID])
+	{
+	    SetVehicleHealth(iVehicleID, DynVehicleInfo[DynVeh[iVehicleID]][gv_fMaxHealth]);
+	}
+	else
+	{
+		switch(GetVehicleModel(iVehicleID)) {
+			case 596, 597, 598: SetVehicleHealth(iVehicleID, 2000.0);
+			case 490: SetVehicleHealth(iVehicleID, 2500.0);
+			case 407, 470: SetVehicleHealth(iVehicleID, 3000.0);
+			case 428, 433, 447, 427: SetVehicleHealth(iVehicleID, 4000.0);
+			case 601, 528: SetVehicleHealth(iVehicleID, 5000.0);
+			case 432, 425: SetVehicleHealth(iVehicleID, 7500.0);
+		}
+	}
+}
+
+LockPlayerVehicle(ownerid, carid, type)
+{
+	new v = GetPlayerVehicle(ownerid, carid);
+	if(PlayerVehicleInfo[ownerid][v][pvId] == carid && type == 3)
+	{
+	    LockStatus{carid} = 1;
+	    vehicle_lock_doors(carid);
+	}
+}
+
+UnLockPlayerVehicle(ownerid, carid, type)
+{
+	new v = GetPlayerVehicle(ownerid, carid);
+	if(PlayerVehicleInfo[ownerid][v][pvId] == carid && type == 3)
+	{
+	    LockStatus{carid} = 0;
+		vehicle_unlock_doors(carid);
+	}
+}
+
+encode_tires(tire1, tire2, tire3, tire4)
+{
+	return tire1 | (tire2 << 1) | (tire3 << 2) | (tire4 << 3);
+}
+
 CMD:carhelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

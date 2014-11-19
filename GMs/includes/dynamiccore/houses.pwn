@@ -35,6 +35,121 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock ReloadHouseText(houseid)
+{
+	new string[128];
+	if(HouseInfo[houseid][hOwned])
+	{
+		if(HouseInfo[houseid][hRentable]) format(string, sizeof(string), "This house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
+		else format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
+	}
+	else format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
+	UpdateDynamic3DTextLabelText(HouseInfo[houseid][hTextID], COLOR_GREEN, string);
+}
+
+stock ReloadHousePickup(houseid)
+{
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
+	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
+	new string[128];
+	if(HouseInfo[houseid][hOwned])
+	{
+		if(HouseInfo[houseid][hRentable])
+		{
+			format(string, sizeof(string), "This house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
+			HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
+			HouseInfo[houseid][hPickupID] = CreateDynamicPickup(1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
+		}
+		else
+		{
+			format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
+			HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
+			HouseInfo[houseid][hPickupID] = CreateDynamicPickup(1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
+		}
+	}
+	else
+	{
+		format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
+		HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
+		HouseInfo[houseid][hPickupID] = CreateDynamicPickup(1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
+	}
+	return 1;
+}
+
+stock SaveHouses()
+{
+	for(new i = 0; i < MAX_HOUSES; i++)
+	{
+		SaveHouse(i);
+	}
+	return 1;
+}
+
+stock RehashHouse(houseid)
+{
+	HouseInfo[houseid][hSQLId] = -1;
+	HouseInfo[houseid][hOwned] = 0;
+	HouseInfo[houseid][hLevel] = 0;
+	HouseInfo[houseid][hCustomInterior] = 0;
+	HouseInfo[houseid][hOwnerID] = -1;
+	format(HouseInfo[houseid][hOwnerName], 128, "Nobody");
+	HouseInfo[houseid][hExteriorX] = 0.0;
+	HouseInfo[houseid][hExteriorY] = 0.0;
+	HouseInfo[houseid][hExteriorZ] = 0.0;
+	HouseInfo[houseid][hExteriorR] = 0.0;
+	HouseInfo[houseid][hExteriorA] = 0.0;
+	HouseInfo[houseid][hInteriorX] = 0.0;
+	HouseInfo[houseid][hInteriorY] = 0.0;
+	HouseInfo[houseid][hInteriorZ] = 0.0;
+	HouseInfo[houseid][hInteriorR] = 0.0;
+	HouseInfo[houseid][hInteriorA] = 0.0;
+	HouseInfo[houseid][hExtIW] = 0;
+	HouseInfo[houseid][hExtVW] = 0;
+	HouseInfo[houseid][hIntIW] = 0;
+	HouseInfo[houseid][hIntVW] = 0;
+	HouseInfo[houseid][hLock] = 0;
+	HouseInfo[houseid][hRentable] = 0;
+	HouseInfo[houseid][hRentFee] = 0;
+	HouseInfo[houseid][hValue] = 0;
+	HouseInfo[houseid][hSafeMoney] = 0;
+	HouseInfo[houseid][hPot] = 0;
+	HouseInfo[houseid][hCrack] = 0;
+	HouseInfo[houseid][hMaterials] = 0;
+	HouseInfo[houseid][hHeroin] = 0;
+	HouseInfo[houseid][hWeapons][0] = 0;
+	HouseInfo[houseid][hWeapons][1] = 0;
+	HouseInfo[houseid][hWeapons][2] = 0;
+	HouseInfo[houseid][hWeapons][3] = 0;
+	HouseInfo[houseid][hWeapons][4] = 0;
+	HouseInfo[houseid][hGLUpgrade] = 0;
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
+	HouseInfo[houseid][hCustomExterior] = 0;
+	HouseInfo[houseid][hMailX] = 0.0;
+	HouseInfo[houseid][hMailY] = 0.0;
+	HouseInfo[houseid][hMailZ] = 0.0;
+	HouseInfo[houseid][hMailA] = 0.0;
+	HouseInfo[houseid][hMailType] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hMailObjectId])) DestroyDynamicObject(HouseInfo[houseid][hMailObjectId]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hMailTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hMailTextID]);
+	HouseInfo[houseid][hClosetX] = 0.0;
+	HouseInfo[houseid][hClosetY] = 0.0;
+	HouseInfo[houseid][hClosetZ] = 0.0;
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hClosetTextID]);
+	LoadHouse(houseid);
+}
+
+stock RehashHouses()
+{
+	printf("[RehashHouses] Deleting houses from server...");
+	for(new i = 0; i < MAX_HOUSES; i++)
+	{
+		RehashHouse(i);
+	}
+	LoadHouses();
+}
+
 CMD:househelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

@@ -100,6 +100,56 @@ stock HigherBid(playerid)
 	return 1;
 }
 
+forward EndAuction(auction);
+public EndAuction(auction)
+{
+	if(Auctions[auction][InProgress] == 1 && Auctions[auction][Bidder] != 0) {
+		if(Auctions[auction][Expires] == 0) {
+
+			new string[128];
+		    format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has won the auction for %s with the amount of $%d", Auctions[auction][Wining], Auctions[auction][BiddingFor], Auctions[auction][Bid]);
+			ABroadCast( COLOR_YELLOW, string, 2 );
+
+			format(string, sizeof(string), "%s(%d) has won the auction for item %s(%i) and has paid $%d", Auctions[auction][Wining], Auctions[auction][Bidder], Auctions[auction][BiddingFor], auction, Auctions[auction][Bid]);
+			Log("logs/auction.log", string);
+
+			new Player = ReturnUser(Auctions[auction][Wining]);
+			if(IsPlayerConnected(Player) && GetPlayerSQLId(Player) == Auctions[auction][Bidder])
+			{
+	 			format(string, sizeof(string), "(Auction Winner) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
+			   	AddFlag(Player, INVALID_PLAYER_ID, string);
+
+				format(string, sizeof(string), "You have won the auction for the %s!", Auctions[auction][BiddingFor]);
+		  		SendClientMessageEx(Player, COLOR_GREEN, string);
+			}
+			else
+			{
+		 		format(string, sizeof(string), "(Auction Winner) %s %s", Auctions[auction][Wining], Auctions[auction][BiddingFor]);
+		   		AddOFlag(Auctions[auction][Bidder], INVALID_PLAYER_ID, string);
+			}
+
+			Auctions[auction][InProgress] = 0;
+			Auctions[auction][Bid] = 0;
+			Auctions[auction][Bidder] = 0;
+			Auctions[auction][Expires] = 0;
+			strcpy(Auctions[auction][Wining], "(none)", MAX_PLAYER_NAME);
+			strcpy(Auctions[auction][BiddingFor], "(none)", 64);
+			Auctions[auction][Increment] = 0;
+			KillTimer(Auctions[auction][Timer]);
+			SaveAuction(auction);
+		}
+		else
+		{
+		    Auctions[auction][Expires] += -1;
+		}
+	}
+	else
+	{
+	    KillTimer(Auctions[auction][Timer]);
+	}
+	return 1;
+}
+
 CMD:editauctions(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4) {
 		new

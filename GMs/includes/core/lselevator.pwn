@@ -35,6 +35,59 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+//Leave this here
+new Float:FloorZOffsets[21] =
+{
+    0.0,		// 0.0,
+    8.5479,		// 8.5479,
+    13.99945,   // 8.5479 + (5.45155 * 1.0),
+    19.45100,   // 8.5479 + (5.45155 * 2.0),
+    24.90255,   // 8.5479 + (5.45155 * 3.0),
+    30.35410,   // 8.5479 + (5.45155 * 4.0),
+    35.80565,   // 8.5479 + (5.45155 * 5.0),
+    41.25720,   // 8.5479 + (5.45155 * 6.0),
+    46.70875,   // 8.5479 + (5.45155 * 7.0),
+    52.16030,   // 8.5479 + (5.45155 * 8.0),
+    57.61185,   // 8.5479 + (5.45155 * 9.0),
+    63.06340,   // 8.5479 + (5.45155 * 10.0),
+    68.51495,   // 8.5479 + (5.45155 * 11.0),
+    73.96650,   // 8.5479 + (5.45155 * 12.0),
+    79.41805,   // 8.5479 + (5.45155 * 13.0),
+    84.86960,   // 8.5479 + (5.45155 * 14.0),
+    90.32115,   // 8.5479 + (5.45155 * 15.0),
+    95.77270,   // 8.5479 + (5.45155 * 16.0),
+    101.22425,  // 8.5479 + (5.45155 * 17.0),
+    106.67580,	// 8.5479 + (5.45155 * 18.0),
+    112.12735	// 8.5479 + (5.45155 * 19.0)
+};
+
+stock Float:GetElevatorZCoordForFloor(floorid)
+{
+    return (GROUND_Z_COORD + FloorZOffsets[floorid] + ELEVATOR_OFFSET); // A small offset for the elevator object itself.
+}
+
+stock Float:GetDoorsZCoordForFloor(floorid)
+{
+	return (GROUND_Z_COORD + FloorZOffsets[floorid]);
+}
+
+forward Elevator_Boost(floorid);
+public Elevator_Boost(floorid)
+{
+	// Increases the elevator's speed until it reaches 'floorid'
+
+	MoveDynamicObject(Obj_Elevator, 1786.678100, -1303.459472, GetElevatorZCoordForFloor(floorid), ELEVATOR_SPEED);
+    MoveDynamicObject(Obj_ElevatorDoors[0], X_DOOR_CLOSED, -1303.459472, GetDoorsZCoordForFloor(floorid), ELEVATOR_SPEED);
+    MoveDynamicObject(Obj_ElevatorDoors[1], X_DOOR_CLOSED, -1303.459472, GetDoorsZCoordForFloor(floorid), ELEVATOR_SPEED);
+}
+
+forward Elevator_TurnToIdle();
+public Elevator_TurnToIdle()
+{
+	ElevatorState = ELEVATOR_STATE_IDLE;
+	ReadNextFloorInQueue();
+}
+
 stock Elevator_Initialize()
 {
 	// Initializes the elevator.
@@ -233,6 +286,44 @@ stock CallElevator(playerid, floorid)
 
 	FloorRequestedBy[floorid] = playerid;
 	AddFloorToQueue(floorid);
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(!IsPlayerInAnyVehicle(playerid) && newkeys & KEY_CTRL_BACK)
+	{
+		new Float:pos[3];
+		GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+		if(pos[1] < -1301.4 && pos[1] > -1303.2417 && pos[0] < 1786.2131 && pos[0] > 1784.1555)
+		{    // He is using the elevator button
+			PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
+			ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+			ShowElevatorDialog(playerid, 1);
+		}
+		else    // Is he in a floor button?
+		{
+			if(pos[1] > -1301.4 && pos[1] < -1299.1447 && pos[0] < 1785.6147 && pos[0] > 1781.9902)
+			{
+				// He is most likely using it, check floor:
+				new i=20;
+				while(pos[2] < GetDoorsZCoordForFloor(i) + 3.5 && i > 0)
+					i --;
+
+				if(i == 0 && pos[2] < GetDoorsZCoordForFloor(0) + 2.0)
+					i = -1;
+
+				if(i <= 19)
+				{
+					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
+					ApplyAnimation(playerid, "HEIST9", "Use_SwipeCard", 10.0, 0, 0, 0, 0, 0);
+					CallElevator(playerid, i + 1);
+					GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);
+				}
+			}
+		}
+	}
+
 	return 1;
 }
 

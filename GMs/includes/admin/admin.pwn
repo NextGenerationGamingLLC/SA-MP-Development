@@ -35,6 +35,239 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward SprunkGuardCheck(playerid, giveplayerid);
+public SprunkGuardCheck(playerid, giveplayerid)
+{
+	if(giveplayerid == INVALID_PLAYER_ID || !IsPlayerConnected(giveplayerid))
+    {
+        SendClientMessageEx(playerid, COLOR_YELLOW, "The sprunk guard check result could not be made, the player logged off.");
+        SGcheckUsed = 0;
+		DestroyVehicle(SGcheckPlane);
+		SGcheckPlane = INVALID_VEHICLE_ID;
+        return 1;
+    }
+	if(playerTabbed[giveplayerid] != 0)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the player alt-tabbed.");
+
+		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		if(SGcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, SGcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, SGcheckInt[giveplayerid]);
+		DestroyVehicle(SGcheckPlane);
+		SGcheckPlane = INVALID_VEHICLE_ID;
+  		for(new i = 0; i < 6; i++)
+		{
+			SGcheckFloats[giveplayerid][i] = 0;
+		}
+		SGcheckVW[giveplayerid] = 0;
+		SGcheckInt[giveplayerid] = 0;
+
+		SGcheckUsed = 0;
+  		return 1;
+	}
+    new Float:health, string[128];
+    GetVehicleHealth(SGcheckPlane, health);
+	if(!IsPlayerInVehicle(giveplayerid, SGcheckPlane) || health < 200)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person was probably desynced/lagging or not in the plane.");
+		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		if(SGcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, SGcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, SGcheckInt[giveplayerid]);
+		DestroyVehicle(SGcheckPlane);
+		SGcheckPlane = INVALID_VEHICLE_ID;
+  		for(new i = 0; i < 6; i++)
+		{
+			SGcheckFloats[giveplayerid][i] = 0;
+		}
+		SGcheckVW[giveplayerid] = 0;
+		SGcheckInt[giveplayerid] = 0;
+
+		SGcheckUsed = 0;
+		return 1;
+	}
+	new Float:phealth;
+	GetPlayerHealth(giveplayerid, phealth);	
+	if(phealth < 1)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person is dead.");
+		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		if(SGcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, SGcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, SGcheckInt[giveplayerid]);
+		DestroyVehicle(SGcheckPlane);
+		SGcheckPlane = INVALID_VEHICLE_ID;
+  		for(new i = 0; i < 6; i++)
+		{
+			SGcheckFloats[giveplayerid][i] = 0;
+		}
+		SGcheckVW[giveplayerid] = 0;
+		SGcheckInt[giveplayerid] = 0;
+
+		SGcheckUsed = 0;
+		return 1;	
+	}
+    if(health < 1000)
+	{
+        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SPRUNK GUARD CHECK RESULT_______________");
+        format(string, sizeof(string), "The sprunk guard check on %s was {00F70C}positive{FFFFFF}. The person may be using sprunk guard.", GetPlayerNameEx(giveplayerid));
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1500.0");
+        format(string, sizeof(string), "Plane Health after check: %.1f", health);
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
+    }
+    else
+	{
+        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SPRUNK GUARD CHECK RESULT_______________");
+        format(string, sizeof(string), "The sprunk guard check on %s was {FF0606}negative{FFFFFF}. The person was not using sprunk guard.", GetPlayerNameEx(giveplayerid));
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Plane Health before check: 1500.0");
+        format(string, sizeof(string), "Plane Health after check: %.1f", health);
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
+    }	
+	SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+	if(SGcheckFloats[giveplayerid][1] > 0) {
+		SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+	}
+	SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
+	SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
+	SetCameraBehindPlayer(giveplayerid);
+	SetPlayerVirtualWorld(giveplayerid, SGcheckVW[giveplayerid]);
+	SetPlayerInterior(giveplayerid, SGcheckInt[giveplayerid]);
+	DestroyVehicle(SGcheckPlane);
+	SGcheckPlane = INVALID_VEHICLE_ID;
+	for(new i = 0; i < 6; i++)
+	{
+		SGcheckFloats[giveplayerid][i] = 0;
+	}
+	SGcheckVW[giveplayerid] = 0;
+	SGcheckInt[giveplayerid] = 0;
+
+	SGcheckUsed = 0;	
+	DeletePVar(giveplayerid, "SprunkGuardLic");
+	return 1;
+}
+
+forward HealthHackCheck(playerid, giveplayerid);
+public HealthHackCheck(playerid, giveplayerid)
+{
+	new string[128];
+ 	if(giveplayerid == INVALID_PLAYER_ID)
+    {
+        SendClientMessageEx(playerid, COLOR_YELLOW, "The health hack check result could not be made, the player logged off.");
+        HHcheckUsed = 0;
+        return 1;
+    }
+	if(playerTabbed[giveplayerid] != 0)
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "The health hack check result could not be made, the player alt-tabbed.");
+
+		SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+		if(HHcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, HHcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, HHcheckInt[giveplayerid]);
+  		for(new i = 0; i < 6; i++)
+		{
+			HHcheckFloats[giveplayerid][i] = 0;
+		}
+		HHcheckVW[giveplayerid] = 0;
+		HHcheckInt[giveplayerid] = 0;
+
+		HHcheckUsed = 0;
+  		return 1;
+	}
+    if(!IsPlayerInRangeOfPoint(giveplayerid,20,-1400.994873, 106.899650, 1032.273437))
+    {
+        SendClientMessageEx(playerid, COLOR_WHITE, "The health hack check result could not be made, the person was probably desynced/lagging.");
+
+		SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+        if(HHcheckFloats[giveplayerid][1] > 0) {
+			SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+		}
+		SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
+		SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
+		SetCameraBehindPlayer(giveplayerid);
+		SetPlayerVirtualWorld(giveplayerid, HHcheckVW[giveplayerid]);
+ 		SetPlayerInterior(giveplayerid, HHcheckInt[giveplayerid]);
+
+  		for(new i = 0; i < 6; i++)
+		{
+			HHcheckFloats[giveplayerid][i] = 0;
+		}
+		HHcheckVW[giveplayerid] = 0;
+		HHcheckInt[giveplayerid] = 0;
+
+        HHcheckUsed = 0;
+		return 1;
+    }
+
+    new Float:health;
+    GetPlayerHealth(giveplayerid, health);
+    if(health == 100)
+	{
+        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ HEALTH HACK CHECK RESULT_______________");
+        format(string, sizeof(string), "The health hack check on %s was {00F70C}positive{FFFFFF}. The person may be health hacking.", GetPlayerNameEx(giveplayerid));
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Health before check: 100.0");
+        format(string, sizeof(string), "Health after check: %.1f", health);
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
+    }
+    else
+	{
+        SendClientMessageEx(playerid, COLOR_GREEN, "____________________ HEALTH HACK CHECK RESULT_______________");
+        format(string, sizeof(string), "The health hack check on %s was {FF0606}negative{FFFFFF}. The person was not health hacking.", GetPlayerNameEx(giveplayerid));
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_WHITE, "Health before check: 100.0");
+        format(string, sizeof(string), "Health after check: %.1f", health);
+        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
+    }
+
+	SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+	if(HHcheckFloats[giveplayerid][1] > 0) {
+		SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+	}
+	SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
+	SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
+	SetCameraBehindPlayer(giveplayerid);
+	SetPlayerVirtualWorld(giveplayerid, HHcheckVW[giveplayerid]);
+ 	SetPlayerInterior(giveplayerid, HHcheckInt[giveplayerid]);
+
+  	for(new i = 0; i < 6; i++)
+	{
+		HHcheckFloats[giveplayerid][i] = 0;
+	}
+	HHcheckVW[giveplayerid] = 0;
+	HHcheckInt[giveplayerid] = 0;
+
+    HHcheckUsed = 0;
+    return 1;
+}
+
 stock GetAdminRankName(i)
 {
 	new string[128];

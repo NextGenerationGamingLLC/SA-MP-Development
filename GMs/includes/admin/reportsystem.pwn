@@ -185,6 +185,20 @@ stock ClearReports()
 	return 1;
 }
 
+forward ReportTimer(reportid);
+public ReportTimer(reportid)
+{
+	if(Reports[reportid][BeingUsed] == 1)
+	{
+	    if(Reports[reportid][TimeToExpire] >= 0)
+	    {
+	        Reports[reportid][TimeToExpire]++;
+  			Reports[reportid][ReportExpireTimer] = SetTimerEx("ReportTimer", 60000, 0, "d", reportid);
+		}
+	}
+	return 1;
+}
+
 CMD:clearallreports(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 1337) {

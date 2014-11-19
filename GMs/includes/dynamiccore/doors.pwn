@@ -35,6 +35,61 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock SaveDynamicDoors()
+{
+	for(new i = 0; i < MAX_DDOORS; i++)
+	{
+		SaveDynamicDoor(i);
+	}
+	return 1;
+}
+
+stock RehashDynamicDoor(doorid)
+{
+	DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+	DDoorsInfo[doorid][ddSQLId] = -1;
+	DDoorsInfo[doorid][ddOwner] = -1;
+	DDoorsInfo[doorid][ddCustomInterior] = 0;
+	DDoorsInfo[doorid][ddExteriorVW] = 0;
+	DDoorsInfo[doorid][ddExteriorInt] = 0;
+	DDoorsInfo[doorid][ddInteriorVW] = 0;
+	DDoorsInfo[doorid][ddInteriorInt] = 0;
+	DDoorsInfo[doorid][ddExteriorX] = 0.0;
+	DDoorsInfo[doorid][ddExteriorY] = 0.0;
+	DDoorsInfo[doorid][ddExteriorZ] = 0.0;
+	DDoorsInfo[doorid][ddExteriorA] = 0.0;
+	DDoorsInfo[doorid][ddInteriorX] = 0.0;
+	DDoorsInfo[doorid][ddInteriorY] = 0.0;
+	DDoorsInfo[doorid][ddInteriorZ] = 0.0;
+	DDoorsInfo[doorid][ddInteriorA] = 0.0;
+	DDoorsInfo[doorid][ddCustomExterior] = 0;
+	DDoorsInfo[doorid][ddType] = 0;
+	DDoorsInfo[doorid][ddRank] = 0;
+	DDoorsInfo[doorid][ddVIP] = 0;
+	DDoorsInfo[doorid][ddAllegiance] = 0;
+	DDoorsInfo[doorid][ddGroupType] = 0;
+	DDoorsInfo[doorid][ddFamily] = 0;
+	DDoorsInfo[doorid][ddFaction] = 0;
+	DDoorsInfo[doorid][ddAdmin] = 0;
+	DDoorsInfo[doorid][ddWanted] = 0;
+	DDoorsInfo[doorid][ddVehicleAble] = 0;
+	DDoorsInfo[doorid][ddColor] = 0;
+	DDoorsInfo[doorid][ddPickupModel] = 0;
+	DDoorsInfo[doorid][ddLocked] = 0;
+	LoadDynamicDoor(doorid);
+}
+
+stock RehashDynamicDoors()
+{
+	printf("[RehashDynamicDoors] Deleting dynamic doors from server...");
+	for(new i = 0; i < MAX_DDOORS; i++)
+	{
+		RehashDynamicDoor(i);
+	}
+	LoadDynamicDoors();
+}
+
 CMD:changedoorpass(playerid, params[])
 {
     for(new i = 0; i < sizeof(DDoorsInfo); i++) {

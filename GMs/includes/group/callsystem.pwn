@@ -155,6 +155,20 @@ stock ClearCalls()
 	return 1;
 }
 
+forward CallTimer(callid);
+public CallTimer(callid)
+{
+	if(Calls[callid][BeingUsed] == 1)
+	{
+	    if(Calls[callid][TimeToExpire] >= 0)
+	    {
+	        Calls[callid][TimeToExpire]++;
+  			Calls[callid][CallExpireTimer] = SetTimerEx("CallTimer", 60000, 0, "d", callid);
+		}
+	}
+	return 1;
+}
+
 CMD:calls(playerid, params[])
 {
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)

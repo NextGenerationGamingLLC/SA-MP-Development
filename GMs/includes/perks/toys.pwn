@@ -79,6 +79,30 @@ GetPlayerToySlots(playerid)
 	return PlayerInfo[playerid][pToySlot] + 10 + special;
 }
 
+stock player_remove_vip_toys(iTargetID)
+{
+	if(PlayerInfo[iTargetID][pDonateRank] >= 3) return 1;
+	else for(new iToyIter; iToyIter < MAX_PLAYER_ATTACHED_OBJECTS; ++iToyIter) {
+		for(new LoopRapist; LoopRapist < sizeof(HoldingObjectsCop); ++LoopRapist) {
+			if(HoldingObjectsCop[LoopRapist][holdingmodelid] == PlayerToyInfo[iTargetID][iToyIter][ptModelID]) {
+				PlayerToyInfo[iTargetID][iToyIter][ptModelID] = 0;
+				PlayerToyInfo[iTargetID][iToyIter][ptBone] = 0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosX] = 0.0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosY] = 0.0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosZ] = 0.0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosX] = 0.0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosY] = 0.0;
+				PlayerToyInfo[iTargetID][iToyIter][ptPosZ] = 0.0;
+				if(IsPlayerAttachedObjectSlotUsed(iTargetID, iToyIter)) RemovePlayerAttachedObject(iTargetID, iToyIter);
+
+				g_mysql_SaveToys(iTargetID, iToyIter);
+			}
+		}
+	}
+	SendClientMessageEx(iTargetID, COLOR_WHITE, "All accessories/toys that were property of your former employer have been removed.");
+	return 1;
+}
+
 CMD:shopvest(playerid, params[])
 {
 	if (PlayerInfo[playerid][pShopTech] < 1 && PlayerInfo[playerid][pAdmin] < 1338)

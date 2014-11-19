@@ -35,6 +35,43 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+PlacePlant(id, ownerid, planttype, objectid, drugskill, Float:x, Float:y, Float:z, virtualworld, interior)
+{
+    Plants[id][pObjectSpawned] = 0;
+	Plants[id][pOwner] = ownerid;
+	Plants[id][pPlantType] = planttype;
+	Plants[id][pObject] = objectid;
+	Plants[id][pGrowth] = 0;
+	Plants[id][pPos][0] = x;
+	Plants[id][pPos][1] = y;
+	Plants[id][pPos][2] = z;
+	Plants[id][pVirtual] = virtualworld;
+	Plants[id][pInterior] = interior;
+	Plants[id][pExpires] = gettime()+86400;
+	Plants[id][pDrugsSkill] = drugskill;
+	Plants[id][pObjectSpawned] = CreateDynamicObject(objectid, x, y, z, 0.0, 0.0, 0.0, virtualworld, interior);
+	return id;
+}
+
+DestroyPlant(i)
+{
+    DestroyDynamicObject(Plants[i][pObjectSpawned]);
+	Plants[i][pObjectSpawned] = 0;
+	Plants[i][pOwner] = 0;
+	Plants[i][pPlantType] = 0;
+	Plants[i][pObject] = 0;
+	Plants[i][pGrowth] = 0;
+	Plants[i][pPos][0] = 0.0;
+	Plants[i][pPos][1] = 0.0;
+	Plants[i][pPos][2] = 0.0;
+	Plants[i][pVirtual] = 0;
+	Plants[i][pInterior] = 0;
+	Plants[i][pExpires] = 0;
+	Plants[i][pDrugsSkill] = 0;
+	if(IsValidDynamicObject(Plants[i][pObjectSpawned])) DestroyDynamicObject(Plants[i][pObjectSpawned]);
+	return i;
+}
+
 CMD:useheroin(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHeroin] < 10)

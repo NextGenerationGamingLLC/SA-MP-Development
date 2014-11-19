@@ -185,6 +185,14 @@ stock SendFamilyMessage(family, color, string[])
 	}
 }
 
+stock FamilyLog(familyid, string[])
+{
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", familyid, year, month, day);
+	return Log(file, string);
+}
+
 CMD:togfamily(playerid, params[])
 {
 	return cmd_togfam(playerid, params);

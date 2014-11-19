@@ -103,6 +103,42 @@ stock UnZombie(playerid)
 #endif
 
 #if defined zombiemode
+forward OnZombieCheck(playerid);
+public OnZombieCheck(playerid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+ 		new rows, fields;
+   		cache_get_data(rows, fields, MainPipeline);
+		if(rows)
+		{
+			MakeZombie(playerid);
+		}
+	}
+	return 1;
+}
+#endif
+
+forward ScrapMetal(playerid, vehicleid);
+public ScrapMetal(playerid, vehicleid)
+{
+	PlayerInfo[playerid][mInventory][16]--;
+	new Float:vHP;
+	GetVehicleHealth(vehicleid, vHP);
+	SetVehicleHealth(vehicleid, vHP+500.0);
+	new string[128];
+	format(string, sizeof(string), "%s has added scrap metal to their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessage(playerid, COLOR_WHITE, "Your have applied scrap metal to your vehicle giving it +500HP!");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "[ZSCRAPMETAL] %s(%d) used a Scrap Metal. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][16]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "zscrapmetal");
+	return 1;
+}
+
+#if defined zombiemode
 CMD:zh(playerid, params[])
 {
 	return cmd_zombiehelp(playerid, params);

@@ -35,6 +35,50 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+IsAtTruckDeliveryPoint(playerid)
+{
+	for(new i = 0; i < sizeof(TruckerDropoffs); i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 6, TruckerDropoffs[i][PosX], TruckerDropoffs[i][PosY], TruckerDropoffs[i][PosZ])) {
+		    return 1;
+		}
+	}
+	for(new i = 0; i < sizeof(BoatDropoffs); i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 6, BoatDropoffs[i][PosX], BoatDropoffs[i][PosY], BoatDropoffs[i][PosZ])) {
+		    return 1;
+		}
+	}
+	return false;
+}
+
+CancelTruckDelivery(playerid)
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+	if(TruckDeliveringTo[TruckUsed[playerid]] != INVALID_BUSINESS_ID)
+	{
+		if(Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bType] == BUSINESS_TYPE_GASSTATION)
+		{
+			DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
+			DeletePVar(playerid, "Gas_TrailerID");
+		}
+		Businesses[TruckDeliveringTo[TruckUsed[playerid]]][bOrderState] = 1;
+		SaveBusiness(TruckDeliveringTo[TruckUsed[playerid]]);
+	}
+	if(1 <= TruckUsed[playerid] <= MAX_VEHICLES){
+		TruckDeliveringTo[TruckUsed[playerid]] = INVALID_BUSINESS_ID, TruckContents{TruckUsed[playerid]} = 0;
+	}
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
+		if(IsATruckerCar(vehicleid)) SetVehicleToRespawn(vehicleid);
+	}
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+	TruckUsed[playerid] = INVALID_VEHICLE_ID;
+ 	DisablePlayerCheckpoint(playerid);
+ 	DeletePVar(playerid, "TruckDeliver");
+	return 1;
+}
+
 CMD:checkcargo(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] != 20 && PlayerInfo[playerid][pJob2] != 20 && PlayerInfo[playerid][pJob3] != 20 && !IsACop(playerid))

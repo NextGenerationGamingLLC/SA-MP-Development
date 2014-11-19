@@ -120,6 +120,33 @@ LoadVactionsHelper()
 	return 1;
 }
 
+forward StopaniTimer(playerid);
+public StopaniTimer(playerid)
+{
+	new Float:posX, Float:posY, Float:posZ;
+    GetPlayerPos(playerid, posX, posY, posZ);
+
+    if(StopaniFloats[playerid][0] != posX || StopaniFloats[playerid][1] != posY || StopaniFloats[playerid][2] != posZ)
+	{
+	    SendClientMessageEx (playerid, COLOR_YELLOW, "Failed to clear animations because you moved!");
+    	for(new i = 0; i < 3; i++)
+		{
+			StopaniFloats[playerid][i] = 0;
+		}
+	    return 1;
+	}
+	SendClientMessageEx (playerid, COLOR_YELLOW, "Your animations were cleared!");
+	ClearAnimations(playerid);
+	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
+	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+
+	for(new i = 0; i < 3; i++)
+	{
+		StopaniFloats[playerid][i] = 0;
+	}
+	return 1;
+}
+
 CMD:animlist(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "Available Animations:");

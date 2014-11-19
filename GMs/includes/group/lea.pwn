@@ -175,6 +175,211 @@ public CuffTackled(playerid, giveplayerid)
 	return 1;
 }
 
+forward CopGetUp(playerid);
+public CopGetUp(playerid)
+{
+    SetPVarInt(playerid, "CopTackleCooldown", 30); // a Cooldown on when the cop can tackle again after tackling someone
+	DeletePVar(playerid, "Tackling");
+    SendClientMessageEx(playerid, COLOR_GRAD2, "It will be 30 seconds before you can tackle again.");
+	TogglePlayerControllable(playerid, 1);
+	//PreloadAnimLib(playerid, "SUNBATHE");
+	ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
+	return 1;
+}
+
+stock TacklePlayer(playerid, tacklee)
+{
+	new string[128], Float: posx, Float: posy, Float: posz, group[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
+	//PreloadAnimLib(playerid, "PED");
+	format(string, sizeof(string), "** %s leaps at %s, tackling them.", GetPlayerNameEx(playerid), GetPlayerNameEx(tacklee));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SetPVarInt(tacklee, "IsTackled", playerid);
+	TogglePlayerControllable(tacklee, 0);
+	SetPVarInt(tacklee, "IsFrozen", 1);
+	SetPVarInt(tacklee, "TackleCooldown", 20); //Actually a countdown till the tackle is over
+	SetPVarInt(playerid, "Tackling", tacklee);
+	GetPlayerPos(tacklee, posx, posy,posz);
+	SetPlayerFacingAngle(playerid, 180.0);
+	SetPlayerFacingAngle(tacklee, 0.0);
+	GetXYBehindPlayer(tacklee, posx, posy, 0.5);
+	ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 20000, 1);
+	ApplyAnimation(tacklee, "DILDO", "Dildo_Hit_3", 4.1, 0, 1, 1, 1, 20000, 1);
+	GetPlayerGroupInfo(playerid, group, rank, division);
+	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
+	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
+	ShowPlayerDialog(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
+	return 1;
+}
+
+forward TazerTimer(playerid);
+public TazerTimer(playerid)
+{
+	if (TazerTimeout[playerid] > 0)
+   	{
+		new string[128];
+   		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~%d", TazerTimeout[playerid]);
+		GameTextForPlayer(playerid, string,1500, 3);
+		TazerTimeout[playerid] -= 1;
+		SetTimerEx("TazerTimer",1000,false,"d",playerid);
+   	}
+	return 1;
+}
+
+forward BackupClear(playerid, calledbytimer);
+public BackupClear(playerid, calledbytimer)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		if(IsACop(playerid) || IsAMedic(playerid))
+		{
+			if (Backup[playerid] > 0)
+			{
+			    //foreach(new i: Player)
+				for(new i = 0; i < MAX_PLAYERS; ++i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(IsACop(i))
+						{
+							SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+						}
+					}	
+				}
+				SetPlayerToTeamColor(playerid);
+				new string[128];
+				if (calledbytimer != 1)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared.");
+					format(string, sizeof(string), "* %s no longer requires backup.", GetPlayerNameEx(playerid));
+					//foreach(new i: Player)
+					for(new i = 0; i < MAX_PLAYERS; ++i)
+					{
+						if(IsPlayerConnected(i))
+						{
+							switch(Backup[playerid]) {
+								case 1, 2:
+								{
+									if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
+										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+								case 3:
+								{
+									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+									}
+								}
+								default: if(IsACop(i)) {
+									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+								}
+							}
+						}	
+					}
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared automatically.");
+					format(string, sizeof(string), "* %s's backup request has expired.", GetPlayerNameEx(playerid));
+					//foreach(new i: Player)
+					for(new i = 0; i < MAX_PLAYERS; ++i)
+					{
+						if(IsPlayerConnected(i))
+						{
+							switch(Backup[playerid]) {
+								case 1, 2:
+								{
+									if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
+										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
+									}
+								}
+								case 3:
+								{
+									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+		
+								}
+								}
+								default: if(IsACop(i)) {
+									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+								}
+							}
+						}	
+					}
+				}
+				HideBackupActiveForPlayer(playerid);
+				Backup[playerid] = 0;
+				BackupClearTimer[playerid] = 0;
+			}
+			else
+			{
+				if (calledbytimer != 1)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have an active backup request!");
+				}
+			}
+		}
+		else
+		{
+			if (calledbytimer != 1)
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+			}
+		}
+	}
+	return 1;
+}
+
+forward SetAllCopCheckpoint(Float:allx, Float:ally, Float:allz, Float:radi);
+public SetAllCopCheckpoint(Float:allx, Float:ally, Float:allz, Float:radi)
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(IsACop(i))
+			{
+				SetPlayerCheckpoint(i,allx,ally,allz, radi);
+			}
+		}	
+	}
+	return 1;
+}
+
+forward ShowPlayerBeaconForCops(playerid);
+public ShowPlayerBeaconForCops(playerid)
+{
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(IsACop(i))
+			{
+				SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
+			}
+		}	
+	}
+	return 1;
+}
+
+forward HidePlayerBeaconForCops(playerid);
+public HidePlayerBeaconForCops(playerid)
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(IsACop(i))
+			{
+				SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+			}
+		}	
+	}
+	SetPlayerToTeamColor(playerid);
+	return 1;
+}
+
 CMD:placekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{

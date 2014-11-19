@@ -1234,3 +1234,190 @@ CMD:pdcell(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
 	return true;
 }
+
+forward SFPD(playerid);
+public SFPD(playerid)
+{
+	MoveDynamicObject(SFPDObject[0], -1636.02539062,701.49707031,19994.54101562, 2.5);
+ 	return 1;
+}
+
+forward SFPD1(playerid);
+public SFPD1(playerid)
+{
+	MoveDynamicObject(SFPDObject[1], -1635.99414062, 696.53320312, 19994.55078125, 2.5);
+ 	return 1;
+}
+
+forward SFPD2(playerid);
+public SFPD2(playerid)
+{
+	MoveDynamicObject(SFPDObject[2],-1625.28808594,712.56250000,19994.85937500, 2.5);
+ 	return 1;
+}
+
+forward SFPD3(playerid);
+public SFPD3(playerid)
+{
+	MoveDynamicObject(SFPDObject[3], -1613.92871094,681.78125000,19989.05468750, 2.5);
+ 	return 1;
+}
+
+forward SFPD4(playerid);
+public SFPD4(playerid)
+{
+	MoveDynamicObject(SFPDObject[4], -1634.79492188, 712.56250000, 19994.85937500, 2.5);
+ 	return 1;
+}
+
+forward DoorOpen(playerid);
+public DoorOpen(playerid)
+{
+	  MoveDynamicObject(lspddoor1, 247.2763671875,72.536186218262,1002.640625, 3.5000);
+	  MoveDynamicObject(lspddoor2, 244.0330657959,72.580932617188,1002.640625, 3.5000);
+	  return 1;
+}
+forward DoorClose(playerid);
+public DoorClose(playerid)
+{
+	  MoveDynamicObject(lspddoor1, 246.35150146484,72.547714233398,1002.640625, 3.5000);
+	  MoveDynamicObject(lspddoor2, 245.03300476074,72.568511962891,1002.640625, 3.5000);
+	  return 1;
+}
+
+forward CloseWestLobby();
+public CloseWestLobby()
+{
+	MoveDynamicObject(westlobby1,239.71582031,116.09179688,1002.21502686,4);
+	MoveDynamicObject(westlobby2,239.67968750,119.09960938,1002.21502686,4);
+	return 1;
+}
+
+forward CloseEastLobby();
+public CloseEastLobby()
+{
+	MoveDynamicObject(eastlobby1,253.14941406,110.59960938,1002.21502686,4);
+	MoveDynamicObject(eastlobby2,253.18457031,107.59960938,1002.21502686,4);
+	return 1;
+}
+
+forward CloseBlastDoor();
+public CloseBlastDoor()
+{
+	MoveDynamicObject(blastdoor[0],-764.11816406,2568.81445312,10021.5,2);
+	return 1;
+}
+
+forward CloseBlastDoor2();
+public CloseBlastDoor2()
+{
+    MoveDynamicObject(blastdoor[1],-746.02636719,2535.19433594,10021.5,2);
+	return 1;
+}
+
+forward CloseBlastDoor3();
+public CloseBlastDoor3()
+{
+	MoveDynamicObject(blastdoor[2],-765.26171875,2552.31347656,10021.5,2);
+	return 1;
+}
+
+forward CloseCage();
+public CloseCage()
+{
+   	MoveDynamicObject(cage,-773.52050781,2545.62109375,10022.29492188,2);
+	return 1;
+}
+
+forward CloseLocker();
+public CloseLocker()
+{
+	MoveDynamicObject(locker1,267.29980469,112.56640625,1003.61718750,4);
+	MoveDynamicObject(locker2,264.29980469,112.52929688,1003.61718750,4);
+	return 1;
+}
+
+forward CloseEntranceDoor();
+public CloseEntranceDoor()
+{
+    MoveDynamicObject(entrancedoor,-766.27539062,2536.58691406,10019.5,2);
+	return 1;
+}
+
+forward CloseCCTV();
+public CloseCCTV()
+{
+	MoveDynamicObject(cctv1,264.44921875,115.79980469,1003.61718750,4);
+	MoveDynamicObject(cctv2,267.46875000,115.83691406,1003.61718750,4);
+	return 1;
+}
+
+forward CloseChief();
+public CloseChief()
+{
+	MoveDynamicObject(chief1,229.59960938,119.50000000,1009.21875000,4);
+	MoveDynamicObject(chief2,232.59960938,119.53515625,1009.21875000,4);
+	return 1;
+}
+
+forward CloseSASD1();
+public CloseSASD1()
+{
+	MoveDynamicObject(sasd1A,2511.65332031,-1697.00976562,561.79223633,4);
+	MoveDynamicObject(sasd1B,2514.67211914,-1696.97485352,561.79223633,4);
+	return 1;
+}
+
+forward CloseSASD2();
+public CloseSASD2()
+{
+	MoveDynamicObject(sasd2A,2516.87548828,-1697.01525879,561.79223633,4);
+	MoveDynamicObject(sasd2B,2519.89257812,-1696.97509766,561.79223633,4);
+	return 1;
+}
+
+forward CloseSASD3();
+public CloseSASD3()
+{
+	MoveDynamicObject(sasd3A,2522.15600586,-1697.01550293,561.79223633,4);
+	MoveDynamicObject(sasd3B,2525.15893555,-1696.98010254,561.79223633,4);
+	return 1;
+}
+
+forward CloseSASD4();
+public CloseSASD4()
+{
+	MoveDynamicObject(sasd4A,2511.84130859,-1660.08081055,561.79528809,4);
+	MoveDynamicObject(sasd4B,2514.81982422,-1660.04650879,561.80004883,4);
+	return 1;
+}
+
+forward CloseSASD5();
+public CloseSASD5()
+{
+	MoveDynamicObject(sasd5A,2522.86059570,-1660.07177734,561.80206299,4);
+	MoveDynamicObject(sasd5B,2519.84228516,-1660.10888672,561.80004883,4);
+	return 1;
+}
+
+forward CloseFBILobbyLeft();
+public CloseFBILobbyLeft()
+{
+	MoveDynamicObject(FBILobbyLeft,295.40136719,-1498.43457031,-46.13965225,4);
+	return 1;
+}
+
+forward CloseFBILobbyRight();
+public CloseFBILobbyRight()
+{
+	MoveDynamicObject(FBILobbyRight,302.39355469,-1521.62988281,-46.13965225,4);
+	return 1;
+}
+
+forward CloseFBIPrivate();
+public CloseFBIPrivate()
+{
+	MoveDynamicObject(FBIPrivate[0],299.29986572,-1492.82666016,-28.73300552,4);
+	MoveDynamicObject(FBIPrivate[1],299.33737183,-1495.83911133,-28.73300552,4);
+	return 1;
+}

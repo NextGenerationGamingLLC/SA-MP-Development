@@ -1682,6 +1682,17 @@ stock ShowInventory(playerid,targetid)
 	return 1;
 }
 
+stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
+{
+	new
+		i = 0;
+	while (i < (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1) && (!PlayerVehicleInfo[ownerid][slot][pvWeapons][i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(PlayerVehicleInfo[ownerid][slot][pvWeapons][i])] == PlayerVehicleInfo[ownerid][slot][pvWeapons][i]))
+	{
+		i++;
+	}
+	if (i == (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1)) return -1;
+	return i;
+}
 
 /*CMD:storagehelp(playerid, params[])
 {

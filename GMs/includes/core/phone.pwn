@@ -35,6 +35,62 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward RingToner();
+public RingToner()
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(RingTone[i] != 6 && RingTone[i] != 0 && RingTone[i] < 11)
+			{
+				RingTone[i] = RingTone[i] -1;
+				PlayerPlaySound(i, 1138, 0.0, 0.0, 0.0);
+			}
+			if(RingTone[i] == 6)
+			{
+				RingTone[i] = RingTone[i] -1;
+			}
+			if(RingTone[i] == 20)
+			{
+				RingTone[i] = RingTone[i] -1;
+				PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
+			}
+		}	
+	}
+	SetTimer("RingTonerRev", 1000, 0);
+	return 1;
+}
+
+forward RingTonerRev();
+public RingTonerRev()
+{
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(RingTone[i] != 5 && RingTone[i] != 0 && RingTone[i] < 10)
+			{
+				RingTone[i] = RingTone[i] -1;
+				PlayerPlaySound(i, 1137, 0.0, 0.0, 0.0);
+			}
+			if(RingTone[i] == 5)
+			{
+				RingTone[i] = RingTone[i] -1;
+			}
+			if(RingTone[i] == 19)
+			{
+				PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
+				RingTone[i] = 0;
+			}
+		}	
+	}
+	SetTimer("RingToner", 1000, 0);
+	return 1;
+}
+
 CMD:cellphonehelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

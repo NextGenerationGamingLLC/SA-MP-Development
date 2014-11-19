@@ -758,6 +758,202 @@ stock LeavePaintballArena(playerid, arenaid)
 	}
 }
 
+forward TickCTF(playerid);
+public TickCTF(playerid)
+{
+	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+	    new arenaid = GetPVarInt(playerid, "IsInArena");
+	    if(PaintBallArena[arenaid][pbGameType] == 3)
+	    {
+	        // Flag Active Codes
+			//
+			// Active -1 = Flag is being carried by someone, not pickupable by anyone intill dropping.
+			// Active 0 = Flag is on the stand, pickupable by only the opp team.
+			// Active 1 = Flag is lying on the ground somewhere, pickupable by both teams, same team resets the flag.
+
+			// Inactive Teams Check
+			if(PaintBallArena[arenaid][pbTeamRed] == 0)
+			{
+			    return 1;
+			}
+			if(PaintBallArena[arenaid][pbTeamBlue] == 0)
+			{
+			    return 1;
+			}
+
+	        new teamid = PlayerInfo[playerid][pPaintTeam];
+	        switch(teamid)
+	        {
+	            case 1: // Red Team's Tick
+	            {
+	                // Red Flag Checks
+	                if(PaintBallArena[arenaid][pbFlagRedActive] == 0)
+					{
+					    if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
+					    {
+					    	if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagRedPos][0], PaintBallArena[arenaid][pbFlagRedPos][1], PaintBallArena[arenaid][pbFlagRedPos][2]))
+	                		{
+	                		    ScoreFlagPaintballArena(playerid, arenaid, 2);
+	                		}
+						}
+					}
+	                if(PaintBallArena[arenaid][pbFlagRedActive] == 1)
+	                {
+	                	if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagRedPos][0], PaintBallArena[arenaid][pbFlagRedPos][1], PaintBallArena[arenaid][pbFlagRedPos][2]))
+	                	{
+	                	    ResetFlagPaintballArena(arenaid, 1);
+	                	}
+					}
+
+					// Blue Flag Checks
+	                if(PaintBallArena[arenaid][pbFlagBlueActive] == 0)
+					{
+					    if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagBluePos][0], PaintBallArena[arenaid][pbFlagBluePos][1], PaintBallArena[arenaid][pbFlagBluePos][2]))
+					    {
+					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
+					        {
+					            SetPlayerHealth(playerid, 1);
+					            RemoveArmor(playerid);
+					        }
+					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
+					        {
+					            SetPlayerArmedWeapon(playerid, 0);
+					        }
+							PickupFlagPaintballArena(playerid, arenaid, 2);
+					    }
+					}
+	                if(PaintBallArena[arenaid][pbFlagBlueActive] == 1)
+	                {
+	                    if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagBluePos][0], PaintBallArena[arenaid][pbFlagBluePos][1], PaintBallArena[arenaid][pbFlagBluePos][2]))
+					    {
+					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
+					        {
+					            SetPlayerHealth(playerid, 1);
+					            RemoveArmor(playerid);
+					        }
+					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
+					        {
+					            SetPlayerArmedWeapon(playerid, 0);
+					        }
+							PickupFlagPaintballArena(playerid, arenaid, 2);
+					    }
+					}
+	            }
+	            case 2: // Blue Team's Tick
+	            {
+	                // Blue Flag Checks
+	                if(PaintBallArena[arenaid][pbFlagBlueActive] == 0)
+	                {
+	                    if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
+	                    {
+	                        if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagBluePos][0], PaintBallArena[arenaid][pbFlagBluePos][1], PaintBallArena[arenaid][pbFlagBluePos][2]))
+	                		{
+	                		    ScoreFlagPaintballArena(playerid, arenaid, 1);
+	                		}
+	                    }
+	                }
+	                if(PaintBallArena[arenaid][pbFlagBlueActive] == 1)
+	                {
+	                    if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagBluePos][0], PaintBallArena[arenaid][pbFlagBluePos][1], PaintBallArena[arenaid][pbFlagBluePos][2]))
+	                	{
+	                	    ResetFlagPaintballArena(arenaid, 2);
+	                	}
+	                }
+
+	                // Red Flag Checks
+	                if(PaintBallArena[arenaid][pbFlagRedActive] == 0)
+	                {
+                        if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagRedPos][0], PaintBallArena[arenaid][pbFlagRedPos][1], PaintBallArena[arenaid][pbFlagRedPos][2]))
+					    {
+					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
+					        {
+					            SetPlayerHealth(playerid, 1);
+                                RemoveArmor(playerid);
+					        }
+					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
+					        {
+					            SetPlayerArmedWeapon(playerid, 0);
+					        }
+							PickupFlagPaintballArena(playerid, arenaid, 1);
+					    }
+	                }
+	                if(PaintBallArena[arenaid][pbFlagRedActive] == 1)
+	                {
+	                    if(IsPlayerInRangeOfPoint(playerid, 3.0, PaintBallArena[arenaid][pbFlagRedPos][0], PaintBallArena[arenaid][pbFlagRedPos][1], PaintBallArena[arenaid][pbFlagRedPos][2]))
+					    {
+					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
+					        {
+					            SetPlayerHealth(playerid, 1);
+					            RemoveArmor(playerid);
+					        }
+					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
+					        {
+					            SetPlayerArmedWeapon(playerid, 0);
+					        }
+							PickupFlagPaintballArena(playerid, arenaid, 1);
+					    }
+					}
+	            }
+	        }
+	    }
+	}
+	return 1;
+}
+
+forward TickKOTH(playerid);
+public TickKOTH(playerid)
+{
+	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+	    new arenaid = GetPVarInt(playerid, "IsInArena");
+
+   		// Inactive Players Check
+       	if(PaintBallArena[arenaid][pbPlayers] < 2)
+       	{
+			return 1;
+		}
+
+	    if(PaintBallArena[arenaid][pbGameType] == 4) // King of the Hill
+		{
+		    if(IsPlayerInCheckpoint(playerid))
+			{
+			    new Float:health;
+			    GetPlayerHealth(playerid, health);
+			    SetPlayerHealth(playerid, health+1);
+
+			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+			    PlayerInfo[playerid][pKills] += 1;
+			}
+		}
+		if(PaintBallArena[arenaid][pbGameType] == 5) // Team King of the Hill
+		{
+		    if(IsPlayerInCheckpoint(playerid))
+			{
+			    new Float:health;
+			    GetPlayerHealth(playerid, health);
+			    SetPlayerHealth(playerid, health+1);
+
+			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
+
+
+			    switch(PlayerInfo[playerid][pPaintTeam])
+			    {
+			        case 1:
+			        {
+						PaintBallArena[arenaid][pbTeamRedScores] += 1;
+			        }
+			        case 2:
+			        {
+			            PaintBallArena[arenaid][pbTeamBlueScores] += 1;
+					}
+			    }
+			}
+		}
+	}
+	return 1;
+}
+
 CMD:areloadpb(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)

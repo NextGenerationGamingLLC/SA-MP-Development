@@ -35,6 +35,164 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward Lotto(number);
+public Lotto(number)
+{
+	new JackpotFallen = 0, TotalWinners = 0, string[128];
+
+	format(string, sizeof(string), "Lottery News: Today the winning number has fallen on... %d!.", number);
+	OOCOff(COLOR_WHITE, string);
+
+	//foreach(new i: Player)
+	for(new i = 0; i < MAX_PLAYERS; ++i)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(PlayerInfo[i][pLottoNr] > 0)
+			{
+				for(new t = 0; t < 5; t++)
+				{
+					if(LottoNumbers[i][t] == number)
+					{
+						TotalWinners++;
+						SetPVarInt(i, "Winner", 1);
+						break;
+					}
+					else
+					{
+						LottoNumbers[i][t] = 0;
+						if(t == 4) {
+							SendClientMessageEx(i, COLOR_GREY, "Sorry your lottery tickets have not been selected this drawing.");
+						}
+					}
+				}
+				DeleteTickets(i);
+				PlayerInfo[i][pLottoNr] = 0;
+			}
+			else {
+				SendClientMessageEx(i, COLOR_GREY, "You did not participate in this drawing.");
+			}
+		}	
+	}
+	if(TotalWinners == 1)
+	{
+		//foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(GetPVarType(i, "Winner"))
+				{
+					for(new t = 0; t < 5; t++) {
+						LottoNumbers[i][t] = 0;
+					}
+					if(SpecLotto) {
+						AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
+					}
+					JackpotFallen = 1;
+					format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
+					OOCOff(COLOR_WHITE, string);
+					format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
+					SendClientMessageEx(i, COLOR_YELLOW, string);
+					GivePlayerCash(i, Jackpot);
+					DeletePVar(i, "Winner");
+				}
+			}	
+		}
+	}
+	else if(TotalWinners > 1)
+	{
+	    //foreach(new i: Player)
+		for(new i = 0; i < MAX_PLAYERS; ++i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(GetPVarType(i, "Winner"))
+				{
+					for(new t = 0; t < 5; t++) {
+						LottoNumbers[i][t] = 0;
+					}
+					if(SpecLotto) {
+						AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
+					}
+					JackpotFallen = 1;
+					format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
+					OOCOff(COLOR_WHITE, string);
+					format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
+					SendClientMessageEx(i, COLOR_YELLOW, string);
+					GivePlayerCash(i, Jackpot/TotalWinners);
+					DeletePVar(i, "Winner");
+				}
+			}	
+	    }
+	}
+	TicketsSold = 0;
+	SpecLotto = 0;
+	if(!JackpotFallen)
+	{
+		Misc_Save();
+		format(string, sizeof(string), "Lottery News: The jackpot has been raised to $%s.", number_format(Jackpot));
+		OOCOff(COLOR_WHITE, string);
+	}
+	else
+	{
+	    Jackpot = 50000;
+	    format(string, sizeof(string), "Lottery News: The new jackpot has been started with $%s.", number_format(Jackpot));
+		OOCOff(COLOR_WHITE, string);
+	}
+	return 1;
+}
+
+forward PrepareLotto();
+public PrepareLotto()
+{
+ 	SetTimerEx("StartLotto", 60000, 0, "d", 1);
+	return 1;
+}
+
+forward StartLotto(stage);
+public StartLotto(stage)
+{
+	new minutes, string[128];
+	if(stage <= 3 && stage != 0)
+	{
+	    if(stage == 1) minutes = 6;
+	    else if(stage == 2) minutes = 4;
+	    else if(stage == 3) minutes = 2;
+		format(string, sizeof(string), "Lottery News: A Lottery Election is about to start, please get a lottery ticket at any 24/7. %d minutes left.", minutes);
+		OOCOff(COLOR_WHITE, string);
+		if(stage > 0)
+		{
+			SetTimerEx("StartLotto", 120000, 0, "d", stage+1);
+		}
+	}
+	else if(stage == 4)
+	{
+	    SetTimerEx("EndLotto", 1000, 0, "d", 3);
+	}
+	return 1;
+}
+
+forward EndLotto(secondt);
+public EndLotto(secondt)
+{
+	new string[128];
+	if(secondt != 0)
+	{
+		format(string, sizeof(string), "Lottery News Countdown: %d.", secondt);
+		OOCOff(COLOR_WHITE, string);
+		SetTimerEx("EndLotto", 1000, 0, "d", secondt-1);
+	}
+	else
+	{
+	    format(string, sizeof(string), "Lottery News: We have started the Lottery Election.");
+		OOCOff(COLOR_WHITE, string);
+		new rand = Random(1, 300);
+		Lotto(rand);
+	}
+	return 1;
+}
+
 CMD:lottoinfo(playerid, params[])
 {
 	new szMessage[128];

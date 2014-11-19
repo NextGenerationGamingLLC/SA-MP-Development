@@ -35,6 +35,13 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward ERequested();
+public ERequested()
+{
+	EventKernel[EventAdvisor] = 0;
+	return 1;
+}
+
 CMD:joinevent(playerid, params[]) {
 	if( EventKernel[ EventStatus ] == 0 ) {
 		SendClientMessageEx( playerid, COLOR_WHITE, "There are currently no active events." );

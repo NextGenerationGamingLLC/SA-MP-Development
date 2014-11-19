@@ -45,6 +45,194 @@ stock CountCrates()
 	return count;
 }
 
+forward DeliverCrate(playerid);
+public DeliverCrate(playerid)
+{
+    new vehicleid = GetPlayerVehicleID(playerid);
+    SetPVarInt(playerid, "DeliverCrateTime", GetPVarInt(playerid, "DeliverCrateTime")-1);
+	new string[128];
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "DeliverCrateTime"));
+	GameTextForPlayer(playerid, string, 1100, 3);
+	new CrateFound = GetPVarInt(playerid, "dc_CrateFound");
+
+	if(GetPVarInt(playerid, "SecuricarID") != vehicleid) {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You're no longer in control of the vehicle - delivery cancelled.");
+		TogglePlayerControllable(playerid, 1);
+	    DeletePVar(playerid, "dc_CrateFound");
+        DeletePVar(playerid, "delivercratecrateid");
+        DeletePVar(playerid, "DeliverCrateTime");
+        DeletePVar(playerid, "SecuricarID");
+        DeletePVar(playerid, "dc_GroupID");
+        DeletePVar(playerid, "dc_i");
+		return 1;
+	}
+
+	if(!CrateFound)
+	{
+	    return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any crates loaded.");
+	}
+
+	if(GetPVarInt(playerid, "DeliverCrateTime") > 0) SetTimerEx("DeliverCrate", 1000, 0, "d", playerid);
+
+
+	if(GetPVarInt(playerid, "DeliverCrateTime") <= 0)
+	{
+	    if(GetPVarInt(playerid, "Speedo"))
+	    {
+	        PlayerInfo[playerid][pSpeedo] = 1;
+	        DeletePVar(playerid, "Speedo");
+	    }
+	    new CrateID = GetPVarInt(playerid, "delivercratecrateid"), group = GetPVarInt(playerid, "dc_GroupID"), i = GetPVarInt(playerid, "dc_i");
+        if( arrGroupData[group][g_iLockerStock] + floatround(CrateInfo[CrateID][GunQuantity] * 2) < MAX_LOCKER_STOCK)
+        {
+            if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 530 && CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] == 1)
+            {
+			    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
+			    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+			    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
+			}
+            new Float: quantcalc = floatdiv(CrateInfo[CrateID][GunQuantity], 50);
+            new Float: costcalc = (CRATE_COST * 1.2);
+            new discount = floatround(floatmul(quantcalc, costcalc));
+			arrGroupData[group][g_iLockerStock] += floatround(CrateInfo[CrateID][GunQuantity] * 2) * 10;
+			arrGroupData[group][g_iBudget] -= discount;
+			arrGroupData[group][g_iCratesOrder]--;
+			Tax += floatround(CRATE_COST * 1.2);
+			CrateInfo[CrateID][GunQuantity] = 0;
+			CrateInfo[CrateID][crActive] = 0;
+			CrateVehicleLoad[vehicleid][vCrateID][i] = -1;
+            mysql_SaveCrates();
+            SaveGroup(group);
+            new str[128], file[32];
+            format(str, sizeof(str), "%s delivered a weapon crate at a cost of $%d to %s's budget fund.",GetPlayerNameEx(playerid), discount, arrGroupData[group][g_szGroupName]);
+			new month, day, year;
+			getdate(year,month,day);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", group, month, day, year);
+			Log(file, str);
+		}
+		else
+		{
+		    if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 530 && CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] == 1)
+            {
+			    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
+			    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+			    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
+			}
+		    new Float: quantcalc = floatdiv((MAX_LOCKER_STOCK - arrGroupData[group][g_iLockerStock]), 100);
+            new Float: costcalc = (CRATE_COST * 1.2);
+            new discount = floatround(floatmul(quantcalc, costcalc));
+		    arrGroupData[group][g_iLockerStock] = MAX_LOCKER_STOCK;
+		    arrGroupData[group][g_iBudget] -= discount;
+		    arrGroupData[group][g_iCratesOrder]--;
+			Tax += discount;
+			CrateInfo[CrateID][GunQuantity] = 0;
+			CrateInfo[CrateID][crActive] = 0;
+			CrateVehicleLoad[vehicleid][vCrateID][i] = -1;
+			mysql_SaveCrates();
+			SaveGroup(group);
+			new str[128], file[32];
+            format(str, sizeof(str), "%s delivered a weapon crate at a cost of $%d to %s's budget fund.",GetPlayerNameEx(playerid), floatround(CRATE_COST * 0.8), arrGroupData[group][g_szGroupName]);
+            new month, day, year;
+			getdate(year,month,day);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", group, month, day, year);
+			Log(file, str);
+		}
+	    DeletePVar(playerid, "dc_CrateFound");
+        DeletePVar(playerid, "delivercratecrateid");
+        DeletePVar(playerid, "DeliverCrateTime");
+        DeletePVar(playerid, "SecuricarID");
+        DeletePVar(playerid, "dc_GroupID");
+        DeletePVar(playerid, "dc_i");
+        TogglePlayerControllable(playerid, 1);
+	    if(CrateFound)
+	    {
+	        SendClientMessageEx(playerid, COLOR_GRAD2, "You've delivered the High Grade Materials to the Locker.");
+		}
+
+	}
+	return 1;
+}
+
+forward LoadForklift(playerid);
+public LoadForklift(playerid)
+{
+    new vehicleid = GetPlayerVehicleID(playerid);
+    SetPVarInt(playerid, "LoadForkliftTime", GetPVarInt(playerid, "LoadForkliftTime")-1);
+	new string[128];
+	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "LoadForkliftTime"));
+	GameTextForPlayer(playerid, string, 1100, 3);
+
+	if(GetPVarInt(playerid, "ForkliftID") != vehicleid) {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You've exited the forklift - load cancelled.");
+		TogglePlayerControllable(playerid, 1);
+		DeletePVar(playerid, "LoadForkliftTime");
+		DeletePVar(playerid, "ForkliftID");
+		LoadForkliftStatus = 0;
+		return 1;
+	}
+
+	if(GetPVarInt(playerid, "LoadForkliftTime") > 0) SetTimerEx("LoadForklift", 1000, 0, "d", playerid);
+
+
+	if(GetPVarInt(playerid, "LoadForkliftTime") <= 0)
+	{
+	    if(GetPVarInt(playerid, "Speedo"))
+	    {
+	        PlayerInfo[playerid][pSpeedo] = 1;
+	        DeletePVar(playerid, "Speedo");
+	    }
+	    LoadForkliftStatus = 0;
+		DeletePVar(playerid, "LoadForkliftTime");
+		DeletePVar(playerid, "ForkliftID");
+		TogglePlayerControllable(playerid, 1);
+		CrateVehicleLoad[vehicleid][vForkLoaded] = 1;
+		CrateVehicleLoad[vehicleid][vForkObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
+		AttachDynamicObjectToVehicle(CrateVehicleLoad[vehicleid][vForkObject], vehicleid, 0, 0.9, -0.2, 0, 0, 0);
+		Streamer_Update(playerid);
+		SendClientMessageEx(playerid, COLOR_GRAD2, " You've successfully loaded the crate!");
+		new Float: pX, Float: pY, Float: pZ;
+		GetPlayerPos(playerid, pX, pY, pZ);
+		SetPVarFloat(playerid, "tpForkliftX", pX);
+ 		SetPVarFloat(playerid, "tpForkliftY", pY);
+  		SetPVarFloat(playerid, "tpForkliftZ", pZ);
+		SetPVarInt(playerid, "tpForkliftTimer", 80);
+		SetPVarInt(playerid, "tpForkliftID", GetPlayerVehicleID(playerid));
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_CRATETIMER);
+		Tax -= CRATE_COST;
+		Misc_Save();
+		HideCrate();
+		SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
+		for(new i = 0; i < sizeof(CrateInfo); i++)
+		{
+		    if(!CrateInfo[i][crActive])
+			{
+				CrateInfo[i][InVehicle] = vehicleid;
+				CrateInfo[i][GunQuantity] = 50;
+				CrateInfo[i][crActive] = 1;
+				CrateVehicleLoad[vehicleid][vCrateID][0] = i;
+				break;
+			}
+		}
+	}
+	return 1;
+}
+
+forward HideCrate();
+public HideCrate()
+{
+    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad, E_STREAMER_WORLD_ID, { 1 });
+    return 1;
+}
+
+forward ShowCrate();
+public ShowCrate()
+{
+    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad, E_STREAMER_WORLD_ID, { 0 });
+    return 1;
+}
+
 CMD:crates(playerid, params[]) {
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])

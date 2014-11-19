@@ -35,6 +35,98 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock CreateSpeedCamera(Float:x, Float:y, Float:z, Float:rotation, Float:range, Float:limit)
+{
+	new loadedCams = 0;
+	new index;
+
+	for (new i = 0; i < MAX_SPEEDCAMERAS; i++)
+	{
+		if (SpeedCameras[i][_scActive])
+		{
+			loadedCams++;
+		}
+		else
+		{
+			index = i;
+			break;
+		}
+	}
+
+	if (loadedCams == MAX_SPEEDCAMERAS)
+		return -1;
+
+	SpeedCameras[index][_scActive] = true;
+	SpeedCameras[index][_scPosX] = x;
+	SpeedCameras[index][_scPosY] = y;
+	SpeedCameras[index][_scPosZ] = z;
+	SpeedCameras[index][_scRotation] = rotation;
+	SpeedCameras[index][_scRange] = range;
+	SpeedCameras[index][_scLimit] = limit;
+	SpeedCameras[index][_scObjectId] = -1;
+
+	StoreNewSpeedCameraInMySQL(index);
+	SpawnSpeedCamera(index);
+
+	return index;
+}
+
+stock ShowPlayerCrimeDialog(playerid)
+{
+	new szCrime[1200];
+	format(szCrime, sizeof(szCrime), "----Misdemeanors----\n");
+	for(new i = 0; i < sizeof(SuspectCrimes); i++)
+	{
+		if(SuspectCrimeInfo[i][0] == 0)
+		{
+		    strcat(szCrime, "{FFFF00}");
+		    strcat(szCrime, SuspectCrimes[i]);
+		    strcat(szCrime, "\n");
+		}
+	}
+	strcat(szCrime, "----Felonies----\n");
+	for(new i = 0; i < sizeof(SuspectCrimes); i++)
+	{
+		if(SuspectCrimeInfo[i][0] == 1)
+		{
+		    strcat(szCrime, "{AA3333}");
+		    strcat(szCrime, SuspectCrimes[i]);
+			strcat(szCrime, "\n");
+		}
+	}
+	//strcat(szCrime, "Other (Not Listed)");
+	return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Select a committed crime", szCrime, "Select", "Exit");
+}
+
+stock SpawnSpeedCamera(i)
+{
+	if (SpeedCameras[i][_scActive] && SpeedCameras[i][_scObjectId] == -1)
+	{
+		SpeedCameras[i][_scObjectId] = CreateDynamicObject(18880, SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ], 0, 0, SpeedCameras[i][_scRotation]);
+		new szLimit[50];
+		format(szLimit, sizeof(szLimit), "{FFFFFF}Speed Limit\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[i][_scLimit], floatround_round));
+		SpeedCameras[i][_scTextID] = CreateDynamic3DTextLabel(szLimit, COLOR_TWWHITE, SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ]+5, 30.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, -1, -1, -1);
+	}
+}
+
+stock DespawnSpeedCamera(i)
+{
+	if (SpeedCameras[i][_scActive])
+	{
+		DestroyDynamicObject(SpeedCameras[i][_scObjectId]);
+		DestroyDynamic3DTextLabel(SpeedCameras[i][_scTextID]);
+		SpeedCameras[i][_scObjectId] = -1;
+	}
+}
+
+stock SaveSpeedCameras()
+{
+	for (new c = 0; c < MAX_SPEEDCAMERAS; c++)
+	{
+		SaveSpeedCamera(c);
+	}
+}
+
 CMD:speedcam(playerid, params[])
 {
 	if (IsPlayerInAnyVehicle(playerid))

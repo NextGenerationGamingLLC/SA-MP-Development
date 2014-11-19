@@ -35,6 +35,39 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock SaveDynamicMapIcons()
+{
+	for(new i = 1; i < MAX_DMAPICONS; i++)
+	{
+		SaveDynamicMapIcon(i);
+	}
+	return 1;
+}
+
+stock RehashDynamicMapIcon(mapiconid)
+{
+	if(IsValidDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID])) DestroyDynamicMapIcon(DMPInfo[mapiconid][dmpMapIconID]);
+	DMPInfo[mapiconid][dmpMarkerType] = 0;
+	DMPInfo[mapiconid][dmpColor] = 0;
+	DMPInfo[mapiconid][dmpVW] = 0;
+	DMPInfo[mapiconid][dmpInt] = 0;
+	DMPInfo[mapiconid][dmpPosX] = 0.0;
+	DMPInfo[mapiconid][dmpPosY] = 0.0;
+	DMPInfo[mapiconid][dmpPosZ] = 0.0;
+	LoadDynamicMapIcon(mapiconid);
+}
+
+stock RehashDynamicMapIcons()
+{
+	printf("[RehashDynamicMapIcons] Deleting map icons from server...");
+	for(new i = 1; i < MAX_DMAPICONS; i++)
+	{
+		RehashDynamicMapIcon(i);
+	}
+	LoadDynamicMapIcons();
+}
+
+
 CMD:gotomapicon(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4)

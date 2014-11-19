@@ -35,6 +35,57 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward PayNSpray(playerid, id, vehicleid);
+public PayNSpray(playerid, id, vehicleid)
+{
+	if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_igID] != INVALID_GROUP_ID)
+	{
+		new iGroupID = DynVehicleInfo[DynVeh[vehicleid]][gv_igID];
+		if(arrGroupData[iGroupID][g_iBudget] >= PayNSprays[id][pnsGroupCost])
+		{
+			arrGroupData[iGroupID][g_iBudget] -= PayNSprays[id][pnsGroupCost];
+			new str[128], file[32];
+			format(str, sizeof(str), "%s has repaired vehicle %d at a cost of $%s to %s's budget fund.", GetPlayerNameEx(playerid), GetPlayerVehicleID(playerid), number_format(PayNSprays[id][pnsGroupCost]), arrGroupData[iGroupID][g_szGroupName]);
+			new month, day, year;
+			getdate(year,month,day);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+			Log(file, str);
+			SendClientMessageEx(playerid, COLOR_GREY, "This is a group vehicle and the repair cost has been paid by the government.");
+		}
+		else
+		{
+			SendClientMessage(playerid, COLOR_WHITE, "Your agency does not have enough money in their funds to pay for this!");
+			TogglePlayerControllable(playerid, 1);
+			return 1;
+		}
+	}
+	else
+	{
+		if(PlayerInfo[playerid][pCash] >= PayNSprays[id][pnsRegCost])
+		{
+			GivePlayerCash(playerid, -PayNSprays[id][pnsRegCost]);
+		}
+		else
+		{
+			SendClientMessage(playerid, COLOR_WHITE, "You don't have enough money to pay for this!");
+			TogglePlayerControllable(playerid, 1);
+			return 1;
+		}
+	}
+	RepairVehicle(vehicleid);
+	Vehicle_Armor(vehicleid);
+	if(IsTrailerAttachedToVehicle(vehicleid))
+	{
+		RepairVehicle(GetVehicleTrailer(vehicleid));
+		Vehicle_Armor(GetVehicleTrailer(vehicleid));
+	}
+	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been repaired!");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	TogglePlayerControllable(playerid, 1);
+	return 1;
+}
+
+
 CMD:pnsedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4)

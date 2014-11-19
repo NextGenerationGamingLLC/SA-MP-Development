@@ -35,6 +35,101 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+CreateHouseSaleSign(houseid)
+{
+	if(!HouseInfo[houseid][hSign][0]) return 1;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
+	new string[64];
+	HouseInfo[houseid][hSignObj] = CreateDynamicObject(19471, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2], 0, 0, HouseInfo[houseid][hSign][3], HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
+	format(string,sizeof(string),"ID: %d\nType /readsign to read the Owners Message.", houseid);
+	HouseInfo[houseid][hSignText] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, HouseInfo[houseid][hSign][0], HouseInfo[houseid][hSign][1], HouseInfo[houseid][hSign][2] + 0.5, 10.0, .worldid = HouseInfo[houseid][hExtVW], .streamdistance = 25.0);
+	return 1;
+}
+
+DeleteHouseSaleSign(houseid)
+{
+	format(HouseInfo[houseid][hSignDesc], 64, "None");
+	HouseInfo[houseid][hSign][0] = 0.0;
+	HouseInfo[houseid][hSign][1] = 0.0;
+	HouseInfo[houseid][hSign][2] = 0.0;
+	HouseInfo[houseid][hSign][3] = 0.0;
+	HouseInfo[houseid][hSignExpire] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
+	SaveHouse(houseid);
+	return 1;
+}
+
+forward FuelCan(playerid, vehicleid, amount);
+public FuelCan(playerid, vehicleid, amount)
+{
+	new string[128];
+	if(GetPVarInt(playerid, "fuelcan") == 1)
+	{
+		PlayerInfo[playerid][mInventory][7]--;
+		format(string, sizeof(string), "[FUELCAN] %s(%d) used a fuel can. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][7]);
+		Log("logs/micro.log", string);
+	}
+	if(GetPVarInt(playerid, "fuelcan") == 2)
+	{
+		format(string, sizeof(string), "[ZFUELCAN] %s(%d) used a fuel can with %d%% fuel.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][zFuelCan]);
+		Log("logs/micro.log", string);
+		PlayerInfo[playerid][zFuelCan] = 0;
+	}
+	VehicleFuel[vehicleid] += float(amount);
+	if(VehicleFuel[vehicleid] > 100) VehicleFuel[vehicleid] = 100.0;
+	format(string, sizeof(string), "%s has used a fuel can to refill their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessageEx(playerid, COLOR_WHITE, "You have used a fuel can to refill your vehicle.");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	DeletePVar(playerid, "fuelcan");
+	return 1;
+}
+
+forward JumpStart(playerid, vehicleid);
+public JumpStart(playerid, vehicleid)
+{
+	PlayerInfo[playerid][mInventory][8]--;
+	RepairVehicle(vehicleid);
+	Vehicle_Armor(vehicleid);
+	if(IsTrailerAttachedToVehicle(vehicleid))
+	{
+		RepairVehicle(GetVehicleTrailer(vehicleid));
+		Vehicle_Armor(GetVehicleTrailer(vehicleid));
+	}
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,bonnet,boot,objective);
+	SetVehicleParamsEx(vehicleid, engine,lights,alarm,doors,VEHICLE_PARAMS_ON,boot,objective);
+	new string[128];
+	format(string, sizeof(string), "%s has jump started their vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	SendClientMessage(playerid, COLOR_WHITE, "Your vehicle has been Jump Started!");
+	PlayerPlaySound(playerid,1133,0.0,0.0,0.0);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	format(string, sizeof(string), "[JUMPSTART] %s(%d) used a jump start. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][8]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "jumpstarting");
+	return 1;
+}
+
+forward EatBar(playerid);
+public EatBar(playerid)
+{
+	PlayerInfo[playerid][pHunger] = 100;
+	PlayerInfo[playerid][mInventory][4]--;
+	PlayerInfo[playerid][mCooldown][4] = 60;
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	SendClientMessageEx(playerid, -1, "You have consumed a energy bar, effects will last for 1 hour.");
+	SendClientMessageEx(playerid, -1, "Your hunger has been filled, fitness increase has a 50%% boost and health will decrease slower when in a injured state.");
+	new string[128];
+	format(string, sizeof(string), "[ENERGYBAR] %s(%d) used a energy bar. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][4]);
+	Log("logs/micro.log", string);
+	DeletePVar(playerid, "eatingbar");
+	return 1;
+}
+
 CMD:shopplate(playerid, params[])
 {
     if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)

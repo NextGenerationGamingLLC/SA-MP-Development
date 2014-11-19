@@ -35,6 +35,209 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+NationSel_InitNationNameText(Text:txtInit)
+{
+  	TextDrawUseBox(txtInit, 0);
+	TextDrawLetterSize(txtInit,1.25,3.0);
+	TextDrawFont(txtInit, 0);
+	TextDrawSetShadow(txtInit,0);
+    TextDrawSetOutline(txtInit,1);
+    TextDrawColor(txtInit,0xEEEEEEFF);
+    TextDrawBackgroundColor(txtNationSelHelper,0x000000FF);
+}
+
+NationSel_InitTextDraws()
+{
+    // Init our observer helper text display
+	txtSanAndreas = TextDrawCreate(10.0, 380.0, "San Andreas");
+	NationSel_InitNationNameText(txtSanAndreas);
+	txtTierraRobada = TextDrawCreate(10.0, 380.0, "Tierro Robada");
+	NationSel_InitNationNameText(txtTierraRobada);
+
+    // Init our observer helper text display
+	txtNationSelHelper = TextDrawCreate(10.0, 415.0,
+	   " Press ~b~~k~~GO_LEFT~ ~w~or ~b~~k~~GO_RIGHT~ ~w~to switch cities.~n~ Press ~r~~k~~PED_FIREWEAPON~ ~w~to select.");
+	TextDrawUseBox(txtNationSelHelper, 1);
+	TextDrawBoxColor(txtNationSelHelper,0x222222BB);
+	TextDrawLetterSize(txtNationSelHelper,0.3,1.0);
+	TextDrawTextSize(txtNationSelHelper,400.0,40.0);
+	TextDrawFont(txtNationSelHelper, 2);
+	TextDrawSetShadow(txtNationSelHelper,0);
+    TextDrawSetOutline(txtNationSelHelper,1);
+    TextDrawBackgroundColor(txtNationSelHelper,0x000000FF);
+    TextDrawColor(txtNationSelHelper,0xFFFFFFFF);
+
+	txtNationSelMain = TextDrawCreate(10.0, 50.0, "Select Your Nation");
+	TextDrawUseBox(txtNationSelMain, 0);
+	TextDrawLetterSize(txtNationSelMain, 1.25, 3.0);
+	TextDrawFont(txtNationSelMain, 1);
+	TextDrawSetShadow(txtNationSelMain, 0);
+    TextDrawSetOutline(txtNationSelMain, 1);
+    TextDrawBackgroundColor(txtNationSelMain, 0x000000FF);
+    TextDrawColor(txtNationSelMain, 0xFFFFFFFF);
+}
+
+NationSel_SetupSelectedNation(playerid)
+{
+	if(PlayerNationSelection[playerid] == -1) {
+		PlayerNationSelection[playerid] = NATION_SAN_ANDREAS;
+	}
+
+	if(PlayerNationSelection[playerid] == NATION_SAN_ANDREAS) {
+		SetPlayerInterior(playerid,0);
+   		SetPlayerCameraPos(playerid,1630.6136,-2286.0298,110.0);
+		SetPlayerCameraLookAt(playerid,1887.6034,-1682.1442,47.6167);
+
+		TextDrawShowForPlayer(playerid,txtSanAndreas);
+		TextDrawHideForPlayer(playerid,txtTierraRobada);
+	}
+	else if(PlayerNationSelection[playerid] == NATION_TIERRA_ROBADA) {
+		SetPlayerInterior(playerid,0);
+   		SetPlayerCameraPos(playerid,1310.6155,1675.9182,110.7390);
+		SetPlayerCameraLookAt(playerid,2285.2944,1919.3756,68.2275);
+
+		TextDrawHideForPlayer(playerid,txtSanAndreas);
+		TextDrawShowForPlayer(playerid,txtTierraRobada);
+	}
+}
+
+NationSel_SwitchToNextNation(playerid)
+{
+    PlayerNationSelection[playerid]++;
+	if(PlayerNationSelection[playerid] > NATION_TIERRA_ROBADA) {
+	    PlayerNationSelection[playerid] = NATION_SAN_ANDREAS;
+	}
+	PlayerPlaySound(playerid,1052,0.0,0.0,0.0);
+	NationSel_SetupSelectedNation(playerid);
+}
+
+NationSel_SwitchToPrevNation(playerid)
+{
+    PlayerNationSelection[playerid]--;
+	if(PlayerNationSelection[playerid] < NATION_SAN_ANDREAS) {
+	    PlayerNationSelection[playerid] = NATION_TIERRA_ROBADA;
+	}
+	PlayerPlaySound(playerid,1053,0.0,0.0,0.0);
+	NationSel_SetupSelectedNation(playerid);
+}
+
+NationSel_HandleNationSelection(playerid)
+{
+	new Keys,ud,lr;
+	new Float:diff = float(TRCitizens)/float(TotalCitizens)*100;
+    GetPlayerKeys(playerid,Keys,ud,lr);
+
+    if(PlayerNationSelection[playerid] == -1) {
+		NationSel_SwitchToNextNation(playerid);
+		return;
+	}
+
+	if(Keys & KEY_FIRE)
+	{
+	    PlayerHasNationSelected[playerid] = 1;
+	    TextDrawHideForPlayer(playerid,txtNationSelHelper);
+		TextDrawHideForPlayer(playerid,txtNationSelMain);
+		TextDrawHideForPlayer(playerid,txtSanAndreas);
+		TextDrawHideForPlayer(playerid,txtTierraRobada);
+		RegistrationStep[playerid] = 0;
+	    PlayerInfo[playerid][pTut] = 1;
+		gOoc[playerid] = 0; gNews[playerid] = 0; gFam[playerid] = 0;
+		TogglePlayerControllable(playerid, 1);
+		SetCamBack(playerid);
+		DeletePVar(playerid, "MedicBill");
+		SetPlayerColor(playerid,TEAM_HIT_COLOR);
+		SetPlayerInterior(playerid,0);
+		for(new x;x<10000;x++)
+		{
+			new rand=random(300);
+			if(PlayerInfo[playerid][pSex] == 2)
+			{
+				if(IsValidSkin(rand) && IsFemaleSpawnSkin(rand))
+				{
+					PlayerInfo[playerid][pModel] = rand;
+					SetPlayerSkin(playerid, rand);
+					break;
+				}
+			}
+			else
+			{
+				if(IsValidSkin(rand) && !IsFemaleSkin(rand))
+				{
+					PlayerInfo[playerid][pModel] = rand;
+					SetPlayerSkin(playerid, rand);
+					break;
+				}
+			}
+		}
+		SetCameraBehindPlayer(playerid);
+		SetPlayerVirtualWorld(playerid, 0);
+		if(NATION_SAN_ANDREAS == PlayerNationSelection[playerid])
+		{
+			PlayerInfo[playerid][pNation] = 0;
+			switch(random(2))
+			{
+				case 0:
+				{
+					SetPlayerPos(playerid, 1715.1201,-1903.1711,13.5665);
+					SetPlayerFacingAngle(playerid, 360.0);
+				}
+				case 1:
+				{
+					SetPlayerPos(playerid, -1969.0737,138.1210,27.6875);
+					SetPlayerFacingAngle(playerid, 90.0);
+				}
+			}
+		}
+		else if(NATION_TIERRA_ROBADA == PlayerNationSelection[playerid])
+		{
+			if(floatround(diff) >= 30)
+			{
+				AddNationQueue(playerid, 1, 1);
+				SendClientMessageEx(playerid, COLOR_RED, "The nation of Tierra Robada is currently full. You have been placed into a queue to join.");
+				switch(random(2))
+				{
+					case 0:
+					{
+						SetPlayerPos(playerid, 1715.1201,-1903.1711,13.5665);
+						SetPlayerFacingAngle(playerid, 360.0);
+					}
+					case 1:
+					{
+						SetPlayerPos(playerid, -1969.0737,138.1210,27.6875);
+						SetPlayerFacingAngle(playerid, 90.0);
+					}
+				}
+			}
+			else
+			{
+				AddNationQueue(playerid, 1, 2);
+				switch(random(2))
+				{
+					case 0:
+					{
+						SetPlayerPos(playerid, 1699.2, 1435.1, 10.7);
+						SetPlayerFacingAngle(playerid, 270.0);
+					}
+					case 1:
+					{
+						SetPlayerPos(playerid, -1446.5997, 2608.4478, 55.8359);
+						SetPlayerFacingAngle(playerid, 180.0);
+					}
+				}
+			}
+		}
+	    return;
+	}
+
+	if(lr > 0) {
+	   NationSel_SwitchToNextNation(playerid);
+	}
+	else if(lr < 0) {
+	   NationSel_SwitchToPrevNation(playerid);
+	}
+}
+
+
 CMD:apply(playerid, params[])
 {
 	new choice[3];

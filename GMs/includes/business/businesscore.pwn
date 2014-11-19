@@ -334,6 +334,57 @@ stock GetFreeGasPumpID(biz)
 	return INVALID_GAS_PUMP;
 }
 
+forward GasPumpSaleTimer(playerid, iBusinessID, iPumpID);
+public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
+{
+
+
+
+	new
+		Float: fPumpAmount = FUEL_PUMP_RATE / 4,
+		iVehicleID = Businesses[iBusinessID][GasPumpVehicleID][iPumpID];
+
+	if (fPumpAmount*10 + VehicleFuel[iVehicleID] > 100.0)
+	{
+		SendClientMessageEx(playerid, COLOR_GREEN, "Your vehicle tank is now full.");
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+	    return 1;
+	}
+	else if (GetPVarInt(playerid, "Refueling") == -1)
+	{
+		SendClientMessageEx(playerid, COLOR_GREEN, "You have stopped refueling.");
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+	    return 1;
+	}
+	else if (fPumpAmount > Businesses[iBusinessID][GasPumpGallons][iPumpID])
+	{
+		SendClientMessageEx(playerid, COLOR_RED, "No more gas left in the station's gas pump.");
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+	    return 1;
+	}
+	else if (GetPlayerCash(playerid) < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]))
+	{
+		SendClientMessageEx(playerid, COLOR_RED, "You are out of cash.");
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+	    return 1;
+	}
+	else if (GetVehicleDistanceFromPoint(iVehicleID, Businesses[iBusinessID][GasPumpPosX][iPumpID], Businesses[iBusinessID][GasPumpPosY][iPumpID], Businesses[iBusinessID][GasPumpPosZ][iPumpID]) > 5.0)
+	{
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+	    return 1;
+	}
+
+	Businesses[iBusinessID][GasPumpGallons][iPumpID] -= fPumpAmount;
+	VehicleFuel[iVehicleID] += fPumpAmount*10;
+	Businesses[iBusinessID][GasPumpSaleGallons][iPumpID] += fPumpAmount;
+	Businesses[iBusinessID][GasPumpSalePrice][iPumpID] += fPumpAmount * Businesses[iBusinessID][bGasPrice];
+
+	new szSaleText[148];
+	format(szSaleText,sizeof(szSaleText),"Price Per Gallon: $%.2f\nThis Sale: $%.2f\nGallons: %.3f\nGas Available: %.2f/%.2f gallons", Businesses[iBusinessID][bGasPrice], Businesses[iBusinessID][GasPumpSalePrice][iPumpID], Businesses[iBusinessID][GasPumpSaleGallons][iPumpID], Businesses[iBusinessID][GasPumpGallons][iPumpID], Businesses[iBusinessID][GasPumpCapacity][iPumpID]);
+	UpdateDynamic3DTextLabelText(Businesses[iBusinessID][GasPumpSaleTextID][iPumpID], COLOR_YELLOW, szSaleText);
+	return 1;
+}
+
 CMD:businessdate(playerid, params[]) {
 	new giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] < 2)

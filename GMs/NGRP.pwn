@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.159"
+#define SERVER_GM_TEXT "NG:RP v3.0.160"
 
 
 #include <a_samp>
@@ -98,7 +98,6 @@
 #include "./includes/variables.pwn"
 #include "./includes/timers.pwn"
 #include "./includes/functions.pwn"
-//#include "./includes/commands.pwn"
 #include "./includes/vehiclesystem/vehiclecore.pwn"
 #include "./includes/mysql.pwn"
 #include "./includes/OnPlayerLoad.pwn"
@@ -229,6 +228,8 @@
 #include "./includes/perks/tokens.pwn"
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
+
+#include "./includes/initgamemode.pwn"
 
 #pragma unused DynamicBusiness
 

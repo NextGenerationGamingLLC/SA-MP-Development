@@ -35,6 +35,15 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward PickUpC4(playerid);
+public PickUpC4(playerid)
+{
+   	DestroyDynamicObject(PlayerInfo[playerid][pC4]);
+   	PlayerInfo[playerid][pC4] = 0;
+	return 1;
+}
+
+
 CMD:contracts(playerid, params[])
 {
     if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 4)
