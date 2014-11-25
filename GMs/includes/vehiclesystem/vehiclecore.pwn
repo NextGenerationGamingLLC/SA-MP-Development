@@ -705,31 +705,27 @@ CMD:seatbelt(playerid, params[])
 	new string[60 + MAX_PLAYER_NAME];
     if(IsPlayerInAnyVehicle(playerid) == 1 && Seatbelt[playerid] == 0)
 	{
-        Seatbelt[playerid] = 1;
         if(IsABike(GetPlayerVehicleID(playerid)))
-		{
-            format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and puts it on.", GetPlayerNameEx(playerid));
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your helmet.");
-        }
+            return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
         else
 		{
             format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and buckles it up.", GetPlayerNameEx(playerid));
             SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your seatbelt.");
+			Seatbelt[playerid] = 1;
         }
 
     }
     else if(IsPlayerInAnyVehicle(playerid) == 1 && Seatbelt[playerid] == 1)
 	{
-        Seatbelt[playerid] = 0;
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
-            SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
+            return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
         }
         else
 		{
             format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
             SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
+			Seatbelt[playerid] = 0;
         }
     }
     ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -756,11 +752,7 @@ CMD:checkbelt(playerid, params[])
         else { stext = "on"; }
         if(IsABike(GetPlayerVehicleID(playerid)))
 		{
-            format(string, sizeof(string), "%s's helmet is currently %s." , GetPlayerNameEx(giveplayerid) , stext);
-            SendClientMessageEx(playerid,COLOR_WHITE,string);
-
-            format(string, sizeof(string), "* %s looks at %s, checking to see if they are wearing a helmet.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
-            ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+            SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, use /checkhelmet(/chm) instead.");
         }
         else
 		{

@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.160"
+#define SERVER_GM_TEXT "NG:RP v3.0.161"
 
 
 #include <a_samp>
@@ -153,6 +153,7 @@
 #include "./includes/vehiclesystem/speedo.pwn"
 #include "./includes/vehiclesystem/tow.pwn"
 #include "./includes/vehiclesystem/VLP.pwn"
+#include "./includes/vehiclesystem/helmet.pwn"
 
 
 //dynamic core includes

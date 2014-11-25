@@ -145,7 +145,7 @@ enum eBiz {
 	bGunsOffered[31],
 	bSkinsOffered[300],
 	bToysOffered[100],
-	bItemPrices[18],
+	bItemPrices[19],
 	bTotalSales,
 	bTotalProfits,
 	Text3D: bStateText,

@@ -268,6 +268,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		ITEM_ILOCK                      	16
 #define 		ITEM_ELOCK                      	17
 #define 		ITEM_SCALARM                      	18
+#define 		ITEM_HELMET                      	19
 #define 		FUEL_PUMP_RATE 						0.1 // Gallons per second
 #define 		BIZ_PENALTY 						0.2
 

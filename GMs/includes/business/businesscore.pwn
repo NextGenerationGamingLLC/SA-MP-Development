@@ -2472,7 +2472,7 @@ CMD:offeritem(playerid, params[])
 	if (sscanf(params, "uk<storeitem>", buyerid, item))	{
 	    SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offeritem [Player] [Item]");
 	    SendClientMessageEx(playerid, COLOR_GREY, "Items - cellphone, phonebook, dice, condom, musicplayer, rope, cigar, sprunk, lock, spraycan, radio, camera, lotteryticket,");
-	    return SendClientMessageEx(playerid, COLOR_GREY, "checkbook, paper, industriallock, elock, and standardcaralarm");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "checkbook, paper, industriallock, elock, standardcaralarm, helmet");
 	}
 	if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not in the business interior!");

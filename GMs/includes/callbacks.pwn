@@ -1525,7 +1525,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 		{
 			new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 			mS_DestroySelectionMenu(playerid);
-			CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1);
+			CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1, -1);
 			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 		}
 		else
@@ -1552,7 +1552,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 				HideModelSelectionMenu(playerid);
-				CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1);
+				CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1, -1);
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 			}
 			else
@@ -1614,9 +1614,10 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				{
 					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
 					new item_id = gSelectionItemsTag[playerid][x];
+					new extralist_id = gSelectionItemsExtra[playerid][x];
 					new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 					HideModelSelectionMenu(playerid);
-					CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 1, extraid, item_id);
+					CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 1, extraid, item_id, extralist_id);
 					return 1;
 				}
 				else
@@ -7129,16 +7130,16 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	    case 1:
 	    {
 			new string[128];
-	        if(IsABike(vehicleid))
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
-				format(string, sizeof(string), "* %s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
-				format(string, sizeof(string), "* %s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
-			}
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
+			format(string, sizeof(string), "* %s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+  			Seatbelt[playerid] = 0;
+	    }
+		case 2:
+	    {
+			new string[128];
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
+			format(string, sizeof(string), "* %s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
   			Seatbelt[playerid] = 0;
 	    }
@@ -7790,10 +7791,10 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 
 		}
 	}
-	return 1;
+	return 0;
 }
 
-public OnPlayerModelSelectionEx(playerid, response, extraid, modelid)
+public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id)
 {
 	if(extraid == DYNAMIC_FAMILY_CLOTHES)
 	{
@@ -7822,6 +7823,107 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid)
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the bomb selection menu.");
 		}
+	}
+	else if(extraid == 1339) 
+	{
+		if(response)
+		{
+			new i, string[144];
+			for(i = 0; i < MAX_PLAYERTOYS; i++)
+			{
+				if(PlayerToyInfo[playerid][i][ptModelID] == 0)
+				{
+					PlayerToyInfo[playerid][i][ptModelID] =  modelid;
+					PlayerToyInfo[playerid][i][ptBone] = 2;
+					PlayerToyInfo[playerid][i][ptPosX] = 0.07;
+					PlayerToyInfo[playerid][i][ptPosY] = 0.0;
+					PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
+					PlayerToyInfo[playerid][i][ptRotX] = 88.0;
+					PlayerToyInfo[playerid][i][ptRotY] = 75.0;
+					PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+					PlayerToyInfo[playerid][i][ptScaleX] = 0.0;
+					PlayerToyInfo[playerid][i][ptScaleY] = 0.0;
+					PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
+					PlayerToyInfo[playerid][i][ptTradable] = 1;
+					PlayerToyInfo[playerid][i][ptSpecial] = 2; // New special object with actual functionality
+					
+					g_mysql_NewToy(playerid, i); 
+					
+					SetPVarInt(playerid, "ToySlot", i);
+					ShowEditMenu(playerid);
+					
+					new iBusiness = GetPVarInt(playerid, "businessid");
+					new cost = GetPVarInt(playerid, "helcost");
+					new iItem = GetPVarInt(playerid, "item")-1;
+					Businesses[iBusiness][bInventory]-= StoreItemCost[iItem][ItemValue];
+					Businesses[iBusiness][bTotalSales]++;
+					Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
+					//if(penalty) Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
+					GivePlayerCash(playerid, -cost);
+					if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[iBusiness][bLevelProgress]++;
+					SaveBusiness(iBusiness);
+					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+					if (PlayerInfo[playerid][pDonateRank] >= 1)
+					{
+						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Helmet in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
+					Log("logs/business.log", string);
+					format(string,sizeof(string),"* You have purchased a Helmet from %s for $%s, you can now put on your helmet with /helmet(/hm).", Businesses[iBusiness][bName], number_format(cost));
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+					new playersold = GetPVarInt(playerid, "playersold");
+					if(playersold)
+					{
+						DeletePVar(playerid, "Business_ItemType");
+						DeletePVar(playerid, "Business_ItemPrice");
+						DeletePVar(playerid, "Business_ItemOfferer");
+						DeletePVar(playerid, "Business_ItemOffererSQLId");
+					}
+					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that this is an actual toy but with functionality, it does not affect your toy count and you may own multiple helmets.");
+					break;
+				}
+			}
+			if(i == MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot have anymore toys, please delete one.");
+		}
+		else
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
+	}
+	else if(extraid == 2000)
+	{
+		if(response)
+		{
+			new toycount = GetFreeToySlot(playerid), string[144];
+			if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
+			if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
+			
+			if(PlayerToyInfo[playerid][extralist_id][ptScaleX] == 0) {
+				PlayerToyInfo[playerid][extralist_id][ptScaleX] = 1.0;
+				PlayerToyInfo[playerid][extralist_id][ptScaleY] = 1.0;
+				PlayerToyInfo[playerid][extralist_id][ptScaleZ] = 1.0;
+			}			
+			new name[24];
+			format(name, sizeof(name), "Unknown");
+
+			for(new i;i<sizeof(HoldingObjectsAll);i++)
+			{
+				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][extralist_id][ptModelID])
+				{
+					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				}
+			}
+			format(string, sizeof(string), "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], extralist_id);
+			SendClientMessageEx(playerid, COLOR_RED, string);
+			PlayerHoldingObject[playerid][toycount] = extralist_id+1;
+			SetPlayerAttachedObject(playerid, toycount-1, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
+			PlayerToyInfo[playerid][extralist_id][ptRotX], PlayerToyInfo[playerid][extralist_id][ptRotY], PlayerToyInfo[playerid][extralist_id][ptRotZ], PlayerToyInfo[playerid][extralist_id][ptScaleX], PlayerToyInfo[playerid][extralist_id][ptScaleY], PlayerToyInfo[playerid][extralist_id][ptScaleZ]);
+		
+			Seatbelt[playerid] = 2;
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and puts it on.", GetPlayerNameEx(playerid));
+            SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your helmet.");
+		}
+		else
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
 	}
 	return 1;
 }

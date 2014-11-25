@@ -1034,7 +1034,7 @@ LoadEventPoints() {
 			
 			
 forward OnPlayerModelSelection(playerid, response, listid, modelid);
-forward OnPlayerModelSelectionEx(playerid, response, extraid, modelid);
+forward OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id);
 //forward strfind(const string[],const sub[],bool:ignorecase=false,pos=0);
 
 forward HideReportText(playerid);
@@ -4087,6 +4087,7 @@ stock mS_ShowPlayerMPs(playerid)
 			}
 			gSelectionItems[playerid][x] = mS_CreateMPTextDraw(playerid, gCustomList[playerid][itemat], BaseX, BaseY, rotzoom[0], rotzoom[1], rotzoom[2], rotzoom[3], mS_SPRITE_DIM_X, mS_SPRITE_DIM_Y, bgcolor);
 			gSelectionItemsTag[playerid][x] = gCustomList[playerid][itemat];
+			gSelectionItemsExtra[playerid][x] = gCustomExtraList[playerid][itemat];
 			BaseX += mS_SPRITE_DIM_X + 1.0; // move on the X for the next sprite
 			linetracker++;
 			if(linetracker == mS_ITEMS_PER_LINE) linetracker = 0;
@@ -4159,7 +4160,7 @@ stock ShowModelSelectionMenu(playerid, ListID, header_text[], dialogBGcolor = 0x
 	return 1;
 }
 
-stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text[], extraid, Float:Xrot = 0.0, Float:Yrot = 0.0, Float:Zrot = 0.0, Float:mZoom = 1.0, dialogBGcolor = 0x4A5A6BBB, previewBGcolor = 0x88888899 , tdSelectionColor = 0xFFFF00AA)
+stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text[], extraid, Float:Xrot = 0.0, Float:Yrot = 0.0, Float:Zrot = 0.0, Float:mZoom = 1.0, dialogBGcolor = 0x4A5A6BBB, previewBGcolor = 0x88888899 , tdSelectionColor = 0xFFFF00AA, extra_array[] = 0)
 {
 	mS_DestroySelectionMenu(playerid);
 	if(item_amount > mS_CUSTOM_MAX_ITEMS)
@@ -4172,6 +4173,7 @@ stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text
 		for(new i=0;i<item_amount;i++)
 		{
 			gCustomList[playerid][i] = items_array[i];
+			gCustomExtraList[playerid][i] =  extra_array[i];
 		}
 		SetPVarInt(playerid, "mS_list_page", 0);
 		SetPVarInt(playerid, "mS_list_id", mS_CUSTOM_LISTID);
@@ -8054,6 +8056,19 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
+		case ITEM_HELMET:
+		{
+			/* if(GetPlayerVehicleCount(playerid) != 0)
+			{ */
+			SetPVarInt(playerid, "helmetsel", 1);
+			SetPVarInt(playerid, "helcost", price);
+			SetPVarInt(playerid, "businessid", business);
+			SetPVarInt(playerid, "item", item);
+			new models[8] = {18936, 18937, 18938, 18976, 18977, 18978, 18979, 18645};
+			return ShowModelSelectionMenuEx(playerid, models, sizeof(models), "Helmet Selector", 1339, 0.0, 0.0, 120.0);
+			/* }
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?"); */
+		}
 		default:
 		{
 			printf("Error %d ITEM", item);
@@ -10261,6 +10276,10 @@ stock UpdateVehicleHUDForPlayer(p, fuel, speed)
 		format(str, sizeof(str), "~b~SB: ~r~OFF");
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
 	}
+	else if(Seatbelt[p] == 2) {
+		format(str, sizeof(str), "~b~HM: ~g~ON");
+		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
+	}
 	else {
 		format(str, sizeof(str), "~b~SB: ~g~ON");
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
@@ -10948,7 +10967,9 @@ stock CompleteToyTrade(playerid)
 			if(PlayerToyInfo[playerid][i][ptSpecial] == 1) 
 			{
 				PlayerToyInfo[playerid][i][ptSpecial] = 0;
-			}	
+			}
+			else
+				PlayerToyInfo[playerid][i][ptSpecial] = PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial];
 			
 			// Seller	
 			format(string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
@@ -10962,6 +10983,7 @@ stock CompleteToyTrade(playerid)
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptModelID] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptBone] = 0;
+	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] = 0;
 	
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);

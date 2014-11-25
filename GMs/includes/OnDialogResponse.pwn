@@ -2322,77 +2322,33 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}	
 	if((dialogid == TOYS) && response)
 	{
-		if(listitem == 0)
+		new stringg[4096], icount = GetPlayerToySlots(playerid);
+		for(new x;x<icount;x++)
 		{
-			new stringg[4096], icount = GetPlayerToySlots(playerid);
-			for(new x;x<icount;x++)
-			{
-				new name[24];
-				format(name, sizeof(name), "None");
+			new name[24];
+			format(name, sizeof(name), "None");
 
-				for(new i;i<sizeof(HoldingObjectsAll);i++)
+			for(new i;i<sizeof(HoldingObjectsAll);i++)
+			{
+				if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
 				{
-					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
-					}
+					format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
 				}
-				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
-				{
-					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
-				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 			}
-			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-			ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+			if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
+			{
+				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
+			}
+			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
-		else if(listitem == 1)
-		{
-			new stringg[4096], icount = GetPlayerToySlots(playerid);
-			for(new x;x<icount;x++)
-			{
-				new name[24];
-				format(name, sizeof(name), "None");
-
-				for(new i;i<sizeof(HoldingObjectsAll);i++)
-				{
-					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
-					}
-				}
-				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
-				{
-					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
-				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
-			}
-			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
-		}
-		else if(listitem == 2)
-		{
-			new stringg[4096], icount = GetPlayerToySlots(playerid);
-			for(new x;x<icount;x++)
-			{
-				new name[24];
-				format(name, sizeof(name), "None");
-
-				for(new i;i<sizeof(HoldingObjectsAll);i++)
-				{
-					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][x][ptModelID])
-					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
-					}
-				}
-				if(PlayerToyInfo[playerid][x][ptModelID] != 0 && (strcmp(name, "None", true) == 0))
-				{
-					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
-				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
-			}
-			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-			ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
+		format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
+		switch(listitem) {
+			case 0:
+				ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+			case 1:
+				ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+			case 2:
+				ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
 		}
 	}
 
@@ -2464,9 +2420,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = listitem+1;
-
-			g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+			if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptSpecial] == 2)
+				SendClientMessageEx(playerid, COLOR_GRAD2, "This toy is limited to be attached to the head only.");
+			else {
+				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = listitem+1;
+				g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+			}
 		}
 		ShowEditMenu(playerid);
 	}
@@ -10674,6 +10633,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, giveplayerid);
 			PlayerToyInfo[giveplayerid][slot][ptModelID] = 0;
 			PlayerToyInfo[giveplayerid][slot][ptBone] = 0;
+			PlayerToyInfo[giveplayerid][slot][ptSpecial] = 0;
 			Log("logs/toydelete.log", string);
 		}
 	}
@@ -16612,6 +16572,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerToyInfo[giveplayerid][listitem][ptModelID] = toyid;
 			PlayerToyInfo[giveplayerid][listitem][ptBone] = 1;
 			PlayerToyInfo[giveplayerid][listitem][ptTradable] = 1;
+			PlayerToyInfo[giveplayerid][listitem][ptSpecial] = 0;
 			format(stringg, sizeof(stringg), "You have given %s object %d", GetPlayerNameEx(giveplayerid), toyid);
 			SendClientMessageEx(playerid, COLOR_YELLOW, stringg);
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have received a new toy from an administrator!");

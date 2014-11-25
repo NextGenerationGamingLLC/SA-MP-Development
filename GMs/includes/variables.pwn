@@ -158,7 +158,8 @@ new StoreItemCost[][StoreItemCostEnum] =
 	{1},
 	{25},
 	{80},
-	{28}
+	{28},
+	{3}
 };
 
 new const StoreItems[][] =
@@ -180,7 +181,8 @@ new const StoreItems[][] =
 	"Papers",
 	"Industrial Lock",
 	"Electrical Lock",
-	"Standard Car Alarm"
+	"Standard Car Alarm",
+	"Helmet"
 };
 
 new PokerTable[MAX_POKERTABLES][pkrInfo];
@@ -353,6 +355,7 @@ new DeckTextdrw[53][] = {
 
 // settings dynamic per player lists
 new gCustomList[MAX_PLAYERS][mS_CUSTOM_MAX_ITEMS];
+new gCustomExtraList[MAX_PLAYERS][mS_CUSTOM_MAX_ITEMS];
 new PlayerText:gCurrentPageTextDrawId[MAX_PLAYERS];
 new PlayerText:gHeaderTextDrawId[MAX_PLAYERS];
 new PlayerText:gBackgroundTextDrawId[MAX_PLAYERS];
@@ -361,6 +364,7 @@ new PlayerText:gPrevButtonTextDrawId[MAX_PLAYERS];
 new PlayerText:gCancelButtonTextDrawId[MAX_PLAYERS];
 new PlayerText:gSelectionItems[MAX_PLAYERS][mS_SELECTION_ITEMS];
 new gSelectionItemsTag[MAX_PLAYERS][mS_SELECTION_ITEMS];
+new gSelectionItemsExtra[MAX_PLAYERS][mS_SELECTION_ITEMS];
 new gItemAt[MAX_PLAYERS];
 new gLists[mS_TOTAL_LISTS][2]; // list information start/end index
 new gItemList[mS_TOTAL_ITEMS][2];
@@ -985,6 +989,7 @@ SSCANF:storeitem(string[])
 	if (!strcmp(string, "industriallock", true)) return ITEM_ILOCK;
 	if (!strcmp(string, "elock", true)) return ITEM_ELOCK;
 	if (!strcmp(string, "standardcaralarm", true)) return ITEM_SCALARM;
+	if (!strcmp(string, "helmet", true)) return ITEM_HELMET;
 	return INVALID_STORE_ITEM;
 }
 

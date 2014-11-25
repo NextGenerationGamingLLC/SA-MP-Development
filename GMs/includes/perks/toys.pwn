@@ -54,9 +54,16 @@ GetPlayerToyCount(playerid)
 GetSpecialPlayerToyCount(playerid)
 {
 	new toys = 0;
-	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] == 1) ++toys;
+	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] != 0) ++toys;
 	return toys;
-}	
+}
+
+/* GetSpecialFuncPlayerToyCount(playerid)
+{
+	new toys = 0;
+	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] > 1) ++toys;
+	return toys;
+} */	
 
 GetFreeToySlot(playerid)
 {
@@ -157,7 +164,7 @@ CMD:listtoys(playerid, params[]) {
 				{
 				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
+				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s%s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
 			}
 			format(string, sizeof(string), "Listing %s's Toys - Select a Slot", GetPlayerNameEx(giveplayerid));
 			ShowPlayerDialog(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, stringg, "Delete", "Cancel");
