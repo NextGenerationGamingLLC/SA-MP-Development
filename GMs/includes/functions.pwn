@@ -50,7 +50,7 @@ CheckPointCheck(iTargetID)  {
 	if(GetPVarType(iTargetID, "hFind") > 0 || GetPVarType(iTargetID, "TrackCar") > 0 || GetPVarType(iTargetID, "DV_TrackCar") > 0 || GetPVarType(iTargetID, "Packages") > 0 || TaxiAccepted[iTargetID] != INVALID_PLAYER_ID || EMSAccepted[iTargetID] != INVALID_PLAYER_ID || BusAccepted[iTargetID] != INVALID_PLAYER_ID || gPlayerCheckpointStatus[iTargetID] != CHECKPOINT_NONE || MedicAccepted[iTargetID] != INVALID_PLAYER_ID || MechanicCallTime[iTargetID] >= 1) {
 		return 1;
 	}
-	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0) 
+	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0 || GetPVarType(iTargetID, "pDTest") > 0) 
 		return 1;
 	return 0;
 }
@@ -11546,9 +11546,9 @@ ClearCheckpoint(playerid) {
 	MedicAccepted[playerid] = INVALID_PLAYER_ID;
 	MechanicCallTime[playerid] = 0;
 	TaxiCallTime[playerid] = 0;
-  	BusCallTime[playerid] = 0;
+	BusCallTime[playerid] = 0;
 
-    DeletePVar(playerid, "DV_TrackCar");
+	DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
 	if(GetPVarType(playerid, "DeliveringVehicleTime")) {
 		if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
@@ -11573,10 +11573,10 @@ ClearCheckpoint(playerid) {
 	DeletePVar(playerid, "Pizza");
 	DeletePVar(playerid, "Packages");
 	DeletePVar(playerid, "hFind");
-	
-    DisablePlayerCheckpoint(playerid);
+	DeletePVar(playerid, "pDTest");
+	DisablePlayerCheckpoint(playerid);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
- 	return;
+	return;
 }
 
 UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {

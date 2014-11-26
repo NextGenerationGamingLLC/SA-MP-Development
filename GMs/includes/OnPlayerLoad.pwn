@@ -385,6 +385,7 @@ public OnPlayerLoad(playerid)
 		FIFInfo[playerid][FIFHours] = 0;
 		FIFInfo[playerid][FIFChances] = 0;
 		PlayerInfo[playerid][zFuelCan] = 0;
+		PlayerInfo[playerid][bTicket] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)

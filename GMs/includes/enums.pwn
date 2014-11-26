@@ -1117,7 +1117,8 @@ enum pInfo
 	mBoost[2], // Job | Skill
 	mShopCounter,
 	mNotice,
-	zFuelCan
+	zFuelCan,
+	bTicket
 };
 
 enum pvInfo

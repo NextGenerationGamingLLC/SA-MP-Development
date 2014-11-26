@@ -716,6 +716,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "mShopNotice", szResult, MainPipeline);
 					sscanf(szResult, "p<|>dd", PlayerInfo[extraid][mShopCounter], PlayerInfo[extraid][mNotice]);
 					PlayerInfo[extraid][zFuelCan] = cache_get_field_content_int(row,  "zFuelCan", MainPipeline);
+					PlayerInfo[extraid][bTicket] = cache_get_field_content_int(row,  "bTicket", MainPipeline);
 					GetPartnerName(extraid);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
@@ -3412,6 +3413,7 @@ stock g_mysql_SaveAccount(playerid)
 	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "zFuelCan", PlayerInfo[playerid][zFuelCan]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "bTicket", PlayerInfo[playerid][bTicket]);
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	g_mysql_SaveFIF(playerid);
 	return 1;
@@ -6431,40 +6433,6 @@ public OnIPCheck(index)
 		{
 			SendClientMessageEx(index, COLOR_WHITE, "There was an issue with checking the account's IP.");
 		}
-	}
-	return 1;
-}
-
-forward OnProcessOrderCheck(index, extraid);
-public OnProcessOrderCheck(index, extraid)
-{
-	if(IsPlayerConnected(index))
-	{
-		new string[164],playerip[32], giveplayerip[32];
-		GetPlayerIp(index, playerip, sizeof(playerip));
-		GetPlayerIp(extraid, giveplayerip, sizeof(giveplayerip));
-
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
-		if(rows)
-		{
-			SendClientMessageEx(index, COLOR_WHITE, "This order has previously been processed, therefore it did not count toward your pay.");
-			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), giveplayerip);
-			Log("logs/shoporders.log", string);
-		}
-		else
-		{
-			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(%d)(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), giveplayerip);
-			Log("logs/shopconfirmedorders.log", string);
-			PlayerInfo[index][pShopTechOrders]++;
-
-			format(string, sizeof(string), "INSERT INTO shoptech (id,total,dtotal) VALUES (%d,1,%f) ON DUPLICATE KEY UPDATE total = total + 1, dtotal = dtotal + %f", GetPlayerSQLId(index), ShopTechPay, ShopTechPay);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
-
-			format(string, sizeof(string), "INSERT INTO `orders` (`id`) VALUES ('%d')", GetPVarInt(index, "processorder"));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
-		}
-		DeletePVar(index, "processorder");
 	}
 	return 1;
 }

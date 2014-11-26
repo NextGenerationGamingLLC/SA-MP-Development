@@ -51,6 +51,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 	PlayerCuffedTime[playerid] = 0;
 	if(PlayerInfo[playerid][pFitness] >= 6) PlayerInfo[playerid][pFitness] -= 6;
 	else PlayerInfo[playerid][pFitness] = 0;
+	if(GetPVarInt(playerid, "_HospitalBeingDelivered") != 1) ResetPlayerWeaponsEx(playerid);
 	new string[128];
 	
 	new index = GetFreeHospitalBed(iHospital);
@@ -258,6 +259,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	{
 		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 		DeletePVar(playerid, "_SpawningAtHospital");
+		DeletePVar(playerid, "_HospitalBeingDelivered");
 		arrHospitalBedData[iHospital][bBedOccupied][iBed] = false;
 		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
 		PlayerTextDrawHide(playerid, HospTime[playerid]);
