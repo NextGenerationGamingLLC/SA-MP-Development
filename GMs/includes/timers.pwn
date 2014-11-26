@@ -2632,7 +2632,11 @@ task ServerMicrobeat[500]() {
 					fVehHealth[i] = fExpHealth;
 				}
 			}
-		}	
+		}
+		if(GetPVarType(i, "pDTest") > 0)
+		{
+			DrivingSchoolSpeedMeter(i, player_get_speed(i));
+		}
 	}
 }
 

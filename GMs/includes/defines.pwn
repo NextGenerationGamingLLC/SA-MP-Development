@@ -93,7 +93,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		MAX_EVENTPOINTS 			(100)
 #define 		INVALID_HOUSE_ID			(-1)
 #define			MAX_TURFS					(150)
-#define			MAX_ARENAS					(10)
+#define			MAX_ARENAS					(15)
 #define			MAX_MAILBOXES				(50)
 #define 		MAX_3DLABELS 				(500)
 #define 		MAX_SPEEDCAMERAS			(50)

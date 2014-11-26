@@ -869,7 +869,7 @@ CMD:requesthelp(playerid, params[])
 
 CMD:showrequests(playerid, params[])
 {
-	if(PlayerInfo[playerid][pHelper] >= 2)
+	if(PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pPR])
 	{
 		new string[128], reason[64];
 		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ HELP REQUESTS _____________________");

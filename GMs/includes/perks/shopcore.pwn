@@ -1711,3 +1711,274 @@ CMD:managecredits(playerid, params[])
 		return ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
 	return 0;
 }
+
+forward OnShopOrder(index);
+public OnShopOrder(index)
+{
+	if(IsPlayerConnected(index))
+	{
+	    HideNoticeGUIFrame(index);
+		new rows, fields;
+		cache_get_data(rows, fields, ShopPipeline);
+		if(rows > 0)
+		{
+		    new string[512];
+		    new ipsql[16], ip[16];
+	    	GetPlayerIp(index, ip, sizeof(ip));
+		    mysql_fetch_field_row(ipsql, "ip", MainPipeline);
+		    cache_get_field_content(0, "ip", ipsql, ShopPipeline);
+		    if(!isnull(ipsql) && strcmp(ipsql, ip, true) == 0)
+			{
+			    new status[2], name[64], quantity[8], delivered[8], product_id[8];
+			    for(new i;i<rows;i++)
+			    {
+	   				cache_get_field_content(i, "order_status_id", status, ShopPipeline);
+			    	if(strval(status) == 2)
+				    {
+	    			 	cache_get_field_content(i, "name", name, ShopPipeline);
+			  			cache_get_field_content(i, "quantity", quantity, ShopPipeline);
+			  		    cache_get_field_content(i, "delivered", delivered, ShopPipeline);
+			  			cache_get_field_content(i, "order_product_id", product_id, ShopPipeline);
+				    	if(strval(quantity)-strval(delivered) <= 0)
+					    {
+	        				if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
+					        else format(string, sizeof(string), "%s%s (Delivered)", string, name);
+						}
+						else
+						{
+		    				if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, strval(quantity)-strval(delivered));
+					    	else format(string, sizeof(string), "%s%s (%d)", string, name, strval(quantity)-strval(delivered));
+						}
+					}
+					else
+					{
+					    new reason[27];
+						switch(strval(status))
+						{
+						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
+						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
+						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+						    case 5:
+							{
+								ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								return 1;
+							}
+			    			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
+					    	case 8: format(reason, sizeof(reason), "{FF0000}Denied");
+				   			case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
+					    	case 10: format(reason, sizeof(reason), "{FF0000}Failed");
+						    case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
+						    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+						    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
+				   			default: format(reason, sizeof(reason), "{FF0000}Unknown");
+						}
+						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
+						ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+	  					return 1;
+					}
+				}
+			}
+			else
+			{
+			    new email[256];
+			    cache_get_field_content(0, "email", email, ShopPipeline);
+			    SetPVarString(index, "ShopEmailVerify", email);
+			    ShowPlayerDialog(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Shop Order Error", "We were unable to link your order to your IP,\nfor further verification of your identity please input your shop e-mail address:", "Submit", "Cancel");
+			    return 1;
+			}
+			ShowPlayerDialog(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+		}
+		else
+		{
+		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		}
+	}
+	return 1;
+}
+
+forward OnShopOrderEmailVer(index);
+public OnShopOrderEmailVer(index)
+{
+	if(IsPlayerConnected(index))
+	{
+	    HideNoticeGUIFrame(index);
+		new rows, fields;
+		cache_get_data(rows, fields, ShopPipeline);
+		if(rows > 0)
+		{
+		    new string[512];
+		   	new status[2], name[64], quantity[8], delivered[8], product_id[8];
+		    for(new i;i<rows;i++)
+		    {
+			    cache_get_field_content(i, "order_status_id", status, ShopPipeline);
+				if(strval(status) == 2)
+	   			{
+					cache_get_field_content(i, "name", name, ShopPipeline);
+	 				cache_get_field_content(i, "quantity", quantity, ShopPipeline);
+		    		cache_get_field_content(i, "delivered", delivered, ShopPipeline);
+	  				cache_get_field_content(i, "order_product_id", product_id, ShopPipeline);
+		   			if(strval(quantity)-strval(delivered) <= 0)
+				    {
+	   					if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
+	       				else format(string, sizeof(string), "%s%s (Delivered)", string, name);
+					}
+					else
+					{
+					    if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, strval(quantity)-strval(delivered));
+					    else format(string, sizeof(string), "%s%s (%d)", string, name, strval(quantity)-strval(delivered));
+					}
+				}
+				else
+				{
+	    			new reason[27];
+					switch(strval(status))
+					{
+	    				case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
+		   				case 1: format(reason, sizeof(reason), "{FF0000}Pending");
+					    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+					    case 5:
+						{
+							ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+							return 1;
+						}
+			   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
+					    case 8: format(reason, sizeof(reason), "{FF0000}Denied");
+					    case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
+					    case 10: format(reason, sizeof(reason), "{FF0000}Failed");
+			   			case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
+					    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+					    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
+					    default: format(reason, sizeof(reason), "{FF0000}Unknown");
+					}
+					format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
+					ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+	 				return 1;
+				}
+			}
+			ShowPlayerDialog(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+		}
+		else
+		{
+		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		}
+	}
+	return 1;
+}
+
+forward OnShopOrder2(index, extraid);
+public OnShopOrder2(index, extraid)
+{
+	if(IsPlayerConnected(index))
+	{
+	    HideNoticeGUIFrame(index);
+		new string[256];
+		new rows, fields;
+		cache_get_data(rows, fields, ShopPipeline);
+		if(rows > 0)
+		{
+		    for(new i;i<rows;i++)
+		    {
+	  			if(i == extraid)
+		    	{
+	      			new status[2];
+		        	cache_get_field_content(i, "status", status, ShopPipeline);
+			        if(strval(status) == 2)
+		        	{
+			    		new order_id[8], order_product_id[8], product_id[8], name[64], price[8], user[32], quantity[8], delivered[8];
+				    	cache_get_field_content(i, "order_id", order_id, ShopPipeline);
+						cache_get_field_content(i, "order_product_id", order_product_id, ShopPipeline);
+						cache_get_field_content(i, "product_id", product_id, ShopPipeline);
+						cache_get_field_content(i, "name", name, ShopPipeline);
+		  				cache_get_field_content(i, "price", price, ShopPipeline);
+			  			cache_get_field_content(i, "deliveruser", user, ShopPipeline);
+			  			cache_get_field_content(i, "quantity", quantity, ShopPipeline);
+			  			cache_get_field_content(i, "delivered", delivered, ShopPipeline);
+
+						format(string, sizeof(string), "Order ID: %d\nProduct ID: %d\nProduct: %s\nPrice: %s\nName: %s\nQuantity: %d", \
+						strval(order_id), strval(order_product_id), name, price, user, strval(quantity)-strval(delivered));
+
+						SetPVarInt(index, "DShop_order_id", strval(order_id));
+						SetPVarInt(index, "DShop_product_id", strval(product_id));
+						SetPVarString(index, "DShop_name", name);
+						SetPVarInt(index, "DShop_quantity", strval(quantity)-strval(delivered));
+
+						ShowPlayerDialog(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Shop Order Info", string, "Deliver", "Cancel");
+						return 1;
+					}
+					else
+					{
+						new reason[27];
+						switch(strval(status))
+						{
+						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
+						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
+						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
+						    case 5:
+							{
+								ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								return 1;
+							}
+				   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
+						    case 8: format(reason, sizeof(reason), "{FF0000}Denied");
+						    case 9: format(reason, sizeof(reason), "{FF0000}Cancelled Reversal");
+						    case 10: format(reason, sizeof(reason), "{FF0000}Failed");
+						    case 11: format(reason, sizeof(reason), "{00FF00}Refundend");
+						    case 12: format(reason, sizeof(reason), "{FF0000}Reversed");
+						    case 13: format(reason, sizeof(reason), "{FF0000}Chargeback");
+						    default: format(reason, sizeof(reason), "{FF0000}Unknown");
+						}
+						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
+						ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+	  					return 1;
+					}
+				}
+			}
+		}
+		else
+		{
+		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		}
+	}
+	return 1;
+}
+
+forward OnProcessOrderCheck(index, extraid);
+public OnProcessOrderCheck(index, extraid)
+{
+	if(IsPlayerConnected(index))
+	{
+		new string[256],playerip[32], giveplayerip[32];
+		GetPlayerIp(index, playerip, sizeof(playerip));
+		GetPlayerIp(extraid, giveplayerip, sizeof(giveplayerip));
+
+		new rows, fields;
+		cache_get_data(rows, fields, MainPipeline);
+		if(rows)
+		{
+			SendClientMessageEx(index, COLOR_WHITE, "This order has previously been processed, therefore it did not count toward your pay.");
+			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), giveplayerip);
+			Log("logs/shoporders.log", string);
+		}
+		else
+		{
+			format(string, sizeof(string), "%s(IP: %s) has processed shop order ID %d from %s(IP: %s).", GetPlayerNameEx(index), playerip, GetPVarInt(index, "processorder"), GetPlayerNameEx(extraid), giveplayerip);
+			Log("logs/shopconfirmedorders.log", string);
+			PlayerInfo[index][pShopTechOrders]++;
+
+			format(string, sizeof(string), "INSERT INTO shoptech (id,total,dtotal) VALUES (%d,1,%f) ON DUPLICATE KEY UPDATE total = total + 1, dtotal = dtotal + %f", GetPlayerSQLId(index), ShopTechPay, ShopTechPay);
+			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+
+			format(string, sizeof(string), "INSERT INTO `orders` (`id`) VALUES ('%d')", GetPVarInt(index, "processorder"));
+			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+			
+			/*format(string, sizeof(string), "INSERT INTO betazorder_history (`order_id`, `order_status_id`, `comment`, `date_added`, `notify`) \
+			VALUES ('%d', '5', 'Order Processed (%s) (Status: Complete)', NOW(), '1')", GetPVarInt(index, "processorder"), GetPlayerNameEx(index));
+			mysql_function_query(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+			
+			format(string, sizeof(string), "UPDATE betazorder SET `order_status_id` = '5' WHERE `order_id` = '%d'", GetPVarInt(index, "processorder"));
+			mysql_function_query(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);*/
+		}
+		DeletePVar(index, "processorder");
+	}
+	return 1;
+}

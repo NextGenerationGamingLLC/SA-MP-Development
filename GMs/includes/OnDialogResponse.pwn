@@ -1677,10 +1677,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			new query[384];
 			format(query, sizeof(query), "\
-			SELECT p.order_product_id, p.order_id, p.name, p.quantity, p.delivered, h.order_status_id, o.email, o.ip \
-			FROM newshoporder_product p \
-			LEFT JOIN newshoporder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM newshoporder_history WHERE p.order_id = order_id) \
-			LEFT JOIN newshoporder o ON o.order_id = p.order_id \
+			SELECT p.order_product_id, p.order_id, p.name, p.quantity, h.order_status_id, o.email, o.ip \
+			FROM betazorder_product p \
+			LEFT JOIN betazorder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM betazorder_history WHERE p.order_id = order_id) \
+			LEFT JOIN betazorder o ON o.order_id = p.order_id \
 			WHERE p.order_id = %d", orderid);
 			mysql_function_query(ShopPipeline, query, true, "OnShopOrder", "i", playerid);
 
@@ -1700,9 +1700,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new query[384];
 				format(query, sizeof(query), "\
 				SELECT p.order_product_id, p.order_id, p.name, p.quantity, p.delivered, h.order_status_id \
-				FROM newshoporder_product p \
-				LEFT JOIN newshoporder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM newshoporder_history WHERE p.order_id = order_id) \
-				LEFT JOIN newshoporder o ON o.order_id = p.order_id \
+				FROM betazorder_product p \
+				LEFT JOIN betazorder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM betazorder_history WHERE p.order_id = order_id) \
+				LEFT JOIN betazorder o ON o.order_id = p.order_id \
 				WHERE p.order_id = %d", PlayerInfo[playerid][pOrder]);
 				mysql_function_query(ShopPipeline, query, true, "OnShopOrderEmailVer", "i", playerid);
 			}

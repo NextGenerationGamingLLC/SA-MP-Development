@@ -72,12 +72,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
-			/*  ---------------- SCRIPT REVISION ----------------- */
+/*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.160"
-
+#define SERVER_GM_TEXT "NG:RP v3.0.161"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -98,7 +97,6 @@
 #include "./includes/variables.pwn"
 #include "./includes/timers.pwn"
 #include "./includes/functions.pwn"
-#include "./includes/vehiclesystem/vehiclecore.pwn"
 #include "./includes/mysql.pwn"
 #include "./includes/OnPlayerLoad.pwn"
 #include "./includes/callbacks.pwn"
@@ -146,40 +144,45 @@
 #include "./includes/core/upgrades.pwn"
 #include "./includes/core/vactions.pwn"
 #include "./includes/core/weapons.pwn"
+#include "./includes/core/damage.pwn"
+//#include "./includes/core/health.pwn"
+//#include "./includes/core/teams.pwn"
 
 //vehicle system includes
-#include "./includes/vehiclesystem/drivingtest.pwn"
-#include "./includes/vehiclesystem/licenses.pwn"
-#include "./includes/vehiclesystem/speedo.pwn"
-#include "./includes/vehiclesystem/tow.pwn"
-#include "./includes/vehiclesystem/VLP.pwn"
+#include "./includes/vehsystem/vehiclecore.pwn"
+#include "./includes/vehsystem/drivingtest.pwn"
+#include "./includes/vehsystem/licenses.pwn"
+#include "./includes/vehsystem/speedo.pwn"
+#include "./includes/vehsystem/tow.pwn"
+#include "./includes/vehsystem/VLP.pwn"
 
 
 //dynamic core includes
-#include "./includes/dynamiccore/doors.pwn"
-#include "./includes/dynamiccore/garages.pwn"
-#include "./includes/dynamiccore/gates.pwn"
-#include "./includes/dynamiccore/houses.pwn"
-#include "./includes/dynamiccore/mapicons.pwn"
-#include "./includes/dynamiccore/motds.pwn"
-#include "./includes/dynamiccore/paynsprays.pwn"
-#include "./includes/dynamiccore/textlabels.pwn"
-#include "./includes/dynamiccore/impound.pwn"
-#include "./includes/dynamiccore/speedcamera.pwn"
-#include "./includes/dynamiccore/arrestpoints.pwn"
+#include "./includes/dynamic/doors.pwn"
+#include "./includes/dynamic/garages.pwn"
+#include "./includes/dynamic/gates.pwn"
+#include "./includes/dynamic/houses.pwn"
+#include "./includes/dynamic/mapicons.pwn"
+#include "./includes/dynamic/motds.pwn"
+#include "./includes/dynamic/paynsprays.pwn"
+#include "./includes/dynamic/textlabels.pwn"
+#include "./includes/dynamic/impound.pwn"
+#include "./includes/dynamic/speedcamera.pwn"
+#include "./includes/dynamic/arrestpoints.pwn"
 
 //event kernels includes
-//#include "./includes/eventkernels/bday.pwn"
-#include "./includes/eventkernels/event.pwn"
-#include "./includes/eventkernels/eventpoints.pwn"
-#include "./includes/eventkernels/fif.pwn"
-#include "./includes/eventkernels/hungergames.pwn"
-#include "./includes/eventkernels/paintball.pwn"
-#include "./includes/eventkernels/rewardplay.pwn"
-#include "./includes/eventkernels/rfl.pwn"
-#include "./includes/eventkernels/xmas.pwn"
-#include "./includes/eventkernels/zombies.pwn"
-#include "./includes/eventkernels/valentine.pwn"
+//#include "./includes/events/bday.pwn"
+#include "./includes/events/event.pwn"
+#include "./includes/events/eventpoints.pwn"
+#include "./includes/events/fif.pwn"
+#include "./includes/events/hungergames.pwn"
+#include "./includes/events/paintball.pwn"
+#include "./includes/events/rewardplay.pwn"
+#include "./includes/events/rfl.pwn"
+#include "./includes/events/xmas.pwn"
+#include "./includes/events/zombies.pwn"
+#include "./includes/events/valentine.pwn"
+#include "./includes/events/festival.pwn"
 
 //dynamic group system includes
 #include "./includes/group/citizenship.pwn"
