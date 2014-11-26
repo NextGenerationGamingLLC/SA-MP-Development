@@ -44,22 +44,22 @@ timer SkinDelay[1000](playerid)
 		{
 			case 1: // Small
 			{
-				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				//PlayerInfo[playerid][pBEquipped] = 1;
 			}
 			case 2: // Med
 			{
-				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				//PlayerInfo[playerid][pBEquipped] = 1;
 			}
 			case 3: // Large
 			{
-				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 				//PlayerInfo[playerid][pBEquipped] = 1;
 			}

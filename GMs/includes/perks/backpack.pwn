@@ -594,8 +594,8 @@ CMD:bwear(playerid, params[])
 			new engine,lights,alarm,doors,bonnet,boot,objective;
 			GetVehicleParamsEx(PlayerVehicleInfo[playerid][pvid][pvId],engine,lights,alarm,doors,bonnet,boot,objective);
 			if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take/put stuff inside the trunk if it's closed!(/car trunk to open it)");
-			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			switch(PlayerInfo[playerid][pBackpack])
 			{
 				case 1: 
@@ -634,8 +634,8 @@ CMD:bwear(playerid, params[])
 			}
 			if(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[pvid][hInteriorX], HouseInfo[pvid][hInteriorY], HouseInfo[pvid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[pvid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[pvid][hIntIW])
 			{
-				if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				switch(PlayerInfo[playerid][pBackpack])
 				{
 					case 1: 

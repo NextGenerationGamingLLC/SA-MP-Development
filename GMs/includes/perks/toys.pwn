@@ -58,6 +58,13 @@ GetSpecialPlayerToyCount(playerid)
 	return toys;
 }
 
+GetSpecialPlayerToyCountEx(playerid, special)
+{
+	new toys = 0;
+	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] == special) ++toys;
+	return toys;
+}
+
 /* GetSpecialFuncPlayerToyCount(playerid)
 {
 	new toys = 0;
@@ -67,14 +74,9 @@ GetSpecialPlayerToyCount(playerid)
 
 GetFreeToySlot(playerid)
 {
-	for(new i = 0; i < 11; i++) {
-		if(i + 1 < 11) {
-			if(PlayerHoldingObject[playerid][i+1] == 0) {
-				return i+1;
-			}
-		}
-		else {
-			return -1;
+	for(new i = 0; i < 10; i++) {
+		if(PlayerHoldingObject[playerid][i] == 0) {
+			return i;
 		}
 	}
 	return -1;
@@ -348,14 +350,14 @@ CMD:wt(playerid, params[])
 	new toyslot;
 	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
 
-	if(toyslot < 1 || toyslot > 11 + PlayerInfo[playerid][pToySlot]) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
+	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
 	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
 
-	for(new i; i < 11; i++)
+	for(new i; i < 10; i++)
 	{
 		if(PlayerHoldingObject[playerid][i] == toyslot)
 		{
-			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, i))
 			{
 				return 1;
 			}
@@ -368,11 +370,11 @@ CMD:wt(playerid, params[])
 		PlayerToyInfo[playerid][toyslot-1][ptScaleZ] = 1.0;
 	}
 
-	if(PlayerToyInfo[playerid][toyslot-1][ptModelID] != 0)
+	if(PlayerToyInfo[playerid][toyslot-1][ptModelID] != 0 && PlayerToyInfo[playerid][toyslot-1][ptSpecial] != 2)
 	{
 		new toycount = GetFreeToySlot(playerid);
-		if(PlayerInfo[playerid][pBEquipped] && toycount == 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use attach this toy since you have your backpack equipped.");
-		PlayerHoldingObject[playerid][toycount] = toyslot;
+		if(PlayerInfo[playerid][pBEquipped] && toycount == 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use attach this toy since you have your backpack equipped.");
+		PlayerHoldingObject[playerid][toycount-1] = toyslot;
 		SetPlayerAttachedObject(playerid, toycount-1,
 			PlayerToyInfo[playerid][toyslot-1][ptModelID],
 			PlayerToyInfo[playerid][toyslot-1][ptBone],
@@ -395,18 +397,18 @@ CMD:dt(playerid, params[])
 	new toyslot;
 	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dt [toyslot]");
 
-	if(toyslot < 1 || toyslot > 11 + PlayerInfo[playerid][pToySlot]) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dt [toyslot]");
+	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dt [toyslot]");
 
 
-	for(new i; i < 11; i++)
+	for(new i; i < 10; i++)
 	{
 		if(PlayerHoldingObject[playerid][i] == toyslot)
 		{
-			if(IsPlayerAttachedObjectSlotUsed(playerid, i-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, i))
 			{
-				if(i == 10 && PlayerInfo[playerid][pBEquipped]) 
+				if(i == 9 && PlayerInfo[playerid][pBEquipped] || PlayerToyInfo[playerid][toyslot-1][ptSpecial] == 2) 
 					break;
-				RemovePlayerAttachedObject(playerid, i-1);
+				RemovePlayerAttachedObject(playerid, i);
 				PlayerHoldingObject[playerid][i] = 0;
 				break;
 			}
@@ -419,21 +421,21 @@ CMD:wat(playerid, params[])
 {
 	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
 	new count = 0;
-	SendClientMessageEx(playerid, COLOR_WHITE, "* Attached all toys below slot 10.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Attached max toys allowed.");
 	for(new x;x<MAX_PLAYERTOYS;x++)
 	{
-		count++;
 		if(PlayerToyInfo[playerid][x][ptScaleX] == 0) {
 			PlayerToyInfo[playerid][x][ptScaleX] = 1.0;
 			PlayerToyInfo[playerid][x][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][x][ptScaleZ] = 1.0;
 		}
-		if(PlayerToyInfo[playerid][x][ptModelID] != 0) 
+		if(PlayerToyInfo[playerid][x][ptModelID] != 0 && PlayerToyInfo[playerid][x][ptSpecial] != 2) 
 		{
 			if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
 				break;
 			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
-			PlayerHoldingObject[playerid][x+1] = x+1;
+			PlayerHoldingObject[playerid][count] = x;
+			count++;
 		}
 		if(count == 10)
 			break;
@@ -444,17 +446,15 @@ CMD:wat(playerid, params[])
 CMD:dat(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "* Deattached all toys.");
-	for(new x;x<MAX_PLAYERTOYS;x++) {
-		if(IsPlayerAttachedObjectSlotUsed(playerid, x)) 
-		{
-			if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
-				break;
-			RemovePlayerAttachedObject(playerid, x);
-		}
-	}
-	for(new i; i < 11; i++)
+	for(new i; i < 10; i++)
 	{
-		PlayerHoldingObject[playerid][i] = 0;
+		if(IsPlayerAttachedObjectSlotUsed(playerid, i) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2) 
+		{
+			if(i == 9 && PlayerInfo[playerid][pBEquipped]) 
+				break;
+			PlayerHoldingObject[playerid][i] = 0;
+			RemovePlayerAttachedObject(playerid, i);
+		}
 	}
     return 1;
 }

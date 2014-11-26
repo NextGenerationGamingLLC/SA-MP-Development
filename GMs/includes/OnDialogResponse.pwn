@@ -2380,11 +2380,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			case 0: ShowPlayerDialog(playerid, EDITTOYSBONE, DIALOG_STYLE_LIST, "Select a Bone", "Spine\nHead\nLeft upper arm\nRight upper arm\nLeft hand\nRight hand\nLeft thigh\nRight thigh\nLeft foot\nRight foot\nRight calf\nLeft calf\nLeft forearm\nRight forearm\nLeft clavicle\nRight clavicle\nNeck\nJaw", "Select", "Cancel");
 			case 1:
 			{		
-				for(new i; i < 11; i++)
+				for(new i; i < 10; i++)
 				{
-					if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "ToySlot")+1)
+					if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "ToySlot"))
 					{
-						EditAttachedObject(playerid, i-1);
+						EditAttachedObject(playerid, i);
 						break;
 					}
 				}
@@ -2394,6 +2394,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else
 		{
 			new stringg[4096], icount = GetPlayerToySlots(playerid);
+			if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptSpecial] == 2) for(new i; i < 10; i++) {
+				if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "ToySlot")) {
+					PlayerHoldingObject[playerid][i] = 0;
+					RemovePlayerAttachedObject(playerid, i);
+					SendClientMessageEx(playerid, COLOR_GRAD1, "You may only wear this toy with /helmet.");
+					break;
+				}
+			}
 			for(new x;x<icount;x++)
 			{
 				new name[24];
@@ -2509,18 +2517,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Wear your toy", "Woops! You don't have anything to wear from that slot.", "Okay", "");
 		}
+		else if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptSpecial] == 2) 
+		{
+			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Wear your toy", "You may only wear this toy with /helmet.", "Okay", "");
+		}
 		else
 		{
 			new toys = 99999;
-			for(new i; i < 11; i++)
+			for(new i; i < 10; i++)
 			{
-				if(PlayerHoldingObject[playerid][i] == listitem+1)
+				if(PlayerHoldingObject[playerid][i] == listitem)
 				{
 					toys = i;
 					break;
 				}
 			}		
-			if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, toys))
 			{	
 				new name[24];
 				format(name, sizeof(name), "None");
@@ -2534,10 +2546,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				format(string, sizeof(string), "Successfully dettached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
 				SendClientMessageEx(playerid, COLOR_RED, string);
-				RemovePlayerAttachedObject(playerid, toys-1);
-				for(new i; i < 11; i++)
+				RemovePlayerAttachedObject(playerid, toys);
+				for(new i; i < 10; i++)
 				{
-					if(PlayerHoldingObject[playerid][i] == listitem+1)
+					if(PlayerHoldingObject[playerid][i] == listitem)
 					{
 						PlayerHoldingObject[playerid][i] = 0;
 						break;
@@ -2547,8 +2559,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				new toycount = GetFreeToySlot(playerid);
-				if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
-				if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+				if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
+				if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
 				
 				if(PlayerToyInfo[playerid][listitem][ptScaleX] == 0) {
 					PlayerToyInfo[playerid][listitem][ptScaleX] = 1.0;
@@ -2567,8 +2579,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				format(string, sizeof(string), "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
 				SendClientMessageEx(playerid, COLOR_RED, string);
-				PlayerHoldingObject[playerid][toycount] = listitem+1;
-				SetPlayerAttachedObject(playerid, toycount-1, PlayerToyInfo[playerid][listitem][ptModelID], PlayerToyInfo[playerid][listitem][ptBone], PlayerToyInfo[playerid][listitem][ptPosX], PlayerToyInfo[playerid][listitem][ptPosY], PlayerToyInfo[playerid][listitem][ptPosZ],
+				PlayerHoldingObject[playerid][toycount] = listitem;
+				SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][listitem][ptModelID], PlayerToyInfo[playerid][listitem][ptBone], PlayerToyInfo[playerid][listitem][ptPosX], PlayerToyInfo[playerid][listitem][ptPosY], PlayerToyInfo[playerid][listitem][ptPosZ],
 				PlayerToyInfo[playerid][listitem][ptRotX], PlayerToyInfo[playerid][listitem][ptRotY], PlayerToyInfo[playerid][listitem][ptRotZ], PlayerToyInfo[playerid][listitem][ptScaleX], PlayerToyInfo[playerid][listitem][ptScaleY], PlayerToyInfo[playerid][listitem][ptScaleZ]);
 			}
 		}
@@ -2577,15 +2589,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if((dialogid == DELETETOY) && response)
 	{
 		new toys = 99999;			
-		for(new i; i < 11; i++)
+		for(new i; i < 10; i++)
 		{
-			if(PlayerHoldingObject[playerid][i] == listitem+1)
+			if(PlayerHoldingObject[playerid][i] == listitem)
 			{
 				toys = i;
-				if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
+				if(IsPlayerAttachedObjectSlotUsed(playerid, toys))
 				{
 					PlayerHoldingObject[playerid][i] = 0;
-					RemovePlayerAttachedObject(playerid, toys-1);
+					RemovePlayerAttachedObject(playerid, toys);
 				}
 				break;
 			}
@@ -10611,15 +10623,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 			new toys = 99999;
-			for(new i; i < 11; i++)
+			for(new i; i < 10; i++)
 			{
-				if(PlayerHoldingObject[giveplayerid][i] == slot+1)
+				if(PlayerHoldingObject[giveplayerid][i] == slot)
 				{
 					toys = i;
-					if(IsPlayerAttachedObjectSlotUsed(giveplayerid, toys-1))
+					if(IsPlayerAttachedObjectSlotUsed(giveplayerid, toys))
 					{
 						PlayerHoldingObject[giveplayerid][i] = 0;
-						RemovePlayerAttachedObject(giveplayerid, toys-1);
+						RemovePlayerAttachedObject(giveplayerid, toys);
 					}
 					break;
 				}
@@ -14585,8 +14597,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold36` = '%d', `AmountMade36` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[36], AmountMade[36]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 
 			PlayerInfo[playerid][pBEquipped] = 1;
@@ -14616,8 +14628,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold37` = '%d', `AmountMade37` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[37], AmountMade[37]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 
 			PlayerInfo[playerid][pBEquipped] = 1;
@@ -14647,8 +14659,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold38` = '%d', `AmountMade38` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[38], AmountMade[38]);
 			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 			
 			PlayerInfo[playerid][pBEquipped] = 1;

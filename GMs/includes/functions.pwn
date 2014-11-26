@@ -4160,7 +4160,7 @@ stock ShowModelSelectionMenu(playerid, ListID, header_text[], dialogBGcolor = 0x
 	return 1;
 }
 
-stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text[], extraid, Float:Xrot = 0.0, Float:Yrot = 0.0, Float:Zrot = 0.0, Float:mZoom = 1.0, dialogBGcolor = 0x4A5A6BBB, previewBGcolor = 0x88888899 , tdSelectionColor = 0xFFFF00AA, extra_array[] = 0)
+stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text[], extraid, Float:Xrot = 0.0, Float:Yrot = 0.0, Float:Zrot = 0.0, Float:mZoom = 1.0, dialogBGcolor = 0x4A5A6BBB, previewBGcolor = 0x88888899 , tdSelectionColor = 0xFFFF00AA)
 {
 	mS_DestroySelectionMenu(playerid);
 	if(item_amount > mS_CUSTOM_MAX_ITEMS)
@@ -4173,7 +4173,6 @@ stock ShowModelSelectionMenuEx(playerid, items_array[], item_amount, header_text
 		for(new i=0;i<item_amount;i++)
 		{
 			gCustomList[playerid][i] = items_array[i];
-			gCustomExtraList[playerid][i] =  extra_array[i];
 		}
 		SetPVarInt(playerid, "mS_list_page", 0);
 		SetPVarInt(playerid, "mS_list_id", mS_CUSTOM_LISTID);
@@ -6086,22 +6085,22 @@ stock SetPlayerSpawn(playerid)
 			{
 				case 1:
 				{
-					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					if(PlayerHoldingObject[playerid][9] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 					//PlayerInfo[playerid][pBEquipped] = 1;
 				}
 				case 2: // Med
 				{
-					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					if(PlayerHoldingObject[playerid][9] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 					//PlayerInfo[playerid][pBEquipped] = 1;
 				}
 				case 3: // Large
 				{
-					if(PlayerHoldingObject[playerid][10] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					if(PlayerHoldingObject[playerid][9] != 0 && IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 					SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 					//PlayerInfo[playerid][pBEquipped] = 1;
 				}
@@ -7763,15 +7762,15 @@ stock ShowEditMenu(playerid)
 		iIndex = GetPVarInt(playerid, "ToySlot");
 
 	new toys = 99999;			
-	for(new i; i < 11; i++)
+	for(new i; i < 10; i++)
 	{
-		if(PlayerHoldingObject[playerid][i] == iIndex+1)
+		if(PlayerHoldingObject[playerid][i] == iIndex)
 		{
 			toys = i;
-			if(IsPlayerAttachedObjectSlotUsed(playerid, toys-1))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, toys))
 			{
 				PlayerHoldingObject[playerid][i] = 0;
-				if(!PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, toys-1);
+				if(!PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, toys);
 			}
 			break;
 		}
@@ -7782,10 +7781,10 @@ stock ShowEditMenu(playerid)
 		PlayerToyInfo[playerid][iIndex][ptScaleZ] = 1.0;
 	}
 	new toycount = GetFreeToySlot(playerid);
-	if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
-	if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
-	PlayerHoldingObject[playerid][toycount] = iIndex+1;
-	SetPlayerAttachedObject(playerid, toycount-1, PlayerToyInfo[playerid][iIndex][ptModelID],
+	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
+	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+	PlayerHoldingObject[playerid][toycount] = iIndex;
+	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][iIndex][ptModelID],
 	PlayerToyInfo[playerid][iIndex][ptBone], PlayerToyInfo[playerid][iIndex][ptPosX],
 	PlayerToyInfo[playerid][iIndex][ptPosY], PlayerToyInfo[playerid][iIndex][ptPosZ],
 	PlayerToyInfo[playerid][iIndex][ptRotX], PlayerToyInfo[playerid][iIndex][ptRotY],

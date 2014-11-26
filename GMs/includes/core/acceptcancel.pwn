@@ -2736,8 +2736,8 @@ CMD:accept(playerid, params[])
 						return 1;
 					}
 					new btype[8];
-					if(PlayerHoldingObject[playerid][10] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
-						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][10] = 0;
+					if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 					switch(PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack])
 					{
 						case 1: 

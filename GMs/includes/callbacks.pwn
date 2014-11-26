@@ -1525,7 +1525,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 		{
 			new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 			mS_DestroySelectionMenu(playerid);
-			CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1, -1);
+			CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 0, extraid, -1, -1);
 			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 		}
 		else
@@ -1552,7 +1552,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 				HideModelSelectionMenu(playerid);
-				CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 0, extraid, -1, -1);
+				CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 0, extraid, -1, -1);
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 			}
 			else
@@ -1617,7 +1617,7 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					new extralist_id = gSelectionItemsExtra[playerid][x];
 					new extraid = GetPVarInt(playerid, "mS_custom_extraid");
 					HideModelSelectionMenu(playerid);
-					CallLocalFunction("OnPlayerModelSelectionEx", "dddd", playerid, 1, extraid, item_id, extralist_id);
+					CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 1, extraid, item_id, extralist_id);
 					return 1;
 				}
 				else
@@ -2422,6 +2422,18 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
     IsPlayerEntering{playerid} = true;
 	Seatbelt[playerid] = 0;
+	if(GetPVarType(playerid, "HelmetOn"))
+	{
+		for(new i; i < 10; i++) {
+			if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
+				PlayerHoldingObject[playerid][i] = 0;
+				RemovePlayerAttachedObject(playerid, i);
+				DeletePVar(playerid, "HelmetOn");
+				break;
+			}
+		}
+	}
+	
 	if(PlayerCuffed[playerid] != 0) SetPVarInt( playerid, "ToBeEjected", 1 );
 	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
 		DeletePVar(playerid, "BackpackMedKit");
@@ -2764,7 +2776,7 @@ public OnPlayerConnect(playerid)
 		PlayerToyInfo[playerid][i][ptSpecial] = 0;
 	}
 
-	for(new i = 0; i < 11; i++) {
+	for(new i = 0; i < 10; i++) {
 		PlayerHoldingObject[playerid][i] = 0;
 	}
 
@@ -6840,6 +6852,17 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        ConnectedToPC[playerid] = 0;
 		}
 		Seatbelt[playerid] = 0;
+		if(GetPVarType(playerid, "HelmetOn"))
+		{
+			for(new i; i < 10; i++) {
+				if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
+					PlayerHoldingObject[playerid][i] = 0;
+					RemovePlayerAttachedObject(playerid, i);
+					DeletePVar(playerid, "HelmetOn");
+					break;
+				}
+			}
+		}
 	}
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
@@ -7108,6 +7131,21 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	        ConnectedToPC[playerid] = 0;
 		}
 	}
+	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
+	{
+		Seatbelt[playerid] = 0;
+		if(GetPVarType(playerid, "HelmetOn"))
+		{
+			for(new i; i < 10; i++) {
+				if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
+					PlayerHoldingObject[playerid][i] = 0;
+					RemovePlayerAttachedObject(playerid, i);
+					DeletePVar(playerid, "HelmetOn");
+					break;
+				}
+			}
+		}
+	}
 	return 1;
 }
 
@@ -7141,6 +7179,17 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
 			format(string, sizeof(string), "* %s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			if(GetPVarType(playerid, "HelmetOn"))
+			{
+				for(new i; i < 10; i++) {
+					if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
+						PlayerHoldingObject[playerid][i] = 0;
+						RemovePlayerAttachedObject(playerid, i);
+						DeletePVar(playerid, "HelmetOn");
+						break;
+					}
+				}
+			}
   			Seatbelt[playerid] = 0;
 	    }
 	}
@@ -7828,6 +7877,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 	{
 		if(response)
 		{
+			if(GetSpecialPlayerToyCountEx(playerid, 2) > 7)
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only own up to 8 helmets.");
 			new i, string[144];
 			for(i = 0; i < MAX_PLAYERTOYS; i++)
 			{
@@ -7894,8 +7945,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		if(response)
 		{
 			new toycount = GetFreeToySlot(playerid), string[144];
-			if(toycount > 10 || toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
-			if(toycount == 10 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
+			if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
+			if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
 			
 			if(PlayerToyInfo[playerid][extralist_id][ptScaleX] == 0) {
 				PlayerToyInfo[playerid][extralist_id][ptScaleX] = 1.0;
@@ -7914,12 +7965,14 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			}
 			format(string, sizeof(string), "Successfully attached %s(%d) (Bone: %s) (Slot: %d)", name, PlayerToyInfo[playerid][extralist_id][ptModelID], HoldingBones[PlayerToyInfo[playerid][extralist_id][ptBone]], extralist_id);
 			SendClientMessageEx(playerid, COLOR_RED, string);
-			PlayerHoldingObject[playerid][toycount] = extralist_id+1;
-			SetPlayerAttachedObject(playerid, toycount-1, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
+			SetPVarInt(playerid, "HelmetOn", extralist_id);
+			PlayerHoldingObject[playerid][toycount] = extralist_id;
+			SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
 			PlayerToyInfo[playerid][extralist_id][ptRotX], PlayerToyInfo[playerid][extralist_id][ptRotY], PlayerToyInfo[playerid][extralist_id][ptRotZ], PlayerToyInfo[playerid][extralist_id][ptScaleX], PlayerToyInfo[playerid][extralist_id][ptScaleY], PlayerToyInfo[playerid][extralist_id][ptScaleZ]);
 		
 			Seatbelt[playerid] = 2;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and puts it on.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your helmet.");
 		}
 		else

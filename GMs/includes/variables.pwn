@@ -1309,7 +1309,7 @@ new FIFInfo[MAX_PLAYERS][FallIntoFun],
 new freeweekend,
 	nonvipcredits;
 
-new PlayerHoldingObject[MAX_PLAYERS][11];
+new PlayerHoldingObject[MAX_PLAYERS][10];
 
 // Dynamic Gift Box Stuff
 new dgVar[dgItems][4];
