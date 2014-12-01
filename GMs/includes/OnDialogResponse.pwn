@@ -2339,14 +2339,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 Since the toys list starts of from 1( As players see it )
 		}
 		format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
 		switch(listitem) {
 			case 0:
 				ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
 			case 1:
-				ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+				if(IsPlayerInAnyVehicle(playerid))
+					ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
+				else
+					ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
 			case 2:
 				ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
 		}
@@ -2356,7 +2359,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		/*new toycount = GetFreeToySlot(playerid);
 		if(toycount >= 10) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");*/
-		
 		if(listitem >= GetPlayerToySlots(playerid)) 
 		{
 			new szstring[128];
@@ -2418,7 +2420,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 since toys list starts off from 1 (From players view)
 			}
 			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
 			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
@@ -2517,7 +2519,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Wear your toy", "Woops! You don't have anything to wear from that slot.", "Okay", "");
 		}
-		else if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptSpecial] == 2) 
+		else if(PlayerToyInfo[playerid][listitem][ptSpecial] == 2) 
 		{
 			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Wear your toy", "You may only wear this toy with /helmet.", "Okay", "");
 		}

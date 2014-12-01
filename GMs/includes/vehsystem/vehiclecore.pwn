@@ -728,6 +728,7 @@ CMD:seatbelt(playerid, params[])
 			Seatbelt[playerid] = 0;
         }
     }
+	else return 1;
     ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     return 1;
 }

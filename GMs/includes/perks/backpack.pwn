@@ -51,7 +51,7 @@ stock IsBackpackAvailable(playerid)
 
 stock GetBackpackFreeSlotGun(playerid) {
 	new slot;
-	for(new g = 6; g < 10; g++)
+	for(new g = 6; g < 11; g++)
 	{
 		
 		if(PlayerInfo[playerid][pBItems][g] == 0)

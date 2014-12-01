@@ -363,7 +363,7 @@ CMD:wt(playerid, params[])
 			}
 		}
 	}
-	
+	// Toy Slot is -1 since players see their toys list starting off from 1
 	if(PlayerToyInfo[playerid][toyslot-1][ptScaleX] == 0) {
 		PlayerToyInfo[playerid][toyslot-1][ptScaleX] = 1.0;
 		PlayerToyInfo[playerid][toyslot-1][ptScaleY] = 1.0;
@@ -374,8 +374,8 @@ CMD:wt(playerid, params[])
 	{
 		new toycount = GetFreeToySlot(playerid);
 		if(PlayerInfo[playerid][pBEquipped] && toycount == 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use attach this toy since you have your backpack equipped.");
-		PlayerHoldingObject[playerid][toycount-1] = toyslot;
-		SetPlayerAttachedObject(playerid, toycount-1,
+		PlayerHoldingObject[playerid][toycount] = toyslot;
+		SetPlayerAttachedObject(playerid, toycount,
 			PlayerToyInfo[playerid][toyslot-1][ptModelID],
 			PlayerToyInfo[playerid][toyslot-1][ptBone],
 			PlayerToyInfo[playerid][toyslot-1][ptPosX],
@@ -494,8 +494,8 @@ CMD:selltoy(playerid, params[])
 		{
 			format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 		}
-		format(string, sizeof(string), "%s(%d) %s\n", string, x, name);
+		format(string, sizeof(string), "%s(%d) %s\n", string, x+1, name);
 	}	
-	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", string, "Sell", "Cancel");
+	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", string, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
 	return 1;
 }	
