@@ -939,7 +939,7 @@ IsValidName(iPlayer) {
 	new
 		iLength,
 		szPlayerName[MAX_PLAYER_NAME], tmpName[MAX_PLAYER_NAME],
-		falses;
+		invalids;
 
 	GetPlayerName(iPlayer, szPlayerName, sizeof(szPlayerName));
 
@@ -950,16 +950,15 @@ IsValidName(iPlayer) {
 	}
 	iLength = strlen(szPlayerName);
 
-	if(strfind(szPlayerName, "_", false) == -1 || szPlayerName[iLength - 1] == '_' || szPlayerName[0] == '_') {
-		return 0;
-	}
+	if(strfind(szPlayerName, "_", false) == -1 || szPlayerName[iLength - 1] == '_' || szPlayerName[0] == '_') return 0;
+	else if(szPlayerName[0] == '.' || szPlayerName[0] == '_') return 0;
 	else for(new i; i < iLength; ++i) {
-		if(!('a' <= szPlayerName[i] <= 'z' || 'A' <= szPlayerName[i] <= 'Z' || szPlayerName[i] == '_') && szPlayerName[i] != '.') {
-			return 0;
-		}
+		if(!('a' <= szPlayerName[i] <= 'z' || 'A' <= szPlayerName[i] <= 'Z' 
+			|| szPlayerName[i] == '_') && szPlayerName[i] != '.') return 0;
 		if(szPlayerName[i] == 'I' && i == 0) continue;
-		if(szPlayerName[i] == 'I' && szPlayerName[i-1] != '_') falses++;
-		if(falses > 0) return 0;
+		if(szPlayerName[i] == '_' && szPlayerName[i+1] == '.') invalids++;
+		if(szPlayerName[i] == 'I' && szPlayerName[i-1] != '_') invalids++;
+		if(invalids > 0) return 0;
 	}
 	return 1;
 }
