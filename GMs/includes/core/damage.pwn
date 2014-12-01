@@ -71,18 +71,16 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
     if(pTazer{playerid} == 1)
 	{
 	    if(weaponid !=  23) {
-	    	new string[44 + MAX_PLAYER_NAME];
 			RemovePlayerWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
-			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{playerid} = 0;
 			return 1;
 		}
 		if(!ProxDetectorS(20.0, playerid, damagedid)) {
-			new string[44 + (MAX_PLAYER_NAME * 2)];
-			format(string, sizeof(string), "* %s fires their tazer at %s, missing them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, missing them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			return 1;
 		}
  		if(TazerTimeout[playerid] > 0 && !GetPVarType(damagedid, "IsFrozen"))
@@ -92,7 +90,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
   		    SetPlayerHealth(damagedid, hp-amount);
 			return 1;
 		}
-		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1 && GetPVarInt(damagedid, "Injured") != 1)
+		if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
 		{
 		    if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1)
 			{
@@ -110,6 +108,25 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	  		    SetPlayerHealth(damagedid, hp+amount);
 				return 1;
 			}
+			new newkeys, dir1, dir2;
+			GetPlayerKeys(damagedid, newkeys, dir1, dir2);
+			if(ActiveKey(KEY_HANDBRAKE) && (!IsNotAGun(GetPlayerWeapon(playerid))))
+			{
+				new Float:hp;
+  		    	GetPlayerHealth(damagedid, hp);
+  		    	SetPlayerHealth(damagedid, hp-amount);
+  		    	SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
+				return 1;
+			}
+			if(ActiveKey(KEY_FIRE) && (!IsNotAGun(GetPlayerWeapon(playerid))))
+			{
+				new Float:hp;
+  		    	GetPlayerHealth(damagedid, hp);
+  		    	SetPlayerHealth(damagedid, hp-amount);
+  		    	SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively shooting.");
+				return 1;
+			}
+			
 			#if defined zombiemode
 			if(GetPVarInt(damagedid, "pIsZombie"))
 			{
@@ -120,9 +137,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			new Float:X, Float:Y, Float:Z, Float:hp;
 	  		GetPlayerPos(playerid, X, Y, Z);
 			GetPlayerHealth(damagedid, hp);
-			new string[44 + (MAX_PLAYER_NAME * 2)];
-			format(string, sizeof(string), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
    			SetPlayerHealth(damagedid, hp+amount);
 			TogglePlayerControllable(damagedid, 0);
@@ -165,6 +181,15 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			SetPlayerArmour(playerid, fArmour);
 			return true;
 		}
+	}
+	if(pTazer{playerid} == 1 && (!IsNotAGun(weaponid)))
+	{
+			RemovePlayerWeapon(playerid, 23);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			pTazer{playerid} = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer has been holstered as you have taken damage from bullets.");
 	}
 	if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
 		DeletePVar(playerid, "AttemptingLockPick");

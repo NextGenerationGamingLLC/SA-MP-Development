@@ -943,6 +943,39 @@ Weapon_ReturnName(iModelID) {
 	return szWepName;
 }
 
+IsNotAGun(weaponid)
+{
+	switch(weaponid)
+	{
+		case 0: return true;
+		case WEAPON_BAT: return true;
+		case WEAPON_BRASSKNUCKLE: return true;
+		case WEAPON_CAMERA: return true;
+		case WEAPON_CANE: return true;
+		case WEAPON_COLLISION: return true;
+		case WEAPON_DILDO: return true;
+		case WEAPON_DILDO2: return true;
+		case WEAPON_DROWN: return true;
+		case WEAPON_FIREEXTINGUISHER: return true;
+		case WEAPON_FLOWER: return true;
+		case WEAPON_GOLFCLUB: return true;
+		case WEAPON_KATANA: return true;
+		case WEAPON_KNIFE: return true;
+		case WEAPON_NITESTICK: return true;
+		case WEAPON_PARACHUTE: return true;
+		case WEAPON_POOLSTICK: return true;
+		case WEAPON_SHOVEL: return true;
+		case WEAPON_SPRAYCAN: return true;
+		case WEAPON_TEARGAS: return true;
+		case WEAPON_VEHICLE: return true;
+		case WEAPON_VIBRATOR: return true;
+		case WEAPON_VIBRATOR2: return true;
+		case 44, 45: return true;
+		default: return false;
+	}
+	return 0;
+}
+
 CMD:myguns(playerid, params[])
 {
 	new string[128], myweapons[13][2], weaponname[50], encryption[256], name[MAX_PLAYER_NAME];

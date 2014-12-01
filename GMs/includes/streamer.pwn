@@ -434,14 +434,6 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,1154.7295,-1440.2323,15.7969+0.6,18.0); // Namechange at mall
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,-2279.6545, 2311.2238, 4.9641+0.6,18.0); // Namechange (TR)
 
-    /* Sprunk 3D Text */
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,2140.4504,-1161.4298,23.9922+0.6,12.0); // Sprunk Machine
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,2153.8826,-1015.5273,62.8895+0.6,12.0); // Sprunk Machine
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,2325.9705,-1646.1234,14.8270+0.6,12.0); // Sprunk Machine
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,2060.2163,-1898.6940,13.5538+0.6,12.0); // Sprunk Machine
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,1929.8986,-1772.5122,13.5469+0.6,12.0); // Sprunk Machine
-    CreateDynamic3DTextLabel("Sprunk Machine \nHit 'F' to grab a drink/snack",COLOR_YELLOW,1153.6688,-1460.8262,15.7969+0.6,12.0); // Sprunk Machine
-
 	/* Job's 3D Text */
 	CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,251.99, 117.36, 1003.22+0.5,4.0);// Detective Job (LS)
 	CreateDynamic3DTextLabel("Detective Job \nType /join to become one", COLOR_RED, 1478.9515, -1755.7147, 3285.2859+0.5, 4.0);// Detective Job (LS)
@@ -505,7 +497,7 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Monument to the Revolution", COLOR_YELLOW, -2325.9256, 2338.7119, 4.8137, 20.0);
 	CreateDynamic3DTextLabel("Monument to the Civil Services and Mechanist Union of Tierra Robada", COLOR_YELLOW, -2356.6712, 2222.0739, 4.8137, 20.0);
 	
-	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
+	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance\n/hospitalmenu", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
 	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
 	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
 	CreateDynamicPickup(1240, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup

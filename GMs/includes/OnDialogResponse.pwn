@@ -18333,7 +18333,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_ORDER_HMA1) {
 		if(response) {
-			new szMiscArray[1048];
 			switch(listitem) {
 				case 0: {
 					if(GetPlayerCash(playerid) >= 2000) {

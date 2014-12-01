@@ -43,6 +43,8 @@ new zombieevent;
 new prezombie;
 #endif
 
+new szMiscArray[4096];
+
 #if defined event_chancegambler
 new chancegambler;
 #endif

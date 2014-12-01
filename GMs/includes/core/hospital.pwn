@@ -35,6 +35,12 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+
+#define DIALOG_HOSPITAL_MENU    7000
+#define MESSAGE_INSUFFICIENT_FUNDS  "You have insufficient funds for this."
+
 DeliverPlayerToHospital(playerid, iHospital)
 {
 	TogglePlayerControllable(playerid, 0);
@@ -422,20 +428,18 @@ CMD:setinsurance(playerid, params[])
 	return 1;
 }
 
-CMD:healme(playerid, params[])
+HospHeal(playerid)
 {
-	if (IsPlayerInRangeOfPoint(playerid, 2.0, 1179.4012451172,-1331.5632324219,2423.0461425781))//2103.3252,2824.2102,-16.1672
+	if (IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479))//2103.3252,2824.2102,-16.1672
 	{
 		if(GetPVarType(playerid, "STD"))
 		{
 			DeletePVar(playerid, "STD");
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the Hospital's help!");
-			GivePlayerCash(playerid, -1000);
-			SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Doc: Your medical bill contained $1000,-. Have a nice day!");
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "   You Don't have a STD to heal!");
+			SendClientMessageEx(playerid, COLOR_GREY, "   Your STD results also came back negative!");
 			return 1;
 		}
 	}
@@ -518,4 +522,88 @@ CMD:kill(playerid, params[])
 		}
 	}
 	return 1;
+}
+
+RemoveVendingMachines(playerid)
+{
+    // Remove 24/7 machines
+    RemoveBuildingForPlayer(playerid, 1302, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 1209, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 955, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 956, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 1775, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 1776, 0.0, 0.0, 0.0, 6000.0);
+    RemoveBuildingForPlayer(playerid, 1977, 0.0, 0.0, 0.0, 6000.0);
+    
+    return 1;
+}
+
+CMD:hospitalmenu(playerid, params[])
+{
+    if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) /*Main Hospitals */ || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258) /* DOC Hospital */)
+    {
+        format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000)");
+        ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
+    }
+    else SendClientMessageEx(playerid, COLOR_GREY, "You must be at a hospital front desk to be treated.");
+    
+    return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    switch(dialogid)
+    {
+        case DIALOG_HOSPITAL_MENU:
+        {
+            new Float:tHP;
+            GetPlayerHealth(playerid, tHP);
+            
+            switch(response)
+            {
+                case 0: // heal them 25% 
+                {
+                   if(PlayerInfo[playerid][pCash] >= 1000)
+                   {
+                       SetPlayerHealth(playerid, tHP + 25);
+                       GivePlayerCash(playerid, -1000);
+					   HospHeal(playerid);
+                   }
+                   else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+                }
+                case 1: // heal them 50%
+                {
+                    if(PlayerInfo[playerid][pCash] >= 2000)
+                    {
+                       SetPlayerHealth(playerid, tHP + 50);
+                       GivePlayerCash(playerid, -2000);
+					   HospHeal(playerid);
+                    }
+                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+                }
+                case 2: // heal them 75%
+                {
+                    if(PlayerInfo[playerid][pCash] >= 3000)
+                    {
+                       SetPlayerHealth(playerid, tHP + 75);
+                       GivePlayerCash(playerid, -3000);
+					   HospHeal(playerid);
+                    }
+                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+                }
+                case 3: // heal them fully.
+                {
+                    if(PlayerInfo[playerid][pCash] >= 4000)
+                    {
+                       SetPlayerHealth(playerid, 100);
+                       GivePlayerCash(playerid, -4000);
+					   HospHeal(playerid);
+                    }
+                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+                }
+            }
+        }
+    }
+    
+    return 1;
 }
