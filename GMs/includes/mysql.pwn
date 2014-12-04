@@ -698,7 +698,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "FavStation", PlayerInfo[extraid][pFavStation], MainPipeline, 255);
 					
 					// Austin's DP System
-					
 					cache_get_field_content(row,  "pDedicatedPlayer", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedPlayer] = strval(szResult);
 					cache_get_field_content(row,  "pDedicatedEnabled",  szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedEnabled] = strval(szResult);
 					cache_get_field_content(row,  "pDedicatedMuted", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedMuted] = strval(szResult);
@@ -723,7 +722,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "JailedInfo", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<ddddd>", PlayerInfo[extraid][pJailedInfo]);
 					cache_get_field_content(row,  "JailedWeapons", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<ddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
+					sscanf(szResult, "p<|>e<dddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
 
 
 					if(PlayerInfo[extraid][pCredits] > 0)
@@ -3398,13 +3397,12 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "FavStation", PlayerInfo[playerid][pFavStation]);
 	
 	// Austin's DP System
-	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedPlayer", PlayerInfo[playerid][pDedicatedPlayer]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedEnabled", PlayerInfo[playerid][pDedicatedEnabled]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);	
 	
-	new mistring[64], mpstring[64], mcstring[256];
+	new mistring[64], mpstring[64], mcstring[256], jailString[64];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
@@ -3421,6 +3419,18 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "zFuelCan", PlayerInfo[playerid][zFuelCan]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "bTicket", PlayerInfo[playerid][bTicket]);
+
+	// Austin's Punishment Revamp
+	format(jailString, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1]
+		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3] PlayerInfo[playerid][pJailedInfo][4]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", jailString);
+	format(jailString, 64, "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedWeapons][0], PlayerInfo[playerid][pJailedWeapons][1]
+		PlayerInfo[playerid][pJailedWeapons][2], PlayerInfo[playerid][pJailedWeapons][3], PlayerInfo[playerid][pJailedWeapons][4],
+		PlayerInfo[playerid][pJailedWeapons][5], PlayerInfo[playerid][pJailedWeapons][6], PlayerInfo[playerid][pJailedWeapons][7],
+		PlayerInfo[playerid][pJailedWeapons][8], PlayerInfo[playerid][pJailedWeapons][9], PlayerInfo[playerid][pJailedWeapons][10],
+		PlayerInfo[playerid][pJailedWeapons][11]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", jailString);
+
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	g_mysql_SaveFIF(playerid);
 	return 1;

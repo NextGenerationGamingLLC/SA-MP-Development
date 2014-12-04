@@ -456,10 +456,11 @@ CMD:reverse(playerid, params[])
 			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(giveplayerid, PlayerInfo[giveplayerid][pJailedWeapons][x], 60000);
 			for(new y = 0; y < 5; y++) PlayerInfo[giveplayerid][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[giveplayerid][pJailedWeapons][z] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
-		}
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
+		} 
+		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reverse [playerid] [reason]");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reverse [playerid] [reason]");
+	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	return 1;	
 }
 
@@ -467,11 +468,11 @@ CMD:dprison(playerid, params[])
 {
 	if((PlayerInfo[playerid][pAdmin] >= 2 && (PlayerInfo[playerid][pFactionModerator] > 0 || PlayerInfo[playerid][pGangModerator] > 0 ||
 	PlayerInfo[playerid][pBM] > 0)) || PlayerInfo[playerid][pAdmin] >= 1337) {
-		new giveplayerid, time;
-		if(!sscanf(params, "ud", giveplayerid, time)) {
+		new giveplayerid, mintues;
+		if(!sscanf(params, "ud", giveplayerid, mintues)) {
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this on admins or watchdogs!");
-			if(time > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Time cannot be above 120 minutes.");
-			if(prisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", time, .custom=1) == 0) return 1;
+			if(mintues > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Time cannot be above 120 minutes.");
+			if(prisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", .time=mintues, .custom=1) == 0) return 1;
 		}	
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dprison [playerid] [time]");
 	}	

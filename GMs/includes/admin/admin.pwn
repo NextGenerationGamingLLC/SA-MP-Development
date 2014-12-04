@@ -1106,49 +1106,7 @@ CMD:mjail(playerid, params[]) {
             if(PlayerInfo[iTargetID][pJailTime] > 0) {
 			    return SendClientMessageEx(playerid, COLOR_GREY, "You can't perform this action on someone in jail already.");
 			}
-			if(GetPVarInt(iTargetID, "IsInArena") >= 0) LeavePaintballArena(iTargetID, GetPVarInt(iTargetID, "IsInArena"));
-
-			new
-				szMessage[128];
-			if(GetPVarInt(iTargetID, "Injured") == 1)
-			{
-				KillEMSQueue(iTargetID);
-				ClearAnimations(iTargetID);
-			}
-			ResetPlayerWeaponsEx(iTargetID);
-
-			PhoneOnline[iTargetID] = 1;
-			PlayerInfo[iTargetID][pJailTime] = 20*60;
-			SetPVarInt(iTargetID, "_rAppeal", gettime()+60);
-			SetPlayerInterior(iTargetID, 1);
-			PlayerInfo[iTargetID][pInt] = 1;
-        	SetPlayerHealth(iTargetID, 0x7FB00000);
-			new rand = random(sizeof(OOCPrisonSpawns));
-			Streamer_UpdateEx(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
-			SetPlayerPos(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
-			SetPlayerSkin(iTargetID, 50);
-
-			PlayerInfo[iTargetID][pVW] = 0;
-			SetPlayerVirtualWorld(iTargetID, 0);
-			SetPlayerColor(iTargetID, TEAM_APRISON_COLOR);
-
-			Player_StreamPrep(iTargetID, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-
-			format(szMessage, sizeof(szMessage), "AdmCmd: %s has been jailed by %s, reason: %s", GetPlayerNameEx(iTargetID), GetPlayerNameEx(playerid), szReason);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, szMessage);
-
-			format(szMessage, sizeof(szMessage), "AdmCmd: %s(%d) has been jailed by %s(%d), reason: %s", GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), szReason);
-			Log("logs/moderator.log", szMessage);
-
-			format(szMessage, sizeof(szMessage), "You have been jailed by Server Moderator %s for 20 minutes for violation of server rules.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-
-			format(szMessage, sizeof(szMessage), "Reason: %s", szReason);
-			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
-
-            format(szReason, sizeof(szReason), "[OOC] %s", szReason);
-			strcpy(PlayerInfo[iTargetID][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
-			strcpy(PlayerInfo[iTargetID][pPrisonReason], szReason, 128);
+			if(prisonPlayer(playerid, iTargetID, szReason, .time=20, .custom=1) == 0) return 1;
 		}
 		else
 		{
@@ -6333,7 +6291,7 @@ CMD:jail(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && (PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2))) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			if(prisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
+			if(prisonPlayer(playerid, giveplayerid, reason, .time=minutes, .custom=1) == 0) return 1;
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
