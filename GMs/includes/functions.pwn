@@ -7779,6 +7779,8 @@ stock ShowEditMenu(playerid)
 		PlayerToyInfo[playerid][iIndex][ptScaleY] = 1.0;
 		PlayerToyInfo[playerid][iIndex][ptScaleZ] = 1.0;
 	}
+	if(IsPlayerInAnyVehicle(playerid) && PlayerToyInfo[playerid][iIndex][ptSpecial] == 2)
+		return ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
 	new toycount = GetFreeToySlot(playerid);
 	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
 	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");

@@ -2346,10 +2346,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			case 0:
 				ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
 			case 1:
-				if(IsPlayerInAnyVehicle(playerid))
-					ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
-				else
-					ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+				ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
 			case 2:
 				ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
 		}
