@@ -14,9 +14,6 @@
 				(created by Next Generation Gaming Development Team)
 
 				Current Developers:
-								**** Director of Support Operations: 
-									 Lewis
-								
 								***  Director of SA:MP Development: 
 									 Miguel (s0nic)
 								
@@ -26,6 +23,7 @@
 									 Dom
 									 Connor
 									 Farva
+									 Jamie
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -76,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.165"
+#define SERVER_GM_TEXT "NG:RP v3.0.166"
 
 #include <a_samp>
 #undef  MAX_PLAYERS

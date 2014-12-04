@@ -652,6 +652,8 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_REPORTTEAMNAME		(3792)
 #define			DIALOG_REPORT_HSIGN			(3793)
 
+#define 		DIALOG_REVERSE				(3794)
+
 #define         DIALOG_DEDICATEDPLAYER      (3800)
 
 #define 		DIALOG_POMAILS 				(3810)

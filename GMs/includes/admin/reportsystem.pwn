@@ -721,6 +721,25 @@ CMD:ar(playerid, params[])
 			Reports[reportid][BeingUsed] = 0;
 			return 1;
 		}
+		if(GetPVarInt(Reports[reportid][ReportFrom], "ReverseReport") == 1) 
+		{
+			new reversereason[24];
+			GetPVarString(Reports[reportid][ReportFrom], "ReverseReason", reversereason, 24);
+			DeletePVar(Reports[reportid][ReportFrom], "ReverseReport");
+			SetPVarInt(playerid, "ReverseFromID", Reports[reportid][ReportFrom]);
+			format(string, 128, "%s would like to reverse their action on %s.\n\nReason: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), GetPlayerNameEx(GetPVarInt(Reports[reportid][ReportFrom], "ReverseID")), reversereason);
+			ShowPlayerDialog(playerid, DIALOG_REVERSE, DIALOG_STYLE_MSGBOX, "Reverse Action", string, "Allow", "Deny");
+			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+			ABroadCast(COLOR_ORANGE, string, 2);
+			PlayerInfo[playerid][pAcceptReport]++;
+			ReportCount[playerid]++;
+			ReportHourCount[playerid]++;
+			Reports[reportid][BeingUsed] = 0;
+			Reports[reportid][TimeToExpire] = 0;
+			strmid(Reports[reportid][Report], "None", 0, 4, 4);
+			DeletePVar(Reports[reportid][ReportFrom], "HasReport");
+			return 1;
+		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AccountRestrictionReport") == 1)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot accept this report!");

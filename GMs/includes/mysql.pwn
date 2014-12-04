@@ -719,6 +719,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][bTicket] = cache_get_field_content_int(row,  "bTicket", MainPipeline);
 					GetPartnerName(extraid);
 
+					// Austin's Punishment Revamp 
+					cache_get_field_content(row,  "JailedInfo", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<ddddd>", PlayerInfo[extraid][pJailedInfo]);
+					cache_get_field_content(row,  "JailedWeapons", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<ddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
+
+
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
 						new szLog[128];

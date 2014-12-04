@@ -5947,16 +5947,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 		}
 	}
-	else if( dialogid == DIALOG_NAMECHANGE )
+	else if(dialogid == DIALOG_NAMECHANGE)
 	{
 		if(!response || strlen(inputtext) == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You have prevented yourself from changing your name." );
 		if(strlen(inputtext) > 20)
 		{
-			SendClientMessageEx( playerid, COLOR_WHITE, "You can't select a name that's above 20 characters." );
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't select a name that's above 20 characters.");
 		}
 		else
 		{
-			if( strlen(inputtext) >= 1 )
+			if(strlen(inputtext) >= 1)
 			{
 				if(!response)
 				{
@@ -5964,13 +5964,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					for(new i = 0; i < strlen( inputtext ); i++)
-					{
-						if (inputtext[i] == ' ') return SendClientMessageEx(playerid, COLOR_GRAD2, "Please use the '_'(underscore) instead of the ' '(space)");
-					}
-					if( strfind( inputtext, "_", true) == -1 )
-					{
-						SendClientMessageEx( playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname." );
+					if(!IsValidName(playerid)) {
+						SendClientMessageEx(playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname.");
 						return 1;
 					}
 					/*new namechangecost;

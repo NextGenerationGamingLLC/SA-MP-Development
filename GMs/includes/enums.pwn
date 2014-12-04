@@ -1118,7 +1118,9 @@ enum pInfo
 	mShopCounter,
 	mNotice,
 	zFuelCan,
-	bTicket
+	bTicket,
+	pJailedInfo[5], // 0 id - 1 fine - 2 time - 3 warn - 4 wep restriction
+	pJailedWeapons[12]
 };
 
 enum pvInfo
