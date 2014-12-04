@@ -3402,7 +3402,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedMuted", PlayerInfo[playerid][pDedicatedMuted]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDedicatedWarn", PlayerInfo[playerid][pDedicatedWarn]);	
 	
-	new mistring[64], mpstring[64], mcstring[256], jailString[64];
+	new mistring[64], mpstring[64], mcstring[256];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
@@ -3421,15 +3421,15 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "bTicket", PlayerInfo[playerid][bTicket]);
 
 	// Austin's Punishment Revamp
-	format(jailString, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1]
-		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3] PlayerInfo[playerid][pJailedInfo][4]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", jailString);
-	format(jailString, 64, "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedWeapons][0], PlayerInfo[playerid][pJailedWeapons][1]
-		PlayerInfo[playerid][pJailedWeapons][2], PlayerInfo[playerid][pJailedWeapons][3], PlayerInfo[playerid][pJailedWeapons][4],
-		PlayerInfo[playerid][pJailedWeapons][5], PlayerInfo[playerid][pJailedWeapons][6], PlayerInfo[playerid][pJailedWeapons][7],
-		PlayerInfo[playerid][pJailedWeapons][8], PlayerInfo[playerid][pJailedWeapons][9], PlayerInfo[playerid][pJailedWeapons][10],
-		PlayerInfo[playerid][pJailedWeapons][11]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", jailString);
+	format(mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
+		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3], PlayerInfo[playerid][pJailedInfo][4]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", mistring);
+	for(new jailX = 0; jailX < 12; jailX++)
+	{
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);
+		if(jailX != 11) strcat(mistring, "|");
+	}
+	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
 
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	g_mysql_SaveFIF(playerid);
