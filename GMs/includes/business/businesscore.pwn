@@ -821,7 +821,7 @@ CMD:eba(playerid, params[]) {
 }
 
 CMD:emergencybutton(playerid, params[]) {
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 7 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 7) {
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI) {
 		new
 	    	string[128],
 			Location[MAX_ZONE_NAME];

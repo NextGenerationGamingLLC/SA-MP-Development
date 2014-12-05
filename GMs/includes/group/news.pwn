@@ -341,7 +341,7 @@ CMD:cameraangle(playerid, params[])
 
 CMD:stopnews(playerid, params[])
 {
-	if(IsAReporter(playerid) && (PlayerInfo[playerid][pRank] >= 5 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 4))
+	if(IsAReporter(playerid) && (PlayerInfo[playerid][pRank] >= 5 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_NEWS))
 	{
 	    if(shutdown == 0)
 	    {

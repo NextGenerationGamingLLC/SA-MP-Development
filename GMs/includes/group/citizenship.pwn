@@ -262,7 +262,7 @@ CMD:apply(playerid, params[])
 
 CMD:checkapps(playerid, params[])
 {
-	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 5)
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
 	{
 		switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 		{
@@ -276,7 +276,7 @@ CMD:checkapps(playerid, params[])
 
 CMD:deport(playerid, params[])
 {
-	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 5)
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
 	{
    		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deport [player]");

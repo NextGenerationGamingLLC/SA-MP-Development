@@ -174,7 +174,7 @@ CMD:calls(playerid, params[])
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
 		new string[128];
-		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 4) SendClientMessageEx(playerid, COLOR_PINK, "____________________ HOTLINE ____________________");
+		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_NEWS) SendClientMessageEx(playerid, COLOR_PINK, "____________________ HOTLINE ____________________");
 		else SendClientMessageEx(playerid, COLOR_DBLUE, "____________________ 911 CALLS ____________________");
 		for(new i = 999; i >= 0; i--) // Why in hell would we run 4 unnecessary loops here?
 		{

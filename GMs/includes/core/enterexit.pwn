@@ -351,7 +351,7 @@ CMD:enter(playerid, params[])
 //NG/LEO Only Entrance
                                                   // Hitman HQ
     else if(IsPlayerInRangeOfPoint(playerid, 2.0, 2323.3135, 7.6760, 26.5640)) {
-        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
+        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT) {
             SetPlayerVirtualWorld(playerid, 666421);
             PlayerInfo[playerid][pVW] = 666421;
             SetPlayerInterior(playerid, 1);
@@ -987,7 +987,7 @@ CMD:exit(playerid, params[])
 	}
                                                   // Hitman HQ
     else if(IsPlayerInRangeOfPoint(playerid, 2.0, 65.176315, 1975.498779, -68.817260 ) && (GetPlayerVirtualWorld(playerid) == 666421)) {
-        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2) {
+        	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT) {
             SetPlayerVirtualWorld(playerid, 0);
             PlayerInfo[playerid][pVW] = 0;
             SetPlayerInterior(playerid, 0);

@@ -200,11 +200,11 @@ CMD:help(playerid, params[])
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online /setbadge /setdivname");
-			if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
 			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /viewbudget /grepocars /gvbuyback /gdonate /ordercrates /dvtrackcar /gwithdraw, /dvstorage");
 			}
-			else if(arrGroupData[iGroupID][g_iGroupType] == 5)
+			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 			{
 			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /checkapps /deport");
 			}

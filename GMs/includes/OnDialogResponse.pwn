@@ -322,7 +322,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case BIGEARS2: {
 			if(response) {
 				new group = ListItemTrackId[playerid][listitem];
-				if (arrGroupData[group][g_iGroupType] == 2 && PlayerInfo[playerid][pAdmin] < 4)
+				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4)
 				{
 					SendClientMessage(playerid, COLOR_WHITE, "Only Senior Admins+ are allowed to use this feature.");
 					return 1;
@@ -7302,7 +7302,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(arrGroupData[z][g_iAllegiance] == 1)
 					{
-						if(arrGroupData[z][g_iGroupType] == 5)
+						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128], file[32], month, day, year;
 							getdate(year,month,day);
@@ -7341,7 +7341,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(arrGroupData[z][g_iAllegiance] == 1)
 					{
-						if(arrGroupData[z][g_iGroupType] == 5)
+						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128], file[32], month, day, year;
 							getdate(year,month,day);
@@ -8022,7 +8022,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new groups[1024], item;
 				for (new i; i < MAX_GROUPS; i++)
 				{
-					if (arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_iGroupType] == 1 && arrGroupData[i][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
+					if (arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA && arrGroupData[i][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 					{
 						format(groups, sizeof(groups), "%s*%s\n", groups, arrGroupData[i][g_szGroupName]);
 						ListItemTrackId[playerid][item++] = i;
@@ -8339,7 +8339,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(arrGroupData[z][g_iAllegiance] == 1)
 				{
-					if(arrGroupData[z][g_iGroupType] == 5)
+					if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 					{
 						format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the SA Government Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Gov));
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
@@ -8397,7 +8397,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -8411,7 +8411,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -8487,7 +8487,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -8501,7 +8501,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -8568,7 +8568,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -8582,7 +8582,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
@@ -12503,7 +12503,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new
 			iGroupID = listitem;
 
-		if(arrGroupData[iGroupID][g_iGroupType] == 2) {
+		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT) {
 			return SendClientMessage(playerid, COLOR_WHITE, "You can't switch to a contract agency with this command.");
 		}
 
@@ -17853,7 +17853,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				for(new x; x < MAX_GROUPS; x++)
 				{
-					if(arrGroupData[x][g_iGroupType] == 4)
+					if(arrGroupData[x][g_iGroupType] == GROUP_TYPE_NEWS)
 					{
 						arrGroupData[x][g_iBudget] += shared;
 					}

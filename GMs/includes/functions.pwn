@@ -354,7 +354,7 @@ PayDay(i) {
 				{
 					if(arrGroupData[iGroupID][g_iAllegiance] == 1)
 					{
-						if(arrGroupData[iGroupID][g_iGroupType] == 5)
+						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128], file[32];
 							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
@@ -367,7 +367,7 @@ PayDay(i) {
 				{
 					if(arrGroupData[iGroupID][g_iAllegiance] == 2)
 					{
-						if(arrGroupData[iGroupID][g_iGroupType] == 5)
+						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128], file[32];
 							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
@@ -428,7 +428,7 @@ PayDay(i) {
 			if((0 <= iGroupID < MAX_GROUPS) && 0 <= iRank <= 9 && arrGroupData[iGroupID][g_iPaycheck][iRank] > 0) { // added for sanews to get their own paychecks from their vaults.
 				
 				
-				if(arrGroupData[iGroupID][g_iGroupType] == 4)
+				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS)
 				{
 					if(arrGroupData[iGroupID][g_iBudget] > 0) {
 						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iPaycheck][iRank];
@@ -455,7 +455,7 @@ PayDay(i) {
 						{
 							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									new str[128], file[32];
 									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
@@ -479,7 +479,7 @@ PayDay(i) {
 						{
 							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									new str[128], file[32];
 									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
@@ -4319,7 +4319,7 @@ stock TaxSale(amount)
 	Tax += iTaxAmount;
 	for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
 	{
-		if(arrGroupData[iGroupID][g_iGroupType] == 5 && arrGroupData[iGroupID][g_iAllegiance] == 1)
+		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 		{
 			new str[128], file[32], month, day, year;
 			getdate(year,month,day);
@@ -5344,11 +5344,11 @@ stock SearchingHit(playerid)
 			}
 		}	
 	}
-	if(hits && PlayerInfo[playerid][pRank] <= 1 && arrGroupData[group][g_iGroupType] == 2)
+	if(hits && PlayerInfo[playerid][pRank] <= 1 && arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT)
 	{
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givemehit to assign a contract to yourself.");
 	}
-	if(hits && PlayerInfo[playerid][pRank] >= 6 && arrGroupData[group][g_iGroupType] == 2)
+	if(hits && PlayerInfo[playerid][pRank] >= 6 && arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT)
 	{
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givehit to assign a contract to one of the hitmen.");
 	}
@@ -5899,55 +5899,55 @@ stock wordwrap(string[], width, seperator[] = "\n", dest[], size = sizeof(dest))
 
 stock IsACop(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 1)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA)) return 1;
 	return 0;
 }
 
 stock IsAHitman(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)) return 1;
 	return 0;
 }
 
 stock IsAMedic(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 3)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_MEDIC)) return 1;
 	return 0;
 }
 
 stock IsAReporter(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 4)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_NEWS)) return 1;
 	return 0;
 }
 
 stock IsAGovernment(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 5)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_GOV)) return 1;
 	return 0;
 }
 
 stock IsAJudge(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 6)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL)) return 1;
 	return 0;
 }
 
 stock IsATaxiDriver(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 7))	return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
 	return 0;
 }
 
 stock IsATowman(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)) return 1;
 	return 0;
 }
 
 stock IsARacer(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 9)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE)) return 1;
 	return 0;
 }
 
@@ -7835,7 +7835,7 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 	{
 		if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && tmpdv != -1) {
 			new iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
-			if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
 				if(arrGroupData[iGroupID][g_iBudget] >= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2))
 				{
@@ -8248,7 +8248,7 @@ public SyncTime()
 		}
 		for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
 		{
-			if(arrGroupData[iGroupID][g_iGroupType] == 5 && arrGroupData[iGroupID][g_iAllegiance] == 1)
+			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 			{
 				new str[128], file[32];
 				format(str, sizeof(str), "The tax vault is at $%s", number_format(Tax));
@@ -8257,7 +8257,7 @@ public SyncTime()
 				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 				Log(file, str);
 			}
-			else if(arrGroupData[iGroupID][g_iGroupType] == 5 && arrGroupData[iGroupID][g_iAllegiance] == 2)
+			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 2)
 			{
 				new str[128], file[32];
 				format(str, sizeof(str), "The tax vault is at $%s", number_format(TRTax));
@@ -8275,7 +8275,7 @@ public SyncTime()
 				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 				Log(file, str);
 			}
-			if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
 				if(arrGroupData[iGroupID][g_iBudgetPayment] > 0)
 				{
@@ -8295,7 +8295,7 @@ public SyncTime()
 						{
 							if(arrGroupData[z][g_iAllegiance] == 1)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(str, sizeof(str), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
@@ -8321,7 +8321,7 @@ public SyncTime()
 						{
 							if(arrGroupData[z][g_iAllegiance] == 2)
 							{
-								if(arrGroupData[z][g_iGroupType] == 5)
+								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(str, sizeof(str), "TR Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
@@ -10763,7 +10763,7 @@ stock IsAnAmbulance(carid)
 	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
 	    if((0 <= iGroupID < MAX_GROUPS))
 	    {
-	    	if(arrGroupData[iGroupID][g_iGroupType] == 3) return 1;
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC) return 1;
 		}
 	}
 	return 0;
@@ -10775,7 +10775,7 @@ stock IsACopCar(carid)
 	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
 	    if((0 <= iGroupID < MAX_GROUPS))
 	    {
-	    	if(arrGroupData[iGroupID][g_iGroupType] == 1) return 1;
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) return 1;
 		}
 	}
 	return 0;
@@ -10788,7 +10788,7 @@ stock IsANewsCar(carid)
 	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
 	    if((0 <= iGroupID < MAX_GROUPS))
 	    {
-	    	if(arrGroupData[iGroupID][g_iGroupType] == 4) return 1;
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS) return 1;
 		}
 	}
 	return 0;

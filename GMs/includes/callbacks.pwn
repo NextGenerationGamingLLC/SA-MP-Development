@@ -2239,7 +2239,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 		else if(IsASpawnedTrain(vehicleid))
 		{
-	        if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 7 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 7))
+	        if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI))
 			{
 			}
 		    else
@@ -4422,6 +4422,7 @@ public OnPlayerSpawn(playerid)
 	SetPlayerToTeamColor(playerid);
 	IsSpawned[playerid] = 1;
 	SpawnKick[playerid] = 0;
+	SetPlayerArmedWeapon(playerid, 0); // making sure players spawn with their fists.
 	return 1;
 }
 

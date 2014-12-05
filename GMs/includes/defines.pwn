@@ -218,6 +218,18 @@ native gpci(playerid, serial[], maxlen);
 #define         GROUP_QUERY_LOCKERS     	7
 #define         GROUP_QUERY_JURISDICTIONS   8
 
+// group ID defines
+#define			GROUP_TYPE_LEA				1
+#define			GROUP_TYPE_CONTRACT			2
+#define			GROUP_TYPE_MEDIC			3
+#define			GROUP_TYPE_NEWS				4
+#define			GROUP_TYPE_GOV				5
+#define			GROUP_TYPE_JUDICIAL			6
+#define			GROUP_TYPE_TAXI				7
+#define			GROUP_TYPE_TOWING			8
+#define			GROUP_TYPE_RACE				9
+#define			GROUP_TYPE_CRIMINAL			10
+
 //Query thread IDs for Dynamic Vehicles
 #define         GV_QUERY_LOAD               1
 #define         GV_QUERY_SAVE               2

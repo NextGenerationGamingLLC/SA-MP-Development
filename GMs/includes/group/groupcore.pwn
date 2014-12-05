@@ -104,6 +104,7 @@ Group_ReturnType(iGroupType) {
 		case 7: szResult = "Transport";
 		case 8: szResult = "Towing";
 		case 9: szResult = "URL";
+		case 10: szResult = "Criminal";
 	}
 	return szResult;
 }
@@ -1783,7 +1784,7 @@ CMD:dvsiren(playerid, params[])
 	{
 	    if(arrGroupData[iGroupID][g_iAllegiance] == 1)
 	    {
-	        if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7)
+	        if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 	        {
 	            if(arrGroupData[iGroupID][g_iBudgetPayment] > 0)
 	            {
@@ -1841,7 +1842,7 @@ CMD:viewbudget(playerid, params[])
 {
 	new i = PlayerInfo[playerid][pMember];
 	new string[128];
-	if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7 || arrGroupData[i][g_iGroupType] == 4 || arrGroupData[i][g_iGroupType] == 2 || arrGroupData[i][g_iGroupType] == 8)
+	if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[i][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
 	{
 	    SendClientMessage(playerid, 0x008EFC00, "            BALANCE SHEET            ");
 		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -1854,7 +1855,7 @@ CMD:viewbudget(playerid, params[])
 
 CMD:setbudget(playerid, params[])
 {
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 5)
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
 	{
 	    if(PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pMember]))
 	    {
@@ -1870,7 +1871,7 @@ CMD:setbudget(playerid, params[])
 				{
 				    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[i][g_iAllegiance])
 				    {
-					    if(arrGroupData[i][g_iGroupType] == 1 || arrGroupData[i][g_iGroupType] == 3 || arrGroupData[i][g_iGroupType] == 6 || arrGroupData[i][g_iGroupType] == 7)
+					    if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI)
 					    {
 						    if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "%d - {%6x}%s {AFAFAF} [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
 							else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%d - %s [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -1880,7 +1881,7 @@ CMD:setbudget(playerid, params[])
 				}
 				return 1;
 			}
-			if(0 <= iGroupID < MAX_GROUPS && (arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7))
+			if(0 <= iGroupID < MAX_GROUPS && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI))
 			{
 			    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
 			    {
@@ -1967,7 +1968,7 @@ CMD:gdonate(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS))
 	{
-		if(arrGroupData[iGroupID][g_iGroupType] == 1 || arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 6 || arrGroupData[iGroupID][g_iGroupType] == 7 || arrGroupData[iGroupID][g_iGroupType] == 4 || arrGroupData[iGroupID][g_iGroupType] == 8 || arrGroupData[iGroupID][g_iGroupType] == 2 )
+		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT )
 		{
 			new string[128], moneys;
 			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gdonate [amount]");
@@ -4290,11 +4291,11 @@ CMD:locker(playerid, params[]) {
 					    }
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == 1) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == 3 || arrGroupData[iGroupID][g_iGroupType] == 5 || arrGroupData[iGroupID][g_iGroupType] == 8) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;

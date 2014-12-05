@@ -74,7 +74,7 @@ CMD:showmehq2(playerid, params[])
         SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
         return 1;
     }
-	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2)
+	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT)
 	{
 	    SetPlayerCheckpoint(playerid,811.087707, -564.493835, 16.335937, 4.0);
 	    GameTextForPlayer(playerid, "~w~Waypoint set ~r~HQ", 5000, 1);
@@ -90,7 +90,7 @@ CMD:showmehq3(playerid, params[])
         SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
         return 1;
     }
-   	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2)
+   	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT)
 	{
     	SetPlayerCheckpoint(playerid, 1415.727905, -1299.371093, 15.054657, 4.0);
 	    GameTextForPlayer(playerid, "~w~Waypoint set ~r~HQ", 5000, 1);
@@ -498,7 +498,7 @@ CMD:givemehit(playerid, params[])
 
 CMD:deletehit(playerid, params[])
 {
-	if( PlayerInfo[playerid][pAdmin] >= 4 || (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2 && PlayerInfo[playerid][pRank] >= 5) || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 2 )
+	if( PlayerInfo[playerid][pAdmin] >= 4 || (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pRank] >= 5) || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT )
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletehit [player]");
@@ -562,7 +562,7 @@ CMD:contract(playerid, params[])
 		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid)) 
 			return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
 		
-		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 2)
+		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this to that person.");
 			
 		if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)

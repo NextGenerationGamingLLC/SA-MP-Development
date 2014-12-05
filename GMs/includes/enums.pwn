@@ -66,7 +66,15 @@ enum eGroupData {
 	g_iTackleAccess,
 	Float: g_fGaragePos[3],
 	g_iWheelClamps,
-	g_iDoCAccess
+	g_iDoCAccess/*,
+	g_iPot,
+	g_iCrack,
+	g_iHeroin,
+	g_iSyringes,
+	g_iOpium,
+	g_iWeapons[MAX_GANGLOCKERGUNS],
+	g_iClothes[MAX_GROUP_RANKS]*/
+	
 }
 
 enum eLockerData {
