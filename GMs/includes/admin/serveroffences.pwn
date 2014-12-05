@@ -492,6 +492,8 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	PlayerInfo[giveplayerid][pJailedInfo][3] = 0;
 	PlayerInfo[giveplayerid][pJailedInfo][4] = 0;
 	for(new i = 0; i < 12; i++) PlayerInfo[giveplayerid][pJailedWeapons][i] = 0;
+
+	if(time > 0) jailtime = time;
 	
 	if(!strcmp(reason, "Deathmatching", true) && !custom) {
 		strcpy(shortreason, "DM", 5);

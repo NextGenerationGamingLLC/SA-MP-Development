@@ -350,7 +350,7 @@ CMD:wt(playerid, params[])
 	new toyslot;
 	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
 
-	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
+	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS+1) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
 	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
 
 	for(new i; i < 10; i++)

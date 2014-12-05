@@ -50,7 +50,7 @@ CMD:sellgun(playerid, params[])
 		return 1;
 	}
     if (PlayerInfo[playerid][pJob] != 9 && PlayerInfo[playerid][pJob2] != 9 && PlayerInfo[playerid][pJob3] != 9) {
-        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Arms Dealer!");
+        SendClientMessageEx(playerid,COLOR_GREY,"   You are not an Arms Dealer!");
         return 1;
     }
     if(WatchingTV[playerid] != 0) {

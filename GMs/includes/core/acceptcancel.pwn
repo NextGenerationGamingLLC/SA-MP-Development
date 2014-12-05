@@ -310,15 +310,18 @@ CMD:accept(playerid, params[])
 			DeletePVar(playerid, "Business_VehicleOffererSQLId");
 			DeletePVar(playerid, "Business_VehicleSlot");
         }
-
         else if(strcmp(params, "death", true) == 0) {
             if(GetPVarInt(playerid, "Injured") == 1) {
+
+            	if(GetPVarInt(playerid, "InjuredWait") > gettime()) 
+            		return SendClientMessageEx(playerid, COLOR_GRAD2, "Please wait 5 seconds before accepting death.");
+
                 SendClientMessageEx(playerid, COLOR_WHITE, "You gave up hope and fell unconscious, you were immediately sent to the hospital.");
                 KillEMSQueue(playerid);
                 ResetPlayerWeaponsEx(playerid);
                 SpawnPlayer(playerid);
             }
-            else {  SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now !"); }
+            else SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now !");
         }
         else if(strcmp(params, "car", true) == 0) {
             if(VehicleOffer[playerid] != INVALID_PLAYER_ID) {
@@ -3060,7 +3063,6 @@ CMD:refill(playerid, params[])
 	else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	return 1;
 }
-
 
 CMD:repair(playerid, params[])
 {

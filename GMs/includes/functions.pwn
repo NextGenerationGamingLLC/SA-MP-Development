@@ -1420,6 +1420,7 @@ forward KillEMSQueue(playerid);
 public KillEMSQueue(playerid)
 {
     DeletePVar(playerid, "Injured");
+    DeletePVar(playerid, "InjuredWait");
     DeletePVar(playerid, "EMSAttempt");
 	SetPVarInt(playerid, "MedicBill", 1);
 	DeletePVar(playerid, "MedicCall");

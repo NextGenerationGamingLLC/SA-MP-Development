@@ -3947,6 +3947,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			if(HungerPlayerInfo[playerid][hgInEvent] != 1)
 			{
 				SetPVarInt(playerid, "Injured", 1);
+				SetPVarInt(playerid, "InjuredWait", gettime()+5);
 
 				new Float:mX, Float:mY, Float:mZ;
 				GetPlayerPos(playerid, mX, mY, mZ);
