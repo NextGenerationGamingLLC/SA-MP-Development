@@ -547,18 +547,6 @@ public LoadStreamerDynamicButtons()
 	bottomroom[1] = CreateButton(-764.51269531,2566.65332031,10021.18847656, 260);
 	ncontrolroom[0] = CreateButton(-754.32763672,2538.71655273,10021.61132812, 178.50000000);
 	ncontrolroom[1] = CreateButton(-752.47076416,2538.23266602,10021.00195312, 0);
-
- 	// Create the required buttons for the interior.
-	SFPDButton[0] = CreateButton(-1635.12597656,708.45117188,19996.32812500, 180.0);
-	SFPDButton[1] = CreateButton(-1635.18176270,687.56250000,19996.32812500, 180.0);
-	SFPDButton[2] = CreateButton(-1636.74023438,687.56250000,19996.32812500, 180.0);
-	SFPDButton[3] = CreateButton(-1636.29687500,708.36035156,19996.32812500, 270.0);
-	SFPDButton[4] = CreateButton(-1627.03222656,712.46093750,19996.32812500, 0.0);
-	SFPDButton[5] = CreateButton(-1627.03295898,712.63281250,19996.32812500, 180.0);
-	SFPDButton[6] = CreateButton(-1614.06738281,683.54052734,19990.56250000, 270.0);
-	SFPDButton[7] = CreateButton(-1612.91674805,683.60369873,19990.56250000, 0.0);
-	SFPDButton[8] = CreateButton(-1632.86157227,712.62530518,19996.32812500, 180.0);
-	SFPDButton[9] = CreateButton(-1632.861328125, 712.47210693359, 19996.328125, 0.0);
 	
 	FBILobbyLeftBTN[0] = CreateButton(297.66613770,-1498.67749023,-44.59006119,0.79565430); //Lobby Button Left
 	FBILobbyLeftBTN[1] = CreateButton(297.24850464,-1498.23107910,-44.59006119,180); //Lobby Button Left
@@ -826,12 +814,6 @@ public LoadStreamerDynamicObjects()
 	DocIsolationCells[4] = CreateDynamicObject(1495, 553.84729, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 5
 	DocIsolationCells[5] = CreateDynamicObject(1495, 550.66852, 1450.35547, 5995.95801,   0.00000, 0.00000, 0.00000); // isolation cell 6
 	
-	SFPDObject[0] =	CreateDynamicObject(976,-1636.02539062,701.49707031,19994.54101562,0.00000000,0.00000000,90.00000000, .interiorid = 3); //object(phils_compnd_gate) (1)
-	SFPDObject[1] =	CreateDynamicObject(976,-1635.99414062,696.53320312,19994.55078125,0.00000000,0.00000000,270.00000000, .interiorid = 3); //object(phils_compnd_gate) (2)
-	SFPDObject[2] =	CreateDynamicObject(1569,-1625.28808594,712.56250000,19994.85937500,0.00000000,0.00000000,179.99450684, .interiorid = 3); //object(adam_v_door) (2)
-	SFPDObject[3] =	CreateDynamicObject(1569,-1613.92871094,681.78125000,19989.05468750,0.00000000,0.00000000,90.00000000, .interiorid = 3); //object(adam_v_door) (4)
-	SFPDObject[4] =	CreateDynamicObject(1569,-1634.79492188,712.56250000,19994.85937500,0.00000000,0.00000000,0.00000000, .interiorid = 3); //object(adam_v_door) (7)
-
 	// Gym dynamic objects (bmx parkour)
 	BikeParkourObjects[0] = CreateDynamicObject(2669,2848.1015625,-2243.1552734,99.0883789,0.0000000,0.0000000,90.0000000, .worldid = 5, .streamdistance = 300); //object(cj_chris_crate) (1)
 	//BikeParkourObjects[1] = CreateDynamicObject(1381,2847.4970703,-2243.1191406,4901.4877930,0.0000000,0.0000000,69.7851562, .worldid = -1, .streamdistance = 300); //object(magnocrane_04) (1)
@@ -1225,41 +1207,6 @@ CMD:pdcell(playerid, params[])
 	else
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
 	return true;
-}
-
-forward SFPD(playerid);
-public SFPD(playerid)
-{
-	MoveDynamicObject(SFPDObject[0], -1636.02539062,701.49707031,19994.54101562, 2.5);
- 	return 1;
-}
-
-forward SFPD1(playerid);
-public SFPD1(playerid)
-{
-	MoveDynamicObject(SFPDObject[1], -1635.99414062, 696.53320312, 19994.55078125, 2.5);
- 	return 1;
-}
-
-forward SFPD2(playerid);
-public SFPD2(playerid)
-{
-	MoveDynamicObject(SFPDObject[2],-1625.28808594,712.56250000,19994.85937500, 2.5);
- 	return 1;
-}
-
-forward SFPD3(playerid);
-public SFPD3(playerid)
-{
-	MoveDynamicObject(SFPDObject[3], -1613.92871094,681.78125000,19989.05468750, 2.5);
- 	return 1;
-}
-
-forward SFPD4(playerid);
-public SFPD4(playerid)
-{
-	MoveDynamicObject(SFPDObject[4], -1634.79492188, 712.56250000, 19994.85937500, 2.5);
- 	return 1;
 }
 
 forward DoorOpen(playerid);

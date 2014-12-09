@@ -5898,113 +5898,6 @@ stock wordwrap(string[], width, seperator[] = "\n", dest[], size = sizeof(dest))
     return 1;
 }
 
-stock IsACop(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA)) return 1;
-	return 0;
-}
-
-stock IsAHitman(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)) return 1;
-	return 0;
-}
-
-stock IsAMedic(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_MEDIC)) return 1;
-	return 0;
-}
-
-stock IsAReporter(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_NEWS)) return 1;
-	return 0;
-}
-
-stock IsAGovernment(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_GOV)) return 1;
-	return 0;
-}
-
-stock IsAJudge(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL)) return 1;
-	return 0;
-}
-
-stock IsATaxiDriver(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
-	return 0;
-}
-
-stock IsATowman(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)) return 1;
-	return 0;
-}
-
-stock IsARacer(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE)) return 1;
-	return 0;
-}
-
-stock IsADocGuard(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDoCAccess])) return 1;
-	return 0;
-}
-
-stock IsMDCPermitted(playerid)
-{
-	if(IsACop(playerid) || IsAJudge(playerid))
-	{
-		return 1;
-	}
-	return 0;
-}
-
-stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
-{
-	new
-		iGroupID = PlayerInfo[targetid][pMember],
-	 	iRankID = PlayerInfo[targetid][pRank];
-
-	if (0 <= iGroupID < MAX_GROUPS)
-	{
-	    if(0 <= iRankID < MAX_GROUP_RANKS)
-	    {
-		    if(arrGroupRanks[iGroupID][iRankID][0]) {
-				format(rank, (GROUP_MAX_RANK_LEN), "%s", arrGroupRanks[iGroupID][iRankID]);
-			}
-			else format(rank, (GROUP_MAX_RANK_LEN), "undefined");
-		}
-	    if(0 <= PlayerInfo[targetid][pDivision] < MAX_GROUP_DIVS)
-		{
-			if(arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]][0]) { format(division, (GROUP_MAX_DIV_LEN), "%s", arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]]); }
-			else format(division, (GROUP_MAX_DIV_LEN), "undefined");
-		}
-	    else format(division, (GROUP_MAX_DIV_LEN), "G.D.");
-	    if(arrGroupData[iGroupID][g_szGroupName][0]) {
-			format(employer, (GROUP_MAX_NAME_LEN), "%s", arrGroupData[iGroupID][g_szGroupName]);
-		}
-		else
-		{
-		    format(employer, (GROUP_MAX_NAME_LEN), "undefined");
-		}
-	}
-	else
-	{
-	    format(rank, (GROUP_MAX_RANK_LEN), "N/A");
-	    format(division, (GROUP_MAX_DIV_LEN), "None");
-	    format(employer, (GROUP_MAX_NAME_LEN), "None");
-	}
-	return 1;
-}
-
 stock IsAtNameChange(playerid)
 {
 	if(IsPlayerConnected(playerid))
@@ -9083,15 +8976,6 @@ stock GetWeaponParam(id, WeaponsEnum: param)
 	return 0;
 }
 
-stock GetWeaponPrice(business, id)
-{
-	for (new i; i < sizeof(Weapons); i++)
-	{
-		if (Weapons[i][WeaponId] == id) return Businesses[business][bItemPrices][i];
-	}
-	return 0;
-}
-
 stock legalRims(playerid, compenent, vehicleid)
 {
 	if(IsPlayerInRangeOfPoint(playerid, 20, 617.5360,-1.9900,1000.6592)) // Transfender
@@ -10765,6 +10649,8 @@ stock IsAnAmbulance(carid)
 	    if((0 <= iGroupID < MAX_GROUPS))
 	    {
 	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC) return 1;
+			else if(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) return 1;
+			else if(carid == 416) return 1;
 		}
 	}
 	return 0;

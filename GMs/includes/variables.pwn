@@ -916,8 +916,6 @@ new ncontrolroomopened;
 new blastdoor[4];
 new cage;
 new entrancedoor;
-new SFPDButton[14];
-new SFPDObject[9];
 new CellDoors[16];
 new CellGates[12];
 new BlastDoors[18];

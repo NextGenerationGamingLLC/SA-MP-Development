@@ -37,7 +37,7 @@
 
 CMD:loadpt(playerid, params[])
 {
-    if(IsAMedic(playerid))
+    if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
         if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -120,7 +120,7 @@ CMD:loadpt(playerid, params[])
 
 CMD:triage(playerid, params[])
 {
-    if(IsAMedic(playerid))
+    if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
  		if(PlayerInfo[playerid][pTriageTime] != 0)
    		{
@@ -171,7 +171,7 @@ CMD:heal(playerid, params[])
 	if (IsPlayerConnected(giveplayerid))
 	{
 		new iVehicle = GetPlayerVehicleID(playerid);
-		if(IsAMedic(playerid))
+		if(IsAMedic(playerid) || IsFirstAid(playerid))
 		{
 			if(GetPlayerVehicleID(giveplayerid) == iVehicle && (IsAnAmbulance(iVehicle)))
 			{
@@ -224,7 +224,7 @@ CMD:heal(playerid, params[])
 
 CMD:getpt(playerid, params[])
 {
-	if(IsAMedic(playerid))
+	if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpt(patient) [player]");
@@ -262,7 +262,7 @@ CMD:getpt(playerid, params[])
 
 CMD:movept(playerid, params[])
 {
-	if(IsAMedic(playerid))
+	if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /movepatient [player]");
@@ -309,7 +309,7 @@ CMD:movept(playerid, params[])
 
 CMD:deliverpt(playerid, params[])
 {
-    if(IsAMedic(playerid))
+    if(IsAMedic(playerid) || IsFirstAid(playerid))
 	{
         if(IsPlayerInAnyVehicle(playerid))
 		{

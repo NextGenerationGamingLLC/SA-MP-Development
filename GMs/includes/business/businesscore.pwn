@@ -385,6 +385,15 @@ public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 	return 1;
 }
 
+stock GetWeaponPrice(business, id)
+{
+	for (new i; i < sizeof(Weapons); i++)
+	{
+		if (Weapons[i][WeaponId] == id) return Businesses[business][bItemPrices][i];
+	}
+	return 0;
+}
+
 CMD:businessdate(playerid, params[]) {
 	new giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] < 2)

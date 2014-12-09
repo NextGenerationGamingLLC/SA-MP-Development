@@ -249,7 +249,7 @@ CMD:settaxmoney(playerid, params[])
 CMD:checktax(playerid, params[])
 {
 	new string[128];
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != 5)
+	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_GOV)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a government official.");
 		return 1;

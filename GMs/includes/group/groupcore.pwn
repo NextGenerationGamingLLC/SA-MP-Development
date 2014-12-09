@@ -35,6 +35,120 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <YSI\y_hooks>
+
+stock IsACop(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA)) return 1;
+	return 0;
+}
+
+stock IsAHitman(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)) return 1;
+	return 0;
+}
+
+stock IsAMedic(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_MEDIC)) return 1;
+	return 0;
+}
+
+stock IsAReporter(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_NEWS)) return 1;
+	return 0;
+}
+
+stock IsAGovernment(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_GOV)) return 1;
+	return 0;
+}
+
+stock IsAJudge(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL)) return 1;
+	return 0;
+}
+
+stock IsATaxiDriver(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
+	return 0;
+}
+
+stock IsATowman(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)) return 1;
+	return 0;
+}
+
+stock IsARacer(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE)) return 1;
+	return 0;
+}
+
+stock IsADocGuard(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDoCAccess])) return 1;
+	return 0;
+}
+
+stock IsFirstAid(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess])) return 1;
+	return 0;
+}
+
+stock IsMDCPermitted(playerid)
+{
+	if(IsACop(playerid) || IsAJudge(playerid))
+	{
+		return 1;
+	}
+	return 0;
+}
+
+stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
+{
+	new
+		iGroupID = PlayerInfo[targetid][pMember],
+	 	iRankID = PlayerInfo[targetid][pRank];
+
+	if (0 <= iGroupID < MAX_GROUPS)
+	{
+	    if(0 <= iRankID < MAX_GROUP_RANKS)
+	    {
+		    if(arrGroupRanks[iGroupID][iRankID][0]) {
+				format(rank, (GROUP_MAX_RANK_LEN), "%s", arrGroupRanks[iGroupID][iRankID]);
+			}
+			else format(rank, (GROUP_MAX_RANK_LEN), "undefined");
+		}
+	    if(0 <= PlayerInfo[targetid][pDivision] < MAX_GROUP_DIVS)
+		{
+			if(arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]][0]) { format(division, (GROUP_MAX_DIV_LEN), "%s", arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]]); }
+			else format(division, (GROUP_MAX_DIV_LEN), "undefined");
+		}
+	    else format(division, (GROUP_MAX_DIV_LEN), "G.D.");
+	    if(arrGroupData[iGroupID][g_szGroupName][0]) {
+			format(employer, (GROUP_MAX_NAME_LEN), "%s", arrGroupData[iGroupID][g_szGroupName]);
+		}
+		else
+		{
+		    format(employer, (GROUP_MAX_NAME_LEN), "undefined");
+		}
+	}
+	else
+	{
+	    format(rank, (GROUP_MAX_RANK_LEN), "N/A");
+	    format(division, (GROUP_MAX_DIV_LEN), "None");
+	    format(employer, (GROUP_MAX_NAME_LEN), "None");
+	}
+	return 1;
+}
+
 Group_GetMaxRank(iGroupID) {
 
 	new
@@ -178,7 +292,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
 		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
 		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)",
+		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)\n\
+		{EEEEEE}Edit Medic Access:{FFFFFF} %s (rank %i)",
 		szDialog,
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
@@ -187,7 +302,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
 		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
 		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
-		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess]
+		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess],
+		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess]
 	);
 
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
@@ -782,6 +898,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					format(szTitle, sizeof szTitle, "Edit Group DoC Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DOCACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 31: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group Medic Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_MEDICACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -1590,6 +1718,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: {
 					arrGroupData[iGroupID][g_iDoCAccess] = listitem;
 					format(string, sizeof(string), "%s has set the minimum rank for DoC Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDoCAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDoCAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_MEDICACCESS: {
+			
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iMedicAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for Medic Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iMedicAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for Medic Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iMedicAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
 				}
 			}

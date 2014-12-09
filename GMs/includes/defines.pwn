@@ -191,7 +191,7 @@ native gpci(playerid, serial[], maxlen);
 
 // General constants.
 #define			MAX_GROUP_ALLEGIANCES		3
-#define			MAX_GROUP_TYPES             10
+#define			MAX_GROUP_TYPES             11
 #define         MAX_LOCKER_STOCK        	10000
 #define         MAX_CRATES             		50
 #define 		MAX_SPIKES 					4
@@ -629,6 +629,7 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_GROUP_TACKLEACCESS			(3396)
 #define			DIALOG_GROUP_WHEELCLAMPS			(3400)
 #define			DIALOG_GROUP_DOCACCESS				(3401)
+#define			DIALOG_GROUP_MEDICACCESS			(3402)
 
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)
