@@ -71,7 +71,8 @@ CMD:me(playerid, params[])
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /me [action]");
 	new string[128];
 	format(string, sizeof(string), "{FF8000}* {C2A2DA}%s %s", GetPlayerNameEx(playerid), params);
-	ProxDetectorWrap(playerid, string, 92, 30.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetectorWrap(playerid, string, 92, 5.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	else ProxDetectorWrap(playerid, string, 92, 30.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	return 1;
 }
 
@@ -174,7 +175,8 @@ CMD:do(playerid, params[])
 
 	new string[150];
 	format(string, sizeof(string), "* %s (( %s ))", params, GetPlayerNameEx(playerid));
-	ProxDetectorWrap(playerid, string, 92, 30.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetectorWrap(playerid, string, 92, 5.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+	else ProxDetectorWrap(playerid, string, 92, 30.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
 	return 1;
 }
 
@@ -249,7 +251,8 @@ CMD:s(playerid, params[])
 	format(string, sizeof(string), "(shouts) %s!", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,60.0,5000);
 	format(string, sizeof(string), "%s shouts: %s!", GetPlayerNameEx(playerid), params);
-	ProxDetector(30.0, playerid, string,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
+	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1); // addition for prison system
+	else ProxDetector(30.0, playerid, string,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
 	return 1;
 }
 
@@ -285,7 +288,8 @@ CMD:b(playerid, params[])
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b [local ooc chat]");
 	new string[128];
 	format(string, sizeof(string), "%s: (( %s ))", GetPlayerNameEx(playerid), params);
-	ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
+	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
+	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 
 	//foreach(new i: Player)
 	for(new i = 0; i < MAX_PLAYERS; ++i)

@@ -4854,7 +4854,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				return 1;
 			}
 		}
-		else if(GetPVarInt(playerid, "MatDeliver") == 555 && IsPlayerInRangeOfPoint(playerid, 6.0, 578.0073, 1221.9861, 11.7113))
+		else if(GetPVarInt(playerid, "MatDeliver") == 555 && IsPlayerInRangeOfPoint(playerid, 6.0, -688.7897,966.1434,12.1627))
 		{
 			if(GetPVarInt(playerid, "Packages") > 0)
 			{

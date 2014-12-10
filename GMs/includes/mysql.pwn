@@ -151,12 +151,12 @@ SaveGroup(iGroupID) {
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = %d",
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d'",
 		szQuery,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess]);
+		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]);
 
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%i` = '%s'", szQuery, i, arrGroupRanks[iGroupID][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%iPay` = %i", szQuery, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -3912,7 +3912,15 @@ public MDCQueryFinish(playerid, suspectid)
     new resultline[1424];
     new crimes = PlayerInfo[suspectid][pCrimes];
 	new arrests = PlayerInfo[suspectid][pArrested];
-	format(resultline, sizeof(resultline), "{FF6347}Name:{BFC0C2} %s\t{FF6347}Phone Number:{BFC0C2} %d\n{FF6347}Total Previous Crimes: {BFC0C2}%d\t {FF6347}Total Arrests: {BFC0C2}%d \n{FF6347}Crime Key: {FF7D7D}Currently Wanted/{BFC0C2}Past Crime\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests);
+	new nation[14];
+	
+	switch(PlayerInfo[suspectid][pNation])
+	{
+		case 0: nation = "San Andreas";
+		case 1: nation = "Tierra Robada";
+	}
+	
+	format(resultline, sizeof(resultline), "{FF6347}Name:{BFC0C2} %s\t{FF6347}Phone Number:{BFC0C2} %d\n{FF6347}Total Previous Crimes: {BFC0C2}%d\t {FF6347}Total Arrests: {BFC0C2}%d \n{FF6347}Citizenship: {BFC0C2}%s \n{FF6347}Crime Key: {FF7D7D}Currently Wanted/{BFC0C2}Past Crime\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests, nation);
 
 	for(new i; i < rows; i++)
 	{
@@ -7050,6 +7058,12 @@ public Group_QueryFinish(iType, iExtraID) {
 			arrGroupData[iIndex][g_iWheelClamps] = strval(szResult);
 			
 			arrGroupData[iIndex][g_iDoCAccess] = cache_get_field_content_int(iIndex, "DoCAccess", MainPipeline);
+			
+			cache_get_field_content(iIndex, "MedicAccess", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iMedicAccess] = strval(szResult);
+			
+			cache_get_field_content(iIndex, "DMVAccess", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iDMVAccess] = strval(szResult);
 
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);

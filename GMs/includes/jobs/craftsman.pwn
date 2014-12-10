@@ -189,7 +189,7 @@ CMD:getmats(playerid, params[])
 		SetPlayerCheckpoint(playerid, -1872.879760, 1416.312500, 7.180089, 5);
 		return 1;
 	}
-	if (IsPlayerInRangeOfPoint(playerid, 4.0, -1522.7351, 2587.2612, 55.8359)) // Matrun TR
+	if (IsPlayerInRangeOfPoint(playerid, 4.0, -2481.1560,2290.8391,4.9844)) // Matrun TR
 	{
 		if(GetPVarInt(playerid, "Packages") >= 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must deliver your packages first.");
 
@@ -244,7 +244,7 @@ CMD:getmats(playerid, params[])
 		SetPVarInt(playerid, "MatDeliver", 555);
 		SetPVarInt(playerid, "tpMatRunTimer", 12);
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
-		SetPlayerCheckpoint(playerid, 578.0073, 1221.9861, 11.7113, 5);
+		SetPlayerCheckpoint(playerid, -688.7897,966.1434,12.1627, 5);
 		return 1;
 	}
 	if (mypoint == -1)

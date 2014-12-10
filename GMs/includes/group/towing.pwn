@@ -51,7 +51,8 @@ CMD:impound(playerid, params[]) {
 					iVehType,
 					iVehIndex,
 					iTargetOwner,
-					iVehTowed = GetVehicleTrailer(GetPlayerVehicleID(playerid));
+					iVehTowed = GetVehicleTrailer(GetPlayerVehicleID(playerid)),
+					iCost;
 
 				if(!GetVehicleModel(iVehTowed)) {
 					return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle in tow has been desynced and therefore cannot be impounded.");
@@ -65,6 +66,7 @@ CMD:impound(playerid, params[]) {
 						if(iVehIndex != -1) {
 							iVehType = 1;
 							iTargetOwner = i;
+							iCost = (((PlayerVehicleInfo[iTargetOwner][iVehIndex][pvPrice] / 20 + PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]) / 100) * 20);
 							break;
 						}
 					}	
@@ -76,8 +78,9 @@ CMD:impound(playerid, params[]) {
 						SetVehiclePos(iVehTowed, 0, 0, 0); // Attempted desync fix
 						SetVehicleToRespawn(iVehTowed);
 					}
-					case 1: {
-
+					case 1: {	
+						arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += iCost;
+						
 						PlayerVehicleInfo[iTargetOwner][iVehIndex][pvImpounded] = 1;
 						PlayerVehicleInfo[iTargetOwner][iVehIndex][pvSpawned] = 0;
 						GetVehicleHealth(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId], PlayerVehicleInfo[iTargetOwner][iVehIndex][pvHealth]);
@@ -100,6 +103,9 @@ CMD:impound(playerid, params[]) {
 
 						format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]));
 						SendGroupMessage(1, RADIO, szMessage);
+						
+						format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %'s %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(iCost));
+						GroupLog(PlayerInfo[playerid][pMember], szMessage);
 					}
 					/*case 2: {
 
@@ -124,7 +130,7 @@ CMD:impound(playerid, params[]) {
 }
 
 CMD:dmvrelease(playerid, params[]) {
-	if(IsACop(playerid) || IsATowman(playerid))
+	if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess])
     {
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, 833.60, 3.23, 1004.17)) {
 

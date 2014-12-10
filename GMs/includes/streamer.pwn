@@ -262,7 +262,7 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, 2102.71,-103.97,2.28, -1); // Matrun 3
 	CreateDynamicPickup(1239, 23, -1816.528686, -179.502624, 9.398437, -1); // Matrun 4 (pickup)
 	CreateDynamicPickup(1239, 23, -1872.879760, 1416.312500, 7.180089, -1); // Matrun 4 (dropoff)
-	CreateDynamicPickup(1239, 23, -1522.7351, 2587.2612, 55.8359, -1); //Matrun TR (Pickup)
+	CreateDynamicPickup(1239, 23, -2481.1560,2290.8391,4.9844, -1); //Matrun TR (Pickup)
 	CreateDynamicPickup(1239, 23, -688.7897,966.1434,12.1627, -1); //Matrun TR (DropOff)
   	//CreateDynamicPickup(1239, 23, 2565.346191, 1403.409790, 7699.584472, -1);// VIP ph changing station.
   	CreateDynamicPickup(1239, 23, 701.7953,-519.8322,16.3348, -1); //Rental Icon
@@ -430,7 +430,7 @@ public LoadStreamerDynamic3DTextLabels()
 	//CreateDynamic3DTextLabel("Press F (enter) to go inside.",COLOR_YELLOW,1564.8464,-1666.1444,28.3956+0.6,4.0); //LSPD Roof enter
 
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1816.528686, -179.502624, 9.398437+0.6,5.0);
-    CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1522.7351, 2587.2612, 55.8359+0.6, 5.0);
+    CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW, -2481.1560,2290.8391,4.9844+0.6, 5.0);
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,1154.7295,-1440.2323,15.7969+0.6,18.0); // Namechange at mall
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,-2279.6545, 2311.2238, 4.9641+0.6,18.0); // Namechange (TR)
 

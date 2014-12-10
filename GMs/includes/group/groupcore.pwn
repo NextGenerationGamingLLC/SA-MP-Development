@@ -292,8 +292,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
 		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
 		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Medic Access:{FFFFFF} %s (rank %i)",
+		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)\n",
 		szDialog,
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
@@ -302,10 +301,18 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		GetPlayerDistanceFromPoint(iPlayerID, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]),
 		(arrGroupData[iGroupID][g_iTackleAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTackleAccess],
 		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
-		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess],
-		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess]
+		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess]
 	);
-
+	
+	format(szDialog, sizeof(szDialog),
+		"%s\
+		{EEEEEE}Edit Medic Access:{FFFFFF} %s (rank %i)\n\
+		{EEEEEE}Edit DMV Release:{FFFFFF} %s (rank %i)",
+		szDialog,
+		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
+		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess]
+	);
+		
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
 	format(szTitle, sizeof szTitle, "{FFFFFF}Edit {%s}%s", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 	return ShowPlayerDialog(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
@@ -910,6 +917,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					format(szTitle, sizeof szTitle, "Edit Group Medic Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_MEDICACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 32: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group DMV Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_DMVACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -1737,6 +1756,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: {
 					arrGroupData[iGroupID][g_iMedicAccess] = listitem;
 					format(string, sizeof(string), "%s has set the minimum rank for Medic Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iMedicAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_DMVACCESS: {
+			
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iDMVAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for DMV Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDMVAccess], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iDMVAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for DMV Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDMVAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDMVAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
 				}
 			}

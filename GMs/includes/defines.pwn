@@ -630,6 +630,7 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_GROUP_WHEELCLAMPS			(3400)
 #define			DIALOG_GROUP_DOCACCESS				(3401)
 #define			DIALOG_GROUP_MEDICACCESS			(3402)
+#define			DIALOG_GROUP_DMVACCESS				(3403)
 
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)

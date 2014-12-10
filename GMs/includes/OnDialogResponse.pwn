@@ -7296,7 +7296,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money on you to pay the ticket.");
 				}
 				GivePlayerCash(playerid, -PlayerVehicleInfo[playerid][listitem][pvTicket]);
-				Tax += (PlayerVehicleInfo[playerid][listitem][pvTicket] / 100) * 30;
+				Tax += (PlayerVehicleInfo[playerid][listitem][pvTicket] / 100) * 11;
 				SpeedingTickets += PlayerVehicleInfo[playerid][listitem][pvTicket];
 				for(new z; z < MAX_GROUPS; z++)
 				{
@@ -7335,7 +7335,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], iCost);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMessage);
 				GivePlayerCash(playerid, -iCost);
-				Tax += (iCost / 100) * 30;
+				Tax += (iCost / 100) * 11;
 				SpeedingTickets += iCost;
 				for(new z; z < MAX_GROUPS; z++)
 				{
