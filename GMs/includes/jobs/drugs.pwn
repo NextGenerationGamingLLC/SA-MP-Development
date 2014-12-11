@@ -834,11 +834,11 @@ CMD:usepot(playerid, params[])
 		}
 		if(healthint > 80)
 		{
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 		}
 		else
 		{
-			SetPlayerHealth(playerid, health + 20.0);
+			SetHealth(playerid, health + 20.0);
 		}
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of pot!");
 		format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
@@ -904,7 +904,7 @@ CMD:usecrack(playerid, params[])
 		return 1;
 	}
 	new Float:armour;
-	GetPlayerArmour(playerid, armour);
+	GetArmour(playerid, armour);
 	if(armour >= 100)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
@@ -946,7 +946,7 @@ CMD:usecrack(playerid, params[])
 			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
 		}
 		new string[128], Float:PlayersArmour;
-		GetPlayerArmour(playerid, PlayersArmour);
+		GetArmour(playerid, PlayersArmour);
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of crack!");
 		format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -956,23 +956,15 @@ CMD:usecrack(playerid, params[])
 		} else {
 			StorageInfo[playerid][storageid-1][sCrack] -= 2;
 		}
-		if(CurrentArmor[playerid] < PlayersArmour && GetPVarInt(playerid, "IsInArena") == 0)
-	    {
-	    	format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
-			ABroadCast( COLOR_YELLOW, string, 2 );
-			format(string, sizeof(string), "%s(%d) (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (2)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerid, CurrentArmor[playerid], PlayersArmour);
-			Log("logs/hack.log", string);
-	        return 1;
-	    }
 		UsedCrack[playerid] = 1;
 		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
 		if(PlayersArmour > 90)
 		{
-			SetPlayerArmor(playerid, 100);
+			SetArmour(playerid, 100);
 		}
 		else
 		{
-			SetPlayerArmor(playerid, PlayersArmour + 10.0);
+			SetArmour(playerid, PlayersArmour + 10.0);
 		}
 		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
 		switch(GetPVarInt(playerid, "STD")) {

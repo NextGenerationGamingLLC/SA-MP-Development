@@ -258,7 +258,7 @@ new Float:festival_vertices[] =
 public OnFilterScriptInit()
 {
 	//musicarea = CreateDynamicSphere(592.84, -2085, 0, 330.0);
-	festivalarea = CreateDynamicPolygon(festival_vertices);
+	festivalarea = CreateDynamicPolygon(festival_vertices, .worldid = 0);
 	piratearea = CreateDynamicRectangle(1323.112670, -183.252929, 1448.739501, -90.425178);
 	SetTimer("KartUpdateGlobal", 1000, true);
 	CreateDynamic3DTextLabel("{FFFF00}Type {FF0000}/bumpercars {FFFF00}to join in!", 0xFFFFFFF, gBumperOrigin[0], gBumperOrigin[1], gBumperOrigin[2], 10.0);
@@ -671,7 +671,7 @@ public MoveOTower()
 {
 	if(oTowerInfo[0][place] == 1)
 	{
-		if(--oTowerInfo[0][count] == 0)
+		if(--oTowerInfo[0][starting] == 0)
 		{
 			MoveObject(oTower[0], 1534.34131, -69.60560, -20.48360, 2);
 			oTowerInfo[0][place] = 0;
@@ -758,7 +758,7 @@ public MoveTower(tower)
 {
 	if(dTowerInfo[tower][place] == 0)
 	{
-		if(--dTowerInfo[tower][count] == 0)
+		if(--dTowerInfo[tower][starting] == 0)
 		{
 			MoveObject(dTower[tower], dTowerOrigin[tower][0], dTowerOrigin[tower][1], 35.8, 30);
 			dTowerInfo[tower][place] = 1;
@@ -1090,7 +1090,7 @@ public KartUpdateGlobal()
 //Pirate
 CMD:pirateshipreset(playerid, params[])
 {
-	if(IsPlayerAdmin(playerid))
+	if(IsPlayerAdmin(playerid) || GetPVarInt(playerid, "aLvl") > 1337)
 	{
 		if(IsObjectMoving(pirateship[0])) StopObject(pirateship[0]);
 	    MoveObject(pirateship[0], PirateShipOrigin[0][0], PirateShipOrigin[0][1], PirateShipOrigin[0][2], 0.1, 0.0, 0.0, 40.0);
@@ -1160,7 +1160,7 @@ stock UpdatePirateLabel()
 	else
 	{
 		if(piratestep[5] == 1) format(string, sizeof(string), "{FFFF00}Ride in progress!\nParticipants: {FF0000}%d", piratestep[6]);
-		else format(string, sizeof(string), "{FFFF00}Type {FF0000}/pirateship {FFFF00}to join in!\nParticipant: {FF0000}%d\nRide Starts: %d", piratestep[6], piratestep[7]-gettime());
+		else format(string, sizeof(string), "{FFFF00}Type {FF0000}/pirateship {FFFF00}to join in!\nParticipants: {FF0000}%d\nRide Starts: %d", piratestep[6], piratestep[7]-gettime());
 	}
 	UpdateDynamic3DTextLabelText(piratetext, 0xFFFFFFFF, string);
 }
@@ -1250,7 +1250,7 @@ public OnObjectMoved(objectid)
 			SetTimerEx("RemovePlayersFromRide", 1000, 0, "dd", 1, 0);
 			return 1;
 		}
-		if(oTowerInfo[0][place] == 0) oTowerInfo[0][place] = 1, oTowerInfo[0][count] = 10, SetTimer("MoveOTower", 1*1000, false);
+		if(oTowerInfo[0][place] == 0) oTowerInfo[0][place] = 1, oTowerInfo[0][starting] = 10, SetTimer("MoveOTower", 1*1000, false);
 	}
 	if(objectid == dTower[0] || objectid == dTower[1])
 	{
@@ -1261,7 +1261,7 @@ public OnObjectMoved(objectid)
 			SetTimerEx("RemovePlayersFromRide", 1000, 0, "dd", 0, bRide);
 			return 1;
 		}
-		if(dTowerInfo[bRide][place] == 0) dTowerInfo[bRide][count] = 3, SetTimerEx("MoveTower", 3*1000, false, "i", bRide);
+		if(dTowerInfo[bRide][place] == 0) dTowerInfo[bRide][starting] = 3, SetTimerEx("MoveTower", 3*1000, false, "i", bRide);
 		if(dTowerInfo[bRide][place] == 1) MoveTower(bRide);
 	}
 	if(objectid == pirateship[0])

@@ -349,14 +349,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							format(string, sizeof(string), "* %s %s takes a badge and a gun from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						SetPlayerHealth(playerid, 100.0);
+						SetHealth(playerid, 100.0);
 						if(IsAMedic(playerid))
 						{
 							Medics += 1;
 						}
 						if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 						{
-							SetPlayerArmor(playerid, 100);
+							SetArmour(playerid, 100);
 							arrGroupData[iGroupID][g_iLockerStock] -= 1;
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -367,7 +367,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(arrGroupData[iGroupID][g_iLockerCostType] != 0)
 						{
-							SetPlayerArmor(playerid, 100.0);
+							SetArmour(playerid, 100.0);
 						}
 						else
 						{
@@ -386,7 +386,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							Medics -= 1;
 						}
-						SetPlayerHealth(playerid, 100.0);
+						SetHealth(playerid, 100.0);
 						RemoveArmor(playerid);
 						PlayerInfo[playerid][pDuty] = 0;
 						SetPlayerToTeamColor(playerid);
@@ -481,8 +481,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 					{
-						SetPlayerArmor(playerid, 100);
-						SetPlayerHealth(playerid, 100.0);
+						SetArmour(playerid, 100);
+						SetHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
 						new str[128], file[32];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -495,8 +495,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(arrGroupData[iGroupID][g_iBudget] > 2500)
 						{
-							SetPlayerArmor(playerid, 100);
-							SetPlayerHealth(playerid, 100.0);
+							SetArmour(playerid, 100);
+							SetHealth(playerid, 100.0);
 							arrGroupData[iGroupID][g_iBudget] -= 2500;
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -511,8 +511,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(GetPlayerCash(playerid) > 2500)
 						{
-							SetPlayerArmor(playerid, 100);
-							SetPlayerHealth(playerid, 100.0);
+							SetArmour(playerid, 100);
+							SetHealth(playerid, 100.0);
 							GivePlayerCash(playerid, -2500);
 							new str[128], file[32];
 							format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
@@ -3137,6 +3137,7 @@ CMD:deploy(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
 	{
+		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		new type, object[12], string[128];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{

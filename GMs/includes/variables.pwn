@@ -935,7 +935,7 @@ new STD4[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 3};
 new Float:PlayerPos[MAX_PLAYERS][3];
 new lspddoor1;
 new lspddoor2;
-new Seatbelt[MAX_PLAYERS], Float: CurrentArmor[MAX_PLAYERS];
+new Seatbelt[MAX_PLAYERS];
 new SpikeStrips[MAX_GROUPS][MAX_SPIKES][Spikes];
 new Cones[MAX_GROUPS][MAX_CONES][Cone];
 new Flares[MAX_GROUPS][MAX_FLARES][Flare];
@@ -2716,8 +2716,10 @@ new HospitalSpawnInfo[MAX_HOSPITALS][2] = {
 new arrHospitalBedData[MAX_HOSPITALS][eHospitalBedData];
 
 new PlayerText:HospTime[MAX_PLAYERS];
-	
+
 new gPlayerUsingLoopingAnim[MAX_PLAYERS];
 new gPlayerAnimLibsPreloaded[MAX_PLAYERS];
 
 new Text:txtAnimHelper;
+
+new bool:PlayerIsDead[MAX_PLAYERS];

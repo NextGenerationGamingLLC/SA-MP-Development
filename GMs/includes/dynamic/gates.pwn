@@ -200,7 +200,7 @@ CMD:lockgate(playerid, params[])
 		{
 			if(GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
 			{
-				if(GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID])
+				if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID])
 				{
 					if(GateInfo[i][gLocked] == 0)
 					{

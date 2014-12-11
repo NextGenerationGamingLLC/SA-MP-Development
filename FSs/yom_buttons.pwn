@@ -96,10 +96,9 @@
 
 /*----------------------------------------------------------------------------*/
 #include <a_samp>
+#undef  MAX_PLAYERS
+#define MAX_PLAYERS (700)
 #include <streamer>
-
-/*#undef MAX_PLAYERS
-#define MAX_PLAYERS 1000*/
 
 #define INVALID_BUTTON_ID   -1
 

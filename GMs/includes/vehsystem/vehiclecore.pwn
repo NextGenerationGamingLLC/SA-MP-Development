@@ -354,7 +354,7 @@ CMD:window(playerid, params[])
             GetPlayerPos(playerid, fSpecPos[0], fSpecPos[1], fSpecPos[2]);
             GetPlayerFacingAngle(playerid, fSpecPos[3]);
             GetPlayerHealth(playerid, fSpecPos[4]);
-            GetPlayerArmour(playerid, fSpecPos[5]);
+            GetArmour(playerid, fSpecPos[5]);
 
             SetPVarFloat(playerid, "air_Xpos", fSpecPos[0]);
             SetPVarFloat(playerid, "air_Ypos", fSpecPos[1]);

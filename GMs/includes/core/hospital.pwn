@@ -44,7 +44,7 @@
 DeliverPlayerToHospital(playerid, iHospital)
 {
 	TogglePlayerControllable(playerid, 0);
-	SetPlayerHealth(playerid, 0.5);
+	SetHealth(playerid, 0.5);
 	SetPlayerInterior(playerid, 1);
 	PlayerInfo[playerid][pInt] = 1;
 	PlayerInfo[playerid][pHospital] = 1;
@@ -94,7 +94,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 		arrHospitalBedData[iHospital][iCountDown][index] = 140;
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
 		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
-		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 		SendGroupMessage(1, DEPTRADIO, string);
 	}
 	else if(PlayerInfo[playerid][pDonateRank] >= 4)
@@ -154,13 +154,13 @@ DeliverPlayerToHospital(playerid, iHospital)
 				SendClientMessageEx(playerid, COLOR_CYAN, "You didn't have enough credits for super advanced health care.");
 			}
 		}
-		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 	}
 	else // if player has regular insurance
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 40;
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Want to spawn faster? Enable advanced healthcare using /togglehealthcare.");
-		if(PlayerInfo[playerid][pSHealth] > 0) {SetPlayerArmor(playerid, PlayerInfo[playerid][pSHealth]);}
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 	}
 	format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][index]);
 	PlayerTextDrawHide(playerid, HospTime[playerid]);
@@ -307,12 +307,12 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		Log(file, string);
 		if(!GetPVarType(playerid, "HealthCareActive")) PlayerInfo[playerid][pHunger] = 50;
 		else PlayerInfo[playerid][pHunger] = 83;
-		if(!GetPVarType(playerid, "HealthCareActive")) SetPlayerHealth(playerid, 50);
-		else SetPlayerHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
+		if(!GetPVarType(playerid, "HealthCareActive")) SetHealth(playerid, 50);
+		else SetHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
 		PlayerInfo[playerid][pHydration] = 100;
 		if(PlayerInfo[playerid][pDonateRank] >= 3)
 		{
-			SetPlayerHealth(playerid, 100.0);
+			SetHealth(playerid, 100.0);
 			PlayerInfo[playerid][pHunger] = 100;
 		}
 		DeletePVar(playerid, "VIPSpawn");
@@ -325,7 +325,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		PlayerTextDrawShow(playerid, HospTime[playerid]);
 		new Float:curhealth;
 		GetPlayerHealth(playerid, curhealth);
-		SetPlayerHealth(playerid, curhealth+1);
+		SetHealth(playerid, curhealth+1);
 		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
 	}
 	
@@ -565,7 +565,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 {
                    if(PlayerInfo[playerid][pCash] >= 1000)
                    {
-                       SetPlayerHealth(playerid, tHP + 25);
+                       SetHealth(playerid, tHP + 25);
                        GivePlayerCash(playerid, -1000);
 					   HospHeal(playerid);
                    }
@@ -575,7 +575,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 {
                     if(PlayerInfo[playerid][pCash] >= 2000)
                     {
-                       SetPlayerHealth(playerid, tHP + 50);
+                       SetHealth(playerid, tHP + 50);
                        GivePlayerCash(playerid, -2000);
 					   HospHeal(playerid);
                     }
@@ -585,7 +585,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 {
                     if(PlayerInfo[playerid][pCash] >= 3000)
                     {
-                       SetPlayerHealth(playerid, tHP + 75);
+                       SetHealth(playerid, tHP + 75);
                        GivePlayerCash(playerid, -3000);
 					   HospHeal(playerid);
                     }
@@ -595,7 +595,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 {
                     if(PlayerInfo[playerid][pCash] >= 4000)
                     {
-                       SetPlayerHealth(playerid, 100);
+                       SetHealth(playerid, 100);
                        GivePlayerCash(playerid, -4000);
 					   HospHeal(playerid);
                     }

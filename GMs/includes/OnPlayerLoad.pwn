@@ -1054,7 +1054,7 @@ public OnPlayerLoad(playerid)
 	{
 		SetPVarInt(playerid, "WatchdogChat", 1);
 	}
-	if(PlayerInfo[playerid][pDonateRank] >= 5)
+	if(PlayerInfo[playerid][pVIPMod])
 	{
 		SetPVarInt(playerid, "vStaffChat", 1);
 	}

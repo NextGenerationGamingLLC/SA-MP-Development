@@ -416,7 +416,7 @@ PayDay(i) {
 				}
 				else 
 				{
-					SetPlayerHealth(i, 100.0);
+					SetHealth(i, 100.0);
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have played for 5 hours and received 100 percent HP.");
 					PlayerInfo[i][pFallIntoFun] = 0;
 				}
@@ -1191,8 +1191,8 @@ public killPlayer(playerid)
 	{
 		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '/kill')", GetPlayerSQLId(playerid), GetPlayerSQLId(playerid));
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	
-		SetPlayerHealth(playerid, 0);
+		SetPVarInt(playerid, "commitSuicide", 0);
+		SetHealth(playerid, 0);
 	}
 	else
 		return SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 10 seconds, therefore you couldn't commit suicide.");
@@ -1462,7 +1462,7 @@ public SendEMSQueue(playerid,type)
 			GameTextForPlayer(playerid, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
 			ClearAnimations(playerid);
 			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 			RemoveArmor(playerid);
 			if(GetPVarInt(playerid, "usingfirstaid") == 1)
 			{
@@ -1475,7 +1475,7 @@ public SendEMSQueue(playerid,type)
 		    SetPVarInt(playerid,"EMSAttempt", 2);
 			ClearAnimations(playerid);
 		 	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 			RemoveArmor(playerid);
 		}
 	}
@@ -1559,7 +1559,7 @@ public SetVehicleEngine(vehicleid, playerid)
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					PlayerInfo[playerid][pHeadValue] = 0;
 					PlayerInfo[GetChased[playerid]][pCHits] += 1;
-					SetPlayerHealth(playerid, 0.0);
+					SetHealth(playerid, 0.0);
 					// KillEMSQueue(playerid);
 					GoChase[GetChased[playerid]] = INVALID_PLAYER_ID;
 					PlayerInfo[GetChased[playerid]][pC4Used] = 0;
@@ -1612,7 +1612,7 @@ public firstaid5(playerid)
 		{
 			if((health+5.0) <= 100.0)
 			{
- 				SetPlayerHealth(playerid, health+5.0);
+ 				SetHealth(playerid, health+5.0);
 			}
 		}
 	}
@@ -1800,7 +1800,7 @@ public OtherTimerEx(playerid, type)
 				new Float:curhealth;
 				GetPlayerHealth(playerid, curhealth);
 				SetPVarInt(playerid, "HospitalTimer", GetPVarInt(playerid, "HospitalTimer")-1);
-				SetPlayerHealth(playerid, curhealth+1);
+				SetHealth(playerid, curhealth+1);
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
 				if(GetPVarInt(playerid, "HospitalTimer") == 0)
 				{
@@ -2971,7 +2971,7 @@ public HeroinEffect(playerid)
 	if(GetPVarInt(playerid, "Health") != 0)
 	{
 		SetPVarInt(playerid, "Health", GetPVarInt(playerid, "Health")-1);
-		SetPlayerHealth(playerid, GetPVarInt(playerid, "Health"));
+		SetHealth(playerid, GetPVarInt(playerid, "Health"));
 	}
 	else
 	{
@@ -2986,7 +2986,7 @@ public InjectHeroin(playerid)
 {
     KillEMSQueue(playerid);
 	ClearAnimations(playerid);
-	SetPlayerHealth(playerid, 30);
+	SetHealth(playerid, 30);
 	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, 1, "i", playerid));
 	return 1;
 }
@@ -6010,8 +6010,8 @@ stock SetPlayerSpawn(playerid)
 					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -6039,8 +6039,8 @@ stock SetPlayerSpawn(playerid)
 					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -6069,8 +6069,8 @@ stock SetPlayerSpawn(playerid)
 							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 								
-							SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-							SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+							SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+							SetArmour(i, HungerPlayerInfo[i][hgLastArmour]);
 							SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 							SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 							SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -6112,8 +6112,8 @@ stock SetPlayerSpawn(playerid)
 				}
 				else if(hgPlayerCount > 3 || hgPlayerCount == 1)
 				{
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -6170,8 +6170,8 @@ stock SetPlayerSpawn(playerid)
 			DeletePVar(playerid, "SpecPosZ");
 			if(GetPVarType(playerid, "pGodMode"))
 	    	{
-	        	SetPlayerHealth(playerid, 0x7FB00000);
-		    	SetPlayerArmor(playerid, 0x7FB00000);
+	        	SetHealth(playerid, 0x7FB00000);
+		    	SetArmour(playerid, 0x7FB00000);
 			}
 			return 1;
 		}
@@ -6218,7 +6218,7 @@ stock SetPlayerSpawn(playerid)
 				PlayerInfo[playerid][pVW] = 0;
 				//SetPlayerSkin(playerid, 50); 
 				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
-				SetPlayerHealth(playerid, 100);
+				SetHealth(playerid, 100);
 				DeletePVar(playerid, "Injured");
 				DeletePVar(playerid, "ArrestPoint");
 				ResetPlayerWeaponsEx(playerid);
@@ -6237,7 +6237,7 @@ stock SetPlayerSpawn(playerid)
 			}
 		    else
 		    {
-		        SetPlayerHealth(playerid, 0x7FB00000);
+		        SetHealth(playerid, 0x7FB00000);
 		       	PhoneOnline[playerid] = 1;
 				SetPlayerInterior(playerid, 1);
 				PlayerInfo[playerid][pInt] = 1;
@@ -6271,9 +6271,9 @@ stock SetPlayerSpawn(playerid)
 					SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
 					SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
 					SetPlayerInterior(playerid,EventLastInt[playerid]);
-					SetPlayerHealth(playerid, EventFloats[playerid][4]);
+					SetHealth(playerid, EventFloats[playerid][4]);
 					if(EventFloats[playerid][5] > 0) {
-						SetPlayerArmor(playerid, EventFloats[playerid][5]);
+						SetArmour(playerid, EventFloats[playerid][5]);
 					}
 					for(new d = 0; d < 6; d++)
 					{
@@ -6306,9 +6306,9 @@ stock SetPlayerSpawn(playerid)
 					EventLastInt[playerid] = 0;
 					RemovePlayerWeapon(playerid, 38);
 					health = GetPVarFloat(playerid, "pPreGodHealth");
-					SetPlayerHealth(playerid,health);
+					SetHealth(playerid,health);
 					armor = GetPVarFloat(playerid, "pPreGodArmor");
-					SetPlayerArmor(playerid, armor);
+					SetArmour(playerid, armor);
 					DeletePVar(playerid, "pPreGodHealth");
 					DeletePVar(playerid, "pPreGodArmor");
 					DeletePVar(playerid, "eventStaff");
@@ -6321,7 +6321,7 @@ stock SetPlayerSpawn(playerid)
 				SetPlayerInterior(playerid, EventKernel[ EventInterior ] );
 				SetPlayerVirtualWorld(playerid, EventKernel[ EventWorld ] );
 				SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
-				SetPlayerHealth(playerid, 30);
+				SetHealth(playerid, 30);
 				RemoveArmor(playerid);
 				SetPlayerSkin(playerid, 134);
 				SetPlayerColor(playerid, 0x0BC43600);
@@ -6338,9 +6338,9 @@ stock SetPlayerSpawn(playerid)
 				SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
 				SetPlayerInterior(playerid,EventLastInt[playerid]);
 				Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
-				SetPlayerHealth(playerid, EventFloats[playerid][4]);
+				SetHealth(playerid, EventFloats[playerid][4]);
 				if(EventFloats[playerid][5] > 0) {
-					SetPlayerArmor(playerid, EventFloats[playerid][5]);
+					SetArmour(playerid, EventFloats[playerid][5]);
 				}
 				for(new i = 0; i < 6; i++)
 				{
@@ -6388,8 +6388,8 @@ stock SetPlayerSpawn(playerid)
 			SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pPos_r]);
 			SetPlayerInterior(playerid,PlayerInfo[playerid][pInt]);
 			if(PlayerInfo[playerid][pHealth] < 1) PlayerInfo[playerid][pHealth] = 100;
-			SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
-			if(PlayerInfo[playerid][pArmor] > 0) SetPlayerArmor(playerid, PlayerInfo[playerid][pArmor]);
+			SetHealth(playerid, PlayerInfo[playerid][pHealth]);
+			if(PlayerInfo[playerid][pArmor] > 0) SetArmour(playerid, PlayerInfo[playerid][pArmor]);
 			SetCameraBehindPlayer(playerid);
 			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
 		}
@@ -8048,7 +8048,7 @@ stock OnPlayerStatsUpdate(playerid) {
 		if(!GetPVarType(playerid, "TempName") && !GetPVarInt(playerid, "EventToken") && GetPVarInt(playerid, "IsInArena") == -1) {
 		    new Float: Pos[4], Float: Health[2];
 			GetPlayerHealth(playerid, Health[0]);
-			GetPlayerArmour(playerid, Health[1]);
+			GetArmour(playerid, Health[1]);
 
 			PlayerInfo[playerid][pInt] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pVW] = GetPlayerVirtualWorld(playerid);
@@ -8601,21 +8601,6 @@ stock IsPlayerInInvalidNosVehicle(playerid)
 		case 430, 446, 448, 449, 452, 453, 454, 461, 462, 463, 468, 472, 473, 481, 484, 493, 509, 510, 521, 522, 523, 537, 538, 569, 570, 581, 586, 590, 595: return 1;
 	}
 	return 0;
-}
-
-stock SetPlayerArmor(Player, Float:Armor)
-{
-	CurrentArmor[Player] = floatround(Armor, floatround_ceil);
-	SetPlayerArmour(Player, Armor);
-	return 1;
-}
-
-stock RemoveArmor(Player)
-{
-	DeletePVar(Player, "ArmorWarning");
-	CurrentArmor[Player] = 0.0;
-	SetPlayerArmour(Player, 0.0);
-	return 1;
 }
 
 stock AddSpecialToken(playerid)
@@ -9797,7 +9782,15 @@ stock ShowStats(playerid,targetid)
 				case 2: drank = "{800080}Silver VIP{FFFFFF}\n";
 				case 3: drank = "{FFD700}Gold VIP{FFFFFF}\n";
 				case 4: drank = "{E5E4E2}Platinum VIP{FFFFFF}\n";
-				case 5: drank = "{800080}VIP Moderator{FFFFFF}\n";
+			}
+		}
+		new svipmod[40];
+		if(PlayerInfo[targetid][pVIPMod])
+		{
+			switch(PlayerInfo[targetid][pVIPMod])
+			{
+				case 1: svipmod = "{800080}VIP Moderator{FFFFFF}\n";
+				case 2: svipmod = "{800080}Senior VIP Moderator{FFFFFF}\n";
 			}
 		}
 		new famedrank[64];
@@ -9831,7 +9824,7 @@ stock ShowStats(playerid,targetid)
 		new costlevel = nxtlevel*25000;
 		new Float:health, Float:armor;
 		GetPlayerHealth(targetid, health);
-		GetPlayerArmour(targetid, armor);
+		GetArmour(targetid, armor);
 		new Float:px,Float:py,Float:pz;
 		GetPlayerPos(targetid, px, py, pz);
 		new zone[MAX_ZONE_NAME];
@@ -9844,6 +9837,7 @@ stock ShowStats(playerid,targetid)
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
+		%s\
 		%s\
 		%s\
 		%s\
@@ -9871,6 +9865,7 @@ stock ShowStats(playerid,targetid)
 		famedrank,
 		dprank,
 		drank,
+		svipmod,
 		fifstr,
 		PlayerInfo[targetid][pLevel],
 		sext,
@@ -10013,96 +10008,6 @@ stock ResetPlayerWeaponsEx( playerid )
 	PlayerInfo[playerid][pAGuns][ 10 ] = 0;
 	PlayerInfo[playerid][pAGuns][ 11 ] = 0;
 	return 1;
-}
-
-stock CreateTxtLabel(labelid)
-{
-	new string[128];
-	format(string, sizeof(string), "%s\nID: %d",TxtLabels[labelid][tlText],labelid);
-
-	switch(TxtLabels[labelid][tlColor])
-	{
-	    case -1:{ /* Disable 3d Textdraw */ }
-	    case 1:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWWHITE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 2:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPINK, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 3:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWRED, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 4:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBROWN, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 5:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGRAY, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 6:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWOLIVE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 7:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPURPLE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 8:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWORANGE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 9:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWAZURE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 10:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGREEN, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 11:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLUE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	    case 12:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLACK, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-		default:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
-	}
-
-	switch(TxtLabels[labelid][tlPickupModel])
-	{
-	    case -1: { /* Disable Pickup */ }
-		case 1:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1210, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 2:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1212, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 3:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1239, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 4:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1240, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 5:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1241, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 6:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1242, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 7:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1247, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 8:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1248, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 9:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1252, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 10:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1253, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 11:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1254, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 12:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1313, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 13:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1272, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 14:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1273, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 15:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1274, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 16:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1275, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 17:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1276, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 18:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1277, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 19:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1279, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 20:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1314, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 21:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1316, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 22:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1317, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 23:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1559, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 24:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1582, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-		case 25:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(2894, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
-	    default: { }
-	}
-}
-
-stock SaveTxtLabels()
-{
-	for(new i = 0; i < MAX_3DLABELS; i++)
-	{
-		SaveTxtLabel(i);
-	}
-	return 1;
-}
-
-stock RehashTxtLabel(labelid)
-{
-	printf("[RehashTxtLabel] Deleting Text Label #%d from server...", labelid);
-	DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-	if(IsValidDynamic3DTextLabel(TxtLabels[labelid][tlTextID])) DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
-	TxtLabels[labelid][tlSQLId] = -1;
-	TxtLabels[labelid][tlPosX] = 0.0;
-	TxtLabels[labelid][tlPosY] = 0.0;
-	TxtLabels[labelid][tlPosZ] = 0.0;
-	TxtLabels[labelid][tlVW] = 0;
-	TxtLabels[labelid][tlInt] = 0;
-	TxtLabels[labelid][tlColor] = 0;
-	TxtLabels[labelid][tlPickupModel] = 0;
-	LoadTxtLabel(labelid);
-}
-
-stock RehashTxtLabels()
-{
-	printf("[RehashTxtLabels] Deleting text labels from server...");
-	for(new i = 0; i < MAX_3DLABELS; i++)
-	{
-		RehashTxtLabel(i);
-	}
-	LoadTxtLabels();
 }
 
 stock ShowVehicleHUDForPlayer(playerid)
@@ -10248,23 +10153,6 @@ stock UpdateWheelTarget()
 	if(gWheelTransAlternate) gWheelTransAlternate = 0;
 	else gWheelTransAlternate = 1;
 }
-
-/*stock SetPlayerHealthEx(playerid, Float:health)
-{
-	pSSHealth[playerid] = health;
-	pSSHealthTime[playerid][0] = GetTickCount();
-	pSSHealthTime[playerid][1] = GetPlayerPing(playerid);
-	SetPlayerHealth(playerid, health);
-}
-
-stock SetPlayerArmorEx(playerid, Float:armour)
-{
-	pSSArmour[playerid] = armour;
-	pSSHealthTime[playerid][0] = GetTickCount();
-	pSSHealthTime[playerid][1] = GetPlayerPing(playerid);
-	SetPlayerArmor(playerid, armour);
-}*/
-
 
 stock ConvertTimeS(seconds, TYPE = 0)
 {
@@ -10857,7 +10745,19 @@ stock CompleteToyTrade(playerid)
 			}
 			else
 				PlayerToyInfo[playerid][i][ptSpecial] = PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial];
-			
+			if(PlayerToyInfo[playerid][i][ptSpecial] == 2)
+			{
+				PlayerToyInfo[playerid][i][ptBone] = 2;
+				PlayerToyInfo[playerid][i][ptPosX] = 0.07;
+				PlayerToyInfo[playerid][i][ptPosY] = 0.0;
+				PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
+				PlayerToyInfo[playerid][i][ptRotX] = 88.0;
+				PlayerToyInfo[playerid][i][ptRotY] = 75.0;
+				PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleX] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleY] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
+			}
 			// Seller	
 			format(string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, sellerid);
@@ -11258,129 +11158,6 @@ stock IsWeaponPrimary(weaponid) {
 	}
 	return false;
 }
-
-/* Server Side Health WIP
-forward SyncPlayerAC(playerid);
-public SyncPlayerAC(playerid)
-{
-	#if defined ANTICHEAT_ENABLED
-		if(playerTabbed[playerid] != 0) return AntiCheat[playerid][Timer] = SetTimerEx("SyncPlayerAC", 1000, 0, "i", playerid);
-	
-		new Float: health, healthex, Float: armour, armourex, serverarmour, serverhealth;
-		
-		if(PlayerInfo[playerid][State] == 1)
-		{	
-			GetPlayerHealth(playerid, health);
-			GetPlayerArmour(playerid, armour);
-			
-			healthex = floatround(health, floatround_round);
-			armourex = floatround(armour, floatround_round);
-			
-			serverhealth = floatround(AntiCheat[playerid][acHealth], floatround_round);
-			serverarmour = floatround(AntiCheat[playerid][acArmour], floatround_round);
-			
-			if(healthex != serverhealth)
-			{
-				SetPlayerHealth(playerid, AntiCheat[playerid][acHealth]);
-			}
-			
-			if(armourex != serverarmour)
-			{
-				SetPlayerArmour(playerid, AntiCheat[playerid][acArmour]);
-			}
-		}
-		return AntiCheat[playerid][Timer] = SetTimerEx("SyncPlayerAC", 1000, 0, "i", playerid);
-	#else
-		printf("ANTICHEAT ERROR: Player ID: %d tried to sync while the UAC is disabled.", playerid);
-	#endif
-	return true;
-}
-
-Float: GetPlayerHealthEx(playerid, special = 0)
-
-	new Float: health;
-	#if defined ANTICHEAT_ENABLED
-		if(special == 1)
-		{
-			GetPlayerHealth(playerid, health);
-			return Float: health;
-		}
-		else
-		{
-			return Float: AntiCheat[playerid][acHealth];
-		}
-	}
-	#else
-		GetPlayerHealth(playerid, health);
-		return Float: health;
-	#endif
-}
-
-Float: GetPlayerArmourEx(playerid, special = 0)
-
-	new Float: armour;
-	#if defined ANTICHEAT_ENABLED
-		if(special == 1)
-		{
-			GetPlayerArmour(playerid, armour);
-			return Float: armour;
-		}
-		else
-		{
-			return Float: AntiCheat[playerid][acArmour];
-		}
-	}
-	#else
-		GetPlayerHealth(playerid, armour);
-		return Float: armour;
-	#endif
-}
-
-stock SetPlayerHealthEx(playerid, Float: amount)
-{
-	#if defined ANTICHEAT_ENABLED
-		AntiCheat[playerid][acHealth] = amount;
-	#endif
-	return SetPlayerHealth(playerid, Float: amount);
-}
-
-stock SetPlayerArmor(playerid, Float: amount)
-{
-	#if defined ANTICHEAT_ENABLED
-		AntiCheat[playerid][acArmour] = amount;
-	#else
-		CurrentArmor[playerid] = floatround(amount, floatround_ceil);
-	#endif
-	return SetPlayerArmour(playerid, Float: amount);
-}
-
-stock RemoveArmor(playerid)
-{
-	DeletePVar(playerid, "ArmorWarning");
-	return SetPlayerArmor(playerid, 0.0);
-}
-
-#if defined _ALS_SetPlayerHealth
-	#undef SetPlayerHealth
-#else
-	#define _ALS_SetPlayerHealth
-#endif
-#define SetPlayerHealth SetPlayerHealthEx
-
-#if defined _ALS_GetPlayerHealth
-	#undef GetPlayerHealth
-#else
-	#define _ALS_GetPlayerHealth
-#endif
-#define GetPlayerHealth GetPlayerHealthEx
-
-#if defined _ALS_GetPlayerArmour
-	#undef GetPlayerArmour
-#else
-	#define _ALS_GetPlayerArmour
-#endif
-#define GetPlayerArmour GetPlayerArmourEx
-*/
 
 forward DG_AutoReset();
 public DG_AutoReset()

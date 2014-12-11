@@ -41,7 +41,7 @@ stock SpawnZombie(playerid)
 	new Float:maxdis, Float:dis, tpto;
 	maxdis=9999.9;
 	SetPlayerSkin(playerid, 134);
-	SetPlayerHealth(playerid, 200);
+	SetHealth(playerid, 200);
 	SetPlayerInterior(playerid, 0);
 	SetPlayerVirtualWorld(playerid, 0);
 	for(new x;x<sizeof(ZombieSpawns);x++)
@@ -76,7 +76,7 @@ stock MakeZombie(playerid)
   	DeletePVar(playerid, "pZombieBit");
    	SetPlayerToTeamColor(playerid);
 
-	SetPlayerHealth(playerid, 200);
+	SetHealth(playerid, 200);
 	SetPlayerSkin(playerid, 134);
 
 	ResetPlayerWeaponsEx(playerid);
@@ -94,7 +94,7 @@ stock UnZombie(playerid)
   	DeletePVar(playerid, "pZombieBit");
   	SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
    	SetPlayerToTeamColor(playerid);
-	SetPlayerHealth(playerid, 100);
+	SetHealth(playerid, 100);
 	new string[64];
 	format(string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
@@ -372,7 +372,7 @@ CMD:bite(playerid, params[])
 						return SendClientMessageEx(playerid, COLOR_GREY, "They have a antibiotic in their bloodstream! Your bite had no effect on them!");
 					}
 					GetPlayerHealth(i, hp);
-					SetPlayerHealth(i, hp - 30);
+					SetHealth(i, hp - 30);
 					SetPVarInt(i, "pZombieBit", 1);
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
@@ -404,7 +404,7 @@ CMD:bite(playerid, params[])
 				    {
 						new Float:hp, string[128];
 						GetPlayerHealth(i, hp);
-						SetPlayerHealth(i, hp-20);
+						SetHealth(i, hp-20);
 						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						//SendAudioToRange(65, 100, X, Y, Z, 5);

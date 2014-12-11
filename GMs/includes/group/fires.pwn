@@ -95,7 +95,7 @@ public OnEnterFire()
 				{
 					new Float:ftempHP;
 					GetPlayerHealth(i, ftempHP);
-					SetPlayerHealth(i, ftempHP - 5);
+					SetHealth(i, ftempHP - 5);
 				}
 			}
 		}

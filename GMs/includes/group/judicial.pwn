@@ -451,8 +451,8 @@ CMD:jarrest(playerid, params[])
 				ClearAnimations(suspect);
 				if(PlayerCuffed[suspect] == 2)
 				{
-					SetPlayerHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
-					SetPlayerArmor(suspect, GetPVarFloat(suspect, "cuffarmor"));
+					SetHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
+					SetArmour(suspect, GetPVarFloat(suspect, "cuffarmor"));
 					DeletePVar(suspect, "cuffhealth");
 					DeletePVar(suspect, "PlayerCuffed");
 				}

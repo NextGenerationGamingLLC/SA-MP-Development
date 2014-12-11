@@ -82,11 +82,11 @@ CMD:buyhotdog(playerid, params[])
 	{
 		if(health > 90) 
 		{
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 		}
 		else 
 		{
-			SetPlayerHealth(playerid, health + 10.0);
+			SetHealth(playerid, health + 10.0);
 		}
 	}
 	return 1;

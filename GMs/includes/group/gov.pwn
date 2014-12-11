@@ -37,7 +37,7 @@
 
 CMD:settax(playerid, params[])
 {
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] != 5) {
+	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
 		return 1;
 	}
@@ -69,7 +69,7 @@ CMD:settax(playerid, params[])
 
 CMD:taxwithdraw(playerid, params[])
 {
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] != 5)
+	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
 		return 1;
@@ -146,7 +146,7 @@ CMD:taxwithdraw(playerid, params[])
 
 CMD:taxdeposit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] != 5)
+	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a Government Leader.");
 		return 1;
@@ -249,7 +249,7 @@ CMD:settaxmoney(playerid, params[])
 CMD:checktax(playerid, params[])
 {
 	new string[128];
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_GOV)
+	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a government official.");
 		return 1;

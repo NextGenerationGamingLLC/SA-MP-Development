@@ -127,8 +127,8 @@ CMD:endhunger(playerid, params[])
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
-					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetArmour(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -188,8 +188,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -217,8 +217,8 @@ CMD:leavehunger(playerid, params[])
 			format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 			SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 					
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -247,8 +247,8 @@ CMD:leavehunger(playerid, params[])
 					format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 							
-					SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-					SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+					SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+					SetArmour(i, HungerPlayerInfo[i][hgLastArmour]);
 					SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 					SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 					SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -290,8 +290,8 @@ CMD:leavehunger(playerid, params[])
 		}
 		else if(hgPlayerCount > 3 || hgPlayerCount == 1)
 		{
-			SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-			SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+			SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+			SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 			SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 			SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 			SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -344,10 +344,10 @@ CMD:joinhunger(playerid, params[])
 	SetPlayerPos(playerid, hgRandomSpawn[rand][0], hgRandomSpawn[rand][1], hgRandomSpawn[rand][2]);
 	
 	GetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-	SetPlayerHealth(playerid, 9999.9);
+	SetHealth(playerid, 9999.9);
 	
-	GetPlayerArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
-	SetPlayerArmour(playerid, 0);
+	GetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+	SetArmour(playerid, 0);
 	
 	HungerPlayerInfo[playerid][hgLastVW] = GetPlayerVirtualWorld(playerid);
 	SetPlayerVirtualWorld(playerid, 2039);
@@ -421,8 +421,8 @@ CMD:openbackpack(playerid, params[])
 			if(HungerBackpackInfo[backpack][hgBackpackType] == 1)
 			{
 				new Float: exarmor;
-				GetPlayerArmour(playerid, exarmor);
-				SetPlayerArmor(playerid, exarmor+15);
+				GetArmour(playerid, exarmor);
+				SetArmour(playerid, exarmor+15);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 15 percent armor.");
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -482,7 +482,7 @@ CMD:openbackpack(playerid, params[])
 			}
 			else if(HungerBackpackInfo[backpack][hgBackpackType] == 4)
 			{
-				SetPlayerHealth(playerid, 100.0);
+				SetHealth(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 100 percent health.");\
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);

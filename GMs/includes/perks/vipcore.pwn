@@ -71,10 +71,10 @@ stock SendVIPMessage(color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2) && PlayerInfo[i][pVIPTogged] == 1) {
+			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pVIPMod]) && PlayerInfo[i][pVIPTogged] == 1) {
 				SendClientMessageEx(i, color, string);
 			}
-		}	
+		}
 	}
 }
 
@@ -459,7 +459,7 @@ CMD:togvip(playerid, params[]) {
 
 CMD:v(playerid, params[]) {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {
 		if(isnull(params)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /v [message]");
 		}
@@ -485,9 +485,11 @@ CMD:v(playerid, params[]) {
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
-			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pDonateRank] > 0)
+			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pVIPMod])
 			{
-				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
+				if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else format(szMessage, sizeof(szMessage), "** %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
 				SetPVarInt(playerid, "timeVIP", gettime()+5);
 			}
 			
@@ -716,7 +718,7 @@ CMD:setvip(playerid, params[])
 		if(sscanf(params, "udds[32]", giveplayerid, level, months, orderid))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvip [player] [level] [months] [orderID]");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Available Levels: |0| None |1| Bronze |2| Silver |4| Platinum |5| Moderator");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Available Levels: |0| None |1| Bronze |2| Silver |4| Platinum");
 			return 1;
 		}
 
@@ -724,9 +726,9 @@ CMD:setvip(playerid, params[])
 		{
    			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-				if(level < 0 || level > 5)
+				if(level < 0 || level > 4)
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "VIP Level can not be below 0 or above 5!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "VIP Level can not be below 0 or above 4!");
 					return 1;
 				}
 				if(level == 3)
@@ -856,27 +858,6 @@ CMD:setvip(playerid, params[])
 					Log("logs/setvip.log", string);
 					return 1;
 				}
-				if(level == 5)
-				{
-					if (PlayerInfo[playerid][pAdmin] < 1337)
-					{
-						format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Moderator (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-						SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
-					}
-					if(PlayerInfo[giveplayerid][pVIPM] == 0)
-					{
-					    PlayerInfo[giveplayerid][pVIPM] = VIPM;
-						VIPM++;
-					}
-					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Moderator (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
-					ABroadCast(COLOR_LIGHTRED,string, 1337);
-					format(string, sizeof(string), "Your VIP level has been set to Moderator by Admin %s.", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-
-					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Moderator (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
-					Log("logs/setvip.log", string);
-					return 1;
-				}
 			}
 			Misc_Save();
 		}
@@ -971,7 +952,7 @@ CMD:respawnvipcars(playerid, params[])
 
 CMD:vmute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pDonateRank] == 5)
+	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vmute [player]");
@@ -1018,7 +999,7 @@ CMD:vmute(playerid, params[])
 
 CMD:vto(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pDonateRank] == 5)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vto [player] [reason]");
@@ -1058,7 +1039,7 @@ CMD:vto(playerid, params[])
 
 CMD:vtoreset(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pDonateRank] == 5)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vtoreset [player] [reason]");
@@ -1193,7 +1174,7 @@ CMD:ovunmute(playerid, params[])
 
 CMD:togvipm(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDonateRank] < 5 && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "vStaffChat") == 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled VIP staff chat.");
@@ -1209,11 +1190,12 @@ CMD:togvipm(playerid, params[])
 CMD:vipm(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(PlayerInfo[playerid][pDonateRank] < 5 && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "vStaffChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have VIP staff chat disabled - /togvipm to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vipm [text]");
 	new szMessage[128];
-	if(PlayerInfo[playerid][pDonateRank] >= 5) format(szMessage, sizeof(szMessage), "* VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+	if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "* VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "* Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pShopTech] >= 3) format(szMessage, sizeof(szMessage), "* DoCR %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
@@ -1222,11 +1204,44 @@ CMD:vipm(playerid, params[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pDonateRank] >= 5 || PlayerInfo[i][pShopTech] >= 3 || PlayerInfo[i][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
+			if((PlayerInfo[i][pVIPMod] || PlayerInfo[i][pShopTech] >= 3 || PlayerInfo[i][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
 			{
 				SendClientMessageEx(i, 0xff0066FF, szMessage);
 			}
 		}
 	}
+	return 1;
+}
+
+CMD:makevipmod(playerid, params[])
+{
+	if(PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	new target, level;
+	if(sscanf(params, "ud", target, level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makevipmod [player] [level(0-2)])");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	if(!(0 <= level <= 2)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid levels are 0 - 2");
+	if(PlayerInfo[target][pVIPMod] == level) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this level.");
+	switch(level)
+	{
+		case 0: format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has removed %s's VIP Moderator rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		case 1: format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has made %s a VIP Moderator.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		case 2: format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has made %s a Senior VIP Moderator.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+	}
+	Log("logs/admin.log", szMiscArray);
+	switch(level)
+	{
+		case 0: format(szMiscArray, sizeof(szMiscArray), "Your VIP Moderator rank has been removed by %s.", GetPlayerNameEx(playerid));
+		case 1: format(szMiscArray, sizeof(szMiscArray), "You have been made a VIP Moderator by %s.", GetPlayerNameEx(playerid));
+		case 2: format(szMiscArray, sizeof(szMiscArray), "You have been made a Senior VIP Moderator by %s.", GetPlayerNameEx(playerid));
+	}
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, szMiscArray);
+	switch(level)
+	{
+		case 0: format(szMiscArray, sizeof(szMiscArray), "You have removed %s's VIP Moderator rank.", GetPlayerNameEx(target));
+		case 1: format(szMiscArray, sizeof(szMiscArray), "You have made %s a VIP Moderator.", GetPlayerNameEx(target));
+		case 2: format(szMiscArray, sizeof(szMiscArray), "You have made %s a Senior VIP Moderator.", GetPlayerNameEx(target));
+	}
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	PlayerInfo[target][pVIPMod] = level;
 	return 1;
 }

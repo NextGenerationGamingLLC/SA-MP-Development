@@ -305,9 +305,9 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	    {
 	        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 	        {
-	            SetPlayerHealth(playerid, PaintBallArena[arenaid][pbHealth]);
+	            SetHealth(playerid, PaintBallArena[arenaid][pbHealth]);
 	            if(PaintBallArena[arenaid][pbArmor] > 0) {
-	            	SetPlayerArmor(playerid, PaintBallArena[arenaid][pbArmor]);
+	            	SetArmour(playerid, PaintBallArena[arenaid][pbArmor]);
 	            }
 	        }
 
@@ -332,9 +332,9 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	    {
 	        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 	        {
-	            SetPlayerHealth(playerid, PaintBallArena[arenaid][pbHealth]);
+	            SetHealth(playerid, PaintBallArena[arenaid][pbHealth]);
 	            if(PaintBallArena[arenaid][pbArmor] > 0) {
-	            	SetPlayerArmor(playerid, PaintBallArena[arenaid][pbArmor]);
+	            	SetArmour(playerid, PaintBallArena[arenaid][pbArmor]);
 	            }
 	        }
 
@@ -541,9 +541,9 @@ stock SpawnPaintballArena(playerid, arenaid)
 
  	SetPlayerInterior(playerid, PaintBallArena[arenaid][pbInterior]);
  	SetPlayerVirtualWorld(playerid, PaintBallArena[arenaid][pbVirtual]);
- 	SetPlayerHealth(playerid, PaintBallArena[arenaid][pbHealth]);
+ 	SetHealth(playerid, PaintBallArena[arenaid][pbHealth]);
  	if(PaintBallArena[arenaid][pbArmor] >= 0) {
- 		SetPlayerArmor(playerid, PaintBallArena[arenaid][pbArmor]);
+ 		SetArmour(playerid, PaintBallArena[arenaid][pbArmor]);
  	}
  	GivePlayerWeapon(playerid, PaintBallArena[arenaid][pbWeapons][0], 60000);
  	GivePlayerWeapon(playerid, PaintBallArena[arenaid][pbWeapons][1], 60000);
@@ -574,7 +574,7 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 	SetPVarFloat(playerid, "pbOldZ", oldZ);
 
 	GetPlayerHealth(playerid,oldHealth);
-	GetPlayerArmour(playerid,oldArmor);
+	GetArmour(playerid,oldArmor);
 	SetPVarInt(playerid, "pbOldInt", GetPlayerInterior(playerid));
 	SetPVarInt(playerid, "pbOldVW", GetPlayerVirtualWorld(playerid));
 	SetPVarFloat(playerid, "pbOldHealth", oldHealth);
@@ -746,8 +746,8 @@ stock LeavePaintballArena(playerid, arenaid)
   		SetPlayerColor(playerid,TEAM_HIT_COLOR);
   		SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "pbOldX"), GetPVarFloat(playerid, "pbOldY"), GetPVarFloat(playerid, "pbOldZ"));
-		SetPlayerHealth(playerid, GetPVarFloat(playerid, "pbOldHealth"));
-		SetPlayerArmor(playerid, GetPVarFloat(playerid, "pbOldArmor"));
+		SetHealth(playerid, GetPVarFloat(playerid, "pbOldHealth"));
+		SetArmour(playerid, GetPVarFloat(playerid, "pbOldArmor"));
 		SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "pbOldVW"));
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "pbOldInt"));
 		PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "pbOldVW");
@@ -813,7 +813,7 @@ public TickCTF(playerid)
 					    {
 					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 					        {
-					            SetPlayerHealth(playerid, 1);
+					            SetHealth(playerid, 1);
 					            RemoveArmor(playerid);
 					        }
 					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
@@ -829,7 +829,7 @@ public TickCTF(playerid)
 					    {
 					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 					        {
-					            SetPlayerHealth(playerid, 1);
+					            SetHealth(playerid, 1);
 					            RemoveArmor(playerid);
 					        }
 					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
@@ -868,7 +868,7 @@ public TickCTF(playerid)
 					    {
 					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 					        {
-					            SetPlayerHealth(playerid, 1);
+					            SetHealth(playerid, 1);
                                 RemoveArmor(playerid);
 					        }
 					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
@@ -884,7 +884,7 @@ public TickCTF(playerid)
 					    {
 					        if(PaintBallArena[arenaid][pbFlagInstagib] == 1)
 					        {
-					            SetPlayerHealth(playerid, 1);
+					            SetHealth(playerid, 1);
 					            RemoveArmor(playerid);
 					        }
 					        if(PaintBallArena[arenaid][pbFlagNoWeapons] == 1)
@@ -920,7 +920,7 @@ public TickKOTH(playerid)
 			{
 			    new Float:health;
 			    GetPlayerHealth(playerid, health);
-			    SetPlayerHealth(playerid, health+1);
+			    SetHealth(playerid, health+1);
 
 			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 			    PlayerInfo[playerid][pKills] += 1;
@@ -932,7 +932,7 @@ public TickKOTH(playerid)
 			{
 			    new Float:health;
 			    GetPlayerHealth(playerid, health);
-			    SetPlayerHealth(playerid, health+1);
+			    SetHealth(playerid, health+1);
 
 			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
 

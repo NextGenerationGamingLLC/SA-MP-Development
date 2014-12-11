@@ -1083,7 +1083,7 @@ CMD:docarrest(playerid, params[])
 			PlayerCuffedTime[suspect] = 0;
 			PlayerInfo[suspect][pVW] = 0;
 			SetPlayerVirtualWorld(suspect, 0);
-			SetPlayerHealth(suspect, 100);
+			SetHealth(suspect, 100);
 			strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 			strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
 			SetPlayerToTeamColor(suspect);
@@ -1286,6 +1286,7 @@ CMD:acceptjailfood(playerid, params[])
 		if(PlayerInfo[playerid][pHunger] <= 100)
 		{
 			PlayerInfo[playerid][pHunger] += 33;
+			if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 			if (PlayerInfo[playerid][pFitness] >= 3)
 			{
 				PlayerInfo[playerid][pFitness] -= 3;
@@ -1344,6 +1345,7 @@ CMD:eatfood(playerid, params[])
 		if(PlayerInfo[playerid][pHunger] <= 100)
 		{
 			PlayerInfo[playerid][pHunger] += 33;
+			if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 			if (PlayerInfo[playerid][pFitness] >= 3)
 			{
 				PlayerInfo[playerid][pFitness] -= 3;

@@ -43,7 +43,7 @@ stock SendAdvisorMessage(color, string[])
 	{
 		if(IsPlayerConnected(i))
 		{
-			if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pDonateRank] == 5 || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
+			if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
 			{
 				SendClientMessageEx(i, color, string);
 			}
@@ -1113,10 +1113,10 @@ CMD:accepthelp(playerid, params[])
 			SetPlayerInterior(playerid, i);
 			GetPlayerHealth(playerid,health);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
-			GetPlayerArmour(playerid,armor);
+			GetArmour(playerid,armor);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);
-			SetPlayerHealth(playerid, 0x7FB00000);
-		    SetPlayerArmor(playerid, 0x7FB00000);
+			SetHealth(playerid, 0x7FB00000);
+		    SetArmour(playerid, 0x7FB00000);
 		    SetPVarInt(playerid, "pGodMode", 1);
 			if(i > 0 || vw > 0) Player_StreamPrep(playerid, x, y, z, FREEZE_TIME);
 			HelpingNewbie[playerid] = Player;
@@ -1142,10 +1142,10 @@ CMD:finishhelp(playerid, params[])
 		SetPlayerInterior(playerid, GetPVarInt(playerid, "AdvisorLastInt"));
 		DeletePVar(playerid, "pGodMode");
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealth(playerid,health);
+		SetHealth(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmor(playerid,armor);
+			SetArmour(playerid,armor);
 		}
 		else
 		{

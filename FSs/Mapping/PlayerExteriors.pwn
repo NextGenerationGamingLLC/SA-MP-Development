@@ -7143,10 +7143,11 @@ public OnFilterScriptInit()
 	{
 	    if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0)
 		{
-			Streamer_UpdateEx(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 			GetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-			SetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2] + 2.5);
-			TogglePlayerControllable(i, true);
+			Streamer_UpdateEx(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
+			//SetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2] + 2.5);
+			//TogglePlayerControllable(i, true);
+			CallRemoteFunction("Player_StreamPrep", "ifffi", i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2], 2500);
 		}
 	}
 	// Headroom for static objects - streamed limits are completely independent (cause of old crashing)

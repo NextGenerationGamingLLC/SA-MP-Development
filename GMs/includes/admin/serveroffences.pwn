@@ -421,9 +421,9 @@ CMD:reverse(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		if(!sscanf(params, "us[24]", giveplayerid, reason)) {
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player.");
-			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 1337) 
+			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 4) 
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You have not acted against this person, therefor you can not reverse any actions for them.");
-				
+			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this to someone not currently prisoned.");
 			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 				SetPVarInt(playerid, "ReverseReport", 1);
 				SetPVarInt(playerid, "ReverseID", giveplayerid);
@@ -443,7 +443,7 @@ CMD:reverse(playerid, params[])
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(giveplayerid);
-			SetPlayerHealth(giveplayerid, 100);
+			SetHealth(giveplayerid, 100);
 			SetPlayerWantedLevel(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pJailTime] = 0;
 			SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -666,7 +666,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 	PhoneOnline[giveplayerid] = 1;
 	SetPlayerInterior(giveplayerid, 1);
-	SetPlayerHealth(giveplayerid, 0x7FB00000);
+	SetHealth(giveplayerid, 0x7FB00000);
 	PlayerInfo[giveplayerid][pInt] = 1;
 	Streamer_UpdateEx(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
 	SetPlayerPos(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2]);
@@ -864,7 +864,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerInfo[releasedID][pWantedLevel] = 0;
 			PlayerInfo[releasedID][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(releasedID);
-			SetPlayerHealth(releasedID, 100);
+			SetHealth(releasedID, 100);
 			SetPlayerWantedLevel(releasedID, 0);
 			PlayerInfo[releasedID][pJailTime] = 0;
 			SetPlayerPos(releasedID, 1529.6,-1691.2,13.3);

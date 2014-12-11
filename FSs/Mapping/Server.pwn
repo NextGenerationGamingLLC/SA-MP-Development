@@ -32,7 +32,7 @@ public OnFilterScriptInit()
 	// Start of Enterable vehicles mapping project.
 	
 	// journey interior
-	CreateDynamicObject(19462, 2821.55054, 1529.81494, -50.00000,   0.00000, 90.00000, 0.00000);
+	CreateObject(19462, 2821.55054, 1529.81494, -50.00000,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(1794, 2823.32007, 1533.18005, -49.49400,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(2136, 2820.28027, 1529.22485, -49.99760,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(2139, 2822.28418, 1534.15393, -50.00360,   0.00000, 0.00000, 90.00000);
@@ -20403,14 +20403,167 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1297, 1717.41101, -997.48480, 26.20000,   0.00000, 0.00000, 75.00000);
 	CreateDynamicObject(1297, 1764.53882, -1007.46240, 26.20000,   0.00000, 0.00000, 75.00000);
 	
+	//Paintball Arenas
+		//East LS Parking Lot
+	CreateDynamicObject(987, 2812.58960, -1583.50964, 9.74301,   0.00000, 0.00000, 244.30896, .worldid = 1);
+	CreateDynamicObject(987, 2766.37695, -1599.89331, 11.84454,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(987, 2778.30640, -1599.91138, 11.84454,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(987, 2790.17725, -1600.00525, 11.84450,   0.00000, -7.00000, 90.00000, .worldid = 1);
+	CreateDynamicObject(987, 2790.13379, -1588.08228, 13.31020,   0.00000, -7.00000, 89.39700, .worldid = 1);
+	CreateDynamicObject(987, 2790.18921, -1576.20044, 14.76230,   0.00000, -7.00000, 89.80300, .worldid = 1);
+	CreateDynamicObject(987, 2790.18628, -1564.34546, 16.24040,   0.00000, -7.00000, 89.80300, .worldid = 1);
+	CreateDynamicObject(987, 2790.24902, -1553.01770, 17.71547,   0.00000, 0.00000, 89.61242, .worldid = 1);
+	CreateDynamicObject(987, 2815.94385, -1533.71973, 10.06982,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(987, 2827.80591, -1565.25781, 9.74301,   0.00000, 0.00000, 230.54274, .worldid = 1);
+	CreateDynamicObject(987, 2820.16577, -1574.34521, 9.74301,   0.00000, 0.00000, 230.54274, .worldid = 1);
+	CreateDynamicObject(3593, 2794.13379, -1578.22363, 11.18610,   0.00000, 90.00000, 282.90640, .worldid = 1);
+	CreateDynamicObject(3593, 2796.34814, -1576.30371, 11.18610,   0.00000, 56.00000, 105.62670, .worldid = 1);
+	CreateDynamicObject(3574, 2774.74121, -1615.99182, 12.66210,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(2932, 2804.85938, -1571.77783, 11.29320,   0.00000, 0.00000, 41.80532, .worldid = 1);
+	CreateDynamicObject(2934, 2826.16382, -1551.87866, 11.32500,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(2932, 2798.95435, -1593.50793, 14.24670,   0.00000, 0.00000, 70.07420, .worldid = 1);
+	CreateDynamicObject(3573, 2807.01880, -1553.22717, 12.66210,   0.00000, 0.00000, 321.75037, .worldid = 1);
+	CreateDynamicObject(2934, 2826.16382, -1551.87866, 14.15748,   0.00000, 0.00000, 0.00000, .worldid = 1);
+	CreateDynamicObject(2935, 2792.10522, -1621.52026, 11.26470,   0.00000, 0.00000, 73.27990, .worldid = 1);
+	CreateDynamicObject(2935, 2793.37354, -1558.49084, 13.71980,   62.00000, 0.00000, 91.08674, .worldid = 1);
+	CreateDynamicObject(2934, 2798.95435, -1593.50793, 11.30465,   0.00000, 0.00000, 70.07418, .worldid = 1);
+	CreateDynamicObject(2934, 2790.66943, -1601.33215, 13.30560,   90.00000, 0.00000, 33.33947, .worldid = 1);
+	CreateDynamicObject(2935, 2793.01733, -1605.05359, 13.71980,   62.00000, 0.00000, 33.33950, .worldid = 1);
+	CreateDynamicObject(2935, 2805.54834, -1586.72534, 13.71980,   62.00000, 0.00000, 240.55757, .worldid = 1);
+	CreateDynamicObject(2935, 2821.14624, -1553.86145, 11.29320,   0.00000, 0.00000, 90.00000, .worldid = 1);
+		//San Fierro
+	CreateDynamicObject(8147, -2646.93970, 167.09419, 4.87190,   0.00000, 0.00000, 270.00000, .worldid = 2);
+	CreateDynamicObject(8147, -2653.14453, 29.34861, 4.87190,   0.00000, 0.00000, 90.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2726.00684, 41.69647, -2.07542,   90.00000, 0.00000, 0.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2587.01123, 41.59088, 4.49514,   0.00000, 0.00000, 0.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2586.30005, 82.52362, 4.22988,   90.00000, 0.00000, 0.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2578.94141, 159.85562, 4.22988,   90.00000, 0.00000, 0.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2717.13037, 157.35620, 0.54380,   90.00000, 0.00000, 0.00000, .worldid = 2);
+	CreateDynamicObject(18981, -2729.82251, 84.67581, -2.07542,   90.00000, 0.00000, 0.00000, .worldid = 2);
+		//SF Train Station
+	CreateDynamicObject(7017, -1951.47, 204.91, 25.52,   0.00, 0.00, 76.00, .worldid = 3);
+	CreateDynamicObject(3867, -1940.98, 210.26, 22.96,   0.00, 0.00, 180.00, .worldid = 3);
+	CreateDynamicObject(10932, -1941.46, 83.47, 32.64,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(11353, -1921.89, 83.34, 29.76,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(18981, -1960.35, 95.47, 23.46,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(18981, -1960.35, 70.47, 23.46,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(18766, -1960.35, 55.47, 29.46,   0.00, 90.00, 90.00, .worldid = 3);
+	CreateDynamicObject(10985, -1940.90, 196.72, 25.90,   0.00, 0.00, 91.00, .worldid = 3);
+	CreateDynamicObject(10984, -1931.33, 198.49, 25.90,   0.00, 0.00, 91.00, .worldid = 3);
+	CreateDynamicObject(7017, -1951.47, 204.91, 30.47,   0.00, 0.00, 76.00, .worldid = 3);
+	CreateDynamicObject(7017, -1929.46, 201.39, 25.52,   0.00, 0.00, -79.00, .worldid = 3);
+	CreateDynamicObject(7017, -1929.46, 201.39, 30.47,   0.00, 0.00, -79.00, .worldid = 3);
+	CreateDynamicObject(1418, -1979.08, 139.58, 27.44,   0.00, 0.00, 90.00, .worldid = 3);
+	CreateDynamicObject(1418, -1979.08, 136.11, 27.44,   0.00, 0.00, 90.00, .worldid = 3);
+	CreateDynamicObject(1449, -1978.85, 137.85, 27.20,   0.00, 0.00, 88.60, .worldid = 3);
+	CreateDynamicObject(3865, -1943.94, 193.95, 28.10,   -11.00, 0.00, 91.00, .worldid = 3);
+	CreateDynamicObject(3865, -1942.54, 102.13, 27.00,   -1.00, 0.00, 193.00, .worldid = 3);
+	CreateDynamicObject(3865, -1947.36, 104.05, 28.34,   -32.00, 0.00, 91.00, .worldid = 3);
+	CreateDynamicObject(4853, -1938.86, 120.91, 28.00,   -1.00, 0.00, 89.50, .worldid = 3);
+	CreateDynamicObject(10984, -1952.91, 102.56, 25.90,   0.00, 0.00, 91.00, .worldid = 3);
+	CreateDynamicObject(1432, -1938.23, 70.57, 24.78,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(1432, -1940.68, 70.58, 24.78,   0.00, 0.00, 55.00, .worldid = 3);
+	CreateDynamicObject(3577, -1925.81, 101.52, 26.03,   0.00, 0.00, 105.00, .worldid = 3);
+	CreateDynamicObject(1684, -1939.33, 63.83, 26.20,   0.00, 0.00, 251.00, .worldid = 3);
+	CreateDynamicObject(1685, -1952.06, 125.64, 25.99,   0.00, 0.00, 251.00, .worldid = 3);
+	CreateDynamicObject(1685, -1937.08, 136.81, 25.99,   0.00, 0.00, 178.00, .worldid = 3);
+	CreateDynamicObject(3867, -1950.15, 54.57, 25.96,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(3867, -1932.71, 54.57, 25.96,   0.00, 0.00, 0.00, .worldid = 3);
+	CreateDynamicObject(1358, -1938.69, 158.24, 26.47,   0.00, 0.00, 142.00, .worldid = 3);
+	CreateDynamicObject(1775, -1960.05, 145.40, 27.70,   0.00, 0.00, 90.00, .worldid = 3);
+	CreateDynamicObject(1437, -1930.04, 56.89, 25.94,   0.00, 0.00, 180.00, .worldid = 3);
+	CreateDynamicObject(1426, -1922.83, 54.43, 25.20,   0.00, 0.00, -90.00, .worldid = 3);
+	CreateDynamicObject(1426, -1922.82, 54.33, 28.80,   0.00, 0.00, 90.00, .worldid = 3);
+	CreateDynamicObject(1426, -1922.83, 54.43, 32.39,   0.00, 0.00, -90.00, .worldid = 3);
+	CreateDynamicObject(18763, -1960.38, 54.45, 27.20,   0.00, 0.00, 180.00, .worldid = 3);
+	CreateDynamicObject(18763, -1960.38, 54.45, 32.20,   0.00, 0.00, 180.00, .worldid = 3);
+	CreateDynamicObject(1426, -1959.99, 54.66, 34.69,   0.00, 0.00, -90.00, .worldid = 3);
+		//LV Construction Site
+	CreateDynamicObject(8869, 2637.26, 807.80, 12.86,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2627.70, 821.46, 9.87,   0.00, 0.00, -62.00, .worldid = 4);
+	CreateDynamicObject(8871, 2637.26, 871.24, 12.77,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2656.19, 836.98, 9.89,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2729.87, 836.98, 9.89,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2656.19, 836.98, 4.94,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2627.70, 821.47, 4.94,   0.00, 0.00, -62.00, .worldid = 4);
+	CreateDynamicObject(7017, 2729.87, 836.98, 4.94,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(7017, 2717.15, 844.94, 9.94,   0.00, 0.00, 90.00, .worldid = 4);
+	CreateDynamicObject(3529, 2666.15, 887.36, 8.23,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(3529, 2635.26, 854.71, 8.23,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(1384, 2651.72, 848.44, 69.53,   0.00, 0.00, -34.00, .worldid = 4);
+	CreateDynamicObject(1383, 2651.80, 848.44, 37.13,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(1684, 2646.72, 871.44, 6.63,   0.00, 0.00, 47.00, .worldid = 4);
+	CreateDynamicObject(3529, 2624.93, 842.92, 7.50,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(3577, 2698.94, 844.43, 8.70,   0.00, 5.00, -185.00, .worldid = 4);
+	CreateDynamicObject(1685, 2647.48, 860.69, 5.77,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(1685, 2678.09, 873.57, 10.70,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(1685, 2670.81, 856.02, 10.70,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(1685, 2671.59, 858.30, 10.70,   0.00, 0.00, 0.00, .worldid = 4);
+	CreateDynamicObject(933, 2669.09, 844.42, 6.49,   0.00, -6.00, 0.00, .worldid = 4);
+	CreateDynamicObject(933, 2668.99, 844.25, 7.43,   0.00, -6.00, 0.00, .worldid = 4);
+		//Las Colinas Forest Arena
+	CreateDynamicObject(18259, 2425.10, -644.39, 124.77,   357.42, 10.31, 0.00, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2400.20, -682.52, 121.59,   0.00, 0.00, 339.37, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2431.04, -669.09, 119.76,   0.00, 0.00, 358.49, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2443.51, -643.25, 116.64,   0.00, 0.00, 55.44, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2418.63, -621.55, 119.38,   0.00, 0.00, 127.30, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2428.14, -628.00, 117.21,   0.00, 0.00, 121.35, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2393.55, -619.82, 119.29,   0.00, 0.00, 141.16, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2359.41, -621.47, 120.90,   0.00, 0.00, 151.58, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2337.34, -633.65, 124.64,   0.00, 0.00, 193.25, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2331.76, -653.78, 125.41,   0.00, 0.00, 238.06, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2361.15, -686.11, 127.67,   347.11, 0.00, 310.26, .worldid = 5);// Rock1
+	CreateDynamicObject(18228, 2343.53, -677.75, 124.29,   347.11, 0.00, 285.24, .worldid = 5);// Rock1
+	CreateDynamicObject(744, 2392.19, -637.09, 123.55,   0.00, 0.00, 0.00, .worldid = 5);// Rock2
+	CreateDynamicObject(744, 2391.18, -665.30, 125.75,   0.00, 0.00, 0.00, .worldid = 5);// Rock2
+	CreateDynamicObject(744, 2372.62, -663.56, 126.58,   0.00, 0.00, 0.00, .worldid = 5);// Rock2
+	CreateDynamicObject(696, 2367.96, -638.75, 126.32,   0.00, 0.00, -31.32, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2356.78, -670.55, 126.64,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2380.70, -662.10, 126.34,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2410.62, -666.18, 125.48,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2409.65, -636.45, 124.75,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2393.17, -649.56, 124.75,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2432.69, -651.97, 124.34,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2349.67, -641.24, 126.32,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(696, 2367.45, -658.51, 126.64,   0.00, 0.00, 0.00, .worldid = 5);// Small Tree
+	CreateDynamicObject(647, 2357.47, -670.48, 130.64,   0.00, 0.00, 0.00, .worldid = 5);// B_Bush
+	CreateDynamicObject(762, 2372.48, -622.38, 137.33,   0.00, 0.00, -76.44, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2347.79, -626.96, 138.63,   0.00, 0.00, -76.44, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2385.99, -620.39, 139.00,   0.00, 0.00, 241.60, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2403.91, -622.79, 137.33,   0.00, 0.00, 215.68, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2412.58, -624.02, 137.33,   0.00, 0.00, 215.68, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2426.99, -626.97, 136.92,   0.00, 0.00, 183.88, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2435.48, -631.71, 136.92,   0.00, 0.00, 183.88, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2440.47, -639.77, 136.92,   0.00, 0.00, 183.88, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2441.94, -653.81, 135.41,   0.00, 0.00, 183.88, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2436.03, -664.40, 135.41,   0.00, 0.00, 164.80, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2420.33, -675.36, 135.41,   0.00, 0.00, 149.02, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2407.75, -680.28, 136.13,   0.00, 0.00, 149.02, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2384.92, -685.94, 137.17,   0.00, 0.00, 149.02, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2369.39, -687.34, 139.50,   0.00, 0.00, 149.02, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2350.88, -679.36, 142.69,   0.00, 0.00, 220.24, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2336.57, -670.70, 142.69,   0.00, 0.00, 220.24, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2332.71, -661.72, 144.21,   0.00, 0.00, 220.24, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2331.88, -641.47, 142.01,   0.00, 0.00, 179.44, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2393.26, -668.42, 127.81,   0.00, 0.00, 164.80, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2369.55, -671.52, 129.08,   0.00, 0.00, 164.80, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2379.10, -636.43, 126.20,   0.00, 0.00, 164.80, .worldid = 5);// B_Bush2
+	CreateDynamicObject(762, 2393.67, -645.63, 126.20,   0.00, 0.00, 164.80, .worldid = 5);// B_Bush2
+	CreateDynamicObject(744, 2377.54, -641.07, 124.23,   0.00, 0.00, -10.92, .worldid = 5);// Rock2
+	CreateDynamicObject(744, 2361.01, -641.85, 126.88,   0.00, 0.00, 0.00, .worldid = 5);// Rock2
+	CreateDynamicObject(745, 2370.77, -649.56, 126.20,   0.00, 0.00, -99.78, .worldid = 5);//ING_BUSH_G
+	CreateDynamicObject(745, 2407.88, -651.44, 125.91,   0.00, 0.00, 116.26, .worldid = 5);//ING_BUSH_G
+	CreateDynamicObject(745, 2382.57, -653.64, 125.40,   0.00, 0.00, 116.26, .worldid = 5);//ING_BUSH_G
+	
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{
 	    if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0)
 		{
-			Streamer_UpdateEx(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 			GetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-			SetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2] + 2.5);
-			TogglePlayerControllable(i, true);
+			Streamer_UpdateEx(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
+			//SetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2] + 2.5);
+			//TogglePlayerControllable(i, true);
+			CallRemoteFunction("Player_StreamPrep", "ifffi", i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2], 2500);
 		}
 	}
 	// Headroom for static objects - streamed limits are completely independent (cause of old crashing)
@@ -21340,6 +21493,15 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1294, 1743.5391, -1007.3906, 27.5781, 0.25);
 		RemoveBuildingForPlayer(playerid, 1215, 1751.0156, -1007.2344, 23.6094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1215, 1767.3984, -1011.0781, 23.6094, 0.25);
+		
+		//Paintball Arenas
+			//1
+		RemoveBuildingForPlayer(playerid, 17904, 2769.2422, -1624.2266, 19.3203, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 2809.4219, -1567.6328, 9.5469, 0.25);
+		RemoveBuildingForPlayer(playerid, 620, 2809.2734, -1556.3125, 9.5469, 0.25);
+			//5
+		RemoveBuildingForPlayer(playerid, 785, 2431.3750, -657.0859, 119.6094, 0.25);
+		RemoveBuildingForPlayer(playerid, 791, 2431.3750, -657.0859, 119.6094, 0.25);
 		SetPVarInt(playerid, "BuildingRemoved", 1);
 	}
 	return true;

@@ -202,7 +202,7 @@ CMD:help(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online /setbadge /setdivname");
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /viewbudget /grepocars /gvbuyback /gdonate /ordercrates /dvtrackcar /gwithdraw, /dvstorage");
+			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /viewbudget /grepocars /gvbuyback /gdonate /ordercrates /dvtrackcar /gwithdraw /dvstorage");
 			}
 			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 			{
@@ -243,7 +243,7 @@ CMD:help(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP *** /freeads /pvipjob /vipplate");
 	}
-	if(PlayerInfo[playerid][pDonateRank] == 5)
+	if(PlayerInfo[playerid][pVIPMod])
 	{
 		SendClientMessageEx(playerid, COLOR_PURPLE, "*** VIP Moderator *** /vipparty /vto /vtoreset /vmute /vsuspend /vipm");
 	}

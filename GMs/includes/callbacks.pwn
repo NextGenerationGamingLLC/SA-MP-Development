@@ -2311,7 +2311,6 @@ public OnPlayerConnect(playerid)
 	BackupClearTimer[playerid] = 0;
 	Backup[playerid] = 0;
     CarRadars[playerid] = 0;
-    CurrentArmor[playerid] = 0.0;
 	PlayerInfo[playerid][pReg] = 0;
 	HHcheckVW[playerid] = 0;
 	HHcheckInt[playerid] = 0;
@@ -2608,6 +2607,7 @@ public OnPlayerConnect(playerid)
 	SetTimerEx("LoginCheckEx", 5000, 0, "i", playerid);
 
 	RemoveBuildings(playerid);
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 	return 1;
 }
 
@@ -2661,8 +2661,8 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -2690,8 +2690,8 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 						
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -2720,8 +2720,8 @@ public OnPlayerDisconnect(playerid, reason)
 							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
 								
-							SetPlayerHealth(i, HungerPlayerInfo[i][hgLastHealth]);
-							SetPlayerArmor(i, HungerPlayerInfo[i][hgLastArmour]);
+							SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
+							SetArmour(i, HungerPlayerInfo[i][hgLastArmour]);
 							SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 							SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 							SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
@@ -2762,8 +2762,8 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				else if(hgPlayerCount > 3)
 				{
-					SetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
-					SetPlayerArmor(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
+					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
@@ -3007,8 +3007,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetHealth(playerid, 0x7FB00000);
+						SetArmour(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3024,8 +3024,8 @@ public OnPlayerDisconnect(playerid, reason)
 				{
 					if(PlayerCuffed[playerid] == 2)
 				    {
-					    SetPlayerHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
-	                    SetPlayerArmor(playerid, GetPVarFloat(playerid, "cuffarmor"));
+					    SetHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
+	                    SetArmour(playerid, GetPVarFloat(playerid, "cuffarmor"));
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
@@ -3102,8 +3102,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetHealth(playerid, 0x7FB00000);
+						SetArmour(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3119,8 +3119,8 @@ public OnPlayerDisconnect(playerid, reason)
 				{
 				    if(PlayerCuffed[playerid] == 2)
 				    {
-					    SetPlayerHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
-	                    SetPlayerArmor(playerid, GetPVarFloat(playerid, "cuffarmor"));
+					    SetHealth(playerid, GetPVarFloat(playerid, "cuffhealth"));
+	                    SetArmour(playerid, GetPVarFloat(playerid, "cuffarmor"));
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
@@ -3216,8 +3216,8 @@ public OnPlayerDisconnect(playerid, reason)
 					DeletePVar(playerid, "SpecOff");
 					if(GetPVarType(playerid, "pGodMode"))
 					{
-						SetPlayerHealth(playerid, 0x7FB00000);
-						SetPlayerArmor(playerid, 0x7FB00000);
+						SetHealth(playerid, 0x7FB00000);
+						SetArmour(playerid, 0x7FB00000);
 					}
 					GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 					Spectate[playerid] = INVALID_PLAYER_ID;
@@ -3269,11 +3269,11 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pHealth] = GetPVarFloat(playerid, "pbOldHealth");
 			PlayerInfo[playerid][pArmor] = GetPVarFloat(playerid, "pbOldArmor");
 			new szLog[128], Float: realarmor;
-			GetPlayerArmour(playerid, realarmor);
+			GetArmour(playerid, realarmor);
 			format(szLog, sizeof(szLog), "Player %s(%d) disconnects inside paintball with %f.2 armor, but has %f.2.", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pArmor], realarmor);
 			Log("logs/debug.log", szLog);
-			SetPlayerHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
-			SetPlayerArmor(playerid,GetPVarFloat(playerid, "pbOldArmor"));
+			SetHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
+			SetArmour(playerid,GetPVarFloat(playerid, "pbOldArmor"));
 		}
 		else if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "LoadingObjects"))
 		{
@@ -3571,9 +3571,9 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "pGodMode") == 1)
 		{
 			health = GetPVarFloat(playerid, "pPreGodHealth");
-			SetPlayerHealth(playerid,health);
+			SetHealth(playerid,health);
 			armor = GetPVarFloat(playerid, "pPreGodArmor");
-			SetPlayerArmor(playerid, armor);
+			SetArmour(playerid, armor);
 			DeletePVar(playerid, "pGodMode");
 			DeletePVar(playerid, "pPreGodHealth");
 			DeletePVar(playerid, "pPreGodArmor");
@@ -3637,6 +3637,8 @@ public OnRconLoginAttempt(ip[], password[], success)
 public OnPlayerDeath(playerid, killerid, reason)
 {
     if(IsPlayerNPC(playerid)) return 1;
+	if(PlayerIsDead[playerid]) return 1;
+	PlayerIsDead[playerid] = true;
 	IsSpawned[playerid] = 0;
 	SpawnKick[playerid] = 0;
 	if(IsPlayerConnected(playerid) && IsPlayerConnected(killerid))
@@ -3929,7 +3931,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			    {
 			        --PaintBallArena[iKiller][pbTeamRedKills];
 			        ++PaintBallArena[iPlayer][pbTeamBlueKills];
-			        SetPlayerHealth(killerid, 0);
+			        SetHealth(killerid, 0);
 			        PlayerInfo[killerid][pKills] -= 2;
 			        ++PlayerInfo[killerid][pDeaths];
 		    		--PlayerInfo[playerid][pDeaths];
@@ -3947,7 +3949,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			    {
 			        --PaintBallArena[iKiller][pbTeamBlueKills];
 			        ++PaintBallArena[iPlayer][pbTeamRedKills];
-			        SetPlayerHealth(killerid, 0);
+			        SetHealth(killerid, 0);
 			        PlayerInfo[killerid][pKills] -= 2;
 			        ++PlayerInfo[killerid][pDeaths];
 		    		--PlayerInfo[playerid][pDeaths];
@@ -4143,6 +4145,7 @@ public OnPlayerSpawn(playerid)
 	}
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
+	PlayerIsDead[playerid] = false;
 	
 	if(!gPlayerAnimLibsPreloaded[playerid])
 	{
@@ -4310,9 +4313,9 @@ public OnPlayerSpawn(playerid)
 	    SetPlayerWeaponsEx(playerid);
         GivePlayerValidWeapon(playerid, 46, 60000);
         SetPlayerSkin(playerid, GetPVarInt(playerid, "NGPassengerSkin"));
-        SetPlayerHealth(playerid, GetPVarFloat(playerid, "NGPassengerHP"));
+        SetHealth(playerid, GetPVarFloat(playerid, "NGPassengerHP"));
         if(GetPVarFloat(playerid, "NGPassengerArmor") > 0) {
-        	SetPlayerArmor(playerid, GetPVarFloat(playerid, "NGPassengerArmor"));
+        	SetArmour(playerid, GetPVarFloat(playerid, "NGPassengerArmor"));
         }
 		DeletePVar(playerid, "NGPassenger");
 	    DeletePVar(playerid, "NGPassengerVeh");
@@ -4325,9 +4328,9 @@ public OnPlayerSpawn(playerid)
 	{
 		SetPlayerPos(playerid, GetPVarFloat(playerid, "air_Xpos"), GetPVarFloat(playerid, "air_Ypos"), GetPVarFloat(playerid, "air_Zpos"));
 		SetPlayerFacingAngle(playerid, GetPVarFloat(playerid, "air_Rpos"));
-		SetPlayerHealth(playerid, GetPVarFloat(playerid, "air_HP"));
+		SetHealth(playerid, GetPVarFloat(playerid, "air_HP"));
 		if(GetPVarFloat(playerid, "air_Arm") > 0) {
-			SetPlayerArmor(playerid, GetPVarFloat(playerid, "air_Arm"));
+			SetArmour(playerid, GetPVarFloat(playerid, "air_Arm"));
 		}
 		SetPlayerWeaponsEx(playerid);
 		SetPlayerToTeamColor(playerid);
@@ -4353,7 +4356,7 @@ public OnPlayerSpawn(playerid)
 		DeletePVar(playerid, "STD");
 	}
 
-	SetPlayerTeam(playerid, NO_TEAM);
+	SetTeam(playerid, NO_TEAM);
 	SetPlayerSpawn(playerid);
 	SetPlayerWeapons(playerid);
 	SetPlayerToTeamColor(playerid);
@@ -4476,7 +4479,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 			}	
-			SetPlayerHealth(playerid, 0);
+			SetHealth(playerid, 0);
 			return 1;
 		}
 	    if(EventRCPT[RCPIdCurrent[playerid]] == 1) {
@@ -4743,7 +4746,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				DeletePVar(playerid, "Packages");
 				DeletePVar(playerid, "MatDeliver");
 				DisablePlayerCheckpoint(playerid);
-
+				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 				for(new p = 0; p < sizeof(FamilyInfo); p++)
 				{
 					if(strcmp(Points[h][Owner], FamilyInfo[p][FamilyName], true) == 0)
@@ -5648,7 +5651,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			GetPlayerHealth(playerid, cHealth);
 		    if(cHealth < 100)
 		    {
-				SetPlayerHealth(playerid, cHealth+5);
+				SetHealth(playerid, cHealth+5);
 		    }
 		    else
 		    {
@@ -5668,7 +5671,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			GetPlayerHealth(playerid, cHealth);
 		    if(cHealth < 100)
 		    {
-				SetPlayerHealth(playerid, cHealth+8);
+				SetHealth(playerid, cHealth+8);
 		    }
 		    else
 		    {
@@ -5689,7 +5692,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			GetPlayerHealth(playerid, cHealth);
 			if(cHealth < 100)
 			{
-				SetPlayerHealth(playerid, cHealth+2);
+				SetHealth(playerid, cHealth+2);
 			}
 			else
 			{
@@ -5859,7 +5862,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							SendClientMessageEx(GoChase[playerid], COLOR_YELLOW, string);
 							PlayerInfo[GoChase[playerid]][pHeadValue] = 0;
 							PlayerInfo[playerid][pCHits] += 1;
-							SetPlayerHealth(GoChase[playerid], 0.0);
+							SetHealth(GoChase[playerid], 0.0);
 							// KillEMSQueue(GoChase[playerid]);
 							GotHit[GoChase[playerid]] = 0;
 							GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
@@ -6011,7 +6014,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 					PlayerInfo[playerid][pHeadValue] = 0;
 					PlayerInfo[GetChased[playerid]][pCHits] += 1;
-					SetPlayerHealth(playerid, 0.0);
+					SetHealth(playerid, 0.0);
 					GoChase[GetChased[playerid]] = INVALID_PLAYER_ID;
 					PlayerInfo[GetChased[playerid]][pC4Used] = 0;
 					PlayerInfo[GetChased[playerid]][pC4] = 0;
@@ -6291,7 +6294,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarInt(playerid, "NGPassengerSkin", GetPlayerSkin(playerid));
 			new Float:health, Float:armour;
 			GetPlayerHealth(playerid, health);
-			GetPlayerArmour(playerid, armour);
+			GetArmour(playerid, armour);
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);
 		}*/

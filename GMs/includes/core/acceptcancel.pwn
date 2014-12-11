@@ -975,8 +975,8 @@ CMD:accept(playerid, params[])
                     if(IsPlayerInRangeOfPoint(playerid,20.0,758.98, -60.32, 1000.78) || IsPlayerInRangeOfPoint(BoxOffer[playerid],20.0,758.98, -60.32, 1000.78)) {
                         ResetPlayerWeapons(playerid);
                         ResetPlayerWeapons(BoxOffer[playerid]);
-                        SetPlayerHealth(playerid, mypoints);
-                        SetPlayerHealth(BoxOffer[playerid], points);
+                        SetHealth(playerid, mypoints);
+                        SetHealth(BoxOffer[playerid], points);
                         SetPlayerInterior(playerid, 7); SetPlayerInterior(BoxOffer[playerid], 7);
                         SetPlayerPos(playerid, 768.94, -70.87, 1001.56); SetPlayerFacingAngle(playerid, 131.8632);
                         SetPlayerPos(BoxOffer[playerid], 764.35, -66.48, 1001.56); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -1015,8 +1015,8 @@ CMD:accept(playerid, params[])
                     }
                     ResetPlayerWeapons(playerid);
                     ResetPlayerWeapons(BoxOffer[playerid]);
-                    SetPlayerHealth(playerid, mypoints);
-                    SetPlayerHealth(BoxOffer[playerid], points);
+                    SetHealth(playerid, mypoints);
+                    SetHealth(BoxOffer[playerid], points);
                     SetPlayerInterior(playerid, 5); SetPlayerInterior(BoxOffer[playerid], 5);
                     SetPlayerPos(playerid, 762.9852,2.4439,1001.5942); SetPlayerFacingAngle(playerid, 131.8632);
                     SetPlayerPos(BoxOffer[playerid], 758.7064,-1.8038,1001.5942); SetPlayerFacingAngle(BoxOffer[playerid], 313.1165);
@@ -1336,7 +1336,7 @@ CMD:accept(playerid, params[])
                     if(IsPlayerConnected(GuardOffer[playerid])) {
                         if(ProxDetectorS(6.0, playerid, GuardOffer[playerid])) {
                             new Float:armour;
-                            GetPlayerArmour(playerid, armour);
+                            GetArmour(playerid, armour);
                             if(armour >= 50) {
                                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You already have a vest!");
                                 return 1;
@@ -1353,7 +1353,7 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            SetPlayerArmor(playerid, 50);
+                            SetArmour(playerid, 50);
                             GetPlayerName(GuardOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
                             format(szMessage, sizeof(szMessage), "* You accepted the protection for $%d from %s.",GuardPrice[playerid],GetPlayerNameEx(GuardOffer[playerid]));
@@ -2473,10 +2473,10 @@ CMD:accept(playerid, params[])
                                         GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 90) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 10.0);
+                                                SetHealth(playerid, health + 10.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD1));
@@ -2493,10 +2493,10 @@ CMD:accept(playerid, params[])
                                         GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 80) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 20.0);
+                                                SetHealth(playerid, health + 20.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD2));
@@ -2511,10 +2511,10 @@ CMD:accept(playerid, params[])
                                         GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 70) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 30.0);
+                                                SetHealth(playerid, health + 30.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD3));
@@ -2529,10 +2529,10 @@ CMD:accept(playerid, params[])
                                         GetPlayerHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 60) {
-                                                SetPlayerHealth(playerid, 100);
+                                                SetHealth(playerid, 100);
                                             }
                                             else {
-                                                SetPlayerHealth(playerid, health + 40.0);
+                                                SetHealth(playerid, health + 40.0);
                                             }
                                         }
                                         new rand = random(sizeof(STD4));
@@ -2546,10 +2546,10 @@ CMD:accept(playerid, params[])
                                     else if(level >= 401) {
                                         GetPlayerHealth(playerid, health);
                                         if(health > 50) {
-                                            SetPlayerHealth(playerid, 100);
+                                            SetHealth(playerid, 100);
                                         }
                                         else {
-                                            SetPlayerHealth(playerid, health + 50.0);
+                                            SetHealth(playerid, health + 50.0);
                                         }
                                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your sex skill level was high enough to give them a lot of health and no STD.");
                                         SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* The whore's sex skill level was high enough to give you a lot of health and no STD.");

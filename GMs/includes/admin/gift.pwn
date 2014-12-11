@@ -230,11 +230,11 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgArmor][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
-						GetPlayerArmour(giveplayerid, armor);
+						GetArmour(giveplayerid, armor);
 						
 						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						SetArmour(giveplayerid, armor + dgVar[dgArmor][2]);
 						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
@@ -340,8 +340,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgHealthNArmor][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerHealth(giveplayerid, 100.0);
-						SetPlayerArmor(giveplayerid, 100);
+						SetHealth(giveplayerid, 100.0);
+						SetArmour(giveplayerid, 100);
 						format(string, sizeof(string), "Congratulations, you have won Full Health & Armor!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -913,11 +913,11 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgArmor][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
-						GetPlayerArmour(giveplayerid, armor);
+						GetArmour(giveplayerid, armor);
 						
 						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						SetArmour(giveplayerid, armor + dgVar[dgArmor][2]);
 						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
@@ -1023,8 +1023,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgHealthNArmor][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerHealth(giveplayerid, 100.0);
-						SetPlayerArmor(giveplayerid, 100);
+						SetHealth(giveplayerid, 100.0);
+						SetArmour(giveplayerid, 100);
 						format(string, sizeof(string), "Congratulations, you have won Full Health & Armor!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -1596,11 +1596,11 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgArmor][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
-						GetPlayerArmour(giveplayerid, armor);
+						GetArmour(giveplayerid, armor);
 						
 						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						SetArmour(giveplayerid, armor + dgVar[dgArmor][2]);
 						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
@@ -1706,8 +1706,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgHealthNArmor][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerHealth(giveplayerid, 100.0);
-						SetPlayerArmor(giveplayerid, 100);
+						SetHealth(giveplayerid, 100.0);
+						SetArmour(giveplayerid, 100);
 						format(string, sizeof(string), "Congratulations, you have won Full Health & Armor!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));
@@ -2279,11 +2279,11 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgArmor][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						new Float: armor;
-						GetPlayerArmour(giveplayerid, armor);
+						GetArmour(giveplayerid, armor);
 						
 						if(armor+dgVar[dgArmor][2] >= 100) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerArmor(giveplayerid, armor + dgVar[dgArmor][2]);
+						SetArmour(giveplayerid, armor + dgVar[dgArmor][2]);
 						format(string, sizeof(string), "Congratulations, you have won %d Armour!", dgVar[dgArmor][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Armour, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgArmor][2]);
@@ -2389,8 +2389,8 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgHealthNArmor][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgHealthNArmor][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						SetPlayerHealth(giveplayerid, 100.0);
-						SetPlayerArmor(giveplayerid, 100);
+						SetHealth(giveplayerid, 100.0);
+						SetArmour(giveplayerid, 100);
 						format(string, sizeof(string), "Congratulations, you have won Full Health & Armor!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Full Health & Armor, enjoy!", GetPlayerNameEx(giveplayerid));

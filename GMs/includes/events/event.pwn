@@ -92,7 +92,7 @@ CMD:joinevent(playerid, params[]) {
 		    ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
 			GetPlayerHealth(playerid, EventFloats[playerid][4]);
-			GetPlayerArmour(playerid, EventFloats[playerid][5]);
+			GetArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -128,7 +128,7 @@ CMD:joinevent(playerid, params[]) {
 			ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
 			GetPlayerHealth(playerid, EventFloats[playerid][4]);
-			GetPlayerArmour(playerid, EventFloats[playerid][5]);
+			GetArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
 			GetPlayerPos(playerid, EventFloats[playerid][1], EventFloats[playerid][2], EventFloats[playerid][3]);
@@ -142,9 +142,9 @@ CMD:joinevent(playerid, params[]) {
 			SetPlayerVirtualWorld( playerid, EventKernel[ EventWorld ] );
 			SendClientMessageEx( playerid, COLOR_WHITE, EventKernel[ EventInfo ] );
 			
-			SetPlayerHealth( playerid, EventKernel[ EventHealth ] );
+			SetHealth( playerid, EventKernel[ EventHealth ] );
 			if(EventKernel[EventArmor] > 0) {
-				SetPlayerArmor( playerid, EventKernel[ EventArmor ]);
+				SetArmour( playerid, EventKernel[ EventArmor ]);
 			}
 			//if(PlayerInfo[playerid][pBEquipped]) PlayerInfo[playerid][pBEquipped] = 0;
 			for(new x;x<MAX_PLAYERTOYS;x++) {
@@ -240,10 +240,10 @@ CMD:eventstaff(playerid, params[])
 					EventKernel[EventStaff][i] = playerid;
 					GetPlayerHealth(playerid,health);
 					SetPVarFloat(playerid, "pPreGodHealth", health);
-					GetPlayerArmour(playerid,armor);
+					GetArmour(playerid,armor);
 					SetPVarFloat(playerid, "pPreGodArmor", armor);
-					SetPlayerHealth(playerid, 0x7FB00000);
-					SetPlayerArmor(playerid, 0x7FB00000);
+					SetHealth(playerid, 0x7FB00000);
+					SetArmour(playerid, 0x7FB00000);
 					SetPVarInt(playerid, "eventStaff", 1);
 					return SendClientMessageEx( playerid, COLOR_WHITE, "You have joined the event staff." );
 				}
@@ -303,9 +303,9 @@ CMD:quitevent(playerid, params[])
         EventLastInt[playerid] = 0;
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
-		SetPlayerHealth(playerid,health);
+		SetHealth(playerid,health);
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
-		SetPlayerArmor(playerid, armor);
+		SetArmour(playerid, armor);
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
 		DeletePVar(playerid, "eventStaff");
@@ -327,9 +327,9 @@ CMD:quitevent(playerid, params[])
         			SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
         			SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
         			SetPlayerInterior(playerid,EventLastInt[playerid]);
-        			SetPlayerHealth(playerid, EventFloats[playerid][4]);
+        			SetHealth(playerid, EventFloats[playerid][4]);
         			if(EventFloats[playerid][5] > 0) {
-        				SetPlayerArmor(playerid, EventFloats[playerid][5]);
+        				SetArmour(playerid, EventFloats[playerid][5]);
         			}
         			Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
         			RemovePlayerWeapon(playerid, 38);
@@ -351,9 +351,9 @@ CMD:quitevent(playerid, params[])
       	SetPlayerVirtualWorld(playerid, EventLastVW[playerid]);
        	SetPlayerFacingAngle(playerid, EventFloats[playerid][0]);
        	SetPlayerInterior(playerid,EventLastInt[playerid]);
-       	SetPlayerHealth(playerid, EventFloats[playerid][4]);
+       	SetHealth(playerid, EventFloats[playerid][4]);
        	if(EventFloats[playerid][5] > 0) {
-       		SetPlayerArmor(playerid, EventFloats[playerid][5]);
+       		SetArmour(playerid, EventFloats[playerid][5]);
        	}
        	Player_StreamPrep(playerid, EventFloats[playerid][1],EventFloats[playerid][2],EventFloats[playerid][3], FREEZE_TIME);
        	if(EventKernel[EventType] == 4)
@@ -369,11 +369,11 @@ CMD:quitevent(playerid, params[])
         RemovePlayerWeapon(playerid, 38);
 		health = GetPVarFloat(playerid, "pPreGodHealth");
 		if(health > 0) {
-			SetPlayerHealth(playerid,health);
+			SetHealth(playerid,health);
 		}
 		armor = GetPVarFloat(playerid, "pPreGodArmor");
 		if(armor > 0) {
-			SetPlayerArmor(playerid, armor);
+			SetArmour(playerid, armor);
 		}	
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
@@ -430,7 +430,7 @@ CMD:requestevent(playerid, params[])
 
 CMD:vipparty(playerid, params[])
 {
-    if( PlayerInfo[playerid][pDonateRank] == 5 )
+    if(PlayerInfo[playerid][pVIPMod])
 	{
         new string[128+MAX_PLAYER_NAME];
         if( EventKernel[ EventStatus ] == 0 )
@@ -445,7 +445,7 @@ CMD:vipparty(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_GRAD2, "Another admin/advisor already requested/made an event within the last three hours, please try again later!");
                 return 1;
             }
-            if(PlayerInfo[ playerid ][ pAdmin ] >= 4 || PlayerInfo[playerid][pDonateRank] == 5) {
+            if(PlayerInfo[ playerid ][ pAdmin ] >= 4 || PlayerInfo[playerid][pVIPMod]) {
                 EventKernel[ EventRequest ] = playerid;
                 SendClientMessageEx( playerid, COLOR_GRAD2, "You have requested to set up an event, please wait until a Senior Admin approves it." );
                 format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: VIP Mod %s would like to set up a VIP event - /acceptevent or /denyevent", GetPlayerNameEx(playerid) );
@@ -479,9 +479,9 @@ CMD:denyevent(playerid, params[])
                 SetPlayerVirtualWorld(EventKernel[EventStaff][i], EventLastVW[EventKernel[EventStaff][i]]);
                 SetPlayerFacingAngle(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][0]);
                 SetPlayerInterior(EventKernel[EventStaff][i],EventLastInt[EventKernel[EventStaff][i]]);
-                SetPlayerHealth(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
+                SetHealth(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][4]);
                 if(EventFloats[EventKernel[EventStaff][i]][5] > 0) {
-                	SetPlayerArmor(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
+                	SetArmour(EventKernel[EventStaff][i], EventFloats[EventKernel[EventStaff][i]][5]);
                 }
                 for(new d = 0; d < 6; d++) {
                     EventFloats[EventKernel[EventStaff][i]][d] = 0.0;
@@ -1028,7 +1028,7 @@ CMD:seteventviponly(playerid, params[])
 		{
 			if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventviponly [0/1]");
 
-			if(PlayerInfo[playerid][pDonateRank] == 5 && PlayerInfo[playerid][pAdmin] == 0)
+			if(PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pAdmin] == 0)
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "Error: You're not allowed to change this value!");
 				return 1;
@@ -1103,9 +1103,9 @@ CMD:endevent(playerid, params[])
 						EventLastInt[i] = 0;
 						RemovePlayerWeapon(i, 38);
 						health = GetPVarFloat(i, "pPreGodHealth");
-						SetPlayerHealth(i,health);
+						SetHealth(i,health);
 						armor = GetPVarFloat(i, "pPreGodArmor");
-						SetPlayerArmor(i, armor);
+						SetArmour(i, armor);
 						DeletePVar(i, "pPreGodHealth");
 						DeletePVar(i, "pPreGodArmor");
 						SetPVarInt(i, "eventStaff", 0);
@@ -1133,9 +1133,9 @@ CMD:endevent(playerid, params[])
 						SetPlayerVirtualWorld(i, EventLastVW[i]);
 						SetPlayerFacingAngle(i, EventFloats[i][0]);
 						SetPlayerInterior(i,EventLastInt[i]);
-						SetPlayerHealth(i, EventFloats[i][4]);
+						SetHealth(i, EventFloats[i][4]);
 						if(EventFloats[i][5] > 0) {
-							SetPlayerArmor(i, EventFloats[i][5]);
+							SetArmour(i, EventFloats[i][5]);
 						}
 						for(new d = 0; d < 6; d++)
 						{
@@ -1348,10 +1348,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+								SetHealth( i, EventKernel[ EventHealth ] );
 							}	
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+								SetArmour( i, EventKernel[ EventArmor ]);
 							}
 							GivePlayerEventWeapons( i );
 						}
@@ -1360,10 +1360,10 @@ CMD:beginevent(playerid, params[])
 							//GivePlayerEventWeapons( i );
 							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
 							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerHealth( i, EventKernel[ EventHealth ] );
+								SetHealth( i, EventKernel[ EventHealth ] );
 							}
 							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetPlayerArmor( i, EventKernel[ EventArmor ]);
+								SetArmour( i, EventKernel[ EventArmor ]);
 							}	
 							GivePlayerEventWeapons( i );
 						}
@@ -1372,7 +1372,7 @@ CMD:beginevent(playerid, params[])
 							if(zombiemade == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
-								SetPlayerHealth(playerid, 30);
+								SetHealth(playerid, 30);
 								RemoveArmor(playerid);
 								SetPlayerSkin(playerid, 134);
 								SetPlayerColor(playerid, 0x0BC43600);
@@ -1385,10 +1385,10 @@ CMD:beginevent(playerid, params[])
 								//GivePlayerEventWeapons( i );
 								SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
 								if(GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerHealth( i, EventKernel[ EventHealth ] );
+									SetHealth( i, EventKernel[ EventHealth ] );
 								}	
 								if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-									SetPlayerArmor( i, EventKernel[ EventArmor ]);
+									SetArmour( i, EventKernel[ EventArmor ]);
 								}
 								GivePlayerEventWeapons( i );
 							}

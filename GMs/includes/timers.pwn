@@ -286,7 +286,7 @@ task SyncUp[60000]()
 			{
 				new Float:health;
 				GetPlayerHealth(i, health);
-				SetPlayerHealth(i, health - 10.0);
+				SetHealth(i, health - 10.0);
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 10 health due to virus.");
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Seek a medic to cure you!");
 			}
@@ -295,19 +295,19 @@ task SyncUp[60000]()
 				case 1: {
 					new Float: health;
 					GetPlayerHealth(i, health);
-					SetPlayerHealth(i, health - 5.0);
+					SetHealth(i, health - 5.0);
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 4 health due to STD.");
 				}
 				case 2: {
 					new Float: health;
 					GetPlayerHealth(i, health);
-					SetPlayerHealth(i, health - 12.0);
+					SetHealth(i, health - 12.0);
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 8 health due to STD.");
 				}
 				case 3: {
 					new Float: health;
 					GetPlayerHealth(i, health);
-					SetPlayerHealth(i, health - 20.0);
+					SetHealth(i, health - 20.0);
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 12 health due to STD.");
 				}
 			}
@@ -550,9 +550,9 @@ task MoneyUpdate[1000]()
 						SetPlayerVirtualWorld(i, EventLastVW[i]);
 						SetPlayerFacingAngle(i, EventFloats[i][0]);
 						SetPlayerInterior(i,EventLastInt[i]);
-						SetPlayerHealth(i, EventFloats[i][4]);
+						SetHealth(i, EventFloats[i][4]);
 						if(EventFloats[i][5] > 0) {
-							SetPlayerArmor(i, EventFloats[i][5]);
+							SetArmour(i, EventFloats[i][5]);
 						}
 						for(new d = 0; d < 6; d++)
 						{
@@ -780,8 +780,8 @@ task MoneyUpdate[1000]()
 				if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
 				if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
 				if(PlayerCuffed[i] > 1) {
-					SetPlayerHealth(i, 1000);
-					SetPlayerArmor(i, GetPVarFloat(i, "cuffarmor"));
+					SetHealth(i, 1000);
+					SetArmour(i, GetPVarFloat(i, "cuffarmor"));
 				}
 				if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
 				{
@@ -1048,9 +1048,9 @@ task EMSUpdate[5000]()
 					{
 						if(!GetPVarType(i, "_energybar")) SetPVarInt(i, "_energybar", 60);
 						if(GetPVarType(i, "_energybar") && GetPVarInt(i, "_energybar")) SetPVarInt(i, "_energybar", GetPVarInt(i, "_energybar")-1);
-						else SetPlayerHealth(i, health-1);
+						else SetHealth(i, health-1);
 					}
-					else SetPlayerHealth(i, health-1);
+					else SetHealth(i, health-1);
 					if(GetPVarInt(i, "EMSAttempt") == -1)
 					{
 						if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), ApplyAnimation(i, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
@@ -1195,7 +1195,7 @@ task ServerHeartbeat[1000]() {
 						PlayerInfo[i][pVW] = 0;
 						SetPlayerPos(i, 1544.5059,-1675.5673,13.5585);
 					}
-					SetPlayerHealth(i, 100);
+					SetHealth(i, 100);
 					PlayerInfo[i][pJailTime] = 0;
 					strcpy(PlayerInfo[i][pPrisonReason], "None");
 					PhoneOnline[i] = 0;
@@ -1673,22 +1673,22 @@ task ServerHeartbeat[1000]() {
 										if(GetPlayerHealth(Boxer1, health) < 20)
 										{
 											SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-											SetPlayerHealth(Boxer1, 30.0);
+											SetHealth(Boxer1, 30.0);
 										}
 										else
 										{
 											SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-											SetPlayerHealth(Boxer1, 50.0);
+											SetHealth(Boxer1, 50.0);
 										}
 										if(GetPlayerHealth(Boxer2, health) < 20)
 										{
 											SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-											SetPlayerHealth(Boxer2, 30.0);
+											SetHealth(Boxer2, 30.0);
 										}
 										else
 										{
 											SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-											SetPlayerHealth(Boxer2, 50.0);
+											SetHealth(Boxer2, 50.0);
 										}
 										GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
 										if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pBoxSkill] += 1; }
@@ -1747,22 +1747,22 @@ task ServerHeartbeat[1000]() {
 									if(GetPlayerHealth(Boxer1, health) < 20)
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-										SetPlayerHealth(Boxer1, 30.0);
+										SetHealth(Boxer1, 30.0);
 									}
 									else
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-										SetPlayerHealth(Boxer1, 50.0);
+										SetHealth(Boxer1, 50.0);
 									}
 									if(GetPlayerHealth(Boxer2, health) < 20)
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-										SetPlayerHealth(Boxer2, 30.0);
+										SetHealth(Boxer2, 30.0);
 									}
 									else
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-										SetPlayerHealth(Boxer2, 50.0);
+										SetHealth(Boxer2, 50.0);
 									}
 									GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
 									if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pBoxSkill] += 1; }
@@ -1826,22 +1826,22 @@ task ServerHeartbeat[1000]() {
 										if(GetPlayerHealth(Boxer1, health) < 20)
 										{
 											SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-											SetPlayerHealth(Boxer1, 30.0);
+											SetHealth(Boxer1, 30.0);
 										}
 										else
 										{
 											SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-											SetPlayerHealth(Boxer1, 50.0);
+											SetHealth(Boxer1, 50.0);
 										}
 										if(GetPlayerHealth(Boxer2, health) < 20)
 										{
 											SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-											SetPlayerHealth(Boxer2, 30.0);
+											SetHealth(Boxer2, 30.0);
 										}
 										else
 										{
 											SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-											SetPlayerHealth(Boxer2, 50.0);
+											SetHealth(Boxer2, 50.0);
 										}
 										GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
 										if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pBoxSkill] += 1; }
@@ -1898,22 +1898,22 @@ task ServerHeartbeat[1000]() {
 									if(GetPlayerHealth(Boxer1, health) < 20)
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-										SetPlayerHealth(Boxer1, 30.0);
+										SetHealth(Boxer1, 30.0);
 									}
 									else
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-										SetPlayerHealth(Boxer1, 50.0);
+										SetHealth(Boxer1, 50.0);
 									}
 									if(GetPlayerHealth(Boxer2, health) < 20)
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-										SetPlayerHealth(Boxer2, 30.0);
+										SetHealth(Boxer2, 30.0);
 									}
 									else
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-										SetPlayerHealth(Boxer2, 50.0);
+										SetHealth(Boxer2, 50.0);
 									}
 									GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
 									if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pBoxSkill] += 1; }
@@ -2079,8 +2079,8 @@ task ServerHeartbeat[1000]() {
 							GameTextForPlayer(i, "~r~You broke the Cuffs, you are free!", 2500, 3);
 							TogglePlayerControllable(i, 1);
 							PlayerCuffed[i] = 0;
-							SetPlayerHealth(i, GetPVarFloat(i, "cuffhealth"));
-							SetPlayerArmor(i, GetPVarFloat(i, "cuffarmor"));
+							SetHealth(i, GetPVarFloat(i, "cuffhealth"));
+							SetArmour(i, GetPVarFloat(i, "cuffarmor"));
 							DeletePVar(i, "cuffhealth");
 							DeletePVar(i, "PlayerCuffed");
 							PlayerCuffedTime[i] = 0;
@@ -2130,7 +2130,7 @@ task ServerHeartbeat[1000]() {
 						if (PlayerInfo[i][pHunger] == 0 && ++PlayerInfo[i][pHungerDeathTimer] >= 600) // 10 minutes
 						{
 							SendClientMessageEx(i, COLOR_RED, "You fall unconcious due to starvation.");
-							SetPlayerHealth(i, 0);
+							SetHealth(i, 0);
 							PlayerInfo[i][pHungerDeathTimer] = 0;
 						}
 					}
@@ -2189,17 +2189,17 @@ task ServerHeartbeat[1000]() {
 										new Float:health, Float:armour;
 
 										GetPlayerHealth(i, health);
-										GetPlayerArmour(i, armour);
+										GetArmour(i, armour);
 										SetPVarFloat(i, "_BoxingCacheHP", health);
 										SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
 										GetPlayerHealth(ii, health);
-										GetPlayerArmour(ii, armour);
+										GetArmour(ii, armour);
 										SetPVarFloat(ii, "_BoxingCacheHP", health);
 										SetPVarFloat(ii, "_BoxingCacheArmour", armour);
 
-										SetPlayerHealth(i, 100.0);
-										SetPlayerHealth(ii, 100.0);
+										SetHealth(i, 100.0);
+										SetHealth(ii, 100.0);
 										RemoveArmor(i);
 										RemoveArmor(ii);
 
@@ -2238,20 +2238,20 @@ task ServerHeartbeat[1000]() {
 										new Float:health, Float:armour;
 
 										GetPlayerHealth(i, health);
-										GetPlayerArmour(i, armour);
+										GetArmour(i, armour);
 										SetPVarFloat(i, "_BoxingCacheHP", health);
 										SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
 										GetPlayerHealth(ii, health);
-										GetPlayerArmour(ii, armour);
+										GetArmour(ii, armour);
 										SetPVarFloat(ii, "_BoxingCacheHP", health);
 										SetPVarFloat(ii, "_BoxingCacheArmour", armour);
 
 										ResetPlayerWeapons(i);
 										ResetPlayerWeapons(ii);
 
-										SetPlayerHealth(i, 100.0);
-										SetPlayerHealth(ii, 100.0);
+										SetHealth(i, 100.0);
+										SetHealth(ii, 100.0);
 										RemoveArmor(i);
 										RemoveArmor(ii);
 
@@ -2330,8 +2330,8 @@ task ServerHeartbeat[1000]() {
 					}
 				}
 
-				SetPlayerHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
-				SetPlayerArmor(i, GetPVarFloat(i, "_BoxingCacheArmour"));
+				SetHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
+				SetArmour(i, GetPVarFloat(i, "_BoxingCacheArmour"));
 				DeletePVar(i, "_BoxingCacheHP");
 				DeletePVar(i, "_BoxingCacheArmour");
 				DeletePVar(i, "_BoxingFightOver");
@@ -2376,32 +2376,6 @@ task ServerHeartbeatTwo[1000]() {
 				if(GetPlayerState(i) == PLAYER_STATE_DRIVER) SetPlayerArmedWeapon(i, 0);
 				else if(PlayerInfo[i][pGuns][4] == 0) SetPlayerArmedWeapon(i, 0);
 				else SetPlayerArmedWeapon(i, 29);
-			}
-			new Float:armor;
-			GetPlayerArmour(i, armor);
-			if((armor > CurrentArmor[i]) && PlayerInfo[i][pAdmin] < 2)
-			{
-				if(GetPVarType(i, "ArmorCheckAgain"))
-				{
-					if(gettime()-GetPVarInt(i, "ArmorCheckAgain") > 10)
-					{
-						if(gettime()-GetPVarInt(i, "ArmorWarningTime") > 300)
-						{
-							SetPVarInt(i, "ArmorWarningTime", gettime());
-							SetPVarInt(i, "ArmorWarning", 1);
-							DeletePVar(i, "ArmorCheckAgain");
-							new string[128];
-							format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (1)", GetPlayerNameEx(i), i, CurrentArmor[i], armor);
-							ABroadCast( COLOR_YELLOW, string, 2 );
-							format(string, sizeof(string), "%s(%d) (ID %d) may possibly be armor hacking. (Recorded: %f - Current: %f) (1)", GetPlayerNameEx(i), GetPlayerSQLId(i), i, CurrentArmor[i], armor);
-							Log("logs/hack.log", string);
-						}
-					}
-				}
-				else
-				{
-					SetPVarInt(i, "ArmorCheckAgain", gettime());
-				}
 			}
 			if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 			{
@@ -2569,15 +2543,15 @@ task ServerMicrobeat[500]() {
 					if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 					{
 						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
-							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
+							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
+							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 						}
 					}
 					else
 					{
 						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
-							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
+							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
+							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 						}
 					}
 
@@ -2616,15 +2590,15 @@ task ServerMicrobeat[500]() {
 					if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 					{
 						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
-							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
+							case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
+							default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 						}
 					}
 					else
 					{
 						if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
-							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetPlayerHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
+							case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
+							default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 						}
 					}
 
@@ -2711,12 +2685,12 @@ task hungerGames[1000]()
 					if(GetPVarInt(i, "HungerVoucher") == 1)
 					{
 						GivePlayerWeapon(i, 29, 60000);
-						SetPlayerHealth(i, 100.0);
+						SetHealth(i, 100.0);
 						DeletePVar(i, "HungerVoucher");
 					}
 					else
 					{
-						SetPlayerHealth(i, 50.0);
+						SetHealth(i, 50.0);
 					}
 	
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Let the Hunger Games Begin!");
@@ -2787,8 +2761,8 @@ timer FinishMedKit[5000](playerid)
 	new string[122];
 	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
 	{
-		SetPlayerHealth(playerid, 100);
-		SetPlayerArmor(playerid, 100);
+		SetHealth(playerid, 100);
+		SetArmour(playerid, 100);
 		PlayerInfo[playerid][pBItems][5]--;
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
 		new ip[MAX_PLAYER_NAME];
@@ -2825,7 +2799,7 @@ timer FinishMeal[5000](playerid)
 		PlayerInfo[playerid][pBItems][0]--;
 		format(string,sizeof(string),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
 		SendClientMessage(playerid, COLOR_GRAD2, string);
-		SetPlayerHealth(playerid, 100.0);
+		SetHealth(playerid, 100.0);
 		
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
@@ -2834,7 +2808,7 @@ timer FinishMeal[5000](playerid)
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the 5 seconds, therefore you couldn't use the Full Meal.");
+		SendClientMessageEx(playerid, COLOR_RED, "You have taken damage or tried entering a car during the 5 seconds, therefore you couldn't use the Full Meal.");
 		SetPVarInt(playerid, "BackpackDisabled", 120);
 	}
 	ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");

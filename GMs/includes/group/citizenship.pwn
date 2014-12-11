@@ -147,6 +147,7 @@ NationSel_HandleNationSelection(playerid)
 		DeletePVar(playerid, "MedicBill");
 		SetPlayerColor(playerid,TEAM_HIT_COLOR);
 		SetPlayerInterior(playerid,0);
+		SetHealth(playerid, 100);
 		for(new x;x<10000;x++)
 		{
 			new rand=random(300);

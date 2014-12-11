@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.173"
+#define SERVER_GM_TEXT "NG:RP v3.0.174"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -143,8 +143,8 @@
 #include "./includes/core/vactions.pwn"
 #include "./includes/core/weapons.pwn"
 #include "./includes/core/damage.pwn"
-//#include "./includes/core/health.pwn"
-//#include "./includes/core/teams.pwn"
+#include "./includes/core/health.pwn"
+#include "./includes/core/teams.pwn"
 
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"
@@ -181,7 +181,7 @@
 #include "./includes/events/xmas.pwn"
 #include "./includes/events/zombies.pwn"
 #include "./includes/events/valentine.pwn"
-#include "./includes/events/festival.pwn"
+//#include "./includes/events/festival.pwn"
 
 //dynamic group system includes
 #include "./includes/group/citizenship.pwn"

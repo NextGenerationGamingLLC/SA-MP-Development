@@ -1066,7 +1066,7 @@ CMD:exit(playerid, params[])
             SetPlayerPos(playerid,200.2569,1869.5732,13.1470);
         }
         else {
-            SetPlayerHealth(playerid, 0);
+            SetHealth(playerid, 0);
             SendClientMessageEx(playerid, COLOR_WHITE, "You can not escape admin prison!");
         }
 

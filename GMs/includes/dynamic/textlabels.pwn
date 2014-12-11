@@ -60,8 +60,6 @@ CMD:tledit(playerid, params[])
 			TxtLabels[labelid][tlVW] = GetPlayerVirtualWorld(playerid);
 			format(string, sizeof(string), "You have changed the position on Text Label #%d.", labelid);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-			DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's position.", GetPlayerNameEx(playerid), labelid);
@@ -73,9 +71,6 @@ CMD:tledit(playerid, params[])
 			TxtLabels[labelid][tlColor] = amount;
 			format(string, sizeof(string), "You have changed the color to %d on Text Label #%d.", amount, labelid);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-
-			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-			DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's color.", GetPlayerNameEx(playerid), labelid);
@@ -87,9 +82,6 @@ CMD:tledit(playerid, params[])
 			TxtLabels[labelid][tlPickupModel] = amount;
 			format(string, sizeof(string), "You have changed the pickup model to %d on Text Label #%d.", amount, labelid);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-
-			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-			DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
 			CreateTxtLabel(labelid);
 			SaveTxtLabel(labelid);
 			format(string, sizeof(string), "%s has edited Text Label ID %d's PickupModel.", GetPlayerNameEx(playerid), labelid);
@@ -103,8 +95,8 @@ CMD:tledit(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				return 1;
 			}
-			DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-			DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
+			if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
+			if(IsValidDynamic3DTextLabel(TxtLabels[labelid][tlTextID])) DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
 			TxtLabels[labelid][tlText] = 0;
 			TxtLabels[labelid][tlPosX] = 0.0;
 			TxtLabels[labelid][tlPosY] = 0.0;
@@ -139,15 +131,10 @@ CMD:tltext(playerid, params[]) {
 		else if(strfind(szName, "\r") != -1 || strfind(szName, "\n") != -1) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "Newline characters are forbidden.");
 		}
-
 		strcat((TxtLabels[labelid][tlText][0] = 0, TxtLabels[labelid][tlText]), szName, 128);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully changed the text on this text label.");
-
-		DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
-		if(IsValidDynamic3DTextLabel(TxtLabels[labelid][tlTextID])) DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
 		CreateTxtLabel(labelid);
 		SaveTxtLabel(labelid);
-
 		format(szName, sizeof(szName), "%s has edited Text Label ID %d's text to %s.", GetPlayerNameEx(playerid), labelid, TxtLabels[labelid][tlText]);
 		Log("logs/tledit.log", szName);
 	}
@@ -211,4 +198,179 @@ CMD:gotolabel(playerid, params[])
 		PlayerInfo[playerid][pVW] = TxtLabels[labelnum][tlVW];
 	}
 	return 1;
+}
+
+stock CreateTxtLabel(labelid)
+{
+	if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
+	if(IsValidDynamic3DTextLabel(TxtLabels[labelid][tlTextID])) DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
+	new string[128];
+	format(string, sizeof(string), "%s\nID: %d",TxtLabels[labelid][tlText],labelid);
+
+	switch(TxtLabels[labelid][tlColor])
+	{
+	    case -1:{ /* Disable 3d Textdraw */ }
+	    case 1:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWWHITE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 2:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPINK, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 3:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWRED, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 4:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBROWN, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 5:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGRAY, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 6:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWOLIVE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 7:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPURPLE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 8:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWORANGE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 9:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWAZURE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 10:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGREEN, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 11:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLUE, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	    case 12:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLACK, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+		default:{TxtLabels[labelid][tlTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, TxtLabels[labelid][tlVW], TxtLabels[labelid][tlInt], -1);}
+	}
+
+	switch(TxtLabels[labelid][tlPickupModel])
+	{
+	    case -1: { /* Disable Pickup */ }
+		case 1:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1210, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 2:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1212, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 3:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1239, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 4:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1240, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 5:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1241, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 6:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1242, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 7:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1247, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 8:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1248, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 9:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1252, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 10:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1253, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 11:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1254, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 12:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1313, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 13:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1272, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 14:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1273, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 15:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1274, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 16:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1275, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 17:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1276, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 18:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1277, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 19:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1279, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 20:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1314, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 21:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1316, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 22:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1317, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 23:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1559, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 24:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(1582, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+		case 25:{TxtLabels[labelid][tlPickupID] = CreateDynamicPickup(2894, 23, TxtLabels[labelid][tlPosX], TxtLabels[labelid][tlPosY], TxtLabels[labelid][tlPosZ], TxtLabels[labelid][tlVW]);}
+	    default: { }
+	}
+}
+
+stock SaveTxtLabels()
+{
+	for(new i = 0; i < MAX_3DLABELS; i++)
+	{
+		SaveTxtLabel(i);
+	}
+	return 1;
+}
+
+stock RehashTxtLabel(labelid)
+{
+	printf("[RehashTxtLabel] Deleting Text Label #%d from server...", labelid);
+	if(IsValidDynamicPickup(TxtLabels[labelid][tlPickupID])) DestroyDynamicPickup(TxtLabels[labelid][tlPickupID]);
+	if(IsValidDynamic3DTextLabel(TxtLabels[labelid][tlTextID])) DestroyDynamic3DTextLabel(TxtLabels[labelid][tlTextID]);
+	TxtLabels[labelid][tlSQLId] = -1;
+	TxtLabels[labelid][tlPosX] = 0.0;
+	TxtLabels[labelid][tlPosY] = 0.0;
+	TxtLabels[labelid][tlPosZ] = 0.0;
+	TxtLabels[labelid][tlVW] = 0;
+	TxtLabels[labelid][tlInt] = 0;
+	TxtLabels[labelid][tlColor] = 0;
+	TxtLabels[labelid][tlPickupModel] = 0;
+	LoadTxtLabel(labelid);
+}
+
+stock RehashTxtLabels()
+{
+	printf("[RehashTxtLabels] Deleting text labels from server...");
+	for(new i = 0; i < MAX_3DLABELS; i++)
+	{
+		RehashTxtLabel(i);
+	}
+	LoadTxtLabels();
+}
+
+stock SaveTxtLabel(labelid)
+{
+	new string[1024];
+	format(string, sizeof(string), "UPDATE `text_labels` SET \
+		`Text`='%s', \
+		`PosX`=%f, \
+		`PosY`=%f, \
+		`PosZ`=%f, \
+		`VW`=%d, \
+		`Int`=%d, \
+		`Color`=%d, \
+		`PickupModel`=%d WHERE `id`=%d",
+		g_mysql_ReturnEscaped(TxtLabels[labelid][tlText], MainPipeline),
+		TxtLabels[labelid][tlPosX],
+		TxtLabels[labelid][tlPosY],
+		TxtLabels[labelid][tlPosZ],
+		TxtLabels[labelid][tlVW],
+		TxtLabels[labelid][tlInt],
+		TxtLabels[labelid][tlColor],
+		TxtLabels[labelid][tlPickupModel],
+		labelid+1
+	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
+
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock LoadTxtLabel(labelid)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT * FROM `text_labels` WHERE `id`=%d", labelid+1); // Array starts at zero, MySQL starts at 1.
+	mysql_function_query(MainPipeline, string, true, "OnLoadTxtLabel", "i", labelid);
+}
+
+stock LoadTxtLabels()
+{
+	printf("[LoadTxtLabels] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `text_labels`", true, "OnLoadTxtLabels", "");
+}
+
+forward OnLoadTxtLabel(index);
+public OnLoadTxtLabel(index)
+{
+	new rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	for(new row; row < rows; row++)
+	{
+		cache_get_field_content(row, "id", tmp, MainPipeline);  TxtLabels[index][tlSQLId] = strval(tmp);
+		cache_get_field_content(row, "Text", TxtLabels[index][tlText], MainPipeline, 128);
+		cache_get_field_content(row, "PosX", tmp, MainPipeline); TxtLabels[index][tlPosX] = floatstr(tmp);
+		cache_get_field_content(row, "PosY", tmp, MainPipeline); TxtLabels[index][tlPosY] = floatstr(tmp);
+		cache_get_field_content(row, "PosZ", tmp, MainPipeline); TxtLabels[index][tlPosZ] = floatstr(tmp);
+		cache_get_field_content(row, "VW", tmp, MainPipeline); TxtLabels[index][tlVW] = strval(tmp);
+		cache_get_field_content(row, "Int", tmp, MainPipeline); TxtLabels[index][tlInt] = strval(tmp);
+		cache_get_field_content(row, "Color", tmp, MainPipeline); TxtLabels[index][tlColor] = strval(tmp);
+		cache_get_field_content(row, "PickupModel", tmp, MainPipeline); TxtLabels[index][tlPickupModel] = strval(tmp);
+		if(TxtLabels[index][tlPosX] != 0.0) CreateTxtLabel(index);
+	}
+	return 1;
+}
+
+forward OnLoadTxtLabels();
+public OnLoadTxtLabels()
+{
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "id", tmp, MainPipeline);  TxtLabels[i][tlSQLId] = strval(tmp);
+		cache_get_field_content(i, "Text", TxtLabels[i][tlText], MainPipeline, 128);
+		cache_get_field_content(i, "PosX", tmp, MainPipeline); TxtLabels[i][tlPosX] = floatstr(tmp);
+		cache_get_field_content(i, "PosY", tmp, MainPipeline); TxtLabels[i][tlPosY] = floatstr(tmp);
+		cache_get_field_content(i, "PosZ", tmp, MainPipeline); TxtLabels[i][tlPosZ] = floatstr(tmp);
+		cache_get_field_content(i, "VW", tmp, MainPipeline); TxtLabels[i][tlVW] = strval(tmp);
+		cache_get_field_content(i, "Int", tmp, MainPipeline); TxtLabels[i][tlInt] = strval(tmp);
+		cache_get_field_content(i, "Color", tmp, MainPipeline); TxtLabels[i][tlColor] = strval(tmp);
+		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); TxtLabels[i][tlPickupModel] = strval(tmp);
+		if(TxtLabels[i][tlPosX] != 0.0) CreateTxtLabel(i);
+		i++;
+	}
 }

@@ -1132,7 +1132,8 @@ enum pInfo
 	zFuelCan,
 	bTicket,
 	pJailedInfo[5], // 0 id - 1 fine - 2 time - 3 warn - 4 wep restriction
-	pJailedWeapons[12]
+	pJailedWeapons[12],
+	pVIPMod
 };
 
 enum pvInfo
@@ -1250,7 +1251,8 @@ enum hInfo
 	Float:hSign[4],
 	hSignExpire,
 	hSignObj,
-	Text3D:hSignText
+	Text3D:hSignText,
+	hLastLogin
 };
 
 enum dmpInfo
@@ -1304,6 +1306,7 @@ enum ddInfo
 	ddPickupModel,
 	ddPass[24],
 	ddLocked,
+	ddLastLogin
 };
 
 enum gInfo

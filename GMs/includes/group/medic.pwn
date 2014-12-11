@@ -138,8 +138,8 @@ CMD:triage(playerid, params[])
 			{
 	    	    new Float: health;
 	    	    GetPlayerHealth(giveplayerid, health);
-	    	    if(health >= 85) SetPlayerHealth(giveplayerid, 100);
-				else SetPlayerHealth(giveplayerid, health+15.0);
+	    	    if(health >= 85) SetHealth(giveplayerid, 100);
+				else SetHealth(giveplayerid, health+15.0);
 	    	    format(string, sizeof(string), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    	    ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[playerid][pTriageTime] = 120;
@@ -192,7 +192,7 @@ CMD:heal(playerid, params[])
 				GivePlayerCash(playerid, price / 2);
 				Tax += price / 2;
 				GivePlayerCash(giveplayerid, -price);
-				SetPlayerHealth(giveplayerid, 100);
+				SetHealth(giveplayerid, 100);
 				PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
 				PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
 				format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
@@ -338,7 +338,7 @@ CMD:deliverpt(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GRAD2, "That person is paused, you can't currently deliver him!");
                             return 1;
                         }
-                        SetPlayerHealth(giveplayerid, 100);
+                        SetHealth(giveplayerid, 100);
                         if(GetPVarType(giveplayerid, "STD"))
 						{
 							DeletePVar(giveplayerid, "STD");

@@ -772,6 +772,12 @@ CMD:bopen(playerid, params[])
 			return 1;
 		}
 		new string[122];
+		if(GetPVarInt(playerid, "BackpackDisabled") > 0)
+		{
+			format(string, sizeof(string), "You have recently taken damage during the backpack menu, your backpack is disabled for %d second(s)", GetPVarInt(playerid, "BackpackDisabled"));
+			SendClientMessageEx(playerid, COLOR_GREY, string);
+			return 1;
+		}
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s lays down and opens a backpack.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

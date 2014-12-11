@@ -716,7 +716,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					sscanf(szResult, "p<|>dd", PlayerInfo[extraid][mShopCounter], PlayerInfo[extraid][mNotice]);
 					PlayerInfo[extraid][zFuelCan] = cache_get_field_content_int(row,  "zFuelCan", MainPipeline);
 					PlayerInfo[extraid][bTicket] = cache_get_field_content_int(row,  "bTicket", MainPipeline);
-					GetPartnerName(extraid);
 
 					// Austin's Punishment Revamp 
 					cache_get_field_content(row,  "JailedInfo", szResult, MainPipeline);
@@ -724,6 +723,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "JailedWeapons", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
 
+					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -731,7 +731,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						format(szLog, sizeof(szLog), "[LOGIN] [User: %s(%i)] [IP: %s] [Credits: %s]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], GetPlayerIpEx(extraid), number_format(PlayerInfo[extraid][pCredits]));
 						Log("logs/logincredits.log", szLog), print(szLog);
 					}
-
+					GetPartnerName(extraid);
 					g_mysql_LoadPVehicles(extraid);
 					LoadPlayerNonRPPoints(extraid);
 					g_mysql_LoadPlayerToys(extraid);
@@ -1497,6 +1497,16 @@ stock g_mysql_AccountOnline(playerid, stateid)
 	new string[128];
 	format(string, sizeof(string), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
+		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey]);
+	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid))
+		HouseInfo[PlayerInfo[playerid][pPhousekey2]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey2]);
+	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid))
+		HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey3]);
+	for(new i; i != MAX_DDOORS; i++)
+	{
+		if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid)) DDoorsInfo[i][ddLastLogin] = gettime(), SaveDynamicDoor(i);
+	}
 	return 1;
 }
 
@@ -2471,7 +2481,9 @@ stock SaveDynamicDoor(doorid)
 		`Color`=%d, \
 		`PickupModel`=%d, \
 		`Pass`='%s', \
-		`Locked`=%d WHERE `id`=%d",
+		`Locked`=%d, \
+		`LastLogin`=%d \
+		WHERE `id`=%d",
 		string,
 		DDoorsInfo[doorid][ddCustomExterior],
 		DDoorsInfo[doorid][ddType],
@@ -2490,6 +2502,7 @@ stock SaveDynamicDoor(doorid)
 		DDoorsInfo[doorid][ddPickupModel],
 		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddPass], MainPipeline),
 		DDoorsInfo[doorid][ddLocked],
+		DDoorsInfo[doorid][ddLastLogin],
 		doorid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -2612,7 +2625,8 @@ stock SaveHouse(houseid)
 		`SignY`=%f, \
 		`SignZ`=%f, \
 		`SignA`=%f, \
-		`SignExpire`=%d \
+		`SignExpire`=%d, \
+		`LastLogin`=%d \
 		WHERE `id`=%d",
 		string,
 		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
@@ -2621,6 +2635,7 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hSign][2],
 		HouseInfo[houseid][hSign][3],
 		HouseInfo[houseid][hSignExpire],
+		HouseInfo[houseid][hLastLogin],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -2713,45 +2728,6 @@ stock StoreNewSpeedCameraInMySQL(index)
 
 	mysql_function_query(MainPipeline, string, true, "OnNewSpeedCamera", "i", index);
 	return 1;
-}
-
-stock SaveTxtLabel(labelid)
-{
-	new string[1024];
-	format(string, sizeof(string), "UPDATE `text_labels` SET \
-		`Text`='%s', \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`Color`=%d, \
-		`PickupModel`=%d WHERE `id`=%d",
-		g_mysql_ReturnEscaped(TxtLabels[labelid][tlText], MainPipeline),
-		TxtLabels[labelid][tlPosX],
-		TxtLabels[labelid][tlPosY],
-		TxtLabels[labelid][tlPosZ],
-		TxtLabels[labelid][tlVW],
-		TxtLabels[labelid][tlInt],
-		TxtLabels[labelid][tlColor],
-		TxtLabels[labelid][tlPickupModel],
-		labelid+1
-	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock LoadTxtLabel(labelid)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `text_labels` WHERE `id`=%d", labelid+1); // Array starts at zero, MySQL starts at 1.
-	mysql_function_query(MainPipeline, string, true, "OnLoadTxtLabel", "i", labelid);
-}
-
-stock LoadTxtLabels()
-{
-	printf("[LoadTxtLabels] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `text_labels`", true, "OnLoadTxtLabels", "");
 }
 
 stock SavePayNSpray(id)
@@ -3431,6 +3407,7 @@ stock g_mysql_SaveAccount(playerid)
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
 
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	g_mysql_SaveFIF(playerid);
 	return 1;
@@ -5045,6 +5022,7 @@ public OnLoadDynamicDoor(index)
 		cache_get_field_content(rows, "PickupModel", tmp, MainPipeline); DDoorsInfo[index][ddPickupModel] = strval(tmp);
 		cache_get_field_content(rows, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
 		cache_get_field_content(rows, "Locked", tmp, MainPipeline); DDoorsInfo[index][ddLocked] = strval(tmp);
+		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(rows, "LastLogin", MainPipeline);
 		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
 	}
 	return 1;
@@ -5093,6 +5071,7 @@ public OnLoadDynamicDoors()
 		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); DDoorsInfo[i][ddPickupModel] = strval(tmp);
 		cache_get_field_content(i, "Pass", DDoorsInfo[i][ddPass], MainPipeline, 24);
 		cache_get_field_content(i, "Locked", tmp, MainPipeline); DDoorsInfo[i][ddLocked] = strval(tmp);
+		DDoorsInfo[i][ddLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
 		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);
 		i++;
 	}
@@ -5163,6 +5142,7 @@ public OnLoadHouse(index)
 		HouseInfo[index][hSign][2] = cache_get_field_content_float(row, "SignZ", MainPipeline);
 		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
 		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
+		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
 		
 		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
@@ -5240,6 +5220,7 @@ public OnLoadHouses()
 		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
 		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
 		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
+		HouseInfo[i][hLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
 		
 		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
 		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
@@ -5329,50 +5310,6 @@ public OnNewSpeedCamera(index)
 
 // @returns
 //  ID of new speed cam on success, or -1 on failure
-
-forward OnLoadTxtLabel(index);
-public OnLoadTxtLabel(index)
-{
-	new rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  TxtLabels[index][tlSQLId] = strval(tmp);
-		cache_get_field_content(row, "Text", TxtLabels[index][tlText], MainPipeline, 128);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); TxtLabels[index][tlPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); TxtLabels[index][tlPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); TxtLabels[index][tlPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); TxtLabels[index][tlVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); TxtLabels[index][tlInt] = strval(tmp);
-		cache_get_field_content(row, "Color", tmp, MainPipeline); TxtLabels[index][tlColor] = strval(tmp);
-		cache_get_field_content(row, "PickupModel", tmp, MainPipeline); TxtLabels[index][tlPickupModel] = strval(tmp);
-		if(TxtLabels[index][tlPosX] != 0.0) CreateTxtLabel(index);
-	}
-	return 1;
-}
-
-forward OnLoadTxtLabels();
-public OnLoadTxtLabels()
-{
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  TxtLabels[i][tlSQLId] = strval(tmp);
-		cache_get_field_content(i, "Text", TxtLabels[i][tlText], MainPipeline, 128);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); TxtLabels[i][tlPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); TxtLabels[i][tlPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); TxtLabels[i][tlPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); TxtLabels[i][tlVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); TxtLabels[i][tlInt] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); TxtLabels[i][tlColor] = strval(tmp);
-		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); TxtLabels[i][tlPickupModel] = strval(tmp);
-		if(TxtLabels[i][tlPosX] != 0.0) CreateTxtLabel(i);
-		i++;
-	}
-}
 
 forward OnLoadPayNSprays();
 public OnLoadPayNSprays()

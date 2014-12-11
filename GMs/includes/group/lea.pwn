@@ -50,7 +50,7 @@ stock CuffTacklee(playerid, giveplayerid)
 	ClearAnimations(giveplayerid);
 	ClearAnimations(playerid);
 	GetPlayerHealth(giveplayerid, health);
-	GetPlayerArmour(giveplayerid, armor);
+	GetArmour(giveplayerid, armor);
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
 	SetPVarFloat(giveplayerid, "cuffarmor",armor);
 	SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
@@ -478,8 +478,8 @@ CMD:usekit(playerid, params[]) {
 		        format(string, sizeof(string), "{FF8000}** {C2A2DA}%s leans in to the trunk and takes out a Kevlar Vest & First Aid Kit.", GetPlayerNameEx(playerid));
             	SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the Vehicle Trunk.");
             	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				SetPlayerHealth(playerid, 100);
-				SetPlayerArmor(playerid, 100);
+				SetHealth(playerid, 100);
+				SetArmour(playerid, 100);
             	CrateVehicleLoad[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }
@@ -904,7 +904,7 @@ CMD:vmdc(playerid, params[])
    		if(IsPlayerConnected(giveplayerid))
     	{
 	        SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-			format(string, sizeof(string), "*** %s' Vehicles  ***", GetPlayerNameEx(giveplayerid));
+			format(string, sizeof(string), "*** %s's Vehicles  ***", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_GRAD2, string);
 	        for(new i=0; i<MAX_PLAYERVEHICLES; i++)
          	{
@@ -1761,7 +1761,7 @@ CMD:cuff(playerid, params[])
 					TogglePlayerControllable(giveplayerid, 0);
 					ClearAnimations(giveplayerid);
 					GetPlayerHealth(giveplayerid, health);
-					GetPlayerArmour(giveplayerid, armor);
+					GetArmour(giveplayerid, armor);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
 					SetPVarFloat(giveplayerid, "cuffarmor",armor);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
@@ -1807,6 +1807,7 @@ CMD:uncuff(playerid, params[])
 {
 	if(IsACop(playerid))
 	{
+		if(PlayerCuffed[playerid] == 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot uncuff others while being cuffed yourself!");
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /uncuff [player]");
 
@@ -1835,8 +1836,8 @@ CMD:uncuff(playerid, params[])
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
-                    SetPlayerHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
-                    SetPlayerArmor(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
+                    SetHealth(giveplayerid, GetPVarFloat(giveplayerid, "cuffhealth"));
+                    SetArmour(giveplayerid, GetPVarFloat(giveplayerid, "cuffarmor"));
                     DeletePVar(giveplayerid, "cuffhealth");
 					DeletePVar(giveplayerid, "PlayerCuffed");
 					DeletePVar(giveplayerid, "jailcuffs");

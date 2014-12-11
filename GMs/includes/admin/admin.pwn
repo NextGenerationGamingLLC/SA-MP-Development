@@ -50,9 +50,9 @@ public SprunkGuardCheck(playerid, giveplayerid)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the player alt-tabbed.");
 
-		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		SetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
 		if(SGcheckFloats[giveplayerid][1] > 0) {
-			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+			SetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 		}
 		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
@@ -76,9 +76,9 @@ public SprunkGuardCheck(playerid, giveplayerid)
 	if(!IsPlayerInVehicle(giveplayerid, SGcheckPlane) || health < 200)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person was probably desynced/lagging or not in the plane.");
-		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		SetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
 		if(SGcheckFloats[giveplayerid][1] > 0) {
-			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+			SetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 		}
 		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
@@ -102,9 +102,9 @@ public SprunkGuardCheck(playerid, giveplayerid)
 	if(phealth < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person is dead.");
-		SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+		SetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
 		if(SGcheckFloats[giveplayerid][1] > 0) {
-			SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+			SetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 		}
 		SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 		SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
@@ -143,9 +143,9 @@ public SprunkGuardCheck(playerid, giveplayerid)
         SendClientMessageEx(playerid, COLOR_WHITE, string);
         SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
     }	
-	SetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+	SetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
 	if(SGcheckFloats[giveplayerid][1] > 0) {
-		SetPlayerArmor(giveplayerid, SGcheckFloats[giveplayerid][1]);
+		SetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 	}
 	SetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 	SetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
@@ -180,9 +180,9 @@ public HealthHackCheck(playerid, giveplayerid)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The health hack check result could not be made, the player alt-tabbed.");
 
-		SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+		SetHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
 		if(HHcheckFloats[giveplayerid][1] > 0) {
-			SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+			SetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 		}
 		SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 		SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
@@ -203,9 +203,9 @@ public HealthHackCheck(playerid, giveplayerid)
     {
         SendClientMessageEx(playerid, COLOR_WHITE, "The health hack check result could not be made, the person was probably desynced/lagging.");
 
-		SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+		SetHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
         if(HHcheckFloats[giveplayerid][1] > 0) {
-			SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+			SetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 		}
 		SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 		SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
@@ -247,9 +247,9 @@ public HealthHackCheck(playerid, giveplayerid)
         SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________________");
     }
 
-	SetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+	SetHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
 	if(HHcheckFloats[giveplayerid][1] > 0) {
-		SetPlayerArmor(giveplayerid, HHcheckFloats[giveplayerid][1]);
+		SetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 	}
 	SetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 	SetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
@@ -411,7 +411,7 @@ CMD:hhcheck(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
 			GetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
-			GetPlayerArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
+			GetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 			GetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 			GetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
 			HHcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -424,7 +424,7 @@ CMD:hhcheck(playerid, params[])
 			SetPlayerCameraLookAt(giveplayerid, 785.1896,1692.6887,0);
             SetPlayerVirtualWorld(giveplayerid, 0);
 		    SetPlayerInterior(giveplayerid, 1);
-		    SetPlayerHealth(giveplayerid, 100);
+		    SetHealth(giveplayerid, 100);
 		    RemoveArmor(giveplayerid);
 			SetPlayerPos(giveplayerid, -1400.994873, 106.899650, 1032.273437);
 			SetPlayerFacingAngle(giveplayerid, 90.66);
@@ -582,7 +582,7 @@ CMD:sethp(playerid, params[])
 		if(IsPlayerConnected(playa)) {
 			if(playa != INVALID_PLAYER_ID)
 			{
-				SetPlayerHealth(playa, health);
+				SetHealth(playa, health);
 				format(string, sizeof(string), "You have set %s's health to %d.", GetPlayerNameEx(playa), health);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
@@ -601,7 +601,7 @@ CMD:setmyhp(playerid, params[])
         return 1;
     }
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1) {
-        SetPlayerHealth(playerid, health);
+        SetHealth(playerid, health);
         format(string, sizeof(string), "You have set your health to %d.", health);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -625,7 +625,7 @@ CMD:setarmor(playerid, params[])
 		{
             if(playa != INVALID_PLAYER_ID)
 			{
-                SetPlayerArmor(playa, health);
+                SetArmour(playa, health);
                 format(string, sizeof(string), "You have set %s's armor to %d.", GetPlayerNameEx(playa), health);
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
             }
@@ -640,23 +640,29 @@ CMD:setarmor(playerid, params[])
 
 CMD:hackwarnings(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+	if(PlayerInfo[playerid][pAdmin] < 2) return 1;
+	new Float: health,
+		Float: rhealth,
+		Float: armor,
+		Float: rarmor;
+	foreach(Player, i)
+	{
+		if(IsPlayerConnected(i))
 		{
-			if(IsPlayerConnected(i))
+			GetPlayerHealth(i, health);
+			GetHealth(i, rhealth);
+			GetPlayerArmour(i, armor);
+			GetArmour(i, rarmor);
+			if(health > rhealth)
 			{
-				if(GetPVarType(i, "ArmorWarning"))
-				{
-					new Float: armor, szMessage[128];
-					GetPlayerArmour(i, armor);
-					if(armor > CurrentArmor[i])
-					{
-						format(szMessage, sizeof(szMessage), "%s (ID: %i, Level: %d) - Armor Hacking - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], CurrentArmor[i], armor);
-						SendClientMessage(playerid, COLOR_WHITE, szMessage);
-					}
-				}
-			}	
+				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Level: %d) - Health - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rhealth, health);
+				SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+			}
+			if(armor > rarmor)
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %i, Level: %d) - Armor - Recorded: %f - Current: %f", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], rarmor, armor);
+				SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+			}
 		}
 	}
 	return 1;
@@ -672,7 +678,7 @@ CMD:setmyarmor(playerid, params[])
     }
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
-        SetPlayerArmor(playerid, armor);
+        SetArmour(playerid, armor);
         format(string, sizeof(string), "You have set your armor to %d.", armor);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -697,7 +703,7 @@ CMD:setarmorall(playerid, params[])
 		{
 			if(IsPlayerConnected(i))
 			{
-				SetPlayerArmor(i, armor);
+				SetArmour(i, armor);
 			}	
         }
     }
@@ -1176,7 +1182,7 @@ CMD:noooc(playerid, params[])
 
 CMD:togstaff(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pDonateRank] == 5 || PlayerInfo[playerid][pWatchdog] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		if (!advisorchat[playerid])
 		{
@@ -3690,9 +3696,9 @@ CMD:god(playerid, params[])
 	    if(GetPVarType(playerid, "pGodMode"))
 	    {
 			health = GetPVarFloat(playerid, "pPreGodHealth");
-			SetPlayerHealth(playerid,health);
+			SetHealth(playerid,health);
 			armor = GetPVarFloat(playerid, "pPreGodArmor");
-			SetPlayerArmor(playerid, armor);
+			SetArmour(playerid, armor);
 			DeletePVar(playerid, "pGodMode");
 			DeletePVar(playerid, "pPreGodHealth");
 			DeletePVar(playerid, "pPreGodArmor");
@@ -3702,10 +3708,10 @@ CMD:god(playerid, params[])
 		{
 			GetPlayerHealth(playerid,health);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
-			GetPlayerArmour(playerid,armor);
+			GetArmour(playerid,armor);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);
-		    SetPlayerHealth(playerid, 0x7FB00000);
-		    SetPlayerArmor(playerid, 0x7FB00000);
+		    SetHealth(playerid, 0x7FB00000);
+		    SetArmour(playerid, 0x7FB00000);
 		    SetPVarInt(playerid, "pGodMode", 1);
 		    SendClientMessage(playerid, COLOR_WHITE, "God mode enabled");
 		}
@@ -3761,7 +3767,7 @@ CMD:healnear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerHealth(i, 100);
+					SetHealth(i, 100);
 					count++;
 				}
 			}	
@@ -3788,7 +3794,7 @@ CMD:armornear(playerid, params[])
 			if(IsPlayerConnected(i))
 			{
 				if(ProxDetectorS(radius, playerid, i)) {
-					SetPlayerArmor(i, 100);
+					SetArmour(i, 100);
 					count++;
 				}
 			}	
@@ -4436,7 +4442,7 @@ CMD:headadmin(playerid, params[])  {
 }
 
 CMD:staff(playerid, params[]) {
-	if((PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pDonateRank] == 5 || PlayerInfo[playerid][pWatchdog] >= 1) && advisorchat[playerid]) {
+	if((PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1) && advisorchat[playerid]) {
 		if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 		if(!isnull(params)) {
 
@@ -4457,7 +4463,8 @@ CMD:staff(playerid, params[]) {
 				if(PlayerInfo[playerid][pSMod] != 0) format(szMessage, sizeof(szMessage), "** Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
 				else format(szMessage, sizeof(szMessage), "** Server Moderator %s: %s", GetPlayerNameEx(playerid), params);
 			}
-			else if(PlayerInfo[playerid][pDonateRank] == 5) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMessage, sizeof(szMessage), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMessage, sizeof(szMessage), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
@@ -5242,7 +5249,7 @@ CMD:revive(playerid, params[])
 
 				KillEMSQueue(giveplayerid);
    				ClearAnimations(giveplayerid);
-   				SetPlayerHealth(giveplayerid, 100);
+   				SetHealth(giveplayerid, 100);
 			}
 			else
 			{
@@ -5278,13 +5285,13 @@ CMD:revivenear(playerid, params[])
 				{
 					if(ProxDetectorS(radius, playerid, i))
 					{
-						SetPlayerHealth(i, 100);
+						SetHealth(i, 100);
 						count++;
 					}
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
 					KillEMSQueue(i);
 					ClearAnimations(i);
-					SetPlayerHealth(i, 100);
+					SetHealth(i, 100);
 					format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
 				}
@@ -6239,7 +6246,7 @@ CMD:release(playerid, params[])
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealth(giveplayerid, 100);
+				SetHealth(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -7504,7 +7511,7 @@ CMD:slap(playerid, params[])
 		}
 		else {
 		    GetPlayerHealth(giveplayerid, shealth);
-			SetPlayerHealth(giveplayerid, shealth-5);
+			SetHealth(giveplayerid, shealth-5);
 			GetPlayerPos(giveplayerid, posx, posy, posz);
 			SetPlayerPos(giveplayerid, posx, posy, posz+5);
 			PlayerPlaySound(giveplayerid, 1130, posx, posy, posz+5);
@@ -8094,7 +8101,7 @@ CMD:ah(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /ha /setweather /makeleader /pedit /groupunban /groupcsfunban /giftall /removemoderator /makewatchdog");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /ha /setweather /makeleader /pedit /groupunban /groupcsfunban /giftall /removemoderator");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
@@ -8624,7 +8631,7 @@ CMD:srelease(playerid, params[])
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
-				SetPlayerHealth(giveplayerid, 100);
+				SetHealth(giveplayerid, 100);
 				SetPlayerWantedLevel(giveplayerid, 0);
 				PlayerInfo[giveplayerid][pJailTime] = 0;
 				SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
@@ -8666,7 +8673,7 @@ CMD:sgcheck(playerid, params[])
   	format(string, sizeof(string), "Checking %s for sprunk guard, please wait....", GetPlayerNameEx(giveplayerid));
     SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	GetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
-	GetPlayerArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
+	GetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 	GetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 	GetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
 	SGcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
@@ -8694,7 +8701,7 @@ CMD:relog(playerid, params[])
 	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player has not logged in.");
 	
 	OnPlayerDisconnect(giveplayerid, 4);
-	SetPlayerArmor(giveplayerid, 0);
+	SetArmour(giveplayerid, 0);
 	ResetPlayerWeapons(giveplayerid);
 	OnPlayerConnect(giveplayerid);
 	format(string, sizeof(string), "You have relogged %s.", GetPlayerNameEx(giveplayerid));
@@ -8732,7 +8739,7 @@ CMD:quickstats(playerid, params[])
 {
 	new string[128], Float: health, Float: armor;
 	GetPlayerHealth(playerid, health);
-	GetPlayerArmour(playerid, armor);
+	GetArmour(playerid, armor);
 	
 	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);

@@ -101,8 +101,8 @@ CMD:corndog(playerid, params[])
 	GetPlayerHealth(playerid, health);
 	if(health < 100) 
 	{
-		if(health > 90) SetPlayerHealth(playerid, 100);
-		else SetPlayerHealth(playerid, health + 10.0);
+		if(health > 90) SetHealth(playerid, 100);
+		else SetHealth(playerid, health + 10.0);
 	}
 	return 1;
 }
@@ -123,8 +123,8 @@ CMD:pizza(playerid, params[])
 	GetPlayerHealth(playerid, health);
 	if(health < 100) 
 	{
-		if(health > 90) SetPlayerHealth(playerid, 100);
-		else SetPlayerHealth(playerid, health + 10.0);
+		if(health > 90) SetHealth(playerid, 100);
+		else SetHealth(playerid, health + 10.0);
 	}
 	return 1;
 }
@@ -145,8 +145,8 @@ CMD:frieddough(playerid, params[])
 	GetPlayerHealth(playerid, health);
 	if(health < 100) 
 	{
-		if(health > 90) SetPlayerHealth(playerid, 100);
-		else SetPlayerHealth(playerid, health + 10.0);
+		if(health > 90) SetHealth(playerid, 100);
+		else SetHealth(playerid, health + 10.0);
 	}
 	return 1;
 }

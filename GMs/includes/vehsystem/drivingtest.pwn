@@ -127,7 +127,7 @@ CMD:drivingtest(playerid,params[]){
 	DIALOG_DSVEH_CAUTION,
 	DIALOG_STYLE_MSGBOX,
 	"DRIVING TEST",
-	"{FE2C2C}READ CAREFULLY\n{FFFFFF}You are about to take the drivers license test.\n On main roads, the speed limit is {FE2C2C}50{FFFFFF} and on the highway/freeway the speed limit is {FE2C2C}100{FFFFFF}.\n If you exceed the speed limit you will fail the test however you can take it again.\nIf you are out of the vehicle for more than one minute, you will fail.", "Agree", "Disagree");
+	"{FE2C2C}READ CAREFULLY\n{FFFFFF}You are about to take the drivers license test.\nOn main roads, the speed limit is {FE2C2C}50{FFFFFF} and on the highway/freeway the speed limit is {FE2C2C}100{FFFFFF}.\nIf you exceed the speed limit you will fail the test however you can take it again.\nIf you are out of the vehicle for more than one minute, you will fail.", "Agree", "Disagree");
 	return 1;
 }
 
@@ -168,7 +168,7 @@ DrivingSchoolSpeedMeter(playerid, Float:speed)
 hook OnGameModeInit()
 {
 	CreateDynamicPickup(1239, 1, 1173.0698,1348.4688,10.9219);
-	CreateDynamic3DTextLabel("/drivingtest to begin the driving test.", 0xFF0000FF, 1173.4,1348.4688,10.9219,4.0);
+	CreateDynamic3DTextLabel("/drivingtest to begin the driving test.", 0xFF0000FF, 1173.0698,1348.4688,10.9219,4.0);
 	return 1;
 }
 
@@ -191,7 +191,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		if(PlayerInfo[playerid][pCarLic] == 0)
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: You don't have a driver's license! To get one, go to the Driving School in Las Venturas.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: You don't have a driver's license! To get one, go to the Driving School in Las Venturas. (/drivingtest)");
 		}
 	}
 	return 1;
@@ -343,6 +343,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new pTestVeh = GetPVarInt(playerid, "PTestVeh");
 					PutPlayerInVehicle(playerid, pTestVeh, 0);
 					SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Please make sure you go a max of 50mph in the residential areas. You may now begin.");
+					if(!PlayerInfo[playerid][pSpeedo])
+					{
+						SendClientMessageEx(playerid, COLOR_WHITE, "Your speedometer has been enabled for you.");
+						PlayerInfo[playerid][pSpeedo] = 1;
+						ShowVehicleHUDForPlayer(playerid);
+					}
 					SetPVarInt(playerid, "PDTest", 1);
 					DisablePlayerCheckpoint(playerid);
 					SetPlayerCheckpoint(playerid, dsPoints[0][0], dsPoints[0][1], dsPoints[0][2], 4.0);
