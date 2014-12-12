@@ -927,20 +927,17 @@ CMD:cratelimit(playerid, params[]) {
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		format(string, sizeof(string), "** %s has restricted weapon crate production to %d", GetPlayerNameEx(playerid), moneys);
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			iGroupID = PlayerInfo[i][pMember];
+			if( (0 <= iGroupID < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iCrateIsland] )
 			{
-				iGroupID = PlayerInfo[i][pMember];
-				if( (0 <= iGroupID < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iCrateIsland] )
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
 				{
-					if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
-					{
-						SendClientMessageEx(i, DEPTRADIO, string);
-					}
+					SendClientMessageEx(i, DEPTRADIO, string);
 				}
-			}	
-		}
+			}
+		}	
 	}
 	else
 	{
@@ -1103,18 +1100,14 @@ CMD:alockdown(playerid, params[]) {
 		if(IslandGateStatus == 0)
 		{
 		    MoveDynamicObject(IslandGate, -1083.90002441,4289.70019531,7.59999990, 0.5);
-		    //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+		    foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(IsPlayerInRangeOfPoint(i, 500, -1083.90002441,4289.70019531,7.59999990))
 				{
-					if(IsPlayerInRangeOfPoint(i, 500, -1083.90002441,4289.70019531,7.59999990))
-					{
-						SendClientMessageEx(i, COLOR_YELLOW, "** MEGAPHONE **  UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
-						PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
-					}
-				}	
-		    }
+					SendClientMessageEx(i, COLOR_YELLOW, "** MEGAPHONE **  UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
+					PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
+				}
+			}	
 		  	format(string, sizeof(string), "** %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. **", GetPlayerNameEx(playerid));
 			SendGroupMessage(1, DEPTRADIO, string);
 			IslandGateStatus = gettime();

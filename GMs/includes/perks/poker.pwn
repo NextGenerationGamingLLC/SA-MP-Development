@@ -568,18 +568,14 @@ PlacePokerTable(tableid, skipmisc, Float:x, Float:y, Float:z, Float:rx, Float:ry
 DestroyPokerTable(tableid)
 {
 	if(PokerTable[tableid][pkrPlaced] == 1) {
-		//foreach(new i : Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i : Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarInt(i, "pkrTableID")-1 == tableid)
 			{
-				if(GetPVarInt(i, "pkrTableID")-1 == tableid)
-				{
-					LeavePokerTable(i);
-					SendClientMessageEx(i, COLOR_YELLOW, "The poker table owner has destroyed the table.");
-				}
-			}	
-		}
+				LeavePokerTable(i);
+				SendClientMessageEx(i, COLOR_YELLOW, "The poker table owner has destroyed the table.");
+			}
+		}	
 
 		// Delete Table
 		if(IsValidDynamicObject(PokerTable[tableid][pkrObjectID])) DestroyDynamicObject(PokerTable[tableid][pkrObjectID]);
@@ -1716,21 +1712,17 @@ CMD:placetable(playerid, params[])
 		if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only place poker tables inside interiors.");
 		if(GetPVarType(playerid, "pTable")) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a poker table out, use /destroytable.");
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarType(i, "pTable"))
 			{
-				if(GetPVarType(i, "pTable"))
+				if(IsPlayerInRangeOfPoint(playerid, 7.0, PokerTable[GetPVarInt(i, "pTable")][pkrX], PokerTable[GetPVarInt(i, "pTable")][pkrY], PokerTable[GetPVarInt(i, "pTable")][pkrZ]))
 				{
-					if(IsPlayerInRangeOfPoint(playerid, 7.0, PokerTable[GetPVarInt(i, "pTable")][pkrX], PokerTable[GetPVarInt(i, "pTable")][pkrY], PokerTable[GetPVarInt(i, "pTable")][pkrZ]))
-					{
-						SendClientMessage(playerid, COLOR_GREY, "You are in range of another poker table, you can't place one here!");
-						return 1;
-					}
+					SendClientMessage(playerid, COLOR_GREY, "You are in range of another poker table, you can't place one here!");
+					return 1;
 				}
-			}	
-		}
+			}
+		}	
 
 
 		new string[128];

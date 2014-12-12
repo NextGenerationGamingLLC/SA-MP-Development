@@ -350,18 +350,14 @@ CMD:adestroymailbox(playerid, params[])
 	new string[64];
 	format(string, sizeof(string), "You have destroyed the mailbox of house %d.", houseid);
 	SendClientMessageEx(playerid, COLOR_GREY, string);
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if(PlayerInfo[i][pPhousekey] == houseid || PlayerInfo[i][pPhousekey2] == houseid || PlayerInfo[i][pPhousekey3] == houseid)	{
-				format(string, sizeof(string), "Administrator %s has destroyed your mailbox.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(i, COLOR_GREY, string);
-				break;
-			}
-		}	
-	}
+		if(PlayerInfo[i][pPhousekey] == houseid || PlayerInfo[i][pPhousekey2] == houseid || PlayerInfo[i][pPhousekey3] == houseid)	{
+			format(string, sizeof(string), "Administrator %s has destroyed your mailbox.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(i, COLOR_GREY, string);
+			break;
+		}
+	}	
 
 	format(string, sizeof(string), "Administrator %s has destroyed the mailbox of house %d.", GetPlayerNameEx(playerid), houseid);
 	Log("logs/house.log", string);

@@ -537,18 +537,14 @@ public OnPlayerLoad(playerid)
 	        new
 				Business = PlayerInfo[playerid][pBusiness];
 
-			//foreach(new j: Player) {
-			for(new j = 0; j < MAX_PLAYERS; ++j)
-			{
-				if(IsPlayerConnected(j))
-				{			
-					if(PlayerInfo[j][pBusiness] == Business) {
-						PlayerInfo[j][pBusiness] = INVALID_BUSINESS_ID;
-						PlayerInfo[j][pBusinessRank] = 0;
-						SendClientMessageEx(playerid, COLOR_WHITE, "An admin has sold this business, your business stats have been reset.");
-					}
-				}	
-			}
+			foreach(new j: Player)
+			{			
+				if(PlayerInfo[j][pBusiness] == Business) {
+					PlayerInfo[j][pBusiness] = INVALID_BUSINESS_ID;
+					PlayerInfo[j][pBusinessRank] = 0;
+					SendClientMessageEx(playerid, COLOR_WHITE, "An admin has sold this business, your business stats have been reset.");
+				}
+			}	
 
 			Businesses[Business][bOwner] = -1;
 			Businesses[Business][bMonths] = 0;
@@ -654,14 +650,10 @@ public OnPlayerLoad(playerid)
 			format(string, sizeof(string), "SERVER: %s has logged in as a %s{FFFFFF}.", GetPlayerNameEx(playerid), GetStaffRank(playerid));
 		}
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pAdmin] >= PlayerInfo[playerid][pAdmin]) SendClientMessageEx(i, COLOR_WHITE, string);
-			}	
-		}
+			if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pAdmin] >= PlayerInfo[playerid][pAdmin]) SendClientMessageEx(i, COLOR_WHITE, string);
+		}	
 	}
 	
 	if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
@@ -674,14 +666,11 @@ public OnPlayerLoad(playerid)
 			if(PlayerInfo[playerid][pDuty])
 			{
 				format(string, sizeof(string), "** %s%s %s is in service **", badge, rank, GetPlayerNameEx(playerid));
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player) 
 				{
-					if(IsPlayerConnected(i))
+					if(GetPVarInt(i, "togRadio") == 0)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
-						{
-							if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-						}
+						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
 				}
 			}
@@ -693,14 +682,11 @@ public OnPlayerLoad(playerid)
 			if(PlayerInfo[playerid][pDuty])
 			{
 				format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player) 
 				{
-					if(IsPlayerConnected(i))
+					if(GetPVarInt(i, "togRadio") == 0)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
-						{
-							if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-						}
+						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
 				}
 			}

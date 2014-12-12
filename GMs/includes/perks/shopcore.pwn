@@ -143,20 +143,16 @@ CMD:shopplate(playerid, params[])
 			return 1;
 		}
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			iVehIndex = GetPlayerVehicle(i, carid);
+			if(iVehIndex != -1)
 			{
-				iVehIndex = GetPlayerVehicle(i, carid);
-				if(iVehIndex != -1)
-				{
-					iVehType = 1;
-					iTargetOwner = i;
-					break;
-				}
-			}	
-		}
+				iVehType = 1;
+				iTargetOwner = i;
+				break;
+			}
+		}	
 		if(iVehType == 1)
 		{
 		    format(plate, sizeof(plate), "%s", str_replace("(black)", "{000000}", plate));
@@ -398,41 +394,37 @@ CMD:orders(playerid, params[])
 	{
  		new string[128];
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SHOP ORDERS _____________________");
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pOrder] > 0 && OrderAssignedTo[i] == INVALID_PLAYER_ID)
 			{
-				if(PlayerInfo[i][pOrder] > 0 && OrderAssignedTo[i] == INVALID_PLAYER_ID)
-				{
-					new playerip[32];
-					GetPlayerIp(i, playerip, sizeof(playerip));
+				new playerip[32];
+				GetPlayerIp(i, playerip, sizeof(playerip));
 
-					new orderid = PlayerInfo[i][pOrder];
+				new orderid = PlayerInfo[i][pOrder];
 
-					if(PlayerInfo[i][pOrderConfirmed]) {
-						format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
-					} else {
-						format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
-					}
-					SendClientMessageEx(playerid, COLOR_SHOP, string);
+				if(PlayerInfo[i][pOrderConfirmed]) {
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
+				} else {
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: Nobody", GetPlayerNameEx(i), i, orderid, playerip);
 				}
-				else if(PlayerInfo[i][pOrder] > 0 && OrderAssignedTo[i] != INVALID_PLAYER_ID)
-				{
-					new playerip[32];
-					GetPlayerIp(i, playerip, sizeof(playerip));
+				SendClientMessageEx(playerid, COLOR_SHOP, string);
+			}
+			else if(PlayerInfo[i][pOrder] > 0 && OrderAssignedTo[i] != INVALID_PLAYER_ID)
+			{
+				new playerip[32];
+				GetPlayerIp(i, playerip, sizeof(playerip));
 
-					new orderid = PlayerInfo[i][pOrder];
+				new orderid = PlayerInfo[i][pOrder];
 
-					if(PlayerInfo[i][pOrderConfirmed]) {
-						format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
-					} else {
-						format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
-					}
-					SendClientMessageEx(playerid, COLOR_SHOP, string);
+				if(PlayerInfo[i][pOrderConfirmed]) {
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Confirmed) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
+				} else {
+					format(string, sizeof(string), "%s(%d) | Order ID: %d (Invalid) | IP: %s | Assigned to: %s", GetPlayerNameEx(i), i, orderid, playerip, GetPlayerNameEx(OrderAssignedTo[i]));
 				}
-			}	
-		}
+				SendClientMessageEx(playerid, COLOR_SHOP, string);
+			}
+		}	
   		SendClientMessageEx(playerid, COLOR_WHITE, "Use /givemeorder /processorder /denyorder");
         SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________________");
 	}

@@ -43,19 +43,15 @@ CMD:viewflags(playerid, params[])
 
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Player Flag Count List (/viewflag [player] to view):");
 		new fCounter;
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pFlagged] > 0)
 			{
-				if(PlayerInfo[i][pFlagged] > 0)
-				{
-					format(string, sizeof(string), "%s(%d) Flag Count: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
-					fCounter += 1;
-				}
-			}	
-		}
+				format(string, sizeof(string), "%s(%d) Flag Count: %d.",GetPlayerNameEx(i),i,PlayerInfo[i][pFlagged]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				fCounter += 1;
+			}
+		}	
 		if(fCounter <= 0)
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD1, "None.");

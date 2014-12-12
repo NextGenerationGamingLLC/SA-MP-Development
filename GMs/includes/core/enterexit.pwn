@@ -139,23 +139,19 @@ CMD:enter(playerid, params[])
 
 					}
 				}
-                //foreach(new passenger: Player)
-				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+                foreach(new passenger: Player)
 				{
-					if(IsPlayerConnected(passenger))
+					if(passenger != playerid)
 					{
-						if(passenger != playerid)
+						if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
 						{
-							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
-							{
-								SetPlayerInterior(passenger,DDoorsInfo[i][ddInteriorInt]);
-								PlayerInfo[passenger][pInt] = DDoorsInfo[i][ddInteriorInt];
-								PlayerInfo[passenger][pVW] = DDoorsInfo[i][ddInteriorVW];
-								SetPlayerVirtualWorld(passenger, DDoorsInfo[i][ddInteriorVW]);
-							}
+							SetPlayerInterior(passenger,DDoorsInfo[i][ddInteriorInt]);
+							PlayerInfo[passenger][pInt] = DDoorsInfo[i][ddInteriorInt];
+							PlayerInfo[passenger][pVW] = DDoorsInfo[i][ddInteriorVW];
+							SetPlayerVirtualWorld(passenger, DDoorsInfo[i][ddInteriorVW]);
 						}
-					}	
-                }
+					}
+				}
             }
             else {
                 SetPlayerPos(playerid,DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
@@ -203,19 +199,16 @@ CMD:enter(playerid, params[])
 						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
 					}
 				}
-				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+				foreach(new passenger : Player)
 				{
-					if(IsPlayerConnected(passenger))
+					if(passenger != playerid)
 					{
-						if(passenger != playerid)
+						if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
 						{
-							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
-							{
-								SetPlayerInterior(passenger, 1);
-								PlayerInfo[passenger][pInt] = 1;
-								PlayerInfo[passenger][pVW] = GarageInfo[i][gar_InteriorVW];
-								SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_InteriorVW]);
-							}
+							SetPlayerInterior(passenger, 1);
+							PlayerInfo[passenger][pInt] = 1;
+							PlayerInfo[passenger][pVW] = GarageInfo[i][gar_InteriorVW];
+							SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_InteriorVW]);
 						}
 					}
 				}
@@ -684,23 +677,19 @@ CMD:exit(playerid, params[])
 
 					}
 				}
-                //foreach(new passenger: Player)
-				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+                foreach(new passenger: Player)
 				{
-					if(IsPlayerConnected(passenger))
+					if(passenger != playerid)
 					{
-						if(passenger != playerid)
+						if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
 						{
-							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
-							{
-								SetPlayerInterior(passenger,DDoorsInfo[i][ddExteriorInt]);
-								PlayerInfo[passenger][pInt] = DDoorsInfo[i][ddExteriorInt];
-								PlayerInfo[passenger][pVW] = DDoorsInfo[i][ddExteriorVW];
-								SetPlayerVirtualWorld(passenger, DDoorsInfo[i][ddExteriorVW]);
-							}
+							SetPlayerInterior(passenger,DDoorsInfo[i][ddExteriorInt]);
+							PlayerInfo[passenger][pInt] = DDoorsInfo[i][ddExteriorInt];
+							PlayerInfo[passenger][pVW] = DDoorsInfo[i][ddExteriorVW];
+							SetPlayerVirtualWorld(passenger, DDoorsInfo[i][ddExteriorVW]);
 						}
-					}	
-                }
+					}
+				}	
             }
             else {
                 SetPlayerPos(playerid,DDoorsInfo[i][ddExteriorX],DDoorsInfo[i][ddExteriorY],DDoorsInfo[i][ddExteriorZ]);
@@ -747,19 +736,16 @@ CMD:exit(playerid, params[])
 						Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
 					}
 				}
-				for(new passenger = 0; passenger < MAX_PLAYERS; ++passenger)
+				foreach(new passenger : Player)
 				{
-					if(IsPlayerConnected(passenger))
+					if(passenger != playerid)
 					{
-						if(passenger != playerid)
+						if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
 						{
-							if(IsPlayerInVehicle(passenger, GetPlayerVehicleID(playerid)))
-							{
-								SetPlayerInterior(passenger,GarageInfo[i][gar_ExteriorInt]);
-								PlayerInfo[passenger][pInt] = GarageInfo[i][gar_ExteriorInt];
-								PlayerInfo[passenger][pVW] = GarageInfo[i][gar_ExteriorVW];
-								SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_ExteriorVW]);
-							}
+							SetPlayerInterior(passenger,GarageInfo[i][gar_ExteriorInt]);
+							PlayerInfo[passenger][pInt] = GarageInfo[i][gar_ExteriorInt];
+							PlayerInfo[passenger][pVW] = GarageInfo[i][gar_ExteriorVW];
+							SetPlayerVirtualWorld(passenger, GarageInfo[i][gar_ExteriorVW]);
 						}
 					}
 				}

@@ -140,16 +140,12 @@ public StationSelectHTTP(index, response_code, data[])
  	{
 		if(IsPlayerInAnyVehicle(index))
 		{
-	 	    //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+	 	    foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(index)) {
-						PlayAudioStreamForPlayerEx(i, data);
-					}
-				}	
-			}
+				if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(index)) {
+					PlayAudioStreamForPlayerEx(i, data);
+				}
+			}	
 		  	format(stationidv[GetPlayerVehicleID(index)], 64, "%s", data);
 		  	new string[53];
 		  	format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(index), string);
@@ -159,17 +155,13 @@ public StationSelectHTTP(index, response_code, data[])
 		}
 		else if(GetPVarType(index, "pBoomBox"))
 		{
-		    //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+		    foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(IsPlayerInDynamicArea(i, GetPVarInt(index, "pBoomBoxArea")))
 				{
-					if(IsPlayerInDynamicArea(i, GetPVarInt(index, "pBoomBoxArea")))
-					{
-						PlayAudioStreamForPlayerEx(i, data, GetPVarFloat(index, "pBoomBoxX"), GetPVarFloat(index, "pBoomBoxY"), GetPVarFloat(index, "pBoomBoxZ"), 30.0, 1);
-					}
-				}	
-			}
+					PlayAudioStreamForPlayerEx(i, data, GetPVarFloat(index, "pBoomBoxX"), GetPVarFloat(index, "pBoomBoxY"), GetPVarFloat(index, "pBoomBoxZ"), 30.0, 1);
+				}
+			}	
 		  	SetPVarString(index, "pBoomBoxStation", data);
 		}
 		else
@@ -203,17 +195,13 @@ CMD:audiostopurl(playerid, params[])
     	{
 	        new string[128];
 
-	        //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+	        foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(IsPlayerInRangeOfPoint(i, audiourlparams[3], audiourlparams[0], audiourlparams[1], audiourlparams[2]))
 				{
-					if(IsPlayerInRangeOfPoint(i, audiourlparams[3], audiourlparams[0], audiourlparams[1], audiourlparams[2]))
-					{
-						StopAudioStreamForPlayerEx(i);
-					}
-				}	
-	        }
+					StopAudioStreamForPlayerEx(i);
+				}
+			}	
 	        DestroyDynamicArea(audiourlid);
 	        format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has stopped the audiourl",GetPlayerNameEx(playerid));
 	        ABroadCast(COLOR_YELLOW, string, 4);

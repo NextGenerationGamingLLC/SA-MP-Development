@@ -150,60 +150,59 @@ CMD:pickveh(playerid, params[])
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
 	GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
 	if(IsPlayerInRangeOfPoint(playerid, 1.0, Pos[0], Pos[1], Pos[2])) {
-		for(new i = 0; i < MAX_PLAYERS; ++i) {
-			if(IsPlayerConnected(i)) {
-				new v = GetPlayerVehicle(i, vehicleid);
-				if(v != -1) {
-					if(PlayerVehicleInfo[i][v][pvLock] == 0 || PlayerVehicleInfo[i][v][pvLocksLeft] <= 0)
-						return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that don't have a lock.");
-					if(PlayerVehicleInfo[i][v][pvBeingPickLocked] > 0)
-						return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: This vehicle is already being lock picked.");
-					if(PlayerVehicleInfo[i][v][pvAllowedPlayerId] == playerid)
-						return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that you have the keys of them.");
-					new status, waittime, vipperk, randskill = random(100);
-					switch(PlayerInfo[playerid][pDonateRank]) {
-						case 1: vipperk = 5;
-						case 2: vipperk = 10;
-						case 3, 4, 5: vipperk = 15;
-					}
-					switch(PlayerInfo[playerid][pCarLockPickSkill]) {
-						case 0 .. 49: if(0 <= randskill < (25+vipperk)) waittime = 180, status = 1; //Success
-						case 50 .. 124: if(0 <= randskill < (35+vipperk)) waittime = 170, status = 1; //Success
-						case 125 .. 224: if(0 <= randskill < (45+vipperk)) waittime = 160, status = 1; //Success
-						case 225 .. 349: if(0 <= randskill < (55+vipperk)) waittime = 150, status = 1; //Success
-						default: if(0 <= randskill < (65+vipperk)) waittime = 130, status = 1; //Success
-					}
-					format(szMessage, sizeof(szMessage), "* %s attempts to pick lock a nearby vehicle.", GetPlayerNameEx(playerid));
-					ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
-					if(status) {
-						SetPVarInt(playerid, "AttemptingLockPick", 1);
-						SetPVarInt(playerid, "LockPickCountdown", waittime);
-						SetPVarInt(playerid, "LockPickTotalTime", waittime);
-						SetPVarInt(playerid, "LockPickVehicle", vehicleid);
-						SetPVarInt(playerid, "LockPickPlayer", i);
-						DeletePVar(playerid, "TrunkAlreadyCracked");
-						
-						PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
-						PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;
-						SendClientMessageEx(playerid, COLOR_PURPLE, "(( You've successfully managed to start pick locking this vehicle, you are now attempting to break into it. /stoplockpick ))");
-						SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail lock picking the vehicle.");
-						ShowVLPTextDraws(playerid, vehicleid);
-						GetVehicleZAngle(vehicleid, a);
-						SetPlayerFacingAngle(playerid, a-90);
-						ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
-						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-						GetPlayerIp(playerid, ip, sizeof(ip));
-						GetPlayerIp(i, ip2, sizeof(ip2));
-						format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
-						Log("logs/playervehicle.log", szMessage);
-					}
-					else {
-						SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
-					}
-					success = 1;
-					break;
+		foreach(new i: Player)  
+		{
+			new v = GetPlayerVehicle(i, vehicleid);
+			if(v != -1) {
+				if(PlayerVehicleInfo[i][v][pvLock] == 0 || PlayerVehicleInfo[i][v][pvLocksLeft] <= 0)
+					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that don't have a lock.");
+				if(PlayerVehicleInfo[i][v][pvBeingPickLocked] > 0)
+					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: This vehicle is already being lock picked.");
+				if(PlayerVehicleInfo[i][v][pvAllowedPlayerId] == playerid)
+					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that you have the keys of them.");
+				new status, waittime, vipperk, randskill = random(100);
+				switch(PlayerInfo[playerid][pDonateRank]) {
+					case 1: vipperk = 5;
+					case 2: vipperk = 10;
+					case 3, 4, 5: vipperk = 15;
 				}
+				switch(PlayerInfo[playerid][pCarLockPickSkill]) {
+					case 0 .. 49: if(0 <= randskill < (25+vipperk)) waittime = 180, status = 1; //Success
+					case 50 .. 124: if(0 <= randskill < (35+vipperk)) waittime = 170, status = 1; //Success
+					case 125 .. 224: if(0 <= randskill < (45+vipperk)) waittime = 160, status = 1; //Success
+					case 225 .. 349: if(0 <= randskill < (55+vipperk)) waittime = 150, status = 1; //Success
+					default: if(0 <= randskill < (65+vipperk)) waittime = 130, status = 1; //Success
+				}
+				format(szMessage, sizeof(szMessage), "* %s attempts to pick lock a nearby vehicle.", GetPlayerNameEx(playerid));
+				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				PlayerInfo[playerid][pLockPickTime] = gettime() + 10;
+				if(status) {
+					SetPVarInt(playerid, "AttemptingLockPick", 1);
+					SetPVarInt(playerid, "LockPickCountdown", waittime);
+					SetPVarInt(playerid, "LockPickTotalTime", waittime);
+					SetPVarInt(playerid, "LockPickVehicle", vehicleid);
+					SetPVarInt(playerid, "LockPickPlayer", i);
+					DeletePVar(playerid, "TrunkAlreadyCracked");
+					
+					PlayerVehicleInfo[i][v][pvBeingPickLocked] = 1;
+					PlayerVehicleInfo[i][v][pvBeingPickLockedBy] = playerid;
+					SendClientMessageEx(playerid, COLOR_PURPLE, "(( You've successfully managed to start pick locking this vehicle, you are now attempting to break into it. /stoplockpick ))");
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Warning{FFFFFF}: Please stay still, if you move or get shot you may fail lock picking the vehicle.");
+					ShowVLPTextDraws(playerid, vehicleid);
+					GetVehicleZAngle(vehicleid, a);
+					SetPlayerFacingAngle(playerid, a-90);
+					ApplyAnimation(playerid, "COP_AMBIENT", "Copbrowse_loop", 4.1, 1, 0, 0, 0, 0, 1);
+					new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(i, ip2, sizeof(ip2));
+					format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) is attempting to lock pick a %s(VID:%d Slot %d) owned by %s(IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), PlayerVehicleInfo[playerid][v][pvId], v, GetPlayerNameEx(i), ip2);
+					Log("logs/playervehicle.log", szMessage);
+				}
+				else {
+					SendClientMessageEx(playerid, COLOR_PURPLE, "(( Your attempt to lock pick this vehicle failed! Try again or move on. ))");
+				}
+				success = 1;
+				break;
 			}
 		}
 		if(!success) {

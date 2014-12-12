@@ -56,81 +56,61 @@ stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
        	{
    	    	case 1:
    	    	{
-	        	//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+	        	foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0)
 					{
-						if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0)
-						{
-							GameTextForPlayer(i, "~r~DM Alert", 1500, 1);
-						}
-					}	
-				}
+						GameTextForPlayer(i, "~r~DM Alert", 1500, 1);
+					}
+				}	
     		}
  	    	case 2:
   	    	{
-        		//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+        		foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
-						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
-						{
-							GameTextForPlayer(i, "~p~Priority Report", 1500, 1);
-						}
-					}	
-				}
+						GameTextForPlayer(i, "~p~Priority Report", 1500, 1);
+					}
+				}	
 			}
    			case 3..4:
  	    	{
-       			//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+       			foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
-						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
-						{
-							TextDrawSetString(PriorityReport[i], "~y~New Report");
-							TextDrawShowForPlayer(i, PriorityReport[i]);
-							SetTimerEx("HideReportText", 2000, 0, "d", i);
-						}
-					}	
-				}
+						TextDrawSetString(PriorityReport[i], "~y~New Report");
+						TextDrawShowForPlayer(i, PriorityReport[i]);
+						SetTimerEx("HideReportText", 2000, 0, "d", i);
+					}
+				}	
     		}
  	    	case 5:
   	    	{
-        		//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+        		foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
 					{
-						if(PlayerInfo[i][pAdmin] >= reportlevel && PlayerInfo[i][pTogReports] == 0)
-						{
-							//GameTextForPlayer(i, "~w~~n~n~n~Priority 5 Item Pending", 1500, 3);
-							TextDrawSetString(PriorityReport[i], "~w~Priority 5 Item Pending");
-							TextDrawShowForPlayer(i, PriorityReport[i]);
-							SetTimerEx("HideReportText", 2000, 0, "d", i);
-						}
-					}	
-				}
+						//GameTextForPlayer(i, "~w~~n~n~n~Priority 5 Item Pending", 1500, 3);
+						TextDrawSetString(PriorityReport[i], "~w~Priority 5 Item Pending");
+						TextDrawShowForPlayer(i, PriorityReport[i]);
+						SetTimerEx("HideReportText", 2000, 0, "d", i);
+					}
+				}	
     		}
      	}
-     	//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+     	foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
-					SendClientMessageEx(i, COLOR_REPORT, string);
-				}
-				else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
-					SendClientMessageEx(i, COLOR_REPORT, string);
-				}
-			}	
-     	}
+			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
+				format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				SendClientMessageEx(i, COLOR_REPORT, string);
+			}
+			else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
+				format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				SendClientMessageEx(i, COLOR_REPORT, string);
+			}
+		}	
      	SetPVarInt(reportfrom, "HasReport", 1);
         if(reportlevel == 2)
 		{
@@ -858,16 +838,12 @@ CMD:ar(playerid, params[])
 					if(IsPlayerConnected(giveplayerid)) {
 						if (PlayerInfo[giveplayerid][pAdmin] < 2) {
 							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has offered %s a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-							//foreach(new i: Player) {
-							for(new i = 0; i < MAX_PLAYERS; ++i)
-							{
-								if(IsPlayerConnected(i))
-								{	
-									if(PlayerInfo[i][pSMod] == 1) {
-										SendClientMessageEx(i, COLOR_YELLOW, string);
-									}
-								}	
-							}
+							foreach(new i: Player)
+							{	
+								if(PlayerInfo[i][pSMod] == 1) {
+									SendClientMessageEx(i, COLOR_YELLOW, string);
+								}
+							}	
 							ABroadCast( COLOR_YELLOW, string, 2);
 							ShowPlayerDialog(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 						}

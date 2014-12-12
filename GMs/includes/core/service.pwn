@@ -99,17 +99,13 @@ CMD:service(playerid, params[])
 	else if(strcmp(choice,"medic",true) == 0)
 	{
 		new OnDutyMedics;
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(IsAMedic(i) && PlayerInfo[i][pDuty] == 1)
 			{
-				if(IsAMedic(i) && PlayerInfo[i][pDuty] == 1)
-				{
-					OnDutyMedics++;
-				}
-			}	
-		}
+				OnDutyMedics++;
+			}
+		}	
 		if(OnDutyMedics < 1)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "   There are no medics on duty at the moment, try again later!");

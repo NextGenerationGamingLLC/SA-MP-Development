@@ -78,16 +78,12 @@ stock GetFamedRankName(i)
 
 stock SendFamedMessage(color, string[])
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pFamedTogged] == 1) {
-				SendClientMessageEx(i, color, string);
-			}
-		}	
-	}
+		if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pFamedTogged] == 1) {
+			SendClientMessageEx(i, color, string);
+		}
+	}	
 }
 
 //======[Start of Famed Commands]=======
@@ -385,14 +381,11 @@ CMD:fmembers(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFamed] >= 4)
 	{
 		new string[2048];
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player) 
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pFamed] >= 1)
 			{
-				if(PlayerInfo[i][pFamed] >= 1)
-				{
-					format(string, sizeof(string), "%s\nLevel %d Famed %s", string, PlayerInfo[i][pFamed], GetPlayerNameEx(i));
-				}
+				format(string, sizeof(string), "%s\nLevel %d Famed %s", string, PlayerInfo[i][pFamed], GetPlayerNameEx(i));
 			}	
 		}
 		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Current Online Famed Members", string, "Close", "");

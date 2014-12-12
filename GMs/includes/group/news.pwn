@@ -254,76 +254,72 @@ CMD:cameraangle(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Unrecognized camera angle");
 				return 1;
 			}
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(WatchingTV[i] == 1)
 				{
-					if(WatchingTV[i] == 1)
+					switch(broadcaststudio)
 					{
-						switch(broadcaststudio)
+						case 1:
 						{
-							case 1:
+							switch(cameraangle)
 							{
-								switch(cameraangle)
+								case 0:
 								{
-									case 0:
-									{
-										SetPlayerCameraPos(i, 651.7099, -23.5688, 1101.6589);
-										SetPlayerCameraLookAt(i, 651.6790, -24.5670, 1101.5894);
-									}
-									case 1:
-									{
-										SetPlayerCameraPos(i, 647.0847, -24.2731, 1101.7302);
-										SetPlayerCameraLookAt(i, 647.7896, -24.9810, 1101.6757);
-									}
-									case 2:
-									{
-										SetPlayerCameraPos(i, 653.3759, -24.5380, 1101.6094);
-										SetPlayerCameraLookAt(i, 652.9409, -25.4370, 1101.5249);
-									}
+									SetPlayerCameraPos(i, 651.7099, -23.5688, 1101.6589);
+									SetPlayerCameraLookAt(i, 651.6790, -24.5670, 1101.5894);
+								}
+								case 1:
+								{
+									SetPlayerCameraPos(i, 647.0847, -24.2731, 1101.7302);
+									SetPlayerCameraLookAt(i, 647.7896, -24.9810, 1101.6757);
+								}
+								case 2:
+								{
+									SetPlayerCameraPos(i, 653.3759, -24.5380, 1101.6094);
+									SetPlayerCameraLookAt(i, 652.9409, -25.4370, 1101.5249);
 								}
 							}
-							case 2:
+						}
+						case 2:
+						{
+							switch(cameraangle)
 							{
-								switch(cameraangle)
+								case 0:
 								{
-									case 0:
-									{
-										SetPlayerCameraPos(i, 647.3672, -3.6455, 1102.5767);
-										SetPlayerCameraLookAt(i, 647.4997, -2.6562, 1102.3917);
-									}
-									case 1:
-									{
-										SetPlayerCameraPos(i, 651.5222, -2.8707, 1102.1970);
-										SetPlayerCameraLookAt(i, 650.9796, -2.0328, 1102.0521);
-									}
-									case 2:
-									{
-										SetPlayerCameraPos(i, 642.5612, -2.0504, 1102.3726);
-										SetPlayerCameraLookAt(i, 643.2610, -1.3387, 1102.2280);
-									}
+									SetPlayerCameraPos(i, 647.3672, -3.6455, 1102.5767);
+									SetPlayerCameraLookAt(i, 647.4997, -2.6562, 1102.3917);
+								}
+								case 1:
+								{
+									SetPlayerCameraPos(i, 651.5222, -2.8707, 1102.1970);
+									SetPlayerCameraLookAt(i, 650.9796, -2.0328, 1102.0521);
+								}
+								case 2:
+								{
+									SetPlayerCameraPos(i, 642.5612, -2.0504, 1102.3726);
+									SetPlayerCameraLookAt(i, 643.2610, -1.3387, 1102.2280);
 								}
 							}
-							case 3:
+						}
+						case 3:
+						{
+							switch(cameraangle)
 							{
-								switch(cameraangle)
+								case 0:
 								{
-									case 0:
-									{
-										SetPlayerCameraPos(i, 661.6169, -1.8129, 1103.3221);
-										SetPlayerCameraLookAt(i, 660.6224, -1.9017, 1102.5270);
-									}
-									case 1:
-									{
-										SetPlayerCameraPos(i, 660.9686, 0.9339, 1103.2574);
-										SetPlayerCameraLookAt(i, 660.5128, 0.0453, 1102.8682);
-									}
-									case 2:
-									{
-										SetPlayerCameraPos(i, 660.8921, -4.4156, 1103.3365);
-										SetPlayerCameraLookAt(i, 660.3720, -3.5629, 1102.8322);
-									}
+									SetPlayerCameraPos(i, 661.6169, -1.8129, 1103.3221);
+									SetPlayerCameraLookAt(i, 660.6224, -1.9017, 1102.5270);
+								}
+								case 1:
+								{
+									SetPlayerCameraPos(i, 660.9686, 0.9339, 1103.2574);
+									SetPlayerCameraLookAt(i, 660.5128, 0.0453, 1102.8682);
+								}
+								case 2:
+								{
+									SetPlayerCameraPos(i, 660.8921, -4.4156, 1103.3365);
+									SetPlayerCameraLookAt(i, 660.3720, -3.5629, 1102.8322);
 								}
 							}
 						}
@@ -353,46 +349,38 @@ CMD:stopnews(playerid, params[])
 				broadcasting = 0;
 				UpdateSANewsBroadcast();
 				DestroyDynamic3DTextLabel(camera);
-	            //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+	            foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(WatchingTV[i] == 1)
 					{
-						if(WatchingTV[i] == 1)
-						{
-							SetPlayerPos(i,BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3]);
-							SetPlayerVirtualWorld(i, BroadcastLastVW[i]);
-							PlayerInfo[i][pInt] = BroadcastLastVW[i];
-							SetPlayerInterior(i, BroadcastLastInt[i]);
-							PlayerInfo[i][pInt] = BroadcastLastInt[i];
-							SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
-							SetCameraBehindPlayer(i);
-							WatchingTV[i] = 0;
-							viewers = 0;
-							UpdateSANewsBroadcast();
-							Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
-						}
-					}	
-				}
-	        }
-	        //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
-				{
-					if(TalkingLive[i] != INVALID_PLAYER_ID)
-					{
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Live conversation ended.");
-						SendClientMessageEx(TalkingLive[i], COLOR_LIGHTBLUE, "* Live conversation ended.");
-						TogglePlayerControllable(i, 1);
-						TogglePlayerControllable(TalkingLive[i], 1);
-						TalkingLive[TalkingLive[i]] = INVALID_PLAYER_ID;
-						TalkingLive[i] = INVALID_PLAYER_ID;
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Live has just been shutdown..");
-						return 1;
+						SetPlayerPos(i,BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3]);
+						SetPlayerVirtualWorld(i, BroadcastLastVW[i]);
+						PlayerInfo[i][pInt] = BroadcastLastVW[i];
+						SetPlayerInterior(i, BroadcastLastInt[i]);
+						PlayerInfo[i][pInt] = BroadcastLastInt[i];
+						SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
+						SetCameraBehindPlayer(i);
+						WatchingTV[i] = 0;
+						viewers = 0;
+						UpdateSANewsBroadcast();
+						Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
 					}
 				}	
 	        }
+	        foreach(new i: Player)
+			{
+				if(TalkingLive[i] != INVALID_PLAYER_ID)
+				{
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Live conversation ended.");
+					SendClientMessageEx(TalkingLive[i], COLOR_LIGHTBLUE, "* Live conversation ended.");
+					TogglePlayerControllable(i, 1);
+					TogglePlayerControllable(TalkingLive[i], 1);
+					TalkingLive[TalkingLive[i]] = INVALID_PLAYER_ID;
+					TalkingLive[i] = INVALID_PLAYER_ID;
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Live has just been shutdown..");
+					return 1;
+				}
+			}	
 	    }
 	    else
 	    {
@@ -477,27 +465,23 @@ CMD:broadcast(playerid, params[])
 				broadcaststudio = 0;
 				UpdateSANewsBroadcast();
 				//DestroyDynamic3DTextLabel(camera);
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(WatchingTV[i] == 1)
 					{
-						if(WatchingTV[i] == 1)
-						{
-							SetPlayerPos(i,BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3]);
-							SetPlayerVirtualWorld(i, BroadcastLastVW[i]);
-							PlayerInfo[i][pInt] = BroadcastLastVW[i];
-							SetPlayerInterior(i, BroadcastLastInt[i]);
-							PlayerInfo[i][pInt] = BroadcastLastInt[i];
-							SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
-							SetCameraBehindPlayer(i);
-							WatchingTV[i] = 0;
-							viewers = 0;
-							UpdateSANewsBroadcast();
-							Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
-						}
-					}	
-				}
+						SetPlayerPos(i,BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3]);
+						SetPlayerVirtualWorld(i, BroadcastLastVW[i]);
+						PlayerInfo[i][pInt] = BroadcastLastVW[i];
+						SetPlayerInterior(i, BroadcastLastInt[i]);
+						PlayerInfo[i][pInt] = BroadcastLastInt[i];
+						SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
+						SetCameraBehindPlayer(i);
+						WatchingTV[i] = 0;
+						viewers = 0;
+						UpdateSANewsBroadcast();
+						Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
+					}
+				}	
 				return 1;
 			}
 		}

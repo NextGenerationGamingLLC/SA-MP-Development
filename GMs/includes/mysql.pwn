@@ -101,22 +101,18 @@ Group_DisbandGroup(iGroupID) {
 	}
 	SaveGroup(iGroupID);
 
-	//foreach(new x: Player)
-	for(new x = 0; x < MAX_PLAYERS; ++x)
+	foreach(new x: Player)
 	{
-		if(IsPlayerConnected(x))
-		{
-			if(PlayerInfo[x][pMember] == iGroupID || PlayerInfo[x][pLeader] == iGroupID) {
-				SendClientMessageEx(x, COLOR_WHITE, "Your group has been disbanded by an administrator. All members have been automatically removed.");
-				PlayerInfo[x][pLeader] = INVALID_GROUP_ID;
-				PlayerInfo[x][pMember] = INVALID_GROUP_ID;
-				PlayerInfo[x][pRank] = INVALID_RANK;
-				PlayerInfo[x][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[x][pBadge], "None", 9);
-			}
-			if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
-		}	
-	}
+		if(PlayerInfo[x][pMember] == iGroupID || PlayerInfo[x][pLeader] == iGroupID) {
+			SendClientMessageEx(x, COLOR_WHITE, "Your group has been disbanded by an administrator. All members have been automatically removed.");
+			PlayerInfo[x][pLeader] = INVALID_GROUP_ID;
+			PlayerInfo[x][pMember] = INVALID_GROUP_ID;
+			PlayerInfo[x][pRank] = INVALID_RANK;
+			PlayerInfo[x][pDivision] = INVALID_DIVISION;
+			strcpy(PlayerInfo[x][pBadge], "None", 9);
+		}
+		if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
+	}	
 
 
 	format(szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
@@ -755,8 +751,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				SendClientMessage(extraid, COLOR_GRAD2, "We will be going down to do some maintenance on the server/script, we will be back online shortly.");
 				SetTimerEx("KickEx", 1000, 0, "i", extraid);
 
-				//foreach(extraid: Player) if(gPlayerLogged{extraid})
-				for(extraid = 0; extraid < MAX_PLAYERS; ++extraid) if(gPlayerLogged{extraid}) {
+				foreach(extraid: Player) if(gPlayerLogged{extraid}) {
 					SetPVarInt(extraid, "RestartKick", 1);
 					return OnPlayerStatsUpdate(extraid);
 				}
@@ -767,8 +762,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 			}
 			if(GetPVarType(extraid, "AccountSaving") && (GetPVarInt(extraid, "AccountSaved") == 0)) {
 				SetPVarInt(extraid, "AccountSaved", 1);
-				//foreach(extraid: Player)
-				for(extraid = 0; extraid < MAX_PLAYERS; ++extraid)
+				foreach(extraid: Player)
 				{
 					if(gPlayerLogged{extraid} && (GetPVarInt(extraid, "AccountSaved") == 0))
 					{
@@ -778,15 +772,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 				}
 				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);
 				print("Account Saving Complete");
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						DeletePVar(i, "AccountSaved");
-						DeletePVar(i, "AccountSaving");
-					}	
-				}
+					DeletePVar(i, "AccountSaved");
+					DeletePVar(i, "AccountSaving");
+				}	
 				//g_mysql_DumpAccounts();
 			}
 			return 1;
@@ -1254,9 +1244,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 						if(strcmp(GetPlayerIpEx(extraid), "127.0.0.1", false, 16) != 0)
 						{
 							SendClientMessage(extraid, COLOR_WHITE, "SERVER: Your IP does not match the whitelisted IP of that account. Contact a Senior+ Admin to whitelist your current IP.");
-							for(new x; x < MAX_PLAYERS; x++)
+							foreach(new x: Player) 
 							{
-								if(IsPlayerConnected(x))
 								{
 									if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
 									{			
@@ -3828,18 +3817,14 @@ public MailDetailsQueryFinish(playerid)
 	ShowPlayerDialog(playerid, DIALOG_PODETAIL, DIALOG_STYLE_MSGBOX, "Mail Content", string, "Back", "Trash");
 
 	if (notify && !read) {
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if (GetPlayerSQLId(i) == senderid)	{
-					format(string, sizeof(string), "Your message has just been read by %s!", GetPlayerNameEx(playerid));
-					SendClientMessageEx(i, COLOR_YELLOW, string);
-					break;
-				}
-			}	
-		}
+			if (GetPlayerSQLId(i) == senderid)	{
+				format(string, sizeof(string), "Your message has just been read by %s!", GetPlayerNameEx(playerid));
+				SendClientMessageEx(i, COLOR_YELLOW, string);
+				break;
+			}
+		}	
 	}
 
 	format(string, sizeof(string), "UPDATE `letters` SET `Read` = 1 WHERE `id` = %d", id);
@@ -3860,20 +3845,16 @@ public MailDeliveryQueryFinish()
 	{
     	cache_get_field_content(i, "Receiver_Id", tmp, MainPipeline);
     	id = strval(tmp);
-		//foreach(new j: Player)
-		for(new j = 0; j < MAX_PLAYERS; ++j)
+		foreach(new j: Player)
 		{
-			if(IsPlayerConnected(j))
-			{
-				if (GetPlayerSQLId(j) == id) {
-					if (PlayerInfo[j][pDonateRank] >= 4 && HasMailbox(j))	{
-						SendClientMessageEx(j, COLOR_YELLOW, "Mail has just been delivered to your mailbox.");
-						SetPVarInt(j, "UnreadMails", 1);
-						break;
-					}
+			if (GetPlayerSQLId(j) == id) {
+				if (PlayerInfo[j][pDonateRank] >= 4 && HasMailbox(j))	{
+					SendClientMessageEx(j, COLOR_YELLOW, "Mail has just been delivered to your mailbox.");
+					SetPVarInt(j, "UnreadMails", 1);
+					break;
 				}
-			}	
-		}
+			}
+		}	
  	}
 
 	return 1;
@@ -5961,14 +5942,10 @@ public OnSetName(index, extraid)
 				
 				if(PlayerInfo[extraid][pMarriedID] != -1)
 				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(PlayerInfo[extraid][pMarriedID] == GetPlayerSQLId(i)) format(PlayerInfo[i][pMarriedName], MAX_PLAYER_NAME, "%s", tmpName);
-						}	
-					}
+						if(PlayerInfo[extraid][pMarriedID] == GetPlayerSQLId(i)) format(PlayerInfo[i][pMarriedName], MAX_PLAYER_NAME, "%s", tmpName);
+					}	
 				}
 
 				for(new i; i < MAX_DDOORS; i++)
@@ -6068,13 +6045,9 @@ public OnApproveName(index, extraid)
 
 			if(PlayerInfo[extraid][pMarriedID] != -1)
 			{
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if(PlayerInfo[extraid][pMarriedID] == GetPlayerSQLId(i)) format(PlayerInfo[i][pMarriedName], MAX_PLAYER_NAME, "%s", newname);
-					}	
+					if(PlayerInfo[extraid][pMarriedID] == GetPlayerSQLId(i)) format(PlayerInfo[i][pMarriedName], MAX_PLAYER_NAME, "%s", newname);
 				}
 			}
 			
@@ -6381,7 +6354,7 @@ public OnIPCheck(index)
 				if(AdminLvL > PlayerInfo[index][pAdmin])
 				{
 					format(string, sizeof(string), "%s has tried to offline check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(index));
-					for(new i; i < MAX_PLAYERS; i++)
+					foreach(new i: Player) 
 					{
 						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
 					}
@@ -6653,34 +6626,26 @@ public OnDMWatch(playerid)
     {
 		new string[128], namesql[MAX_PLAYER_NAME], name[MAX_PLAYER_NAME];
 		cache_get_row(0, 0, namesql, MainPipeline);
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(!PlayerInfo[i][pJailTime])
 			{
-				if(!PlayerInfo[i][pJailTime])
+				GetPlayerName(i, name, sizeof(name));
+				if(strcmp(name, namesql, true) == 0)
 				{
-					GetPlayerName(i, name, sizeof(name));
-					if(strcmp(name, namesql, true) == 0)
+					foreach(new x: Player)
 					{
-						//foreach(new x: Player)
-						for(new x = 0; x < MAX_PLAYERS; ++x)
+						if(GetPVarInt(x, "pWatchdogWatching") == i)
 						{
-							if(IsPlayerConnected(x))
-							{
-								if(GetPVarInt(x, "pWatchdogWatching") == i)
-								{
-									return SendClientMessage(playerid, COLOR_WHITE, "The random person selected for you is already being watched, please try again!");
-								}
-							}	
+							return SendClientMessage(playerid, COLOR_WHITE, "The random person selected for you is already being watched, please try again!");
 						}
-						format(string, sizeof(string), "You now have access to /spec %s (ID: %i). Use /dmalert if this person deathmatches.", name, i);
-						SendClientMessage(playerid, COLOR_WHITE, string);
-						return SetPVarInt(playerid, "pWatchdogWatching", i);
-					}
+					}	
+					format(string, sizeof(string), "You now have access to /spec %s (ID: %i). Use /dmalert if this person deathmatches.", name, i);
+					SendClientMessage(playerid, COLOR_WHITE, string);
+					return SetPVarInt(playerid, "pWatchdogWatching", i);
 				}
-			}	
-		}
+			}
+		}	
 	}
 	return SendClientMessageEx(playerid, COLOR_WHITE, "There is no one online to DM Watch!");
 }
@@ -7817,22 +7782,18 @@ public OnCheckRFLName(playerid, Player)
 			format(string, sizeof(string), "%s has accepted %s's team name change request",GetPlayerNameEx(playerid),GetPlayerNameEx(Player));
 			ABroadCast(COLOR_YELLOW, string, 3);			
 			SaveRelayForLifeTeam(PlayerInfo[Player][pRFLTeam]);
-			//foreach(new i: Player) {
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
-				{			
-					if( GetPVarInt( i, "EventToken" ) == 1 ) {
-						if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
-							if(EventKernel[EventType] == 3) {
-								if(PlayerInfo[i][pRFLTeam] == PlayerInfo[Player][pRFLTeam]) {
-									format(string, sizeof(string), "Team: %s", newname);
-									UpdateDynamic3DTextLabelText(RFLTeamN3D[i], 0x008080FF, string);
-								}		
-							}
+			foreach(new i: Player)
+			{			
+				if( GetPVarInt( i, "EventToken" ) == 1 ) {
+					if( EventKernel[ EventStatus ] == 1 || EventKernel[ EventStatus ] == 2 ) {
+						if(EventKernel[EventType] == 3) {
+							if(PlayerInfo[i][pRFLTeam] == PlayerInfo[Player][pRFLTeam]) {
+								format(string, sizeof(string), "Team: %s", newname);
+								UpdateDynamic3DTextLabelText(RFLTeamN3D[i], 0x008080FF, string);
+							}		
 						}
 					}
-				}	
+				}
 			}	
 		}	
 	}
@@ -8502,10 +8463,9 @@ public FetchWatchlist(index)
 		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
 		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
 		
-		// Is the player connected?
-		for(new x = 0; x < MAX_PLAYERS; x++)
+		foreach(new x: Player) 
 		{
-			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid)
+			if(PlayerInfo[x][pId] == sqlid)
 			{
 				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Manually Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
@@ -8529,10 +8489,9 @@ public FetchWatchlist2(index, input[])
 		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
 		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
 		
-		// Is the player connected?
-		for(new x = 0; x < MAX_PLAYERS; x++)
+		foreach(new x: Player) 
 		{
-			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid)
+			if(PlayerInfo[x][pId] == sqlid)
 			{
 				format(PublicSQLString, sizeof(PublicSQLString), "%s %s (ID: %d) | Points: %d - Automatically Added\n", PublicSQLString, GetPlayerNameEx(x), x, points);
 				break;
@@ -8629,10 +8588,9 @@ public WatchWatchlist(index)
 		new szResult[32], sqlid;
 		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
 		
-		for(new x = 0; x < MAX_PLAYERS; x++)
+		foreach(new x: Player) 
 		{
-			// Is the player connected, does the SQLId matches the player & is he not being spectated?
-			if(IsPlayerConnected(x) && PlayerInfo[x][pId] == sqlid && gPlayerLogged{x} == 1 && PlayerInfo[x][pJailTime] == 0 && GetPVarInt(x, "BeingSpectated") == 0)
+			if(PlayerInfo[x][pId] == sqlid && gPlayerLogged{x} == 1 && PlayerInfo[x][pJailTime] == 0 && GetPVarInt(x, "BeingSpectated") == 0)
 			{
 				SpectatePlayer(index, x);
 				SetPVarInt(x, "BeingSpectated", 1);
@@ -8864,12 +8822,9 @@ public GetShiftInfo(playerid, szMessage[])
 	{
 		if(needs - signedup > 0) format(string, sizeof(string), "%s The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
 		else format(string, sizeof(string), "%s The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player) 
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
-			}
+			if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);
 		}
 	}
 	else if(playerid != INVALID_PLAYER_ID)

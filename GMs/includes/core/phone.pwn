@@ -38,27 +38,23 @@
 forward RingToner();
 public RingToner()
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(RingTone[i] != 6 && RingTone[i] != 0 && RingTone[i] < 11)
 		{
-			if(RingTone[i] != 6 && RingTone[i] != 0 && RingTone[i] < 11)
-			{
-				RingTone[i] = RingTone[i] -1;
-				PlayerPlaySound(i, 1138, 0.0, 0.0, 0.0);
-			}
-			if(RingTone[i] == 6)
-			{
-				RingTone[i] = RingTone[i] -1;
-			}
-			if(RingTone[i] == 20)
-			{
-				RingTone[i] = RingTone[i] -1;
-				PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
-			}
-		}	
-	}
+			RingTone[i] = RingTone[i] -1;
+			PlayerPlaySound(i, 1138, 0.0, 0.0, 0.0);
+		}
+		if(RingTone[i] == 6)
+		{
+			RingTone[i] = RingTone[i] -1;
+		}
+		if(RingTone[i] == 20)
+		{
+			RingTone[i] = RingTone[i] -1;
+			PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
+		}
+	}	
 	SetTimer("RingTonerRev", 1000, 0);
 	return 1;
 }
@@ -66,27 +62,23 @@ public RingToner()
 forward RingTonerRev();
 public RingTonerRev()
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(RingTone[i] != 5 && RingTone[i] != 0 && RingTone[i] < 10)
 		{
-			if(RingTone[i] != 5 && RingTone[i] != 0 && RingTone[i] < 10)
-			{
-				RingTone[i] = RingTone[i] -1;
-				PlayerPlaySound(i, 1137, 0.0, 0.0, 0.0);
-			}
-			if(RingTone[i] == 5)
-			{
-				RingTone[i] = RingTone[i] -1;
-			}
-			if(RingTone[i] == 19)
-			{
-				PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
-				RingTone[i] = 0;
-			}
-		}	
-	}
+			RingTone[i] = RingTone[i] -1;
+			PlayerPlaySound(i, 1137, 0.0, 0.0, 0.0);
+		}
+		if(RingTone[i] == 5)
+		{
+			RingTone[i] = RingTone[i] -1;
+		}
+		if(RingTone[i] == 19)
+		{
+			PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
+			RingTone[i] = 0;
+		}
+	}	
 	SetTimer("RingToner", 1000, 0);
 	return 1;
 }
@@ -347,58 +339,54 @@ CMD:call(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are already on a call...");
 		return 1;
 	}
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
 		{
-			if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
+			new giveplayerid = i;
+			Mobile[playerid] = giveplayerid; //caller connecting
+			if(IsPlayerConnected(giveplayerid))
 			{
-				new giveplayerid = i;
-				Mobile[playerid] = giveplayerid; //caller connecting
-				if(IsPlayerConnected(giveplayerid))
+				if(giveplayerid != INVALID_PLAYER_ID)
 				{
-					if(giveplayerid != INVALID_PLAYER_ID)
+					if(PhoneOnline[giveplayerid] > 0)
 					{
-						if(PhoneOnline[giveplayerid] > 0)
-						{
-							SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
-							Mobile[playerid] = INVALID_PLAYER_ID;
-							return 1;
-						}
-						if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
-						{
-							SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
-							Mobile[playerid] = INVALID_PLAYER_ID;
-							return 1;
-						}
-						if(Spectating[giveplayerid]!=0)
-						{
-							SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
-							Mobile[playerid] = INVALID_PLAYER_ID;
-							return 1;
-						}
-						if (Mobile[giveplayerid] == INVALID_PLAYER_ID)
-						{
-							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %s]", GetPlayerNameEx(playerid));
-							SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
-							RingTone[giveplayerid] = 10;
-							format(string, sizeof(string), "* %s's phone begins to ring.", GetPlayerNameEx(i));
-							SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
-							ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							new Float:rX, Float:rY, Float:rZ;
-							GetPlayerPos(giveplayerid, rX, rY, rZ);
-							//SendRingtoneToArea(playerid, 100, rX, rY, rZ);
-							//SendAudioToPlayer(playerid, 60, 100);
-							CellTime[playerid] = 1;
-							SetPlayerAttachedObject(playerid, 8, 330, 6);
-							return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
-						}
+						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
+						Mobile[playerid] = INVALID_PLAYER_ID;
+						return 1;
+					}
+					if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
+						Mobile[playerid] = INVALID_PLAYER_ID;
+						return 1;
+					}
+					if(Spectating[giveplayerid]!=0)
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
+						Mobile[playerid] = INVALID_PLAYER_ID;
+						return 1;
+					}
+					if (Mobile[giveplayerid] == INVALID_PLAYER_ID)
+					{
+						format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %s]", GetPlayerNameEx(playerid));
+						SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+						RingTone[giveplayerid] = 10;
+						format(string, sizeof(string), "* %s's phone begins to ring.", GetPlayerNameEx(i));
+						SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
+						ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						new Float:rX, Float:rY, Float:rZ;
+						GetPlayerPos(giveplayerid, rX, rY, rZ);
+						//SendRingtoneToArea(playerid, 100, rX, rY, rZ);
+						//SendAudioToPlayer(playerid, 60, 100);
+						CellTime[playerid] = 1;
+						SetPlayerAttachedObject(playerid, 8, 330, 6);
+						return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 					}
 				}
 			}
-		}	
-	}
+		}
+	}	
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Your call can not be completed as dialed, please check the number and try again.");
 	return 1;
 }
@@ -450,85 +438,77 @@ CMD:sms(playerid, params[])
 			return 1;
 		}
 	}
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
 		{
-			if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
+			new giveplayerid = i;
+			if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
 			{
-				new giveplayerid = i;
-				if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
+				SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is busy (on a call).");
+				return 1;
+			}
+			Mobile[playerid] = giveplayerid; //caller connecting
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if(giveplayerid != INVALID_PLAYER_ID)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is busy (on a call).");
-					return 1;
-				}
-				Mobile[playerid] = giveplayerid; //caller connecting
-				if(IsPlayerConnected(giveplayerid))
-				{
-					if(giveplayerid != INVALID_PLAYER_ID)
+
+					if(PhoneOnline[giveplayerid] > 0)
 					{
-
-						if(PhoneOnline[giveplayerid] > 0)
-						{
-							SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
-							Mobile[playerid] = INVALID_PLAYER_ID;
-							return 1;
-						}
-						//foreach(new u: Player)
-						for(new u = 0; u < MAX_PLAYERS; ++u)
-						{
-							if(IsPlayerConnected(u))
-							{
-								if(GetPVarInt(u, "BigEar") == 6 && (GetPVarInt(u, "BigEarPlayer") == playerid || GetPVarInt(u, "BigEarPlayer") == giveplayerid))
-								{
-									format(string, sizeof(string), "(BE) %s SMS to %s: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), text);
-									SendClientMessageEx(u,COLOR_YELLOW, string);
-								}
-							}	
-						}
-						if(PlayerInfo[playerid][pPhonePrivacy] == 1)
-						{
-							format(string, sizeof(string), "SMS: %s, Sender: Unknown.", text, GetPlayerNameEx(playerid));
-						}
-						else
-						{
-							format(string, sizeof(string), "SMS: %s, Sender: %s (%d)", text, GetPlayerNameEx(playerid), PlayerInfo[playerid][pPnumber]);
-						}
-
-						if(i != playerid)
-						{
-							if(PlayerInfo[i][pSmslog] > 0)
-							{
-								new query[384], ftext[128];
-								mysql_escape_string(text, ftext);
-								if(PlayerInfo[playerid][pPhonePrivacy] == 1) format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, 0, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
-								else format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, %d, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPnumber], GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
-								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-							}
-						}
-
-						//format(string, sizeof(string), "* %s's phone beeps.", sendername);
-						RingTone[giveplayerid] =20;
-						SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
-						SendClientMessageEx(playerid, COLOR_YELLOW, string);
-						SendClientMessageEx(playerid, COLOR_WHITE, "Text Message Delivered");
-						format(string, sizeof(string), "~r~$-%d", 25);
-						GameTextForPlayer(playerid, string, 5000, 1);
-						GivePlayerCash(playerid,-25);
-						//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-						//SendAudioToPlayer(playerid, 47, 100);
-						//SendAudioToPlayer(giveplayerid, 47, 100);
+						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 						Mobile[playerid] = INVALID_PLAYER_ID;
-
-						if(strcmp(PlayerInfo[giveplayerid][pAutoTextReply], "Nothing", true) != 0)
-						{
-							format(string, sizeof(string), "SMS: %s, Sender: %s [automated response] (%d)", PlayerInfo[giveplayerid][pAutoTextReply], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pPnumber]);
-							SendClientMessageEx(playerid, COLOR_YELLOW, string);
-						}
-
 						return 1;
 					}
+					foreach(new u: Player)
+					{
+						if(GetPVarInt(u, "BigEar") == 6 && (GetPVarInt(u, "BigEarPlayer") == playerid || GetPVarInt(u, "BigEarPlayer") == giveplayerid))
+						{
+							format(string, sizeof(string), "(BE) %s SMS to %s: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), text);
+							SendClientMessageEx(u,COLOR_YELLOW, string);
+						}
+					}	
+					if(PlayerInfo[playerid][pPhonePrivacy] == 1)
+					{
+						format(string, sizeof(string), "SMS: %s, Sender: Unknown.", text, GetPlayerNameEx(playerid));
+					}
+					else
+					{
+						format(string, sizeof(string), "SMS: %s, Sender: %s (%d)", text, GetPlayerNameEx(playerid), PlayerInfo[playerid][pPnumber]);
+					}
+
+					if(i != playerid)
+					{
+						if(PlayerInfo[i][pSmslog] > 0)
+						{
+							new query[384], ftext[128];
+							mysql_escape_string(text, ftext);
+							if(PlayerInfo[playerid][pPhonePrivacy] == 1) format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, 0, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
+							else format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, %d, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPnumber], GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
+							mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+						}
+					}
+
+					//format(string, sizeof(string), "* %s's phone beeps.", sendername);
+					RingTone[giveplayerid] =20;
+					SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Text Message Delivered");
+					format(string, sizeof(string), "~r~$-%d", 25);
+					GameTextForPlayer(playerid, string, 5000, 1);
+					GivePlayerCash(playerid,-25);
+					//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+					//SendAudioToPlayer(playerid, 47, 100);
+					//SendAudioToPlayer(giveplayerid, 47, 100);
+					Mobile[playerid] = INVALID_PLAYER_ID;
+
+					if(strcmp(PlayerInfo[giveplayerid][pAutoTextReply], "Nothing", true) != 0)
+					{
+						format(string, sizeof(string), "SMS: %s, Sender: %s [automated response] (%d)", PlayerInfo[giveplayerid][pAutoTextReply], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pPnumber]);
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+
+					return 1;
 				}
 			}
 		}	
@@ -552,23 +532,19 @@ CMD:pickup(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(Mobile[i] == playerid)
 		{
-			if(Mobile[i] == playerid)
-			{
-				Mobile[playerid] = i; //caller connecting
-				SendClientMessageEx(i,  COLOR_GRAD2, "   They picked up the call.");
-				format(string, sizeof(string), "* %s answers their cellphone.", GetPlayerNameEx(playerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				RingTone[playerid] = 0;
-				SetPlayerAttachedObject(playerid, 8, 330, 6);
-				return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
-			}
-		}	
-	}
+			Mobile[playerid] = i; //caller connecting
+			SendClientMessageEx(i,  COLOR_GRAD2, "   They picked up the call.");
+			format(string, sizeof(string), "* %s answers their cellphone.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			RingTone[playerid] = 0;
+			SetPlayerAttachedObject(playerid, 8, 330, 6);
+			return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+		}
+	}	
 	return 1;
 }
 

@@ -549,16 +549,12 @@ CMD:approveevent(playerid, params[])
             SendClientMessageEx( EventKernel[EventCreator], COLOR_GRAD2, "Your event start request has been accepted, you can now use /announceevent to announce it to the server." );
             format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has approved the event start request from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(EventKernel[EventCreator]) );
             ABroadCast( COLOR_YELLOW, string, 4 );
-            //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+            foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(PlayerInfo[i][pDonateRank] >= 3) {
-						SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP Feature: An event has been started! /joinevent to join early");
-					}
-				}	
-            }
+				if(PlayerInfo[i][pDonateRank] >= 3) {
+					SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP Feature: An event has been started! /joinevent to join early");
+				}
+			}	
             return 1;
         }
     }
@@ -593,7 +589,7 @@ CMD:seteventpos(playerid, params[])
 			format(string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s has started an event, type /eventstaff if you want to be in the event staff.", GetPlayerNameEx(playerid) );
 			ABroadCast(COLOR_YELLOW, string, 1);
 			CBroadCast(COLOR_YELLOW, string, 2);
-			for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pSEC] >= 1) SendClientMessageEx(i, COLOR_YELLOW, string);
+			foreach(new i: Player) if(PlayerInfo[i][pSEC] >= 1) SendClientMessageEx(i, COLOR_YELLOW, string);
 		}
 		else
 		{
@@ -1070,84 +1066,80 @@ CMD:endevent(playerid, params[])
 	{
 		if(EventKernel[EventStatus] != 0)
 		{
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if( GetPVarInt( i, "eventStaff" ) == 1)
 				{
-					if( GetPVarInt( i, "eventStaff" ) == 1)
+					ResetPlayerWeapons( i );
+					DeletePVar(i, "EventToken");
+					for(new w = 0; w < 12; w++)
+						if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
+					SetPlayerWeapons(i);
+					SetPlayerToTeamColor(i);
+					SetPlayerSkin(i, PlayerInfo[i][pModel]);
+					SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
+					SetPlayerVirtualWorld(i, EventLastVW[i]);
+					SetPlayerFacingAngle(i, EventFloats[i][0]);
+					SetPlayerInterior(i,EventLastInt[i]);
+					Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
+					if(EventKernel[EventType] == 4)
 					{
-						ResetPlayerWeapons( i );
-						DeletePVar(i, "EventToken");
-						for(new w = 0; w < 12; w++)
-							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
-						SetPlayerWeapons(i);
+						if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
 						SetPlayerToTeamColor(i);
-						SetPlayerSkin(i, PlayerInfo[i][pModel]);
-						SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
-						SetPlayerVirtualWorld(i, EventLastVW[i]);
-						SetPlayerFacingAngle(i, EventFloats[i][0]);
-						SetPlayerInterior(i,EventLastInt[i]);
-						Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
-						if(EventKernel[EventType] == 4)
-						{
-							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
-							SetPlayerToTeamColor(i);
-						}
-						
-						for(new d = 0; d < 6; d++)
-						{
-							EventFloats[i][d] = 0.0;
-						}
-						EventLastVW[i] = 0;
-						EventLastInt[i] = 0;
-						RemovePlayerWeapon(i, 38);
-						health = GetPVarFloat(i, "pPreGodHealth");
-						SetHealth(i,health);
-						armor = GetPVarFloat(i, "pPreGodArmor");
-						SetArmour(i, armor);
-						DeletePVar(i, "pPreGodHealth");
-						DeletePVar(i, "pPreGodArmor");
-						SetPVarInt(i, "eventStaff", 0);
-						SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
-					}	
-					else if( GetPVarInt( i, "EventToken" ) == 1 )
-					{
-						if(EventKernel[EventType] == 3)  {
-							if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
-								DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
-							}
-							DisablePlayerCheckpoint(i);
-						} 
-						else if(EventKernel[EventType] == 4) {
-							if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
-						}
-						ResetPlayerWeapons( i );
-						for(new w = 0; w < 12; w++)
-							if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
-						SetPlayerWeapons(i);
-						SetPlayerToTeamColor(i);
-						SetPlayerSkin(i, PlayerInfo[i][pModel]);
-						SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
-						Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
-						SetPlayerVirtualWorld(i, EventLastVW[i]);
-						SetPlayerFacingAngle(i, EventFloats[i][0]);
-						SetPlayerInterior(i,EventLastInt[i]);
-						SetHealth(i, EventFloats[i][4]);
-						if(EventFloats[i][5] > 0) {
-							SetArmour(i, EventFloats[i][5]);
-						}
-						for(new d = 0; d < 6; d++)
-						{
-							EventFloats[i][d] = 0.0;
-						}
-						EventLastVW[i] = 0;
-						EventLastInt[i] = 0;
-						DeletePVar(i, "EventToken");
-						SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
 					}
+					
+					for(new d = 0; d < 6; d++)
+					{
+						EventFloats[i][d] = 0.0;
+					}
+					EventLastVW[i] = 0;
+					EventLastInt[i] = 0;
+					RemovePlayerWeapon(i, 38);
+					health = GetPVarFloat(i, "pPreGodHealth");
+					SetHealth(i,health);
+					armor = GetPVarFloat(i, "pPreGodArmor");
+					SetArmour(i, armor);
+					DeletePVar(i, "pPreGodHealth");
+					DeletePVar(i, "pPreGodArmor");
+					SetPVarInt(i, "eventStaff", 0);
+					SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
 				}	
-			}
+				else if( GetPVarInt( i, "EventToken" ) == 1 )
+				{
+					if(EventKernel[EventType] == 3)  {
+						if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
+							DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+						}
+						DisablePlayerCheckpoint(i);
+					} 
+					else if(EventKernel[EventType] == 4) {
+						if(GetPVarType(i, "pEventZombie")) DeletePVar(i, "pEventZombie");
+					}
+					ResetPlayerWeapons( i );
+					for(new w = 0; w < 12; w++)
+						if(PlayerInfo[i][pAGuns][w]) PlayerInfo[i][pGuns][w] = 0, PlayerInfo[i][pAGuns][w] = 0;
+					SetPlayerWeapons(i);
+					SetPlayerToTeamColor(i);
+					SetPlayerSkin(i, PlayerInfo[i][pModel]);
+					SetPlayerPos(i,EventFloats[i][1],EventFloats[i][2],EventFloats[i][3]);
+					Player_StreamPrep(i, EventFloats[i][1],EventFloats[i][2],EventFloats[i][3], FREEZE_TIME);
+					SetPlayerVirtualWorld(i, EventLastVW[i]);
+					SetPlayerFacingAngle(i, EventFloats[i][0]);
+					SetPlayerInterior(i,EventLastInt[i]);
+					SetHealth(i, EventFloats[i][4]);
+					if(EventFloats[i][5] > 0) {
+						SetArmour(i, EventFloats[i][5]);
+					}
+					for(new d = 0; d < 6; d++)
+					{
+						EventFloats[i][d] = 0.0;
+					}
+					EventLastVW[i] = 0;
+					EventLastInt[i] = 0;
+					DeletePVar(i, "EventToken");
+					SendClientMessageEx( i, COLOR_YELLOW, "You have been removed from the event as it has been terminated by an administrator." );
+				}
+			}	
 			EventKernel[ EventPositionX ] = 0;
 			EventKernel[ EventPositionY ] = 0;
 			EventKernel[ EventPositionZ ] = 0;
@@ -1230,18 +1222,13 @@ CMD:startevent(playerid, params[])
 				}
 				EventKernel[ EventStatus ] = 1;
 				SendClientMessageEx( playerid, COLOR_GRAD2, "You have started an event, use /announceevent to announce the event to the whole server." );
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(PlayerInfo[i][pDonateRank] >= 3)
 					{
-						if(PlayerInfo[i][pDonateRank] >= 3)
-						{
-							SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP feature: An event has been started! /joinevent to join early");
-						}
-					}	
-				}
-
+						SendClientMessageEx(i, COLOR_YELLOW, "* Gold+ VIP feature: An event has been started! /joinevent to join early");
+					}
+				}	
 				return 1;
 			}
 			else if( EventKernel[EventCreator] == playerid)
@@ -1336,17 +1323,51 @@ CMD:beginevent(playerid, params[])
 		    if(EventKernel[EventType] == 3 && EventKernel[EventTime] != 0) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: This feature is not available with the configuration setup for this event.");
 			EventKernel[ EventStatus ] = 4;
    			new zombiemade;
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if( GetPVarType( i, "EventToken" ) == 1 )
 				{
-					if( GetPVarType( i, "EventToken" ) == 1 )
+					if( EventKernel[ EventType ] == 1 )
 					{
-						if( EventKernel[ EventType ] == 1 )
+						//GivePlayerEventWeapons( i );
+						SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+						if(GetPVarInt(i, "eventStaff") < 1) {
+							SetHealth( i, EventKernel[ EventHealth ] );
+						}	
+						if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
+							SetArmour( i, EventKernel[ EventArmor ]);
+						}
+						GivePlayerEventWeapons( i );
+					}
+					else if( EventKernel[ EventType ] == 2 )
+					{
+						//GivePlayerEventWeapons( i );
+						SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+						if(GetPVarInt(i, "eventStaff") < 1) {
+							SetHealth( i, EventKernel[ EventHealth ] );
+						}
+						if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
+							SetArmour( i, EventKernel[ EventArmor ]);
+						}	
+						GivePlayerEventWeapons( i );
+					}
+					else if( EventKernel[ EventType ] == 4 )
+					{
+						if(zombiemade == 0)
+						{
+							SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
+							SetHealth(playerid, 30);
+							RemoveArmor(playerid);
+							SetPlayerSkin(playerid, 134);
+							SetPlayerColor(playerid, 0x0BC43600);
+							SetPVarInt(playerid, "pEventZombie", 1);
+							zombiemade=1;
+							continue;
+						}
+						else
 						{
 							//GivePlayerEventWeapons( i );
-							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
+							SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
 							if(GetPVarInt(i, "eventStaff") < 1) {
 								SetHealth( i, EventKernel[ EventHealth ] );
 							}	
@@ -1355,51 +1376,13 @@ CMD:beginevent(playerid, params[])
 							}
 							GivePlayerEventWeapons( i );
 						}
-						else if( EventKernel[ EventType ] == 2 )
-						{
-							//GivePlayerEventWeapons( i );
-							SendClientMessageEx( i, COLOR_LIGHTBLUE, "GO! The Event has started." );
-							if(GetPVarInt(i, "eventStaff") < 1) {
-								SetHealth( i, EventKernel[ EventHealth ] );
-							}
-							if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-								SetArmour( i, EventKernel[ EventArmor ]);
-							}	
-							GivePlayerEventWeapons( i );
-						}
-						else if( EventKernel[ EventType ] == 4 )
-						{
-							if(zombiemade == 0)
-							{
-								SendClientMessageEx(playerid, COLOR_WHITE, "You are a zombie! Use /bite to infect others");
-								SetHealth(playerid, 30);
-								RemoveArmor(playerid);
-								SetPlayerSkin(playerid, 134);
-								SetPlayerColor(playerid, 0x0BC43600);
-								SetPVarInt(playerid, "pEventZombie", 1);
-								zombiemade=1;
-								continue;
-							}
-							else
-							{
-								//GivePlayerEventWeapons( i );
-								SendClientMessageEx( i, COLOR_LIGHTBLUE, "The Event has started, kill the zombies (green names!)" );
-								if(GetPVarInt(i, "eventStaff") < 1) {
-									SetHealth( i, EventKernel[ EventHealth ] );
-								}	
-								if(EventKernel[EventArmor] > 0 && GetPVarInt(i, "eventStaff") < 1) {
-									SetArmour( i, EventKernel[ EventArmor ]);
-								}
-								GivePlayerEventWeapons( i );
-							}
-						}
 					}
-					else
-					{
-						SendClientMessageEx( i, COLOR_WHITE, "The event has now started. If you wish to join next time, please use /joinevent." );
-					}
-				}	
-			}
+				}
+				else
+				{
+					SendClientMessageEx( i, COLOR_WHITE, "The event has now started. If you wish to join next time, please use /joinevent." );
+				}
+			}	
 		}
 		else
 		{
@@ -1454,9 +1437,8 @@ CMD:event(playerid, params[])
 		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "There are currently no active events.");
 		new string[128];
 		format(string, sizeof(string), "[Event] %s: %s", GetPlayerNameEx(playerid), params);
-		for(new i; i < MAX_PLAYERS; i++)
+		foreach(new i: Player)
 		{
-			if(!IsPlayerConnected(i)) continue;
 			if(GetPVarInt(i, "EventToken") || PlayerInfo[i][pAdmin] >= 2 || EventKernel[EventCreator] == i || GetPVarInt(i, "eventStaff"))
 			{
 				SendClientMessageEx(i, COLOR_OOC, string);

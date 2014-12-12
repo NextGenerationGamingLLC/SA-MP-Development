@@ -3479,21 +3479,17 @@ CMD:giftnear(playerid, params[])
 
         new string[128];
         new count;
-        //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+        foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(ProxDetectorS(range, playerid, i))
 			{
-				if(ProxDetectorS(range, playerid, i))
+				if(PlayerInfo[i][pGiftTime] <= 0)
 				{
-					if(PlayerInfo[i][pGiftTime] <= 0)
-					{
-						GiftPlayer(playerid, i);
-						count++;
-					}
+					GiftPlayer(playerid, i);
+					count++;
 				}
-			}	
-        }
+			}
+		}	
         format(string, sizeof(string), "You have gifted everyone (%d) nearby.", count);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
     }
@@ -3507,13 +3503,9 @@ CMD:resetgiftall(playerid, params[])
 		new string[128];
 		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has reset everyone's gift timer.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_YELLOW, string, 2);
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				PlayerInfo[i][pGiftTime] = 0;
-			}	
+			PlayerInfo[i][pGiftTime] = 0;
 		}
 	}
 	return 1;
@@ -3560,14 +3552,10 @@ CMD:giftall(playerid, params[])
       		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just sent a gift to all players.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, string, 2);
 			GiftAllowed = 0;
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					GiftPlayer(playerid, i);
-				}	
-			}
+				GiftPlayer(playerid, i);
+			}	
 		}
 		else
 		{
@@ -3607,15 +3595,11 @@ CMD:setcode(playerid, params[])
 		GiftCodeBypass = bypass;
         g_mysql_SaveMOTD();
 		mysql_function_query(MainPipeline, "UPDATE `accounts` SET `GiftCode` = 0;", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		//foreach(new i : Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i : Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pGiftCode] == 1)
-					PlayerInfo[i][pGiftCode] = 0;
-			}		
-		}
+			if(PlayerInfo[i][pGiftCode] == 1)
+				PlayerInfo[i][pGiftCode] = 0;
+		}		
 
 
 		if (strcmp(code, "off") == 0)

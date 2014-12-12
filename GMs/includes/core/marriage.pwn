@@ -94,9 +94,9 @@ CMD:adivorce(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pMarriedID] != -1)
 			{
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i) && PlayerInfo[i][pMarriedID] == GetPlayerSQLId(giveplayerid)) ClearMarriage(i);
+					if(PlayerInfo[i][pMarriedID] == GetPlayerSQLId(giveplayerid)) ClearMarriage(i);
 				}
 				format(string, sizeof(string), "UPDATE `accounts` SET `MarriedID` = -1 WHERE id = %d", PlayerInfo[giveplayerid][pMarriedID]);
 				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);

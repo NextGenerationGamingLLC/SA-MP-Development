@@ -544,111 +544,107 @@ CMD:accept(playerid, params[])
             new
                 Count;
 
-            //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+            foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(GetPVarType(i, "shrequest") && GetPVarInt(i, "shrequest") == playerid) {
-						new
-							Float: ppFloats[3];
+				if(GetPVarType(i, "shrequest") && GetPVarInt(i, "shrequest") == playerid) {
+					new
+						Float: ppFloats[3];
 
-						GetPlayerPos(i, ppFloats[0], ppFloats[1], ppFloats[2]);
+					GetPlayerPos(i, ppFloats[0], ppFloats[1], ppFloats[2]);
 
-						if(!IsPlayerInRangeOfPoint(playerid, 5, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[i] > 0) {
-							Count++;
-							SendClientMessageEx(playerid, COLOR_WHITE, "You're too far away. You can't accept the handshake right now.");
-						}
-						else {
-							switch(GetPVarInt(i, "shstyle")) {
-								case 1:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
-									ApplyAnimation( i, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 2:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
-									ApplyAnimation( i, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 3:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
-									ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 4:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "hndshkcb", 4.0, 1, 1, 1, 0, 1000 );
-									ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 5:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "hndshkda", 4.0, 1, 1, 1, 0, 1000 );
-									ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 6:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
-									ApplyAnimation( i, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 7:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
-									ApplyAnimation( i, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
-								case 8:
-								{
-									Count++;
-									PlayerFacePlayer( playerid, i );
-									ApplyAnimation( playerid, "GANGS", "prtial_hndshk_biz_01", 3.7, 1, 1, 1, 0, 2200 );
-									ApplyAnimation( i, "GANGS", "prtial_hndshk_biz_01", 3.5, 1, 1, 1, 0, 2200 );
-									DeletePVar(i, "shrequest");
-									format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
-									ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									DeletePVar(i, "shstyle");
-								}
+					if(!IsPlayerInRangeOfPoint(playerid, 5, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[i] > 0) {
+						Count++;
+						SendClientMessageEx(playerid, COLOR_WHITE, "You're too far away. You can't accept the handshake right now.");
+					}
+					else {
+						switch(GetPVarInt(i, "shstyle")) {
+							case 1:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkaa", 4.0, 1, 1, 1, 0, 1000 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 2:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkba", 4.0, 1, 1, 1, 0, 1000 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 3:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 4:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "hndshkcb", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 5:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "hndshkda", 4.0, 1, 1, 1, 0, 1000 );
+								ApplyAnimation( i, "GANGS", "hndshkca", 4.0, 1, 1, 1, 0, 1000 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 6:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
+								ApplyAnimation( i, "GANGS","hndshkfa_swt", 4.0, 1, 1, 1, 0, 2600 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 7:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
+								ApplyAnimation( i, "GANGS", "prtial_hndshk_01", 4.0, 1, 1, 1, 0, 1250 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
+							}
+							case 8:
+							{
+								Count++;
+								PlayerFacePlayer( playerid, i );
+								ApplyAnimation( playerid, "GANGS", "prtial_hndshk_biz_01", 3.7, 1, 1, 1, 0, 2200 );
+								ApplyAnimation( i, "GANGS", "prtial_hndshk_biz_01", 3.5, 1, 1, 1, 0, 2200 );
+								DeletePVar(i, "shrequest");
+								format(szMessage, sizeof(szMessage), "* %s has shook hands with %s.", GetPlayerNameEx(i), GetPlayerNameEx(playerid));
+								ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								DeletePVar(i, "shstyle");
 							}
 						}
 					}
@@ -2927,21 +2923,17 @@ CMD:cancel(playerid, params[])
 		{
 			if(GetPVarInt(playerid, "TaxiCall")) DeletePVar(playerid, "TaxiCall");
 			else {
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(TaxiAccepted[i] != INVALID_PLAYER_ID && TaxiAccepted[i] == playerid)
 					{
-						if(TaxiAccepted[i] != INVALID_PLAYER_ID && TaxiAccepted[i] == playerid)
-						{
-								GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Canceled the call", 5000, 1);
-								TaxiCallTime[i] = 0;
-								DeletePVar(TaxiAccepted[i], "TaxiCall");
-								TaxiAccepted[i] = INVALID_PLAYER_ID;
-								DisablePlayerCheckpoint(i);
-						}
-					}	
-				}
+							GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Canceled the call", 5000, 1);
+							TaxiCallTime[i] = 0;
+							DeletePVar(TaxiAccepted[i], "TaxiCall");
+							TaxiAccepted[i] = INVALID_PLAYER_ID;
+							DisablePlayerCheckpoint(i);
+					}
+				}	
 			}
 		}
 	}
@@ -2958,21 +2950,17 @@ CMD:cancel(playerid, params[])
 		}
 		else
 		{
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(BusAccepted[i] != INVALID_PLAYER_ID && BusAccepted[i] == playerid)
 				{
-					if(BusAccepted[i] != INVALID_PLAYER_ID && BusAccepted[i] == playerid)
-					{
-						GameTextForPlayer(i, "~w~Bus Caller~n~~r~Canceled the call", 5000, 1);
-						BusCallTime[i] = 0;
-						DeletePVar(BusAccepted[i], "BusCall");
-						BusAccepted[i] = INVALID_PLAYER_ID;
-						DisablePlayerCheckpoint(i);
-					}
-				}	
-			}
+					GameTextForPlayer(i, "~w~Bus Caller~n~~r~Canceled the call", 5000, 1);
+					BusCallTime[i] = 0;
+					DeletePVar(BusAccepted[i], "BusCall");
+					BusAccepted[i] = INVALID_PLAYER_ID;
+					DisablePlayerCheckpoint(i);
+				}
+			}	
 		}
 	}
 	else if(strcmp(choice,"foodoffer",true) == 0) {

@@ -46,56 +46,52 @@ public OnVehicleSpawn(vehicleid) {
 		v;
 
 
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if((v = GetPlayerVehicle(i, vehicleid)) != -1) {
-				DestroyVehicle(vehicleid);
+		if((v = GetPlayerVehicle(i, vehicleid)) != -1) {
+			DestroyVehicle(vehicleid);
 
-				new
-					iVehicleID = CreateVehicle(PlayerVehicleInfo[i][v][pvModelId], PlayerVehicleInfo[i][v][pvPosX], PlayerVehicleInfo[i][v][pvPosY], PlayerVehicleInfo[i][v][pvPosZ], PlayerVehicleInfo[i][v][pvPosAngle],PlayerVehicleInfo[i][v][pvColor1], PlayerVehicleInfo[i][v][pvColor2], -1);
+			new
+				iVehicleID = CreateVehicle(PlayerVehicleInfo[i][v][pvModelId], PlayerVehicleInfo[i][v][pvPosX], PlayerVehicleInfo[i][v][pvPosY], PlayerVehicleInfo[i][v][pvPosZ], PlayerVehicleInfo[i][v][pvPosAngle],PlayerVehicleInfo[i][v][pvColor1], PlayerVehicleInfo[i][v][pvColor2], -1);
 
-				SetVehicleVirtualWorld(iVehicleID, PlayerVehicleInfo[i][v][pvVW]);
-				LinkVehicleToInterior(iVehicleID, PlayerVehicleInfo[i][v][pvInt]);
+			SetVehicleVirtualWorld(iVehicleID, PlayerVehicleInfo[i][v][pvVW]);
+			LinkVehicleToInterior(iVehicleID, PlayerVehicleInfo[i][v][pvInt]);
 
-				PlayerVehicleInfo[i][v][pvId] = iVehicleID;
+			PlayerVehicleInfo[i][v][pvId] = iVehicleID;
 
-				Vehicle_ResetData(iVehicleID);
-				if(!isnull(PlayerVehicleInfo[i][v][pvPlate])) {
-					SetVehicleNumberPlate(iVehicleID, PlayerVehicleInfo[i][v][pvPlate]);
-				}
-				if(PlayerVehicleInfo[i][v][pvLocked] == 1) LockPlayerVehicle(i, iVehicleID, PlayerVehicleInfo[i][v][pvLock]);
-				ChangeVehiclePaintjob(iVehicleID, PlayerVehicleInfo[i][v][pvPaintJob]);
-				ChangeVehicleColor(iVehicleID, PlayerVehicleInfo[i][v][pvColor1], PlayerVehicleInfo[i][v][pvColor2]);
-				for(new m = 0; m < MAX_MODS; m++)
+			Vehicle_ResetData(iVehicleID);
+			if(!isnull(PlayerVehicleInfo[i][v][pvPlate])) {
+				SetVehicleNumberPlate(iVehicleID, PlayerVehicleInfo[i][v][pvPlate]);
+			}
+			if(PlayerVehicleInfo[i][v][pvLocked] == 1) LockPlayerVehicle(i, iVehicleID, PlayerVehicleInfo[i][v][pvLock]);
+			ChangeVehiclePaintjob(iVehicleID, PlayerVehicleInfo[i][v][pvPaintJob]);
+			ChangeVehicleColor(iVehicleID, PlayerVehicleInfo[i][v][pvColor1], PlayerVehicleInfo[i][v][pvColor2]);
+			for(new m = 0; m < MAX_MODS; m++)
+			{
+				if (PlayerVehicleInfo[i][v][pvMods][m] >= 1000 && PlayerVehicleInfo[i][v][pvMods][m] <= 1193)
 				{
-					if (PlayerVehicleInfo[i][v][pvMods][m] >= 1000 && PlayerVehicleInfo[i][v][pvMods][m] <= 1193)
+					if (InvalidModCheck(PlayerVehicleInfo[i][v][pvModelId], PlayerVehicleInfo[i][v][pvMods][m]))
 					{
-						if (InvalidModCheck(PlayerVehicleInfo[i][v][pvModelId], PlayerVehicleInfo[i][v][pvMods][m]))
-						{
-							AddVehicleComponent(iVehicleID, PlayerVehicleInfo[i][v][pvMods][m]);
-						}
-						else
-						{
-							PlayerVehicleInfo[i][v][pvMods][m] = 0;
-						}
+						AddVehicleComponent(iVehicleID, PlayerVehicleInfo[i][v][pvMods][m]);
+					}
+					else
+					{
+						PlayerVehicleInfo[i][v][pvMods][m] = 0;
 					}
 				}
-				new zyear, zmonth, zday;
-				getdate(zyear, zmonth, zday);
-				if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVehicleID, PlayerVehicleInfo[i][v][pvHealth]);
-				new string[128];
-				format(string, sizeof(string), "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
-				SendClientMessageEx(i, COLOR_GRAD1, string);
 			}
-			if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
-			{
-				DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-			}
-		}	
-	}
+			new zyear, zmonth, zday;
+			getdate(zyear, zmonth, zday);
+			if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) SetVehicleHealth(iVehicleID, PlayerVehicleInfo[i][v][pvHealth]);
+			new string[128];
+			format(string, sizeof(string), "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
+			SendClientMessageEx(i, COLOR_GRAD1, string);
+		}
+		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
+		{
+			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+		}
+	}	
     CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 	for(new i = 0; i < sizeof(CrateInfo); i++)
     {
@@ -286,26 +282,22 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	{
 		SetPlayerArmedWeapon(playerid, 0);
 	}
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(GetPVarType(i, "pBoomBoxArea"))
 		{
-			if(GetPVarType(i, "pBoomBoxArea"))
+			if(areaid == GetPVarInt(i, "pBoomBoxArea"))
 			{
-				if(areaid == GetPVarInt(i, "pBoomBoxArea"))
+				new station[256];
+				GetPVarString(i, "pBoomBoxStation", station, sizeof(station));
+				if(!isnull(station))
 				{
-					new station[256];
-					GetPVarString(i, "pBoomBoxStation", station, sizeof(station));
-					if(!isnull(station))
-					{
-						PlayAudioStreamForPlayerEx(playerid, station, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ"), 30.0, 1);
-					}
-					return 1;
+					PlayAudioStreamForPlayerEx(playerid, station, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ"), 30.0, 1);
 				}
+				return 1;
 			}
-		}	
-	}
+		}
+	}	
 	if(areaid == audiourlid)
 	{
 	    PlayAudioStreamForPlayerEx(playerid, audiourlurl, audiourlparams[0], audiourlparams[1], audiourlparams[2], audiourlparams[3], 1);
@@ -315,21 +307,17 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(GetPVarType(i, "pBoomBoxArea"))
 		{
-			if(GetPVarType(i, "pBoomBoxArea"))
+			if(areaid == GetPVarInt(i, "pBoomBoxArea"))
 			{
-				if(areaid == GetPVarInt(i, "pBoomBoxArea"))
-				{
-					StopAudioStreamForPlayerEx(playerid);
-					return 1;
-				}
+				StopAudioStreamForPlayerEx(playerid);
+				return 1;
 			}
-		}	
-	}
+		}
+	}	
 	if(areaid == audiourlid)
 	{
 		StopAudioStreamForPlayerEx(playerid);
@@ -778,16 +766,12 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 			SetPlayerWeather(playerid, gWeather);
 		}
 	}
-	//foreach(new i: Player) {
-	for(new i = 0; i < MAX_PLAYERS; ++i)
-	{
-		if(IsPlayerConnected(i))
-		{	
-			if(Spectating[i] > 0 && Spectate[i] == playerid) {
-				SetTimerEx("SpecUpdate", 1500, false, "i", i);
-			}
-		}	
-	}
+	foreach(new i: Player)
+	{	
+		if(Spectating[i] > 0 && Spectate[i] == playerid) {
+			SetTimerEx("SpecUpdate", 1500, false, "i", i);
+		}
+	}	
 }
 
 public OnPlayerPressButton(playerid, buttonid)
@@ -2549,7 +2533,7 @@ public OnPlayerConnect(playerid)
 	
 	PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
-	for(new x = 0; x < MAX_PLAYERS; x++)
+	foreach(new x: Player)
 	{
 	    ShotPlayer[playerid][x] = 0;
 	}
@@ -2621,29 +2605,25 @@ public OnPlayerDisconnect(playerid, reason)
 	}
 	KillTimer(logincheck[playerid]);
 	if(GetPVarInt(playerid, "SpectatingWatch") != INVALID_PLAYER_ID) SetPVarInt(GetPVarInt(playerid, "SpectatingWatch"), "BeingSpectated", 0);
-	//foreach(new i: Player) {
-	for(new i = 0; i < MAX_PLAYERS; ++i)
-	{
-		if(IsPlayerConnected(i))
-		{	
-			if(Spectating[i] > 0 && Spectate[i] == playerid) {
-				SetPVarInt(i, "StartedWatching", 0);
-				SetPVarInt(i, "NextWatch", 0);
-				SetPVarInt(i, "SpecOff", 1);
-				Spectating[i] = 0;
-				SpecTime[i] = 0;
-				Spectate[i] = INVALID_PLAYER_ID;
-				GettingSpectated[playerid] = INVALID_PLAYER_ID;
-				TogglePlayerSpectating(i, false);
-				SetCameraBehindPlayer(i);
-				SendClientMessageEx(i, COLOR_WHITE, "The player you were spectating has left the server.");
-			}
-			if(GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-				DeletePVar(i, "_dCheck");
-				SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
-			}
-			if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
-		}	
+	foreach(new i: Player)
+	{	
+		if(Spectating[i] > 0 && Spectate[i] == playerid) {
+			SetPVarInt(i, "StartedWatching", 0);
+			SetPVarInt(i, "NextWatch", 0);
+			SetPVarInt(i, "SpecOff", 1);
+			Spectating[i] = 0;
+			SpecTime[i] = 0;
+			Spectate[i] = INVALID_PLAYER_ID;
+			GettingSpectated[playerid] = INVALID_PLAYER_ID;
+			TogglePlayerSpectating(i, false);
+			SetCameraBehindPlayer(i);
+			SendClientMessageEx(i, COLOR_WHITE, "The player you were spectating has left the server.");
+		}
+		if(GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+			DeletePVar(i, "_dCheck");
+			SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
+		}
+		if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
 	}		
 	// Why save on people who haven't logged in!
 	if(gPlayerLogged{playerid} == 1)
@@ -2713,7 +2693,7 @@ public OnPlayerDisconnect(playerid, reason)
 						}
 					}
 						
-					for(new i = 0; i < MAX_PLAYERS; i++)
+					foreach(new i: Player) 
 					{
 						if(HungerPlayerInfo[i][hgInEvent] == 1)
 						{
@@ -2789,7 +2769,7 @@ public OnPlayerDisconnect(playerid, reason)
 				
 				new string[128];
 				format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
-				for(new i = 0; i < MAX_PLAYERS; i++)
+				foreach(new i: Player) 
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
 				}
@@ -2898,18 +2878,14 @@ public OnPlayerDisconnect(playerid, reason)
 		    {
 		        new string[128];
 				format(string, sizeof(string), "The boombox owner (%s) has logged off", GetPlayerNameEx(playerid));
-		        //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+		        foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
 					{
-						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
-						{
-							StopAudioStreamForPlayerEx(i);
-							SendClientMessage(i, COLOR_PURPLE, string);
-						}
-					}	
-				}
+						StopAudioStreamForPlayerEx(i);
+						SendClientMessage(i, COLOR_PURPLE, string);
+					}
+				}	
 			}
 		}
 		#if defined zombiemode
@@ -3048,14 +3024,11 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
-							for(new i = 0; i < MAX_PLAYERS; ++i)
+							foreach(new i: Player) 
 							{
-								if(IsPlayerConnected(i))
+								if(GetPVarInt(i, "togRadio") == 0)
 								{
-									if(GetPVarInt(i, "togRadio") == 0)
-									{
-										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
+									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
 							}
 						}
@@ -3067,14 +3040,11 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
-							for(new i = 0; i < MAX_PLAYERS; ++i)
+							foreach(new i: Player) 
 							{
-								if(IsPlayerConnected(i))
+								if(GetPVarInt(i, "togRadio") == 0)
 								{
-									if(GetPVarInt(i, "togRadio") == 0)
-									{
-										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
+									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
 							}
 						}
@@ -3162,14 +3132,11 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
-							for(new i = 0; i < MAX_PLAYERS; ++i)
+							foreach(new i: Player) 
 							{
-								if(IsPlayerConnected(i))
+								if(GetPVarInt(i, "togRadio") == 0)
 								{
-									if(GetPVarInt(i, "togRadio") == 0)
-									{
-										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
+									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
 							}
 						}
@@ -3181,14 +3148,11 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
-							for(new i = 0; i < MAX_PLAYERS; ++i)
+							foreach(new i: Player) 
 							{
-								if(IsPlayerConnected(i))
+								if(GetPVarInt(i, "togRadio") == 0)
 								{
-									if(GetPVarInt(i, "togRadio") == 0)
-									{
-										if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
+									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
 							}
 						}
@@ -3411,56 +3375,52 @@ public OnPlayerDisconnect(playerid, reason)
 				Calls[i][TimeToExpire] = 0;
 			}
 		}
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if (GetPVarType(i, "hFind") && GetPVarInt(i, "hFind") == playerid)
 			{
-				if (GetPVarType(i, "hFind") && GetPVarInt(i, "hFind") == playerid)
-				{
-					SendClientMessageEx(i, COLOR_GREY, "The person you were tracking has disconnected.");
-					DeletePVar(i, "hFind");
-					DisablePlayerCheckpoint(i);
-				}
-				if (GetPVarType(i, "Backup") && GetPVarInt(i, "Backup") == playerid)
-				{
-					SendClientMessageEx(i, COLOR_GREY, "The person who called for backup has disconnected.");
-					DeletePVar(i, "Backup");
-				}
-				if(TaxiAccepted[i] == playerid)
-				{
-					TaxiAccepted[i] = INVALID_PLAYER_ID;
-					GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Left the game", 5000, 1);
-					TaxiCallTime[i] = 0;
-					DisablePlayerCheckpoint(i);
-				}
-				if(EMSAccepted[i] == playerid)
-				{
-					EMSAccepted[i] = INVALID_PLAYER_ID;
-					GameTextForPlayer(i, "~w~EMS Caller~n~~r~Left the game", 5000, 1);
-					EMSCallTime[i] = 0;
-					DisablePlayerCheckpoint(i);
-				}
-				if(BusAccepted[i] == playerid)
-				{
-					BusAccepted[i] = INVALID_PLAYER_ID;
-					GameTextForPlayer(i, "~w~Bus Caller~n~~r~Left the game", 5000, 1);
-					BusCallTime[i] = 0;
-					DisablePlayerCheckpoint(i);
-				}
-				if(MedicAccepted[i] == playerid)
-				{
-					TaxiAccepted[playerid] = INVALID_PLAYER_ID; BusAccepted[playerid] = INVALID_PLAYER_ID; MedicAccepted[playerid] = INVALID_PLAYER_ID;
-					GameTextForPlayer(i, "~w~Medic Caller~n~~r~Left the game", 5000, 1);
-					MedicCallTime[i] = 0;
-					DisablePlayerCheckpoint(i);
-				}
-				if(OrderAssignedTo[i] == playerid)
-				{
-				   OrderAssignedTo[i] = INVALID_PLAYER_ID;
-				}
-			}	
-		}
+				SendClientMessageEx(i, COLOR_GREY, "The person you were tracking has disconnected.");
+				DeletePVar(i, "hFind");
+				DisablePlayerCheckpoint(i);
+			}
+			if (GetPVarType(i, "Backup") && GetPVarInt(i, "Backup") == playerid)
+			{
+				SendClientMessageEx(i, COLOR_GREY, "The person who called for backup has disconnected.");
+				DeletePVar(i, "Backup");
+			}
+			if(TaxiAccepted[i] == playerid)
+			{
+				TaxiAccepted[i] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~Taxi Caller~n~~r~Left the game", 5000, 1);
+				TaxiCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+			if(EMSAccepted[i] == playerid)
+			{
+				EMSAccepted[i] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Left the game", 5000, 1);
+				EMSCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+			if(BusAccepted[i] == playerid)
+			{
+				BusAccepted[i] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~Bus Caller~n~~r~Left the game", 5000, 1);
+				BusCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+			if(MedicAccepted[i] == playerid)
+			{
+				TaxiAccepted[playerid] = INVALID_PLAYER_ID; BusAccepted[playerid] = INVALID_PLAYER_ID; MedicAccepted[playerid] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~Medic Caller~n~~r~Left the game", 5000, 1);
+				MedicCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+			if(OrderAssignedTo[i] == playerid)
+			{
+			   OrderAssignedTo[i] = INVALID_PLAYER_ID;
+			}
+		}	
 		if(TransportCost[playerid] > 0 && TransportDriver[playerid] != INVALID_PLAYER_ID)
 		{
 			if(IsPlayerConnected(TransportDriver[playerid]))
@@ -3608,28 +3568,24 @@ public OnRconLoginAttempt(ip[], password[], success)
     if(!success)
     {
         new pip[16], string[128];
-        //foreach(new i : Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+        foreach(new i : Player)
 		{
-			if(IsPlayerConnected(i))
+			GetPlayerIp(i, pip, sizeof(pip));
+			if(!strcmp(ip, pip, true))
 			{
-				GetPlayerIp(i, pip, sizeof(pip));
-				if(!strcmp(ip, pip, true))
+				new logins = GetPVarInt(i, "RconFailedLogin")+1;
+				SetPVarInt(i, "RconFailedLogin", logins);
+				if(GetPVarInt(i, "RconFailedLogin") >= 3)
 				{
-					new logins = GetPVarInt(i, "RconFailedLogin")+1;
-					SetPVarInt(i, "RconFailedLogin", logins);
-					if(GetPVarInt(i, "RconFailedLogin") >= 3)
-					{
-						format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned for excessive RCon failed logins", GetPlayerNameEx(i), GetPlayerSQLId(i), pip);
-						Log("logs/ban.log", string);
-						PlayerInfo[i][pBanned] = 1;
-						MySQLBan(GetPlayerSQLId(i),pip,"Excessive RCon Login Failures",1,"System");
-						SystemBan(i, "[System] Excessive RCon Login Failures");
-						Kick(i);
-					}
+					format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned for excessive RCon failed logins", GetPlayerNameEx(i), GetPlayerSQLId(i), pip);
+					Log("logs/ban.log", string);
+					PlayerInfo[i][pBanned] = 1;
+					MySQLBan(GetPlayerSQLId(i),pip,"Excessive RCon Login Failures",1,"System");
+					SystemBan(i, "[System] Excessive RCon Login Failures");
+					Kick(i);
 				}
-			}	
-        }
+			}
+		}	
     }
     return 1;
 }
@@ -3858,20 +3814,16 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(GetPVarInt(playerid, "Injured") == 1)
 	{
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(EMSAccepted[i] == playerid)
 			{
-				if(EMSAccepted[i] == playerid)
-				{
-					EMSAccepted[i] = INVALID_PLAYER_ID;
-					GameTextForPlayer(i, "~w~EMS Caller~n~~r~Has Died", 5000, 1);
-					EMSCallTime[i] = 0;
-					DisablePlayerCheckpoint(i);
-				}
-			}	
-		}
+				EMSAccepted[i] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Has Died", 5000, 1);
+				EMSCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+		}	
      	SendClientMessageEx(playerid, COLOR_WHITE, "You appear to be stuck in limbo, medics are trying to revive you.");
 	    KillEMSQueue(playerid);
 	    ResetPlayerWeaponsEx(playerid);
@@ -4073,42 +4025,38 @@ public OnVehicleDeath(vehicleid) {
     new Float:XB, Float:YB, Float:ZB;
     VehicleStatus{vehicleid} = 1;
     TruckContents{vehicleid} = 0;
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(TruckUsed[i] == vehicleid)
 		{
-			if(TruckUsed[i] == vehicleid)
+			DeletePVar(i, "LoadTruckTime");
+			DeletePVar(i, "TruckDeliver");
+			TruckUsed[i] = INVALID_VEHICLE_ID;
+			gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+			DisablePlayerCheckpoint(i);
+		}
+		if(InsidePlane[i] == vehicleid)
+		{
+			GetVehiclePos(InsidePlane[i], X, Y, Z);
+			SetPlayerPos(i, X-4, Y-2.3, Z);
+			GetVehiclePos(InsidePlane[i], XB, YB, ZB);
+			if(ZB > 50.0)
 			{
-				DeletePVar(i, "LoadTruckTime");
-				DeletePVar(i, "TruckDeliver");
-				TruckUsed[i] = INVALID_VEHICLE_ID;
-				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-				DisablePlayerCheckpoint(i);
+				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
+				GivePlayerValidWeapon(i, 46, 60000);
 			}
-			if(InsidePlane[i] == vehicleid)
-			{
-				GetVehiclePos(InsidePlane[i], X, Y, Z);
-				SetPlayerPos(i, X-4, Y-2.3, Z);
-				GetVehiclePos(InsidePlane[i], XB, YB, ZB);
-				if(ZB > 50.0)
-				{
-					PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
-					GivePlayerValidWeapon(i, 46, 60000);
-				}
-				PlayerInfo[i][pVW] = 0;
-				SetPlayerVirtualWorld(i, 0);
-				PlayerInfo[i][pInt] = 0;
-				SetPlayerInterior(i, 0);
-				InsidePlane[i] = INVALID_VEHICLE_ID;
-				SendClientMessageEx(i, COLOR_WHITE, "The airplane has been damaged, you cannot be inside it!");
-			}
-			if(GetPVarInt(i, "NGPassengerVeh") == vehicleid)
-			{
-				TogglePlayerSpectating(i, 0);
-			}
-		}	
-	}
+			PlayerInfo[i][pVW] = 0;
+			SetPlayerVirtualWorld(i, 0);
+			PlayerInfo[i][pInt] = 0;
+			SetPlayerInterior(i, 0);
+			InsidePlane[i] = INVALID_VEHICLE_ID;
+			SendClientMessageEx(i, COLOR_WHITE, "The airplane has been damaged, you cannot be inside it!");
+		}
+		if(GetPVarInt(i, "NGPassengerVeh") == vehicleid)
+		{
+			TogglePlayerSpectating(i, 0);
+		}
+	}	
     /*if(DynVeh[vehicleid] != -1)
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
@@ -5614,28 +5562,24 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    if(GetPVarInt(playerid, "RadarTimeout") == 0)
 	    {
 			new Float:x,Float:y,Float:z;
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(IsPlayerStreamedIn(i, playerid))
 				{
-					if(IsPlayerStreamedIn(i, playerid))
+					GetPlayerPos(i,x,y,z);
+					if(IsPlayerAimingAt(playerid,x,y,z,10))
 					{
-						GetPlayerPos(i,x,y,z);
-						if(IsPlayerAimingAt(playerid,x,y,z,10))
-						{
-							new string[68];
-							format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~b~License Plate: ~w~%d~n~~b~Speed: ~w~%.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
-							GameTextForPlayer(playerid, string,3500, 3);
-							format(string, sizeof(string), "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
-							SendClientMessageEx(playerid, COLOR_GRAD4, string);
-							SetPVarInt(playerid, "RadarTimeout", 1);
-							SetTimerEx("RadarCooldown", 3000, 0, "i", playerid);
-							return 1;
-						}
+						new string[68];
+						format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~b~License Plate: ~w~%d~n~~b~Speed: ~w~%.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
+						GameTextForPlayer(playerid, string,3500, 3);
+						format(string, sizeof(string), "License Plate: %d. Speed: %.0f MPH", GetPlayerVehicleID(i), fVehSpeed[i]);
+						SendClientMessageEx(playerid, COLOR_GRAD4, string);
+						SetPVarInt(playerid, "RadarTimeout", 1);
+						SetTimerEx("RadarCooldown", 3000, 0, "i", playerid);
+						return 1;
 					}
-				}	
-			}
+				}
+			}	
 		}
 	}
 	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 && PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
@@ -6137,24 +6081,20 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	//Specating
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER || newstate == PLAYER_STATE_ONFOOT)
 	{
-		//foreach(new i: Player) {
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player) 
 		{
-			if(IsPlayerConnected(i))
-			{		
-				if(PlayerInfo[i][pAdmin] >= 2 || GetPVarType(i, "StartedWatching")) {
-					if(Spectating[i] > 0 && Spectate[i] == playerid) {
-						if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
-							TogglePlayerSpectating(i, true);
-							new carid = GetPlayerVehicleID( playerid );
-							PlayerSpectateVehicle( i, carid );
-						}	
-						else if(newstate == PLAYER_STATE_ONFOOT) {
-							TogglePlayerSpectating(i, true);
-							PlayerSpectatePlayer( i, playerid );
-							SetPlayerInterior( i, GetPlayerInterior( playerid ) );
-						}	
-					}
+			if(PlayerInfo[i][pAdmin] >= 2 || GetPVarType(i, "StartedWatching")) {
+				if(Spectating[i] > 0 && Spectate[i] == playerid) {
+					if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
+						TogglePlayerSpectating(i, true);
+						new carid = GetPlayerVehicleID( playerid );
+						PlayerSpectateVehicle( i, carid );
+					}	
+					else if(newstate == PLAYER_STATE_ONFOOT) {
+						TogglePlayerSpectating(i, true);
+						PlayerSpectatePlayer( i, playerid );
+						SetPlayerInterior( i, GetPlayerInterior( playerid ) );
+					}	
 				}
 			}	
 		}
@@ -6216,21 +6156,17 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			format(string, sizeof(string), "* You are now off duty and earned $%d.", TransportMoney[playerid]);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if (TransportDriver[i] == playerid)
 				{
-					if (TransportDriver[i] == playerid)
-					{
-						GivePlayerCash(i, -TransportCost[i]);
-						format(string, sizeof(string), "* Your driver left the vehicle and so you paid $%d.", TransportCost[i]);
-						TransportCost[i] = 0; // I've not used either of these two variables before, could be more that resetting
-						TransportDriver[i] = INVALID_PLAYER_ID;
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-					}
-				}	
-			}
+					GivePlayerCash(i, -TransportCost[i]);
+					format(string, sizeof(string), "* Your driver left the vehicle and so you paid $%d.", TransportCost[i]);
+					TransportCost[i] = 0; // I've not used either of these two variables before, could be more that resetting
+					TransportDriver[i] = INVALID_PLAYER_ID;
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+				}
+			}	
 
 			GivePlayerCash(playerid, TransportMoney[playerid]);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
@@ -6303,52 +6239,48 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		else SetPlayerArmedWeapon(playerid,0);
 
 	    gLastCar[playerid] = vehicleid;
-	    //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+	    foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(IsPlayerInVehicle(i, vehicleid) && GetPlayerState(i) == 2 && TransportDuty[i] > 0)
 			{
-				if(IsPlayerInVehicle(i, vehicleid) && GetPlayerState(i) == 2 && TransportDuty[i] > 0)
+				if(GetPlayerCash(playerid) < TransportValue[i])
 				{
-					if(GetPlayerCash(playerid) < TransportValue[i])
-					{
-						new string[28];
-						format(string, sizeof(string), "* You need $%d to enter.", TransportValue[i]);
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-						RemovePlayerFromVehicle(playerid);
-						new Float:X, Float:Y, Float:Z;
-						GetPlayerPos(playerid, X, Y, Z);
-						SetPlayerPos(playerid, X, Y, Z+2);
-						TogglePlayerControllable(playerid, 1);
-					}
-					else
-					{
-						new string[35+MAX_PLAYER_NAME];
-						if(TransportDuty[i] == 1)
-						{
-							format(string, sizeof(string), "* You paid $%d to the taxi driver.", TransportValue[i]);
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							format(string, sizeof(string), "* Passenger %s has entered your taxi.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-							TransportTime[i] = 1;
-							TransportTime[playerid] = 1;
-							TransportCost[playerid] = TransportValue[i];
-							TransportCost[i] = TransportValue[i];
-							TransportDriver[playerid] = i;
-						}
-						else if(TransportDuty[i] == 2)
-						{
-							format(string, sizeof(string), "* You paid $%d to the Taxi Driver.", TransportValue[i]);
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							format(string, sizeof(string), "* Passenger %s has entered your Taxi.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-						}
-						GivePlayerCash(playerid, - TransportValue[i]);
-						TransportMoney[i] += TransportValue[i];
-					}
+					new string[28];
+					format(string, sizeof(string), "* You need $%d to enter.", TransportValue[i]);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					RemovePlayerFromVehicle(playerid);
+					new Float:X, Float:Y, Float:Z;
+					GetPlayerPos(playerid, X, Y, Z);
+					SetPlayerPos(playerid, X, Y, Z+2);
+					TogglePlayerControllable(playerid, 1);
 				}
-			}	
-	    }
+				else
+				{
+					new string[35+MAX_PLAYER_NAME];
+					if(TransportDuty[i] == 1)
+					{
+						format(string, sizeof(string), "* You paid $%d to the taxi driver.", TransportValue[i]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						format(string, sizeof(string), "* Passenger %s has entered your taxi.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+						TransportTime[i] = 1;
+						TransportTime[playerid] = 1;
+						TransportCost[playerid] = TransportValue[i];
+						TransportCost[i] = TransportValue[i];
+						TransportDriver[playerid] = i;
+					}
+					else if(TransportDuty[i] == 2)
+					{
+						format(string, sizeof(string), "* You paid $%d to the Taxi Driver.", TransportValue[i]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						format(string, sizeof(string), "* Passenger %s has entered your Taxi.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+					}
+					GivePlayerCash(playerid, - TransportValue[i]);
+					TransportMoney[i] += TransportValue[i];
+				}
+			}
+		}	
 	}
 	if(newstate == PLAYER_STATE_WASTED)
 	{
@@ -6410,63 +6342,59 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				return 1;
 			}
 		}
-	 	//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+	 	foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				v = GetPlayerVehicle(i, newcar);
-				if(v != -1) {
-					if(i == playerid) {
+			v = GetPlayerVehicle(i, newcar);
+			if(v != -1) {
+				if(i == playerid) {
 
-						new
-							string[128];
+					new
+						string[128];
 
-						format(string, sizeof(string),"You are the owner of this %s.", GetVehicleName(newcar));
+					format(string, sizeof(string),"You are the owner of this %s.", GetVehicleName(newcar));
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+					if(PlayerVehicleInfo[i][v][pvTicket] != 0)
+					{
+						format(string, sizeof(string),"This vehicle has $%d unpaid tickets. You must pay the ticket at the DMV in Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
 						SendClientMessageEx(playerid, COLOR_GREY, string);
-						if(PlayerVehicleInfo[i][v][pvTicket] != 0)
-						{
-							format(string, sizeof(string),"This vehicle has $%d unpaid tickets. You must pay the ticket at the DMV in Dilimore.", PlayerVehicleInfo[i][v][pvTicket]);
-							SendClientMessageEx(playerid, COLOR_GREY, string);
-							SendClientMessageEx(playerid, COLOR_GREY, "Failure to pay these tickets as soon as possible will result in further fines, vehicle impounding, or even an arrest.");
-						}
+						SendClientMessageEx(playerid, COLOR_GREY, "Failure to pay these tickets as soon as possible will result in further fines, vehicle impounding, or even an arrest.");
 					}
-					else if(i == PlayerInfo[playerid][pVehicleKeysFrom] && v == PlayerInfo[playerid][pVehicleKeys]) {
-
-						new
-							string[64 + MAX_PLAYER_NAME];
-
-						format(string, sizeof(string),"You have the keys for this %s from owner %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
-						SendClientMessageEx(playerid, COLOR_GREY, string);
-					}
-					else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 1) {
-						GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
-						SetVehicleParamsEx(newcar,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
-						SetTimerEx("DisableVehicleAlarm", 20000, 0, "d",  newcar);
-					}
-					else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
-
-						new
-							string[49 + MAX_PLAYER_NAME];
-
-						if(PlayerInfo[playerid][pAdmin] < 2)
-						{
-							new Float:slx, Float:sly, Float:slz;
-							GetPlayerPos(playerid, slx, sly, slz);
-							SetPlayerPos(playerid, slx, sly, slz+1.3);
-							RemovePlayerFromVehicle(playerid);
-							defer NOPCheck(playerid);
-						}
-						else
-						{
-							format(string, sizeof(string), "Warning: This %s is owned by %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
-							SendClientMessageEx(playerid, COLOR_GREY, string);
-						}
-					}
-					return 1;
 				}
-			}	
-		}
+				else if(i == PlayerInfo[playerid][pVehicleKeysFrom] && v == PlayerInfo[playerid][pVehicleKeys]) {
+
+					new
+						string[64 + MAX_PLAYER_NAME];
+
+					format(string, sizeof(string),"You have the keys for this %s from owner %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 1) {
+					GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
+					SetVehicleParamsEx(newcar,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
+					SetTimerEx("DisableVehicleAlarm", 20000, 0, "d",  newcar);
+				}
+				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
+
+					new
+						string[49 + MAX_PLAYER_NAME];
+
+					if(PlayerInfo[playerid][pAdmin] < 2)
+					{
+						new Float:slx, Float:sly, Float:slz;
+						GetPlayerPos(playerid, slx, sly, slz);
+						SetPlayerPos(playerid, slx, sly, slz+1.3);
+						RemovePlayerFromVehicle(playerid);
+						defer NOPCheck(playerid);
+					}
+					else
+					{
+						format(string, sizeof(string), "Warning: This %s is owned by %s.", GetVehicleName(newcar), GetPlayerNameEx(i));
+						SendClientMessageEx(playerid, COLOR_GREY, string);
+					}
+				}
+				return 1;
+			}
+		}	
 		new vehicleid = newcar;
 		if(IsVIPcar(vehicleid))
 		{
@@ -7256,79 +7184,71 @@ public OnPlayerText(playerid, text[])
 		new Float: f_playerPos[3];
 		GetPlayerPos(playerid, f_playerPos[0], f_playerPos[1], f_playerPos[2]);
 		new str[128];
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
-					/*if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid) >>> 8, sendername, text);*/
+			if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
+				/*if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid) >>> 8, sendername, text);*/
+				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+				SendClientMessageEx(i, COLOR_FADE1, string);
+			}
+			else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
+				if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0 && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[i][pAdmin] < 2)
+				{
+					if(playerid == i)
+					{
+						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+						format(str, sizeof(str), "{8D8DFF}(BUGGED) {CBCCCE}%s", string);
+					}
+					else {
+						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+						format(str, sizeof(str), "{8D8DFF}(BUG ID %d) {CBCCCE}%s", i,string);
+					}
+					SendBugMessage(PlayerInfo[i][pBugged], str);
+				}
+				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
+				{
+					format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
+					SendClientMessageEx(i, COLOR_FADE5, string);
+				}
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE1, string);
 				}
-				else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
-					if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0 && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[i][pAdmin] < 2)
-					{
-						if(playerid == i)
-						{
-							format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-							format(str, sizeof(str), "{8D8DFF}(BUGGED) {CBCCCE}%s", string);
-						}
-						else {
-							format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-							format(str, sizeof(str), "{8D8DFF}(BUG ID %d) {CBCCCE}%s", i,string);
-						}
-						SendBugMessage(PlayerInfo[i][pBugged], str);
-					}
-					if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
-					{
-						format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
-						SendClientMessageEx(i, COLOR_FADE5, string);
-					}
-					else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-						SendClientMessageEx(i, COLOR_FADE1, string);
-					}
-					else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-						SendClientMessageEx(i, COLOR_FADE2, string);
-					}
-					else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-						SendClientMessageEx(i, COLOR_FADE3, string);
-					}
-					else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-						SendClientMessageEx(i, COLOR_FADE4, string);
-					}
-					else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
-						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-						SendClientMessageEx(i, COLOR_FADE5, string);
-					}
-				}
-				if(GetPVarInt(i, "BigEar") == 1 || GetPVarInt(i, "BigEar") == 6 && GetPVarInt(i, "BigEarPlayer") == playerid) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
-					new string2[128] = "(BE) ";
-					strcat(string2,string, sizeof(string2));
-					SendClientMessageEx(i, COLOR_FADE1, string);
+					SendClientMessageEx(i, COLOR_FADE2, string);
 				}
-			}	
-		}
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE3, string);
+				}
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE4, string);
+				}
+				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+					SendClientMessageEx(i, COLOR_FADE5, string);
+				}
+			}
+			if(GetPVarInt(i, "BigEar") == 1 || GetPVarInt(i, "BigEar") == 6 && GetPVarInt(i, "BigEarPlayer") == playerid) {
+				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
+				new string2[128] = "(BE) ";
+				strcat(string2,string, sizeof(string2));
+				SendClientMessageEx(i, COLOR_FADE1, string);
+			}
+		}	
 	}
 	SetPlayerChatBubble(playerid,text,COLOR_WHITE,20.0,5000);
 
 	format(string, sizeof(string), "(BE) %s: %s", GetPlayerNameEx(playerid), text);
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
-	{
-		if(IsPlayerConnected(i))
-		{	
-			if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEar") == 3)
-			{
-				SendClientMessageEx(i, COLOR_WHITE, string);
-			}
-		}	
-	}
+	foreach(new i: Player)
+	{	
+		if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEar") == 3)
+		{
+			SendClientMessageEx(i, COLOR_WHITE, string);
+		}
+	}	
 	return 0;
 }
 

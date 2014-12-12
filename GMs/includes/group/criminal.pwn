@@ -171,18 +171,14 @@ public SprayWall(gangtag, playerid)
 
 stock SendFamilyMessage(family, color, string[])
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if(PlayerInfo[i][pMember] == family || PlayerInfo[i][pLeader] == family) {
-				if(!gFam[i]) {
-					SendClientMessageEx(i, color, string);
-				}
+		if(PlayerInfo[i][pMember] == family || PlayerInfo[i][pLeader] == family) {
+			if(!gFam[i]) {
+				SendClientMessageEx(i, color, string);
 			}
-		}	
-	}
+		}
+	}	
 }
 
 stock FamilyLog(familyid, string[])
@@ -654,31 +650,31 @@ CMD:fedit(playerid, params[])
 
 CMD:families(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || IsAHitman(playerid))
+	new
+		string[128],
+		familyid;
+
+	if(sscanf(params, "d", familyid))
 	{
-
-		new
-			string[128],
-			familyid;
-
-		if(sscanf(params, "d", familyid))
+		new number = 1;
+		for(new i = 1; i < sizeof(FamilyInfo); i++)
 		{
-			new number = 1;
-			for(new i = 1; i < sizeof(FamilyInfo); i++)
+	  		if(FamilyInfo[i][FamilyTurfTokens] < 12)
 			{
- 	  			if(FamilyInfo[i][FamilyTurfTokens] < 12)
-				{
-					format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: 0", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers]);
-				}
-				else
-				{
-					format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: %d", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers], FamilyInfo[i][FamilyTurfTokens]/12);
-				}
-				number++;
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: 0", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers]);
 			}
-			return 1;
+			else
+			{
+				format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: %d", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers], FamilyInfo[i][FamilyTurfTokens]/12);
+			}
+			number++;
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
+		return 1;
+	}
+
+	if(PlayerInfo[playerid][pAdmin] >= 2 || IsAHitman(playerid))
+	{
 
 		if(familyid < 1 || familyid >= MAX_FAMILY)
 		{
@@ -692,66 +688,61 @@ CMD:families(playerid, params[])
 			return 1;
 		}
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			new division[GROUP_MAX_DIV_LEN];
+			if(PlayerInfo[i][pFMember] == familyid && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2))
 			{
-				new division[GROUP_MAX_DIV_LEN];
-				if(PlayerInfo[i][pFMember] == familyid && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2))
+				if(0 <= PlayerInfo[i][pDivision] < 5)
 				{
-					if(0 <= PlayerInfo[i][pDivision] < 5)
-					{
-						format(division, sizeof(division), "%s", FamilyDivisionInfo[PlayerInfo[i][pFMember]][PlayerInfo[i][pDivision]]);
-					} else {
-						division = "None";
-					}
-					if(PlayerInfo[i][pRank] == 0)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (0) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][0], division);
-					}
-					else if(PlayerInfo[i][pRank] == 1)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (1) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][1], division);
-					}
-					else if(PlayerInfo[i][pRank] == 2)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (2) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][2], division);
-					}
-					else if(PlayerInfo[i][pRank] == 3)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (3) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][3], division);
-					}
-					else if(PlayerInfo[i][pRank] == 4)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (4) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][4], division);
-					}
-					else if(PlayerInfo[i][pRank] == 5)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (5) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][5], division);
-					}
-					else if(PlayerInfo[i][pRank] == 6)
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s (6) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][6], division);
-					}
-					else
-					{
-						format(string, sizeof(string), "* %s: %s | Rank: %s | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][0], division);
-					}
-					if(PlayerInfo[playerid][pFMember] == familyid && PlayerInfo[playerid][pRank] >= 5 && playerAFK[i] != 0 && playerAFK[i] > 60)
-					{
-						format(string, sizeof(string), "%s (AFK: %d minutes)", string, playerAFK[i] / 60);
-					}
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					format(division, sizeof(division), "%s", FamilyDivisionInfo[PlayerInfo[i][pFMember]][PlayerInfo[i][pDivision]]);
+				} else {
+					division = "None";
 				}
-			}	
+				if(PlayerInfo[i][pRank] == 0)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (0) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][0], division);
+				}
+				else if(PlayerInfo[i][pRank] == 1)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (1) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][1], division);
+				}
+				else if(PlayerInfo[i][pRank] == 2)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (2) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][2], division);
+				}
+				else if(PlayerInfo[i][pRank] == 3)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (3) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][3], division);
+				}
+				else if(PlayerInfo[i][pRank] == 4)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (4) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][4], division);
+				}
+				else if(PlayerInfo[i][pRank] == 5)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (5) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][5], division);
+				}
+				else if(PlayerInfo[i][pRank] == 6)
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s (6) | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][6], division);
+				}
+				else
+				{
+					format(string, sizeof(string), "* %s: %s | Rank: %s | Division: %s.",FamilyInfo[familyid][FamilyName],GetPlayerNameEx(i),FamilyRankInfo[familyid][0], division);
+				}
+				if(PlayerInfo[playerid][pFMember] == familyid && PlayerInfo[playerid][pRank] >= 5 && playerAFK[i] != 0 && playerAFK[i] > 60)
+				{
+					format(string, sizeof(string), "%s (AFK: %d minutes)", string, playerAFK[i] / 60);
+				}
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+			}
 		}
-	}
+	}	
 	else
 	{
-	    new string[128];
-    	format(string, sizeof(string), "This command has been restricted to family members and administrators.");
-    	SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(string, sizeof(string), "This command has been restricted to family members and administrators.");
+		SendClientMessageEx(playerid, COLOR_GREY, string);
 	}
 	return 1;
 }

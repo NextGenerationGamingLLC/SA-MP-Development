@@ -426,13 +426,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iRand;
 
 				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-					}
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 				}
 
 				while(iDialogCount < 50 && iBreak < 500) {
@@ -465,13 +461,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iRand;
 
 				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-					}
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 				}
 
 				while(iDialogCount < 50 && iBreak < 500) {
@@ -504,13 +496,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iRand;
 
 				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-					}
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 				}
 
 				while(iDialogCount < 50 && iBreak < 500) {
@@ -543,13 +531,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iRand;
 
 				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-					}
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 				}
 
 				while(iDialogCount < 50 && iBreak < 500) {
@@ -582,13 +566,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iRand;
 
 				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-					}
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 				}
 
 				while(iDialogCount < 50 && iBreak < 500) {
@@ -803,23 +783,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					iCount;
 
 				strcat(szSearch, inputtext, sizeof(szSearch)); // strfind is a piece of shit when it comes to non-indexed arrays, maybe this'll help.
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if(!isnull(szAdvert[i])) {
-							// printf("[ads] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s]", GetPlayerNameEx(i), i, szAdvert[i], szSearch);
-							if(strfind(szAdvert[i], szSearch, true) != -1 && iCount < 50) {
-								// printf("[ads - MATCH] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s] [COUNT: %i] [DIALOG LENGTH: %i] [FINDPOS: %i]", GetPlayerNameEx(i), i, szAdvert[i], szSearch, iCount, strlen(szDialog), strfind(szAdvert[i], szSearch, true));
-								strcpy(szBuffer, szAdvert[i], sizeof(szBuffer));
-								if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[i][pPnumber]);
-								else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(i));
-								ListItemTrackId[playerid][iCount++] = i;
-							}
+					if(!isnull(szAdvert[i])) {
+						// printf("[ads] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s]", GetPlayerNameEx(i), i, szAdvert[i], szSearch);
+						if(strfind(szAdvert[i], szSearch, true) != -1 && iCount < 50) {
+							// printf("[ads - MATCH] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s] [COUNT: %i] [DIALOG LENGTH: %i] [FINDPOS: %i]", GetPlayerNameEx(i), i, szAdvert[i], szSearch, iCount, strlen(szDialog), strfind(szAdvert[i], szSearch, true));
+							strcpy(szBuffer, szAdvert[i], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[i][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(i));
+							ListItemTrackId[playerid][iCount++] = i;
 						}
-					}	
-				}
+					}
+				}	
 				if(!isnull(szDialog)) ShowPlayerDialog(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Advertisements - Search Results", szDialog, "Select", "Return");
 				else ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
 
@@ -3248,75 +3224,71 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					for(new i = 0; i < MAX_ARENAS; i++)
 					{
-						//foreach(new p: Player)
-						for(new p = 0; p < MAX_PLAYERS; ++p)
+						foreach(new p: Player)
 						{
-							if(IsPlayerConnected(p))
+							new arenaid = GetPVarInt(p, "IsInArena");
+							if(arenaid == i)
 							{
-								new arenaid = GetPVarInt(p, "IsInArena");
-								if(arenaid == i)
+								if(PaintBallArena[arenaid][pbBidMoney] > 0)
 								{
-									if(PaintBallArena[arenaid][pbBidMoney] > 0)
+									GivePlayerCash(p,PaintBallArena[arenaid][pbBidMoney]);
+									format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[arenaid][pbBidMoney]);
+									SendClientMessageEx(p, COLOR_WHITE, string);
+								}
+								if(arenaid == GetPVarInt(p, "ArenaNumber"))
+								{
+									switch(PaintBallArena[arenaid][pbGameType])
 									{
-										GivePlayerCash(p,PaintBallArena[arenaid][pbBidMoney]);
-										format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[arenaid][pbBidMoney]);
-										SendClientMessageEx(p, COLOR_WHITE, string);
-									}
-									if(arenaid == GetPVarInt(p, "ArenaNumber"))
-									{
-										switch(PaintBallArena[arenaid][pbGameType])
+										case 1:
 										{
-											case 1:
+											if(PlayerInfo[p][pDonateRank] < 3)
 											{
-												if(PlayerInfo[p][pDonateRank] < 3)
-												{
-													PlayerInfo[p][pPaintTokens] += 3;
-													format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-													SendClientMessageEx(p, COLOR_WHITE, string);
-												}
+												PlayerInfo[p][pPaintTokens] += 3;
+												format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+												SendClientMessageEx(p, COLOR_WHITE, string);
 											}
-											case 2:
+										}
+										case 2:
+										{
+											if(PlayerInfo[p][pDonateRank] < 3)
 											{
-												if(PlayerInfo[p][pDonateRank] < 3)
-												{
-													PlayerInfo[p][pPaintTokens] += 4;
-													format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-													SendClientMessageEx(p, COLOR_WHITE, string);
-												}
+												PlayerInfo[p][pPaintTokens] += 4;
+												format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+												SendClientMessageEx(p, COLOR_WHITE, string);
 											}
-											case 3:
+										}
+										case 3:
+										{
+											if(PlayerInfo[p][pDonateRank] < 3)
 											{
-												if(PlayerInfo[p][pDonateRank] < 3)
-												{
-													PlayerInfo[p][pPaintTokens] += 5;
-													format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-													SendClientMessageEx(p, COLOR_WHITE, string);
-												}
+												PlayerInfo[p][pPaintTokens] += 5;
+												format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+												SendClientMessageEx(p, COLOR_WHITE, string);
 											}
-											case 4:
+										}
+										case 4:
+										{
+											if(PlayerInfo[p][pDonateRank] < 3)
 											{
-												if(PlayerInfo[p][pDonateRank] < 3)
-												{
-													PlayerInfo[p][pPaintTokens] += 5;
-													format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-													SendClientMessageEx(p, COLOR_WHITE, string);
-												}
+												PlayerInfo[p][pPaintTokens] += 5;
+												format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+												SendClientMessageEx(p, COLOR_WHITE, string);
 											}
-											case 5:
+										}
+										case 5:
+										{
+											if(PlayerInfo[p][pDonateRank] < 3)
 											{
-												if(PlayerInfo[p][pDonateRank] < 3)
-												{
-													PlayerInfo[p][pPaintTokens] += 6;
-													format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-													SendClientMessageEx(p, COLOR_WHITE, string);
-												}
+												PlayerInfo[p][pPaintTokens] += 6;
+												format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+												SendClientMessageEx(p, COLOR_WHITE, string);
 											}
 										}
 									}
-									LeavePaintballArena(p, arenaid);
 								}
-							}	
-						}
+								LeavePaintballArena(p, arenaid);
+							}
+						}	
 						ResetPaintballArena(i);
 						PaintBallArena[i][pbLocked] = 2;
 					}
@@ -8193,21 +8165,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new MemberString[1024], giveplayer[MAX_PLAYER_NAME], badge[11];
 		new rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN], employer[GROUP_MAX_NAME_LEN];
 		new group = ListItemTrackId[playerid][listitem];
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pMember] == group)
 			{
-				if(PlayerInfo[i][pMember] == group)
-				{
-					if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
-					GetPlayerGroupInfo(i, rank, division, employer);
-					giveplayer = GetPlayerNameEx(i);
-					format(string, sizeof(string), "* %s%s (%s) %s Ph: %d\n", badge, rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
-					strcat(MemberString, string, sizeof(MemberString));
-				}
-			}	
-		}
+				if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
+				GetPlayerGroupInfo(i, rank, division, employer);
+				giveplayer = GetPlayerNameEx(i);
+				format(string, sizeof(string), "* %s%s (%s) %s Ph: %d\n", badge, rank, division,  giveplayer, PlayerInfo[i][pPnumber]);
+				strcat(MemberString, string, sizeof(MemberString));
+			}
+		}	
 		if(strlen(MemberString) == 0)
 		{
 			strcat(MemberString, "No Members online at this time.", sizeof(MemberString));
@@ -8796,31 +8764,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 0;
 			}
 		}
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
 			{
-				if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
+				Mobile[playerid] = i; //caller connecting
+				if(PhoneOnline[i] > 0)
 				{
-					Mobile[playerid] = i; //caller connecting
-					if(PhoneOnline[i] > 0)
-					{
-						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
-						return 1;
-					}
-					format(string, sizeof(string), "SMS: %s, Sender: %s (Ph:%d)", inputtext,GetPlayerNameEx(playerid),PlayerInfo[playerid][pPnumber]);
-					GetPlayerName(i, sendername, sizeof(sendername));
-					RingTone[i] =20;
-					ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
-					SendClientMessageEx(i, COLOR_YELLOW, string);
-					//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-					//SendAudioToPlayer(playerid, 47, 100);
-					Mobile[playerid] = 255;
+					SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 					return 1;
 				}
-			}	
-		}
+				format(string, sizeof(string), "SMS: %s, Sender: %s (Ph:%d)", inputtext,GetPlayerNameEx(playerid),PlayerInfo[playerid][pPnumber]);
+				GetPlayerName(i, sendername, sizeof(sendername));
+				RingTone[i] =20;
+				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
+				SendClientMessageEx(i, COLOR_YELLOW, string);
+				//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+				//SendAudioToPlayer(playerid, 47, 100);
+				Mobile[playerid] = 255;
+				return 1;
+			}
+		}	
 		ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Delivery Failed! ", "Message Delivery Failed. Try Again", "OK", "Cancel");
 	}
 	if(dialogid == MDC_BOLO && response)
@@ -9921,12 +9885,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsPlayerInAnyVehicle(playerid))
 					{
-						for(new i = 0; i < MAX_PLAYERS; ++i)
+						foreach(new i: Player) 
 						{
-							if(IsPlayerConnected(i))
-							{
-								if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation]);
-							}	
+							if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation]);
 						}
 						format(stationidv[GetPlayerVehicleID(playerid)], 255, "%s", PlayerInfo[playerid][pFavStation]);
 						format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
@@ -9934,13 +9895,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(GetPVarType(playerid, "pBoomBox"))
 					{
-						for(new i = 0; i < MAX_PLAYERS; ++i)
+						foreach(new i: Player) 
 						{
-							if(IsPlayerConnected(i))
-							{
-								if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation], GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
-							}	
-						}
+							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation], GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}	
 						SetPVarString(playerid, "pBoomBoxStation", PlayerInfo[playerid][pFavStation]);
 					}
 					else
@@ -9984,33 +9942,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(IsPlayerInAnyVehicle(playerid))
 				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
-								PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
-							}
-						}	
-					}
+						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+						}
+					}	
 					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
 					format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
 				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
 						{
-							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
-							{
-								PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
-							}
-						}	
-					}
+							PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}
+					}	
 					SetPVarString(playerid, "pBoomBoxStation", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
 				}
 				else
@@ -10023,33 +9973,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(IsPlayerInAnyVehicle(playerid))
 				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
-								PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls");
-							}
-						}	
-					}
+						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls");
+						}
+					}	
 					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://nick.ng-gaming.net:8000/listen.pls");
 					format(string, sizeof(string), "* %s changes the radio station.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 				else if(GetPVarType(playerid, "pBoomBox"))
 				{
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
 						{
-							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
-							{
-								PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
-							}
-						}	
-					}
+							PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}
+					}	
 					SetPVarString(playerid, "pBoomBoxStation", "http://nick.ng-gaming.net:8000/listen.pls");
 				}
 				else
@@ -10073,13 +10015,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(GetPVarType(playerid, "pBoomBox"))
 					{
 						SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
-						//foreach(new i: Player)
-						for(new i = 0; i < MAX_PLAYERS; ++i)
-						{
-							if(IsPlayerConnected(i))
-							{						
-								if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) StopAudioStreamForPlayerEx(i);
-							}
+						foreach(new i: Player)
+						{						
+							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) StopAudioStreamForPlayerEx(i);
 						}
 						DeletePVar(playerid, "pBoomBoxStation");
 					}
@@ -10092,16 +10030,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(string, sizeof(string), "* %s turns off the radio.", GetPlayerNameEx(playerid), string);
 					ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
-								StopAudioStreamForPlayerEx(i);
-							}
-						}	
-					}
+						if(GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							StopAudioStreamForPlayerEx(i);
+						}
+					}	
 					stationidv[GetPlayerVehicleID(playerid)][0] = 0;
 				}
 			}
@@ -10114,9 +10048,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(isnull(inputtext) || IsNumeric(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have not entered a valid URL.");
 			if(IsPlayerInAnyVehicle(playerid))
 			{
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player) 
 				{
-					if(IsPlayerConnected(i) && GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
+					if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
 					{
 						PlayAudioStreamForPlayerEx(i, inputtext);
 					}
@@ -10129,9 +10063,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(GetPVarType(playerid, "pBoomBox"))
 			{
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player) 
 				{
-					if(IsPlayerConnected(i) && IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+					if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
 					{
 						PlayAudioStreamForPlayerEx(i, inputtext, GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
 					}
@@ -11090,19 +11024,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szMessage, sizeof(szMessage), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
 			SendClientMessageEx(iTargetID, COLOR_YELLOW, szMessage);
 
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-						format(szMessage, sizeof(szMessage), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-						SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
-						format(szMessage, sizeof(szMessage), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
-						SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
-					}
-				}	
-			}
+				if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+					format(szMessage, sizeof(szMessage), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
+					SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
+					format(szMessage, sizeof(szMessage), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
+					SendClientMessageEx(i, TEAM_BLUE_COLOR, szMessage);
+				}
+			}	
 			PlayerInfo[iTargetID][pDefendTime] = 60;
 		}
 	}
@@ -17864,13 +17794,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
-				{			
-					if(!gNews[i] && InsideMainMenu{i} != 1 && InsideTut{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
-				}
+			foreach(new i: Player)
+			{			
+				if(!gNews[i] && InsideMainMenu{i} != 1 && InsideTut{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
 			}
 			format(advert, sizeof(advert), "%s -- (%d)", advert, GetPlayerSQLId(reportid));
 			Log("logs/pads.log", advert);

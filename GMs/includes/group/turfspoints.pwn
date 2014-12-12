@@ -135,23 +135,19 @@ public CaptureTimer(point)
 ReadyToCapture(pointid)
 {
 	new string[128];
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pFMember] < INVALID_FAMILY_ID)
 		{
-			if(PlayerInfo[i][pFMember] < INVALID_FAMILY_ID)
+			if(Points[pointid][Type] == 3 && Points[pointid][Type] == 4) return 1;
+			if(Points[pointid][CapCrash] != 1)
 			{
-				if(Points[pointid][Type] == 3 && Points[pointid][Type] == 4) return 1;
-				if(Points[pointid][CapCrash] != 1)
-				{
-					format(string, sizeof(string), "%s has become available to capture! Stand at here and /capture it!", Points[pointid][Name]);
-					Points[pointid][CaptureProccessEx] = 1;
-					Points[pointid][CaptureProccess] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, Points[pointid][Pointx], Points[pointid][Pointy], Points[pointid][Pointz], 10.0, _, _, _, _, _,i);
-				}	
-			}
-		}	
-	}
+				format(string, sizeof(string), "%s has become available to capture! Stand at here and /capture it!", Points[pointid][Name]);
+				Points[pointid][CaptureProccessEx] = 1;
+				Points[pointid][CaptureProccess] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, Points[pointid][Pointx], Points[pointid][Pointy], Points[pointid][Pointz], 10.0, _, _, _, _, _,i);
+			}	
+		}
+	}	
 	if(Points[pointid][CapCrash] == 1)
 	{
 		format(string, sizeof(string), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", Points[pointid][PlayerNameCapping], Points[pointid][Name], FamilyInfo[Points[pointid][ClaimerTeam]][FamilyName], Points[pointid][TakeOverTimer]);
@@ -323,17 +319,13 @@ stock GetPlayerTurfWarsZone(playerid)
 stock ShutdownTurfWarsZone(zone)
 {
 	new string[128];
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-				format(string,sizeof(string),"Law Enforcement has attempted to shutdown this turf!");
-				SendClientMessageEx(i,COLOR_YELLOW,string);
-			}
-		}	
-	}
+		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
+			format(string,sizeof(string),"Law Enforcement has attempted to shutdown this turf!");
+			SendClientMessageEx(i,COLOR_YELLOW,string);
+		}
+	}	
 	ResetTurfWarsZone(0, zone);
 
 	TurfWars[zone][twActive] = 1;
@@ -351,17 +343,13 @@ stock ShutdownTurfWarsZone(zone)
 stock TakeoverTurfWarsZone(familyid, zone)
 {
 	new string[128];
-	//forreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-				format(string,sizeof(string),"%s has attempted to takeover this turf for their own!",FamilyInfo[familyid][FamilyName]);
-				SendClientMessageEx(i,COLOR_YELLOW,string);
-			}
-		}	
-	}
+		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
+			format(string,sizeof(string),"%s has attempted to takeover this turf for their own!",FamilyInfo[familyid][FamilyName]);
+			SendClientMessageEx(i,COLOR_YELLOW,string);
+		}
+	}	
 	ResetTurfWarsZone(0, zone);
 
 	TurfWars[zone][twActive] = 1;
@@ -377,36 +365,32 @@ stock TakeoverTurfWarsZone(familyid, zone)
 stock CaptureTurfWarsZone(familyid, zone)
 {
 	new string[128];
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+	    if(turfWarsMiniMap[i] == 1)
 		{
-		    if(turfWarsMiniMap[i] == 1)
-			{
-				turfWarsMiniMap[i] = 0;
-				SetPlayerToTeamColor(i);
+			turfWarsMiniMap[i] = 0;
+			SetPlayerToTeamColor(i);
+		}
+		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
+		    if(familyid != -2) {
+				format(string,sizeof(string),"%s has successfully claimed this turf for their own!",FamilyInfo[familyid][FamilyName]);
+				SendClientMessageEx(i,COLOR_RED,string);
+				//SendAudioToPlayer(i, 62, 100);
 			}
-			if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-			    if(familyid != -2) {
-					format(string,sizeof(string),"%s has successfully claimed this turf for their own!",FamilyInfo[familyid][FamilyName]);
-					SendClientMessageEx(i,COLOR_RED,string);
-					//SendAudioToPlayer(i, 62, 100);
-				}
-				else {
-					format(string,sizeof(string),"Law Enforcement has successfully shut down this turf!",FamilyInfo[familyid][FamilyName]);
-					SendClientMessageEx(i,COLOR_RED,string);
-				}
+			else {
+				format(string,sizeof(string),"Law Enforcement has successfully shut down this turf!",FamilyInfo[familyid][FamilyName]);
+				SendClientMessageEx(i,COLOR_RED,string);
 			}
-			if(PlayerInfo[i][pGangModerator] >= 1) {
-			    if(familyid != -2) {
-					format(string,sizeof(string),"%s has successfully claimed turf %d",FamilyInfo[familyid][FamilyName], zone);
-					SendClientMessageEx(i,COLOR_RED,string);
-				}
-				else {
-					format(string,sizeof(string),"Law Enforcement has successfully shut down turf %d",FamilyInfo[familyid][FamilyName], zone);
-					SendClientMessageEx(i,COLOR_RED,string);
-				}
+		}
+		if(PlayerInfo[i][pGangModerator] >= 1) {
+		    if(familyid != -2) {
+				format(string,sizeof(string),"%s has successfully claimed turf %d",FamilyInfo[familyid][FamilyName], zone);
+				SendClientMessageEx(i,COLOR_RED,string);
+			}
+			else {
+				format(string,sizeof(string),"Law Enforcement has successfully shut down turf %d",FamilyInfo[familyid][FamilyName], zone);
+				SendClientMessageEx(i,COLOR_RED,string);
 			}
 		}	
 	}
@@ -531,14 +515,10 @@ stock HideTurfWarsRadar(playerid)
 
 stock SyncTurfWarsRadarToAll()
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			SyncTurfWarsRadar(i);
-		}	
-	}
+		SyncTurfWarsRadar(i);
+	}	
 }
 
 stock SyncTurfWarsRadar(playerid)
@@ -879,18 +859,14 @@ CMD:shutdown(playerid, params[])
                         return 1;
                     }
 
-                    //foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+                    foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pFMember]) {
-								if(GetPlayerTurfWarsZone(i) == tw) {
-									count++;
-								}
+						if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pFMember]) {
+							if(GetPlayerTurfWarsZone(i) == tw) {
+								count++;
 							}
-						}	
-                    }
+						}
+					}	
                     if(count != 0) {
                         format(string,sizeof(string),"There is still %d Attacking Members on the Turf, you must get rid of them before shuting down!",count);
                         SendClientMessageEx(playerid, COLOR_GRAD2, string);
@@ -951,17 +927,13 @@ CMD:claim(playerid, params[])
                     return 1;
                 }
                 new count = 0;
-                //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+                foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if(family == PlayerInfo[i][pFMember] && PlayerInfo[i][pAccountRestricted] != 1) {
-							if(GetPlayerTurfWarsZone(i) == tw) {
-								count++;
-							}
+					if(family == PlayerInfo[i][pFMember] && PlayerInfo[i][pAccountRestricted] != 1) {
+						if(GetPlayerTurfWarsZone(i) == tw) {
+							count++;
 						}
-					}	
+					}
                 }
 
                 if(count > 2) {
@@ -980,39 +952,31 @@ CMD:claim(playerid, params[])
                     return 1;
                 }
 
-                //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+                foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pFMember]) {
+					if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pFMember]) {
+						if(GetPlayerTurfWarsZone(i) == tw) {
+							count++;
+						}
+					}
+					if(TurfWars[tw][twAttemptId] == -2) {
+						if(IsACop(i)) {
 							if(GetPlayerTurfWarsZone(i) == tw) {
-								count++;
+								leocount++;
 							}
 						}
-						if(TurfWars[tw][twAttemptId] == -2) {
-							if(IsACop(i)) {
-								if(GetPlayerTurfWarsZone(i) == tw) {
-									leocount++;
-								}
-							}
-						}
-					}	
-                }
+					}
+				}	
 
                 if(count == 0 && leocount == 0) {
                     if(family != TurfWars[tw][twOwnerId]) {
                         FamilyInfo[family][FamilyTurfTokens] -= 12;
                     }
-                    //foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+                    foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							if(PlayerInfo[i][pGangModerator] >= 1) {
-								format(string,sizeof(string),"%s has attempted to takeover turf %d for family %s",GetPlayerNameEx(playerid),tw,FamilyInfo[family][FamilyName]);
-								SendClientMessageEx(i,COLOR_YELLOW,string);
-							}
+						if(PlayerInfo[i][pGangModerator] >= 1) {
+							format(string,sizeof(string),"%s has attempted to takeover turf %d for family %s",GetPlayerNameEx(playerid),tw,FamilyInfo[family][FamilyName]);
+							SendClientMessageEx(i,COLOR_YELLOW,string);
 						}	
                     }
                     TakeoverTurfWarsZone(family, tw);

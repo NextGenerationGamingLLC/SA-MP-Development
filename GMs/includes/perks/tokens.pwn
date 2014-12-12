@@ -62,13 +62,9 @@ CMD:random(playerid, params[]) {
 			arr_Winners[MAX_PLAYERS],
 			iWinCount;
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(SeeSpecialTokens(i, iHours)) arr_Winners[iWinCount++] = i;
-			}	
+			if(SeeSpecialTokens(i, iHours)) arr_Winners[iWinCount++] = i;
 		}
 		if(iWinCount > 0) {
 
@@ -105,14 +101,10 @@ CMD:vrandom(playerid, params[]) {
 			arr_Winners[MAX_PLAYERS],
 			iWinCount;
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(SeeSpecialTokens(i, iHours) && PlayerInfo[i][pDonateRank] > 0) arr_Winners[iWinCount++] = i;
-			}	
-		}
+			if(SeeSpecialTokens(i, iHours) && PlayerInfo[i][pDonateRank] > 0) arr_Winners[iWinCount++] = i;
+		}	
 		if(iWinCount > 0) {
 
 			new

@@ -457,17 +457,13 @@ CMD:bonline(playerid, params[]) {
     if((0 <= iBusinessID < MAX_BUSINESSES) && PlayerInfo[playerid][pBusinessRank] >= Businesses[iBusinessID][bMinInviteRank])
 	{
 		new szDialog[1024];
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pBusiness] == PlayerInfo[playerid][pBusiness] && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2))
 			{
-				if(PlayerInfo[i][pBusiness] == PlayerInfo[playerid][pBusiness] && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2))
-				{
-					format(szDialog, sizeof(szDialog), "%s\n* %s (%s)", szDialog, GetPlayerNameEx(i), GetBusinessRankName(PlayerInfo[i][pBusinessRank]));
-				}
-			}	
-		}
+				format(szDialog, sizeof(szDialog), "%s\n* %s (%s)", szDialog, GetPlayerNameEx(i), GetBusinessRankName(PlayerInfo[i][pBusinessRank]));
+			}
+		}	
 		if(!isnull(szDialog)) {
 		    strdel(szDialog, 0, 1);
 			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szDialog, "Select", "Cancel");
@@ -840,18 +836,14 @@ CMD:emergencybutton(playerid, params[]) {
 		}
 
 		GetPlayer2DZone(playerid, Location, MAX_ZONE_NAME);
-	    //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(IsACop(i)) {
-					SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
-					format(string, sizeof(string), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), Location);
-					SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-				}
-			}	
-		}
+			if(IsACop(i)) {
+				SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
+				format(string, sizeof(string), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), Location);
+				SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+			}
+		}	
 		format(string, sizeof(string), "* An alarm engages in %s's taxi at %s. A message is dispatched to the Companies office.", GetPlayerNameEx(playerid), Location);
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
 		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button, police have been informed.");
@@ -1983,19 +1975,15 @@ CMD:asellbiz(playerid, params[])
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	format(string, sizeof(string), "~w~You have sold business %d.", biz);
 	GameTextForPlayer(playerid, string, 10000, 3);
-	//foreach(new j: Player) {
-	for(new j = 0; j < MAX_PLAYERS; ++j)
-	{
-		if(IsPlayerConnected(j))
-		{	
-			if(PlayerInfo[j][pBusiness] == biz) 
-			{
-				PlayerInfo[j][pBusiness] = INVALID_BUSINESS_ID;
-				PlayerInfo[j][pBusinessRank] = 0;
-				SendClientMessageEx(playerid, COLOR_WHITE, "An admin has sold this business, your business stats have been reset.");
-			}
-		}	
-	}
+	foreach(new j: Player)
+	{	
+		if(PlayerInfo[j][pBusiness] == biz) 
+		{
+			PlayerInfo[j][pBusiness] = INVALID_BUSINESS_ID;
+			PlayerInfo[j][pBusinessRank] = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "An admin has sold this business, your business stats have been reset.");
+		}
+	}	
 
 	format(string, sizeof(string), "UPDATE `accounts` SET `Business` = "#INVALID_BUSINESS_ID", `BusinessRank` = 0 WHERE `Business` = '%d'", biz);
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -2410,18 +2398,14 @@ CMD:bpanic(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, "* The police have been notified that you no longer require help. ");
 		SetPVarInt(playerid, "bizpanic", 0);
 	}
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
-	{
-		if(IsPlayerConnected(i))
-		{	
-			if(IsACop(i))
-			{
-				SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
-			}
-		}	
-	}
+	foreach(new i: Player)
+	{	
+		if(IsACop(i))
+		{
+			SetPlayerMarkerForPlayer(i, playerid, 0x2641FEAA);
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+		}
+	}	
 	return 1;
 }
 
@@ -2615,18 +2599,14 @@ CMD:cancelresupply(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_WHITE, "Your business has never placed a resupply order.");
 		}
 		else if (orderstate == 2) {
-		    //foreach(new i : Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
-			{
-				if(IsPlayerConnected(i))
-				{			
-					if(TruckDeliveringTo[GetPlayerVehicleID(i)] == PlayerInfo[playerid][pBusiness])
-					{
-						SendClientMessageEx(playerid, COLOR_WHITE, "You can't cancel an order while it is being shipped!");
-						return 1;
-					}
-				}	
-		    }
+		    foreach(new i : Player)
+			{			
+				if(TruckDeliveringTo[GetPlayerVehicleID(i)] == PlayerInfo[playerid][pBusiness])
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "You can't cancel an order while it is being shipped!");
+					return 1;
+				}
+			}	
 		    Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] += floatround(Businesses[PlayerInfo[playerid][pBusiness]][bOrderAmount] * BUSINESS_ITEMS_COST);
 		    Businesses[PlayerInfo[playerid][pBusiness]][bOrderState] = 4;
 			SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -2718,14 +2698,10 @@ CMD:bizradio(playerid, params[])
 	format(string, sizeof(string), "(radio) %s", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,15.0,5000);
 	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
-	//foreach(new i: Player) {
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if (PlayerInfo[i][pBusiness] == iBusinessID && GetPVarInt(i, "BusinessRadio") != 1) SendClientMessageEx(i, COLOR_BR, string);
-		}	
-	}
+		if (PlayerInfo[i][pBusiness] == iBusinessID && GetPVarInt(i, "BusinessRadio") != 1) SendClientMessageEx(i, COLOR_BR, string);
+	}	
 
 	return 1;
 }

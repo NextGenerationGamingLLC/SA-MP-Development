@@ -118,18 +118,14 @@ CMD:w(playerid, params[])
 		}
 		if(ProxDetectorS(5.0, playerid, giveplayerid) || PlayerInfo[playerid][pAdmin] >= 2)
 		{
-		    //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+		    foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(GetPVarInt(i, "BigEar") == 6 && (GetPVarInt(i, "BigEarPlayer") == playerid || GetPVarInt(i, "BigEarPlayer")  == giveplayerid))
 				{
-					if(GetPVarInt(i, "BigEar") == 6 && (GetPVarInt(i, "BigEarPlayer") == playerid || GetPVarInt(i, "BigEarPlayer")  == giveplayerid))
-					{
-						format(string, sizeof(string), "(BE)%s(ID %d) whispers to %s(ID %d): %s", GetPlayerNameEx(playerid), playerid, GetPlayerNameEx(giveplayerid), giveplayerid, whisper);
-						SendClientMessageWrap(i, COLOR_YELLOW, 92, string);
-					}
-				}	
-			}
+					format(string, sizeof(string), "(BE)%s(ID %d) whispers to %s(ID %d): %s", GetPlayerNameEx(playerid), playerid, GetPlayerNameEx(giveplayerid), giveplayerid, whisper);
+					SendClientMessageWrap(i, COLOR_YELLOW, 92, string);
+				}
+			}	
 
 			format(string, sizeof(string), "%s (ID %d) whispers to you: %s", GetPlayerNameEx(playerid), playerid, whisper);
 			SendClientMessageWrap(giveplayerid, COLOR_YELLOW, 92, string);
@@ -291,19 +287,15 @@ CMD:b(playerid, params[])
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEar") == 2)
 		{
-			if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEar") == 2)
-			{
-				new szAntiprivacy[128];
-				format(szAntiprivacy, sizeof(szAntiprivacy), "(BE) %s: %s", GetPlayerNameEx(playerid), params);
-				SendClientMessageEx(i, COLOR_FADE1, szAntiprivacy);
-			}
-		}	
-	}
+			new szAntiprivacy[128];
+			format(szAntiprivacy, sizeof(szAntiprivacy), "(BE) %s: %s", GetPlayerNameEx(playerid), params);
+			SendClientMessageEx(i, COLOR_FADE1, szAntiprivacy);
+		}
+	}	
 	return 1;
 }
 

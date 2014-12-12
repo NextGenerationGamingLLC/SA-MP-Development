@@ -57,20 +57,16 @@ CMD:impound(playerid, params[]) {
 				if(!GetVehicleModel(iVehTowed)) {
 					return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle in tow has been desynced and therefore cannot be impounded.");
 				}
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						iVehIndex = GetPlayerVehicle(i, iVehTowed);
-						if(iVehIndex != -1) {
-							iVehType = 1;
-							iTargetOwner = i;
-							iCost = (((PlayerVehicleInfo[iTargetOwner][iVehIndex][pvPrice] / 20 + PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]) / 100) * 20);
-							break;
-						}
-					}	
-				}
+					iVehIndex = GetPlayerVehicle(i, iVehTowed);
+					if(iVehIndex != -1) {
+						iVehType = 1;
+						iTargetOwner = i;
+						iCost = (((PlayerVehicleInfo[iTargetOwner][iVehIndex][pvPrice] / 20 + PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]) / 100) * 20);
+						break;
+					}
+				}	
 				switch(iVehType) {
 					case 0, 2: {
 						SendClientMessageEx(playerid, COLOR_GRAD1, "The impound administration could not find any registration on the vehicle and has returned it.");

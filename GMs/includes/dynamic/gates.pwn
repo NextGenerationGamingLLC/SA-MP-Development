@@ -213,17 +213,6 @@ CMD:lockgate(playerid, params[])
 						GateInfo[i][gLocked] = 0;
 						format(string, sizeof(string), "* %s has unlocked their gate.", GetPlayerNameEx(playerid));
 						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-						/*if(GateInfo[i][gAutomate] == 1)
-						{
-							//foreach(new p : Player)
-							for(new p = 0; p < MAX_PLAYERS; ++p)
-							{
-								if(IsPlayerConnected(p))
-								{			
-									SetTimerEx("AutomaticGateTimer", 1000, false, "ii", p, i);
-								}
-							}
-						}*/
 					}
 				}
 			}
@@ -242,17 +231,6 @@ CMD:lockgate(playerid, params[])
 						GateInfo[i][gLocked] = 0;
 						format(string, sizeof(string), "* %s has unlocked the gate.", GetPlayerNameEx(playerid));
 						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-						/*if(GateInfo[i][gAutomate] == 1)
-						{
-							//foreach(new p : Player)
-							for(new p = 0; p < MAX_PLAYERS; ++p)
-							{
-								if(IsPlayerConnected(p))
-								{							
-									SetTimerEx("AutomaticGateTimer", 1000, false, "ii", p, i);
-								}
-							}
-						}*/
 					}
 				}
 			}
@@ -271,17 +249,6 @@ CMD:lockgate(playerid, params[])
 						GateInfo[i][gLocked] = 0;
 						format(string, sizeof(string), "* %s has unlocked the gate.", GetPlayerNameEx(playerid));
 						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-						/*if(GateInfo[i][gAutomate] == 1)
-						{
-							//foreach(new p : Player)
-							for(new p = 0; p < MAX_PLAYERS; ++p)
-							{
-								if(IsPlayerConnected(p))
-								{							
-									SetTimerEx("AutomaticGateTimer", 1000, false, "ii", p, i);
-								}
-							}
-						}*/
 					}
 				}
 			}
@@ -302,17 +269,7 @@ CMD:lockgate(playerid, params[])
 						GateInfo[i][gLocked] = 0;
 						format(string, sizeof(string), "* %s has unlocked the gate.", GetPlayerNameEx(playerid));
 						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-						/*if(GateInfo[i][gAutomate] == 1)
-						{
-							//foreach(new p : Player)
-							for(new p = 0; p < MAX_PLAYERS; ++p)
-							{
-								if(IsPlayerConnected(p))
-								{			
-									SetTimerEx("AutomaticGateTimer", 1000, false, "ii", p, i);
-								}
-							}	
-						}*/
+
 						format(string, sizeof(string), "%s(%d) has locked gate ID %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), i);
 						Log("logs/gedit.log", string);
 					}
@@ -551,18 +508,14 @@ CMD:gedit(playerid, params[])
 		}
 		else if(strcmp(x_job, "open", true) == 0)
 		{
-			//foreach(new i:Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i:Player)
 			{
-				if(IsPlayerConnected(i))
+				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
 				{
-					if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
-					{
-						format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-						return SendClientMessageEx(playerid, COLOR_WHITE, string);
-					}
-				}	
-			}
+					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
+					return SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
+			}	
 			SetPVarInt(playerid, "gEdit", 1);
 			SetPVarInt(playerid, "EditingGateID", gateid);
 			SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
@@ -574,18 +527,14 @@ CMD:gedit(playerid, params[])
 		}
 		else if(strcmp(x_job, "closed", true) == 0)
 		{
-			//foreach(new i:Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i:Player)
 			{
-				if(IsPlayerConnected(i))
+				if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
 				{
-					if(GetPVarInt(i, "EditingGateID") == gateid && i != playerid)
-					{
-						format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
-						return SendClientMessageEx(playerid, COLOR_WHITE, string);
-					}
-				}	
-			}
+					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
+					return SendClientMessageEx(playerid, COLOR_WHITE, string);
+				}
+			}	
 			SetPVarInt(playerid, "gEdit", 2);
 			SetPVarInt(playerid, "EditingGateID", gateid);
 			EditDynamicObject(playerid, GateInfo[gateid][gGATE]);
@@ -808,13 +757,9 @@ CMD:gedit(playerid, params[])
 		    GateInfo[gateid][gAutomate] = value;
 			if(GateInfo[gateid][gAutomate] == 1)
 			{
-				//foreach(new i: Player) 
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{	
-						SetTimerEx("AutomaticGateTimer", 1000, false, "ii", i, gateid);
-					}
+				foreach(new i: Player) 
+				{	
+					SetTimerEx("AutomaticGateTimer", 1000, false, "ii", i, gateid);
 				}
 			}
 		    format(string, sizeof(string), "Automation %d assigned to Gate %d", GateInfo[gateid][gAutomate], gateid);

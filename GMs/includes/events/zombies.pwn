@@ -222,14 +222,10 @@ CMD:zombieevent(playerid, params[])
 	{
 	    if(zombieevent == 0)
 	    {
-	        //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+	        foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					PlayerInfo[i][pVials]++;
-				}	
-	        }
+				PlayerInfo[i][pVials]++;
+			}	
 	        zombieevent=1;
 	        //SendAudioToRange(70, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
 			SendGroupMessage(3, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
@@ -243,8 +239,7 @@ CMD:zombieevent(playerid, params[])
 	        SyncMinTime();
 			SetWeather(5);
 			mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
-			//foreach(Player, i)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(Player, i)
 			{
 			    UnZombie(i);
 			}
@@ -342,8 +337,7 @@ CMD:bite(playerid, params[])
 		{
 		    new Float:X, Float:Y, Float:Z;
 		    GetPlayerPos(playerid, X, Y, Z);
-			//foreach(Player, i)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(Player, i)
 			{
 			    if(!GetPVarType(i, "pIsZombie") && !IsPlayerInAnyVehicle(i) && IsPlayerInRangeOfPoint(i, 2, X, Y, Z))
 			    {
@@ -395,8 +389,7 @@ CMD:bite(playerid, params[])
 		{
 		    new Float:X, Float:Y, Float:Z;
 		    GetPlayerPos(playerid, X, Y, Z);
-			//foreach(Player, i)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(Player, i)
 			{
 			    if((GetPVarInt(i, "EventToken") == 1) && !GetPVarType(i, "pEventZombie"))
 			    {

@@ -218,26 +218,22 @@ CMD:ranks(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Agency's Ranks __________________|");
 
 	new string[128];
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if((IsAHitman(i)))
 		{
-			if((IsAHitman(i)))
+			if( GoChase[playerid] == INVALID_PLAYER_ID )
 			{
-				if( GoChase[playerid] == INVALID_PLAYER_ID )
-				{
-					format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
-				else
-				{
-					format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d | Chasing: %s", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
+				format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits]);
+				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
-		}	
-	}
+			else
+			{
+				format(string, sizeof(string), "* Name: %s | Rank %d | Completed Hits: %d | Failed Hits: %d | Chasing: %s", GetPlayerNameEx(i),PlayerInfo[i][pRank], PlayerInfo[i][pCHits], PlayerInfo[i][pFHits], GetPlayerNameEx(GoChase[i]));
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+			}
+		}
+	}	
 	return 1;
 }
 
@@ -518,18 +514,14 @@ CMD:deletehit(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			GoChase[giveplayerid] = INVALID_PLAYER_ID;
 
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if( HitToGet[i] == giveplayerid )
 				{
-					if( HitToGet[i] == giveplayerid )
-					{
-						HitToGet[i] = INVALID_PLAYER_ID;
-						HitOffer[i] = INVALID_PLAYER_ID;
-					}
-				}	
-			}
+					HitToGet[i] = INVALID_PLAYER_ID;
+					HitOffer[i] = INVALID_PLAYER_ID;
+				}
+			}	
 		}
 		else
 		{

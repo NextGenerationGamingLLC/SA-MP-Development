@@ -132,17 +132,13 @@ public CuffTackled(playerid, giveplayerid)
 	    if(GetPVarInt(giveplayerid, "TackledResisting") == 2) // resisting
 	    {
 	        new copcount;
-			//foreach(new j: Player)
-			for(new j = 0; j < MAX_PLAYERS; ++j)
+			foreach(new j: Player)
 			{
-				if(IsPlayerConnected(j))
+				if(ProxDetectorS(4.0, giveplayerid, j) && IsACop(j) && j != giveplayerid)
 				{
-					if(ProxDetectorS(4.0, giveplayerid, j) && IsACop(j) && j != giveplayerid)
-					{
-						copcount++;
-					}
-				}	
-			}
+					copcount++;
+				}
+			}	
 	        format(string, sizeof(string), "* %s pushes and attempts to resist %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
     		ProxDetector(30.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	        new cuffchance = random(11);
@@ -234,44 +230,37 @@ public BackupClear(playerid, calledbytimer)
 		{
 			if (Backup[playerid] > 0)
 			{
-			    //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+			    foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(IsACop(i))
 					{
-						if(IsACop(i))
-						{
-							SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
-						}
-					}	
-				}
+						SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+					}
+				}	
 				SetPlayerToTeamColor(playerid);
 				new string[128];
 				if (calledbytimer != 1)
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared.");
 					format(string, sizeof(string), "* %s no longer requires backup.", GetPlayerNameEx(playerid));
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						switch(Backup[playerid]) 
 						{
-							switch(Backup[playerid]) {
-								case 1, 2:
-								{
-									if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
-										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
+							case 1, 2:
+							{
+								if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
+									SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
-								case 3:
-								{
-									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-									}
-								}
-								default: if(IsACop(i)) {
+							}
+							case 3:
+							{
+								if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
 									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
 								}
+							}
+							default: if(IsACop(i)) {
+								SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
 							}
 						}	
 					}
@@ -280,31 +269,27 @@ public BackupClear(playerid, calledbytimer)
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD2, "Your backup request has been cleared automatically.");
 					format(string, sizeof(string), "* %s's backup request has expired.", GetPlayerNameEx(playerid));
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
-						{
-							switch(Backup[playerid]) {
-								case 1, 2:
-								{
-									if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
-										SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
-									}
-								}
-								case 3:
-								{
-									if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
-										SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
-		
-								}
-								}
-								default: if(IsACop(i)) {
-									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+						switch(Backup[playerid]) {
+							case 1, 2:
+							{
+								if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) {
+									SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
 							}
-						}	
-					}
+							case 3:
+							{
+								if(IsACop(i) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance]) {
+									SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+	
+							}
+							}
+							default: if(IsACop(i)) {
+								SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+							}
+						}
+					}	
 				}
 				HideBackupActiveForPlayer(playerid);
 				Backup[playerid] = 0;
@@ -332,32 +317,25 @@ public BackupClear(playerid, calledbytimer)
 forward SetAllCopCheckpoint(Float:allx, Float:ally, Float:allz, Float:radi);
 public SetAllCopCheckpoint(Float:allx, Float:ally, Float:allz, Float:radi)
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(IsACop(i))
 		{
-			if(IsACop(i))
-			{
-				SetPlayerCheckpoint(i,allx,ally,allz, radi);
-			}
-		}	
-	}
+			SetPlayerCheckpoint(i,allx,ally,allz, radi);
+		}
+	}	
 	return 1;
 }
 
 forward ShowPlayerBeaconForCops(playerid);
 public ShowPlayerBeaconForCops(playerid)
 {
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(IsACop(i))
 		{
-			if(IsACop(i))
-			{
-				SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
-			}
-		}	
+			SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
+		}
 	}
 	return 1;
 }
@@ -365,16 +343,12 @@ public ShowPlayerBeaconForCops(playerid)
 forward HidePlayerBeaconForCops(playerid);
 public HidePlayerBeaconForCops(playerid)
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(IsACop(i))
 		{
-			if(IsACop(i))
-			{
-				SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
-			}
-		}	
+			SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+		}
 	}
 	SetPlayerToTeamColor(playerid);
 	return 1;
@@ -541,39 +515,35 @@ CMD:searchcar(playerid, params[])
 			return 1;
 		}
 	}
-    //foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+    foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		new v = GetPlayerVehicle(i, closestcar);
+		if(v != -1)
 		{
-			new v = GetPlayerVehicle(i, closestcar);
-			if(v != -1)
+			string[0] = 0;
+			for(new x = 0; x < 3; x++)
 			{
-				string[0] = 0;
-				for(new x = 0; x < 3; x++)
+				if(PlayerVehicleInfo[i][v][pvWeapons][x] != 0)
 				{
-					if(PlayerVehicleInfo[i][v][pvWeapons][x] != 0)
-					{
-						new
-							szWep[20];
+					new
+						szWep[20];
 
-						GetWeaponName(PlayerVehicleInfo[i][v][pvWeapons][x], szWep, sizeof(szWep));
-						if(isnull(string)) format(string, sizeof(string), "* Trunk contains: %s", szWep);
-						else format(string, sizeof(string), "%s, %s", string, szWep);
-					}
+					GetWeaponName(PlayerVehicleInfo[i][v][pvWeapons][x], szWep, sizeof(szWep));
+					if(isnull(string)) format(string, sizeof(string), "* Trunk contains: %s", szWep);
+					else format(string, sizeof(string), "%s, %s", string, szWep);
 				}
-				if(!isnull(string)) {
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					if(CrateVehicleLoad[closestcar][vCarVestKit]) {
-						SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
-						SendClientMessageEx(playerid, COLOR_WHITE, "* Kevlar Vest.");
-						SendClientMessageEx(playerid, COLOR_WHITE, "* First Aid Kit.");
-					}
-				}
-				else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
 			}
-		}	
-    }
+			if(!isnull(string)) {
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				if(CrateVehicleLoad[closestcar][vCarVestKit]) {
+					SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
+					SendClientMessageEx(playerid, COLOR_WHITE, "* Kevlar Vest.");
+					SendClientMessageEx(playerid, COLOR_WHITE, "* First Aid Kit.");
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
+		}
+	}	
     if(isnull(string))
     {
         if(CrateVehicleLoad[closestcar][vCarVestKit] > 0) {
@@ -610,33 +580,29 @@ CMD:takecarweapons(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to search it.");
 		return 1;
 	}
-    //foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+    foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		new v = GetPlayerVehicle(i, closestcar);
+		if(v != -1)
 		{
-			new v = GetPlayerVehicle(i, closestcar);
-			if(v != -1)
+			if (!PlayerVehicleInfo[i][v][pvWeapons][0] && !PlayerVehicleInfo[i][v][pvWeapons][1] && !PlayerVehicleInfo[i][v][pvWeapons][2])
 			{
-				if (!PlayerVehicleInfo[i][v][pvWeapons][0] && !PlayerVehicleInfo[i][v][pvWeapons][1] && !PlayerVehicleInfo[i][v][pvWeapons][2])
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE,  "No weapons in the trunk.");
-					return 1;
-				}
-				else
-				{
-					PlayerVehicleInfo[i][v][pvWeapons][0] = 0;
-					PlayerVehicleInfo[i][v][pvWeapons][1] = 0;
-					PlayerVehicleInfo[i][v][pvWeapons][2] = 0;
-					SendClientMessageEx(playerid, COLOR_WHITE,  "All weapons have been removed from this vehicle.");
-					new string[MAX_PLAYER_NAME + 44];
-					format(string, sizeof(string), "* %s has taken the weapons away from the trunk.", GetPlayerNameEx(playerid));
-					ProxDetector(20.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					return 1;
-				}
+				SendClientMessageEx(playerid, COLOR_WHITE,  "No weapons in the trunk.");
+				return 1;
 			}
-		}	
-    }
+			else
+			{
+				PlayerVehicleInfo[i][v][pvWeapons][0] = 0;
+				PlayerVehicleInfo[i][v][pvWeapons][1] = 0;
+				PlayerVehicleInfo[i][v][pvWeapons][2] = 0;
+				SendClientMessageEx(playerid, COLOR_WHITE,  "All weapons have been removed from this vehicle.");
+				new string[MAX_PLAYER_NAME + 44];
+				format(string, sizeof(string), "* %s has taken the weapons away from the trunk.", GetPlayerNameEx(playerid));
+				ProxDetector(20.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				return 1;
+			}
+		}
+	}	
     return 1;
 }
 
@@ -698,24 +664,20 @@ CMD:clearcargo(playerid, params[])
 		else if(iTruckContents == 7)
 		{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}illegal materials"); }
 		else format(truckcontentname, sizeof(truckcontentname), "{FF0606}illegal materials");
- 		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+ 		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(TruckUsed[i] == closestcar)
 			{
-				if(TruckUsed[i] == closestcar)
-				{
-					TruckUsed[i] = INVALID_VEHICLE_ID;
-					TruckDeliveringTo[closestcar] = INVALID_BUSINESS_ID;
-					TruckContents{closestcar} = 0;
-					TruckRoute[closestcar] = 0;
-					DisablePlayerCheckpoint(i);
-					gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-					DeletePVar(i, "TruckDeliver");
-					SendClientMessageEx(i, COLOR_WHITE, "Your delivery has failed. Law enforcement has confiscated the illegal goods.");
-				}
-			}	
-		}
+				TruckUsed[i] = INVALID_VEHICLE_ID;
+				TruckDeliveringTo[closestcar] = INVALID_BUSINESS_ID;
+				TruckContents{closestcar} = 0;
+				TruckRoute[closestcar] = 0;
+				DisablePlayerCheckpoint(i);
+				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+				DeletePVar(i, "TruckDeliver");
+				SendClientMessageEx(i, COLOR_WHITE, "Your delivery has failed. Law enforcement has confiscated the illegal goods.");
+			}
+		}	
 		new string[128];
 		format(string, sizeof(string), "You removed the %s {FFFFFF}from the Vehicle.", truckcontentname);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -943,23 +905,19 @@ CMD:vticket(playerid, params[])
 		{
             if(vehicleid != INVALID_VEHICLE_ID)
 			{
-                //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+                foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					new v = GetPlayerVehicle(i, vehicleid);
+					if(v != -1)
 					{
-						new v = GetPlayerVehicle(i, vehicleid);
-						if(v != -1)
-						{
-							new string[62 + MAX_PLAYER_NAME];
-							PlayerVehicleInfo[i][v][pvTicket] += 1000;
-							PlayerInfo[playerid][pTicketTime] = 60;
-							format(string, sizeof(string), "You have issued a $1000 ticket on %s's %s.",GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-							return 1;
-						}
-					}	
-                }
+						new string[62 + MAX_PLAYER_NAME];
+						PlayerVehicleInfo[i][v][pvTicket] += 1000;
+						PlayerInfo[playerid][pTicketTime] = 60;
+						format(string, sizeof(string), "You have issued a $1000 ticket on %s's %s.",GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}	
                 SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle does not have any registration!");
             }
         }
@@ -978,22 +936,18 @@ CMD:vcheck(playerid, params[])
 		{
             new carbeingtowed = GetVehicleTrailer(carid);
             new dynveh = DynVeh[carbeingtowed];
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					new v = GetPlayerVehicle(i, carbeingtowed);
+				new v = GetPlayerVehicle(i, carbeingtowed);
 
-					if(v != -1)
-					{
-						new string[78 + MAX_PLAYER_NAME];
-						format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						return 1;
-					}
-				}	
-            }
+				if(v != -1)
+				{
+					new string[78 + MAX_PLAYER_NAME];
+					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carbeingtowed, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
+			}	
             if(dynveh != -1)
 			{
 			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
@@ -1016,22 +970,18 @@ CMD:vcheck(playerid, params[])
         else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
 		    new dynveh = DynVeh[closestcar];
-            //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+            foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
 
-					new v = GetPlayerVehicle(i, closestcar);
-					if(v != -1)
-					{
-						new string[78 + MAX_PLAYER_NAME];
-						format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar));
-						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						return 1;
-					}
-				}	
-            }
+				new v = GetPlayerVehicle(i, closestcar);
+				if(v != -1)
+				{
+					new string[78 + MAX_PLAYER_NAME];
+					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar));
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
+			}	
             if(dynveh != -1)
 			{
 			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
@@ -2025,25 +1975,21 @@ CMD:wanted(playerid, params[])
 		new string[128], x;
 
 		SendClientMessageEx(playerid, COLOR_GREEN, "Current Wanted Suspects:");
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pWantedLevel] >= 1)
 			{
-				if(PlayerInfo[i][pWantedLevel] >= 1)
-				{
-					format(string, sizeof(string), "%s%s: %d", string,GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel]);
-					x++;
-					if(x > 3) {
-						SendClientMessageEx(playerid, COLOR_YELLOW, string);
-						x = 0;
-						format(string, sizeof(string), " ");
-					} else {
-						format(string, sizeof(string), "%s, ", string);
-					}
+				format(string, sizeof(string), "%s%s: %d", string,GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel]);
+				x++;
+				if(x > 3) {
+					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					x = 0;
+					format(string, sizeof(string), " ");
+				} else {
+					format(string, sizeof(string), "%s, ", string);
 				}
-			}	
-		}
+			}
+		}	
 		if(x <= 3 && x > 0)
 		{
 			string[strlen(string)-2] = '.';

@@ -123,7 +123,7 @@ CMD:endhunger(playerid, params[])
 	{
 		if(hgActive > 0)
 		{
-			for(new i = 0; i < MAX_PLAYERS; i++)
+			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
@@ -240,7 +240,7 @@ CMD:leavehunger(playerid, params[])
 				}
 			}
 					
-			for(new i = 0; i < MAX_PLAYERS; i++)
+			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
@@ -319,7 +319,7 @@ CMD:leavehunger(playerid, params[])
 	
 	new string[128];
 	format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
-	for(new i = 0; i < MAX_PLAYERS; i++)
+	foreach(new i: Player)
 	{
 		PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
 	}
@@ -384,7 +384,7 @@ CMD:joinhunger(playerid, params[])
 	
 	new string[128];
 	format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
-	for(new i = 0; i < MAX_PLAYERS; i++)
+	foreach(new i: Player)
 	{
 		PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
 	}
@@ -511,17 +511,13 @@ CMD:hgplayers(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[128]; // 8024 memory is not enough when there is 400+ players in the event
-		//foreach(new i : Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i : Player)
 		{
-			if(IsPlayerConnected(i))
+			if(HungerPlayerInfo[i][hgInEvent] == 1)
 			{
-				if(HungerPlayerInfo[i][hgInEvent] == 1)
-				{
-					format(string, sizeof(string), "Player %s (ID %i)", GetPlayerNameEx(i), i);
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-				}
-			}	
+				format(string, sizeof(string), "Player %s (ID %i)", GetPlayerNameEx(i), i);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
 		}
 	}
 	else

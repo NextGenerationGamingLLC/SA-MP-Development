@@ -195,21 +195,17 @@ CMD:leaverflteam(playerid, params[])
 			DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 		}
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your team has been deleted due to you being the leader.");
-		//foreach(new i: Player) {
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pRFLTeam] == team) {
-					PlayerInfo[i][pRFLTeam] = -1;
-					PlayerInfo[i][pRFLTeamL] = -1;
-					if(IsValidDynamic3DTextLabel(RFLTeamN3D[i])) {
-						DestroyDynamic3DTextLabel(RFLTeamN3D[i]);
-					}
-					SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have been removed from your team due to it being removed.");
-					OnPlayerStatsUpdate(i);
+			if(PlayerInfo[i][pRFLTeam] == team) {
+				PlayerInfo[i][pRFLTeam] = -1;
+				PlayerInfo[i][pRFLTeamL] = -1;
+				if(IsValidDynamic3DTextLabel(RFLTeamN3D[i])) {
+					DestroyDynamic3DTextLabel(RFLTeamN3D[i]);
 				}
-			}	
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have been removed from your team due to it being removed.");
+				OnPlayerStatsUpdate(i);
+			}
 		}	
 		OnPlayerStatsUpdate(playerid);
 		format(string, sizeof(string), "UPDATE `accounts` SET `RFLTeam` = -1, `RFLTeamL` = -1 WHERE `RFLTeam` = %d", team);
@@ -279,19 +275,15 @@ CMD:rflmembers(playerid, params[])
 	if(PlayerInfo[playerid][pRFLTeam] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a team.");
 	new string[64];
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Listing all team members online:");
-	//foreach(new i: Player) {
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if(PlayerInfo[i][pRFLTeam] == PlayerInfo[playerid][pRFLTeam]) {
-				if(PlayerInfo[i][pRFLTeamL] != -1) {
-					format(string, sizeof(string), "%s - Leader", GetPlayerNameEx(i));
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
-				else {
-					SendClientMessageEx(playerid, COLOR_GREY, GetPlayerNameEx(i));
-				}
+		if(PlayerInfo[i][pRFLTeam] == PlayerInfo[playerid][pRFLTeam]) {
+			if(PlayerInfo[i][pRFLTeamL] != -1) {
+				format(string, sizeof(string), "%s - Leader", GetPlayerNameEx(i));
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+			}
+			else {
+				SendClientMessageEx(playerid, COLOR_GREY, GetPlayerNameEx(i));
 			}
 		}
 	}

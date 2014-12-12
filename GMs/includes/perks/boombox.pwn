@@ -91,21 +91,17 @@ CMD:placeboombox(playerid, params[])
 		if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can only place boomboxes inside interiors.");
 		if(GetPVarType(playerid, "pBoomBox")) return SendClientMessageEx(playerid, COLOR_WHITE, "You already have a boombox out, use /destroyboombox.");
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarType(i, "pBoomBox"))
 			{
-				if(GetPVarType(i, "pBoomBox"))
+				if(IsPlayerInRangeOfPoint(playerid, 30.0, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ")) && GetPVarInt(i, "pBoomBoxVW") == GetPlayerVirtualWorld(playerid))
 				{
-					if(IsPlayerInRangeOfPoint(playerid, 30.0, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ")) && GetPVarInt(i, "pBoomBoxVW") == GetPlayerVirtualWorld(playerid))
-					{
-						SendClientMessage(playerid, COLOR_WHITE, "You are in range of another boombox, you can't place one here!");
-						return 1;
-					}
+					SendClientMessage(playerid, COLOR_WHITE, "You are in range of another boombox, you can't place one here!");
+					return 1;
 				}
-			}	
-		}
+			}
+		}	
 
 		new string[128];
 		format(string, sizeof(string), "%s has placed a boombox!", GetPlayerNameEx(playerid));
@@ -146,70 +142,58 @@ CMD:destroyboombox(playerid, params[])
 	    {
 	        new string[128];
 			format(string, sizeof(string), "* %s has destroyed the boombox.", GetPlayerNameEx(playerid));
-	        //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+	        foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
 				{
-					if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
-					{
-						StopAudioStreamForPlayerEx(i);
-						SendClientMessage(i, COLOR_PURPLE, string);
-					}
-				}	
-			}
+					StopAudioStreamForPlayerEx(i);
+					SendClientMessage(i, COLOR_PURPLE, string);
+				}
+			}	
 	        DeletePVar(playerid, "pBoomBoxArea");
 		}
 		SendClientMessage(playerid, COLOR_WHITE, "You've destroyed your boombox!");
 	}
 	else
 	{
-	    //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+	    foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarType(i, "pBoomBox"))
 			{
-				if(GetPVarType(i, "pBoomBox"))
+				if(GetPVarInt(i, "pBoomBoxVW") == GetPlayerVirtualWorld(playerid) && GetPVarInt(i, "pBoomBoxInt") == GetPlayerInterior(playerid) && IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ")))
 				{
-					if(GetPVarInt(i, "pBoomBoxVW") == GetPlayerVirtualWorld(playerid) && GetPVarInt(i, "pBoomBoxInt") == GetPlayerInterior(playerid) && IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(i, "pBoomBoxX"), GetPVarFloat(i, "pBoomBoxY"), GetPVarFloat(i, "pBoomBoxZ")))
+					DestroyDynamicObject(GetPVarInt(i, "pBoomBox"));
+					DestroyDynamic3DTextLabel(Text3D:GetPVarInt(i, "pBoomBoxLabel"));
+
+					DeletePVar(i, "pBoomBox");
+					DeletePVar(i, "pBoomBoxStation");
+					DeletePVar(i, "pBoomBoxLabel");
+					DeletePVar(i, "pBoomBoxX");
+					DeletePVar(i, "pBoomBoxY");
+					DeletePVar(i, "pBoomBoxZ");
+					DeletePVar(i, "pBoomBoxInt");
+					DeletePVar(i, "pBoomBoxVW");
+
+					new string[128];
+					if(GetPVarType(i, "pBoomBoxArea"))
 					{
-						DestroyDynamicObject(GetPVarInt(i, "pBoomBox"));
-						DestroyDynamic3DTextLabel(Text3D:GetPVarInt(i, "pBoomBoxLabel"));
-
-						DeletePVar(i, "pBoomBox");
-						DeletePVar(i, "pBoomBoxStation");
-						DeletePVar(i, "pBoomBoxLabel");
-						DeletePVar(i, "pBoomBoxX");
-						DeletePVar(i, "pBoomBoxY");
-						DeletePVar(i, "pBoomBoxZ");
-						DeletePVar(i, "pBoomBoxInt");
-						DeletePVar(i, "pBoomBoxVW");
-
-						new string[128];
-						if(GetPVarType(i, "pBoomBoxArea"))
+						format(string, sizeof(string), "* %s has destroyed the boombox.", GetPlayerNameEx(playerid));
+						foreach(new pi:Player)
 						{
-							format(string, sizeof(string), "* %s has destroyed the boombox.", GetPlayerNameEx(playerid));
-							//foreach(new pi:Player)
-							for(new pi = 0; pi < MAX_PLAYERS; ++pi)
+							if(IsPlayerInDynamicArea(pi, GetPVarInt(i, "pBoomBoxArea")))
 							{
-								if(IsPlayerConnected(pi))
-								{
-									if(IsPlayerInDynamicArea(pi, GetPVarInt(i, "pBoomBoxArea")))
-									{
-										StopAudioStreamForPlayerEx(pi);
-										SendClientMessage(pi, COLOR_PURPLE, string);
-									}
-								}	
+								StopAudioStreamForPlayerEx(pi);
+								SendClientMessage(pi, COLOR_PURPLE, string);
 							}
-							DeletePVar(i, "pBoomBoxArea");
-						}
-						format(string, sizeof(string), "%s has destroyed your boombox!", GetPlayerNameEx(playerid));
-						SendClientMessage(i, COLOR_WHITE, string);
-						return 1;
+						}	
+						DeletePVar(i, "pBoomBoxArea");
 					}
+					format(string, sizeof(string), "%s has destroyed your boombox!", GetPlayerNameEx(playerid));
+					SendClientMessage(i, COLOR_WHITE, string);
+					return 1;
 				}
-			}	
-	    }
+			}
+		}	
 	    SendClientMessage(playerid, COLOR_WHITE, "You don't have a boombox or you are not near one to destroy.");
 	}
 	return 1;

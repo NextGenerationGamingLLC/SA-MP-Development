@@ -38,108 +38,95 @@
 
 stock SendAdvisorMessage(color, string[])
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
 		{
-			if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
-			{
-				SendClientMessageEx(i, color, string);
-			}
+			SendClientMessageEx(i, color, string);
 		}
 	}
 }
 
 stock SendDutyAdvisorMessage(color, string[])
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pHelper] >= 2 && GetPVarInt(i, "AdvisorDuty") == 1) 
 		{
-			if(PlayerInfo[i][pHelper] >= 2 && GetPVarInt(i, "AdvisorDuty") == 1) {
-				SendClientMessageEx(i, color, string);
-			}
-		}	
+			SendClientMessageEx(i, color, string);
+		}
 	}
 }
 
 CMD:advisors(playerid, params[])
 {
     new string[128];
-    if(PlayerInfo[playerid][pHelper] >= 1) {
+    if(PlayerInfo[playerid][pHelper] >= 1) 
+    {
         SendClientMessageEx(playerid, COLOR_GRAD1, "Advisors Online:");
-        //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+        foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			new tdate[11], thour[9], i_timestamp[3];
+			getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+			format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
+			format(thour, sizeof(thour), "%02d:00:00", hour);
+
+			if(PlayerInfo[i][pHelper] != 0 && PlayerInfo[i][pHelper] <= PlayerInfo[playerid][pHelper]) 
 			{
+				if(PlayerInfo[i][pHelper] == 1 && PlayerInfo[i][pAdmin] < 2) {
+					format(string, sizeof(string), "** Helper: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				}
+				if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
+					format(string, sizeof(string), "** Community Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				}
+				if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
+					format(string, sizeof(string), "** Senior Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				}
+				if(PlayerInfo[i][pHelper] >= 4&&PlayerInfo[i][pAdmin]<2) {
+					format(string, sizeof(string), "** Chief Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				}
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}	
+    }
+    else if(PlayerInfo[playerid][pAdmin] >= 2) {
+        SendClientMessageEx(playerid, COLOR_GRAD1, "Advisors Online:");
+        foreach(new i: Player)
+        {
+			if(PlayerInfo[i][pHelper] >= 1) {
 				new tdate[11], thour[9], i_timestamp[3];
 				getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(thour, sizeof(thour), "%02d:00:00", hour);
 
-				if(PlayerInfo[i][pHelper] != 0 && PlayerInfo[i][pHelper] <= PlayerInfo[playerid][pHelper]) {
-					if(PlayerInfo[i][pHelper] == 1 && PlayerInfo[i][pAdmin] < 2) {
-						format(string, sizeof(string), "** Helper: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				if(PlayerInfo[i][pHelper] == 1&&PlayerInfo[i][pAdmin]<2) {
+					format(string, sizeof(string), "** Helper: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+				}
+				if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
+					if(GetPVarInt(i, "AdvisorDuty") == 1) {
+						format(string, sizeof(string), "** Community Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
-					if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
+					else {
 						format(string, sizeof(string), "** Community Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
-					if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
+				}
+				if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
+					if(GetPVarInt(i, "AdvisorDuty") == 1) {
+						format(string, sizeof(string), "** Senior Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					}
+					else {
 						format(string, sizeof(string), "** Senior Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
-					if(PlayerInfo[i][pHelper] >= 4&&PlayerInfo[i][pAdmin]<2) {
+				}
+				if(PlayerInfo[i][pHelper] >= 4&&PlayerInfo[i][pAdmin]<2) {
+					if(GetPVarInt(i, "AdvisorDuty") == 1) {
+						format(string, sizeof(string), "** Chief Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					}
+					else {
 						format(string, sizeof(string), "** Chief Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
 				}
-			}	
-        }
-    }
-    else if(PlayerInfo[playerid][pAdmin] >= 2) {
-        SendClientMessageEx(playerid, COLOR_GRAD1, "Advisors Online:");
-        //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
-		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pHelper] >= 1) {
-					new tdate[11], thour[9], i_timestamp[3];
-					getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-					format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
-					format(thour, sizeof(thour), "%02d:00:00", hour);
-
-					if(PlayerInfo[i][pHelper] == 1&&PlayerInfo[i][pAdmin]<2) {
-						format(string, sizeof(string), "** Helper: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					}
-					if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
-						if(GetPVarInt(i, "AdvisorDuty") == 1) {
-							format(string, sizeof(string), "** Community Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-						else {
-							format(string, sizeof(string), "** Community Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-					}
-					if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
-						if(GetPVarInt(i, "AdvisorDuty") == 1) {
-							format(string, sizeof(string), "** Senior Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-						else {
-							format(string, sizeof(string), "** Senior Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-					}
-					if(PlayerInfo[i][pHelper] >= 4&&PlayerInfo[i][pAdmin]<2) {
-						if(GetPVarInt(i, "AdvisorDuty") == 1) {
-							format(string, sizeof(string), "** Chief Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-						else {
-							format(string, sizeof(string), "** Chief Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-						}
-					}
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-				}
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}	
         }
     }
@@ -256,17 +243,13 @@ CMD:hlban(playerid, params[])
 				{
 					PlayerInfo[giveplayerid][pHelpMute] = 1;
 
-					//foreach(new n: Player)
-					for(new n = 0; n < MAX_PLAYERS; ++n)
+					foreach(new n: Player)
 					{
-						if(IsPlayerConnected(n))
+						if(gHelp[n]== 0)
 						{
-							if(gHelp[n]== 0)
-							{
-								format(string, sizeof(string), "* %s has been banned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-								SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
-							}
-						}	
+							format(string, sizeof(string), "* %s has been banned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+							SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
+						}
 					}
 					if(gHelp[playerid] != 0)
 					{
@@ -284,17 +267,13 @@ CMD:hlban(playerid, params[])
 				{
 					PlayerInfo[giveplayerid][pHelpMute] = 0;
 
-					//foreach(new n: Player)
-					for(new n = 0; n < MAX_PLAYERS; ++n)
+					foreach(new n: Player)
 					{
-						if(IsPlayerConnected(n))
+						if (gHelp[n]==0)
 						{
-							if (gHelp[n]==0)
-							{
-								format(string, sizeof(string), "* %s has been unbanned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-								SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
-							}
-						}	
+							format(string, sizeof(string), "* %s has been unbanned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+							SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
+						}
 					}
 					if(gHelp[playerid] != 0)
 					{
@@ -377,17 +356,13 @@ CMD:newb(playerid, params[])
 		format(string, sizeof(string), "** Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2) format(string, sizeof(string), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-	//foreach(new n: Player)
-	for(new n = 0; n < MAX_PLAYERS; ++n)
+	foreach(new n: Player)
 	{
-		if(IsPlayerConnected(n))
+		if (PlayerInfo[n][pNewbieTogged] == 0)
 		{
-			if (PlayerInfo[n][pNewbieTogged] == 0)
-			{
-				SendClientMessageEx(n, COLOR_NEWBIE, string);
-			}
-		}	
-	}
+			SendClientMessageEx(n, COLOR_NEWBIE, string);
+		}
+	}	
 	return 1;
 }
 
@@ -470,17 +445,13 @@ CMD:hl(playerid, params[])
 	{
 		format(string, sizeof(string), "** Admin %s: %s", GetPlayerNameEx(playerid), params);
 	}
-	//foreach(new n: Player)
-	for(new n = 0; n < MAX_PLAYERS; ++n)
+	foreach(new n: Player)
 	{
-		if(IsPlayerConnected(n))
+		if (gHelp[n]==0)
 		{
-			if (gHelp[n]==0)
-			{
-				SendClientMessageEx(n, COLOR_HELPERCHAT, string);
-			}
-		}	
-	}
+			SendClientMessageEx(n, COLOR_HELPERCHAT, string);
+		}
+	}	
 	return 1;
 }
 
@@ -504,18 +475,14 @@ CMD:joinhelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_YELLOW, "You have joined the helper chat, type /hl to ask your question or /leavehelp to leave!");
 
 	new string[128];
-	//foreach(new n: Player)
-	for(new n = 0; n < MAX_PLAYERS; ++n)
+	foreach(new n: Player)
 	{
-		if(IsPlayerConnected(n))
+		if (gHelp[n]==0)
 		{
-			if (gHelp[n]==0)
-			{
-				format(string, sizeof(string), "* %s has joined the helper channel.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
-			}
-		}	
-	}
+			format(string, sizeof(string), "* %s has joined the helper channel.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
+		}
+	}	
 	gHelp[playerid] = 0;
 	return 1;
 }
@@ -529,18 +496,14 @@ CMD:leavehelp(playerid, params[])
 	}
 
 	new string[128];
-	//foreach(new n: Player)
-	for(new n = 0; n < MAX_PLAYERS; ++n)
+	foreach(new n: Player)
 	{
-		if(IsPlayerConnected(n))
+		if (gHelp[n]==0)
 		{
-			if (gHelp[n]==0)
-			{
-				format(string, sizeof(string), "* %s has left the helper channel.", GetPlayerNameEx(playerid));
-				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
-			}
-		}	
-	}
+			format(string, sizeof(string), "* %s has left the helper channel.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
+		}
+	}	
 	gHelp[playerid] = 1;
 	return 1;
 }
@@ -556,16 +519,12 @@ CMD:hlkick(playerid, params[])
 		new string[128];
 		HlKickTimer[giveplayerid] = gettime()+120;
 		format(string, sizeof(string), "* %s has been kicked from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-		//foreach(new n: Player) {
-		for(new n = 0; n < MAX_PLAYERS; ++n)
+		foreach(new n: Player)
 		{
-			if(IsPlayerConnected(n))
-			{
-				if (gHelp[n]==0) {
-					SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
-				}
-			}	
-		}
+			if (gHelp[n]==0) {
+				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
+			}
+		}	
 		gHelp[giveplayerid] = 1;
 	}
 	else {
@@ -873,19 +832,15 @@ CMD:showrequests(playerid, params[])
 	{
 		new string[128], reason[64];
 		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ HELP REQUESTS _____________________");
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarInt(i, "COMMUNITY_ADVISOR_REQUEST"))
 			{
-				if(GetPVarInt(i, "COMMUNITY_ADVISOR_REQUEST"))
-				{
-					GetPVarString(i, "HelpReason", reason, 64);
-					format(string, sizeof(string), "%s  | ID: %i | Reason: %s | Expires in: %i minutes.", GetPlayerNameEx(i), i, reason, GetPVarInt(i, "HelpTime"));
-					SendClientMessageEx(playerid, COLOR_REPORT, string);
-				}
-			}	
-		}
+				GetPVarString(i, "HelpReason", reason, 64);
+				format(string, sizeof(string), "%s  | ID: %i | Reason: %s | Expires in: %i minutes.", GetPlayerNameEx(i), i, reason, GetPVarInt(i, "HelpTime"));
+				SendClientMessageEx(playerid, COLOR_REPORT, string);
+			}
+		}	
 		SendClientMessageEx(playerid, COLOR_GREEN, "_________________________________________________________");
 	}
 	return 1;
@@ -1010,38 +965,34 @@ CMD:findnewb(playerid, params[])
 	else {
 	    new Float: Pos[3][2], i[2], vw[2], Message[38 + MAX_PLAYER_NAME];
 	    if(!GetPVarType(playerid, "HelpingSomeone")) {
-     		//foreach(new x: Player)
-			for(new x = 0; x < MAX_PLAYERS; ++x)
+     		foreach(new x: Player)
 			{
-				if(IsPlayerConnected(x))
-				{
-					if(PlayerInfo[x][pLevel] == 1 && PlayerInfo[x][pHelpedBefore] == 0) {
-						GetPlayerPos(x, Pos[0][0], Pos[1][0], Pos[2][0]);
-						GetPlayerPos(playerid, Pos[0][1], Pos[1][1], Pos[2][1]);
-						vw[0] = GetPlayerVirtualWorld(x);
-						i[0] = GetPlayerInterior(x);
-						vw[1] = GetPlayerVirtualWorld(playerid);
-						i[1] = GetPlayerInterior(playerid);
+				if(PlayerInfo[x][pLevel] == 1 && PlayerInfo[x][pHelpedBefore] == 0) {
+					GetPlayerPos(x, Pos[0][0], Pos[1][0], Pos[2][0]);
+					GetPlayerPos(playerid, Pos[0][1], Pos[1][1], Pos[2][1]);
+					vw[0] = GetPlayerVirtualWorld(x);
+					i[0] = GetPlayerInterior(x);
+					vw[1] = GetPlayerVirtualWorld(playerid);
+					i[1] = GetPlayerInterior(playerid);
 
-						SetPVarFloat(playerid, "AdvisorLastx", Pos[0][1]);
-						SetPVarFloat(playerid, "AdvisorLasty", Pos[1][1]);
-						SetPVarFloat(playerid, "AdvisorLastz", Pos[2][1]);
-						SetPVarInt(playerid, "AdvisorLastInt", i[1]);
-						SetPVarInt(playerid, "AdvisorLastVW", vw[1]);
+					SetPVarFloat(playerid, "AdvisorLastx", Pos[0][1]);
+					SetPVarFloat(playerid, "AdvisorLasty", Pos[1][1]);
+					SetPVarFloat(playerid, "AdvisorLastz", Pos[2][1]);
+					SetPVarInt(playerid, "AdvisorLastInt", i[1]);
+					SetPVarInt(playerid, "AdvisorLastVW", vw[1]);
 
-						SetPlayerVirtualWorld(playerid, vw[0]);
-						SetPlayerInterior(playerid, i[0]);
-						SetPlayerPos(playerid, Pos[0][0], Pos[1][0]+2, Pos[2][0]);
-						PlayerInfo[x][pHelpedBefore] = 1;
-						SetPVarInt(playerid, "HelpingSomeone", 1);
-						ShowPlayerDialog(x, 0, DIALOG_STYLE_MSGBOX, "Helper Alert", "A community advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
-						if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
-						format(Message, sizeof(Message), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
-						SendClientMessageEx(playerid, COLOR_WHITE, Message);
-						break;
-					}
-				}	
-			}
+					SetPlayerVirtualWorld(playerid, vw[0]);
+					SetPlayerInterior(playerid, i[0]);
+					SetPlayerPos(playerid, Pos[0][0], Pos[1][0]+2, Pos[2][0]);
+					PlayerInfo[x][pHelpedBefore] = 1;
+					SetPVarInt(playerid, "HelpingSomeone", 1);
+					ShowPlayerDialog(x, 0, DIALOG_STYLE_MSGBOX, "Helper Alert", "A community advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
+					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
+					format(Message, sizeof(Message), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
+					SendClientMessageEx(playerid, COLOR_WHITE, Message);
+					break;
+				}
+			}	
 		}
 		else
 		{
@@ -1191,14 +1142,11 @@ CMD:ca(playerid, params[])
 	else if(PlayerInfo[playerid][pHelper] >= 4) format(szMessage, sizeof(szMessage), "* Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof(szMessage), "* %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);	
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i : Player)
 	{
-		if(IsPlayerConnected(i))
+		if((PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pAdmin] >= 2) && GetPVarInt(i, "CAChat") == 1)
 		{
-			if((PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pAdmin] >= 2) && GetPVarInt(i, "CAChat") == 1)
-			{
-				SendClientMessageEx(i, 0x5288f3FF, szMessage);
-			}
+			SendClientMessageEx(i, 0x5288f3FF, szMessage);
 		}
 	}
 	return 1;

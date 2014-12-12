@@ -340,17 +340,13 @@ CMD:adestroyplant(playerid, params[]) {
 			        new
 						szMessage[47 + MAX_PLAYER_NAME];
 
-                    //foreach(new z : Player)
-					for(new z = 0; z < MAX_PLAYERS; ++z)
+                    foreach(new z : Player)
 					{
-						if(IsPlayerConnected(z))
+						if(Plants[i][pOwner] == GetPlayerSQLId(z))
 						{
-							if(Plants[i][pOwner] == GetPlayerSQLId(z))
-							{
-								PlayerInfo[z][pWeedObject] = 0;
-							}
-						}	
-					}
+							PlayerInfo[z][pWeedObject] = 0;
+						}
+					}	
 					format(szMessage, sizeof(szMessage), "You have destroyed %s's plant.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
 					SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 
@@ -392,17 +388,13 @@ CMD:destroyplant(playerid, params[]) {
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s seizes the weed plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							//foreach(new z : Player)
-							for(new z = 0; z < MAX_PLAYERS; ++z)
+							foreach(new z : Player)
 							{
-								if(IsPlayerConnected(z))
+								if(Plants[i][pOwner] == GetPlayerSQLId(z))
 								{
-									if(Plants[i][pOwner] == GetPlayerSQLId(z))
-									{
-										PlayerInfo[z][pWeedObject] = 0;
-									}
-								}	
-							}
+									PlayerInfo[z][pWeedObject] = 0;
+								}
+							}	
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
@@ -416,17 +408,13 @@ CMD:destroyplant(playerid, params[]) {
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s seizes the opium plant.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							//foreach(new z : Player)
-							for(new z = 0; z < MAX_PLAYERS; ++z)
+							foreach(new z : Player)
 							{
-								if(IsPlayerConnected(z))
+								if(Plants[i][pOwner] == GetPlayerSQLId(z))
 								{
-									if(Plants[i][pOwner] == GetPlayerSQLId(z))
-									{
-										PlayerInfo[z][pWeedObject] = 0;
-									}
-								}	
-							}
+									PlayerInfo[z][pWeedObject] = 0;
+								}
+							}	
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
@@ -510,17 +498,13 @@ CMD:pickplant(playerid, params[])
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s picks the weed plant.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-                            //foreach(new z : Player)
-							for(new z = 0; z < MAX_PLAYERS; ++z)
+                            foreach(new z : Player)
 							{
-								if(IsPlayerConnected(z))
+								if(Plants[i][pOwner] == GetPlayerSQLId(z))
 								{
-									if(Plants[i][pOwner] == GetPlayerSQLId(z))
-									{
-										PlayerInfo[z][pWeedObject] = 0;
-									}
-								}	
-							}
+									PlayerInfo[z][pWeedObject] = 0;
+								}
+							}	
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked weed plant (%d) and recieved %d grams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Plants[i][pGrowth]);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pPot] += Plants[i][pGrowth];
@@ -544,17 +528,13 @@ CMD:pickplant(playerid, params[])
 							SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 							format(szMessage, sizeof(szMessage), "* %s picks the opium plant.", GetPlayerNameEx(playerid));
 							ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							//foreach(new z : Player)
-							for(new z = 0; z < MAX_PLAYERS; ++z)
+							foreach(new z : Player)
 							{
-								if(IsPlayerConnected(z))
+								if(Plants[i][pOwner] == GetPlayerSQLId(z))
 								{
-									if(Plants[i][pOwner] == GetPlayerSQLId(z))
-									{
-										PlayerInfo[z][pWeedObject] = 0;
-									}
-								}	
-							}
+									PlayerInfo[z][pWeedObject] = 0;
+								}
+							}	
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked opium plant (%d) and recieved %d milligrams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Grams);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pRawOpium] += Grams;

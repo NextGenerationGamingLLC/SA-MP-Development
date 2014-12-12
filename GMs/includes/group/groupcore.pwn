@@ -1239,13 +1239,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return ShowPlayerDialog(playerid, DIALOG_GROUP_DUTYCOL, DIALOG_STYLE_INPUT, szTitle, "You cannot use white as the value.\n\nEnter a colour in hexadecimal format (for example, BCA3FF). This colour will be used to identify the group.", "Confirm", "Cancel");
 				}
 				arrGroupData[iGroupID][g_hDutyColour] = hColour;
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if (PlayerInfo[i][pMember] == iGroupID) SetPlayerToTeamColor(i);
-					}	
+					if (PlayerInfo[i][pMember] == iGroupID) SetPlayerToTeamColor(i);
 				}
 
 				format(string, sizeof(string), "%s has set the duty color to %x in %s (%d)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_szGroupName], iGroupID+1);
@@ -1793,16 +1789,12 @@ CMD:clearbugs(playerid, params[])
 		if(PlayerInfo[playerid][pLeader] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) // has leader flag
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD2, "All agency bugs destroyed.");
-			//foreach(new i : Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i : Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
-						PlayerInfo[i][pBugged] = INVALID_GROUP_ID;
-					}
-				}	
-			}
+				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
+					PlayerInfo[i][pBugged] = INVALID_GROUP_ID;
+				}
+			}	
 			new query[256];
 			format(query, sizeof(query), "UPDATE accounts SET `Bugged` = %d WHERE `Bugged` > %d AND `Online` = 0", INVALID_GROUP_ID, INVALID_GROUP_ID);
 			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -1819,16 +1811,12 @@ CMD:listbugs(playerid, params[])
 		if(PlayerInfo[playerid][pLeader] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) // has leader flag
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "List of deployed Bugs:");
-			//foreach(new i : Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i : Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
-						SendClientMessageEx(playerid, COLOR_GREEN, GetPlayerNameEx(i));
-					}
-				}	
-			}
+				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
+					SendClientMessageEx(playerid, COLOR_GREEN, GetPlayerNameEx(i));
+				}
+			}	
 			new query[256];
 			format(query, sizeof(query), "SELECT `Username`, `Bugged` FROM `accounts`  WHERE `Bugged` = %d AND `Online` = 0", PlayerInfo[playerid][pMember]);
 			mysql_function_query(MainPipeline, query, true, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle{playerid});
@@ -1846,27 +1834,23 @@ CMD:online(playerid, params[]) {
 			badge[11],
 			szDialog[1024];
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
-				else format(badge, sizeof(badge), "");
-				if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
-				}
-				else if(IsAMedic(playerid) && IsAMedic(i) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
-				}
-				else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
-					case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
-					default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
-				}
-			}	
-		}
+			if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
+			else format(badge, sizeof(badge), "");
+			if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
+				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
+			}
+			else if(IsAMedic(playerid) && IsAMedic(i) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])) switch(PlayerInfo[i][pDuty]) {
+				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
+			}
+			else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
+				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
+				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
+			}
+		}	
 		if(!isnull(szDialog)) {
 		    strdel(szDialog, 0, 1);
 			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szDialog, "Select", "Cancel");
@@ -2551,17 +2535,13 @@ CMD:dvrespawn(playerid, params[])
 			    }
 			}
 			format(szString, sizeof(szString), "** Respawning all dynamic group vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(PlayerInfo[i][pMember] == iGroupID) 
 				{
-					if(PlayerInfo[i][pMember] == iGroupID) 
-					{
-						SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szString);
-					}
-				}	
-			}
+					SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szString);
+				}
+			}	
             format(szString, sizeof(szString), "%s has respawned group ID %d dynamic group vehicles.", GetPlayerNameEx(playerid), iGroupID+1);
    			Log("logs/group.log", szString);
 		}
@@ -2579,17 +2559,13 @@ CMD:dvrespawn(playerid, params[])
 		        }
 		    }
 			format(szString, sizeof(szString), "** Respawning all dynamic family vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
-		    //foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+		    foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				if(PlayerInfo[i][pFMember] == iFamilyID)
 				{
-					if(PlayerInfo[i][pFMember] == iFamilyID)
-					{
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, szString);
-					}
-				}	
-			}
+					SendClientMessageEx(i, COLOR_LIGHTBLUE, szString);
+				}
+			}	
 		    format(szString, sizeof(szString), "%s has respawned family %d dynamic group vehicles.", GetPlayerNameEx(playerid), iFamilyID);
       		Log("logs/family.log", szString);
 		}
@@ -3242,19 +3218,16 @@ CMD:deploy(playerid, params[])
 						format(string,sizeof(string),"Barricade ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
-						for(new x = 0; x < MAX_PLAYERS; ++x)
+						foreach(new x: Player)
 						{
-							if(IsPlayerConnected(x))
+							if(GetPVarInt(x, "togRadio") == 0)
 							{
-								if(GetPVarInt(x, "togRadio") == 0)
+								if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+								if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
 								{
-									if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
-									if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
-									{
-										new szBigEar[128];
-										format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-										SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
-									}
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+									SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
 								}
 							}
 						}*/
@@ -3286,19 +3259,16 @@ CMD:deploy(playerid, params[])
 						format(string,sizeof(string),"Spike ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						/*format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
-						for(new x = 0; x < MAX_PLAYERS; ++x)
+						foreach(new x: Player)
 						{
-							if(IsPlayerConnected(x))
+							if(GetPVarInt(x, "togRadio") == 0)
 							{
-								if(GetPVarInt(x, "togRadio") == 0)
+								if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+								if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
 								{
-									if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
-									if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
-									{
-										new szBigEar[128];
-										format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-										SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
-									}
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+									SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
 								}
 							}
 						}*/
@@ -3453,19 +3423,16 @@ CMD:destroy(playerid, params[])
 					format(string, sizeof(string), "Barricade ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					format(string, sizeof(string), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(GetPVarInt(i, "togRadio") == 0)
 						{
-							if(GetPVarInt(i, "togRadio") == 0)
+							if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
 							{
-								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
-								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
-								{
-									new szBigEar[128];
-									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
-								}
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+								SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
 							}
 						}
 					}
@@ -3494,19 +3461,16 @@ CMD:destroy(playerid, params[])
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(GetPVarInt(i, "togRadio") == 0)
 						{
-							if(GetPVarInt(i, "togRadio") == 0)
+							if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
 							{
-								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
-								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
-								{
-									new szBigEar[128];
-									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
-								}
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+								SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
 							}
 						}
 					}*/
@@ -4151,23 +4115,20 @@ CMD:r(playerid, params[]) {
 					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(string, sizeof(string), "** [%s] %s %s: %s **", PlayerInfo[playerid][pBadge], rank, GetPlayerNameEx(playerid), params);
 					else format(string, sizeof(string), "** %s (%s) %s: %s **", rank, division, GetPlayerNameEx(playerid), params);
 					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(GetPVarInt(i, "togRadio") == 0)
 						{
-							if(GetPVarInt(i, "togRadio") == 0)
-							{
-								if(PlayerInfo[i][pMember] == iGroupID && iRank >= arrGroupData[iGroupID][g_iRadioAccess]) {
-									SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, string);
-								}
-								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID) {
-									new szBigEar[128];
-									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-									SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
-								}
+							if(PlayerInfo[i][pMember] == iGroupID && iRank >= arrGroupData[iGroupID][g_iRadioAccess]) {
+								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, string);
 							}
-						}	
-					}
+							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID) {
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+							}
+						}
+					}	
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/r)adio [radio chat]");
 			}
@@ -4198,17 +4159,13 @@ CMD:international(playerid, params[])
 	            new szRadio[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
 	            GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
 	            format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
-	            //foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
-				{
-					if(IsPlayerConnected(i))
-					{				
-						if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess])
-						{
-							SendClientMessageEx(i, 0x869688FF, szRadio);
-						}
-					}	
-	            }
+	            foreach(new i: Player)
+				{				
+					if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess])
+					{
+						SendClientMessageEx(i, 0x869688FF, szRadio);
+					}
+				}	
 	            format(szRadio, sizeof(szRadio), "(radio) %s", params);
              	SetPlayerChatBubble(playerid, szRadio, COLOR_WHITE, 15.0, 5000);
              }
@@ -4253,44 +4210,40 @@ CMD:dept(playerid, params[])
 					else format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
 					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
-					//foreach(new i: Player)
-					for(new i = 0; i < MAX_PLAYERS; ++i)
+					foreach(new i: Player)
 					{
-						if(IsPlayerConnected(i))
+						if(GetPVarInt(i, "togDept") == 0)
 						{
-							if(GetPVarInt(i, "togDept") == 0)
+							if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess] && arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
 							{
-								if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess] && arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
+								SendClientMessageEx(i, DEPTRADIO, szRadio);
+							}
+							else if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
+							{
+								new szBigEar[128];
+								format(szBigEar, sizeof(szBigEar), "(BE) %s", szRadio);
+								SendClientMessageEx(i, iGroupID, szBigEar);
+							}
+							else if((PlayerInfo[i][pMember] == INVALID_GROUP_ID || (0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] < arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess]) && PlayerInfo[i][pReceiver] > 0)
+							{
+								if(GetPVarType(i, "pReceiverOn"))
 								{
-									SendClientMessageEx(i, DEPTRADIO, szRadio);
-								}
-								else if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
-								{
-									new szBigEar[128];
-									format(szBigEar, sizeof(szBigEar), "(BE) %s", szRadio);
-									SendClientMessageEx(i, iGroupID, szBigEar);
-								}
-								else if((PlayerInfo[i][pMember] == INVALID_GROUP_ID || (0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] < arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess]) && PlayerInfo[i][pReceiver] > 0)
-								{
-									if(GetPVarType(i, "pReceiverOn"))
+									if(GetPVarInt(i, "pReceiverMLeft") > 0)
 									{
-										if(GetPVarInt(i, "pReceiverMLeft") > 0)
-										{
-											format(szRadio, sizeof(szRadio), "** (receiver) %s: %s", GetPlayerNameEx(playerid), params);
-											SendClientMessageEx(i, DEPTRADIO, szRadio);
-											SetPVarInt(i, "pReceiverMLeft", GetPVarInt(i, "pReceiverMLeft") - 1);
-										}
-										else
-										{
-											PlayerInfo[i][pReceiver]--;
-											SetPVarInt(i, "pReceiverMLeft", 4);
-											return SendClientMessageEx(i, DEPTRADIO, "Your receiver ran out of batteries!");
-										}
+										format(szRadio, sizeof(szRadio), "** (receiver) %s: %s", GetPlayerNameEx(playerid), params);
+										SendClientMessageEx(i, DEPTRADIO, szRadio);
+										SetPVarInt(i, "pReceiverMLeft", GetPVarInt(i, "pReceiverMLeft") - 1);
+									}
+									else
+									{
+										PlayerInfo[i][pReceiver]--;
+										SetPVarInt(i, "pReceiverMLeft", 4);
+										return SendClientMessageEx(i, DEPTRADIO, "Your receiver ran out of batteries!");
 									}
 								}
 							}
-						}	
-					}
+						}
+					}	
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/dept) [department chat]");
 			}
@@ -4344,18 +4297,14 @@ CMD:leaders(playerid, params[])
 
 		new	string[128], sz_FacInfo[3][64];
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if(PlayerInfo[i][pLeader] >= 0) {
-					GetPlayerGroupInfo(i, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
-					format(string, sizeof(string), "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
-					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-				}
-			}	
-		}
+			if(PlayerInfo[i][pLeader] >= 0) {
+				GetPlayerGroupInfo(i, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
+				format(string, sizeof(string), "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}	
 	} else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
 }
@@ -4802,19 +4751,16 @@ CMD:setdivname(playerid, params[])
 			if(strcmp(iName, "none", true) == 0)
 			{
 				format(szMessage, sizeof(szMessage), "** %s has removed the %s division (#%i) **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(GetPVarInt(i, "togRadio") == 0)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
+						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
+						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
 						{
-							if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
-							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
-							{
-								new szBigEar[128];
-								format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
-								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
-							}
+							new szBigEar[128];
+							format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
+							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
 						}
 					}
 				}
@@ -4824,19 +4770,16 @@ CMD:setdivname(playerid, params[])
 			else
 			{
 				format(szMessage, sizeof(szMessage), "** %s has renamed division %s (#%i) to %s **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
+					if(GetPVarInt(i, "togRadio") == 0)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
+						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
+						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
 						{
-							if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
-							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
-							{
-								new szBigEar[128];
-								format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
-								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
-							}
+							new szBigEar[128];
+							format(szBigEar, sizeof(szBigEar), "(BE) %s", szMessage);
+							SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
 						}
 					}
 				}

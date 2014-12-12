@@ -52,68 +52,65 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
     }
     if(newid != INVALID_CALL_ID)
     {
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(0 <= PlayerInfo[i][pMember] < MAX_GROUPS)
 			{
-				if(0 <= PlayerInfo[i][pMember] < MAX_GROUPS)
+				for(new j; j < arrGroupData[PlayerInfo[i][pMember]][g_iJCount]; j++)
 				{
-					for(new j; j < arrGroupData[PlayerInfo[i][pMember]][g_iJCount]; j++)
+					if(strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], area, true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], mainzone, true) == 0)
 					{
-						if(strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], area, true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[i][pMember]][j][g_iAreaName], mainzone, true) == 0)
+						if((type == 0 || type == 4) && IsACop(i))
 						{
-							if((type == 0 || type == 4) && IsACop(i))
-							{
-								PlayCrimeReportForPlayer(i, callfrom, 7);
-								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							}
-							if(type == 1 && IsAMedic(i))
-							{
-								PlayCrimeReportForPlayer(i, callfrom, 7);
-								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							}
-							if(type == 2 && IsACop(i))
-							{
-								PlayCrimeReportForPlayer(i, callfrom, 7);
-								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							}
-							if(type == 3 && (IsACop(i) || IsATowman(i)))
-							{
-								PlayCrimeReportForPlayer(i, callfrom, 7);
-								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							}
-							if(type == 5 && (IsACop(i) || IsAMedic(i)))
-							{
-								PlayCrimeReportForPlayer(i, callfrom, 7);
-								format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-								format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							}
-							if(type == 6 && (IsAReporter(i)))
-							{
-								format(string, sizeof(string), "Hotline: Caller: %s", GetPlayerNameEx(callfrom));
-								SendClientMessageEx(i, COLOR_PINK, string);
-								format(string, sizeof(string), "Hotline: Location: %s, Description: %s", area, description);
-								SendClientMessageEx(i, COLOR_PINK, string);
-							}
+							PlayCrimeReportForPlayer(i, callfrom, 7);
+							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+						}
+						if(type == 1 && IsAMedic(i))
+						{
+							PlayCrimeReportForPlayer(i, callfrom, 7);
+							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+						}
+						if(type == 2 && IsACop(i))
+						{
+							PlayCrimeReportForPlayer(i, callfrom, 7);
+							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+						}
+						if(type == 3 && (IsACop(i) || IsATowman(i)))
+						{
+							PlayCrimeReportForPlayer(i, callfrom, 7);
+							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+						}
+						if(type == 5 && (IsACop(i) || IsAMedic(i)))
+						{
+							PlayCrimeReportForPlayer(i, callfrom, 7);
+							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+						}
+						if(type == 6 && (IsAReporter(i)))
+						{
+							format(string, sizeof(string), "Hotline: Caller: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, COLOR_PINK, string);
+							format(string, sizeof(string), "Hotline: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, COLOR_PINK, string);
 						}
 					}
 				}
 			}
-     	}
+		}
      	SetPVarInt(callfrom, "Has911Call", 1);
 		strmid(Calls[newid][Area], area, 0, strlen(area), 28);
 		strmid(Calls[newid][MainZone], mainzone, 0, strlen(mainzone), 28);
@@ -351,21 +348,17 @@ CMD:acceptcall(playerid, params[])
 						}
 					}
 				}
-				//foreach(new i: Player)
-				for(new i = 0; i < MAX_PLAYERS; ++i)
+				foreach(new i: Player)
 				{
-					if(IsPlayerConnected(i))
-					{
-						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-							format(string, sizeof(string), "%s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
-							SendClientMessageEx(i, COLOR_DBLUE, string);
-						}
-						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-							format(string, sizeof(string), "(BE) %s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
-							SendClientMessageEx(i, COLOR_DBLUE, string);
-						}
-					}	
-				}
+					if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
+						format(string, sizeof(string), "%s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+						SendClientMessageEx(i, COLOR_DBLUE, string);
+					}
+					if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
+						format(string, sizeof(string), "(BE) %s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+						SendClientMessageEx(i, COLOR_DBLUE, string);
+					}
+				}	
 				PlayCrimeReportForPlayer(playerid, Calls[callid][CallFrom], 8);
 				AddCallToken(playerid);
 				format(string, sizeof(string), "%s has accepted your call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(playerid));
@@ -423,21 +416,17 @@ CMD:ignorecall(playerid, params[])
 		}
 		for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
 		{
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
-						format(string, sizeof(string), "%s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
-						SendClientMessageEx(i, COLOR_DBLUE, string);
-					}
-					if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
-						format(string, sizeof(string), "(BE) %s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
-						SendClientMessageEx(i, COLOR_DBLUE, string);
-					}
-				}	
-			}
+				if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
+					format(string, sizeof(string), "%s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, string);
+				}
+				if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
+					format(string, sizeof(string), "(BE) %s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, string);
+				}
+			}	
 			DeletePVar(Calls[callid][CallFrom], "Has911Call");
 			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
 			Calls[callid][BeingUsed] = 0;

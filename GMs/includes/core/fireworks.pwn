@@ -174,10 +174,12 @@ CMD:fireworknear(playerid, params[])
 	{
 		new Float: pos[3];
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing all fireworks within 50 meters of you...");
-		for(new i, string[128]; i < MAX_PLAYERS; i++)
+		foreach(new i : Player)
 		{
 			if(RocketExplosions[i] != -1)
 			{
+				new string[128];
+				
 				pos[0] = GetPVarFloat(i, "fxpos");
 				pos[1] = GetPVarFloat(i, "fypos");
 				pos[2] = GetPVarFloat(i, "fzpos");

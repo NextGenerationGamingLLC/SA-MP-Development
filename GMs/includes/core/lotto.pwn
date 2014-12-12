@@ -43,88 +43,76 @@ public Lotto(number)
 	format(string, sizeof(string), "Lottery News: Today the winning number has fallen on... %d!.", number);
 	OOCOff(COLOR_WHITE, string);
 
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
+		if(PlayerInfo[i][pLottoNr] > 0)
 		{
-			if(PlayerInfo[i][pLottoNr] > 0)
+			for(new t = 0; t < 5; t++)
 			{
-				for(new t = 0; t < 5; t++)
+				if(LottoNumbers[i][t] == number)
 				{
-					if(LottoNumbers[i][t] == number)
-					{
-						TotalWinners++;
-						SetPVarInt(i, "Winner", 1);
-						break;
-					}
-					else
-					{
-						LottoNumbers[i][t] = 0;
-						if(t == 4) {
-							SendClientMessageEx(i, COLOR_GREY, "Sorry your lottery tickets have not been selected this drawing.");
-						}
+					TotalWinners++;
+					SetPVarInt(i, "Winner", 1);
+					break;
+				}
+				else
+				{
+					LottoNumbers[i][t] = 0;
+					if(t == 4) {
+						SendClientMessageEx(i, COLOR_GREY, "Sorry your lottery tickets have not been selected this drawing.");
 					}
 				}
-				DeleteTickets(i);
-				PlayerInfo[i][pLottoNr] = 0;
 			}
-			else {
-				SendClientMessageEx(i, COLOR_GREY, "You did not participate in this drawing.");
+			DeleteTickets(i);
+			PlayerInfo[i][pLottoNr] = 0;
+		}
+		else {
+			SendClientMessageEx(i, COLOR_GREY, "You did not participate in this drawing.");
+		}
+	}	
+	if(TotalWinners == 1)
+	{
+		foreach(new i: Player)
+		{
+			if(GetPVarType(i, "Winner"))
+			{
+				for(new t = 0; t < 5; t++) {
+					LottoNumbers[i][t] = 0;
+				}
+				if(SpecLotto) {
+					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
+				}
+				JackpotFallen = 1;
+				format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
+				OOCOff(COLOR_WHITE, string);
+				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
+				SendClientMessageEx(i, COLOR_YELLOW, string);
+				GivePlayerCash(i, Jackpot);
+				DeletePVar(i, "Winner");
 			}
 		}	
 	}
-	if(TotalWinners == 1)
-	{
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
-		{
-			if(IsPlayerConnected(i))
-			{
-				if(GetPVarType(i, "Winner"))
-				{
-					for(new t = 0; t < 5; t++) {
-						LottoNumbers[i][t] = 0;
-					}
-					if(SpecLotto) {
-						AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
-					}
-					JackpotFallen = 1;
-					format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
-					OOCOff(COLOR_WHITE, string);
-					format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
-					SendClientMessageEx(i, COLOR_YELLOW, string);
-					GivePlayerCash(i, Jackpot);
-					DeletePVar(i, "Winner");
-				}
-			}	
-		}
-	}
 	else if(TotalWinners > 1)
 	{
-	    //foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+	    foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(GetPVarType(i, "Winner"))
 			{
-				if(GetPVarType(i, "Winner"))
-				{
-					for(new t = 0; t < 5; t++) {
-						LottoNumbers[i][t] = 0;
-					}
-					if(SpecLotto) {
-						AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
-					}
-					JackpotFallen = 1;
-					format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
-					OOCOff(COLOR_WHITE, string);
-					format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
-					SendClientMessageEx(i, COLOR_YELLOW, string);
-					GivePlayerCash(i, Jackpot/TotalWinners);
-					DeletePVar(i, "Winner");
+				for(new t = 0; t < 5; t++) {
+					LottoNumbers[i][t] = 0;
 				}
-			}	
-	    }
+				if(SpecLotto) {
+					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
+				}
+				JackpotFallen = 1;
+				format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
+				OOCOff(COLOR_WHITE, string);
+				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
+				SendClientMessageEx(i, COLOR_YELLOW, string);
+				GivePlayerCash(i, Jackpot/TotalWinners);
+				DeletePVar(i, "Winner");
+			}
+		}	
 	}
 	TicketsSold = 0;
 	SpecLotto = 0;

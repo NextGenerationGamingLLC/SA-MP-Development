@@ -39,7 +39,7 @@
 
 SendDedicatedMessage(color, string[])
 {
-	for(new i = 0; i < MAX_PLAYERS; i++) 
+	foreach(new i: Player) 
 	{
 		if((PlayerInfo[i][pDedicatedPlayer] > 0 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pDedicatedEnabled] == 1)
 		{

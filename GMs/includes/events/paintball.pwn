@@ -170,53 +170,41 @@ stock SortWinnerPaintballScores(arenaid)
 	new score = 0;
 	new winnerid;
 	for(new i = 0; i < PaintBallArena[arenaid][pbLimit]; i++) {
-	    //foreach(new p: Player) {
-		for(new p = 0; p < MAX_PLAYERS; ++p)
-		{
-			if(IsPlayerConnected(p))
-			{	
-				if(GetPVarInt(p, "IsInArena") == arenaid) {
-					score = PlayerInfo[p][pKills];
-					if(score > highscore) {
-						highscore = score;
-						winnerid = p;
-					}
+	    foreach(new p: Player)
+		{	
+			if(GetPVarInt(p, "IsInArena") == arenaid) {
+				score = PlayerInfo[p][pKills];
+				if(score > highscore) {
+					highscore = score;
+					winnerid = p;
 				}
-			}	
-	    }
+			}
+		}	
 	}
 	return winnerid;
 }
 
 stock SendPaintballArenaTextMessage(arenaid, style, message[])
 {
-	//foreach(new p: Player) {
-	for(new p = 0; p < MAX_PLAYERS; ++p)
-	{
-		if(IsPlayerConnected(p))
-		{	
-			new carenaid = GetPVarInt(p, "IsInArena");
-			if(arenaid == carenaid) {
-				GameTextForPlayer(p, message, 5000, style);
-			}
-		}	
-	}
+	foreach(new p: Player)
+	{	
+		new carenaid = GetPVarInt(p, "IsInArena");
+		if(arenaid == carenaid) {
+			GameTextForPlayer(p, message, 5000, style);
+		}
+	}	
 	return 1;
 }
 
 stock SendPaintballArenaMessage(arenaid, color, message[])
 {
-	//foreach(new p: Player) {
-	for(new p = 0; p < MAX_PLAYERS; ++p)
-	{
-		if(IsPlayerConnected(p))
-		{	
-			new carenaid = GetPVarInt(p, "IsInArena");
-			if(arenaid == carenaid) {
-				SendClientMessageEx(p, color, message);
-			}
-		}	
-	}
+	foreach(new p: Player)
+	{	
+		new carenaid = GetPVarInt(p, "IsInArena");
+		if(arenaid == carenaid) {
+			SendClientMessageEx(p, color, message);
+		}
+	}	
 	return 1;
 }
 /*
@@ -990,66 +978,62 @@ CMD:lockarenas(playerid, params[])
     }
     new string[128];
     for(new i = 0; i < MAX_ARENAS; i++) {
-        //foreach(new p: Player) {
-		for(new p = 0; p < MAX_PLAYERS; ++p)
-		{
-			if(IsPlayerConnected(p))
-			{		
-				new arenaid = GetPVarInt(p, "IsInArena");
-				if(arenaid == i) {
-					if(PaintBallArena[arenaid][pbBidMoney] > 0) {
-						GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-						format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-						SendClientMessageEx(p, COLOR_WHITE, string);
-					}
-					if(arenaid == GetPVarInt(p, "ArenaNumber")) {
-						switch(PaintBallArena[arenaid][pbGameType]) {
-							case 1:
-							{
-								if(PlayerInfo[p][pDonateRank] < 3) {
-									PlayerInfo[p][pPaintTokens] += 3;
-									format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-									SendClientMessageEx(p, COLOR_WHITE, string);
-								}
+        foreach(new p: Player)
+		{		
+			new arenaid = GetPVarInt(p, "IsInArena");
+			if(arenaid == i) {
+				if(PaintBallArena[arenaid][pbBidMoney] > 0) {
+					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
+					format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
+					SendClientMessageEx(p, COLOR_WHITE, string);
+				}
+				if(arenaid == GetPVarInt(p, "ArenaNumber")) {
+					switch(PaintBallArena[arenaid][pbGameType]) {
+						case 1:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3) {
+								PlayerInfo[p][pPaintTokens] += 3;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+								SendClientMessageEx(p, COLOR_WHITE, string);
 							}
-							case 2:
-							{
-								if(PlayerInfo[p][pDonateRank] < 3) {
-									PlayerInfo[p][pPaintTokens] += 4;
-									format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-									SendClientMessageEx(p, COLOR_WHITE, string);
-								}
+						}
+						case 2:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3) {
+								PlayerInfo[p][pPaintTokens] += 4;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+								SendClientMessageEx(p, COLOR_WHITE, string);
 							}
-							case 3:
-							{
-								if(PlayerInfo[p][pDonateRank] < 3) {
-									PlayerInfo[p][pPaintTokens] += 5;
-									format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-									SendClientMessageEx(p, COLOR_WHITE, string);
-								}
+						}
+						case 3:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3) {
+								PlayerInfo[p][pPaintTokens] += 5;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, string);
 							}
-							case 4:
-							{
-								if(PlayerInfo[p][pDonateRank] < 3) {
-									PlayerInfo[p][pPaintTokens] += 5;
-									format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-									SendClientMessageEx(p, COLOR_WHITE, string);
-								}
+						}
+						case 4:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3) {
+								PlayerInfo[p][pPaintTokens] += 5;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, string);
 							}
-							case 5:
-							{
-								if(PlayerInfo[p][pDonateRank] < 3) {
-									PlayerInfo[p][pPaintTokens] += 6;
-									format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-									SendClientMessageEx(p, COLOR_WHITE, string);
-								}
+						}
+						case 5:
+						{
+							if(PlayerInfo[p][pDonateRank] < 3) {
+								PlayerInfo[p][pPaintTokens] += 6;
+								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+								SendClientMessageEx(p, COLOR_WHITE, string);
 							}
 						}
 					}
-					LeavePaintballArena(p, arenaid);
 				}
-			}	
-        }
+				LeavePaintballArena(p, arenaid);
+			}
+		}	
         ResetPaintballArena(i);
         PaintBallArena[i][pbLocked] = 2;
     }
@@ -1463,75 +1447,71 @@ CMD:lockarena(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have entered a invalid arenaid.");
 		return 1;
 	}
-	//foreach(new p: Player)
-	for(new p = 0; p < MAX_PLAYERS; ++p)
+	foreach(new p: Player)
 	{
-		if(IsPlayerConnected(p))
+		new cid = GetPVarInt(p, "IsInArena");
+		if(cid == arenaid)
 		{
-			new cid = GetPVarInt(p, "IsInArena");
-			if(cid == arenaid)
+			if(PaintBallArena[cid][pbBidMoney] > 0)
 			{
-				if(PaintBallArena[cid][pbBidMoney] > 0)
+				GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
+				format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
+				SendClientMessageEx(p, COLOR_WHITE, string);
+			}
+			if(arenaid == GetPVarInt(p, "ArenaNumber"))
+			{
+				switch(PaintBallArena[arenaid][pbGameType])
 				{
-					GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
-					format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, string);
-				}
-				if(arenaid == GetPVarInt(p, "ArenaNumber"))
-				{
-					switch(PaintBallArena[arenaid][pbGameType])
+				case 1:
 					{
-					case 1:
+						if(PlayerInfo[p][pDonateRank] < 3)
 						{
-							if(PlayerInfo[p][pDonateRank] < 3)
-							{
-								PlayerInfo[p][pPaintTokens] += 3;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-								SendClientMessageEx(p, COLOR_WHITE, string);
-							}
+							PlayerInfo[p][pPaintTokens] += 3;
+							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+							SendClientMessageEx(p, COLOR_WHITE, string);
 						}
-					case 2:
+					}
+				case 2:
+					{
+						if(PlayerInfo[p][pDonateRank] < 3)
 						{
-							if(PlayerInfo[p][pDonateRank] < 3)
-							{
-								PlayerInfo[p][pPaintTokens] += 4;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-								SendClientMessageEx(p, COLOR_WHITE, string);
-							}
+							PlayerInfo[p][pPaintTokens] += 4;
+							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+							SendClientMessageEx(p, COLOR_WHITE, string);
 						}
-					case 3:
+					}
+				case 3:
+					{
+						if(PlayerInfo[p][pDonateRank] < 3)
 						{
-							if(PlayerInfo[p][pDonateRank] < 3)
-							{
-								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
-							}
+							PlayerInfo[p][pPaintTokens] += 5;
+							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, string);
 						}
-					case 4:
+					}
+				case 4:
+					{
+						if(PlayerInfo[p][pDonateRank] < 3)
 						{
-							if(PlayerInfo[p][pDonateRank] < 3)
-							{
-								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
-							}
+							PlayerInfo[p][pPaintTokens] += 5;
+							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, string);
 						}
-					case 5:
+					}
+				case 5:
+					{
+						if(PlayerInfo[p][pDonateRank] < 3)
 						{
-							if(PlayerInfo[p][pDonateRank] < 3)
-							{
-								PlayerInfo[p][pPaintTokens] += 6;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-								SendClientMessageEx(p, COLOR_WHITE, string);
-							}
+							PlayerInfo[p][pPaintTokens] += 6;
+							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+							SendClientMessageEx(p, COLOR_WHITE, string);
 						}
 					}
 				}
-				LeavePaintballArena(p, cid);
 			}
-		}	
-	}
+			LeavePaintballArena(p, cid);
+		}
+	}	
 	ResetPaintballArena(arenaid);
 	PaintBallArena[arenaid][pbLocked] = 2;
 	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);

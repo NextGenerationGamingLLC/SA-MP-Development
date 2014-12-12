@@ -118,32 +118,28 @@ Vehicle_ResetData(iVehicleID) {
 		TruckDeliveringTo[iVehicleID] = INVALID_BUSINESS_ID;
 		VehicleFuel[iVehicleID] = 100.0;
 		
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(TruckUsed[i] == iVehicleID)
 			{
-				if(TruckUsed[i] == iVehicleID)
-				{
-					DeletePVar(i, "LoadTruckTime");
-					DeletePVar(i, "TruckDeliver");
-					TruckUsed[i] = INVALID_VEHICLE_ID;
-					gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
-					DisablePlayerCheckpoint(i);
+				DeletePVar(i, "LoadTruckTime");
+				DeletePVar(i, "TruckDeliver");
+				TruckUsed[i] = INVALID_VEHICLE_ID;
+				gPlayerCheckpointStatus[i] = CHECKPOINT_NONE;
+				DisablePlayerCheckpoint(i);
+			}
+			if(LockStatus{iVehicleID}) {
+				if(PlayerInfo[i][pLockCar] == iVehicleID) {
+					PlayerInfo[i][pLockCar] = INVALID_VEHICLE_ID;
 				}
-				if(LockStatus{iVehicleID}) {
-					if(PlayerInfo[i][pLockCar] == iVehicleID) {
-						PlayerInfo[i][pLockCar] = INVALID_VEHICLE_ID;
-					}
-				}
-				if(VehicleBomb{iVehicleID} == 1) {
-					if(PlacedVehicleBomb[i] == iVehicleID) {
-						VehicleBomb{iVehicleID} = 0;
-						PlacedVehicleBomb[i] = INVALID_VEHICLE_ID;
-						PickUpC4(i);
-						PlayerInfo[i][pC4Used] = 0;
-						PlayerInfo[i][pC4Get] = 1;
-					}
+			}
+			if(VehicleBomb{iVehicleID} == 1) {
+				if(PlacedVehicleBomb[i] == iVehicleID) {
+					VehicleBomb{iVehicleID} = 0;
+					PlacedVehicleBomb[i] = INVALID_VEHICLE_ID;
+					PickUpC4(i);
+					PlayerInfo[i][pC4Used] = 0;
+					PlayerInfo[i][pC4Get] = 1;
 				}
 			}
 		}
@@ -387,15 +383,11 @@ CMD:lock(playerid, params[])
 			if(PlayerInfo[playerid][pLockCar] != GetPlayerVehicleID(playerid) && PlayerInfo[playerid][pLockCar] != INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a lock for this vehicle!");
    			if(GetPlayerVehicleSeat(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can't lock vehicles as a passenger!");
    			new v = -1;
-   			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+   			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
-				{
-					v = GetPlayerVehicle(i, GetPlayerVehicleID(playerid));
-					if(v != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can't lock player-owned vehicles!");
-				}	
-			}
+				v = GetPlayerVehicle(i, GetPlayerVehicleID(playerid));
+				if(v != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Can't lock player-owned vehicles!");
+			}	
    			if(PlayerInfo[playerid][pLockCar] == INVALID_VEHICLE_ID) PlayerInfo[playerid][pLockCar] = GetPlayerVehicleID(playerid);
       		if(LockStatus{GetPlayerVehicleID(playerid)} == 0)
         	{
@@ -1025,22 +1017,18 @@ CMD:rc(playerid, params[])
 		}
 		else if(!IsPlayerInAnyVehicle(playerid))
 		{
-			//foreach(new i: Player)
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i: Player)
 			{
-				if(IsPlayerConnected(i))
+				new v = GetPlayerVehicle(i, ccar);
+				if(v != -1 && PlayerVehicleInfo[i][v][pvLocked] == 0)
 				{
-					new v = GetPlayerVehicle(i, ccar);
-					if(v != -1 && PlayerVehicleInfo[i][v][pvLocked] == 0)
-					{
-						new Float:playerPos[3];
-						GetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]);
-						SetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]-500);
-						IsPlayerEntering{playerid} = true;
-						PutPlayerInVehicle(playerid, ccar, 0);
-					}
-				}	
-			}
+					new Float:playerPos[3];
+					GetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]);
+					SetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]-500);
+					IsPlayerEntering{playerid} = true;
+					PutPlayerInVehicle(playerid, ccar, 0);
+				}
+			}	
 		}
 	}
 	return 1;

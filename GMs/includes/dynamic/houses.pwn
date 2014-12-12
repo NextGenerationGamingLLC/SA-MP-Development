@@ -310,17 +310,13 @@ CMD:ringbell(playerid, params[])
 		new
 			string[75 + MAX_PLAYER_NAME];
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
-			{
-				if((IsPlayerInRangeOfPoint(i, 15.0, HouseInfo[h][hInteriorX], HouseInfo[h][hInteriorY], HouseInfo[h][hInteriorZ])) && GetPlayerVirtualWorld(i) == HouseInfo[h][hIntVW] && GetPlayerInterior(i) == HouseInfo[h][hIntIW]) {
-					format(string,sizeof(string),"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
-					SendClientMessageEx(i,COLOR_PURPLE,string);
-					GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~The doorbell rings...", 4000,3);
-					break;
-				}
+			if((IsPlayerInRangeOfPoint(i, 15.0, HouseInfo[h][hInteriorX], HouseInfo[h][hInteriorY], HouseInfo[h][hInteriorZ])) && GetPlayerVirtualWorld(i) == HouseInfo[h][hIntVW] && GetPlayerInterior(i) == HouseInfo[h][hIntIW]) {
+				format(string,sizeof(string),"%s's doorbell rings.", StripUnderscore(HouseInfo[h][hOwnerName]));
+				SendClientMessageEx(i,COLOR_PURPLE,string);
+				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~The doorbell rings...", 4000,3);
+				break;
 			}
 		}
 		format(string,sizeof(string),"* %s presses a button next to the door, ringing the doorbell of %s's house.", GetPlayerNameEx(playerid), StripUnderscore(HouseInfo[h][hOwnerName]));
@@ -1021,20 +1017,16 @@ CMD:evictall(playerid, params[])
 			(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])))
 			{
 				new giveplayerid, string[56];
-				//foreach(new p: Player)
-				for(new p = 0; p < MAX_PLAYERS; ++p)
+				foreach(new p: Player)
 				{
-					if(IsPlayerConnected(p))
+					if(PlayerInfo[p][pRenting] == i)
 					{
-						if(PlayerInfo[p][pRenting] == i)
-						{
-							format(string, sizeof(string), "%s has evicted you from their house.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(p, COLOR_WHITE, string);
-							PlayerInfo[p][pRenting] = INVALID_HOUSE_ID;
-							++giveplayerid;
-						}
-					}	
-				}
+						format(string, sizeof(string), "%s has evicted you from their house.", GetPlayerNameEx(playerid));
+						SendClientMessageEx(p, COLOR_WHITE, string);
+						PlayerInfo[p][pRenting] = INVALID_HOUSE_ID;
+						++giveplayerid;
+					}
+				}	
 				format(string, sizeof(string), "%d online players have been evicted from your house.", giveplayerid);
 				return SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}

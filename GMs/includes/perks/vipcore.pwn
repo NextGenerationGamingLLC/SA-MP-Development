@@ -66,14 +66,10 @@ stock GetVIPRankName(i)
 
 stock SendVIPMessage(color, string[])
 {
-	//foreach(new i: Player)
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player)
 	{
-		if(IsPlayerConnected(i))
-		{
-			if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pVIPMod]) && PlayerInfo[i][pVIPTogged] == 1) {
-				SendClientMessageEx(i, color, string);
-			}
+		if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pVIPMod]) && PlayerInfo[i][pVIPTogged] == 1) {
+			SendClientMessageEx(i, color, string);
 		}
 	}
 }
@@ -510,26 +506,22 @@ CMD:searchvipm(playerid, params[])
 
  		if(sscanf(params, "d", vipm)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /searchvipm [vipm]");
 
-  		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+  		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pVIPM] == vipm)
 			{
-				if(PlayerInfo[i][pVIPM] == vipm)
-				{
-					format(string, sizeof(string), "%s (%d) | VIPM: %d", GetPlayerNameEx(i), i, vipm);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					count++;
-				}
-				if(PlayerInfo[i][pVIPMO] == vipm)
-				{
-					format(string, sizeof(string), "%s (%d) | VIPM Old: %d", GetPlayerNameEx(i), i, vipm);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					count++;
-				}
-				else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No person online matched that VIPM number.");
-			}	
-    	}
+				format(string, sizeof(string), "%s (%d) | VIPM: %d", GetPlayerNameEx(i), i, vipm);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				count++;
+			}
+			if(PlayerInfo[i][pVIPMO] == vipm)
+			{
+				format(string, sizeof(string), "%s (%d) | VIPM Old: %d", GetPlayerNameEx(i), i, vipm);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				count++;
+			}
+			else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No person online matched that VIPM number.");
+		}	
 	}
 	return 1;
 }
@@ -1200,14 +1192,11 @@ CMD:vipm(playerid, params[])
 	else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
-	for(new i = 0; i < MAX_PLAYERS; ++i)
+	foreach(new i: Player) 
 	{
-		if(IsPlayerConnected(i))
+		if((PlayerInfo[i][pVIPMod] || PlayerInfo[i][pShopTech] >= 3 || PlayerInfo[i][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
 		{
-			if((PlayerInfo[i][pVIPMod] || PlayerInfo[i][pShopTech] >= 3 || PlayerInfo[i][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
-			{
-				SendClientMessageEx(i, 0xff0066FF, szMessage);
-			}
+			SendClientMessageEx(i, 0xff0066FF, szMessage);
 		}
 	}
 	return 1;

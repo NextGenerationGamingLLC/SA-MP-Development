@@ -211,7 +211,7 @@ CMD:dmalert(playerid, params[])
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
 	SetPVarInt(playerid, "AlertType", 1);
 	AlertTime[playerid] = 300;
-	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+	foreach(new i : Player) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins & Watchdogs.");
 	SetPVarInt(playerid, "WDReport", 1);
 	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
@@ -356,9 +356,9 @@ CMD:watchdogs(playerid, params[])
 	{
 		new string[128];
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Watchdogs Online:");
-		for(new i = 0; i < MAX_PLAYERS; ++i)
-		{
-			if(IsPlayerConnected(i) && PlayerInfo[i][pWatchdog] > 0)
+		foreach(new i : Player)
+		{	
+			if(PlayerInfo[i][pWatchdog] > 0)
 			{
 				if(PlayerInfo[i][pWatchdog] == 1) format(string, sizeof(string), "Watchdog %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 2) format(string, sizeof(string), "Senior Watchdog %s (ID %i)", GetPlayerNameEx(i), i);
@@ -410,15 +410,12 @@ CMD:wd(playerid, params[])
 			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMessage, sizeof(szMessage), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
 			else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
 
-			for(new i = 0; i < MAX_PLAYERS; ++i)
+			foreach(new i : Player)
 			{
-				if(IsPlayerConnected(i))
+				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(i, "WatchdogChat") == 1)
 				{
-					if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(i, "WatchdogChat") == 1)
-					{
-						SendClientMessageEx(i, 0x2267F0FF, szMessage);
-					}
-				}	
+					SendClientMessageEx(i, 0x2267F0FF, szMessage);
+				}
 			}
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wd [watchdog chat]");
@@ -443,7 +440,7 @@ CMD:refer(playerid, params[])
 	SendReportToQue(playerid, string, 2, 1);
 	SetPVarInt(giveplayerid, "BeenAlerted", 1);
 	SetPVarInt(playerid, "AlertedThisPlayer", giveplayerid);
-	for(new i; i < MAX_PLAYERS; i++) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
+	foreach(new i : Player) if(PlayerInfo[i][pWatchdog] >= 1) SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins & Watchdogs.");
 	SetPVarInt(playerid, "WDReport", 2);
 	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));

@@ -74,43 +74,39 @@ CMD:checkjudgements(playerid, params[])
 			string[128],
 			fCounter;
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(PlayerInfo[i][pJudgeJailType] == 1)
 			{
-				if(PlayerInfo[i][pJudgeJailType] == 1)
+				if(PlayerInfo[i][pJailTime] > 1)
 				{
-					if(PlayerInfo[i][pJailTime] > 1)
-					{
-						format(string, sizeof(string), "Sentenced: %s - jail (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-						SendClientMessageEx(playerid, COLOR_GRAD1, string);
-						++fCounter;
-					}
-					else
-					{
-						format(string, sizeof(string), "Sentenced: %s - jail (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-						SendClientMessageEx(playerid, COLOR_GRAD1, string);
-						++fCounter;
-					}
+					format(string, sizeof(string), "Sentenced: %s - jail (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					++fCounter;
 				}
-				else if(PlayerInfo[i][pJudgeJailType] == 2)
+				else
 				{
-					if(PlayerInfo[i][pJailTime] > 1)
-					{
-						format(string, sizeof(string), "Sentenced: %s - prison (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-						SendClientMessageEx(playerid, COLOR_GRAD1, string);
-						++fCounter;
-					}
-					else
-					{
-						format(string, sizeof(string), "Sentenced: %s - prison (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
-						SendClientMessageEx(playerid, COLOR_GRAD1, string);
-						++fCounter;
-					}
+					format(string, sizeof(string), "Sentenced: %s - jail (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					++fCounter;
 				}
-			}	
-		}
+			}
+			else if(PlayerInfo[i][pJudgeJailType] == 2)
+			{
+				if(PlayerInfo[i][pJailTime] > 1)
+				{
+					format(string, sizeof(string), "Sentenced: %s - prison (transport completed) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					++fCounter;
+				}
+				else
+				{
+					format(string, sizeof(string), "Sentenced: %s - prison (being transported) - time: %d.",GetPlayerNameEx(i),PlayerInfo[i][pJudgeJailTime]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+					++fCounter;
+				}
+			}
+		}	
 		if(fCounter == 0)
 		{
   			SendClientMessageEx(playerid, COLOR_GRAD1, "Nobody is pending judgement.");
@@ -374,19 +370,15 @@ CMD:wants(playerid, params[])
 			fCounter,
 			string[128];
 
-		//foreach(new i: Player)
-		for(new i = 0; i < MAX_PLAYERS; ++i)
+		foreach(new i: Player)
 		{
-			if(IsPlayerConnected(i))
+			if(!isnull(PlayerInfo[i][pWarrant]) || PlayerInfo[i][pWarrant] != 0)
 			{
-				if(!isnull(PlayerInfo[i][pWarrant]) || PlayerInfo[i][pWarrant] != 0)
-				{
-					format(string, sizeof(string), "%s (%d) - reason: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
-					SendClientMessageEx(playerid, COLOR_GRAD1, string);
-					++fCounter;
-				}
-			}	
-		}
+				format(string, sizeof(string), "%s (%d) - reason: %s.",GetPlayerNameEx(i), i, PlayerInfo[i][pWarrant]);
+				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				++fCounter;
+			}
+		}	
 		if(fCounter <= 0)
 		{
 		    SendClientMessageEx(playerid, COLOR_GRAD1, "Nobody has any pending warrants.");
