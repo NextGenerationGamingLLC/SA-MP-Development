@@ -138,6 +138,7 @@ CMD:hbadge(playerid, params[])
 		}
 		if(giveplayerid == 0)
 		{
+			DeletePVar(playerid, "HitmanBadgeColour");
   			SendClientMessageEx(playerid, COLOR_WHITE, "You have set your badge back to normal.");
   			SetPlayerColor(playerid,TEAM_HIT_COLOR);
 		}
