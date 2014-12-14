@@ -58,9 +58,11 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			if(damagedid == GoChase[playerid] && bodypart == BODY_PART_HEAD)
 			{
-				SetHealth(damagedid, 0);
+				// Almost guarantees /execute to properly fulfill a hit every time, as long as the shot hits and not dependent on what the Player Death callback says killed them.
+				SetPVarInt(damagedid, "KilledByExecute", playerid);
 				SetPVarInt(playerid, "ExecutionMode", 0);
 				SetPVarInt(playerid, "KillShotCooldown", gettime());
+				SetHealth(damagedid, 0);
 			}
 			else
 			{

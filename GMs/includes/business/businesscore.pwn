@@ -2241,7 +2241,7 @@ CMD:addmaterials(playerid, params[])
 
 CMD:offergun(playerid, params[])
 {
-	if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID && Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_GUNSHOP)	{
+	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_GUNSHOP)	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for a gun store!");
 	}
 	new buyerid, weapon;

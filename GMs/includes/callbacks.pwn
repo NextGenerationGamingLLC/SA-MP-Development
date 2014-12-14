@@ -3976,12 +3976,13 @@ public OnPlayerDeath(playerid, killerid, reason)
 	{
 		if(PlayerInfo[playerid][pHeadValue] >= 1)
 		{
-			if(GoChase[killerid] == playerid)// && GetPVarInt(killerid, "HitCooldown") <= 0)
-			{
+			if(GetPVarInt(playerid, "KilledByExecute")) // && GetPVarInt(killerid, "HitCooldown") <= 0)
+			{ // Note: /execute already checks if the hit is being chased by the executor. This pvar should suffice.
 				new szMessage[64 + MAX_PLAYER_NAME];
 				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
+				DeletePVar(playerid, "KilledByExecute");
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
 				SendGroupMessage(2, COLOR_YELLOW, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
