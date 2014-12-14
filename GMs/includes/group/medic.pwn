@@ -137,7 +137,7 @@ CMD:triage(playerid, params[])
     	    if (ProxDetectorS(5.0, playerid, giveplayerid))
 			{
 	    	    new Float: health;
-	    	    GetPlayerHealth(giveplayerid, health);
+	    	    GetHealth(giveplayerid, health);
 	    	    if(health >= 85) SetHealth(giveplayerid, 100);
 				else SetHealth(giveplayerid, health+15.0);
 	    	    format(string, sizeof(string), "* %s has given %s 15 health.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -180,7 +180,7 @@ CMD:heal(playerid, params[])
 
 				if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"You are not near them!");
 				new Float:tempheal;
-				GetPlayerHealth(giveplayerid,tempheal);
+				GetHealth(giveplayerid,tempheal);
 				if(tempheal >= 100.0)
 				{
 					SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");

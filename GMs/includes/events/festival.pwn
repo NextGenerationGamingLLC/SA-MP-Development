@@ -98,7 +98,7 @@ CMD:corndog(playerid, params[])
 	PlayerInfo[playerid][pHungerDeathTimer] = 0;
 	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if(health < 100) 
 	{
 		if(health > 90) SetHealth(playerid, 100);
@@ -120,7 +120,7 @@ CMD:pizza(playerid, params[])
 	PlayerInfo[playerid][pHungerDeathTimer] = 0;
 	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if(health < 100) 
 	{
 		if(health > 90) SetHealth(playerid, 100);
@@ -142,7 +142,7 @@ CMD:frieddough(playerid, params[])
 	PlayerInfo[playerid][pHungerDeathTimer] = 0;
 	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if(health < 100) 
 	{
 		if(health > 90) SetHealth(playerid, 100);

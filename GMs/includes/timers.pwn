@@ -275,7 +275,7 @@ task SyncUp[60000]()
 		if(GetPVarType(i, "pZombieBit"))
 		{
 			new Float:health;
-			GetPlayerHealth(i, health);
+			GetHealth(i, health);
 			SetHealth(i, health - 10.0);
 			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 10 health due to virus.");
 			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Seek a medic to cure you!");
@@ -284,19 +284,19 @@ task SyncUp[60000]()
 		switch(GetPVarInt(i, "STD")) {
 			case 1: {
 				new Float: health;
-				GetPlayerHealth(i, health);
+				GetHealth(i, health);
 				SetHealth(i, health - 5.0);
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 4 health due to STD.");
 			}
 			case 2: {
 				new Float: health;
-				GetPlayerHealth(i, health);
+				GetHealth(i, health);
 				SetHealth(i, health - 12.0);
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 8 health due to STD.");
 			}
 			case 3: {
 				new Float: health;
-				GetPlayerHealth(i, health);
+				GetHealth(i, health);
 				SetHealth(i, health - 20.0);
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 12 health due to STD.");
 			}
@@ -730,7 +730,7 @@ task MoneyUpdate[1000]()
 				/*if((GetPlayerAnimationIndex(i) == 1660) && ((PlayerInfo[i][pCash] - GetPlayerMoney(i)) == 1))
 				{
 					new Float:hp;
-					GetPlayerHealth(i, hp);
+					GetHealth(i, hp);
 					if(hp + 35 >= 100.0) pSSHealth[i] = 100.0;
 					else pSSHealth[i] = hp + 35.0;
 				}*/
@@ -993,7 +993,7 @@ task EMSUpdate[5000]()
 			{
 
 				new Float:health;
-				GetPlayerHealth(i,health);
+				GetHealth(i,health);
 				if(PlayerInfo[i][mCooldown][4])
 				{
 					if(!GetPVarType(i, "_energybar")) SetPVarInt(i, "_energybar", 60);
@@ -1067,7 +1067,7 @@ task EMSUpdate[5000]()
 					}
 				}
 
-				GetPlayerHealth(i, health);
+				GetHealth(i, health);
 				if(health <= 5)
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
@@ -1549,7 +1549,7 @@ task ServerHeartbeat[1000]() {
 					new Lost = 0;
 					new Float:angle;
 					new Float:health;
-					GetPlayerHealth(i, health);
+					GetHealth(i, health);
 					if(health < 12)
 					{
 						if(i == Boxer1) { Lost = 1; trigger = 1; }
@@ -1616,7 +1616,7 @@ task ServerHeartbeat[1000]() {
 									format(string, sizeof(string), "* You have Won the Fight against %s.", loser);
 									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, string);
 									GameTextForPlayer(Boxer2, "~r~You won", 3500, 1);
-									if(GetPlayerHealth(Boxer1, health) < 20)
+									if(GetHealth(Boxer1, health) < 20)
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 										SetHealth(Boxer1, 30.0);
@@ -1626,7 +1626,7 @@ task ServerHeartbeat[1000]() {
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
 										SetHealth(Boxer1, 50.0);
 									}
-									if(GetPlayerHealth(Boxer2, health) < 20)
+									if(GetHealth(Boxer2, health) < 20)
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 										SetHealth(Boxer2, 30.0);
@@ -1690,7 +1690,7 @@ task ServerHeartbeat[1000]() {
 								format(string, sizeof(string), "* You have Won the Fight against %s.", loser);
 								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, string);
 								GameTextForPlayer(Boxer2, "~r~You won", 3500, 1);
-								if(GetPlayerHealth(Boxer1, health) < 20)
+								if(GetHealth(Boxer1, health) < 20)
 								{
 									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer1, 30.0);
@@ -1700,7 +1700,7 @@ task ServerHeartbeat[1000]() {
 									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
 									SetHealth(Boxer1, 50.0);
 								}
-								if(GetPlayerHealth(Boxer2, health) < 20)
+								if(GetHealth(Boxer2, health) < 20)
 								{
 									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer2, 30.0);
@@ -1769,7 +1769,7 @@ task ServerHeartbeat[1000]() {
 									format(string, sizeof(string), "* You have Won the Fight against %s.", loser);
 									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, string);
 									GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
-									if(GetPlayerHealth(Boxer1, health) < 20)
+									if(GetHealth(Boxer1, health) < 20)
 									{
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 										SetHealth(Boxer1, 30.0);
@@ -1779,7 +1779,7 @@ task ServerHeartbeat[1000]() {
 										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
 										SetHealth(Boxer1, 50.0);
 									}
-									if(GetPlayerHealth(Boxer2, health) < 20)
+									if(GetHealth(Boxer2, health) < 20)
 									{
 										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 										SetHealth(Boxer2, 30.0);
@@ -1841,7 +1841,7 @@ task ServerHeartbeat[1000]() {
 								format(string, sizeof(string), "* You have Won the Fight against %s.", loser);
 								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, string);
 								GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
-								if(GetPlayerHealth(Boxer1, health) < 20)
+								if(GetHealth(Boxer1, health) < 20)
 								{
 									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer1, 30.0);
@@ -1851,7 +1851,7 @@ task ServerHeartbeat[1000]() {
 									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
 									SetHealth(Boxer1, 50.0);
 								}
-								if(GetPlayerHealth(Boxer2, health) < 20)
+								if(GetHealth(Boxer2, health) < 20)
 								{
 									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer2, 30.0);
@@ -2127,12 +2127,12 @@ task ServerHeartbeat[1000]() {
 
 								new Float:health, Float:armour;
 
-								GetPlayerHealth(i, health);
+								GetHealth(i, health);
 								GetArmour(i, armour);
 								SetPVarFloat(i, "_BoxingCacheHP", health);
 								SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
-								GetPlayerHealth(ii, health);
+								GetHealth(ii, health);
 								GetArmour(ii, armour);
 								SetPVarFloat(ii, "_BoxingCacheHP", health);
 								SetPVarFloat(ii, "_BoxingCacheArmour", armour);
@@ -2176,12 +2176,12 @@ task ServerHeartbeat[1000]() {
 
 								new Float:health, Float:armour;
 
-								GetPlayerHealth(i, health);
+								GetHealth(i, health);
 								GetArmour(i, armour);
 								SetPVarFloat(i, "_BoxingCacheHP", health);
 								SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
-								GetPlayerHealth(ii, health);
+								GetHealth(ii, health);
 								GetArmour(ii, armour);
 								SetPVarFloat(ii, "_BoxingCacheHP", health);
 								SetPVarFloat(ii, "_BoxingCacheArmour", armour);
@@ -2475,15 +2475,15 @@ task ServerMicrobeat[500]() {
 				if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 					}
 				}
 				else
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 					}
 				}
 
@@ -2523,15 +2523,15 @@ task ServerMicrobeat[500]() {
 				if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
 					}
 				}
 				else
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetPlayerHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
 					}
 				}
 

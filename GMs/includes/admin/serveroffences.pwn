@@ -651,14 +651,14 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 	for(new x = 0; x < 12; x++) PlayerInfo[giveplayerid][pJailedWeapons][x] = PlayerInfo[giveplayerid][pGuns][x];
 	ResetPlayerWeaponsEx(giveplayerid);
-	format(string, 128, "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
+	format(string, 128, "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 	Log("logs/admin.log", string);
 	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 	else format(string, 128, "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 	StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-	PlayerInfo[giveplayerid][pWantedLevel] = 0;
-	SetPlayerWantedLevel(giveplayerid, 0);
+	//PlayerInfo[giveplayerid][pWantedLevel] = 0;
+	//SetPlayerWantedLevel(giveplayerid, 0);
 	PlayerInfo[giveplayerid][pJailTime] = jailtime*60;
 	SetPVarInt(giveplayerid, "_rAppeal", gettime()+60);
 	if(!custom) format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON][%s]", shortreason);

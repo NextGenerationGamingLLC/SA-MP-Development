@@ -215,6 +215,11 @@ public checkTestVehicle(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
+	if(GetPVarType(playerid, "PTestVeh"))
+	{
+		new pTestVeh = GetPVarInt(playerid, "PTestVeh");
+		DestroyVehicle(pTestVeh);
+	}
 	pFindDrive[playerid] = 0;
 	pDriveTimer[playerid] = 0;
 }

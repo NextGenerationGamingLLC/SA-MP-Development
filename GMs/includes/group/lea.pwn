@@ -49,7 +49,7 @@ stock CuffTacklee(playerid, giveplayerid)
 	TogglePlayerControllable(giveplayerid, 0);
 	ClearAnimations(giveplayerid);
 	ClearAnimations(playerid);
-	GetPlayerHealth(giveplayerid, health);
+	GetHealth(giveplayerid, health);
 	GetArmour(giveplayerid, armor);
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
 	SetPVarFloat(giveplayerid, "cuffarmor",armor);
@@ -1710,7 +1710,7 @@ CMD:cuff(playerid, params[])
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 0);
 					ClearAnimations(giveplayerid);
-					GetPlayerHealth(giveplayerid, health);
+					GetHealth(giveplayerid, health);
 					GetArmour(giveplayerid, armor);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
 					SetPVarFloat(giveplayerid, "cuffarmor",armor);

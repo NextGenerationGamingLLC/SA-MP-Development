@@ -77,7 +77,7 @@ CMD:buyhotdog(playerid, params[])
 		PlayerInfo[playerid][pHunger] = 100;
 	}
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if(health < 100) 
 	{
 		if(health > 90) 

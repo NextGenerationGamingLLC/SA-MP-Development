@@ -1749,7 +1749,7 @@ CMD:trunkput(playerid, params[])
 	if(GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][pvid][pvId]) == 510)  return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
 
 	new Float: Health;
-	GetPlayerHealth(playerid, Health);
+	GetHealth(playerid, Health);
 	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons in a car when your health lower than 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{

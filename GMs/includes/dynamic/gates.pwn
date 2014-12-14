@@ -177,7 +177,7 @@ CMD:setgatepass(playerid, params[])
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
 		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z))
 		{
-			if(GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID] && GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
+			if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID] && GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
 			{
 				format(GateInfo[i][gPass], 24, "%s", params);
 				SaveGate(i);

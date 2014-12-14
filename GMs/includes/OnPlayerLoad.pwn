@@ -276,7 +276,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pPhousekey] = INVALID_HOUSE_ID;
 		PlayerInfo[playerid][pPhousekey2] = INVALID_HOUSE_ID;
 		PlayerInfo[playerid][pPhousekey3] = INVALID_HOUSE_ID;
-		PlayerInfo[playerid][pCarLic] = 1;
+		PlayerInfo[playerid][pCarLic] = 0;
 		PlayerInfo[playerid][pFlyLic] = 0;
 		PlayerInfo[playerid][pBoatLic] = 0;
 		PlayerInfo[playerid][pFishLic] = 1;
@@ -291,7 +291,6 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pFreezeCar] = 0;
 		strcpy(PlayerInfo[playerid][pAutoTextReply], "Nothing", 64);
 		PlayerInfo[playerid][pLevel] = 1;
-		PlayerInfo[playerid][pSHealth] = 0.0;
 		PlayerInfo[playerid][pPnumber] = 0;
 		PlayerInfo[playerid][pPhousekey] = INVALID_HOUSE_ID;
 		PlayerInfo[playerid][pPhousekey2] = INVALID_HOUSE_ID;
@@ -386,6 +385,8 @@ public OnPlayerLoad(playerid)
 		FIFInfo[playerid][FIFChances] = 0;
 		PlayerInfo[playerid][zFuelCan] = 0;
 		PlayerInfo[playerid][bTicket] = 0;
+		SetHealth(playerid, 50);
+		SetArmour(playerid, 0);
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -976,7 +977,7 @@ public OnPlayerLoad(playerid)
 	}
 	new year, month, day;
 	getdate(year, month, day);
-	if(PlayerInfo[playerid][pReceivedPrize] == 0 && month == 12 && day == 30 && year == 2013)
+	if(PlayerInfo[playerid][pReceivedPrize] == 0 && month == 12 && day == 23 && year == 2014)
 	{
 		new icount = GetPlayerToySlots(playerid), success = 0;
 		for(new v = 0; v < icount; v++)
@@ -995,7 +996,7 @@ public OnPlayerLoad(playerid)
 				PlayerToyInfo[playerid][v][ptScaleY] = 1.0;
 				PlayerToyInfo[playerid][v][ptScaleZ] = 1.0;
 				PlayerToyInfo[playerid][v][ptTradable] = 1;
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a toy!  Happy New Year!");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a santa hat toy! Merry Christmas!");
 				
 				g_mysql_NewToy(playerid, v);
 				success = 1;
@@ -1027,9 +1028,9 @@ public OnPlayerLoad(playerid)
 					g_mysql_NewToy(playerid, i); 
 					
 					PlayerInfo[playerid][pReceivedPrize] = 1;
-					SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a toy!  Happy New Year!");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your laser.");
-					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the laser, the temporarily additional toy slot will be removed.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a santa hat toy! Merry Christmas!");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your toy.");
+					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the toy, the temporarily additional toy slot will be removed.");
 					break;
 				}	
 			}

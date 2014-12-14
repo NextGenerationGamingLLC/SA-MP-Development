@@ -94,7 +94,7 @@ public OnEnterFire()
 				if(IsValidStructureFire(n))
 				{
 					new Float:ftempHP;
-					GetPlayerHealth(i, ftempHP);
+					GetHealth(i, ftempHP);
 					SetHealth(i, ftempHP - 5);
 				}
 			}

@@ -349,7 +349,7 @@ CMD:window(playerid, params[])
 
             GetPlayerPos(playerid, fSpecPos[0], fSpecPos[1], fSpecPos[2]);
             GetPlayerFacingAngle(playerid, fSpecPos[3]);
-            GetPlayerHealth(playerid, fSpecPos[4]);
+            GetHealth(playerid, fSpecPos[4]);
             GetArmour(playerid, fSpecPos[5]);
 
             SetPVarFloat(playerid, "air_Xpos", fSpecPos[0]);

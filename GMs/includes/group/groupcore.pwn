@@ -4311,7 +4311,7 @@ CMD:leaders(playerid, params[])
 
 CMD:hfind(playerid, params[])
 {
-	if (IsAHitman(playerid) || PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess] || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1))
+	if (IsAHitman(playerid) || (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1))
 	{
 	    if(GetPVarType(playerid, "hFind")) {
 	   		SendClientMessageEx(playerid, COLOR_GRAD2, "Stopped Updating");

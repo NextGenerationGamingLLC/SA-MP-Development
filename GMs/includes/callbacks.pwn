@@ -5592,7 +5592,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    if(GetPVarInt(playerid, "DrinkCooledDown") == 1)
 	    {
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			GetHealth(playerid, cHealth);
 		    if(cHealth < 100)
 		    {
 				SetHealth(playerid, cHealth+5);
@@ -5612,7 +5612,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    if(GetPVarInt(playerid, "DrinkCooledDown") == 1)
 	    {
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			GetHealth(playerid, cHealth);
 		    if(cHealth < 100)
 		    {
 				SetHealth(playerid, cHealth+8);
@@ -5633,7 +5633,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(GetPVarInt(playerid, "DrinkCooledDown") == 1 && GetPVarInt(playerid, "UsingSprunk") == 1)
 		{
 			new Float: cHealth;
-			GetPlayerHealth(playerid, cHealth);
+			GetHealth(playerid, cHealth);
 			if(cHealth < 100)
 			{
 				SetHealth(playerid, cHealth+2);
@@ -6229,7 +6229,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarInt(playerid, "NGPassengerVeh", vehicleid);
 			SetPVarInt(playerid, "NGPassengerSkin", GetPlayerSkin(playerid));
 			new Float:health, Float:armour;
-			GetPlayerHealth(playerid, health);
+			GetHealth(playerid, health);
 			GetArmour(playerid, armour);
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);

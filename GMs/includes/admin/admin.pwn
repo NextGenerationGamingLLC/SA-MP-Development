@@ -98,7 +98,7 @@ public SprunkGuardCheck(playerid, giveplayerid)
 		return 1;
 	}
 	new Float:phealth;
-	GetPlayerHealth(giveplayerid, phealth);	
+	GetHealth(giveplayerid, phealth);	
 	if(phealth < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check result could not be made, the person is dead.");
@@ -225,7 +225,7 @@ public HealthHackCheck(playerid, giveplayerid)
     }
 
     new Float:health;
-    GetPlayerHealth(giveplayerid, health);
+    GetHealth(giveplayerid, health);
     if(health == 100)
 	{
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ HEALTH HACK CHECK RESULT_______________");
@@ -410,7 +410,7 @@ CMD:hhcheck(playerid, params[])
   			format(string, sizeof(string), "Checking %s for health hacks, please wait....", GetPlayerNameEx(giveplayerid));
 		    SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-			GetPlayerHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
+			GetHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
 			GetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
 			GetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
 			GetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
@@ -3682,7 +3682,7 @@ CMD:god(playerid, params[])
 		}
 		else
 		{
-			GetPlayerHealth(playerid,health);
+			GetHealth(playerid,health);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
 			GetArmour(playerid,armor);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);
@@ -7426,7 +7426,7 @@ CMD:slap(playerid, params[])
 			return 1;
 		}
 		else {
-		    GetPlayerHealth(giveplayerid, shealth);
+		    GetHealth(giveplayerid, shealth);
 			SetHealth(giveplayerid, shealth-5);
 			GetPlayerPos(giveplayerid, posx, posy, posz);
 			SetPlayerPos(giveplayerid, posx, posy, posz+5);
@@ -8564,7 +8564,7 @@ CMD:sgcheck(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sgcheck [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	new Float:health;
-	GetPlayerHealth(giveplayerid, health);
+	GetHealth(giveplayerid, health);
 	if(health < 1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is currently dead.");
 	if(SGcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently being checked for using sprunk guard!");
 	if(HHcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently being checked for health hacks!");
@@ -8576,7 +8576,7 @@ CMD:sgcheck(playerid, params[])
    	ABroadCast(COLOR_YELLOW, string, 2);
   	format(string, sizeof(string), "Checking %s for sprunk guard, please wait....", GetPlayerNameEx(giveplayerid));
     SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	GetPlayerHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
+	GetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
 	GetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
 	GetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
 	GetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
@@ -8642,7 +8642,7 @@ CMD:qs(playerid, params[]) return cmd_quickstats(playerid, params);
 CMD:quickstats(playerid, params[])
 {
 	new string[128], Float: health, Float: armor;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	GetArmour(playerid, armor);
 	
 	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));

@@ -1062,7 +1062,7 @@ CMD:accepthelp(playerid, params[])
 			SetPlayerPos(playerid, x, y+2, z);
 			SetPlayerVirtualWorld(playerid, vw);
 			SetPlayerInterior(playerid, i);
-			GetPlayerHealth(playerid,health);
+			GetHealth(playerid,health);
 			SetPVarFloat(playerid, "pPreGodHealth", health);
 			GetArmour(playerid,armor);
 			SetPVarFloat(playerid, "pPreGodArmor", armor);

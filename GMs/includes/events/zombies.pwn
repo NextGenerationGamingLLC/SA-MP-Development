@@ -365,7 +365,7 @@ CMD:bite(playerid, params[])
 						SendClientMessageEx(i, COLOR_GREY, "You were not affected by the zombies bite due to the antibiotic in your bloodstream!");
 						return SendClientMessageEx(playerid, COLOR_GREY, "They have a antibiotic in their bloodstream! Your bite had no effect on them!");
 					}
-					GetPlayerHealth(i, hp);
+					GetHealth(i, hp);
 					SetHealth(i, hp - 30);
 					SetPVarInt(i, "pZombieBit", 1);
 					SetPVarInt(i, "pZombieBiter", playerid);
@@ -396,7 +396,7 @@ CMD:bite(playerid, params[])
 				    if(IsPlayerInRangeOfPoint(i, 2, X, Y, Z))
 				    {
 						new Float:hp, string[128];
-						GetPlayerHealth(i, hp);
+						GetHealth(i, hp);
 						SetHealth(i, hp-20);
 						format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
 						ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

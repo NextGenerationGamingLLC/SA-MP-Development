@@ -402,7 +402,7 @@ PayDay(i) {
 			if(PlayerInfo[i][pFallIntoFun] == 5)
 			{	
 				new Float: health;
-				GetPlayerHealth(i, health);
+				GetHealth(i, health);
 				
 				if(health == 100)
 				{
@@ -1583,7 +1583,7 @@ public firstaid5(playerid)
 	if(GetPVarInt(playerid, "usingfirstaid") == 1)
 	{
 		new Float:health;
-		GetPlayerHealth(playerid, health);
+		GetHealth(playerid, health);
 		if(health < 100.0)
 		{
 			if((health+5.0) <= 100.0)
@@ -1766,7 +1766,7 @@ public OtherTimerEx(playerid, type)
 			if(GetPVarInt(playerid, "HospitalTimer") > 0)
 			{
 				new Float:curhealth;
-				GetPlayerHealth(playerid, curhealth);
+				GetHealth(playerid, curhealth);
 				SetPVarInt(playerid, "HospitalTimer", GetPVarInt(playerid, "HospitalTimer")-1);
 				SetHealth(playerid, curhealth+1);
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_HOSPITALTIMER);
@@ -7933,7 +7933,7 @@ stock OnPlayerStatsUpdate(playerid) {
 	if(gPlayerLogged{playerid}) {
 		if(!GetPVarType(playerid, "TempName") && !GetPVarInt(playerid, "EventToken") && GetPVarInt(playerid, "IsInArena") == -1) {
 		    new Float: Pos[4], Float: Health[2];
-			GetPlayerHealth(playerid, Health[0]);
+			GetHealth(playerid, Health[0]);
 			GetArmour(playerid, Health[1]);
 
 			PlayerInfo[playerid][pInt] = GetPlayerInterior(playerid);
@@ -9654,7 +9654,7 @@ stock ShowStats(playerid,targetid)
 		new expamount = nxtlevel*4;
 		new costlevel = nxtlevel*25000;
 		new Float:health, Float:armor;
-		GetPlayerHealth(targetid, health);
+		GetHealth(targetid, health);
 		GetArmour(targetid, armor);
 		new Float:px,Float:py,Float:pz;
 		GetPlayerPos(targetid, px, py, pz);

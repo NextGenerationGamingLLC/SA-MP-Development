@@ -2539,7 +2539,9 @@ CMD:resupply(playerid, params[])
 	{
 	    return SendClientMessageEx(playerid, COLOR_GREY, "Your inventory does not have the capacity.");
 	}
-	if (Businesses[iBusiness][bSafeBalance] < floatround(amount * BUSINESS_ITEMS_COST)) {
+	new rSupCost = floatround(amount * BUSINESS_ITEMS_COST);
+	if (!Businesses[iBusiness][bSafeBalance] || Businesses[iBusiness][bSafeBalance] < rSupCost || rSupCost < 0) {
+		if(rSupCost < 0) format(string, sizeof(string), "!! %s attempted to exploit resupply with an amount of %d in BizID: %d !!", GetPlayerNameEx(playerid), amount, iBusiness), Log("/logs/business.log", string);
 	    format(string, sizeof(string), "Safe balance is not enough for this. ($%s)", number_format(floatround(amount * BUSINESS_ITEMS_COST)));
 		return SendClientMessageEx(playerid, COLOR_GREY, string);
 	}
@@ -2551,7 +2553,7 @@ CMD:resupply(playerid, params[])
 	Businesses[iBusiness][bOrderAmount] = amount;
 	Businesses[iBusiness][bOrderState] = 1;
 	SaveBusiness(iBusiness);
-	format(string, sizeof(string), "%s (IP: %s) has placed a resupply order for %s (%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness]);
+	format(string, sizeof(string), "%s (IP: %s) has placed a resupply order for %s (%d) - Amount: %d", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), Businesses[PlayerInfo[playerid][pBusiness]][bName], PlayerInfo[playerid][pBusiness], amount);
 	Log("logs/business.log", string);
 	format(string, sizeof(string), "* You have placed a resupply order for %s", Businesses[PlayerInfo[playerid][pBusiness]][bName]);
 	SendClientMessage(playerid, COLOR_GRAD2, string);

@@ -50,7 +50,7 @@ public PayNSpray(playerid, id, vehicleid)
 			getdate(year,month,day);
 			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 			Log(file, str);
-			SendClientMessageEx(playerid, COLOR_GREY, "This is a group vehicle and the repair cost has been paid by the government.");
+			SendClientMessageEx(playerid, COLOR_GREY, "This is a group vehicle and the repair cost has been paid by your agency.");
 		}
 		else
 		{

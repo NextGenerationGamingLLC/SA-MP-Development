@@ -656,26 +656,28 @@ CMD:families(playerid, params[])
 
 	if(sscanf(params, "d", familyid))
 	{
-		new number = 1;
 		for(new i = 1; i < sizeof(FamilyInfo); i++)
 		{
-	  		if(FamilyInfo[i][FamilyTurfTokens] < 12)
+			new count;
+			foreach(Player, j)
 			{
-				format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: 0", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers]);
+				if(PlayerInfo[j][pFMember] == i) count++;
+			}
+			if(PlayerInfo[playerid][pFMember] == INVALID_FAMILY_ID)
+			{
+				format(string, sizeof(string), "%s (%d) | Members: %d | Members Online: %d", FamilyInfo[i][FamilyName], i, FamilyInfo[i][FamilyMembers], count);
 			}
 			else
 			{
-				format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: %d", FamilyInfo[i][FamilyName], number, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers], FamilyInfo[i][FamilyTurfTokens]/12);
+				format(string, sizeof(string), "%s (%d) | Leader: %s | Members: %d | Claim Tokens: %d | Members Online: %d", FamilyInfo[i][FamilyName], i, FamilyInfo[i][FamilyLeader], FamilyInfo[i][FamilyMembers], (FamilyInfo[i][FamilyTurfTokens] < 12)?0:FamilyInfo[i][FamilyTurfTokens]/12, count);
 			}
-			number++;
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
 		return 1;
 	}
 
-	if(PlayerInfo[playerid][pAdmin] >= 2 || IsAHitman(playerid))
+	if(PlayerInfo[playerid][pAdmin] >= 2 || IsAHitman(playerid) || (PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pFMember] == familyid))
 	{
-
 		if(familyid < 1 || familyid >= MAX_FAMILY)
 		{
 			format(string, sizeof(string), "Family slot must be between 1 and %i.", MAX_FAMILY-1);
@@ -741,8 +743,7 @@ CMD:families(playerid, params[])
 	}	
 	else
 	{
-		format(string, sizeof(string), "This command has been restricted to family members and administrators.");
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "This command has been restricted to family members and administrators.");
 	}
 	return 1;
 }
@@ -878,7 +879,7 @@ CMD:fstoregun(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] > 2 || PlayerInfo[playerid][pFamed] > 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give away weapons if you're Gold+ VIP/Famed+!");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You can not store weapons from a vehicle!");
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if (health < 80) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not store weapons if your health is below 80!");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || GetPlayerState(playerid) == 7) 
 		return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");

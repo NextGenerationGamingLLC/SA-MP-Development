@@ -91,7 +91,7 @@ CMD:joinevent(playerid, params[]) {
 		    }
 		    ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			GetPlayerHealth(playerid, EventFloats[playerid][4]);
+			GetHealth(playerid, EventFloats[playerid][4]);
 			GetArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
@@ -127,7 +127,7 @@ CMD:joinevent(playerid, params[]) {
 			SetPVarInt( playerid, "EventToken", 1 );
 			ResetPlayerWeapons( playerid );
 			pTazer{playerid} = 0;
-			GetPlayerHealth(playerid, EventFloats[playerid][4]);
+			GetHealth(playerid, EventFloats[playerid][4]);
 			GetArmour(playerid, EventFloats[playerid][5]);
 			EventLastVW[playerid] = GetPlayerVirtualWorld(playerid);
 			EventLastInt[playerid] = GetPlayerInterior(playerid);
@@ -238,7 +238,7 @@ CMD:eventstaff(playerid, params[])
 					PlayerInfo[playerid][pAGuns][GetWeaponSlot(38)] = 38;
 					GivePlayerValidWeapon(playerid, 38, 60000);
 					EventKernel[EventStaff][i] = playerid;
-					GetPlayerHealth(playerid,health);
+					GetHealth(playerid,health);
 					SetPVarFloat(playerid, "pPreGodHealth", health);
 					GetArmour(playerid,armor);
 					SetPVarFloat(playerid, "pPreGodArmor", armor);

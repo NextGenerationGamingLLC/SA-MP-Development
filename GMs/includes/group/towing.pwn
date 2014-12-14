@@ -100,7 +100,7 @@ CMD:impound(playerid, params[]) {
 						format(szMessage, sizeof(szMessage), "HQ: %s has impounded %s's %s ($%s unpaid tickets).", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]));
 						SendGroupMessage(1, RADIO, szMessage);
 						
-						format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %'s %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(iCost));
+						format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(iCost));
 						GroupLog(PlayerInfo[playerid][pMember], szMessage);
 					}
 					/*case 2: {

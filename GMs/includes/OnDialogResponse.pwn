@@ -3779,7 +3779,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarFloat(playerid, "pbOldY", oldY);
 						SetPVarFloat(playerid, "pbOldZ", oldZ);
 
-						GetPlayerHealth(playerid,oldHealth);
+						GetHealth(playerid,oldHealth);
 						GetArmour(playerid,oldArmor);
 						SetPVarInt(playerid, "pbOldInt", GetPlayerInterior(playerid));
 						SetPVarInt(playerid, "pbOldVW", GetPlayerVirtualWorld(playerid));
@@ -6491,7 +6491,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			GetPlayerHealth(playerid, health);
+			GetHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
@@ -6539,7 +6539,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			GetPlayerHealth(playerid, health);
+			GetHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if( hpint >= 100 )
 			{
@@ -6587,7 +6587,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(listitem == 0)
 		{
 			new Float:health;
-			GetPlayerHealth(playerid, health);
+			GetHealth(playerid, health);
 			new hpint = floatround(health, floatround_round);
 			if(hpint >= 100)
 			{
@@ -6662,7 +6662,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(listitem == 0)
 			{
 				new Float:health;
-				GetPlayerHealth(playerid, health);
+				GetHealth(playerid, health);
 				new hpint = floatround( health, floatround_round );
 				if( hpint >= 100 )
 				{

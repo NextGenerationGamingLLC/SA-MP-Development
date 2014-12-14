@@ -799,7 +799,7 @@ CMD:usepot(playerid, params[])
 
 	if(storageid == 0 && PlayerInfo[playerid][pPot] > 1 || (storageid > 0) && StorageInfo[playerid][storageid-1][sPot] > 1)
 	{
-		GetPlayerHealth(playerid, health);
+		GetHealth(playerid, health);
 		healthint = floatround(health, floatround_round);
 		if(healthint >= 100 )
 		{

@@ -1022,7 +1022,7 @@ CMD:giveweapon(playerid, params[])
 		return 1;
 	}
 	new Float:health;
-	GetPlayerHealth(playerid, health);
+	GetHealth(playerid, health);
 	if (health < 80)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You can not give weapons if your health is below 80!");

@@ -343,7 +343,7 @@ CMD:joinhunger(playerid, params[])
 	new rand = random(sizeof(hgRandomSpawn));
 	SetPlayerPos(playerid, hgRandomSpawn[rand][0], hgRandomSpawn[rand][1], hgRandomSpawn[rand][2]);
 	
-	GetPlayerHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
+	GetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
 	SetHealth(playerid, 9999.9);
 	
 	GetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);

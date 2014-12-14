@@ -681,7 +681,7 @@ CMD:bstore(playerid, params[])
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new Float: Health;
-		GetPlayerHealth(playerid, Health);
+		GetHealth(playerid, Health);
 		if(Health < 50.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store a backpack in a house/car when your health lower than 80.");
 		
 		new string[128], housecar[6];

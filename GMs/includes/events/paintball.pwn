@@ -561,7 +561,7 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 	SetPVarFloat(playerid, "pbOldY", oldY);
 	SetPVarFloat(playerid, "pbOldZ", oldZ);
 
-	GetPlayerHealth(playerid,oldHealth);
+	GetHealth(playerid,oldHealth);
 	GetArmour(playerid,oldArmor);
 	SetPVarInt(playerid, "pbOldInt", GetPlayerInterior(playerid));
 	SetPVarInt(playerid, "pbOldVW", GetPlayerVirtualWorld(playerid));
@@ -907,7 +907,7 @@ public TickKOTH(playerid)
 		    if(IsPlayerInCheckpoint(playerid))
 			{
 			    new Float:health;
-			    GetPlayerHealth(playerid, health);
+			    GetHealth(playerid, health);
 			    SetHealth(playerid, health+1);
 
 			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
@@ -919,7 +919,7 @@ public TickKOTH(playerid)
 		    if(IsPlayerInCheckpoint(playerid))
 			{
 			    new Float:health;
-			    GetPlayerHealth(playerid, health);
+			    GetHealth(playerid, health);
 			    SetHealth(playerid, health+1);
 
 			    PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);

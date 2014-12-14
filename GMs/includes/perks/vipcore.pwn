@@ -484,7 +484,7 @@ CMD:v(playerid, params[]) {
 			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pVIPMod])
 			{
 				if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-				if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 				else format(szMessage, sizeof(szMessage), "** %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
 				SetPVarInt(playerid, "timeVIP", gettime()+5);
 			}

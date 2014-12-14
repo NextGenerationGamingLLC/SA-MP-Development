@@ -2466,7 +2466,7 @@ CMD:accept(playerid, params[])
                                     new Float:health;
                                     new level = PlayerInfo[SexOffer[playerid]][pSexSkill];
                                     if(level >= 0 && level <= 50) {
-                                        GetPlayerHealth(playerid, health);
+                                        GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 90) {
                                                 SetHealth(playerid, 100);
@@ -2486,7 +2486,7 @@ CMD:accept(playerid, params[])
                                         else if(STD1[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 10 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 51 && level <= 100) {
-                                        GetPlayerHealth(playerid, health);
+                                        GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 80) {
                                                 SetHealth(playerid, 100);
@@ -2504,7 +2504,7 @@ CMD:accept(playerid, params[])
                                         else if(STD2[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 20 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 101 && level <= 200) {
-                                        GetPlayerHealth(playerid, health);
+                                        GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 70) {
                                                 SetHealth(playerid, 100);
@@ -2522,7 +2522,7 @@ CMD:accept(playerid, params[])
                                         else if(STD3[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 30 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 201 && level <= 400) {
-                                        GetPlayerHealth(playerid, health);
+                                        GetHealth(playerid, health);
                                         if(health < 100) {
                                             if(health > 60) {
                                                 SetHealth(playerid, 100);
@@ -2540,7 +2540,7 @@ CMD:accept(playerid, params[])
                                         else if(STD4[rand] == 3) { SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You got 40 Health and Syphilis because of unsafe sex."); SendClientMessageEx(SexOffer[playerid], COLOR_LIGHTBLUE, "* You received Syphilis because of unsafe sex."); }
                                     }
                                     else if(level >= 401) {
-                                        GetPlayerHealth(playerid, health);
+                                        GetHealth(playerid, health);
                                         if(health > 50) {
                                             SetHealth(playerid, 100);
                                         }
@@ -2888,7 +2888,7 @@ CMD:cancel(playerid, params[])
 	{
 		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
 			new Float:health;
-			GetPlayerHealth(playerid, health);
+			GetHealth(playerid, health);
 			new hpint = floatround( health, floatround_round );
 			if (hpint >=  80)
 			{

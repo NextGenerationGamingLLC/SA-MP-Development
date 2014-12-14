@@ -324,7 +324,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		PlayerTextDrawSetString(playerid, HospTime[playerid], string);
 		PlayerTextDrawShow(playerid, HospTime[playerid]);
 		new Float:curhealth;
-		GetPlayerHealth(playerid, curhealth);
+		GetHealth(playerid, curhealth);
 		SetHealth(playerid, curhealth+1);
 		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
 	}
@@ -526,84 +526,81 @@ CMD:kill(playerid, params[])
 
 RemoveVendingMachines(playerid)
 {
-    // Remove 24/7 machines
-    RemoveBuildingForPlayer(playerid, 1302, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 1209, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 955, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 956, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 1775, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 1776, 0.0, 0.0, 0.0, 6000.0);
-    RemoveBuildingForPlayer(playerid, 1977, 0.0, 0.0, 0.0, 6000.0);
-    
-    return 1;
+	// Remove 24/7 machines
+	RemoveBuildingForPlayer(playerid, 1302, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 1209, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 955, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 956, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 1775, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 1776, 0.0, 0.0, 0.0, 6000.0);
+	RemoveBuildingForPlayer(playerid, 1977, 0.0, 0.0, 0.0, 6000.0);
+	return 1;
 }
 
 CMD:hospitalmenu(playerid, params[])
 {
-    if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) /*Main Hospitals */ || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258) /* DOC Hospital */)
-    {
-        format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000");
-        ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
-    }
-    else SendClientMessageEx(playerid, COLOR_GREY, "You must be at a hospital front desk to be treated.");
-    
-    return 1;
+	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) /*Main Hospitals */ || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258) /* DOC Hospital */)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000");
+		ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
+	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "You must be at a hospital front desk to be treated.");
+	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-    switch(dialogid)
-    {
-        case DIALOG_HOSPITAL_MENU:
-        {
-            new Float:tHP;
-            GetPlayerHealth(playerid, tHP);
-            
-            switch(response)
-            {
-                case 0: // heal them 25% 
-                {
-                   if(PlayerInfo[playerid][pCash] >= 1000)
-                   {
-                       SetHealth(playerid, tHP + 25);
-                       GivePlayerCash(playerid, -1000);
-					   HospHeal(playerid);
-                   }
-                   else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
-                }
-                case 1: // heal them 50%
-                {
-                    if(PlayerInfo[playerid][pCash] >= 2000)
-                    {
-                       SetHealth(playerid, tHP + 50);
-                       GivePlayerCash(playerid, -2000);
-					   HospHeal(playerid);
-                    }
-                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
-                }
-                case 2: // heal them 75%
-                {
-                    if(PlayerInfo[playerid][pCash] >= 3000)
-                    {
-                       SetHealth(playerid, tHP + 75);
-                       GivePlayerCash(playerid, -3000);
-					   HospHeal(playerid);
-                    }
-                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
-                }
-                case 3: // heal them fully.
-                {
-                    if(PlayerInfo[playerid][pCash] >= 4000)
-                    {
-                       SetHealth(playerid, 100);
-                       GivePlayerCash(playerid, -4000);
-					   HospHeal(playerid);
-                    }
-                    else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
-                }
-            }
-        }
-    }
-    
-    return 1;
+	switch(dialogid)
+	{
+		case DIALOG_HOSPITAL_MENU:
+		{
+			if(!response) return 1;
+			new Float:tHP;
+			GetHealth(playerid, tHP);
+			switch(listitem)
+			{
+				case 0: // heal them 25% 
+				{
+					if(PlayerInfo[playerid][pCash] >= 1000)
+					{
+						if(tHP + 25 > 100) SetHealth(playerid, 100); else SetHealth(playerid, tHP + 25);
+						GivePlayerCash(playerid, -1000);
+						HospHeal(playerid);
+					}
+					else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+				}
+				case 1: // heal them 50%
+				{
+					if(PlayerInfo[playerid][pCash] >= 2000)
+					{
+						if(tHP + 50 > 100) SetHealth(playerid, 100); else SetHealth(playerid, tHP + 50);
+						GivePlayerCash(playerid, -2000);
+						HospHeal(playerid);
+					}
+					else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+				}
+				case 2: // heal them 75%
+				{
+					if(PlayerInfo[playerid][pCash] >= 3000)
+					{
+						if(tHP + 75 > 100) SetHealth(playerid, 100); else SetHealth(playerid, tHP + 75);
+						GivePlayerCash(playerid, -3000);
+						HospHeal(playerid);
+					}
+					else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+				}
+				case 3: // heal them fully.
+				{
+					if(PlayerInfo[playerid][pCash] >= 4000)
+					{
+						SetHealth(playerid, 100);
+						GivePlayerCash(playerid, -4000);
+						HospHeal(playerid);
+					}
+					else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+				}
+			}
+		}
+	}
+	return 1;
 }
