@@ -38,6 +38,7 @@
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if(PlayerIsDead[damagedid]) return 1;
+	szMiscArray[0] = 0;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
 	{
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
@@ -93,8 +94,9 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
 				new newkeys, dir1, dir2;
 				GetPlayerKeys(damagedid, newkeys, dir1, dir2);
-				if(ActiveKey(KEY_HANDBRAKE) && (!IsNotAGun(GetPlayerWeapon(playerid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
-				if(ActiveKey(KEY_FIRE) && (!IsNotAGun(GetPlayerWeapon(playerid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively shooting.");
+				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
+				//if(ActiveKey(KEY_HANDBRAKE) && (!IsNotAGun(GetPlayerWeapon(damagedid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively aiming.");
+				//if(ActiveKey(KEY_FIRE) && (!IsNotAGun(GetPlayerWeapon(damagedid)))) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot taze players that are actively shooting.");
 				#if defined zombiemode
 				if(GetPVarInt(damagedid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Zombies can not be tazed!");
 				#endif

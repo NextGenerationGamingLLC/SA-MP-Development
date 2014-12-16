@@ -37,6 +37,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialog(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];
+	szMiscArray[0] = 0;
 
 	// Crash Bug Fix
 	if(strfind(inputtext, "%", true) != -1)

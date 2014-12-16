@@ -541,6 +541,7 @@ CMD:hospitalmenu(playerid, params[])
 {
 	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) /*Main Hospitals */ || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258) /* DOC Hospital */)
 	{
+		szMiscArray[0] = 0;
 		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000");
 		ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
 	}

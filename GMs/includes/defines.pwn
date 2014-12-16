@@ -966,6 +966,9 @@ native gpci(playerid, serial[], maxlen);
 
 #define			DIALOG_DISABLED				(6018)
 
+#define 		DIALOG_LIST_INTERIORS		(6019)
+#define 		DIALOG_LIST_INTERIORS2		(6020)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 

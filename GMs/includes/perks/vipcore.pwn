@@ -1206,6 +1206,7 @@ CMD:makevipmod(playerid, params[])
 {
 	if(PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	new target, level;
+	szMiscArray[0] = 0;
 	if(sscanf(params, "ud", target, level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makevipmod [player] [level(0-2)])");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	if(!(0 <= level <= 2)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid levels are 0 - 2");
