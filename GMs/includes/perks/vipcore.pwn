@@ -439,7 +439,7 @@ CMD:viplocker(playerid, params[]) {
 }
 
 CMD:togvip(playerid, params[]) {
-	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {
 		if(PlayerInfo[playerid][pVIPTogged] == 1) {
 			PlayerInfo[playerid][pVIPTogged] = 0;
 			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat disabled.");

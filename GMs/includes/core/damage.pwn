@@ -59,11 +59,11 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			if(damagedid == GoChase[playerid] && bodypart == BODY_PART_HEAD)
 			{
-				// Almost guarantees /execute to properly fulfill a hit every time, as long as the shot hits and not dependent on what the Player Death callback says killed them.
-				SetPVarInt(damagedid, "KilledByExecute", playerid);
 				SetPVarInt(playerid, "ExecutionMode", 0);
 				SetPVarInt(playerid, "KillShotCooldown", gettime());
 				SetHealth(damagedid, 0);
+				OnPlayerDeath(damagedid, playerid, weaponid);
+				return 1;
 			}
 			else
 			{
@@ -184,7 +184,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
 	switch(weaponid)
 	{
-		case 0 .. 8, 10 .. 15, 28, 32: if(amount > 7.0) amount = 7.0;
+		case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 7.0) amount = 7.0;
 		case 9: if(amount > 30.0) amount = 30.0;
 		case 23: if(amount > 14.0) amount = 14.0;
 		case 24, 38: if(amount > 47.0) amount = 47.0;
@@ -196,6 +196,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		case 34: if(amount > 42.0) amount = 42.0;
 		case 37, 41, 42: if(amount > 3.0) amount = 3.0;
 	}
+	if(GetPlayerCameraMode(playerid) == 55 && amount > 9.0) amount = 9.0;
 
 	new Float:actual_damage = amount;
 	//fitness damage modifier
@@ -238,7 +239,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	/*format(szMiscArray, sizeof(szMiscArray), "Actual Damage: %f", actual_damage);
 	SendClientMessageToAll(-1, line);*/
 
-	if(armour < 0.1) // Player has no armour
+	if(playerid == INVALID_PLAYER_ID || armour < 0.1) // Player has no armour
 	{
 		difference = health - actual_damage;
 		if(difference < 0.1)
@@ -246,7 +247,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			SetHealth(damagedid, 0.0);
 			OnPlayerDeath(damagedid, playerid, weaponid);
 		}
-		else SetHealth(damagedid, difference);	
+		else SetHealth(damagedid, difference);
 	}
 	else // Player has armour
 	{
@@ -287,7 +288,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			case 50: { ClearAnimations(playerid); }
-			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
+			case 49, 51, 31, 35, 36, 37, 38, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
 		}
 	}
 	foreach(Player, i)

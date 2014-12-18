@@ -3391,6 +3391,7 @@ stock g_mysql_SaveAccount(playerid)
 	format(mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
 		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3], PlayerInfo[playerid][pJailedInfo][4]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", mistring);
+	mistring[0] = 0;
 	for(new jailX = 0; jailX < 12; jailX++)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);

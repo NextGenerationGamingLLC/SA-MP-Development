@@ -576,7 +576,7 @@ task MoneyUpdate[1000]()
 	{
 		if(gPlayerLogged{i})
 		{
-			if(IsSpawned[i] == 0) 
+			if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337) 
 			{
 				SpawnKick[i]++;
 				if(SpawnKick[i] >= 120)

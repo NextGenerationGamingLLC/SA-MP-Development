@@ -180,7 +180,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		if(oldstate == PLAYER_STATE_DRIVER && newstate == PLAYER_STATE_ONFOOT)
 		{
 			pDriveTimer[playerid] = SetTimerEx("checkTestVehicle", 60000, false, "i", playerid);
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have 60 secconds to get back in your vehicle or it will be taken back.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have 60 seconds to get back in your vehicle or it will be taken back.");
 		}
 		else if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER && GetPlayerVehicleID(playerid) == pTestVeh)
 		{

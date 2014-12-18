@@ -244,6 +244,10 @@ DocLockdown(playerid)
 		{
 			OpenDocAreaDoors(i, 0);
 		}
+		for(new i = 0; i < 6; i++)
+		{
+			OpenDocIsolationCells(i, 0);
+		}
 		format( szWarning, sizeof(szWarning), "ALERT: The Easter Basin Correctional Facility is now on Lockdown for an emergency (( %s ))", GetPlayerNameEx(playerid));
 		SendGroupMessage(1, COLOR_RED, szWarning);
 		//PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
@@ -1442,6 +1446,7 @@ CMD:isolateinmate(playerid, params[])
 	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
 	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
 	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
+	else if(!(0 <= iCellID < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Valid Isolation Cells [0-5]");
 	else if(PlayerInfo[iTargetID][pIsolated] == 0)
 	{
 		DocIsolate(iTargetID, iCellID);
@@ -1751,7 +1756,7 @@ CMD:jailcuff(playerid, params[])
 			if (ProxDetectorS(8.0, playerid, giveplayerid))
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
-				if(GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP)
+				if(GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || PlayerCuffed[giveplayerid] == 1)
 				{
 					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);

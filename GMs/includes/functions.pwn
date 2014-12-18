@@ -6279,7 +6279,7 @@ stock SetPlayerSpawn(playerid)
 			SetPlayerInterior(playerid,PlayerInfo[playerid][pInt]);
 			if(PlayerInfo[playerid][pHealth] < 1) PlayerInfo[playerid][pHealth] = 100;
 			SetHealth(playerid, PlayerInfo[playerid][pHealth]);
-			if(PlayerInfo[playerid][pArmor] > 0) SetArmour(playerid, PlayerInfo[playerid][pArmor]);
+			if(PlayerInfo[playerid][pArmor] > 0) SetArmour(playerid, PlayerInfo[playerid][pArmor]); else SetArmour(playerid, 0.0);
 			SetCameraBehindPlayer(playerid);
 			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
 		}

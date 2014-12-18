@@ -568,7 +568,7 @@ CMD:sethp(playerid, params[])
 {
 	new string[128], playa, health;
 	if(sscanf(params, "ud", playa, health)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sethp [player] [health]");
-	if(PlayerInfo[playa][pJailTime] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "You can't set a OOC Prisoner Health!");
+	if(PlayerInfo[playa][pJailTime] >= 1 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessage(playerid, COLOR_WHITE, "You can't set a OOC Prisoner Health!");
 	if((PlayerInfo[playa][pAdmin] >= PlayerInfo[playerid][pAdmin]) && playa != playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on the same/greater level admin than you!");
 	if(PlayerInfo[playerid][pAdmin] >= 4) {
 		if(IsPlayerConnected(playa)) {
@@ -642,6 +642,7 @@ CMD:hackwarnings(playerid, params[])
 
 	foreach(Player, i)
 	{
+		if(playerTabbed[i] != 0) continue;
 		GetPlayerHealth(i, health);
 		GetHealth(i, rhealth);
 		GetPlayerArmour(i, armor);
@@ -7029,7 +7030,7 @@ CMD:entercar(playerid, params[])
 		if(sscanf(params, "ii", carid, seatid))	return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /entercar [carid] [seatid]");
 		if(!(1 <= carid <= MAX_VEHICLES)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid vehicle IDs run from 1 to 2000.");
 		if(seatid < 0 || seatid > 3) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Seat ID!");
-		else if(IsSeatAvailable(carid, seatid)) IsPlayerEntering{playerid} = true, PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+		else if(!IsVehicleOccupied(carid, seatid)) IsPlayerEntering{playerid} = true, PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
 		else SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
 	}
 	else

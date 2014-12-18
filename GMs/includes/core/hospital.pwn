@@ -430,7 +430,7 @@ CMD:setinsurance(playerid, params[])
 
 HospHeal(playerid)
 {
-	if (IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479))//2103.3252,2824.2102,-16.1672
+	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258))//2103.3252,2824.2102,-16.1672
 	{
 		if(GetPVarType(playerid, "STD"))
 		{

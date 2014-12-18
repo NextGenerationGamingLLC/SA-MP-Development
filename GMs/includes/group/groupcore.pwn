@@ -3947,7 +3947,7 @@ CMD:groupban(playerid, params[])
 				SetPVarInt(playerid, "GroupBanningPlayer", giveplayerid);
 				SetPVarInt(playerid, "GroupBanningGroup", group);
 				new string[256];
-				format(string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%s', NOW())", GetPlayerSQLId(giveplayerid), group, reason);
+				format(string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%s', NOW())", GetPlayerSQLId(giveplayerid), group, g_mysql_ReturnEscaped(reason, MainPipeline));
 				mysql_function_query(MainPipeline, string, false, "Group_QueryFinish", "ii", GROUP_QUERY_ADDBAN, playerid);
 				format(string, sizeof(string), "Attempting to ban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
 			    SendClientMessageEx(playerid, COLOR_WHITE, string);
