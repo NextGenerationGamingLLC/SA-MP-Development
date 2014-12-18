@@ -68,7 +68,7 @@ enum eGroupData {
 	g_iWheelClamps,
 	g_iDoCAccess,
 	g_iMedicAccess,
-	g_iDMVAccess/*,
+	g_iDMVAccess,
 	g_iOOCChat,
 	g_hOOCColor,
 	g_iPot,
@@ -76,8 +76,12 @@ enum eGroupData {
 	g_iHeroin,
 	g_iSyringes,
 	g_iOpium,
+	g_iMaterials, 
 	g_iWeapons[50],
-	g_iClothes[MAX_GROUP_RANKS]*/
+	g_iClothes[MAX_GROUP_RANKS],
+	g_iTurfCapRank,
+	g_iPointCapRank,
+	g_iWithdrawRank
 	
 }
 

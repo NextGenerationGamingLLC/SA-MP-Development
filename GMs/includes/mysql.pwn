@@ -152,8 +152,17 @@ SaveGroup(iGroupID) {
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]);
+		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
+	);
 
+	format(szQuery, sizeof(szQuery), "%s\
+		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i'",
+		szQuery,
+		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank]
+	);
+
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `GClothes%i` = '%i'", szQuery, i, arrGroupData[iGroupID][g_iClothes][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%i` = '%s'", szQuery, i, arrGroupRanks[iGroupID][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%iPay` = %i", szQuery, i, arrGroupData[iGroupID][g_iPaycheck][i]);
 	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szQuery, sizeof szQuery, "%s, `Div%i` = '%s'", szQuery, i+1, arrGroupDivisions[iGroupID][i]);
@@ -165,6 +174,13 @@ SaveGroup(iGroupID) {
 		format(szQuery, sizeof(szQuery), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
 		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
+
+	/*for (i = 0; i < MAX_GROUPS; i++) {
+		for(new x = 0; x != 50; x++)
+		{
+			format(szQuery, sizeof(szQuery), "");
+		}
+	}*/
 	return 1;
 }
 
@@ -5484,6 +5500,7 @@ public LoadDynamicGroups()
     mysql_function_query(MainPipeline, "SELECT * FROM `groups`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOAD, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `lockers`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
+	mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
 }
 
@@ -6830,6 +6847,21 @@ public Group_QueryFinish(iType, iExtraID) {
 				iIndex++;
 			}
 		}
+		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
+				
+			cache_get_field_content(iIndex, "Group_ID", szResult, MainPipeline);
+			new iGroupID = strval(szResult)-1;
+			new j = 0;
+
+			while(arrGroupData[iGroupID][g_iClothes][j] != 0)
+			{
+				j++;
+			}
+			
+			cache_get_field_content(iIndex, "Weapon_ID", szResult, MainPipeline);
+			arrGroupData[iGroupID][g_iClothes][j] = strval(szResult);
+			iIndex++;	
+		}
 		case GROUP_QUERY_LOCKERS: while(iIndex < iRows) {
 
 			cache_get_field_content(iIndex, "Group_ID", szResult, MainPipeline);
@@ -6969,6 +7001,44 @@ public Group_QueryFinish(iType, iExtraID) {
 			
 			cache_get_field_content(iIndex, "DMVAccess", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iDMVAccess] = strval(szResult);
+
+			cache_get_field_content(iIndex, "OOCChat", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iOOCChat] = strval(szResult);
+
+			cache_get_field_content(iIndex, "OOCColor", szResult, MainPipeline);
+			arrGroupData[iIndex][g_hOOCColor] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Pot", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iPot] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Crack", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iCrack] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Heroin", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iHeroin] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Syringes", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iSyringes] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Opium", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iOpium] = strval(szResult);
+
+			cache_get_field_content(iIndex, "TurfCapRank", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTurfCapRank] = strval(szResult);
+
+			cache_get_field_content(iIndex, "PointCapRank", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iPointCapRank] = strval(szResult);
+
+			cache_get_field_content(iIndex, "WithdrawRank", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iWithdrawRank] = strval(szResult);
+
+			while(i < MAX_GROUP_RANKS) {
+				format(szResult, sizeof(szResult), "GClothes%i", i);
+				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
+				arrGroupData[iIndex][g_iClothes][i] = strval(szResult);
+				i++;
+			}
+			i = 0;
 
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);

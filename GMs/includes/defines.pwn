@@ -217,6 +217,7 @@ native gpci(playerid, serial[], maxlen);
 #define         GROUP_QUERY_UNINVITE  		6
 #define         GROUP_QUERY_LOCKERS     	7
 #define         GROUP_QUERY_JURISDICTIONS   8
+#define 		GROUP_QUERY_GWEAPONS		9
 
 // group ID defines
 #define			GROUP_TYPE_LEA				1
@@ -631,6 +632,16 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_GROUP_DOCACCESS				(3401)
 #define			DIALOG_GROUP_MEDICACCESS			(3402)
 #define			DIALOG_GROUP_DMVACCESS				(3403)
+#define 		DIALOG_GROUP_OOCCHAT				(3404)
+#define 		DIALOG_GROUP_OOCCOLOR				(3405)
+#define 		DIALOG_GROUP_LISTCLOTHES			(3406)
+#define 		DIALOG_GROUP_EDITCLOTHES			(3407)
+#define 		DIALOG_GROUP_TURFCAP				(3408)
+#define 		DIALOG_GROUP_POINTCAP				(3409)
+#define 		DIALOG_GROUP_WEAPONSAFE				(3410)
+#define 		DIALOG_GROUP_SACTIONTYPE			(3411)
+#define     	DIALOG_GROUP_SACTIONEXEC			(3412)   	
+
 
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)

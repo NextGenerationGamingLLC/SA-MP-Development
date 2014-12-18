@@ -90,6 +90,12 @@ stock IsARacer(playerid)
 	return 0;
 }
 
+stock IsACriminal(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)) return 1;
+	return 0;
+}
+
 stock IsADocGuard(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDoCAccess])) return 1;
@@ -269,8 +275,8 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Barrels:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Ladders:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Crate Island Control:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Locker Stock (%i)\n\
-		{EEEEEE}Edit Locker Weapons (%i defined)\n",
+		{BBBBBB}Edit Locker Stock:{FFFFFF} (%i)\n\
+		{BBBBBB}Edit Locker Weapons (%i defined)\n",
 		szDialog,
 		(arrGroupData[iGroupID][g_iCones] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iCones],
 		(arrGroupData[iGroupID][g_iFlares] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFlares],
@@ -283,16 +289,16 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{EEEEEE}Edit Payments\n\
-		{EEEEEE}Edit Divisions (%i defined)\n\
-		{EEEEEE}Edit Ranks (%i defined)\n\
-		{EEEEEE}Edit Lockers\n\
-		{EEEEEE}Edit Crate Delivery Position (current distance: %.0f)\n\
-		{EEEEEE}Locker Cost Type: %s\n\
-		{EEEEEE}Edit the Garage Position (current distance: %.0f)\n\
-		{EEEEEE}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit DoC Access:{FFFFFF} %s (rank %i)\n",
+		{BBBBBB}Edit Payments\n\
+		{BBBBBB}Edit Divisions (%i defined)\n\
+		{BBBBBB}Edit Ranks (%i defined)\n\
+		{BBBBBB}Edit Lockers\n\
+		{BBBBBB}Edit Crate Delivery Position (current distance: %.0f)\n\
+		{BBBBBB}Locker Cost Type: %s\n\
+		{BBBBBB}Edit the Garage Position (current distance: %.0f)\n\
+		{BBBBBB}Edit Tackle Access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit Wheel Clamps Access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit DoC Access:{FFFFFF} %s (rank %i)\n",
 		szDialog,
 		String_Count(arrGroupDivisions[iGroupID], MAX_GROUP_DIVS),
 		String_Count(arrGroupRanks[iGroupID], MAX_GROUP_RANKS),
@@ -306,11 +312,20 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 	
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{EEEEEE}Edit Medic Access:{FFFFFF} %s (rank %i)\n\
-		{EEEEEE}Edit DMV Release:{FFFFFF} %s (rank %i)",
+		{BBBBBB}Edit Medic Access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit DMV Release:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit OOC Chat Access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit OOC Chat Color: {%s}(edit)\n\
+		{BBBBBB}Edit Group Clothes\n\
+		{BBBBBB}Edit Turf Cap Rank{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit Point Cap Rank {FFFFFF} %s (rank %i)",
 		szDialog,
 		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
-		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess]
+		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess], 
+		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
+		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
+		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTurfCapRank],
+		(arrGroupData[iGroupID][g_iPointCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iPointCapRank]
 	);
 		
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
@@ -330,6 +345,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];
+	szMiscArray[0] = 0;
 	
 	switch(dialogid)
 	{
@@ -341,6 +357,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
+					if(IsACriminal(playerid))
+					{
+						format(szMiscArray, sizeof(szMiscArray), "%s reaches into the locker grabbing their clothes", GetPlayerNameEx(playerid));
+						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						PlayerInfo[playerid][pModel] = arrGroupData[iGroupID][g_iClothes][PlayerInfo[playerid][pRank]];
+						return SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
+					}
 					if(PlayerInfo[playerid][pDuty]==0)
 					{
 						if (IsAReporter(playerid) || IsATaxiDriver(playerid))
@@ -396,6 +419,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0) 
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Locker weapons have been restricted from admins, /togreports to gain access.");
+					if(IsACriminal(playerid))
+					{
+						for(new i=0; i != 50; ++i)
+						{
+							if(arrGroupData[iGroupID][g_iWeapons][i] != 0)
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%i)", szMiscArray, Weapon_ReturnName(arrGroupData[iGroupID][g_iWeapons][i]), arrGroupData[iGroupID][g_iWeapons][i]);
+							}
+							else
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s\nUndefined", szMiscArray);
+							}						
+						}
+						strcat(szMiscArray, "\nDeposit Weapon");
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Weapon Safe", szMiscArray, "Select", "Cancel");
+					}
 					if(PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2)
 					{
 						new
@@ -415,10 +454,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 2:
 				{
-					ShowPlayerDialog(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Uniform","Choose a skin (by ID).", "Select", "Cancel");
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 2);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Pot Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
+					else ShowPlayerDialog(playerid, G_LOCKER_UNIFORM, DIALOG_STYLE_INPUT, "Uniform","Choose a skin (by ID).", "Select", "Cancel");
 				}
 				case 3:
 				{
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 3);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Crack Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
 					if(IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid)) {
 						if(GetPVarInt(playerid, "MedVestKit") == 1) {
 							return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
@@ -479,6 +528,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 4: // LEOs - HP + Armour
 				{
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 4);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Heroin Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
 					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0)
 					{
 						SetArmour(playerid, 100);
@@ -531,6 +585,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 5: // LEOs - HP + Armour Car/Backpack Kit
 				{
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 5);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Syringes Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
 					if(GetPVarInt(playerid, "MedVestKit") == 1) {
 						return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
 					}
@@ -586,6 +645,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 6: //Tazer
 				{
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 6);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Opium Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
 					if(PlayerInfo[playerid][pHasTazer] == 0)
 					{
 						new szMessage[128];
@@ -599,7 +663,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
-					ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 7);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Material Safe", "Deposit\nWithdraw", "Select", "Back");
+					}
+					else ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+				}
+				case 8: 
+				{
+					if(IsACriminal(playerid))
+					{
+						SetPVarInt(playerid, "GSafe_Opt", 8);
+						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
+					}
 				}
 			}
 		}
@@ -929,6 +1006,58 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					format(szTitle, sizeof szTitle, "Edit Group DMV Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DMVACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 33: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 34: {
+					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Enter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
+				}
+				case 35: {
+					new
+						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i) {
+						format(szDialog, sizeof szDialog, "%s\nRank %i (%s): Skin ID:%i", szDialog, i, arrGroupRanks[iGroupID][i], arrGroupData[iGroupID][g_iClothes][i]);
+					}
+
+					format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+				}
+				case 36: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group Turf Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					
+					ShowPlayerDialog(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 37: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					format(szTitle, sizeof szTitle, "Edit Group Point Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -1775,6 +1904,455 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_OOCCHAT: {
+
+			new 
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iOOCChat] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for OOC Chat Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iOOCChat], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iOOCChat] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for OOC Chat Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iOOCChat], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iOOCChat]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_OOCCOLOR: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) {
+
+				new
+					szTitle[32 + GROUP_MAX_NAME_LEN],
+					hColour;
+
+				if(strlen(inputtext) > 6 || !ishex(inputtext)) {
+					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					return ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Invalid value specified.\n\nEnter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
+				}
+				sscanf(inputtext, "h", hColour);
+				arrGroupData[iGroupID][g_hOOCColor] = hColour;
+
+				format(string, sizeof(string), "%s has set the OOC Chat color to %x in %s (%d)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_szGroupName], iGroupID+1);
+				Log("logs/editgroup.log", string);
+			}
+
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_LISTCLOTHES: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) {
+
+				new
+					szTitle[32 + GROUP_MAX_NAME_LEN];
+
+				SetPVarInt(playerid, "Group_EditRank", listitem);
+				format(szTitle, sizeof szTitle, "Edit Group Rank (%i) {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				return ShowPlayerDialog(playerid, DIALOG_GROUP_EDITCLOTHES, DIALOG_STYLE_INPUT, szTitle, "Specify a skin ID for this rank.", "OK", "Cancel");
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_EDITCLOTHES: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID"),
+				iRankID = GetPVarInt(playerid, "Group_EditRank");
+
+			if(response) {
+				new szTitle[128];
+				arrGroupData[iGroupID][g_iClothes][iRankID] = strval(inputtext);
+				new
+						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
+
+				for(new i = 0; i != MAX_GROUP_RANKS; ++i) {
+						format(szDialog, sizeof szDialog, "%s\nRank %i (%s): Skin ID:%i", szDialog, i, arrGroupRanks[iGroupID][i], arrGroupData[iGroupID][g_iClothes][i]);
+				}
+
+				format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				ShowPlayerDialog(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
+				format(string, sizeof(string), "%s has changed the skin ID for rank %d (%s) to $%d in %s (%d)", GetPlayerNameEx(playerid), iRankID, arrGroupRanks[iGroupID][iRankID], strval(inputtext), iGroupID + 1);
+				Log("logs/editgroup.log", string);
+
+				return 1;
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_TURFCAP: {
+
+			new 
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iTurfCapRank] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for turf capping to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTurfCapRank], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iTurfCapRank] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for turf capping to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTurfCapRank], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTurfCapRank]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_POINTCAP: {
+
+			new 
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iPointCapRank] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for point capping to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iPointCapRank], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iPointCapRank] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for point capping to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iPointCapRank], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iPointCapRank]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_SACTIONTYPE:
+		{
+			if(!response)
+			{
+				return cmd_locker(playerid, "");
+			}
+			switch(listitem)
+			{
+				case 0:
+				{
+					SetPVarInt(playerid, "GSafe_Action", 1);
+					format(szMiscArray, sizeof(szMiscArray), "Please type an ammount to deposit.");
+				}
+				case 1:
+				{
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank])
+					{
+						SetPVarInt(playerid, "GSafe_Action", 2);
+						format(szMiscArray, sizeof(szMiscArray), "Please type an ammount to withdraw.");
+					}
+					else 
+					{
+						DeletePVar(playerid, "GSafe_Opt");
+						return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to withdraw from the locker.");
+					}
+					
+				}
+			}
+			return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", szMiscArray, "Input", "Cancel");
+		}
+		case DIALOG_GROUP_SACTIONEXEC:
+		{
+			new iGroupID = PlayerInfo[playerid][pMember];
+			if(!response)
+			{
+				DeletePVar(playerid, "GSafe_Action");
+				DeletePVar(playerid, "GSafe_Opt");
+				return cmd_locker(playerid, "");
+			}
+			if(response)
+			{
+				if(strval(inputtext) <= 0) return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount cannot be less than or 0.", "Input", "Cancel");
+				switch(GetPVarInt(playerid, "GSafe_Opt"))
+				{
+					case 2:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pPot])
+								{
+									arrGroupData[iGroupID][g_iPot] += strval(inputtext);
+									PlayerInfo[playerid][pPot] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of pot into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of pot into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iPot])
+								{
+									arrGroupData[iGroupID][g_iPot] -= strval(inputtext);
+									PlayerInfo[playerid][pPot] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of pot from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of pot from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 3:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pCrack])
+								{
+									arrGroupData[iGroupID][g_iCrack] += strval(inputtext);
+									PlayerInfo[playerid][pCrack] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of crack into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of crack into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iCrack])
+								{
+									arrGroupData[iGroupID][g_iCrack] -= strval(inputtext);
+									PlayerInfo[playerid][pCrack] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of crack from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of crack from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 4:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pHeroin])
+								{
+									arrGroupData[iGroupID][g_iHeroin] += strval(inputtext);
+									PlayerInfo[playerid][pHeroin] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of heroin into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of heroin into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iHeroin])
+								{
+									arrGroupData[iGroupID][g_iHeroin] -= strval(inputtext);
+									PlayerInfo[playerid][pHeroin] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of heroin from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of heroin from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 5:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pSyringes])
+								{
+									arrGroupData[iGroupID][g_iSyringes] += strval(inputtext);
+									PlayerInfo[playerid][pSyringes] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i syringes into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i syringes into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iSyringes])
+								{
+									arrGroupData[iGroupID][g_iSyringes] -= strval(inputtext);
+									PlayerInfo[playerid][pSyringes] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i syringes from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i syringes from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 6:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pRawOpium])
+								{
+									arrGroupData[iGroupID][g_iOpium] += strval(inputtext);
+									PlayerInfo[playerid][pRawOpium] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of opium into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of opium into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iOpium])
+								{
+									arrGroupData[iGroupID][g_iOpium] -= strval(inputtext);
+									PlayerInfo[playerid][pRawOpium] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of opium from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of opium from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 7:
+					{
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= PlayerInfo[playerid][pMats])
+								{
+									arrGroupData[iGroupID][g_iMaterials] += strval(inputtext);
+									PlayerInfo[playerid][pMats] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i materials into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i materials into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iMaterials])
+								{
+									arrGroupData[iGroupID][g_iMaterials] -= strval(inputtext);
+									PlayerInfo[playerid][pMats] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i materials from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i materials from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 8:
+					{
+						new amount = strval(inputtext);
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
+							{
+								if(strval(inputtext) <= GetPlayerCash(playerid))
+								{
+									arrGroupData[iGroupID][g_iBudget] += strval(inputtext);
+									GivePlayerCash( playerid, -amount);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited $%i into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited $%i into the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iBudget])
+								{
+									arrGroupData[iGroupID][g_iBudget] -= strval(inputtext);
+									GivePlayerCash(playerid, amount);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%i from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%i from the safe.", strval(inputtext));
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+				}
+			}
+		}
+		case DIALOG_GROUP_WEAPONSAFE:
+		{
+			new iGroupID = PlayerInfo[playerid][pMember];
+			if(response)
+			{
+				if(strcmp(inputtext, "Deposit Weapon", true) == 0)
+				{
+					// log + GVIP / Famed + check on weapons
+				}
+				else if(arrGroupData[iGroupID][g_iWeapons][listitem] == 0)
+				{
+					return SendClientMessageEx(playerid, COLOR_GREY, "There is no weapon in the slot you have attempted to access."), cmd_locker(playerid, "");
+				}
+				else
+				{
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iWithdrawRank])
+					{
+						GivePlayerValidWeapon(playerid, arrGroupData[iGroupID][g_iWeapons][listitem], 60000);
+						format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(arrGroupData[iGroupID][g_iWeapons][listitem]));
+						GroupLog(iGroupID, szMiscArray);
+						format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(arrGroupData[iGroupID][g_iWeapons][listitem]));
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+						arrGroupData[iGroupID][g_iWeapons][listitem] = 0;
+					}
+				}
+			}
 		}
 		// END DYNAMIC GROUP CODE
 	}
@@ -4374,7 +4952,7 @@ CMD:hfind(playerid, params[])
 	return 1;
 }
 
-/*CMD:g(playerid, params[])
+CMD:g(playerid, params[])
 {
 
 	new
@@ -4384,14 +4962,17 @@ CMD:hfind(playerid, params[])
 
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/g)roup [group chat]");
 	if (iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
-
-	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
-	foreach(new i: Player) {
-	    if (PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(i, TEAM_AZTECAS_COLOR, string);
+	if(iRank >= arrGroupData[iGroupID][g_iOOCChat])
+	{
+		format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
+		foreach(new i: Player) {
+	    	if (PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor], string);
+		}
 	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
 
 	return 1;
-}*/
+}
 
 CMD:locker(playerid, params[]) {
 
@@ -4423,6 +5004,19 @@ CMD:locker(playerid, params[]) {
 							{
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
+					    }
+					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+					    {
+					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nPot (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)\nMaterials (%i)\nVault ($%s)",\
+					    		arrGroupData[iGroupID][g_iPot],
+					    		arrGroupData[iGroupID][g_iCrack],
+					    		arrGroupData[iGroupID][g_iHeroin],
+					    		arrGroupData[iGroupID][g_iSyringes],
+					    		arrGroupData[iGroupID][g_iOpium],
+					    		arrGroupData[iGroupID][g_iMaterials],
+					    		number_format(arrGroupData[iGroupID][g_iBudget])
+					    	);
+					    	return ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 					    }
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) // name-change point in faction lockers for free namechange factions
 						{
@@ -5065,5 +5659,34 @@ CMD:togbr(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Bug chat channel disabled.");
 		}
 	}
+	return 1;
+}
+
+CMD:adjustwithdrawrank(playerid, params[])
+{
+	new 
+		iGroupID = PlayerInfo[playerid][pMember];
+
+	szMiscArray[0] = 0;
+
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pLeader] == iGroupID)
+	{
+		new iRank;
+		if(sscanf(params, "d", iRank)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustwithdrawrank [rank]");
+		else
+		{
+			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
+			{
+				arrGroupData[iGroupID][g_iWithdrawRank] = iRank;
+				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
+				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
+				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank to %i.", iRank);
+				GroupLog(iGroupID, szMiscArray);
+			}
+			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
+		}
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	return 1;
 }
