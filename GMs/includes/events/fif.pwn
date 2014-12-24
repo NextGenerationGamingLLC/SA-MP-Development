@@ -35,6 +35,134 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	switch(dialogid)
+	{
+		case DIALOG_FIFMENU:
+		{
+			if(!response) return 1;
+			if(PlayerInfo[playerid][pPR] < 2 && PlayerInfo[playerid][pAdmin] < 1338) return 1;
+			switch(listitem)
+			{
+				case 0:
+				{
+					if(FIFEnabled == 0)
+					{
+						FIFEnabled = 1; 
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Fall Into Fun hours.");
+						if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
+						if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
+						FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], 0);
+						FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);
+					}
+					else if(FIFEnabled == 1)
+					{
+						FIFEnabled = 0; 
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the Fall Into Fun hours.");
+						if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
+						if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
+					}
+				}
+				case 1:
+				{
+					switch(FIFType)
+					{
+						case 1:
+						{
+							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "{00FF00}Normal Mode (1 chance / 3 hours){FFFFFF}\nDouble Mode (2 chances / 3 hours)\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+						}
+						case 2:
+						{
+							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\n{00FF00}Double Mode (2 chances / 3 hours){FFFFFF}\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+						}
+						case 3:
+						{
+							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\nDouble Mode (2 chances / 3 hours)\n{00FF00}Triple Mode(3 chances / 3 hours){FFFFFF}", "Select", "Cancel");
+						}
+					}
+				}
+				case 2:
+				{
+					if(FIFGP3 == 0)
+					{
+						FIFGP3 = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Gold & Platinum VIP x3 Enabled.");
+					}
+					else
+					{
+						FIFGP3 = 0;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Gold & Platinum VIP x3 Disabled.");
+					}
+				}
+				case 3:
+				{
+					if(FIFTimeWarrior == 0)
+					{
+						FIFTimeWarrior = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Time Warrior Enabled.");
+					}
+					else
+					{
+						FIFTimeWarrior = 0;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Time Warrior Disabled.");
+					}
+				}
+				case 4:
+				{
+					if(FIFGThurs == 0)
+					{
+						FIFGThurs = 1;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Golden Thursday Enabled.");
+					}
+					else
+					{
+						FIFGThurs = 0;
+						SendClientMessageEx(playerid, COLOR_WHITE, "Golden Thursday Disabled.");
+					}
+				}
+				case 5:
+				{
+					GetPlayerPos(playerid, FIFGamble[0], FIFGamble[1], FIFGamble[2]);
+					if(IsValidDynamicPickup(FIFPickup)) DestroyDynamicPickup(FIFPickup);
+					if(IsValidDynamic3DTextLabel(FIFText)) DestroyDynamic3DTextLabel(FIFText);
+					FIFPickup = CreateDynamicPickup(1239, 23, FIFGamble[0], FIFGamble[1], FIFGamble[2], -1, -1, -1, 100.0);
+					FIFText = CreateDynamic3DTextLabel("Chance Gambler\n/gamblechances to risk all of your chances or double them", COLOR_RED, FIFGamble[0], FIFGamble[1], FIFGamble[2]+0.5,10.0);  
+					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Gamble Position Updated");
+				}
+			}
+			Misc_Save();
+		}
+		case DIALOG_FIFMENU2:
+		{
+			if(!response) return 1;
+			if(PlayerInfo[playerid][pPR] < 2 && PlayerInfo[playerid][pAdmin] < 1338) return 1;
+			switch(listitem)
+			{
+				case 0:
+				{
+					FIFType = 1;
+					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x1");
+				}
+				case 1:
+				{
+					FIFType = 2;
+					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x2");
+				}
+				case 2:
+				{
+					FIFType = 3;
+					SendClientMessageEx(playerid, COLOR_WHITE, "FIF Mode set to x3");
+				}
+			}
+			Misc_Save();
+		}
+	}
+	return 1;
+}
+
 #if defined event_chancegambler
 CMD:togchancegambler(playerid, params[])
 {

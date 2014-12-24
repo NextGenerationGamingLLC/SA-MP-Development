@@ -2335,6 +2335,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(strcmp(inputtext, "Deposit Weapon", true) == 0)
 				{
 					// log + GVIP / Famed + check on weapons
+					for(new g = 0; g < 12; g++)	
+					{
+						if(PlayerInfo[playerid][pGuns][g] != 0)
+						{
+							format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%i)", szMiscArray, Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]), PlayerInfo[playerid][pGuns][g]);
+						}
+					}
+					ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE_DEPOSIT, DIALOG_STYLE_LIST, "Safe Weapon Deposit", szMiscArray, "Deposit", "Cancel");
+
 				}
 				else if(arrGroupData[iGroupID][g_iWeapons][listitem] == 0)
 				{
@@ -2351,6 +2360,46 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 						arrGroupData[iGroupID][g_iWeapons][listitem] = 0;
 					}
+				}
+			}
+		}
+		case DIALOG_GROUP_WEAPONSAFE_DEPOSIT:
+		{
+			new iGroupID = PlayerInfo[playerid][pMember];
+			if(response)
+			{
+				new stpos = strfind(inputtext, "(");
+			    new fpos = strfind(inputtext, ")");
+			    new str[4], id;
+			    strmid(str, inputtext, stpos+1, fpos);
+			    id = strval(str);
+
+			    // dont disallow VIPs / Famed + from depositing any weapon, just those they can obtain from the lockers
+			    if((PlayerInfo[playerid][pDonateRank] >= 3 || PlayerInfo[playerid][pFamed] >= 3) && (id == WEAPON_DEAGLE || id == WEAPON_SILENCED || id == WEAPON_MP5 || id == WEAPON_SHOTGUN))
+			    	return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot deposit these weapons as you have obtained them from the VIP Safe.");
+
+				
+				// finding whether there are any free slots to deposit the weapons into
+				new x = -1;
+				for(new g = 0; g != 50; g++)
+				{
+					if(arrGroupData[iGroupID][g_iWeapons][g] == 0)
+					{
+						x = g;
+						break;
+					}
+				}
+				if(x == -1)
+					return SendClientMessageEx(playerid, COLOR_WHITE, "There is no free space available to deposit your weapons.");
+
+				else
+				{
+					arrGroupData[iGroupID][g_iWeapons][x] = id;
+					PlayerInfo[playerid][pGuns][Weapon_ReturnSlot(id)] = 0;
+					format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(id));
+					GroupLog(iGroupID, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s into the locker.", Weapon_ReturnName(id));
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 				}
 			}
 		}

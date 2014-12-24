@@ -119,7 +119,7 @@ ReturnWeaponName(iWeaponID) {
 	return szName;
 }
 
-/*Weapon_ReturnSlot(iWeaponID) {
+Weapon_ReturnSlot(iWeaponID) {
 	switch(iWeaponID) {
 		case 0, 1:
 			return 0;
@@ -158,7 +158,7 @@ ReturnWeaponName(iWeaponID) {
 			return 11;
 	}
 	return -1;
-}*/
+}
 
 OnPlayerChangeWeapon(playerid, newweapon)
 {

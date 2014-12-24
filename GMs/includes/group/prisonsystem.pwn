@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 DocIsolate(playerid, cellid)
 {
 	SetPlayerPos(playerid, DocIsolation[cellid][0], DocIsolation[cellid][1], DocIsolation[cellid][2]);
@@ -892,6 +894,175 @@ public StartJailBoxing(iArenaID)
 	{
 		format(string, sizeof(string), "** [Boxing Countdown (Arena:%d)] %d seconds until start! **", iArenaID, arrJailBoxingData[iArenaID][iDocBoxingCountdown]);
 		ProxDetector(10.0, iRangePoint, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+	}
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case DIALOG_DOC_ELEVATOR:
+		{
+			if(response)
+			{
+				switch(listitem)
+				{
+					case 0: CallDocElevator(playerid, 0);
+					case 1: CallDocElevator(playerid, 1);
+					case 2: CallDocElevator(playerid, 2);
+				}
+			}
+		}
+		case DIALOG_DOC_CP:
+		{
+			if(response)
+			{
+				switch(listitem)
+				{
+					case 0: ShowDocPrisonControls(playerid, 1);
+					case 1: ShowDocPrisonControls(playerid, 5);
+					case 2: ShowDocPrisonControls(playerid, 4);
+					case 3: DocLockdown(playerid);
+				}
+			}
+		}
+		case DIALOG_DOC_CP_SUB:
+		{
+			if(response)
+			{
+				switch(listitem)
+				{
+					case 0: // floor 1
+					{
+						ShowDocPrisonControls(playerid, 2);
+					}
+					case 1: // floor 2
+					{
+						ShowDocPrisonControls(playerid, 3);
+					}
+					case 2: // all floor 1
+					{
+						if(bDocCellsFloorOpen[0] == false)
+						{
+							for(new i = 0; i < 16; i++)
+							{
+								OpenDocCells(i, 1);
+							}
+							bDocCellsFloorOpen[0] = true;
+						}
+						else if(bDocCellsFloorOpen[0] == true)
+						{
+							for(new i = 0; i < 16; i++)
+							{
+								OpenDocCells(i, 0);
+							}
+							bDocCellsFloorOpen[0] = false;
+						}
+					}
+					case 3: // all floor 2
+					{
+						if(bDocCellsFloorOpen[1] == false)
+						{
+							for(new i = 16; i < 31; i++)
+							{
+								OpenDocCells(i, 1);
+							}
+							bDocCellsFloorOpen[1] = true;
+						}
+						else if(bDocCellsFloorOpen[1] == true)
+						{
+							for(new i = 16; i < 31; i++)
+							{
+								OpenDocCells(i, 0);
+							}
+							bDocCellsFloorOpen[1] = false;
+						}
+					}
+				}
+			}
+			else ShowDocPrisonControls(playerid, 0);
+		}
+		case DIALOG_DOC_CP_AREA:
+		{
+			if(response)
+			{
+				if(listitem == 11)
+				{
+					if(bDocAreaOpen[11] == false) bDocAreaOpen[11] = true;
+					else bDocAreaOpen[11] = false;
+				}
+				else if(listitem == 12)
+				{
+					if(bDocAreaOpen[12] == false) bDocAreaOpen[12] = true;
+					else bDocAreaOpen[12] = false;
+				}
+				else
+				{
+					if(bDocAreaOpen[listitem] == false) OpenDocAreaDoors(listitem, 1);
+					else OpenDocAreaDoors(listitem, 0);
+				}
+				ShowDocPrisonControls(playerid, 4);
+			}
+			else ShowDocPrisonControls(playerid, 0);
+		}
+		case DIALOG_DOC_CP_ISOLATION:
+		{
+			if(response)
+			{
+				if(bDocIsolationOpen[listitem] == false) OpenDocIsolationCells(listitem, 1);
+				else OpenDocIsolationCells(listitem, 0);
+				ShowDocPrisonControls(playerid, 5);
+			}
+			else ShowDocPrisonControls(playerid, 0);
+		}
+		case DIALOG_DOC_CP_C1F1:
+		{
+			if(response)
+			{
+				if(bDocCellOpen[listitem] == false) OpenDocCells(listitem, 1);
+				else OpenDocCells(listitem, 0);
+				ShowDocPrisonControls(playerid, 2);
+			}
+			else ShowDocPrisonControls(playerid, 1);
+		}
+		case DIALOG_DOC_CP_C1F2:
+		{
+			if(response)
+			{
+				if(bDocCellOpen[listitem + 16] == false) OpenDocCells(listitem + 16, 1);
+				else OpenDocCells(listitem + 16, 0);
+				ShowDocPrisonControls(playerid, 3);
+			}
+			else ShowDocPrisonControls(playerid, 1);
+		}
+		case DIALOG_LOAD_DETAINEES:
+		{
+			if(response)
+			{
+				new stpos = strfind(inputtext, "(");
+			    new fpos = strfind(inputtext, ")");
+			    new prisoneridstr[4], prisonerid;
+			    strmid(prisoneridstr, inputtext, stpos+1, fpos);
+			    prisonerid = strval(prisoneridstr);
+				
+				new	getVW = GetPlayerVirtualWorld(playerid);
+				new	getIW = GetPlayerInterior(playerid);
+				new	getVeh = GetPlayerVehicleID(playerid);
+				new iVehicleSeat = 0;
+				
+				for(new i = 1; i < 9; i++)
+				{
+					if(IsSeatAvailable(getVeh, i))
+					{
+						iVehicleSeat = i;
+						break;
+					}
+				}
+				LoadPrisoner(playerid, prisonerid, getVeh, iVehicleSeat, getVW, getIW);
+			}
+		}
 	}
 	return 1;
 }

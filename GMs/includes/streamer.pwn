@@ -696,11 +696,11 @@ public LoadStreamerDynamicObjects()
 	
 	entrancedoor = CreateDynamicObject(2951,-766.27539062,2536.58691406,10019.5,0.98876953,0.00000000,85.49011230); //object(a51_labdoor) (1)
 
-	blastdoor[0] = CreateDynamicObject(2927,-764.11816406,2568.81445312,10021.5,0.70861816,0.49438477,86.46789551); //object(a51_blastdoorr) (5)
+	/*blastdoor[0] = CreateDynamicObject(2927,-764.11816406,2568.81445312,10021.5,0.70861816,0.49438477,86.46789551); //object(a51_blastdoorr) (5)
 	blastdoor[1] = CreateDynamicObject(2927,-746.02636719,2535.19433594,10021.5,359.74731445,0.00000000,265.24291992); //object(a51_blastdoorr) (1)
 	cage = CreateDynamicObject(2930,-773.52050781,2545.62109375,10022.29492188,359.73632812,359.23095703,354.73205566); //object(chinatgate) (1)
 	blastdoor[2] = CreateDynamicObject(2927,-765.26171875,2552.31347656,10021.5,0.00000000,0.00000000,87.44567871); //object(a51_blastdoorr) (5)
-
+	*/
 	ncontrolroomobjects[0] = CreateDynamicObject(3037,-760.61718750,2544.21679688,10024.92480469,0.00000000,0.00000000,355.98999023); //object(warehouse_door2b) (1)
 	ncontrolroomobjects[1] = CreateDynamicObject(3037,-759.52246094,2560.88574219,10024.79785156,0.00000000,0.00000000,355.98999023); //object(warehouse_door2b) (2)
 	ncontrolroomobjects[2] = CreateDynamicObject(3037,-755.53906250,2538.61035156,10025.02636719,0.00000000,0.00000000,85.99548340); //object(warehouse_door2b) (3)
@@ -1237,27 +1237,6 @@ public CloseEastLobby()
 {
 	MoveDynamicObject(eastlobby1,253.14941406,110.59960938,1002.21502686,4);
 	MoveDynamicObject(eastlobby2,253.18457031,107.59960938,1002.21502686,4);
-	return 1;
-}
-
-forward CloseBlastDoor();
-public CloseBlastDoor()
-{
-	MoveDynamicObject(blastdoor[0],-764.11816406,2568.81445312,10021.5,2);
-	return 1;
-}
-
-forward CloseBlastDoor2();
-public CloseBlastDoor2()
-{
-    MoveDynamicObject(blastdoor[1],-746.02636719,2535.19433594,10021.5,2);
-	return 1;
-}
-
-forward CloseBlastDoor3();
-public CloseBlastDoor3()
-{
-	MoveDynamicObject(blastdoor[2],-765.26171875,2552.31347656,10021.5,2);
 	return 1;
 }
 

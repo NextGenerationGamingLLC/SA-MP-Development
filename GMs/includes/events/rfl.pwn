@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 stock CountRFLTeams()
 {
 	new var;
@@ -84,6 +86,55 @@ public WateringStation(playerid)
 	}
 }
 
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{	
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case DIALOG_RFL_SEL:
+		{
+			if(response)
+			{
+				if(listitem == 0) {
+					mysql_function_query(MainPipeline, "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT 15;", true, "OnRFLPScore", "ii", playerid, 1);
+				}
+				else if(listitem == 1) {
+					mysql_function_query(MainPipeline, "SELECT `Username`, `RacePlayerLaps` FROM `accounts` WHERE `RacePlayerLaps` > 0 ORDER BY `RacePlayerLaps` DESC LIMIT 25;", true, "OnRFLPScore", "ii", playerid, 2);
+				}
+			}
+			return 1;
+		}
+		case DIALOG_RFL_PLAYERS:
+		{
+			if(response)
+			{
+				return 1;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		case DIALOG_RFL_TEAMS:
+		{
+			new temp = GetPVarInt(playerid, "rflTemp");
+			if(response)
+			{
+				if(temp > 0) {
+					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT %d , 15;", temp);
+					mysql_function_query(MainPipeline, szMiscArray, true, "OnRFLPScore", "ii", playerid, 1);
+				}
+			}
+			else
+			{
+				DeletePVar(playerid, "rflTemp");
+				return 1;
+			}	
+
+		}
+	}
+	return 1;
+}
 
 // Relay For Life
 CMD:setlapcount(playerid, params[]) 

@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
 	if(GetPVarType(playerid, "pAudioStream"))
@@ -178,6 +180,483 @@ stock ShowSetStation(playerid, title[] = "Radio Menu")
 	new string[128];
 	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
 	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	if(dialogid == SETSTATION)
+	{
+		if(response)
+		{
+			if(listitem == 0)
+			{
+				if(isnull(PlayerInfo[playerid][pFavStation]))
+				{
+					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialog(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nWould you like to set the one that is currently playing?", "Select", "Back");
+					else ShowPlayerDialog(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nPlease find a station and return to this menu to set a favorite station.", "Back", "");
+				}
+				else
+				{
+					if(IsPlayerInAnyVehicle(playerid))
+					{
+						foreach(new i: Player) 
+						{
+							if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation]);
+						}
+						format(stationidv[GetPlayerVehicleID(playerid)], 255, "%s", PlayerInfo[playerid][pFavStation]);
+						format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+						ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					}
+					else if(GetPVarType(playerid, "pBoomBox"))
+					{
+						foreach(new i: Player) 
+						{
+							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) PlayAudioStreamForPlayerEx(i, PlayerInfo[playerid][pFavStation], GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}	
+						SetPVarString(playerid, "pBoomBoxStation", PlayerInfo[playerid][pFavStation]);
+					}
+					else
+					{
+						PlayAudioStreamForPlayerEx(playerid, PlayerInfo[playerid][pFavStation]);
+						SetPVarInt(playerid, "MusicIRadio", 1);
+					}
+				}
+			}
+			if(listitem == 1)
+			{
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					SetPVarInt(playerid, "pHTTPWait", 1);
+					format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?listgenres=1", SAMP_WEB);
+					HTTP(playerid, HTTP_GET, szMiscArray, "", "GenreHTTP");
+				}
+				else
+				{
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				}
+			}
+			else if(listitem == 2)
+			{
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					SetPVarInt(playerid, "pHTTPWait", 1);
+					format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?top50=1", SAMP_WEB);
+					HTTP(playerid, HTTP_GET, szMiscArray, "", "Top50HTTP");
+				}
+				else
+				{
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				}
+			}
+			else if(listitem == 3)
+			{
+				ShowPlayerDialog(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
+			}
+			else if(listitem == 4)
+			{
+				if(IsPlayerInAnyVehicle(playerid))
+				{
+					foreach(new i: Player)
+					{
+						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+						}
+					}	
+					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				}
+				else if(GetPVarType(playerid, "pBoomBox"))
+				{
+					foreach(new i: Player)
+					{
+						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+						{
+							PlayAudioStreamForPlayerEx(i, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}
+					}	
+					SetPVarString(playerid, "pBoomBoxStation", "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+				}
+				else
+				{
+					PlayAudioStreamForPlayerEx(playerid, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1");
+					SetPVarInt(playerid, "MusicIRadio", 1);
+				}
+			}
+			else if(listitem == 5)
+			{
+				if(IsPlayerInAnyVehicle(playerid))
+				{
+					foreach(new i: Player)
+					{
+						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls");
+						}
+					}	
+					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "http://nick.ng-gaming.net:8000/listen.pls");
+					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				}
+				else if(GetPVarType(playerid, "pBoomBox"))
+				{
+					foreach(new i: Player)
+					{
+						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+						{
+							PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}
+					}	
+					SetPVarString(playerid, "pBoomBoxStation", "http://nick.ng-gaming.net:8000/listen.pls");
+				}
+				else
+				{
+					PlayAudioStreamForPlayerEx(playerid, "http://nick.ng-gaming.net:8000/listen.pls");
+					SetPVarInt(playerid, "MusicIRadio", 1);
+				}
+			}
+			else if(listitem == 6)
+			{
+				ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
+			}
+			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7)
+			{
+				ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+			}
+			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8))
+			{
+				if(!IsPlayerInAnyVehicle(playerid))
+				{
+					if(GetPVarType(playerid, "pBoomBox"))
+					{
+						SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
+						foreach(new i: Player)
+						{						
+							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) StopAudioStreamForPlayerEx(i);
+						}
+						DeletePVar(playerid, "pBoomBoxStation");
+					}
+					else
+					{
+						StopAudioStreamForPlayerEx(playerid);
+					}
+				}
+				else
+				{
+					format(szMiscArray, sizeof(szMiscArray), "* %s turns off the radio.", GetPlayerNameEx(playerid), szMiscArray);
+					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					foreach(new i: Player)
+					{
+						if(GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							StopAudioStreamForPlayerEx(i);
+						}
+					}	
+					stationidv[GetPlayerVehicleID(playerid)][0] = 0;
+				}
+			}
+		}
+	}
+	else if(dialogid == CUSTOM_URLCHOICE)
+	{
+		if(response)
+		{
+			if(isnull(inputtext) || IsNumeric(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have not entered a valid URL.");
+			if(IsPlayerInAnyVehicle(playerid))
+			{
+				foreach(new i: Player) 
+				{
+					if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
+					{
+						PlayAudioStreamForPlayerEx(i, inputtext);
+					}
+				}
+				format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", inputtext);
+				format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+				ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				DeletePVar(playerid, "pSelectGenre");
+				DeletePVar(playerid, "pSelectStation");
+			}
+			else if(GetPVarType(playerid, "pBoomBox"))
+			{
+				foreach(new i: Player) 
+				{
+					if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+					{
+						PlayAudioStreamForPlayerEx(i, inputtext, GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+					}
+				}
+				SetPVarString(playerid, "pBoomBoxStation", inputtext);
+			}
+			else
+			{
+				PlayAudioStreamForPlayerEx(playerid, inputtext);
+				SetPVarInt(playerid, "MusicIRadio", 1);
+				format(szMiscArray, sizeof(szMiscArray), "You are now playing %s", inputtext);
+				SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+			}
+		}
+		else
+		{
+			ShowSetStation(playerid);
+		}
+	}		
+	else if(dialogid == GENRES)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?genre=%d", SAMP_WEB, (listitem+1));
+				SetPVarInt(playerid, "pSelectGenre", (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationListHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			ShowSetStation(playerid);
+			DeletePVar(playerid, "pSelectGenre");
+		}
+	}
+	else if(dialogid == STATIONLIST)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?genre=%d&station=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationInfoHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?listgenres=1", SAMP_WEB);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "GenreHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+	}
+	else if(dialogid == TOP50LIST)
+	{
+		if(!response)
+		{
+			ShowSetStation(playerid);
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?top50=1&station=%d", SAMP_WEB, (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "Top50InfoHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+	}
+	else if(dialogid == STATIONLISTEN)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?genre=%d&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"), GetPVarInt(playerid, "pSelectStation"));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSelectHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?genre=%d", SAMP_WEB, GetPVarInt(playerid, "pSelectGenre"));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationListHTTP");
+				DeletePVar(playerid, "pSelectStation");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+	}
+	else if(dialogid == TOP50LISTEN)
+	{
+		if(!response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				DeletePVar(playerid, "pSelectStation");
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?top50=1", SAMP_WEB);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "Top50HTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?top50=1&station=%d&listen=1", SAMP_WEB, GetPVarInt(playerid, "pSelectStation"));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSelectHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+	}
+	else if(dialogid == STATIONSEARCH)
+	{
+		if(response)
+		{
+			if(strlen(inputtext) < 0 || strlen(inputtext) > 64)
+			{
+				ShowSetStation(playerid);
+			}
+			else
+			{
+				if(!GetPVarType(playerid, "pHTTPWait"))
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?search=%s", SAMP_WEB, inputtext);
+					SetPVarString(playerid, "pSearchStation", inputtext);
+					SetPVarInt(playerid, "pHTTPWait", 1);
+					ShowNoticeGUIFrame(playerid, 6);
+					HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSearchHTTP");
+				}
+				else
+				{
+					SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+				}
+			}
+		}
+		else
+		{
+			ShowSetStation(playerid);
+		}
+	}
+	else if(dialogid == STATIONSEARCHLIST)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", szMiscArray, sizeof(szMiscArray));
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?search=%s&station=%d", SAMP_WEB, szMiscArray, (listitem+1));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				ShowNoticeGUIFrame(playerid, 6);
+				SetPVarInt(playerid, "pSelectStation", (listitem+1));
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSearchInfoHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			ShowSetStation(playerid);
+		}
+	}
+	else if(dialogid == STATIONSEARCHLISTEN)
+	{
+		if(response)
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", szMiscArray, sizeof(szMiscArray));
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?search=%s&station=%d&listen=1", SAMP_WEB, szMiscArray, GetPVarInt(playerid, "pSelectStation"));
+				SetPVarInt(playerid, "pHTTPWait", 1);
+				ShowNoticeGUIFrame(playerid, 6);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSelectHTTP");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+		else
+		{
+			if(!GetPVarType(playerid, "pHTTPWait"))
+			{
+				GetPVarString(playerid, "pSearchStation", szMiscArray, sizeof(szMiscArray));
+				format(szMiscArray, sizeof(szMiscArray), "%s/radio/radio.php?search=%s", SAMP_WEB, szMiscArray);
+				ShowNoticeGUIFrame(playerid, 6);
+				HTTP(playerid, HTTP_GET, szMiscArray, "", "StationSearchHTTP");
+				DeletePVar(playerid, "pSelectStation");
+			}
+			else
+			{
+				SendClientMessage(playerid, 0xFFFFFFAA, "HTTP Thread is busy");
+			}
+		}
+	}
+	else if(dialogid == STATIONFAV)
+	{
+		if(response)
+		{
+			GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully set your favorite station.");
+		}
+		else ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAV2)
+	{
+		ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAVSETTING)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
+				ShowPlayerDialog(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully modified your favorite station!", "Go Back", "Exit");
+			}
+			case 1:
+			{
+				strcat((PlayerInfo[playerid][pFavStation][0] = 0, PlayerInfo[playerid][pFavStation]), "", 8);
+				ShowPlayerDialog(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully removed your favorite station!", "Go Back", "Exit");
+			}
+		}
+		if(!response) ShowSetStation(playerid);
+	}
+	else if(dialogid == STATIONFAVMODIFY)
+	{
+		if(response) ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+	}
+	else if(dialogid == STATIONREMOVE)
+	{
+		if(response) ShowSetStation(playerid);
+	}
+	return 1;
 }
 
 CMD:setstation(playerid, params[]) {

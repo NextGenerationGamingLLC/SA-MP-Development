@@ -35,6 +35,455 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	switch(dialogid)
+	{
+		case DIALOG_ADCATEGORY: if(response) switch(listitem) {
+			case 0: {
+
+				new
+					szDialog[2256],
+					szBuffer[32],
+					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+					iDialogCount,
+					iCount,
+					iBreak,
+					iRand;
+
+				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
+				}
+
+				while(iDialogCount < 50 && iBreak < 500) {
+					iRand = random(iCount);
+					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
+						if(AdvertType[arrAdverts[iRand]] == 1) //Real Estate
+						{
+							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+							arrAdverts[iRand] = INVALID_PLAYER_ID;	
+						}
+					}
+					++iBreak;
+				}
+				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			}
+			case 1: {
+
+				new
+					szDialog[2256],
+					szBuffer[32],
+					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+					iDialogCount,
+					iCount,
+					iBreak,
+					iRand;
+
+				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
+				}
+
+				while(iDialogCount < 50 && iBreak < 500) {
+					iRand = random(iCount);
+					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
+						if(AdvertType[arrAdverts[iRand]] == 2) //Automobile
+						{
+							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+							arrAdverts[iRand] = INVALID_PLAYER_ID;
+						}
+					}
+					++iBreak;
+				}
+				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			}
+			case 2: {
+
+				new
+					szDialog[2256],
+					szBuffer[32],
+					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+					iDialogCount,
+					iCount,
+					iBreak,
+					iRand;
+
+				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
+				}
+
+				while(iDialogCount < 50 && iBreak < 500) {
+					iRand = random(iCount);
+					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
+						if(AdvertType[arrAdverts[iRand]] == 3) //Buying
+						{
+							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+							arrAdverts[iRand] = INVALID_PLAYER_ID;
+						}
+					}
+					++iBreak;
+				}
+				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			}
+			case 3: {
+
+				new
+					szDialog[2256],
+					szBuffer[32],
+					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+					iDialogCount,
+					iCount,
+					iBreak,
+					iRand;
+
+				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
+				}
+
+				while(iDialogCount < 50 && iBreak < 500) {
+					iRand = random(iCount);
+					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
+						if(AdvertType[arrAdverts[iRand]] == 4) //Selling
+						{
+							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+							arrAdverts[iRand] = INVALID_PLAYER_ID;	
+						}
+					}
+					++iBreak;
+				}
+				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			}
+			case 4: {
+
+				new
+					szDialog[2256],
+					szBuffer[32],
+					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+					iDialogCount,
+					iCount,
+					iBreak,
+					iRand;
+
+				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+				foreach(new i: Player)
+				{				
+					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
+				}
+
+				while(iDialogCount < 50 && iBreak < 500) {
+					iRand = random(iCount);
+					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
+						if(AdvertType[arrAdverts[iRand]] == 5) //Miscellaneous
+						{
+							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+							arrAdverts[iRand] = INVALID_PLAYER_ID;
+						}	
+					}
+					++iBreak;
+				}
+				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+			}
+		}	
+		case DIALOG_ADMAIN: if(response) switch(listitem) {
+			case 0: ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			case 1: ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Enter a search phrase.", "Search", "Return");
+			case 2: {
+				if(PlayerInfo[playerid][pADMute] == 1) {
+					SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
+				}
+				else if(PlayerInfo[playerid][pPnumber] == 0) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
+				}
+				else if(GetPVarType(playerid, "HasReport")) {
+ 					SendClientMessageEx(playerid, COLOR_GREY, "You must wait for you report to be answered or cancelled (/cancelreport) before placing an ad.");
+ 				}
+				else ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			}
+			case 3: {
+				if(PlayerInfo[playerid][pADMute] == 1) {
+					SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
+				}
+				else if(PlayerInfo[playerid][pPnumber] == 0) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
+				}
+				else if(gettime() < GetPVarInt(playerid, "adT")) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You may only place one priority advertisement every two minutes.");
+				}	
+				else if(gettime() < iAdverTimer) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
+				}
+				else
+				{
+					if(PlayerInfo[playerid][pAdvertVoucher] != 0)
+					{
+						ShowPlayerDialog(playerid, DIALOG_ADVERTVOUCHER, DIALOG_STYLE_MSGBOX, "Priority Advertisement Voucher", "We found a Priority Advertisement Voucher on your account, would you like to use it?\n\n{FF0000}Note: You will lose 1 voucher if you choose yes.{FFFFFF}", "Yes", "Nope");
+					}
+					else if(PlayerInfo[playerid][pAdvertVoucher] == 0)
+						return ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				}
+			}
+		}
+		case DIALOG_ADCATEGORYPLACE: {
+			if(response) switch(listitem) {
+				case 0: {
+					AdvertType[playerid] = 1;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					"Enter your Real Estate Advertisement! Keep it below 128 characters.", "Submit", "Return");
+				}
+				case 1: {
+					AdvertType[playerid] = 2;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					"Enter your Automobile Advertisement! Keep it below 128 characters.", "Submit", "Return");
+				}	
+				case 2: {
+					AdvertType[playerid] = 3;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					"Enter your Buying Advertisement! Keep it below 128 characters.", "Submit", "Return");
+				}
+				case 3: {
+					AdvertType[playerid] = 4;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					"Enter your Selling Advertisement! Keep it below 128 characters.", "Submit", "Return");
+				}
+				case 4: {
+					AdvertType[playerid] = 5;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					"Enter your Miscellaneous Advertisement! Keep it below 128 characters.", "Submit", "Return");
+				}
+			}
+		}	
+		case DIALOG_ADCATEGORYPLACEP: {
+			if(response) switch(listitem) {
+				case 0: {
+					AdvertType[playerid] = 1;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your Real Estate Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}
+				case 1: {
+					AdvertType[playerid] = 2;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your Automobile Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}	
+				case 2: {
+					AdvertType[playerid] = 3;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your Buying Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}
+				case 3: {
+					AdvertType[playerid] = 4;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your Selling Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}
+				case 4: {
+					AdvertType[playerid] = 5;
+					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your Miscellaneous Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}
+			}
+		}		
+		case DIALOG_ADPLACE: {
+			if(response) {
+
+				new iLength = strlen(inputtext);
+				
+				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a priority advertisement pending.");
+
+				if(!(2 <= iLength <= 127)) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
+				}
+
+				iLength *= 50;
+				if(GetPlayerCash(playerid) < iLength) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+				}
+				if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
+				{
+					PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[6]);
+					PlayerTextDrawShow(playerid, MicroNotice[playerid]);
+					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
+				}
+				strcpy(szAdvert[playerid], inputtext, 128);
+				StripColorEmbedding(szAdvert[playerid]);
+				GivePlayerCash(playerid, -iLength);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations, you have placed your advertisement!");
+			}
+			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+		}
+		case DIALOG_ADPLACEP: {
+			if(response) {
+				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a priority advertisement pending.");
+			
+				if(gettime() < iAdverTimer) {
+					SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
+					return ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					"Enter your desired advertisement text! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
+				}
+				if(!(2 <= strlen(inputtext) <= 79)) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
+				}				
+				if(GetPVarInt(playerid, "AdvertVoucher") > 0)
+				{
+				}
+				else if(PlayerInfo[playerid][pFreeAdsLeft] > 0)
+				{
+				}
+				else if(PlayerInfo[playerid][pDonateRank] == 2 && GetPlayerCash(playerid) < 125000) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+				}
+				else if(PlayerInfo[playerid][pDonateRank] == 3 && GetPlayerCash(playerid) < 100000) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+				}
+				else if(PlayerInfo[playerid][pDonateRank] >= 4 && GetPlayerCash(playerid) < 50000) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+				}
+				else if(PlayerInfo[playerid][pDonateRank] <= 1 && GetPlayerCash(playerid) < 150000) {
+					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
+				}
+				SetPVarInt(playerid, "adT", gettime()+120);
+				strcpy(szAdvert[playerid], inputtext, 128);
+				StripColorEmbedding(szAdvert[playerid]);
+					
+				SetPVarInt(playerid, "RequestingAdP", 1);
+				SetPVarString(playerid, "PriorityAdText", szAdvert[playerid]);
+				new playername[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, playername, sizeof(playername));
+				SendReportToQue(playerid, "Priority Advertisement", 2, 4);	
+					
+				return SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a priority advertisement, please wait until an admin approves/denies your advertisement.");
+			}
+			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+		}
+		case DIALOG_ADSEARCH: {
+			if(response) {
+
+				if(!(4 <= strlen(inputtext) <= 80)) {
+					return ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Queries must be between 4\n and 80 characters in length.\n\nEnter a search phrase.", "Search", "Return");
+				}
+				else for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+
+				new
+					szDialog[2256],
+					szSearch[80],
+					szBuffer[32],
+					iCount;
+
+				strcat(szSearch, inputtext, sizeof(szSearch)); // strfind is a piece of shit when it comes to non-indexed arrays, maybe this'll help.
+				foreach(new i: Player)
+				{
+					if(!isnull(szAdvert[i])) {
+						// printf("[ads] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s]", GetPlayerNameEx(i), i, szAdvert[i], szSearch);
+						if(strfind(szAdvert[i], szSearch, true) != -1 && iCount < 50) {
+							// printf("[ads - MATCH] [NAME: %s] [ID: %i] [AD: %s] [SEARCH: %s] [COUNT: %i] [DIALOG LENGTH: %i] [FINDPOS: %i]", GetPlayerNameEx(i), i, szAdvert[i], szSearch, iCount, strlen(szDialog), strfind(szAdvert[i], szSearch, true));
+							strcpy(szBuffer, szAdvert[i], sizeof(szBuffer));
+							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[i][pPnumber]);
+							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(i));
+							ListItemTrackId[playerid][iCount++] = i;
+						}
+					}
+				}	
+				if(!isnull(szDialog)) ShowPlayerDialog(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Advertisements - Search Results", szDialog, "Select", "Return");
+				else ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
+
+			}
+			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+		}
+		case DIALOG_ADSEARCHLIST: if(response) {
+
+			new
+				i = ListItemTrackId[playerid][listitem],
+				szDialog[164];
+
+			if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
+				SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
+				format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
+				ShowPlayerDialog(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+			}
+			else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
+		}
+		case DIALOG_ADFINAL: {
+			if(response) {
+				new params[32];
+				format(params, sizeof(params), "%d", GetPVarInt(playerid, "advertContact"));
+				DeletePVar(playerid, "adverContact");
+				return cmd_call(playerid, params);
+			}
+		}		
+		case DIALOG_ADLIST: {
+			if(response) {
+
+				new
+					i = ListItemTrackId[playerid][listitem],
+					szDialog[164];
+
+				if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
+					SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
+					format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
+					return ShowPlayerDialog(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+				}
+				else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
+			}
+			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+		}
+		case DIALOG_ADVERTVOUCHER:
+		{
+			if(response) // Clicked Yes
+			{
+				SetPVarInt(playerid, "AdvertVoucher", 1);
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			}
+			else // Clicked No
+			{
+				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			}
+		}
+	}
+	return 1;
+}
+
+
 CMD:ad(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "The /ad command has been removed - use /ads or /advertisements.");

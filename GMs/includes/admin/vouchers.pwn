@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 stock ShowVouchers(playerid, targetid)
 {
 	if(IsPlayerConnected(targetid))
@@ -50,6 +52,544 @@ stock ShowVouchers(playerid, targetid)
 	}
 	return 1;
 }	
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case DIALOG_VOUCHER:
+		{
+			if(response)
+			{
+				new playeridd = GetPVarInt(playerid, "WhoIsThis");
+				switch(listitem)
+				{
+
+					case 0: // Car Voucher
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 1);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pVehVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 1);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your car voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pVehVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 1);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any car vouchers.", GetPlayerNameEx(GetPVarInt(playerid, "WhoIsThis")));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 1: // SVIP Voucher
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 2);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pSVIPVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 2);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Silver VIP voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pSVIPVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 2);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any Silver VIP vouchers.", GetPlayerNameEx(GetPVarInt(playerid, "WhoIsThis")));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 2: // GVIP Voucher
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 3);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pGVIPVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 3);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gold VIP voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pGVIPVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 3);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any Gold VIP vouchers.", GetPlayerNameEx(playeridd));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 3: // PVIP Voucher
+					{
+						if(playerid != playeridd) return 1;
+						if(PlayerInfo[playeridd][pPVIPVoucher] < 1) 
+						{
+							new szDialog[128];
+							format(szDialog, sizeof(szDialog), "%s does not have any Platinum VIP vouchers.", GetPlayerNameEx(playeridd));
+							DeletePVar(playerid, "WhoIsThis");
+							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+						}
+						
+						if(PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have Platinum VIP+, you may sell this voucher with /sellvoucher."), DeletePVar(playerid, "WhoIsThis");
+						
+						ShowPlayerDialog(playerid, DIALOG_PVIPVOUCHER, DIALOG_STYLE_MSGBOX, "Platinum VIP Voucher", "You will be made Platinum VIP after use of this voucher.", "Confirm", "Cancel");	
+					}
+					case 4: // Restricted Car Voucher
+					{
+						if(playerid != playeridd) return 1;
+						
+						if(ShopClosed == 1) return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
+						
+						if(PlayerInfo[playeridd][pCarVoucher] < 1) 
+						{
+							new szDialog[128];
+							format(szDialog, sizeof(szDialog), "%s does not have any Restriced Car vouchers.", GetPlayerNameEx(playeridd));
+							DeletePVar(playerid, "WhoIsThis");
+							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+						}
+						if(!IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at NGG's shop to redeem this voucher.");
+						ShowModelSelectionMenu(playerid, CarList3, "Car Shop");
+					}
+					case 5: // Gift Reset Voucher
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1)
+						{
+							SetPVarInt(playerid, "voucherdialog", 4);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pGiftVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 4);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gift Reset Voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pGiftVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1)
+							{
+								SetPVarInt(playerid, "voucherdialog", 4);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any Gift Reset vouchers.", GetPlayerNameEx(playeridd));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 6: // Priority Advertisement Voucher
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 5);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pAdvertVoucher] > 0 && (playerid == playeridd))
+						{
+							return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use your voucher through here, you will be prompt a dialog while in the advertisement menu to use this voucher.");
+						}
+						else if(PlayerInfo[playeridd][pAdvertVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 5);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any Priority Advertisement vouchers.", GetPlayerNameEx(playeridd));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 7: // 7 Days Silver VIP
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 6);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pSVIPExVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 5);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Silver VIP voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pSVIPExVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 6);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any 7 Days Silver VIP vouchers.", GetPlayerNameEx(playeridd));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+					case 8: // 7 Days Gold VIP
+					{
+						if(PlayerInfo[playerid][pAdmin] >= 4)
+						{
+							SetPVarInt(playerid, "voucherdialog", 7);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+						}
+						else if(PlayerInfo[playeridd][pGVIPExVoucher] > 0 && (playerid == playeridd))
+						{
+							SetPVarInt(playerid, "voucherdialog", 6);
+							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Gold VIP voucher?", "Yes", "No");
+						}
+						else if(PlayerInfo[playeridd][pGVIPExVoucher] < 1)
+						{
+							if(PlayerInfo[playerid][pAdmin] >= 4)
+							{
+								SetPVarInt(playerid, "voucherdialog", 7);
+								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							}
+							else 
+							{
+								new szDialog[128];
+								format(szDialog, sizeof(szDialog), "%s does not have any 7 Days Gold VIP vouchers.", GetPlayerNameEx(playeridd));
+								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								DeletePVar(playerid, "WhoIsThis");
+							}	
+						}	
+					}
+				}
+			} 
+		}		
+		case DIALOG_VOUCHERADMIN:
+		{
+			if(response)
+			{
+				if(!isnull(inputtext))
+				{
+					if(IsNumeric(inputtext))
+					{
+						if(!IsPlayerConnected(GetPVarInt(playerid, "WhoIsThis"))) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player has disconnected from the server.");
+						if(strval(inputtext) < 1) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GRAD1, "You can't give less than 1 voucher.");
+						if(GetPVarInt(playerid,	"voucherdialog") == 1) // Car Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"), 
+								amount = strval(inputtext),
+								szString[128];
+								
+							PlayerInfo[targetid][pVehVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d car voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d car voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "%s has given %s(%d) %d car voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
+							Log("logs/vouchers.log", szString);
+						}
+						if(GetPVarInt(playerid,	"voucherdialog") == 2) // SVIP Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"), 
+								amount = strval(inputtext),
+								szString[128];
+								
+							PlayerInfo[targetid][pSVIPVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "%s has given %s(%d) %d Silver VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
+							Log("logs/vouchers.log", szString);
+						}
+						if(GetPVarInt(playerid,	"voucherdialog") == 3) // GVIP Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"), 
+								amount = strval(inputtext),
+								szString[128];
+								
+							PlayerInfo[targetid][pGVIPVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "%s has given %s(%d) %d Gold VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), amount);
+							Log("logs/vouchers.log", szString);
+						}
+						if(GetPVarInt(playerid, "voucherdialog") == 4) // Gift Reset Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"),
+								amount = strval(inputtext),
+								szString[128];
+							PlayerInfo[targetid][pGiftVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d Gift Reset voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d Gift Reset voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free gift reset voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
+							Log("logs/adminrewards.log", szString);	
+						}
+						if(GetPVarInt(playerid, "voucherdialog") == 5) // Priority Advertisement Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"),
+								amount = strval(inputtext),
+								szString[128];
+							PlayerInfo[targetid][pAdvertVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d Priority Advertisement voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d Priority Advertisement voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free Priority Advertisement voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
+							Log("logs/vouchers.log", szString);	
+						}
+						if(GetPVarInt(playerid, "voucherdialog") == 6) // 7 Days Silver VIP Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"),
+								amount = strval(inputtext),
+								szString[128];
+							PlayerInfo[targetid][pSVIPExVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d 7 Days Silver VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d 7 Days Silver VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free 7 Days Silver VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
+							Log("logs/vouchers.log", szString);	
+						}
+						if(GetPVarInt(playerid, "voucherdialog") == 7) // 7 Days Gold VIP Voucher
+						{
+							new targetid = GetPVarInt(playerid, "WhoIsThis"),
+								amount = strval(inputtext),
+								szString[128];
+							PlayerInfo[targetid][pGVIPExVoucher] += amount;
+							format(szString, sizeof(szString), "You have given %s %d 7 Days Gold VIP voucher(s).", GetPlayerNameEx(targetid), amount);
+							SendClientMessageEx(playerid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "You have been given %d 7 Days Gold VIP voucher(s) by %s.", amount, GetPlayerNameEx(playerid));
+							SendClientMessageEx(targetid, COLOR_CYAN, szString);
+							format(szString, sizeof(szString), "[Admin] %s(IP:%s) has given %s(%d)(IP:%s) %d free 7 Days Gold VIP voucher(s).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(targetid), GetPlayerSQLId(targetid), GetPlayerIpEx(targetid), amount);
+							Log("logs/vouchers.log", szString);	
+						}
+					}
+					else ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System - {FF0000}That's not a number", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+				}	
+				else ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System ", "Please enter how many would you like to give to this player.", "Enter", "Cancel");	
+			}
+			DeletePVar(playerid, "voucherdialog");
+			DeletePVar(playerid, "WhoIsThis");
+		}										
+		case DIALOG_VOUCHER2:
+		{
+			if(response) // Clicked "Use"
+			{	
+				if(PlayerInfo[playerid][pJailTime] > 0)
+				{
+					DeletePVar(playerid, "voucherdialog");
+					DeletePVar(playerid, "WhoIsThis");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while being in jail/prison.");
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 1) // Car Voucher
+				{
+					if(GetPlayerInterior(playerid) != 0 || !IsPlayerInDynamicArea(playerid, NGGShop)) 
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						if(GetPlayerInterior(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this while being inside an interior.");
+						if(!IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at NGG's shop to redeem this voucher.");
+					}
+					else
+					{
+						return ShowModelSelectionMenu(playerid, CarList2, "Car Voucher Selection");
+					}
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 2) // SVIP Voucher
+				{
+					if(PlayerInfo[playerid][pDonateRank] >= 2)
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Your VIP Level is already set to Silver+");
+					}
+					if(PlayerInfo[playerid][pSVIPVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a SVIP Voucher.");
+					PlayerInfo[playerid][pSVIPVoucher]--;
+					PlayerInfo[playerid][pDonateRank] = 2;
+					PlayerInfo[playerid][pTempVIP] = 0;
+					PlayerInfo[playerid][pBuddyInvited] = 0;
+					PlayerInfo[playerid][pVIPSellable] = 0;
+					PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+					if(PlayerInfo[playerid][pVIPM] == 0)
+					{
+						PlayerInfo[playerid][pVIPM] = VIPM;
+						VIPM++;
+					}
+					LoadPlayerDisabledVehicles(playerid);
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Silver (2).", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
+					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Silver VIP voucher(s), you have %d Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPVoucher]);
+					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Silver VIP will expire in 30 days.");
+
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Silver (2) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pSVIPVoucher]);
+					Log("logs/vouchers.log", szMiscArray);
+					OnPlayerStatsUpdate(playerid);
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 3) // GVIP Voucher - Not renewable
+				{
+					if(PlayerInfo[playerid][pDonateRank] >= 3)
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Your VIP Level is already set to Gold+");
+					}
+					if(PlayerInfo[playerid][pGVIPVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a GVIP Voucher.");
+					PlayerInfo[playerid][pGVIPVoucher]--;
+					PlayerInfo[playerid][pDonateRank] = 3;
+					PlayerInfo[playerid][pTempVIP] = 0;
+					PlayerInfo[playerid][pBuddyInvited] = 0;
+					PlayerInfo[playerid][pVIPSellable] = 0;
+					PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+					if(PlayerInfo[playerid][pVIPM] == 0)
+					{
+						PlayerInfo[playerid][pVIPM] = VIPM;
+						VIPM++;
+					}
+					LoadPlayerDisabledVehicles(playerid);
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Gold (3).", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
+					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Gold VIP voucher(s), you have %d Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPVoucher]);
+					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Gold VIP will expire in 30 days.");
+
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Gold (3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGVIPVoucher]);
+					Log("logs/vouchers.log", szMiscArray);
+					OnPlayerStatsUpdate(playerid);
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 4) // Gift Reset Voucher
+				{
+					if(PlayerInfo[playerid][pGiftTime] <= 0)
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "You're already able to to receive a gift from the giftbox or the safe.");
+					}
+					if(PlayerInfo[playerid][pGiftVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a Gift Reset Voucher.");
+					PlayerInfo[playerid][pGiftVoucher]--;
+					PlayerInfo[playerid][pGiftTime] = 0;
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your Gift Reset voucher(s), you have %d Gift Reset voucher(s) left.", PlayerInfo[playerid][pGiftVoucher]);
+					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: You may now get another gift.");
+					format(szMiscArray, sizeof(szMiscArray), "%s(%d)(IP:%s) has used a Gift Reset Voucher. (Vouchers Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGiftVoucher]);
+					Log("logs/vouchers.log", szMiscArray);	
+					OnPlayerStatsUpdate(playerid);
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 5) // 7 Days Silver VIP
+				{
+					if(PlayerInfo[playerid][pDonateRank] >= 2)
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Your VIP Level is already set to Silver+");
+					}
+					if(PlayerInfo[playerid][pSVIPExVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a 7 Day Silver VIP Voucher.");
+					PlayerInfo[playerid][pSVIPExVoucher]--;
+					PlayerInfo[playerid][pDonateRank] = 2;
+					PlayerInfo[playerid][pTempVIP] = 0;
+					PlayerInfo[playerid][pBuddyInvited] = 0;
+					PlayerInfo[playerid][pVIPSellable] = 1;
+					PlayerInfo[playerid][pVIPExpire] = gettime()+604800*1;
+					if(PlayerInfo[playerid][pVIPM] == 0)
+					{
+						PlayerInfo[playerid][pVIPM] = VIPM;
+						VIPM++;
+					}
+					LoadPlayerDisabledVehicles(playerid);
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Silver (7 Days)(3).", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
+					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your 7 Days Silver VIP voucher(s), you have %d 7 Days Silver VIP voucher(s) left.", PlayerInfo[playerid][pSVIPExVoucher]);
+					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Silver VIP will expire in 7 days.");
+
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Silver (7 Days)(3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pSVIPExVoucher]);
+					Log("logs/vouchers.log", szMiscArray);
+					OnPlayerStatsUpdate(playerid);
+				}
+				if(GetPVarInt(playerid, "voucherdialog") == 6) // 7 Days Gold VIP
+				{
+					if(PlayerInfo[playerid][pDonateRank] >= 3)
+					{
+						DeletePVar(playerid, "voucherdialog");
+						DeletePVar(playerid, "WhoIsThis");
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Your VIP Level is already set to Gold+");
+					}
+					if(PlayerInfo[playerid][pGVIPExVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a 7 Day Gold VIP Voucher.");
+					PlayerInfo[playerid][pGVIPExVoucher]--;
+					PlayerInfo[playerid][pDonateRank] = 3;
+					PlayerInfo[playerid][pTempVIP] = 0;
+					PlayerInfo[playerid][pBuddyInvited] = 0;
+					PlayerInfo[playerid][pVIPSellable] = 1;
+					PlayerInfo[playerid][pVIPExpire] = gettime()+604800*1;
+					if(PlayerInfo[playerid][pVIPM] == 0)
+					{
+						PlayerInfo[playerid][pVIPM] = VIPM;
+						VIPM++;
+					}
+					LoadPlayerDisabledVehicles(playerid);
+					new playerip[32];
+					GetPlayerIp(playerid, playerip, sizeof(playerip));
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's VIP level to Gold (7 Days)(3).", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_LIGHTRED, szMiscArray, 4);
+					format(szMiscArray, sizeof(szMiscArray), "You have successfully used one of your 7 Days Gold VIP voucher(s), you have %d 7 Days Gold VIP voucher(s) left.", PlayerInfo[playerid][pGVIPExVoucher]);
+					SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "** Note: Your Gold VIP will expire in 7 days.");
+
+					format(szMiscArray, sizeof(szMiscArray), "AdmCmd: Server (Voucher System) has set %s's(%d) (IP:%s) VIP level to Gold (7 Days)(3) (Voucher Left: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip, PlayerInfo[playerid][pGVIPExVoucher]);
+					Log("logs/vouchers.log", szMiscArray);
+					OnPlayerStatsUpdate(playerid);
+				}
+			}
+			DeletePVar(playerid, "voucherdialog");
+			DeletePVar(playerid, "WhoIsThis");
+		}
+	}
+	return 1;
+}
 
 // Start of the voucher commands
 CMD:myvouchers(playerid, params[])

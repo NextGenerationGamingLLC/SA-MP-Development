@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 stock ShowStorageEquipDialog(playerid)
 {
 	if(gPlayerLogged{playerid} != 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not logged in!");
@@ -1692,6 +1694,97 @@ stock FindGunInVehicleForPlayer(ownerid, slot, playerid)
 	}
 	if (i == (PlayerVehicleInfo[ownerid][slot][pvWepUpgrade] + 1)) return -1;
 	return i;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case DISPLAY_INV:
+		{
+			new targetid = GetPVarInt(playerid, "ShowInventory");
+			if(IsPlayerConnected(targetid))
+			{
+				if(response)
+				{
+					new resultline[1024], header[64];
+
+					format(header, sizeof(header), "Showing Inventory of %s", GetPlayerNameEx(targetid));
+					format(resultline, sizeof(resultline),"Lock: %d\n\
+					First Aid Kit: %d\n\
+					RC Cam: %d\n\
+					Receiver: %d\n\
+					GPS: %d\n\
+					Bug Sweep: %d\n\
+					Firework: %d\n\
+					Boombox: %d\n\
+					Mailbox: %d\n\
+					Metal Detector: %d\n\
+					Energy Bars: %d\n\
+					House Sale Sign: %d\n\
+					Fuel Canisters: %d\n\
+					Jump Starts: %d\n\
+					Restricted Car Colors: %d\n\
+					Restricted Skins: %d\n\
+					Rim Kits: %d\n\
+					Platinum VIP Voucher: %d\n\
+					Checks: %s\n\
+					Additional Vehicle Slots: %s\n\
+					Additional Toy Slots: %s",
+					PlayerInfo[targetid][pLock],
+					PlayerInfo[targetid][pFirstaid],
+					PlayerInfo[targetid][pRccam],
+					PlayerInfo[targetid][pReceiver],
+					PlayerInfo[targetid][pGPS],
+					PlayerInfo[targetid][pSweep],
+					PlayerInfo[targetid][pFirework],
+					PlayerInfo[targetid][pBoombox],
+					PlayerInfo[targetid][pMailbox],
+					PlayerInfo[targetid][pMetalDetector],
+					PlayerInfo[targetid][mInventory][4],
+					PlayerInfo[playerid][mInventory][6],
+					PlayerInfo[playerid][mInventory][7],
+					PlayerInfo[playerid][mInventory][8],
+					PlayerInfo[playerid][mInventory][9],
+					PlayerInfo[playerid][mInventory][13],
+					PlayerInfo[targetid][pRimMod],
+					PlayerInfo[targetid][pPVIPVoucher],
+					number_format(PlayerInfo[targetid][pChecks]),
+					number_format(PlayerInfo[targetid][pVehicleSlot]),
+					number_format(PlayerInfo[targetid][pToySlot]));
+					if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nScrap Metal: %d\n.50 Cal Ammo: %d\nAntibiotic Injections: %d\nSurvivor Kits: %d\nFuel Can: %d%% Fuel", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
+					ShowPlayerDialog(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
+				}
+				else DeletePVar(playerid, "ShowInventory");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The player you were checking has logged out.");
+				DeletePVar(playerid, "ShowInventory");
+				return 1;
+			}
+		}
+		case DISPLAY_INV2:
+		{
+			new targetid = GetPVarInt(playerid, "ShowInventory");
+			if(IsPlayerConnected(targetid))
+			{
+				if(response)
+				{
+					ShowInventory(playerid, targetid);
+				}
+				else DeletePVar(playerid, "ShowInventory");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The player you were checking has logged out.");
+				DeletePVar(playerid, "ShowInventory");
+				return 1;
+			}
+		}
+	}
+	return 1;
 }
 
 /*CMD:storagehelp(playerid, params[])

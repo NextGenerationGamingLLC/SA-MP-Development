@@ -135,7 +135,8 @@ SaveGroup(iGroupID) {
 
 	new
 		szQuery[2048],
-		i = 0;
+		i = 0,
+		iIndex = 0;
 
 	format(szQuery, sizeof szQuery, "UPDATE `groups` SET \
 		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `Allegiance` = %i, `Bug` = %i, \
@@ -147,7 +148,7 @@ SaveGroup(iGroupID) {
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d'",
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d',",
 		szQuery,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
@@ -175,12 +176,14 @@ SaveGroup(iGroupID) {
 		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
 
-	/*for (i = 0; i < MAX_GROUPS; i++) {
+	for (i = 0; i < MAX_GROUPS; i++) {
 		for(new x = 0; x != 50; x++)
 		{
-			format(szQuery, sizeof(szQuery), "");
+			format(szQuery, sizeof(szQuery), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
+			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+			iIndex++;
 		}
-	}*/
+	}
 	return 1;
 }
 
@@ -6853,7 +6856,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			new iGroupID = strval(szResult)-1;
 			new j = 0;
 
-			while(arrGroupData[iGroupID][g_iClothes][j] != 0)
+			while(arrGroupData[iGroupID][g_iWeapons][j] != 0)
 			{
 				j++;
 			}

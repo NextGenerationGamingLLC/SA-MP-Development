@@ -902,32 +902,6 @@ public OnPlayerPressButton(playerid, buttonid)
 			return 1;
 		}
 	}
-	if(buttonid == radarroom[0] || buttonid == radarroom[1])
-	{
-		if(IsACop(playerid))
-	    {
-			MoveDynamicObject(blastdoor[1],-746.02636719,2535.19433594,10025,2);
-			SetTimer("CloseBlastDoor2", 5000, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == intergate[0] || buttonid == intergate[1])
-	{
-		if(IsACop(playerid))
-	    {
-			MoveDynamicObject(blastdoor[2],-765.26171875,2552.31347656,10025,2);
-			SetTimer("CloseBlastDoor3", 5000, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
 	if(buttonid == intergate[2])
 	{
 		if(IsACop(playerid))
@@ -959,19 +933,6 @@ public OnPlayerPressButton(playerid, buttonid)
 				MoveDynamicObject(ncontrolroomobjects[2],-755.53906250,2538.61035156,10021.02636719,2);
 				ncontrolroomopened = 1;
 			}
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == bottomroom[0] || buttonid == bottomroom[1])
-	{
-		if(IsACop(playerid))
-	    {
-			MoveDynamicObject(blastdoor[0],-764.11816406,2568.81445312,10025.05566406,2);
-			SetTimer("CloseBlastDoor", 5000, 0);
 	    }
 	    else
 	    {

@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 forward Lotto(number);
 public Lotto(number)
 {
@@ -177,6 +179,47 @@ public EndLotto(secondt)
 		OOCOff(COLOR_WHITE, string);
 		new rand = Random(1, 300);
 		Lotto(rand);
+	}
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case LOTTOMENU: //lotteryticket
+		{
+			new lotto = strval(inputtext);
+			if(response)
+			{
+				if(lotto < 1 || lotto > 300)
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "   Lottery Number not below 1 or above 300!");
+					ShowPlayerDialog( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
+				}
+				else
+				{
+					if(PlayerInfo[playerid][pLottoNr] >= 5) {
+						SendClientMessageEx(playerid, COLOR_GREY, "You can only buy up to 5 tickets.");
+						return 1;
+					}
+					format(szMiscArray, sizeof(szMiscArray), "* You bought a Lottery Ticket with number: %d.", lotto);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+					AddTicket(playerid, lotto);
+					for(new i = 0; i < 5; i++) {
+						if(LottoNumbers[playerid][i] == 0) {
+							LottoNumbers[playerid][i] = lotto;
+							break;
+						}
+					}
+					Jackpot += 800;
+					TicketsSold += 1;
+					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+					return 1;
+				}
+			}
+		}
 	}
 	return 1;
 }

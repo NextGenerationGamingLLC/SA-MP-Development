@@ -640,7 +640,8 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_GROUP_POINTCAP				(3409)
 #define 		DIALOG_GROUP_WEAPONSAFE				(3410)
 #define 		DIALOG_GROUP_SACTIONTYPE			(3411)
-#define     	DIALOG_GROUP_SACTIONEXEC			(3412)   	
+#define     	DIALOG_GROUP_SACTIONEXEC			(3412)
+#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3413)   	
 
 
 #define         DIALOG_REPORTMENU           (3490)
