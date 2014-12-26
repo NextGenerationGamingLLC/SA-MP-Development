@@ -376,26 +376,6 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 1533.6, -1760.9, 2264.4+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2345, 18, -1); //
 	CreateDynamic3DTextLabel("Back Entrance", COLOR_DBLUE, -2033.7502,-154.8784,35.3203+0.6, 4.0); // Prison
 	
-	/*CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,225.3467,1981.8497,17.6406+0.6,4.0);//Deliverpt (DeMorgan)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-1528.814331, 2540.706054, 55.835937+0.6,4.0);///Deliverpt (TR - El Quebrados)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1142.4733,-1326.3633,13.6259+0.6,4.0);///Deliverpt (All Saints)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,2027.0599,-1410.6870,16.9922+0.6,4.0);///Deliverpt (County General)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1227.2339,306.4730,19.7028+0.6,4.0);///Deliverpt (Montgomery)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-339.2989,1055.8138,19.7392+0.6,4.0);///Deliverpt (Fort Carson)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1165.1564,-1368.8240,26.6502+0.6,4.0);///Deliverpt (All Saints Rooftop)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,2024.5742,-1382.7844,48.3359+0.6,4.0);///Deliverpt (County General)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1233.3384,316.4022,24.7578+0.6,4.0);///Deliverpt (Montgomery Rooftop)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-334.1560,1051.4434,26.0125+0.6,4.0);///Deliverpt (Fort Carson Rooftop)
-   	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-2656.0339,615.2567,66.0938+0.6,4.0);///Deliverpt (SF Rooftop)
-	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,1579.58,1768.88,10.82+0.6,4.0); // /deliverpt (LV Hospital)
-   	CreateDynamic3DTextLabel("Emergency Room\n/deliverpt",COLOR_DBLUE,-2695.5725,639.4147,14.4531+0.6,4.0);///Deliverpt (SF)
-	CreateDynamic3DTextLabel("/deliverpt",COLOR_LIGHTRED,-2482.4338,2231.1106,4.8463+0.6,4.0);///Deliverpt (TR - Bayside)
-   	CreateDynamic3DTextLabel("/deliver",COLOR_DBLUE,1991.7953,-2321.2532,13.5469+0.6,4.0);// Deliver 
-	*/
-	//CreateDynamic3DTextLabel("/healme \nTo cure your disease",COLOR_DBLUE,1179.4012451172,-1331.5632324219,2423.0461425781+0.6,4.0);// /healme
-   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,1169.7209472656,-1348.3218994141,2423.0461425781+0.6,4.0);// Insurance
-   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,2785.586914, 2400.224853, 1240.531127+0.6,8.0);// GVIP Insurance
-   	//CreateDynamic3DTextLabel("/buyinsurance \n To buy insurance",COLOR_DBLUE,912.1003,1429.9298,-81.1762+0.6,4.0);// Famed Room Insurance
 	CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
     CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
 	CreateDynamic3DTextLabel("Type /getlicense to \nacquire a license.",COLOR_YELLOW,366.54,159.09,1008.38+0.5,8.0);// Licenses.
@@ -554,11 +534,6 @@ public LoadStreamerDynamicButtons()
 	FBILobbyRightBTN[1] = CreateButton(300.16033936,-1521.84387207,-44.59006119,0); //Lobby Button Right
 	FBIPrivateBTN[0] = CreateButton(298.87384033,-1495.87316895,-27.32773209,270); //Private Office Button
 	FBIPrivateBTN[1] = CreateButton(300.49453735,-1495.33837891,-27.28091812,180.49487305); //Private Office Button
-	
-	/*SANewsPrivate = CreateButton(625.51953125,-3.59961796,1108.50000000,269.99450684); //object(sec_keypad) (2)
-	SANewsOffice = CreateButton(614.58581543,17.78320312,1108.55004883,0); //object(sec_keypad) (3)
-	SANewsStudio = CreateButton(625.50000000,-13.60000038,1108.50000000,270.00000000); //object(sec_keypad) (1)
-	SANewsPrivateOPP = CreateButton(626.13519287,-0.08516422,1108.61315918,0); //object(sec_keypad) (4)*/
 	
 	//new doc buttons
 	DocButtons[0] = CreateButton(597.35022, 1495.02881, 6001.10938, 180.00);

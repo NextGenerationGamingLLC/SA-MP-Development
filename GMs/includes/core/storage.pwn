@@ -416,11 +416,11 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 			format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[mypoint][Stock]);
 			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
 		}
-		for(new i = 0; i < sizeof(FamilyInfo); i++)
+		for(new i = 0; i < MAX_GROUPS; i++)
 		{
-			if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+			if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 			{
-				FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+				arrGroupData[i][g_iBudget] += price/2;
 			}
 		}
 	}
@@ -444,11 +444,11 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 			format(string, sizeof(string), " CRACK AVAILABLE: %d/500.", Points[mypoint][Stock]);
 			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
 		}
-		for(new i = 0; i < sizeof(FamilyInfo); i++)
+		for(new i = 0; i < MAX_GROUPS; i++)
 		{
-			if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+			if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 			{
-				FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+				arrGroupData[i][g_iBudget] += price/2;
 			}
 		}
 	}

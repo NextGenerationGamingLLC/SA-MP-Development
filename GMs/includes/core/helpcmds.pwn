@@ -196,6 +196,10 @@ CMD:help(playerid, params[])
 			{
 			    SendClientMessageEx(playerid, COLOR_WHITE, "*** URL *** /countdown");
 			}
+			case 10:
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate");
+			}
 		}
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
 		{
@@ -207,6 +211,10 @@ CMD:help(playerid, params[])
 			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 			{
 			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /checkapps /deport");
+			}
+			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+			{
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /adjustwithdrawrank");
 			}
 		}
 	}

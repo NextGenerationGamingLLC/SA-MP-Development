@@ -2313,9 +2313,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								{
 									arrGroupData[iGroupID][g_iBudget] -= strval(inputtext);
 									GivePlayerCash(playerid, amount);
-									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%i from the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%i from the safe.", strval(inputtext));
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(strval(inputtext)));
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
@@ -2337,7 +2337,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					// log + GVIP / Famed + check on weapons
 					for(new g = 0; g < 12; g++)	
 					{
-						if(PlayerInfo[playerid][pGuns][g] != 0)
+						if(PlayerInfo[playerid][pGuns][g] != 0 && PlayerInfo[playerid][pAGuns][g] == 0)
 						{
 							format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%i)", szMiscArray, Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]), PlayerInfo[playerid][pGuns][g]);
 						}
@@ -2360,6 +2360,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 						arrGroupData[iGroupID][g_iWeapons][listitem] = 0;
 					}
+					else SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot withdraw weapons at your current rank.");
 				}
 			}
 		}
@@ -2396,6 +2397,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					arrGroupData[iGroupID][g_iWeapons][x] = id;
 					PlayerInfo[playerid][pGuns][Weapon_ReturnSlot(id)] = 0;
+					SetPlayerWeaponsEx(playerid);
 					format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(id));
 					GroupLog(iGroupID, szMiscArray);
 					format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s into the locker.", Weapon_ReturnName(id));
@@ -2489,7 +2491,7 @@ CMD:online(playerid, params[]) {
 }
 
 CMD:badge(playerid, params[]) {
-    if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF)
+    if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 	{
 		if(GetPVarInt(playerid, "IsInArena") >= 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
 		{
@@ -4621,7 +4623,7 @@ CMD:hshowbadge(playerid, params[])
 
 CMD:showbadge(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_RACE))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showbadge [player]");
@@ -5738,4 +5740,28 @@ CMD:adjustwithdrawrank(playerid, params[])
 	}
 	else SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	return 1;
+}
+
+CMD:orgs(playerid, params[])
+{
+	szMiscArray[0] = 0;
+	for(new i = 0; i < MAX_GROUPS; i++)
+	{
+		if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+		{
+			new iMemberCount = 0;
+			foreach(new x: Player)
+			{
+				if(PlayerInfo[x][pMember] == i) iMemberCount++;
+			}
+			format(szMiscArray, sizeof(szMiscArray), "%s\n** %s | Members Online: %i", szMiscArray, arrGroupData[i][g_szGroupName]);
+		}
+	}
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	return 1;
+}
+
+CMD:f(playerid, params[])
+{
+	return cmd_g(playerid, params);
 }

@@ -171,7 +171,7 @@ native gpci(playerid, serial[], maxlen);
     
 			/*  ---------------- DYNAMIC GROUP ----------------- */
 // First-dimension array sizes - CRITICAL.
-#define 		MAX_GROUPS 					20
+#define 		MAX_GROUPS 					40
 #define 		MAX_GROUP_RANKS 			10
 #define 		MAX_GROUP_DIVS 				10
 #define 		MAX_GROUP_WEAPONS			16

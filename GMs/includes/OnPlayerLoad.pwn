@@ -831,7 +831,7 @@ public OnPlayerLoad(playerid)
 			if(Points[i][CapCrash] == 1)
 			{
 				SendClientMessageEx(playerid, COLOR_YELLOW, "Point Crash Protection:");
-				format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", Points[i][PlayerNameCapping], Points[i][Name], FamilyInfo[Points[i][ClaimerTeam]][FamilyName], Points[i][TakeOverTimer]);
+				format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", Points[i][PlayerNameCapping], Points[i][Name], arrGroupData[Points[i][ClaimerTeam]][g_szGroupName], Points[i][TakeOverTimer]);
 				SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			}
 		}

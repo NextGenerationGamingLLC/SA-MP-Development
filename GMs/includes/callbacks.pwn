@@ -3012,13 +3012,13 @@ public OnPlayerDisconnect(playerid, reason)
 						format(string, sizeof string, "%s%s %s has lost connection.", badge, rank, GetPlayerNameEx(playerid));
 						GroupLog(PlayerInfo[playerid][pMember], string);
 					}
-					else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+					/*else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
 					{
 						format(string, sizeof(string), "** (%i) %s %s has lost connection **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
 						format(string, sizeof string, "%s %s has lost connection.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						FamilyLog(PlayerInfo[playerid][pFMember], string);
-					}
+					}*/
 				}
 			}
 			case 1:
@@ -3120,13 +3120,13 @@ public OnPlayerDisconnect(playerid, reason)
 						format(string, sizeof string, "%s%s has logged out.", badge, GetPlayerNameEx(playerid));
 						GroupLog(PlayerInfo[playerid][pMember], string);
 					}
-					else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
+					/*else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
 					{
 						format(string, sizeof(string), "** (%i) %s %s has logged out **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
 						format(string, sizeof string, "%s %s has logged out.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						FamilyLog(PlayerInfo[playerid][pFMember], string);
-					}
+					}*/
 				}
 			}
 			case 2:
@@ -4656,11 +4656,11 @@ public OnPlayerEnterCheckpoint(playerid)
 				DeletePVar(playerid, "MatDeliver");
 				DisablePlayerCheckpoint(playerid);
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-				for(new p = 0; p < sizeof(FamilyInfo); p++)
+				for(new p = 0; p < MAX_GROUPS; p++)
 				{
-					if(strcmp(Points[h][Owner], FamilyInfo[p][FamilyName], true) == 0)
+					if(strcmp(Points[h][Owner], arrGroupData[p][g_szGroupName], true) == 0)
 					{
-						FamilyInfo[p][FamilyBank] = FamilyInfo[p][FamilyBank]+(payout/3);
+						arrGroupData[p][g_iBudget] += (payout/3);
 						//SendClientMessageEx(playerid, COLOR_WHITE, " Family owner recieved 50 percent of the cost.");
 					}
 				}
@@ -5266,12 +5266,12 @@ public OnPlayerEnterCheckpoint(playerid)
 						mypoint = i;
 					}
 				}
-				for(new i = 0; i < sizeof(FamilyInfo); i++)
+				for(new i = 0; i < MAX_GROUPS; i++)
 				{
-					if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+					if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 					{
 						Misc_Save();
-						FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+(200);
+						arrGroupData[i][g_iBudget] += 200;
 					}
 			 	}
 			}
@@ -6813,11 +6813,11 @@ public OnPlayerText(playerid, text[])
 				SetPVarInt(playerid, "tpDrugRunTimer", 45);
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPDRUGRUNTIMER);
 				SetPlayerCheckpoint(playerid, 2166.3772,-1675.3829,15.0859, 3);
-				for(new i = 0; i < sizeof(FamilyInfo); i++)
+				for(new i = 0; i < MAX_GROUPS; i++)
 				{
-					if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+					if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 					{
-						FamilyInfo[i][FamilyBank] += 500;
+						arrGroupData[i][g_iBudget] += 500;
 					}
 				}
 				return 0;
@@ -6860,11 +6860,11 @@ public OnPlayerText(playerid, text[])
 				SetPVarInt(playerid, "tpDrugRunTimer", 45);
 				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPDRUGRUNTIMER);
 				SetPlayerCheckpoint(playerid, 2354.2808,-1169.2959,28.0066, 3);
-				for(new i = 0; i < sizeof(FamilyInfo); i++)
+				for(new i = 0; i < MAX_GROUPS; i++)
 				{
-					if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+					if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 					{
-						FamilyInfo[i][FamilyBank] += 500;
+						arrGroupData[i][g_iBudget] += 500;
 					}
 				}
 				return 0;

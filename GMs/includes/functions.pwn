@@ -3009,44 +3009,6 @@ public MoveTimerGate(gateid)
 	return 1;
 }
 
-forward CaptureTimerEx(point);
-public CaptureTimerEx(point)
-{
-	new string[128];
-	new fam;
-	if (Points[point][TakeOverTimerStarted])
-	{
-		fam = Points[point][ClaimerTeam];
-		if (Points[point][TakeOverTimer] > 0)
-		{
-			Points[point][TakeOverTimer]--;
-			format(string, sizeof(string), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!",
-			Points[point][PlayerNameCapping], Points[point][Name], FamilyInfo[fam][FamilyName], Points[point][TakeOverTimer]);
-			UpdateDynamic3DTextLabelText(Points[point][CaptureProccess], COLOR_YELLOW, string);
-			PointCrashProtection(point);
-		}
-		else
-		{
-			Points[point][ClaimerTeam] = INVALID_PLAYER_ID;
-			Points[point][TakeOverTimer] = 0;
-			Points[point][TakeOverTimerStarted] = 0;
-			Points[point][Announced] = 0;
-			Points[point][CapCrash] = 0;
-			Points[point][Vulnerable] = NEW_VULNERABLE+1;
-			DestroyDynamic3DTextLabel(Points[point][CaptureProccess]);
-			Points[point][CaptureProccessEx] = 0;
-			strmid(Points[point][Owner], FamilyInfo[fam][FamilyName], 0, 32, 32);
-			strmid(Points[point][CapperName], Points[point][PlayerNameCapping], 0, 32, 32);
-			format(string, sizeof(string), "%s has successfully taken control of the %s for %s.", Points[point][CapperName], Points[point][Name], Points[point][Owner]);
-			SendClientMessageToAllEx(COLOR_YELLOW, string);
-			UpdatePoints();
-			PointCrashProtection(point);
-			KillTimer(Points[point][CaptureTimerEx2]);
-			Points[point][CaptureTimerEx2] = -1;
-		}
-	}
-}
-
 forward StopMusic();
 public StopMusic()
 {
@@ -3306,78 +3268,6 @@ stock ClearHouse(houseid) {
 	HouseInfo[houseid][hSignExpire] = 0;
 	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
-}
-
-stock ClearFamily(family)
-{
-	foreach(new i: Player)
-	{
-		if(PlayerInfo[i][pFMember] == family) {
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* The Family you are in has just been deleted by an Admin, you have been kicked out automatically.");
-			PlayerInfo[i][pFMember] = INVALID_FAMILY_ID;
-		}
-	}	
-
-	new string[MAX_PLAYER_NAME];
-	format(string, sizeof(string), "None");
-	FamilyInfo[family][FamilyTaken] = 0;
-	strmid(FamilyInfo[family][FamilyName], string, 0, strlen(string), 255);
-	strmid(FamilyMOTD[family][0], string, 0, strlen(string), 128);
-	strmid(FamilyMOTD[family][1], string, 0, strlen(string), 128);
-	strmid(FamilyMOTD[family][2], string, 0, strlen(string), 128);
-	strmid(FamilyInfo[family][FamilyLeader], string, 0, strlen(string), 255);
-	format(string, sizeof(string), "Newb");
-	strmid(FamilyRankInfo[family][0], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Outsider");
-	strmid(FamilyRankInfo[family][1], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Associate");
-	strmid(FamilyRankInfo[family][2], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Soldier");
-	strmid(FamilyRankInfo[family][3], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Capo");
-	strmid(FamilyRankInfo[family][4], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Underboss");
-	strmid(FamilyRankInfo[family][5], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "Godfather");
-	strmid(FamilyRankInfo[family][6], string, 0, strlen(string), 30);
-	format(string, sizeof(string), "None");
-	for(new i = 0; i < 5; i++)
-	{
-		strmid(FamilyDivisionInfo[family][i], string, 0, 16, 30);
-	}
-	FamilyInfo[family][FamilyColor] = 0;
-	FamilyInfo[family][FamilyTurfTokens] = 24;
-	FamilyInfo[family][FamilyMembers] = 0;
-	for(new i = 0; i < 4; i++)
-	{
-		FamilyInfo[family][FamilySpawn][i] = 0.0;
-	}
-	for(new i = 0; i < 10; i++)
-	{
-		FamilyInfo[family][FamilyGuns][i] = 0;
-	}
-	FamilyInfo[family][FamilyCash] = 0;
-	FamilyInfo[family][FamilyMats] = 0;
-	FamilyInfo[family][FamilyHeroin] = 0;
-	FamilyInfo[family][FamilyPot] = 0;
-	FamilyInfo[family][FamilyCrack] = 0;
-	FamilyInfo[family][FamilySafe][0] = 0.0;
-	FamilyInfo[family][FamilySafe][1] = 0.0;
-	FamilyInfo[family][FamilySafe][2] = 0.0;
-	FamilyInfo[family][FamilySafeVW] = 0;
-	FamilyInfo[family][FamilySafeInt] = 0;
-	FamilyInfo[family][FamilyUSafe] = 0;
-	FamilyInfo[family][FamColor] = 0x01FCFF;
-	DestroyDynamicPickup( FamilyInfo[family][FamilyEntrancePickup] );
-	DestroyDynamicPickup( FamilyInfo[family][FamilyExitPickup] );
-	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyEntranceText] );
-	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyExitText] );
-	DestroyDynamicPickup( FamilyInfo[family][FamilyPickup] );
-	new query[60];
-	format(query, sizeof(query), "UPDATE `accounts` SET `FMember` = 255 WHERE `FMember` = %d", family);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	SaveFamilies();
-	return 1;
 }
 
 stock BubbleSort(a[], size)
@@ -4754,40 +4644,6 @@ stock ShowAdMuteFine(playerid)
 	    format(string,sizeof(string),"Prison for 1 Hour and 30 Minutes");
 	}
 	ShowPlayerDialog(playerid,ADMUTE,DIALOG_STYLE_LIST,"Advertisements Unmute - Select your Punishment:",string,"Select","Cancel");
-}
-
-stock TurfWarsEditTurfsSelection(playerid)
-{
-	new string[4096];
-	for(new i = 0; i < MAX_TURFS; i++)
-	{
-		if(TurfWars[i][twOwnerId] != -1)
-		{
-			if(TurfWars[i][twOwnerId] < 0 || TurfWars[i][twOwnerId] > MAX_FAMILY-1)
-			{
-				format(string,sizeof(string),"%s%d) %s - (Invalid Family)\n",string,i,TurfWars[i][twName]);
-			}
-			else
-			{
-				format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],FamilyInfo[TurfWars[i][twOwnerId]][FamilyName]);
-			}
-		}
-		else
-		{
-			format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],"Vacant");
-		}
-	}
-	ShowPlayerDialog(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Selection Menu:",string,"Select","Back");
-}
-
-stock TurfWarsEditFColorsSelection(playerid)
-{
-	new string[1024];
-	for(new i = 1; i < MAX_FAMILY; i++)
-	{
-	    format(string,sizeof(string),"%s (ID: %d) %s - (%d)\n",string,i,FamilyInfo[i][FamilyName],FamilyInfo[i][FamilyColor]);
-	}
-	ShowPlayerDialog(playerid,TWEDITFCOLORSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Family Colors Selection:",string,"Select","Back");
 }
 
 stock PaintballEditMenu(playerid)
@@ -8266,12 +8122,12 @@ public SyncTime()
 			}
 		}
 
-		for(new i = 1; i < MAX_FAMILY; i++)
+		for(new i = 1; i < MAX_GROUPS; i++)
 		{
-		    if(FamilyInfo[i][FamilyTurfTokens] < 24)
+		    if(arrGroupData[i][g_iTurfTokens] < 24 && arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 		    {
-		        FamilyInfo[i][FamilyTurfTokens]++;
-		        switch(FamilyInfo[i][FamilyTurfTokens])
+		        arrGroupData[i][g_iTurfTokens]++;
+		        switch(arrGroupData[i][g_iTurfTokens])
 		        {
 					case 12:
 					{
@@ -8284,7 +8140,7 @@ public SyncTime()
 		        }
 		    }
 		}
-		SaveFamilies();
+		//SaveFamilies();
 	}
 }
 

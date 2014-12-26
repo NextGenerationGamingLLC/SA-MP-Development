@@ -110,9 +110,9 @@ public CaptureTimer(point)
 				Points[point][TimeToClaim] = 0;
 			    return 1;
 			}
-			fam = PlayerInfo[claimer][pFMember];
+			fam = PlayerInfo[claimer][pMember];
             Points[point][PlayerNameCapping] = GetPlayerNameEx(claimer);
-		   	format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", Points[point][PlayerNameCapping], Points[point][Name], FamilyInfo[fam][FamilyName], TIME_TO_TAKEOVER);
+		   	format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", Points[point][PlayerNameCapping], Points[point][Name], arrGroupData[fam][g_szGroupName], TIME_TO_TAKEOVER);
 			SendClientMessageToAllEx(COLOR_YELLOW, string);
 			if(Points[point][CaptureProccessEx] >= 1)
 			{
@@ -137,7 +137,7 @@ ReadyToCapture(pointid)
 	new string[128];
 	foreach(new i: Player)
 	{
-		if(PlayerInfo[i][pFMember] < INVALID_FAMILY_ID)
+		if(IsACriminal(i))
 		{
 			if(Points[pointid][Type] == 3 && Points[pointid][Type] == 4) return 1;
 			if(Points[pointid][CapCrash] != 1)
@@ -150,11 +150,49 @@ ReadyToCapture(pointid)
 	}	
 	if(Points[pointid][CapCrash] == 1)
 	{
-		format(string, sizeof(string), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", Points[pointid][PlayerNameCapping], Points[pointid][Name], FamilyInfo[Points[pointid][ClaimerTeam]][FamilyName], Points[pointid][TakeOverTimer]);
+		format(string, sizeof(string), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", Points[pointid][PlayerNameCapping], Points[pointid][Name], arrGroupData[Points[pointid][ClaimerTeam]][g_szGroupName], Points[pointid][TakeOverTimer]);
 		Points[pointid][CaptureProccessEx] = 2;
 		Points[pointid][CaptureProccess] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, Points[pointid][Pointx], Points[pointid][Pointy], Points[pointid][Pointz], 10.0, _, _, _, _, _,_);
 	}
 	return 1;
+}
+
+forward CaptureTimerEx(point);
+public CaptureTimerEx(point)
+{
+	new string[128];
+	new fam;
+	if (Points[point][TakeOverTimerStarted])
+	{
+		fam = Points[point][ClaimerTeam];
+		if (Points[point][TakeOverTimer] > 0)
+		{
+			Points[point][TakeOverTimer]--;
+			format(string, sizeof(string), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!",
+			Points[point][PlayerNameCapping], Points[point][Name], arrGroupData[fam][g_szGroupName], Points[point][TakeOverTimer]);
+			UpdateDynamic3DTextLabelText(Points[point][CaptureProccess], COLOR_YELLOW, string);
+			PointCrashProtection(point);
+		}
+		else
+		{
+			Points[point][ClaimerTeam] = INVALID_PLAYER_ID;
+			Points[point][TakeOverTimer] = 0;
+			Points[point][TakeOverTimerStarted] = 0;
+			Points[point][Announced] = 0;
+			Points[point][CapCrash] = 0;
+			Points[point][Vulnerable] = NEW_VULNERABLE+1;
+			DestroyDynamic3DTextLabel(Points[point][CaptureProccess]);
+			Points[point][CaptureProccessEx] = 0;
+			strmid(Points[point][Owner], arrGroupData[fam][g_szGroupName], 0, 32, 32);
+			strmid(Points[point][CapperName], Points[point][PlayerNameCapping], 0, 32, 32);
+			format(string, sizeof(string), "%s has successfully taken control of the %s for %s.", Points[point][CapperName], Points[point][Name], Points[point][Owner]);
+			SendClientMessageToAllEx(COLOR_YELLOW, string);
+			UpdatePoints();
+			PointCrashProtection(point);
+			KillTimer(Points[point][CaptureTimerEx2]);
+			Points[point][CaptureTimerEx2] = -1;
+		}
+	}
 }
 
 CMD:gotofpoint(playerid, params[])
@@ -188,7 +226,7 @@ CMD:capture(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, " You can not capture while injured!");
 		return 1;
 	}
-	if (PlayerInfo[playerid][pFMember] == INVALID_FAMILY_ID || PlayerInfo[playerid][pRank] < 5)
+	if (!IsACriminal(playerid) || PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iPointCapRank])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, " You are not high rank enough to capture!");
 		return 1;

@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 stock SendFamilyMessage(family, color, string[])
 {
 	foreach(new i: Player)
@@ -53,6 +55,271 @@ stock FamilyLog(familyid, string[])
 	getdate(year, month, day);
 	format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", familyid, year, month, day);
 	return Log(file, string);
+}
+
+stock ClearFamily(family)
+{
+	foreach(new i: Player)
+	{
+		if(PlayerInfo[i][pFMember] == family) {
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* The Family you are in has just been deleted by an Admin, you have been kicked out automatically.");
+			PlayerInfo[i][pFMember] = INVALID_FAMILY_ID;
+		}
+	}	
+
+	new string[MAX_PLAYER_NAME];
+	format(string, sizeof(string), "None");
+	FamilyInfo[family][FamilyTaken] = 0;
+	strmid(FamilyInfo[family][FamilyName], string, 0, strlen(string), 255);
+	strmid(FamilyMOTD[family][0], string, 0, strlen(string), 128);
+	strmid(FamilyMOTD[family][1], string, 0, strlen(string), 128);
+	strmid(FamilyMOTD[family][2], string, 0, strlen(string), 128);
+	strmid(FamilyInfo[family][FamilyLeader], string, 0, strlen(string), 255);
+	format(string, sizeof(string), "Newb");
+	strmid(FamilyRankInfo[family][0], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Outsider");
+	strmid(FamilyRankInfo[family][1], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Associate");
+	strmid(FamilyRankInfo[family][2], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Soldier");
+	strmid(FamilyRankInfo[family][3], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Capo");
+	strmid(FamilyRankInfo[family][4], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Underboss");
+	strmid(FamilyRankInfo[family][5], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "Godfather");
+	strmid(FamilyRankInfo[family][6], string, 0, strlen(string), 30);
+	format(string, sizeof(string), "None");
+	for(new i = 0; i < 5; i++)
+	{
+		strmid(FamilyDivisionInfo[family][i], string, 0, 16, 30);
+	}
+	FamilyInfo[family][FamilyColor] = 0;
+	FamilyInfo[family][FamilyTurfTokens] = 24;
+	FamilyInfo[family][FamilyMembers] = 0;
+	for(new i = 0; i < 4; i++)
+	{
+		FamilyInfo[family][FamilySpawn][i] = 0.0;
+	}
+	for(new i = 0; i < 10; i++)
+	{
+		FamilyInfo[family][FamilyGuns][i] = 0;
+	}
+	FamilyInfo[family][FamilyCash] = 0;
+	FamilyInfo[family][FamilyMats] = 0;
+	FamilyInfo[family][FamilyHeroin] = 0;
+	FamilyInfo[family][FamilyPot] = 0;
+	FamilyInfo[family][FamilyCrack] = 0;
+	FamilyInfo[family][FamilySafe][0] = 0.0;
+	FamilyInfo[family][FamilySafe][1] = 0.0;
+	FamilyInfo[family][FamilySafe][2] = 0.0;
+	FamilyInfo[family][FamilySafeVW] = 0;
+	FamilyInfo[family][FamilySafeInt] = 0;
+	FamilyInfo[family][FamilyUSafe] = 0;
+	FamilyInfo[family][FamColor] = 0x01FCFF;
+	DestroyDynamicPickup( FamilyInfo[family][FamilyEntrancePickup] );
+	DestroyDynamicPickup( FamilyInfo[family][FamilyExitPickup] );
+	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyEntranceText] );
+	DestroyDynamic3DTextLabel( Text3D:FamilyInfo[family][FamilyExitText] );
+	DestroyDynamicPickup( FamilyInfo[family][FamilyPickup] );
+	new query[60];
+	format(query, sizeof(query), "UPDATE `accounts` SET `FMember` = 255 WHERE `FMember` = %d", family);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	SaveFamilies();
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	szMiscArray[0] = 0;
+	switch(dialogid)
+	{
+		case HQENTRANCE:
+		{
+			if(response)
+			{
+				new Float: x, Float: y, Float: z, Float: a;
+				GetPlayerPos(playerid, x, y, z);
+				GetPlayerFacingAngle(playerid, a);
+				if(GetPVarInt(playerid, "editingfamhqaction") == 5)
+				{
+					DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+					DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = x;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
+					format(szMiscArray, sizeof(szMiscArray), "%s", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, x, y, z+0.6, 4.0);
+					SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Entrance changed!.");
+					TogglePlayerControllable(playerid, true);
+					SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+					return 1;
+				}
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = x;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = y;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = z;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = a;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, x, y, z);
+				format(szMiscArray, sizeof(szMiscArray), "%s", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, x, y, z+0.6, 4.0);
+				SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Entrance saved! Please stand where you want the exit at, once ready press the fire button.");
+				SetPVarInt(playerid, "editingfamhqaction", 2);
+				TogglePlayerControllable(playerid, true);
+			}
+			else
+			{
+				if(GetPVarInt(playerid, "editingfamhqaction") == 5)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the exterior change of this HQ.");
+					SetPVarInt(playerid, "editingfamhqaction", 0);
+					SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+					TogglePlayerControllable(playerid, true);
+					return 1;
+				}
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+				SetPVarInt(playerid, "editingfamhqaction", 0);
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+				TogglePlayerControllable(playerid, true);
+			}
+		}
+		case HQEXIT:
+		{
+			if(response)
+			{
+				new Float: x, Float: y, Float: z, Float: a;
+				GetPlayerPos(playerid, x, y, z);
+				GetPlayerFacingAngle(playerid, a);
+				if(GetPVarInt(playerid, "editingfamhqaction") == 6)
+				{
+					DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
+					FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
+					SendClientMessageEx(playerid, COLOR_GRAD2, "HQ Exit changed!.");
+					TogglePlayerControllable(playerid, true);
+					SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+					return 1;
+				}
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = x;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = y;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = z;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = a;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = GetPlayerInterior(playerid);
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyVirtualWorld] = GetPVarInt(playerid, "editingfamhq")+900000;
+				format(szMiscArray,sizeof(szMiscArray),"HQ Exit saved!\n\nIs this interior a custom mapped one?");
+				ShowPlayerDialog(playerid,HQCUSTOMINT,DIALOG_STYLE_MSGBOX,"Warning:",szMiscArray,"Yes","No");
+				SetPVarInt(playerid, "editingfamhqaction", 3);
+				TogglePlayerControllable(playerid, true);
+			}
+			else
+			{
+				if(GetPVarInt(playerid, "editingfamhqaction") == 6)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the interior change of this HQ.");
+					SetPVarInt(playerid, "editingfamhqaction", 0);
+					SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+					TogglePlayerControllable(playerid, true);
+					return 1;
+				}
+				SendClientMessageEx(playerid, COLOR_GRAD2, "You have cancelled the creation of this HQ.");
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+				SetPVarInt(playerid, "editingfamhqaction", 0);
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+				TogglePlayerControllable(playerid, true);
+			}
+		}
+		case HQCUSTOMINT:
+		{
+			if(response)
+			{
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 1;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 255;
+				if(GetPVarInt(playerid, "editingfamhqaction") == 7)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
+				}
+				SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+			}
+			else
+			{
+				if(GetPVarInt(playerid, "editingfamhqaction") == 7)
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully changed the custom interior for this HQ.");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD2, "You have successfully created this HQ.");
+				}
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyCustomMap] = 0;
+				SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+			}
+		}
+		case HQDELETE:
+		{
+			if(!response)
+			{
+			}
+			else
+			{
+				format(szMiscArray,sizeof(szMiscArray),"You have successfully deleted '%s' HQ", FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyName]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrancePickup] );
+				DestroyDynamicPickup( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitPickup] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntranceText] );
+				DestroyDynamic3DTextLabel( FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExitText] );
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyEntrance][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][0] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][1] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][2] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyExit][3] = 0.0;
+				FamilyInfo[GetPVarInt(playerid, "editingfamhq")][FamilyInterior] = 0;
+				SaveFamiliesHQ(GetPVarInt(playerid, "editingfamhq"));
+				SetPVarInt(playerid, "editingfamhqaction", 0);
+				SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
+				TogglePlayerControllable(playerid, true);
+			}
+		}
+	}
+	return 1;
 }
 
 CMD:togfamily(playerid, params[])
@@ -1439,7 +1706,7 @@ CMD:clothes(playerid, params[])
 	return true;
 }	
 
-CMD:f(playerid, params[])
+/*CMD:f(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(gFam[playerid] == 1)
@@ -1478,7 +1745,7 @@ CMD:f(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
 	}
 	return 1;
-}
+}*/
 
 CMD:feditcolor(playerid, params[])
 {

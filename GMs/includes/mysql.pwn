@@ -157,10 +157,10 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szQuery, sizeof(szQuery), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i'",
+		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
 		szQuery,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank]
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
 	);
 
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `GClothes%i` = '%i'", szQuery, i, arrGroupData[iGroupID][g_iClothes][i]);
@@ -7034,6 +7034,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "WithdrawRank", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iWithdrawRank] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Tokens", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);
 
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof(szResult), "GClothes%i", i);
