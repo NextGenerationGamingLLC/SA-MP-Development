@@ -130,7 +130,7 @@ CMD:skos(playerid, params[])
 				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
 				return 1;
 			}
-			if(prisonPlayer(playerid, giveplayerid, "Killing On Sight") == 0) return 1;
+			if(prisonPlayer(playerid, giveplayerid, "Killing On Sight", .silent=1) == 0) return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /skos [playerid]");
 	}
@@ -341,7 +341,7 @@ CMD:nonrp(playerid, params[])
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/dm) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/nonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
 				Log("logs/kick.log", string);
 				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -426,7 +426,7 @@ CMD:reverse(playerid, params[])
 			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 4) 
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You have not acted against this person, therefor you can not reverse any actions for them.");
 			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this to someone not currently prisoned.");
-			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
+			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || (PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 3)) {
 				SetPVarInt(playerid, "ReverseReport", 1);
 				SetPVarInt(playerid, "ReverseID", giveplayerid);
 				SetPVarString(playerid, "ReverseReason", reason);
@@ -437,6 +437,7 @@ CMD:reverse(playerid, params[])
 				
 			if(PlayerInfo[giveplayerid][pJailedInfo][1] > 0) GivePlayerCash(giveplayerid, PlayerInfo[giveplayerid][pJailedInfo][1]);
 			if(PlayerInfo[giveplayerid][pJailedInfo][3] == 1) PlayerInfo[giveplayerid][pWarns]--;
+			if(PlayerInfo[giveplayerid][pJailedInfo][4] > 0) PlayerInfo[giveplayerid][pWRestricted] = 0;
 			format(string, 128, "AdmCmd: %s(%d) has been released from prison (/reverse) by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 			Log("logs/admin.log", string);
 			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -501,20 +502,20 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "DM", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 8 && hours <= 16) {
+			if(hours > 8 && hours <= 36) {
 				jailtime = 15;
 				twarn = 1;
 			}
-			else if(hours > 16 && hours <= 20) {
+			else if(hours > 36 && hours <= 80) {
 				jailtime = 60;
 				twarn = 1;
 			}
-			else if(hours > 20 && hours <= 32) {
+			else if(hours > 80 && hours <= 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 4;
 				jailtime = 120;
 				fine = 5;
 			}
-			else if(hours > 32) {
+			else if(hours > 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 8;
 				PlayerInfo[giveplayerid][pWarns] += 1;
 				warn = 1;
@@ -527,9 +528,9 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "RK", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 16 && hours <= 20) jailtime = 30;
-			else if(hours > 20 && hours <= 32) jailtime = 60;
-			else if(hours > 32) {
+			if(hours > 36 && hours <= 80) jailtime = 30;
+			else if(hours > 80 && hours <= 140) jailtime = 60;
+			else if(hours > 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 5;
 				PlayerInfo[giveplayerid][pWarns] += 1;
 				warn = 1;
@@ -542,19 +543,19 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "NONRP", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 9 && hours <= 16) {
+			if(hours > 8 && hours <= 36) {
 				jailtime = 15;
 				twarn = 1;
 			}
-			else if(hours > 16 && hours <= 20) {
+			else if(hours > 36 && hours <= 80) {
 				PlayerInfo[giveplayerid][pWRestricted] = 2;
 				jailtime = 45;
 			}
-			else if(hours > 20 && hours < 32) {
+			else if(hours > 80 && hours <= 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 2;
 				jailtime = 120;
 			}
-			else if(hours >= 32) {
+			else if(hours > 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 8;
 				PlayerInfo[giveplayerid][pWarns] += 1;
 				warn = 1;
@@ -567,28 +568,28 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "MG", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 16 && hours <= 20) jailtime = 15;
-			else if(hours > 20 && hours < 32) jailtime = 30;
-			else if(hours >= 32) jailtime = 60;
+			if(hours > 36 && hours <= 80) jailtime = 15;
+			else if(hours > 80 && hours <= 140) jailtime = 30;
+			else if(hours > 140) jailtime = 60;
 		}
 	}
 	else if(!strcmp(reason, "Killing On Sight", true) && !custom) {
 		strcpy(shortreason, "KOS", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 9 && hours <= 16) {
+			if(hours > 8 && hours <= 36) {
 				jailtime = 15;
 				twarn = 1;
 			}
-			else if(hours > 16 && hours <= 20) {
+			else if(hours > 36 && hours <= 80) {
 				PlayerInfo[giveplayerid][pWRestricted] = 2;
 				jailtime = 45;
 			}
-			else if(hours > 20 && hours < 32) {
+			else if(hours > 80 && hours <= 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 4;
 				jailtime = 120;
 			}
-			else if(hours >= 32) {
+			else if(hours > 140) {
 				PlayerInfo[giveplayerid][pWRestricted] = 4;
 				PlayerInfo[giveplayerid][pWarns] += 1;
 				warn = 1;
@@ -603,6 +604,8 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		PlayerInfo[giveplayerid][pJailedInfo][4] = PlayerInfo[giveplayerid][pWRestricted];
 		PlayerInfo[giveplayerid][pJailedInfo][3] = warn;
 	}
+	for(new x = 0; x < 12; x++) PlayerInfo[giveplayerid][pJailedWeapons][x] = PlayerInfo[giveplayerid][pGuns][x];
+	ResetPlayerWeaponsEx(giveplayerid);
 	
 	if(fine > 0) {
 		new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
@@ -619,9 +622,9 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) {
 		new ip[32];
 		GetPlayerIp(giveplayerid,ip,sizeof(ip));
-		format(string, 128, "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), shortreason);
+		format(string, 128, "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
 		Log("logs/ban.log", string);
-		format(string, 128, "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), shortreason);
+		format(string, 128, "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 		PlayerInfo[giveplayerid][pBanned] = 1;
 		AddBan(playerid, giveplayerid, "Punished while account restricted");
@@ -651,11 +654,9 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 
 	if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
-	for(new x = 0; x < 12; x++) PlayerInfo[giveplayerid][pJailedWeapons][x] = PlayerInfo[giveplayerid][pGuns][x];
-	ResetPlayerWeaponsEx(giveplayerid);
 	format(string, 128, "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 	Log("logs/admin.log", string);
-	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an Admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
+	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 	else format(string, 128, "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 	StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
@@ -664,7 +665,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	PlayerInfo[giveplayerid][pJailTime] = jailtime*60;
 	SetPVarInt(giveplayerid, "_rAppeal", gettime()+60);
 	if(!custom) format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON][%s]", shortreason);
-	else format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON][ADM]", shortreason);
+	else format(PlayerInfo[giveplayerid][pPrisonReason], 128, "[OOC][PRISON][ADM] %s", reason);
 	strcpy(PlayerInfo[giveplayerid][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 	PhoneOnline[giveplayerid] = 1;
 	SetPlayerInterior(giveplayerid, 1);
@@ -686,7 +687,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 
 	if(twarn) {
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "WARNING: As your hours (not level) progress, the punishments increase. Please mind the rules.");
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "WARNING: As your hours, not level, progress, the punishments increase. Please mind the rules.");
 	}
 	
 	if(giveplayerid == GetPVarInt(playerid, "PendingAction2")) {
