@@ -2311,11 +2311,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							{
 								if(strval(inputtext) <= arrGroupData[iGroupID][g_iBudget])
 								{
-									arrGroupData[iGroupID][g_iBudget] -= strval(inputtext);
+									new iMoney = strval(inputtext);
+									arrGroupData[iGroupID][g_iBudget] -= iMoney;
 									GivePlayerCash(playerid, amount);
-									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(strval(inputtext));
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(iMoney));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(strval(inputtext)));
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");

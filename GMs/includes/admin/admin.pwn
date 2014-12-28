@@ -367,7 +367,15 @@ stock GetStaffRank(playerid)
 	}
 	return string;
 }
-
+cmd:resetvw(playerid, params[])
+{
+	new resetPlayer;
+	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	if(sscanf(params, "u", resetPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetvw [player]");
+	SetPlayerVirtualWorld(resetPlayer, 0);
+	SetPlayerInterior(resetPlyaer, 0);
+	SendClientMessage(resetPlayer, "Your virtual world has been reset by an admin!");
+}
 CMD:hhc(playerid, params[]) {
 	return cmd_hhcheck(playerid, params);
 }
@@ -7996,7 +8004,7 @@ CMD:ah(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /mole /setskin /countdown /release /forcedeath /rto(reset) /hhc /sgcheck /pg /mg /kos /nonrp");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s)");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s) /resetvw");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4)

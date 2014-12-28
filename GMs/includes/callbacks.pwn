@@ -35,7 +35,8 @@
  //=======================[Official SA:MP/Streamer Callbacks]============================
  
 public OnVehicleSpawn(vehicleid) {
-
+	new Float:X, Float:Y, Float:Z;
+	new Float:XB, Float:YB, Float:ZB;
 	if(DynVeh[vehicleid] != -1)
 	{
 	    DynVeh_Spawn(DynVeh[vehicleid]);
@@ -106,6 +107,28 @@ public OnVehicleSpawn(vehicleid) {
 		    break;
 		}
     }
+    // Make sure no one is in the vehicle window if plane.
+    foreach(new i: Player)
+	{
+		if(InsidePlane[i] == vehicleid)
+		{
+			TogglePlayerSpectating(i, 0);
+			GetVehiclePos(InsidePlane[i], X, Y, Z);
+			SetPlayerPos(i, X-4, Y-2.3, Z);
+			GetVehiclePos(InsidePlane[i], XB, YB, ZB);
+			if(ZB > 50.0)
+			{
+				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
+				GivePlayerValidWeapon(i, 46, 60000);
+			}
+			PlayerInfo[i][pVW] = 0;
+			SetPlayerVirtualWorld(i, 0);
+			PlayerInfo[i][pInt] = 0;
+			SetPlayerInterior(i, 0);
+			InsidePlane[i] = INVALID_VEHICLE_ID;
+			SendClientMessageEx(i, COLOR_WHITE, "The airplane has been damaged, you cannot be inside it!");
+		}
+	}
 }
 
 public OnVehicleMod(playerid, vehicleid, componentid) 
@@ -3998,6 +4021,7 @@ public OnVehicleDeath(vehicleid) {
 		}
 		if(InsidePlane[i] == vehicleid)
 		{
+			TogglePlayerSpectating(i, 0);
 			GetVehiclePos(InsidePlane[i], X, Y, Z);
 			SetPlayerPos(i, X-4, Y-2.3, Z);
 			GetVehiclePos(InsidePlane[i], XB, YB, ZB);

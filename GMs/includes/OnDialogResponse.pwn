@@ -2161,6 +2161,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			new numberstr = -abs(strval(inputtext));
 			if(10 <= strlen(inputtext) >= 2 || strval(inputtext) == 0) { return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The phone number can only be between 2 and 10 digits long. Please input a new number below", "Submit", "Cancel"); }
+			
 			new query[128];
 			new numb[16];
 			format(numb, sizeof(numb), "%d", numberstr);
@@ -2174,6 +2175,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(strlen(numb) == 3)
 			{
 				checkmon = checkmon * 30/100;
+				if(GetPlayerCash(playerid) <= checkmon)
+			   	{
+			   		SendClientMessageEx(playerid, COLOR_WHITE, "You don't have enough money for the phone number!");
+			   		return 1;
+			   	}
 				if(GetPlayerCash(playerid) >= 1000000)
 				{
 					SetPVarInt(playerid, "WantedPh", numberstr);

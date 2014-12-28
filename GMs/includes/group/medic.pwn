@@ -83,7 +83,7 @@ CMD:loadpt(playerid, params[])
 							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 							format(string, sizeof(string), "* You loaded patient %s.", GetPlayerNameEx(giveplayerid));
 							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-							format(string, sizeof(string), "* %s loads %s in the ambulance.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+							format(string, sizeof(string), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							SetPVarInt(giveplayerid, "EMSAttempt", 3);
 							ClearAnimations(giveplayerid);
