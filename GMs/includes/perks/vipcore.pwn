@@ -127,7 +127,7 @@ CMD:spawnathome(playerid, params[])
 
 CMD:vipnum(playerid, params[])
 {
-	SendClientMessageEx(playerid, -1, "This command has been temporarily disabled.");
+	
 
     if(!(IsPlayerInRangeOfPoint(playerid, 3.0, 2549.548095, 1404.047729, 7699.584472 ) || IsPlayerInRangeOfPoint(playerid, 3.0, 1832.6000, 1375.1700, 1464.4600)) )
     {
