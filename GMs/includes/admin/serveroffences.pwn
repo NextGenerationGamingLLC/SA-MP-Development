@@ -145,7 +145,7 @@ CMD:pg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -172,7 +172,7 @@ CMD:spg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -199,7 +199,7 @@ CMD:mg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -226,7 +226,7 @@ CMD:smg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -253,7 +253,7 @@ CMD:rk(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -280,7 +280,7 @@ CMD:srk(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 12) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -571,6 +571,20 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 			if(hours > 36 && hours <= 80) jailtime = 15;
 			else if(hours > 80 && hours <= 140) jailtime = 30;
 			else if(hours > 140) jailtime = 60;
+		}
+	}
+	else if(!strcmp(reason, "Powergaming", true) && !custom) {
+		strcpy(shortreason, "PG", 5);
+		if(!time) {
+			new hours = PlayerInfo[giveplayerid][pConnectHours];
+			if(hours > 36 && hours <= 80) jailtime = 30;
+			else if(hours > 80 && hours <= 140) jailtime = 45;
+			else if(hours > 140) {
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				jailtime = 120;
+				warn = 1;
+				fine = 10;
+			}
 		}
 	}
 	else if(!strcmp(reason, "Killing On Sight", true) && !custom) {
