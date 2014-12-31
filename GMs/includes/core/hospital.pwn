@@ -240,6 +240,7 @@ GetHospitalName(iHospital)
 		case HOSPITAL_LVVIP: string = "LV VIP";
 		case HOSPITAL_HOMECARE: string = "Homecare";
 		case HOSPITAL_FAMED: string = "Famed Lounge";
+		case HOSPITAL_TRFAMED: string = "TR Famed Lounge";
 	}
 	
 	return string;

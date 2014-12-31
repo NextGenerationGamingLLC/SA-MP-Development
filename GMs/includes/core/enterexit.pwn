@@ -501,6 +501,14 @@ CMD:enter(playerid, params[])
             SetPlayerFacingAngle(playerid, 270);
         }
     }
+    // FAMED Garage Enter to Lounge.
+    else if(IsPlayerInRangeOfPoint(playerid, 10.0, 2484.1738,2377.3049,7.4744))
+    {
+    	SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "FamedVW"));
+    	SetPlayerPos(playerid, 876.6959,1421.9335,-82.3370);
+    	SetPlayerFacingAngle(playerid, 273.0974);
+    	Player_StreamPrep(playerid, 876.6959,1421.9335,-82.3370, FREEZE_TIME);
+    }
 	// DOC enter point
 	else if(IsPlayerInRangeOfPoint(playerid, 2.0, -2073.0698,-155.5515,35.3274))
 	{
@@ -868,6 +876,17 @@ CMD:exit(playerid, params[])
 	        SetPlayerPos(playerid, -2088.4797,-199.6259,978.8315);
 		 }
 		 else return SendClientMessageEx(playerid, COLOR_GREY, "You don't have the keys for that door (LEO restricted) !");
+    }
+    // Famed Lounge Exit to Garage.
+    else if(IsPlayerInRangeOfPoint(playerid, 3.0, 876.6959,1421.9335,-82.3370) && (GetPlayerVirtualWorld(playerid) == 1 || GetPlayerVirtualWorld(playerid) == 0 || GetPlayerVirtualWorld(playerid) == 999))
+    {	
+    	SetPVarInt(playerid, "FamedVW", GetPlayerVirtualWorld(playerid));
+    	SetPlayerVirtualWorld(playerid, 0);
+    	SetPlayerPos(playerid, 2484.1738,2377.3049,7.4744);
+    	SetPlayerFacingAngle(playerid, 268.5658);
+    	Player_StreamPrep(playerid, 2484.1738,2377.3049,7.4744, FREEZE_TIME);
+
+    		
     }
     else if(IsPlayerInRangeOfPoint(playerid, 3.0, 1169.67, -1356.32, 2423.04) && GetPlayerVirtualWorld(playerid) == 7) {
                                                   //Battle Carrier

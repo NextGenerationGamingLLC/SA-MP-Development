@@ -367,14 +367,18 @@ stock GetStaffRank(playerid)
 	}
 	return string;
 }
-cmd:resetvw(playerid, params[])
+CMD:resetvw(playerid, params[])
 {
 	new resetPlayer;
 	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	if(sscanf(params, "u", resetPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetvw [player]");
 	SetPlayerVirtualWorld(resetPlayer, 0);
-	SetPlayerInterior(resetPlyaer, 0);
-	SendClientMessage(resetPlayer, "Your virtual world has been reset by an admin!");
+	PlayerInfo[resetPlayer][pVW] =  0;
+	SetPlayerInterior(resetPlayer, 0);
+	new string[80];
+	format(string,sizeof(string), "You have reset %s's virtual world.", GetPlayerNameEx(resetPlayer));
+	SendClientMessageEx(resetPlayer, COLOR_WHITE, "Your virtual world has been reset by an admin!");
+	return 1;
 }
 CMD:hhc(playerid, params[]) {
 	return cmd_hhcheck(playerid, params);

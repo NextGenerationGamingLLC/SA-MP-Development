@@ -1189,7 +1189,7 @@ native gpci(playerid, serial[], maxlen);
 #define			SAVE_GANGTAG					2
 
 // hospital misc definitions
-#define		MAX_HOSPITALS				(16)
+#define		MAX_HOSPITALS				(17)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(4)
 #define		MAX_DELIVERY_POINTS			(16)
@@ -1211,6 +1211,7 @@ native gpci(playerid, serial[], maxlen);
 #define		HOSPITAL_LVVIP				(13)
 #define		HOSPITAL_HOMECARE			(14)
 #define		HOSPITAL_FAMED				(15)
+#define 	HOSPITAL_TRFAMED			(16)
 
 //General Timer Delays
 #define		CRATE_PRODUCTION_DELAY		5000

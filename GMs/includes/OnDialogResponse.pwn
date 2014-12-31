@@ -4170,16 +4170,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(PlayerVehicleInfo[iTargetID][listitem][pvImpounded])
 			{
-				if(!vehicleSpawnCountCheck(iTargetID))
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles out of storage for this vehicle to be released.");
-					return 1;
-				}
+				
 
 				format(szMessage, sizeof(szMessage), "You have released %s's %s.", GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
-				format(szMessage, sizeof(szMessage), "%s has released your %s from the impound.", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
+				format(szMessage, sizeof(szMessage), "%s has released your %s from the impound. (/vstorage to spawn it)", GetPlayerNameEx(playerid), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 
 				format(szMessage, sizeof(szMessage), "HQ: %s has released %s's %s from the impound.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
@@ -4193,14 +4189,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerVehicleInfo[iTargetID][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[iTargetID][listitem][pvTicket] = 0;
-				VehicleSpawned[iTargetID]++;
-				++PlayerCars;
+		
 
-				PlayerVehicleInfo[iTargetID][listitem][pvId] = CreateVehicle(PlayerVehicleInfo[iTargetID][listitem][pvModelId], PlayerVehicleInfo[iTargetID][listitem][pvPosX], PlayerVehicleInfo[iTargetID][listitem][pvPosY], PlayerVehicleInfo[iTargetID][listitem][pvPosZ], PlayerVehicleInfo[iTargetID][listitem][pvPosAngle],PlayerVehicleInfo[iTargetID][listitem][pvColor1], PlayerVehicleInfo[iTargetID][listitem][pvColor2], -1);
-				Vehicle_ResetData(PlayerVehicleInfo[iTargetID][listitem][pvId]);
-				VehicleFuel[PlayerVehicleInfo[iTargetID][listitem][pvId]] = PlayerVehicleInfo[iTargetID][listitem][pvFuel];
-				if(PlayerVehicleInfo[iTargetID][listitem][pvLocked] == 1) LockPlayerVehicle(iTargetID, PlayerVehicleInfo[iTargetID][listitem][pvId], PlayerVehicleInfo[iTargetID][listitem][pvLock]);
-				LoadPlayerVehicleMods(iTargetID, listitem);
+			
 				g_mysql_SaveVehicle(iTargetID, listitem);
 			}
 			else SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle either does not exist, or does not need to be released or have its tickets paid.");
@@ -4257,10 +4248,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return SendClientMessage(playerid, COLOR_GRAD2, "You don't have enough money on you.");
 				}
 
-				if(!vehicleSpawnCountCheck(playerid)) {
-					return SendClientMessage(playerid, COLOR_GRAD2, "You have too many vehicles spawned - store one first.");
-				}
-
+	
 				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], iCost);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMessage);
 				GivePlayerCash(playerid, -iCost);
@@ -4291,13 +4279,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[playerid][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
-				VehicleSpawned[playerid]++;
-				++PlayerCars;
-
-				PlayerVehicleInfo[playerid][listitem][pvId] = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
-				VehicleFuel[PlayerVehicleInfo[playerid][listitem][pvId]] = PlayerVehicleInfo[playerid][listitem][pvFuel];
-				if(PlayerVehicleInfo[playerid][listitem][pvLocked] == 1) LockPlayerVehicle(playerid, PlayerVehicleInfo[playerid][listitem][pvId], PlayerVehicleInfo[playerid][listitem][pvLock]);
-				LoadPlayerVehicleMods(playerid, listitem);
+				SendClientMesasgeEx(playerid, COLOR_WHITE, "Your vehicle has been released, type /vstorage to spawn it.");
 				Vehicle_ResetData(PlayerVehicleInfo[playerid][listitem][pvId]);
 				g_mysql_SaveVehicle(playerid, listitem);
 			}

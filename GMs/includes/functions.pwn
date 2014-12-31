@@ -6107,7 +6107,7 @@ stock SetPlayerSpawn(playerid)
   				return 1;
 			}
 			#endif
-			if(PlayerInfo[playerid][pWantedLevel] > 0 && (PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE || PlayerInfo[playerid][pInsurance] == HOSPITAL_FAMED))
+			if(PlayerInfo[playerid][pWantedLevel] > 0 && (PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE || PlayerInfo[playerid][pInsurance] == HOSPITAL_FAMED || PlayerInfo[playerid][pInsurance] == HOSPITAL_TRFAMED))
 			{
 				new wantedplace;
 				

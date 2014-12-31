@@ -2006,7 +2006,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				}
 				else if(IsCOSModel(vehicleid))
 				{
-					if(PlayerInfo[playerid][pFamed] < 2)
+					if(PlayerInfo[playerid][pFamed] < 1)
 					{
 					    new Float:slx, Float:sly, Float:slz;
 						GetPlayerPos(playerid, slx, sly, slz);
@@ -2019,7 +2019,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 				}
 				else if(IsFamedModel(vehicleid))
 				{
-				    if(PlayerInfo[playerid][pFamed] < 3)
+				    if(PlayerInfo[playerid][pFamed] < 1)
 				    {
 				        new Float:slx, Float:sly, Float:slz;
 						GetPlayerPos(playerid, slx, sly, slz);

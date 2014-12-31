@@ -205,7 +205,7 @@ CMD:travel(playerid, params[])
 	    {
 	        if(isnull(params))
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /travel [famed]");
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /travel [famed, sffamed, trfamed]");
 				return 1;
 			}
             if(strcmp(params,"famed",true) == 0)
@@ -219,6 +219,48 @@ CMD:travel(playerid, params[])
 					SetVehicleZAngle(tmpcar, 180.0373);
 					fVehSpeed[playerid] = 0.0;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the famed lounge.");
+					SetPlayerInterior(playerid,0);
+					PlayerInfo[playerid][pInt] = 0;
+					SetPlayerVirtualWorld(playerid, 0);
+					PlayerInfo[playerid][pVW] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD1, "You're not inside a vehicle!");
+				}
+			}
+			else if(strcmp(params,"trfamed",true) == 0)
+			{
+				if (GetPlayerState(playerid) == 2)
+				{
+					new tmpcar = GetPlayerVehicleID(playerid);
+					SetVehiclePos(tmpcar, -2419.3953,2328.9312,4.9921);
+					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
+						SetPVarInt(playerid, "tpJustEntered", 1);
+					SetVehicleZAngle(tmpcar, 14.1091);
+					fVehSpeed[playerid] = 0.0;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the Tierra Robada famed lounge.");
+					SetPlayerInterior(playerid,0);
+					PlayerInfo[playerid][pInt] = 0;
+					SetPlayerVirtualWorld(playerid, 0);
+					PlayerInfo[playerid][pVW] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD1, "You're not inside a vehicle!");
+				}
+			}
+			else if(strcmp(params,"sffamed",true) == 0)
+			{
+				if (GetPlayerState(playerid) == 2)
+				{
+					new tmpcar = GetPlayerVehicleID(playerid);
+					SetVehiclePos(tmpcar, -2484.3599,59.7974,26.0415);
+					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
+						SetPVarInt(playerid, "tpJustEntered", 1);
+					SetVehicleZAngle(tmpcar, 357.5536);
+					fVehSpeed[playerid] = 0.0;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: You have traveled to the front of the San Fierro famed lounge.");
 					SetPlayerInterior(playerid,0);
 					PlayerInfo[playerid][pInt] = 0;
 					SetPlayerVirtualWorld(playerid, 0);
