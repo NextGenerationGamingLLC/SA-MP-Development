@@ -69,7 +69,6 @@ stock RehashDynamicDoor(doorid)
 	DDoorsInfo[doorid][ddVIP] = 0;
 	DDoorsInfo[doorid][ddAllegiance] = 0;
 	DDoorsInfo[doorid][ddGroupType] = 0;
-	DDoorsInfo[doorid][ddFamily] = 0;
 	DDoorsInfo[doorid][ddFaction] = 0;
 	DDoorsInfo[doorid][ddAdmin] = 0;
 	DDoorsInfo[doorid][ddWanted] = 0;
@@ -103,12 +102,6 @@ CMD:changedoorpass(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
 				SaveDynamicDoor(i);
 			}
-			else if(DDoorsInfo[i][ddType] == 3 && DDoorsInfo[i][ddFamily] != INVALID_FAMILY_ID && PlayerInfo[playerid][pFMember] == DDoorsInfo[i][ddFamily] && PlayerInfo[playerid][pRank] == 6)
-			{
-				format(DDoorsInfo[i][ddPass], 24, "%s", doorpass);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the password of this door.");
-				SaveDynamicDoor(i);
-			}
 			else if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid))
 			{
 				format(DDoorsInfo[i][ddPass], 24, "%s", doorpass);
@@ -127,19 +120,6 @@ CMD:lockdoor(playerid, params[])
         if (IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) && PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW])
 		{
         	if(DDoorsInfo[i][ddType] == 2 && DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID && PlayerInfo[playerid][pLeader] == DDoorsInfo[i][ddFaction])
-			{
-				if(DDoorsInfo[i][ddLocked] == 0)
-				{
-					DDoorsInfo[i][ddLocked] = 1;
-					SendClientMessageEx(playerid, COLOR_WHITE, "This door has been locked.");
-				}
-				else if(DDoorsInfo[i][ddLocked] == 1)
-				{
-					DDoorsInfo[i][ddLocked] = 0;
-					SendClientMessageEx(playerid, COLOR_GREY, "This door has been unlocked.");
-				}
-			}
-			else if(DDoorsInfo[i][ddType] == 3 && DDoorsInfo[i][ddFamily] != INVALID_FAMILY_ID && PlayerInfo[playerid][pFMember] == DDoorsInfo[i][ddFamily] && PlayerInfo[playerid][pRank] == 6)
 			{
 				if(DDoorsInfo[i][ddLocked] == 0)
 				{
@@ -252,7 +232,7 @@ CMD:ddstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "Pickup ID: %d | Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", DDoorsInfo[doorid][ddPickupID], DDoorsInfo[doorid][ddCustomInterior], DDoorsInfo[doorid][ddCustomExterior], DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], DDoorsInfo[doorid][ddInteriorVW], DDoorsInfo[doorid][ddInteriorInt]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Type: %d | Rank: %d | VIP: %d | Allegiance: %d | Group Type: %d | Family: %d | Faction: %d | Admin: %d | Wanted: %d", DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank], DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFamily], DDoorsInfo[doorid][ddFaction], DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted]);
+		format(string, sizeof(string), "Type: %d | Rank: %d | VIP: %d | Allegiance: %d | Group Type: %d | Faction: %d | Admin: %d | Wanted: %d", DDoorsInfo[doorid][ddType], DDoorsInfo[doorid][ddRank], DDoorsInfo[doorid][ddVIP], DDoorsInfo[doorid][ddAllegiance], DDoorsInfo[doorid][ddGroupType], DDoorsInfo[doorid][ddFaction], DDoorsInfo[doorid][ddAdmin], DDoorsInfo[doorid][ddWanted]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "Vehiclable: %d | Locked: %d | Password: %s", DDoorsInfo[doorid][ddVehicleAble], DDoorsInfo[doorid][ddLocked], DDoorsInfo[doorid][ddPass]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -438,7 +418,7 @@ CMD:ddedit(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddedit [name] [doorid] [amount]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, CustomInterior, CustomExterior, Type, Rank, VIP, Famed");
-			SendClientMessageEx(playerid, COLOR_GREY, "Allegiance, GroupType, Family, Faction, Wanted, Admin, VehicleAble, Color, PickupModel, Delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Allegiance, GroupType, Faction, Wanted, Admin, VehicleAble, Color, PickupModel, Delete");
 			return 1;
 		}
 
@@ -538,18 +518,6 @@ CMD:ddedit(playerid, params[])
 					}
 					else SendClientMessageEx(playerid, COLOR_GREY, "Use /ddedit faction to update the owner of this door.");
 				}
-				case 3:
-				{
-					if(DDoorsInfo[doorid][ddFamily] != INVALID_GROUP_ID)
-					{
-						DDoorsInfo[doorid][ddOwner] = -1;
-						strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), FamilyInfo[DDoorsInfo[doorid][ddFamily]][FamilyName], 42);
-						DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-						if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-						CreateDynamicDoor(doorid);
-					}
-					else SendClientMessageEx(playerid, COLOR_GREY, "Use /ddedit family to update the owner of this door.");
-				}
 				default:
 				{
 					strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), "Nobody", 42);
@@ -637,31 +605,6 @@ CMD:ddedit(playerid, params[])
 
 			SaveDynamicDoor(doorid);
 			format(string, sizeof(string), "%s has edited DoorID %d's Group Type to %d.", GetPlayerNameEx(playerid), doorid, amount);
-			Log("logs/ddedit.log", string);
-			return 1;
-		}
-		else if(strcmp(choice, "family", true) == 0)
-		{
-			DDoorsInfo[doorid][ddFamily] = amount+1;
-
-			format(string, sizeof(string), "You have changed the Family to %d.", amount);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-
-			if(DDoorsInfo[doorid][ddType] == 3)
-			{
-				strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), FamilyInfo[DDoorsInfo[doorid][ddFamily]][FamilyName], 42);
-				DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-				if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-				CreateDynamicDoor(doorid);
-			}
-			else
-			{
-				format(string, sizeof(string), "Use '/ddedit type %d 3' to update the owner of this door.", doorid);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-
-			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited DoorID %d's Family.", GetPlayerNameEx(playerid), doorid);
 			Log("logs/ddedit.log", string);
 			return 1;
 		}
@@ -789,7 +732,6 @@ CMD:ddedit(playerid, params[])
 			DDoorsInfo[doorid][ddDPC] = 0;
 			DDoorsInfo[doorid][ddAllegiance] = 0;
 			DDoorsInfo[doorid][ddGroupType] = 0;
-			DDoorsInfo[doorid][ddFamily] = 0;
 			DDoorsInfo[doorid][ddFaction] = 0;
 			DDoorsInfo[doorid][ddAdmin] = 0;
 			DDoorsInfo[doorid][ddWanted] = 0;

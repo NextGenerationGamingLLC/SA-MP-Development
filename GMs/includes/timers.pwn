@@ -81,7 +81,7 @@ timer NOPCheck[5000](playerid)
     else if(GetCarBusiness(newcar) != INVALID_BUSINESS_ID && PlayerInfo[playerid][pBusiness] != GetCarBusiness(newcar)) ExecuteNOPAction(playerid);
     else if(DynVeh[newcar] != -1)
 	{
- 		if(DynVehicleInfo[DynVeh[newcar]][gv_igID] != 0 && (PlayerInfo[playerid][pMember] != DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] != DynVehicleInfo[DynVeh[newcar]][gv_igID]) || DynVehicleInfo[DynVeh[newcar]][gv_ifID] != 0 && PlayerInfo[playerid][pFMember] != DynVehicleInfo[DynVeh[newcar]][gv_ifID] || DynVehicleInfo[DynVeh[newcar]][gv_irID] != 0 && PlayerInfo[playerid][pRank] < DynVehicleInfo[DynVeh[newcar]][gv_irID])
+ 		if(DynVehicleInfo[DynVeh[newcar]][gv_igID] != 0 && (PlayerInfo[playerid][pMember] != DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] != DynVehicleInfo[DynVeh[newcar]][gv_igID])|| DynVehicleInfo[DynVeh[newcar]][gv_irID] != 0 && PlayerInfo[playerid][pRank] < DynVehicleInfo[DynVeh[newcar]][gv_irID])
 		{
   			ExecuteNOPAction(playerid);
 		}
@@ -174,13 +174,13 @@ task SyncUp[60000]()
 		}
 	}
 	
-	for(new i = 0; i < MAX_GANGTAGS; i++)
+	/*for(new i = 0; i < MAX_GANGTAGS; i++)
 	{
 		if(GangTags[i][gt_Time] > 0)
 		{
 			GangTags[i][gt_Time]--;
 		}
-	}
+	}*/
 
 	foreach(new i: Player)
 	{
@@ -424,7 +424,6 @@ task ProductionUpdate[300000]()
 			SendVIPMessage(COLOR_LIGHTGREEN, string);
 		}
 	}
-	SaveFamilies();
 	ResetElevatorQueue();
 	for(new h; h < MAX_HOUSES; h++)
 	{
@@ -2324,16 +2323,6 @@ task ServerHeartbeatTwo[1000]() {
 		{
 			GivePlayerValidWeapon( i, 46, 9 );
 		}
-		/*if(GetPlayerState(i) == PLAYER_STATE_ONFOOT) for(new h = 0; h < sizeof(FamilyInfo); h++)
-		{
-			if(IsPlayerInRangeOfPoint(i, 2.0, FamilyInfo[h][FamilySafe][0], FamilyInfo[h][FamilySafe][1], FamilyInfo[h][FamilySafe][2]) && GetPlayerVirtualWorld(i) == FamilyInfo[h][FamilySafeVW] && GetPlayerInterior(i) == FamilyInfo[h][FamilySafeInt])
-			{
-				if(FamilyInfo[h][FamilyUSafe] == 1)
-				{
-					GameTextForPlayer(i, "~y~gang safe~w~~n~Type ~r~/safehelp~w~ for more information", 5000, 3);
-				}
-			}
-		}*/
 
 		for(new h = 0; h < sizeof(Points); h++)
 		{
@@ -2475,15 +2464,15 @@ task ServerMicrobeat[500]() {
 				if(fCurrentSpeed >= 40 && 60 <= fCurrentSpeed)
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 1.6);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 3.2));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 3.0);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 40.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 6.0));
 					}
 				}
 				else
 				{
 					if(PlayerInfo[i][pAdmin] <= 1 && !IsABoat(iVehicle)) switch(Seatbelt[i]) {
-						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 0.8);
-						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 1.6));
+						case 0: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - (fVehSpeed[i] - fCurrentSpeed) / 3.0);
+						default: if((fVehSpeed[i] - fCurrentSpeed > 50.0) && (fVehHealth[i] - fExpHealth > 0)) GetHealth(i, fExpHealth), SetHealth(i, fExpHealth - ((fVehSpeed[i] - fCurrentSpeed) / 6.0));
 					}
 				}
 

@@ -950,17 +950,10 @@ CMD:vcheck(playerid, params[])
 			}	
             if(dynveh != -1)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
+			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carbeingtowed, GetVehicleName(carbeingtowed), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
-                    SendClientMessageEx(playerid, COLOR_WHITE, string);
-                    return 1;
-				}
-				else if(DynVehicleInfo[dynveh][gv_igID] == -1 && DynVehicleInfo[dynveh][gv_ifID] != 0)
-			    {
-					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", carbeingtowed, GetVehicleName(carbeingtowed), FamilyInfo[DynVehicleInfo[dynveh][gv_ifID]][FamilyName]);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
@@ -984,17 +977,17 @@ CMD:vcheck(playerid, params[])
 			}	
             if(dynveh != -1)
 			{
-			    if(DynVehicleInfo[dynveh][gv_igID] != -1 && DynVehicleInfo[dynveh][gv_ifID] == 0 && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != 2)
+			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
-				else if(DynVehicleInfo[dynveh][gv_igID] == -1 && DynVehicleInfo[dynveh][gv_ifID] != 0)
+				else if(arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), FamilyInfo[DynVehicleInfo[dynveh][gv_ifID]][FamilyName]);
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}

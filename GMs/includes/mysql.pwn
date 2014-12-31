@@ -67,7 +67,6 @@ Group_DisbandGroup(iGroupID) {
 	arrGroupData[iGroupID][g_fCratePos][1] = 0;
 	arrGroupData[iGroupID][g_fCratePos][2] = 0;
 	arrGroupData[iGroupID][g_szGroupName][0] = 0;
-	arrGroupData[iGroupID][g_szGroupMOTD][0] = 0;
 
 	arrGroupData[iGroupID][g_hDutyColour] = 0xFFFFFF;
 	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
@@ -133,54 +132,55 @@ SaveGroup(iGroupID) {
 	if(!(0 <= iGroupID < MAX_GROUPS)) // Array bounds check. Use it.
 		return 0;
 
+	szMiscArray[0] = 0; 
+
 	new
-		szQuery[2048],
 		i = 0,
 		iIndex = 0;
 
-	format(szQuery, sizeof szQuery, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `Allegiance` = %i, `Bug` = %i, \
+	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
+		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, \
 		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
-		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupMOTD], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
+		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][0], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][1], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][2], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
 		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
 	);
-	format(szQuery, sizeof szQuery, "%s\
+	format(szMiscArray, sizeof szMiscArray, "%s\
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
 		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d',",
-		szQuery,
+		szMiscArray,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
 		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
 		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
 	);
 
-	format(szQuery, sizeof(szQuery), "%s\
+	format(szMiscArray, sizeof(szMiscArray), "%s\
 		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
-		szQuery,
+		szMiscArray,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
 		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
 	);
 
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `GClothes%i` = '%i'", szQuery, i, arrGroupData[iGroupID][g_iClothes][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%i` = '%s'", szQuery, i, arrGroupRanks[iGroupID][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szQuery, sizeof szQuery, "%s, `Rank%iPay` = %i", szQuery, i, arrGroupData[iGroupID][g_iPaycheck][i]);
-	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szQuery, sizeof szQuery, "%s, `Div%i` = '%s'", szQuery, i+1, arrGroupDivisions[iGroupID][i]);
-	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szQuery, sizeof szQuery, "%s, `Gun%i` = %i, `Cost%i` = %i", szQuery, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
-	format(szQuery, sizeof szQuery, "%s WHERE `id` = %i", szQuery, iGroupID+1);
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, arrGroupRanks[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
+	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, arrGroupDivisions[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
+	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 
 	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
-		format(szQuery, sizeof(szQuery), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
 
 	for (i = 0; i < MAX_GROUPS; i++) {
 		for(new x = 0; x != 50; x++)
 		{
-			format(szQuery, sizeof(szQuery), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 			iIndex++;
 		}
 	}
@@ -196,11 +196,11 @@ DynVeh_Save(iDvSlotID) {
 		i = 0;
 
 	format(szQuery, sizeof szQuery,
-		"UPDATE `groupvehs` SET `SpawnedID`= '%d',`gID`= '%d',`gDivID`= '%d', `fID`='%d', `rID`='%d', `vModel`= '%d', \
+		"UPDATE `groupvehs` SET `SpawnedID`= '%d',`gID`= '%d',`gDivID`= '%d', `rID`='%d', `vModel`= '%d', \
 		`vPlate` = '%s',`vMaxHealth`= '%.2f',`vType`= '%d',`vLoadMax`= '%d',`vCol1`= '%d',`vCol2`= '%d', \
 		`vX`= '%.2f',`vY`= '%.2f',`vZ`= '%.2f',`vRotZ`= '%.2f', `vUpkeep` = '%d', `vVW` = '%d', `vDisabled` = '%d', \
 		`vInt` = '%d', `vFuel` = '%.5f'"
-		, DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_ifID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iModel],
+		, DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iModel],
 		g_mysql_ReturnEscaped(DynVehicleInfo[iDvSlotID][gv_iPlate], MainPipeline), DynVehicleInfo[iDvSlotID][gv_fMaxHealth], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2],
 		DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iDisabled],
 		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel]);
@@ -478,7 +478,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Member", szResult, MainPipeline); PlayerInfo[extraid][pMember] = strval(szResult);
 					cache_get_field_content(row,  "Division", szResult, MainPipeline); PlayerInfo[extraid][pDivision] = strval(szResult);
 					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 9);
-					cache_get_field_content(row,  "FMember", szResult, MainPipeline); PlayerInfo[extraid][pFMember] = strval(szResult);
 					cache_get_field_content(row,  "Rank", szResult, MainPipeline); PlayerInfo[extraid][pRank] = strval(szResult);
 					cache_get_field_content(row,  "DetSkill", szResult, MainPipeline); PlayerInfo[extraid][pDetSkill] = strval(szResult);
 					cache_get_field_content(row,  "SexSkill", szResult, MainPipeline); PlayerInfo[extraid][pSexSkill] = strval(szResult);
@@ -2222,174 +2221,6 @@ stock SQL_Log(szQuery[], szDesc[] = "none", iExtraID = 0) {
 	return 1;
 }
 
-stock LoadFamilies()
-{
-	printf("[LoadFamilies] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `families`", true, "OnLoadFamilies", "");
-}
-
-stock FamilyMemberCount(famid)
-{
-	new query[56];
-	format(query, sizeof(query), "SELECT NULL FROM `accounts` WHERE `FMember` = '%d'", famid);
-	mysql_function_query(MainPipeline, query, true, "OnFamilyMemberCount", "i", famid);
-	return 1;
-}
-
-stock SaveFamily(id) {
-
-	new string[2048];
-
-	format(string, sizeof(string), "UPDATE `families` SET \
-		`Taken`=%d, \
-		`Name`='%s', \
-		`Leader`='%s', \
-		`Bank`=%d, \
-		`Cash`=%d, \
-		`FamilyUSafe`=%d, \
-		`FamilySafeX`=%f, \
-		`FamilySafeY`=%f, \
-		`FamilySafeZ`=%f, \
-		`FamilySafeVW`=%d, \
-		`FamilySafeInt`=%d, \
-		`Pot`=%d, \
-		`Crack`=%d, \
-		`Mats`=%d, \
-		`Heroin`=%d, \
-		`Rank0`='%s', \
-		`Rank1`='%s', \
-		`Rank2`='%s', \
-		`Rank3`='%s', \
-		`Rank4`='%s', \
-		`Rank5`='%s', \
-		`Rank6`='%s', \
-		`Division0`='%s', \
-		`Division1`='%s', \
-		`Division2`='%s', \
-		`Division3`='%s', \
-		`Division4`='%s', ",
-		FamilyInfo[id][FamilyTaken],
-		g_mysql_ReturnEscaped(FamilyInfo[id][FamilyName], MainPipeline),
-		FamilyInfo[id][FamilyLeader],
-		FamilyInfo[id][FamilyBank],
-		FamilyInfo[id][FamilyCash],
-		FamilyInfo[id][FamilyUSafe],
-		FamilyInfo[id][FamilySafe][0],
-		FamilyInfo[id][FamilySafe][1],
-		FamilyInfo[id][FamilySafe][2],
-		FamilyInfo[id][FamilySafeVW],
-		FamilyInfo[id][FamilySafeInt],
-		FamilyInfo[id][FamilyPot],
-		FamilyInfo[id][FamilyCrack],
-		FamilyInfo[id][FamilyMats],
-		FamilyInfo[id][FamilyHeroin],
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][0], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][1], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][2], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][3], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][4], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][5], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyRankInfo[id][6], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyDivisionInfo[id][0], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyDivisionInfo[id][1], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyDivisionInfo[id][2], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyDivisionInfo[id][3], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyDivisionInfo[id][4], MainPipeline)
-	);
-
-	format(string, sizeof(string), "%s\
-		`fontface`='%s', \
-		`fontsize`=%d, \
-		`bold`=%d, \
-		`fontcolor`=%d, \
-		`gtUsed`=%d, \
-		`text`='%s', ",
-		string,
-		FamilyInfo[id][gt_FontFace],
-		FamilyInfo[id][gt_FontSize],
-		FamilyInfo[id][gt_Bold],
-		FamilyInfo[id][gt_FontColor],
-		FamilyInfo[id][gt_SPUsed],
-		g_mysql_ReturnEscaped(FamilyInfo[id][gt_Text], MainPipeline)
-	);
-
-	format(string, sizeof(string), "%s \
-        `MaxSkins`=%d, \
-		`Skin1`=%d, \
-		`Skin2`=%d, \
-		`Skin3`=%d, \
-		`Skin4`=%d, \
-		`Skin5`=%d, \
-		`Skin6`=%d, \
-		`Skin7`=%d, \
-		`Skin8`=%d, \
-		`Color`=%d, \
-		`TurfTokens`=%d, \
-		`Gun1`=%d, \
-		`Gun2`=%d, \
-		`Gun3`=%d, \
-		`Gun4`=%d, \
-		`Gun5`=%d, \
-		`Gun6`=%d, \
-		`Gun7`=%d, \
-		`Gun8`=%d, \
-		`Gun9`=%d, \
-		`Gun10`=%d, \
-		`GtObject`=%d, \
-		`MOTD1`='%s', \
-		`MOTD2`='%s', \
-		`MOTD3`='%s', \
-		`FamColor` = %i \
-		WHERE `ID` = %d",
-		string,
-		FamilyInfo[id][FamilyMaxSkins],
-		FamilyInfo[id][FamilySkins][0],
-		FamilyInfo[id][FamilySkins][1],
-		FamilyInfo[id][FamilySkins][2],
-		FamilyInfo[id][FamilySkins][3],
-		FamilyInfo[id][FamilySkins][4],
-		FamilyInfo[id][FamilySkins][5],
-		FamilyInfo[id][FamilySkins][6],
-		FamilyInfo[id][FamilySkins][7],
-		FamilyInfo[id][FamilyColor],
-		FamilyInfo[id][FamilyTurfTokens],
-		FamilyInfo[id][FamilyGuns][0],
-		FamilyInfo[id][FamilyGuns][1],
-		FamilyInfo[id][FamilyGuns][2],
-		FamilyInfo[id][FamilyGuns][3],
-		FamilyInfo[id][FamilyGuns][4],
-		FamilyInfo[id][FamilyGuns][5],
-		FamilyInfo[id][FamilyGuns][6],
-		FamilyInfo[id][FamilyGuns][7],
-		FamilyInfo[id][FamilyGuns][8],
-		FamilyInfo[id][FamilyGuns][9],
-		FamilyInfo[id][gtObject],
-		g_mysql_ReturnEscaped(FamilyMOTD[id][0], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyMOTD[id][1], MainPipeline),
-		g_mysql_ReturnEscaped(FamilyMOTD[id][2], MainPipeline),
-		FamilyInfo[id][FamColor],
-		id
-	);
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-	return 1;
-}
-
-stock SaveFamiliesHQ(id)
-{
-	if(!( 1 <= id < MAX_FAMILY))
-		return 0;
-
-	new query[300];
-	format(query, sizeof(query), "UPDATE `families` SET `ExteriorX` = %f, `ExteriorY` = %f, `ExteriorZ` = %f, `ExteriorA` = %f, `InteriorX` = %f, `InteriorY` = %f, `InteriorZ` = %f, `InteriorA` = %f, \
-	`INT` = %d, `VW` = %d, `CustomInterior` = %d WHERE ID = %d", FamilyInfo[id][FamilyEntrance][0], FamilyInfo[id][FamilyEntrance][1], FamilyInfo[id][FamilyEntrance][2], FamilyInfo[id][FamilyEntrance][3],
-	FamilyInfo[id][FamilyExit][0], FamilyInfo[id][FamilyExit][1], FamilyInfo[id][FamilyExit][2], FamilyInfo[id][FamilyExit][3], FamilyInfo[id][FamilyInterior], FamilyInfo[id][FamilyVirtualWorld],
-	FamilyInfo[id][FamilyCustomMap], id);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-	return 1;
-}
-
 stock LoadGates()
 {
 	printf("[LoadGates] Loading data from database...");
@@ -2481,7 +2312,6 @@ stock SaveDynamicDoor(doorid)
 		`DPC`=%d, \
 		`Allegiance`=%d, \
 		`GroupType`=%d, \
-		`Family`=%d, \
 		`Faction`=%d, \
 		`Admin`=%d, \
 		`Wanted`=%d, \
@@ -2501,7 +2331,6 @@ stock SaveDynamicDoor(doorid)
 		DDoorsInfo[doorid][ddDPC],
 		DDoorsInfo[doorid][ddAllegiance],
 		DDoorsInfo[doorid][ddGroupType],
-		DDoorsInfo[doorid][ddFamily],
 		DDoorsInfo[doorid][ddFaction],
 		DDoorsInfo[doorid][ddAdmin],
 		DDoorsInfo[doorid][ddWanted],
@@ -2668,13 +2497,7 @@ stock LoadMailboxes()
 {
 	printf("[LoadMailboxes] Loading data from database...");
 	mysql_function_query(MainPipeline, "SELECT * FROM `mailboxes`", true, "OnLoadMailboxes", "");
-}
-
-stock LoadPoints()
-{
-	printf("[LoadFamilyPoints] Loading Family Points from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `points`", true, "OnLoadPoints", "");
-}		
+}	
 
 stock LoadHGBackpacks()
 {
@@ -3134,7 +2957,6 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Member", PlayerInfo[playerid][pMember]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Division", PlayerInfo[playerid][pDivision]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "Badge", PlayerInfo[playerid][pBadge]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "FMember", PlayerInfo[playerid][pFMember]);
 
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rank", PlayerInfo[playerid][pRank]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "DetSkill", PlayerInfo[playerid][pDetSkill]);
@@ -3449,7 +3271,6 @@ stock SaveGate(id) {
 		`Allegiance`=%d, \
 		`GroupType`=%d, \
 		`GroupID`=%d, \
-		`FamilyID`=%d, \
 		`RenderHQ`=%d, \
 		`Timer`=%d, \
 		`Automate`=%d, \
@@ -3477,7 +3298,6 @@ stock SaveGate(id) {
 		GateInfo[id][gAllegiance],
 		GateInfo[id][gGroupType],
 		GateInfo[id][gGroupID],
-		GateInfo[id][gFamilyID],
 		GateInfo[id][gRenderHQ],
 		GateInfo[id][gTimer],
 		GateInfo[id][gAutomate],
@@ -4787,103 +4607,6 @@ public QueryGetCountFinish(userid, type)
 	return 1;
 }
 
-forward OnLoadFamilies();
-public OnLoadFamilies()
-{
-	new i, rows, fields, tmp[128], famid;
-	cache_get_data(rows, fields, MainPipeline);
-
-	new column[32];
-	while(i < rows)
-	{
-	    FamilyMemberCount(i);
-	    cache_get_field_content(i, "ID", tmp, MainPipeline); famid = strval(tmp);
-		cache_get_field_content(i, "Taken", tmp, MainPipeline); FamilyInfo[famid][FamilyTaken] = strval(tmp);
-		cache_get_field_content(i, "Name", FamilyInfo[famid][FamilyName], MainPipeline, 42);
-		cache_get_field_content(i, "Leader", FamilyInfo[famid][FamilyLeader], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "Bank", tmp, MainPipeline); FamilyInfo[famid][FamilyBank] = strval(tmp);
-		cache_get_field_content(i, "Cash", tmp, MainPipeline); FamilyInfo[famid][FamilyCash] = strval(tmp);
-		cache_get_field_content(i, "FamilyUSafe", tmp, MainPipeline); FamilyInfo[famid][FamilyUSafe] = strval(tmp);
-		cache_get_field_content(i, "FamilySafeX", tmp, MainPipeline); FamilyInfo[famid][FamilySafe][0] = floatstr(tmp);
-		cache_get_field_content(i, "FamilySafeY", tmp, MainPipeline); FamilyInfo[famid][FamilySafe][1] = floatstr(tmp);
-		cache_get_field_content(i, "FamilySafeZ", tmp, MainPipeline); FamilyInfo[famid][FamilySafe][2] = floatstr(tmp);
-		cache_get_field_content(i, "FamilySafeVW", tmp, MainPipeline); FamilyInfo[famid][FamilySafeVW] = strval(tmp);
-		cache_get_field_content(i, "FamilySafeInt", tmp, MainPipeline); FamilyInfo[famid][FamilySafeInt] = strval(tmp);
-		cache_get_field_content(i, "Pot", tmp, MainPipeline); FamilyInfo[famid][FamilyPot] = strval(tmp);
-		cache_get_field_content(i, "Crack", tmp, MainPipeline); FamilyInfo[famid][FamilyCrack] = strval(tmp);
-		cache_get_field_content(i, "Mats", tmp, MainPipeline); FamilyInfo[famid][FamilyMats] = strval(tmp);
-		cache_get_field_content(i, "Heroin", tmp, MainPipeline); FamilyInfo[famid][FamilyHeroin] = strval(tmp);
-		cache_get_field_content(i, "MaxSkins", tmp, MainPipeline); FamilyInfo[famid][FamilyMaxSkins] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); FamilyInfo[famid][FamilyColor] = strval(tmp);
-		cache_get_field_content(i, "TurfTokens", tmp, MainPipeline); FamilyInfo[famid][FamilyTurfTokens] = strval(tmp);
-		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); FamilyInfo[famid][FamilyEntrance][0] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); FamilyInfo[famid][FamilyEntrance][1] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); FamilyInfo[famid][FamilyEntrance][2] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); FamilyInfo[famid][FamilyEntrance][3] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); FamilyInfo[famid][FamilyExit][0] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); FamilyInfo[famid][FamilyExit][1] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); FamilyInfo[famid][FamilyExit][2] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); FamilyInfo[famid][FamilyExit][3] = floatstr(tmp);
-		cache_get_field_content(i, "INT", tmp, MainPipeline); FamilyInfo[famid][FamilyInterior] = strval(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); FamilyInfo[famid][FamilyVirtualWorld] = strval(tmp);
-		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); FamilyInfo[famid][FamilyCustomMap] = strval(tmp);
-		cache_get_field_content(i, "GtObject", tmp, MainPipeline); FamilyInfo[famid][gtObject] = strval(tmp);
-		cache_get_field_content(i, "MOTD1", FamilyMOTD[famid][0], MainPipeline, 128);
-		cache_get_field_content(i, "MOTD2", FamilyMOTD[famid][1], MainPipeline, 128);
-		cache_get_field_content(i, "MOTD3", FamilyMOTD[famid][2], MainPipeline, 128);
-		cache_get_field_content(i, "fontface", tmp, MainPipeline); format(FamilyInfo[famid][gt_FontFace], 32, "%s", tmp);
-		cache_get_field_content(i, "fontsize", tmp, MainPipeline); FamilyInfo[famid][gt_FontSize] = strval(tmp);
-		cache_get_field_content(i, "bold", tmp, MainPipeline); FamilyInfo[famid][gt_Bold] = strval(tmp);
-		cache_get_field_content(i, "fontcolor", tmp, MainPipeline); FamilyInfo[famid][gt_FontColor] = strval(tmp);
-		cache_get_field_content(i, "text", FamilyInfo[famid][gt_Text], MainPipeline, 32);		
-		cache_get_field_content(i, "gtUsed", tmp, MainPipeline); FamilyInfo[famid][gt_SPUsed] = strval(tmp);		
-		if(strcmp(FamilyInfo[famid][gt_Text], "Preview", true) == 0)
-		{
-			FamilyInfo[famid][gtObject] = 1490;
-			FamilyInfo[famid][gt_SPUsed] = 1;
-		}
-	    for (new j; j <= 6; j++) {
-	        format(column,sizeof(column), "Rank%d", j);
-	        cache_get_field_content(i, column, tmp, MainPipeline); format(FamilyRankInfo[famid][j], 20, "%s", tmp);
-	    }
-
-		for (new j = 0; j < 5 ;j++) {
-	        format(column, sizeof(column), "Division%d", j);
-	        cache_get_field_content(i, column, tmp, MainPipeline); format(FamilyDivisionInfo[famid][j], 20, "%s", tmp);
-	    }
-	    for (new j; j < 8; j++) {
-	        format(column,sizeof(column), "Skin%d", j+1);
-	        cache_get_field_content(i, column, tmp, MainPipeline); FamilyInfo[famid][FamilySkins][j] = strval(tmp);
-	    }
-	    for (new j; j < 10; j++) {
-	        format(column,sizeof(column), "Gun%d", j+1);
-	        cache_get_field_content(i, column, tmp, MainPipeline); FamilyInfo[famid][FamilyGuns][j] = strval(tmp);
-	    }
-		FamilyInfo[famid][FamColor] = cache_get_field_content_int(i, "FamColor", MainPipeline);
-		if(FamilyInfo[famid][FamilyUSafe] > 0)
-		{
-			FamilyInfo[famid][FamilyPickup] = CreateDynamicPickup(1239, 23, FamilyInfo[famid][FamilySafe][0], FamilyInfo[famid][FamilySafe][1], FamilyInfo[famid][FamilySafe][2], .worldid = FamilyInfo[famid][FamilySafeVW], .interiorid = FamilyInfo[famid][FamilySafeInt]);
-		}
-		if(FamilyInfo[famid][FamilyEntrance][0] != 0.0 && FamilyInfo[famid][FamilyEntrance][1] != 0.0)
-		{
-		    new string[42];
-		    FamilyInfo[famid][FamilyEntrancePickup] = CreateDynamicPickup(1318, 23, FamilyInfo[famid][FamilyEntrance][0], FamilyInfo[famid][FamilyEntrance][1], FamilyInfo[famid][FamilyEntrance][2]);
-			format(string, sizeof(string), "%s", FamilyInfo[famid][FamilyName]);
-			FamilyInfo[famid][FamilyEntranceText] = CreateDynamic3DTextLabel(string,COLOR_YELLOW,FamilyInfo[famid][FamilyEntrance][0], FamilyInfo[famid][FamilyEntrance][1], FamilyInfo[famid][FamilyEntrance][2]+0.6,4.0);
-		}
-		i++;
-	}
-	//LoadGangTags();
-}
-
-forward OnFamilyMemberCount(famid);
-public OnFamilyMemberCount(famid)
-{
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	FamilyInfo[famid][FamilyMembers] = rows;
-}
-
 forward MailDeliveryTimer();
 public MailDeliveryTimer()
 {
@@ -4922,7 +4645,6 @@ public OnLoadGates()
 		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); GateInfo[i][gAllegiance] = strval(tmp);
 		cache_get_field_content(i, "GroupType", tmp, MainPipeline); GateInfo[i][gGroupType] = strval(tmp);
 		cache_get_field_content(i, "GroupID", tmp, MainPipeline); GateInfo[i][gGroupID] = strval(tmp);
-		cache_get_field_content(i, "FamilyID", tmp, MainPipeline); GateInfo[i][gFamilyID] = strval(tmp);
 		cache_get_field_content(i, "RenderHQ", tmp, MainPipeline); GateInfo[i][gRenderHQ] = strval(tmp);
 		cache_get_field_content(i, "Timer", tmp, MainPipeline); GateInfo[i][gTimer] = strval(tmp);
 		cache_get_field_content(i, "Automate", tmp, MainPipeline); GateInfo[i][gAutomate] = strval(tmp);
@@ -5016,7 +4738,6 @@ public OnLoadDynamicDoor(index)
 		cache_get_field_content(rows, "DPC", tmp, MainPipeline); DDoorsInfo[index][ddDPC] = strval(tmp);
 		cache_get_field_content(rows, "Allegiance", tmp, MainPipeline); DDoorsInfo[index][ddAllegiance] = strval(tmp);
 		cache_get_field_content(rows, "GroupType", tmp, MainPipeline); DDoorsInfo[index][ddGroupType] = strval(tmp);
-		cache_get_field_content(rows, "Family", tmp, MainPipeline); DDoorsInfo[index][ddFamily] = strval(tmp);
 		cache_get_field_content(rows, "Faction", tmp, MainPipeline); DDoorsInfo[index][ddFaction] = strval(tmp);
 		cache_get_field_content(rows, "Admin", tmp, MainPipeline); DDoorsInfo[index][ddAdmin] = strval(tmp);
 		cache_get_field_content(rows, "Wanted", tmp, MainPipeline); DDoorsInfo[index][ddWanted] = strval(tmp);
@@ -5065,7 +4786,6 @@ public OnLoadDynamicDoors()
 		cache_get_field_content(i, "DPC", tmp, MainPipeline); DDoorsInfo[i][ddDPC] = strval(tmp);
 		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); DDoorsInfo[i][ddAllegiance] = strval(tmp);
 		cache_get_field_content(i, "GroupType", tmp, MainPipeline); DDoorsInfo[i][ddGroupType] = strval(tmp);
-		cache_get_field_content(i, "Family", tmp, MainPipeline); DDoorsInfo[i][ddFamily] = strval(tmp);
 		cache_get_field_content(i, "Faction", tmp, MainPipeline); DDoorsInfo[i][ddFaction] = strval(tmp);
 		cache_get_field_content(i, "Admin", tmp, MainPipeline); DDoorsInfo[i][ddAdmin] = strval(tmp);
 		cache_get_field_content(i, "Wanted", tmp, MainPipeline); DDoorsInfo[i][ddWanted] = strval(tmp);
@@ -6905,7 +6625,11 @@ public Group_QueryFinish(iType, iExtraID) {
 		case GROUP_QUERY_LOAD: while(iIndex < iRows) {
 			cache_get_field_content(iIndex, "Name", arrGroupData[iIndex][g_szGroupName], MainPipeline, GROUP_MAX_NAME_LEN);
 
-			cache_get_field_content(iIndex, "MOTD", arrGroupData[iIndex][g_szGroupMOTD], MainPipeline, GROUP_MAX_MOTD_LEN);
+			cache_get_field_content(iIndex, "MOTD", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
+
+			cache_get_field_content(iIndex, "MOTD2", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
+
+			cache_get_field_content(iIndex, "MOTD3", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
 
 			cache_get_field_content(iIndex, "Type", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iGroupType] = strval(szResult);
@@ -7247,7 +6971,6 @@ public DynVeh_QueryFinish(iType, iExtraID) {
 				}
 				cache_get_field_content(iIndex, "gID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igID] = strval(szResult);
 				cache_get_field_content(iIndex, "gDivID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igDivID] = strval(szResult);
-				cache_get_field_content(iIndex, "fID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_ifID] = strval(szResult);
 				cache_get_field_content(iIndex, "rID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_irID] = strval(szResult);
 				cache_get_field_content(iIndex, "vModel", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iModel] = strval(szResult);
                 switch(DynVehicleInfo[sqlid][gv_iModel]) {
@@ -7886,82 +7609,6 @@ public OnCheckRFLName(playerid, Player)
 	return 1;
 }
 
-stock SavePoint(pid)
-{
-	new szQuery[2048];
-	
-	format(szQuery, sizeof(szQuery), "UPDATE `points` SET \
-		`posx` = '%f', \
-		`posy` = '%f', \
- 		`posz` = '%f', \
-		`vw` = '%d', \
-		`type` = '%d', \
-		`vulnerable` = '%d', \
-		`matpoint` = '%d', \
-		`owner` = '%s', \
-		`cappername` = '%s', \
-		`name` = '%s' WHERE `id` = %d",
-		Points[pid][Pointx],
-		Points[pid][Pointy],
-		Points[pid][Pointz],
-		Points[pid][pointVW],
-		Points[pid][Type],
-		Points[pid][Vulnerable],
-		Points[pid][MatPoint],
-		g_mysql_ReturnEscaped(Points[pid][Owner], MainPipeline),
-		g_mysql_ReturnEscaped(Points[pid][CapperName], MainPipeline),
-		g_mysql_ReturnEscaped(Points[pid][Name], MainPipeline),
-		pid+1
-	);	
-		
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);	
-}		
-
-forward OnLoadPoints();
-public OnLoadPoints()
-{
-	new fields, rows, index, result[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while((index < rows))
-	{
-		cache_get_field_content(index, "id", result, MainPipeline); Points[index][pointID] = strval(result);
-		cache_get_field_content(index, "posx", result, MainPipeline); Points[index][Pointx] = floatstr(result);
-		cache_get_field_content(index, "posy", result, MainPipeline); Points[index][Pointy] = floatstr(result);
-		cache_get_field_content(index, "posz", result, MainPipeline); Points[index][Pointz] = floatstr(result);
-		cache_get_field_content(index, "vw", result, MainPipeline); Points[index][pointVW] = strval(result);
-		cache_get_field_content(index, "type", result, MainPipeline); Points[index][Type] = strval(result);
-		cache_get_field_content(index, "vulnerable", result, MainPipeline); Points[index][Vulnerable] = strval(result);
-		cache_get_field_content(index, "matpoint", result, MainPipeline); Points[index][MatPoint] = strval(result);
-		cache_get_field_content(index, "owner", Points[index][Owner], MainPipeline, 128);
-		cache_get_field_content(index, "cappername", Points[index][CapperName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(index, "name", Points[index][Name], MainPipeline, 128);
-		cache_get_field_content(index, "captime", result, MainPipeline); Points[index][CapTime] = strval(result);
-		cache_get_field_content(index, "capfam", result, MainPipeline); Points[index][CapFam] = strval(result);
-		cache_get_field_content(index, "capname", Points[index][CapName], MainPipeline, MAX_PLAYER_NAME);
-		
-		Points[index][CaptureTimerEx2] = -1;
-		Points[index][ClaimerId] = INVALID_PLAYER_ID;
-		Points[index][PointPickupID] = CreateDynamicPickup(1239, 23, Points[index][Pointx], Points[index][Pointy], Points[index][Pointz], Points[index][pointVW]);
-		
-		if(Points[index][CapFam] != INVALID_FAMILY_ID)
-		{
-			Points[index][CapCrash] = 1;
-			Points[index][TakeOverTimerStarted] = 1;
-			Points[index][ClaimerTeam] = Points[index][CapFam];
-			Points[index][TakeOverTimer] = Points[index][CapTime];
-			format(Points[index][PlayerNameCapping], MAX_PLAYER_NAME, "%s", Points[index][CapName]);
-			ReadyToCapture(index);
-			Points[index][CaptureTimerEx2] = SetTimerEx("CaptureTimerEx", 60000, 1, "d", index);	
-		}
-		
-		index++;
-	}
-	if(index == 0) print("[Family Points] No family points has been loaded.");
-	if(index != 0) printf("[Family Points] %d family points has been loaded.", index);
-	return 1;
-}
-
 stock GetPartnerName(playerid)
 {
 	if(PlayerInfo[playerid][pMarriedID] == -1) format(PlayerInfo[playerid][pMarriedName], MAX_PLAYER_NAME, "Nobody");
@@ -8213,19 +7860,6 @@ stock GivePlayerCashEx(playerid, type, amount)
 	return 1;
 }
 
-stock PointCrashProtection(point)
-{
-	new query[128], temp;
-	temp = Points[point][ClaimerTeam];
-	if(temp == INVALID_PLAYER_ID)
-	{
-		temp = INVALID_FAMILY_ID;
-	}
-	format(query, sizeof(query), "UPDATE `points` SET `captime` = %d, `capfam` = %d, `capname` = '%s' WHERE `id` = %d",Points[point][TakeOverTimer], temp, Points[point][PlayerNameCapping], Points[point][pointID]);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	return 1;
-}
-
 /*stock LoadHelp()
 {
 	printf("[LoadHelp] Loading data from database...");
@@ -8251,98 +7885,6 @@ public OnLoadHelp()
 		i++;
 	}
 }*/
-
-stock LoadGangTags()
-{
-	new query[128];
-	format(query, sizeof(query), "SELECT * FROM `gangtags` LIMIT %d", MAX_GANGTAGS);
-	mysql_function_query(MainPipeline, query, true, "OnGangTagQueryFinish", "ii", LOAD_GANGTAGS, -1);
-}
-
-stock SaveGangTag(gangtag)
-{
-	new query[256];
-	format(query, sizeof(query), "UPDATE `gangtags` SET \
-		`posx` = %f, \
-		`posy` = %f, \
-		`posz` = %f, \
-		`posrx` = %f, \
-		`posry` = %f, \
-		`posrz` = %f, \
-		`objectid` = %d, \
-		`vw` = %d, \
-		`interior` = %d, \
-		`family` = %d, \
-		`time` = %d, \
-		`used` = %d WHERE `id` = %d",
-		GangTags[gangtag][gt_PosX],
-		GangTags[gangtag][gt_PosY],
-		GangTags[gangtag][gt_PosZ],
-		GangTags[gangtag][gt_PosRX],
-		GangTags[gangtag][gt_PosRY],
-		GangTags[gangtag][gt_PosRZ],
-		GangTags[gangtag][gt_ObjectID],
-		GangTags[gangtag][gt_VW],
-		GangTags[gangtag][gt_Int],
-		GangTags[gangtag][gt_Family],
-		GangTags[gangtag][gt_Time],
-		GangTags[gangtag][gt_Used],
-		GangTags[gangtag][gt_SQLID]
-	);
-	mysql_function_query(MainPipeline, query, false, "OnGangTagQueryFinish", "ii", SAVE_GANGTAG, gangtag);
-}
-
-forward OnGangTagQueryFinish(threadid, extraid);
-public OnGangTagQueryFinish(threadid, extraid)
-{
-	new fields, rows;
-	cache_get_data(rows, fields, MainPipeline);
-	switch(threadid)
-	{
-		case LOAD_GANGTAGS:
-		{
-			new row, result[64];
-			while(row < rows)
-			{
-				cache_get_field_content(row, "id", result, MainPipeline); GangTags[row][gt_SQLID] = strval(result);
-				cache_get_field_content(row, "posx", result, MainPipeline); GangTags[row][gt_PosX] = floatstr(result);
-				cache_get_field_content(row, "posy", result, MainPipeline); GangTags[row][gt_PosY] = floatstr(result);
-				cache_get_field_content(row, "posz", result, MainPipeline); GangTags[row][gt_PosZ] = floatstr(result);
-				cache_get_field_content(row, "posrx", result, MainPipeline); GangTags[row][gt_PosRX] = floatstr(result);
-				cache_get_field_content(row, "posry", result, MainPipeline); GangTags[row][gt_PosRY] = floatstr(result);
-				cache_get_field_content(row, "posrz", result, MainPipeline); GangTags[row][gt_PosRZ] = floatstr(result);
-				cache_get_field_content(row, "objectid", result, MainPipeline); GangTags[row][gt_ObjectID] = strval(result);
-				cache_get_field_content(row, "vw", result, MainPipeline); GangTags[row][gt_VW] = strval(result);
-				cache_get_field_content(row, "interior", result, MainPipeline); GangTags[row][gt_Int] = strval(result);
-				cache_get_field_content(row, "family", result, MainPipeline); GangTags[row][gt_Family] = strval(result);
-				cache_get_field_content(row, "used", result, MainPipeline); GangTags[row][gt_Used] = strval(result);
-				cache_get_field_content(row, "time", result, MainPipeline); GangTags[row][gt_Time] = strval(result);
-				CreateGangTag(row);
-				row++;
-			}
-			if(row > 0)
-			{
-				printf("[MYSQL] Successfully loaded %d gang tags.", row);
-			}
-			else
-			{
-				print("[MYSQL] Failed loading any gang tags.");
-			}
-		}
-		case SAVE_GANGTAG:
-		{
-			if(mysql_affected_rows(MainPipeline))
-			{
-				printf("[MYSQL] Successfully saved gang tag %d (SQLID: %d).", extraid, GangTags[extraid][gt_SQLID]);
-			}
-			else
-			{
-				printf("[MYSQL] Failed saving gang tag %d (SQLID: %d).", extraid, GangTags[extraid][gt_SQLID]);
-			}
-		}
-	}
-	return 1;
-}
 
 // g_mysql_LoadGiftBox()
 // Description: Loads the data of the dynamic giftbox from the SQL Database.

@@ -66,11 +66,6 @@ CMD:enter(playerid, params[])
                 return 1;
             }
 
-            if(DDoorsInfo[i][ddFamily] > 0) {
-                if(PlayerInfo[playerid][pFMember] != DDoorsInfo[i][ddFamily]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is family restricted.");
-				else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
-            }
-
 			if(DDoorsInfo[i][ddAllegiance] > 0) {
                 if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
 				else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
@@ -223,18 +218,6 @@ CMD:enter(playerid, params[])
 			break;
 		}
 	}
-    for(new i = 0; i < sizeof(FamilyInfo); i++) {
-        if (IsPlayerInRangeOfPoint(playerid,3.0,FamilyInfo[i][FamilyEntrance][0], FamilyInfo[i][FamilyEntrance][1], FamilyInfo[i][FamilyEntrance][2])) {
-            SetPlayerInterior(playerid,FamilyInfo[i][FamilyInterior]);
-            PlayerInfo[playerid][pInt] = FamilyInfo[i][FamilyInterior];
-            PlayerInfo[playerid][pVW] = FamilyInfo[i][FamilyVirtualWorld];
-            SetPlayerVirtualWorld(playerid, FamilyInfo[i][FamilyVirtualWorld]);
-            SetPlayerPos(playerid,FamilyInfo[i][FamilyExit][0],FamilyInfo[i][FamilyExit][1],FamilyInfo[i][FamilyExit][2]);
-            SetPlayerFacingAngle(playerid,FamilyInfo[i][FamilyExit][3]);
-			if(FamilyInfo[i][FamilyCustomMap]) Player_StreamPrep(playerid, FamilyInfo[i][FamilyExit][0],FamilyInfo[i][FamilyExit][1],FamilyInfo[i][FamilyExit][2], FREEZE_TIME);
-            break;
-        }
-    }
     for(new i = 0; i < sizeof(HouseInfo); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3,HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[i][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hExtVW]) {
             if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || PlayerInfo[playerid][pPhousekey3] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
@@ -768,17 +751,6 @@ CMD:exit(playerid, params[])
 			break;
 		}
 	}
-    for(new i = 0; i < sizeof(FamilyInfo); i++) {
-        if (IsPlayerInRangeOfPoint(playerid,3.0,FamilyInfo[i][FamilyExit][0], FamilyInfo[i][FamilyExit][1], FamilyInfo[i][FamilyExit][2]) && PlayerInfo[playerid][pVW] == FamilyInfo[i][FamilyVirtualWorld]) {
-            PlayerInfo[playerid][pInt] = 0;
-            SetPlayerVirtualWorld(playerid, 0);
-            SetPlayerInterior(playerid,0);
-            Streamer_UpdateEx(playerid, FamilyInfo[i][FamilyEntrance][0],FamilyInfo[i][FamilyEntrance][1],FamilyInfo[i][FamilyEntrance][2]);
-            SetPlayerPos(playerid,FamilyInfo[i][FamilyEntrance][0],FamilyInfo[i][FamilyEntrance][1],FamilyInfo[i][FamilyEntrance][2]);
-            SetPlayerFacingAngle(playerid,FamilyInfo[i][FamilyEntrance][3]);
-            return 1;
-        }
-    }
     for(new i = 0; i <  sizeof(HouseInfo); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && PlayerInfo[playerid][pVW] == HouseInfo[i][hIntVW]) {
 			SetPlayerInterior(playerid,0);
@@ -927,44 +899,6 @@ CMD:exit(playerid, params[])
         GetDynamicObjectPos(Carrier[0], X, Y, Z);
         SetPlayerPos(playerid, (X-15.382171),(Y-2.272918),11.6986);
         PlayerInfo[playerid][pVW] = 0;
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, 971.70568847656, 0.73652172088623, 1013.0336914063)) {
-        if(PlayerInfo[playerid][pFMember] == 1) {
-            SetPlayerPos(playerid, 971.75524902344, 1.949291229248, 1012.8675537109);
-            SetCameraBehindPlayer(playerid);
-            Player_StreamPrep(playerid, 971.75524902344, 1.949291229248, 1012.8675537109, FREEZE_TIME);
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GREY, "You do not have the keys for that door (Hades' Children MC Members only)!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, -265.52786254883, 1409.2824707031, -2.2975430488586)) {
-        if(PlayerInfo[playerid][pFMember] == 1) {
-            SetPlayerPos(playerid, -230.57353210449, 1409.3792724609, -5.2974662780762);
-            SetPlayerVirtualWorld(playerid, 0);
-            PlayerInfo[playerid][pVW] = 0;
-            SetCameraBehindPlayer(playerid);
-            SetPlayerInterior(playerid, 0);
-            PlayerInfo[playerid][pInt] = 0;
-			Player_StreamPrep(playerid, -230.57353210449, 1409.3792724609, -5.2974662780762, FREEZE_TIME);
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GREY, "You do not have the keys for that door (Hades' Children MC Members only)!");
-        }
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 2.0, -270.8628,1417.2441,-2.2902)) {
-        if(PlayerInfo[playerid][pFMember] == 1) {
-            SetPlayerPos(playerid, 255.84442138672, -158.21658325195, 1.677818775177);
-            SetPlayerVirtualWorld(playerid, 0);
-            PlayerInfo[playerid][pVW] = 0;
-            SetCameraBehindPlayer(playerid);
-            SetPlayerInterior(playerid, 0);
-            PlayerInfo[playerid][pInt] = 0;
-			Player_StreamPrep(playerid, 255.84442138672, -158.21658325195, 1.677818775177, FREEZE_TIME);
-        }
-        else {
-            SendClientMessageEx(playerid, COLOR_GREY, "You do not have the keys for that door (Hades' Children MC Members only)!");
-        }
     }
                                                   //Garage
     else if (IsPlayerInRangeOfPoint(playerid,8.0,-1790.378295,1436.949829,7.187500)) {

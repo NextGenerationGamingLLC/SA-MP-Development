@@ -48,7 +48,7 @@ CMD:accept(playerid, params[])
         if(isnull(params)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Pot, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
-            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Family, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
+            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss");
             return 1;
         }
@@ -773,45 +773,6 @@ CMD:accept(playerid, params[])
 				else SendClientMessageEx(playerid, COLOR_GREY, "The person offering you an invite has disconnected.");
             }
             else SendClientMessageEx(playerid, COLOR_GREY, "Nobody has offered you a group invite.");
-        }
-        else if(strcmp(params, "family", true) == 0) {
-            if(InviteOffer[playerid] != INVALID_PLAYER_ID) {
-                if(IsPlayerConnected(InviteOffer[playerid])) {
-                    if(!GetPVarType(playerid, "Group_Inviter") && InviteFamily[playerid] != INVALID_FAMILY_ID) {
-                        if(GetPVarInt(playerid, "IsInArena") >= 0) {
-                            SendClientMessageEx(playerid, COLOR_WHITE, "Please wait until your Paintball Arena match is over.");
-                            return 1;
-                        }
-
-                        if(PlayerInfo[playerid][pJailTime] > 1) {
-                            SendClientMessageEx(playerid, COLOR_WHITE, "Please wait until you are released from jail/prison before you accept the invite.");
-                            return 1;
-                        }
-
-                        if( PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || PlayerInfo[playerid][pMember] >= 0 || PlayerInfo[playerid][pLeader] >= 0 ) {
-                            SendClientMessageEx(playerid, COLOR_WHITE, "You can't accept this invite as you're already in a family/faction.");
-                        }
-                        else {
-                            PlayerInfo[playerid][pFMember] = InviteFamily[playerid];
-                            PlayerInfo[playerid][pRank] = 0;
-                            PlayerInfo[playerid][pDivision] = 0;
-                            FamilyInfo[InviteFamily[playerid]][FamilyMembers] ++;
-							SaveFamily(InviteFamily[playerid]);
-                            format(szMessage, sizeof(szMessage), "   You have accepted the invitation and joined the %s, you were invited by %s.", FamilyInfo[InviteFamily[playerid]][FamilyName], GetPlayerNameEx(InviteOffer[playerid]));
-                            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                            format(szMessage, sizeof(szMessage), "   %s has accepted the invitation and joined the %s.", GetPlayerNameEx(playerid),FamilyInfo[InviteFamily[playerid]][FamilyName]);
-                            SendClientMessageEx(InviteOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-                            SendClientMessageEx(playerid, COLOR_WHITE, "Use (/f)amily to talk in family chat. If you wish to acquire a family skin, type /clothes inside a clothes store.");
-                            InviteOffer[playerid] = INVALID_PLAYER_ID;
-                            InviteFamily[playerid] = INVALID_FAMILY_ID;
-                        }
-                    }
-                }
-            }
-            else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No one has invited you to join an organisation/family!");
-                return 1;
-            }
         }
         else if(strcmp(params, "witness", true) == 0) {
             if(MarryWitnessOffer[playerid] != INVALID_PLAYER_ID) {

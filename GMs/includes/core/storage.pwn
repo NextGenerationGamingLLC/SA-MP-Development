@@ -486,50 +486,6 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
 		HouseInfo[houseid][hMaterials] -= amount;
 	}
-	if(special == 5 && itemid == 1) // Family Safe Withdraw - Cash
-	{
-		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
-		DeletePVar(playerid, "Special_FamilyID");
-		getdate(year,month,day);
-
-		FamilyInfo[family][FamilyCash] -= amount;
-		format(string, sizeof(string), "%s has withdrawn $%s from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
-		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-		Log(file, string);
-	}
-	if(special == 5 && itemid == 2 && (PlayerInfo[playerid][pPot] + amount <= onhandlimit[itemid-1])) // Family Safe Withdraw - Pot
-	{
-		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
-		DeletePVar(playerid, "Special_FamilyID");
-		getdate(year,month,day);
-
-		FamilyInfo[family][FamilyPot] -= amount;
-		format(string, sizeof(string), "%s has withdrawn %s pot from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
-		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-		Log(file, string);
-	}
-	if(special == 5 && itemid == 3 && (PlayerInfo[playerid][pCrack] + amount <= onhandlimit[itemid-1])) // Family Safe Withdraw - Crack
-	{
-		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
-		DeletePVar(playerid, "Special_FamilyID");
-		getdate(year,month,day);
-
-		FamilyInfo[family][FamilyCrack] -= amount;
-		format(string, sizeof(string), "%s has withdrawn %s crack from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
-		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-		Log(file, string);
-	}
-	if(special == 5 && itemid == 4) // Family Safe Withdraw - Materials
-	{
-		new file[32], month, day, year, family = GetPVarInt(playerid, "Special_FamilyID");
-		DeletePVar(playerid, "Special_FamilyID");
-		getdate(year,month,day);
-
-		FamilyInfo[family][FamilyMats] -= amount;
-		format(string, sizeof(string), "%s has withdrawn %s materials from %s's safe", GetPlayerNameEx(playerid), number_format(amount), FamilyInfo[family][FamilyName]);
-		format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-		Log(file, string);
-	}
 
 	switch(storageid)
 	{

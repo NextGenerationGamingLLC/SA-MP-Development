@@ -47,7 +47,6 @@ InitiateGamemode()
 	LoadEventPoints();
 	LoadGates();
 	LoadElevatorStuff();
-	LoadFamilies();
 	LoadPoints();
 	ClearCalls();
 	//LoadHelp();

@@ -54,7 +54,7 @@ CMD:news(playerid, params[])
 {
 	if (IsAReporter(playerid))
 	{
-		new string[128];
+		szMiscArray[0] = 0;
 		if(shutdown == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "The news system is currently shut down." );
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /news [text]");
 
@@ -67,8 +67,10 @@ CMD:news(playerid, params[])
 			}
 			else
 			{
-				format(string, sizeof(string), "NR %s: %s", GetPlayerNameEx(playerid), params);
-				OOCNews(COLOR_NEWS,string);
+				format(szMiscArray, sizeof(szMiscArray), "NR %s: %s", GetPlayerNameEx(playerid), params);
+				OOCNews(COLOR_NEWS,szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "[/NEWS] %s (%i): %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), params);
+				Log("logs/broadcast.log", szMiscArray);
 			}
 		}
 		else

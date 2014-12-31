@@ -34,7 +34,6 @@
 
 enum eGroupData {
 	g_iGroupType,
-	g_szGroupMOTD[GROUP_MAX_MOTD_LEN],
 	g_szGroupName[GROUP_MAX_NAME_LEN],
 	g_iLockerGuns[MAX_GROUP_WEAPONS],
 	g_iLockerCost[MAX_GROUP_WEAPONS],
@@ -106,7 +105,6 @@ enum eGroupVehData {
 	gv_igID, // ID of group (faction) (0 if unrestricted - for civilian use)
 	gv_igDivID, // ID of division restriction (0 if unrestricted)
 	gv_irID, // ID of rank restriction (0 if unrestricted)
-	gv_ifID, // ID of family (0 if unrestricted)
 	gv_iType, // (0 - standard | 1 - Crate Transport)
 	gv_iLoadMax, //(ie if type is set to 1, and vLoadMax set to 2, car will have a max capacity of 2 crates)
 	gv_iModel, // Model of Vehicle
@@ -627,50 +625,6 @@ enum TurfWarsEnum
 	Float: twMaxY,
 };
 
-enum fInfo
-{
-	FamilyTaken,
-	FamilyName[42],
-	FamilyColor,
-	FamilyTurfTokens,
-	FamilyLeader[MAX_PLAYER_NAME],
-	FamilyMembers,
-	Float:FamilySpawn[4],
-	FamilyInterior,
-	FamilyCash,
-	FamilyBank,
-	FamilyMats,
-	FamilyHeroin,
-	FamilyPot,
-	FamilyCrack,
-	Float:FamilySafe[3],
-	FamilySafeVW,
-	FamilySafeInt,
-	FamilyUSafe,
-	FamilyPickup,
-	FamilyMaxSkins,
-	FamilySkins[8],
-	Float: FamilyEntrance[4],
-	Float: FamilyExit[4],
-	FamilyEntrancePickup,
-	FamilyExitPickup,
-	Text3D:FamilyEntranceText,
-	Text3D:FamilyExitText,
-	FamilyCustomMap,
-	FamilyVirtualWorld,
-	FamilyResetSpawns,
-	FamilyGuns[10],
-	gtObject,
-	gt_Text[32],
-	gt_FontFace[32],
-	gt_FontSize,
-	gt_Bold,
-	gt_FontColor,
-	gt_BackColor,
-	gt_SPUsed,
-	FamColor
-};
-
 enum fPoint
 {
 	pointID,
@@ -866,7 +820,6 @@ enum pInfo
 	pMember,
 	pDivision,
 	pBadge[9],
-	pFMember,
 	pSpeakerPhone,
 	pRank,
 	pDetSkill,
@@ -1302,7 +1255,6 @@ enum ddInfo
 	ddDPC,
 	ddAllegiance,
 	ddGroupType,
-	ddFamily,
 	ddFaction,
 	ddAdmin,
 	ddWanted,
@@ -1340,7 +1292,6 @@ enum gInfo
 	gAllegiance,
 	gGroupType,
 	gGroupID,
-	gFamilyID,
     gRenderHQ,
 	gTimer,
 	gAutomate,
@@ -1538,7 +1489,7 @@ enum HUNGER_BACKPACK_INFO
 	hgActiveEx
 }
 
-enum GANG_TAG_INFO
+/*enum GANG_TAG_INFO
 {
 	gt_SQLID,
 	gt_Object,
@@ -1556,7 +1507,7 @@ enum GANG_TAG_INFO
 	gt_Time,
 	gt_TimeLeft,
 	gt_Timer
-}
+}*/
 
 enum FIREWORK_INFO
 {

@@ -36,6 +36,102 @@
 */
 
 // Akatony Note: You need to destroy the 3D Label text no matter what's the state of the capture.
+
+stock SavePoint(pid)
+{
+	new szQuery[2048];
+	
+	format(szQuery, sizeof(szQuery), "UPDATE `points` SET \
+		`posx` = '%f', \
+		`posy` = '%f', \
+ 		`posz` = '%f', \
+		`vw` = '%d', \
+		`type` = '%d', \
+		`vulnerable` = '%d', \
+		`matpoint` = '%d', \
+		`owner` = '%s', \
+		`cappername` = '%s', \
+		`name` = '%s' WHERE `id` = %d",
+		Points[pid][Pointx],
+		Points[pid][Pointy],
+		Points[pid][Pointz],
+		Points[pid][pointVW],
+		Points[pid][Type],
+		Points[pid][Vulnerable],
+		Points[pid][MatPoint],
+		g_mysql_ReturnEscaped(Points[pid][Owner], MainPipeline),
+		g_mysql_ReturnEscaped(Points[pid][CapperName], MainPipeline),
+		g_mysql_ReturnEscaped(Points[pid][Name], MainPipeline),
+		pid+1
+	);	
+		
+	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);	
+}		
+
+forward OnLoadPoints();
+public OnLoadPoints()
+{
+	new fields, rows, index, result[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while((index < rows))
+	{
+		cache_get_field_content(index, "id", result, MainPipeline); Points[index][pointID] = strval(result);
+		cache_get_field_content(index, "posx", result, MainPipeline); Points[index][Pointx] = floatstr(result);
+		cache_get_field_content(index, "posy", result, MainPipeline); Points[index][Pointy] = floatstr(result);
+		cache_get_field_content(index, "posz", result, MainPipeline); Points[index][Pointz] = floatstr(result);
+		cache_get_field_content(index, "vw", result, MainPipeline); Points[index][pointVW] = strval(result);
+		cache_get_field_content(index, "type", result, MainPipeline); Points[index][Type] = strval(result);
+		cache_get_field_content(index, "vulnerable", result, MainPipeline); Points[index][Vulnerable] = strval(result);
+		cache_get_field_content(index, "matpoint", result, MainPipeline); Points[index][MatPoint] = strval(result);
+		cache_get_field_content(index, "owner", Points[index][Owner], MainPipeline, 128);
+		cache_get_field_content(index, "cappername", Points[index][CapperName], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(index, "name", Points[index][Name], MainPipeline, 128);
+		cache_get_field_content(index, "captime", result, MainPipeline); Points[index][CapTime] = strval(result);
+		cache_get_field_content(index, "capfam", result, MainPipeline); Points[index][CapFam] = strval(result);
+		cache_get_field_content(index, "capname", Points[index][CapName], MainPipeline, MAX_PLAYER_NAME);
+		
+		Points[index][CaptureTimerEx2] = -1;
+		Points[index][ClaimerId] = INVALID_PLAYER_ID;
+		Points[index][PointPickupID] = CreateDynamicPickup(1239, 23, Points[index][Pointx], Points[index][Pointy], Points[index][Pointz], Points[index][pointVW]);
+		
+		if(Points[index][CapFam] != INVALID_GROUP_ID)
+		{
+			Points[index][CapCrash] = 1;
+			Points[index][TakeOverTimerStarted] = 1;
+			Points[index][ClaimerTeam] = Points[index][CapFam];
+			Points[index][TakeOverTimer] = Points[index][CapTime];
+			format(Points[index][PlayerNameCapping], MAX_PLAYER_NAME, "%s", Points[index][CapName]);
+			ReadyToCapture(index);
+			Points[index][CaptureTimerEx2] = SetTimerEx("CaptureTimerEx", 60000, 1, "d", index);	
+		}
+		
+		index++;
+	}
+	if(index == 0) print("[Family Points] No family points has been loaded.");
+	if(index != 0) printf("[Family Points] %d family points has been loaded.", index);
+	return 1;
+}
+
+stock PointCrashProtection(point)
+{
+	new query[128], temp;
+	temp = Points[point][ClaimerTeam];
+	if(temp == INVALID_PLAYER_ID)
+	{
+		temp = INVALID_GROUP_ID;
+	}
+	format(query, sizeof(query), "UPDATE `points` SET `captime` = %d, `capfam` = %d, `capname` = '%s' WHERE `id` = %d",Points[point][TakeOverTimer], temp, Points[point][PlayerNameCapping], Points[point][pointID]);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 1;
+}
+
+stock LoadPoints()
+{
+	printf("[LoadFamilyPoints] Loading Family Points from the database, please wait...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `points`", true, "OnLoadPoints", "");
+}	
+
 forward ProgressTimer(point);
 public ProgressTimer(point)
 {

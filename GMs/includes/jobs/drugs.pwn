@@ -255,11 +255,11 @@ CMD:getopiumseeds(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have purchased a bag of opium seeds from the drug house.");
 				GivePlayerCash(playerid, -75000);
 				GameTextForPlayer(playerid, "~r~-$75000", 3000, 1 );
-				for(new z = 0; z < sizeof(FamilyInfo); z++)
+				for(new z = 0; z < MAX_GROUPS; z++)
 				{
-					if(strcmp(Points[i][Owner], FamilyInfo[z][FamilyName], true) == 0)
+					if(strcmp(Points[i][Owner], arrGroupData[z][g_szGroupName], true) == 0)
 					{
-						FamilyInfo[z][FamilyBank] += 2500;
+						arrGroupData[z][g_iBudget] += 2500;
 					}
 				}
 				return 1;
@@ -312,11 +312,11 @@ CMD:getseeds(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " You have purchased a bag of Pot Seeds from the Drug House. ");
 	GivePlayerCash(playerid, -10000);
 	GameTextForPlayer(playerid, "~r~-$10000", 3000, 1 );
-	for(new i = 0; i < sizeof(FamilyInfo); i++)
+	for(new i = 0; i < MAX_GROUPS; i++)
 	{
-		if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+		if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 		{
-			FamilyInfo[i][FamilyBank] += 2500;
+			arrGroupData[i][g_iBudget] += 2500;
 		}
 	}
 	return 1;
@@ -645,11 +645,11 @@ CMD:getpot(playerid, params[])
 				format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[mypoint][Stock]);
 				UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
 			}
-			for(new i = 0; i < sizeof(FamilyInfo); i++)
+			for(new i = 0; i < MAX_GROUPS; i++)
 			{
-				if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+				if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 				{
-					FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+					arrGroupData[i][g_iBudget] += price/2;
 				}
 			}
 		}
@@ -723,11 +723,11 @@ CMD:getcrack(playerid, params[])
 			if(PlayerInfo[playerid][pDonateRank] < 1) Points[mypoint][Stock] = Points[mypoint][Stock]-amount;
 			format(string, sizeof(string), " CRACK AVAILABLE: %d/500.", Points[mypoint][Stock]);
 			UpdateDynamic3DTextLabelText(Points[mypoint][TextLabel], COLOR_YELLOW, string);
-			for(new i = 0; i < sizeof(FamilyInfo); i++)
+			for(new i = 0; i < MAX_GROUPS; i++)
 			{
-				if(strcmp(Points[mypoint][Owner], FamilyInfo[i][FamilyName], true) == 0)
+				if(strcmp(Points[mypoint][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 				{
-					FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+price/2;
+					arrGroupData[i][g_iBudget] += price/2;
 				}
 			}
 		}

@@ -37,6 +37,98 @@
 
 #include <YSI\y_hooks>
 
+stock LoadGangTags()
+{
+	new query[128];
+	format(query, sizeof(query), "SELECT * FROM `gangtags` LIMIT %d", MAX_GANGTAGS);
+	mysql_function_query(MainPipeline, query, true, "OnGangTagQueryFinish", "ii", LOAD_GANGTAGS, -1);
+}
+
+stock SaveGangTag(gangtag)
+{
+	new query[256];
+	format(query, sizeof(query), "UPDATE `gangtags` SET \
+		`posx` = %f, \
+		`posy` = %f, \
+		`posz` = %f, \
+		`posrx` = %f, \
+		`posry` = %f, \
+		`posrz` = %f, \
+		`objectid` = %d, \
+		`vw` = %d, \
+		`interior` = %d, \
+		`family` = %d, \
+		`time` = %d, \
+		`used` = %d WHERE `id` = %d",
+		GangTags[gangtag][gt_PosX],
+		GangTags[gangtag][gt_PosY],
+		GangTags[gangtag][gt_PosZ],
+		GangTags[gangtag][gt_PosRX],
+		GangTags[gangtag][gt_PosRY],
+		GangTags[gangtag][gt_PosRZ],
+		GangTags[gangtag][gt_ObjectID],
+		GangTags[gangtag][gt_VW],
+		GangTags[gangtag][gt_Int],
+		GangTags[gangtag][gt_Family],
+		GangTags[gangtag][gt_Time],
+		GangTags[gangtag][gt_Used],
+		GangTags[gangtag][gt_SQLID]
+	);
+	mysql_function_query(MainPipeline, query, false, "OnGangTagQueryFinish", "ii", SAVE_GANGTAG, gangtag);
+}
+
+forward OnGangTagQueryFinish(threadid, extraid);
+public OnGangTagQueryFinish(threadid, extraid)
+{
+	new fields, rows;
+	cache_get_data(rows, fields, MainPipeline);
+	switch(threadid)
+	{
+		case LOAD_GANGTAGS:
+		{
+			new row, result[64];
+			while(row < rows)
+			{
+				cache_get_field_content(row, "id", result, MainPipeline); GangTags[row][gt_SQLID] = strval(result);
+				cache_get_field_content(row, "posx", result, MainPipeline); GangTags[row][gt_PosX] = floatstr(result);
+				cache_get_field_content(row, "posy", result, MainPipeline); GangTags[row][gt_PosY] = floatstr(result);
+				cache_get_field_content(row, "posz", result, MainPipeline); GangTags[row][gt_PosZ] = floatstr(result);
+				cache_get_field_content(row, "posrx", result, MainPipeline); GangTags[row][gt_PosRX] = floatstr(result);
+				cache_get_field_content(row, "posry", result, MainPipeline); GangTags[row][gt_PosRY] = floatstr(result);
+				cache_get_field_content(row, "posrz", result, MainPipeline); GangTags[row][gt_PosRZ] = floatstr(result);
+				cache_get_field_content(row, "objectid", result, MainPipeline); GangTags[row][gt_ObjectID] = strval(result);
+				cache_get_field_content(row, "vw", result, MainPipeline); GangTags[row][gt_VW] = strval(result);
+				cache_get_field_content(row, "interior", result, MainPipeline); GangTags[row][gt_Int] = strval(result);
+				cache_get_field_content(row, "family", result, MainPipeline); GangTags[row][gt_Family] = strval(result);
+				cache_get_field_content(row, "used", result, MainPipeline); GangTags[row][gt_Used] = strval(result);
+				cache_get_field_content(row, "time", result, MainPipeline); GangTags[row][gt_Time] = strval(result);
+				CreateGangTag(row);
+				row++;
+			}
+			if(row > 0)
+			{
+				printf("[MYSQL] Successfully loaded %d gang tags.", row);
+			}
+			else
+			{
+				print("[MYSQL] Failed loading any gang tags.");
+			}
+		}
+		case SAVE_GANGTAG:
+		{
+			if(mysql_affected_rows(MainPipeline))
+			{
+				printf("[MYSQL] Successfully saved gang tag %d (SQLID: %d).", extraid, GangTags[extraid][gt_SQLID]);
+			}
+			else
+			{
+				printf("[MYSQL] Failed saving gang tag %d (SQLID: %d).", extraid, GangTags[extraid][gt_SQLID]);
+			}
+		}
+	}
+	return 1;
+}
+
 stock ClearGangTag(gangtag)
 {
 	GangTags[gangtag][gt_PosX] = 0.0;

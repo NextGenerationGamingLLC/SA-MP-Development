@@ -245,7 +245,6 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBusiness] = INVALID_BUSINESS_ID;
 		PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
 		strcpy(PlayerInfo[playerid][pBadge], "None", 9);
-		PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
 		PlayerInfo[playerid][pRenting] = INVALID_HOUSE_ID;
 		PlayerInfo[playerid][pDetSkill] = 0;
@@ -657,7 +656,7 @@ public OnPlayerLoad(playerid)
 		}	
 	}
 	
-	if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+	if(((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
 	{
 		new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 		if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
@@ -694,27 +693,7 @@ public OnPlayerLoad(playerid)
 			format(string, sizeof string, "%s%s has logged in.", badge, GetPlayerNameEx(playerid));
 			GroupLog(PlayerInfo[playerid][pMember], string);
 		}
-		else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
-		{
-			format(string, sizeof(string), "** (%i) %s %s has logged in **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-			SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
-			format(string, sizeof string, "%s %s has logged in.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-			FamilyLog(PlayerInfo[playerid][pFMember], string);
-		}
 	}
-	
-	/*for(new i = 0; i < sizeof(GateInfo); i++)
-	{
-		if(GateInfo[i][gAutomate] == 1)
-		{
-			if(GateInfo[i][gFamilyID] != -1 && PlayerInfo[playerid][pFMember] == GateInfo[i][gFamilyID]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-			else if(GateInfo[i][gGroupID] != -1 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pMember] == GateInfo[i][gGroupID]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-			else if(GateInfo[i][gAllegiance] != 0 && GateInfo[i][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[i][gAllegiance] && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[i][gGroupType]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-			else if(GateInfo[i][gAllegiance] != 0 && GateInfo[i][gGroupType] == 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[i][gAllegiance]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-			else if(GateInfo[i][gAllegiance] == 0 && GateInfo[i][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[i][gGroupType]) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-			else if(GateInfo[i][gAllegiance] == 0 && GateInfo[i][gGroupType] == 0 && GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1) SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, i);
-		}
-	}*/
 	
 	// Create the player necessary textdraws
 	CreatePlayerTextDraws(playerid);
@@ -817,15 +796,8 @@ public OnPlayerLoad(playerid)
 	format(string, sizeof(string), "SELECT * FROM `rentedcars` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, string, true, "LoadRentedCar", "i", playerid);
 
-	if(PlayerInfo[playerid][pFMember] == -1) { PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID; }
-	if(PlayerInfo[playerid][pFMember] >= 0 && PlayerInfo[playerid][pFMember] < INVALID_FAMILY_ID)
+	if(IsACriminal(playerid))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "Family MOTD's:");
-		for(new i = 1; i <= 3; i++)
-		{
-			format(string, sizeof(string), "%d: %s", i, FamilyMOTD[PlayerInfo[playerid][pFMember]][i-1]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		}
 		for(new i = 0; i < MAX_POINTS; i++)
 		{
 			if(Points[i][CapCrash] == 1)
@@ -836,10 +808,14 @@ public OnPlayerLoad(playerid)
 			}
 		}
 	}
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupMOTD][0])
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
-		format(string, sizeof(string), "MOTD: %s", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupMOTD]);
-		SendClientMessageEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 255, string);
+		
+		for(new i = 0; i < 3; i++)
+		{
+			format(string, sizeof(string), "MOTD: %s", gMOTD[PlayerInfo[playerid][pMember]][i]);
+			SendClientMessageEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 255, string);
+		}
 	}
 	CountFlags(playerid);
 	if(PlayerInfo[playerid][pFlagged] > 5)
@@ -1057,7 +1033,6 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pAdmin] >= 1) SetPVarInt(playerid, "aLvl", PlayerInfo[playerid][pAdmin]);
 	if(PlayerInfo[playerid][pHelper] >= 1) SetPVarInt(playerid, "hLvl", PlayerInfo[playerid][pHelper]);
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) SetPVarInt(playerid, "fLvl", PlayerInfo[playerid][pMember]);
-	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) SetPVarInt(playerid, "gLvl", PlayerInfo[playerid][pFMember]);
 	
 	new szQuery[128];
 	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));

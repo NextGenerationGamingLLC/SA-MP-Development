@@ -41,13 +41,7 @@ CMD:gate(playerid, params[])
 	for(new i = 0; i < sizeof(GateInfo); i++)
 	{
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(GateInfo[i][gFamilyID] != -1 && PlayerInfo[playerid][pFMember] == GateInfo[i][gFamilyID] && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW] && GetPlayerInterior(playerid) == GateInfo[i][gInt])
-		{
-			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
-			if(GateInfo[i][gAutomate] == 1) return 1;
-			MoveGate(playerid, i);
-		}
-		else if(GateInfo[i][gGroupID] != -1 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pMember] == GateInfo[i][gGroupID] && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW] && GetPlayerInterior(playerid) == GateInfo[i][gInt])
+		if(GateInfo[i][gGroupID] != -1 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pMember] == GateInfo[i][gGroupID] && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW] && GetPlayerInterior(playerid) == GateInfo[i][gInt])
 		{
 			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
 			if(GateInfo[i][gAutomate] == 1) return 1;
@@ -101,7 +95,7 @@ CMD:movegate(playerid, params[])
 	for(new i = 0; i < sizeof(GateInfo); i++)
 	{
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1 && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
+		if(GateInfo[i][gGroupID] == -1 && IsPlayerInRangeOfPoint(playerid,GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
 		{
 			if(GateInfo[i][gLocked] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This gate is currently locked.");
 			if(GateInfo[i][gAutomate] == 1) return 1;
@@ -177,7 +171,7 @@ CMD:setgatepass(playerid, params[])
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
 		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z))
 		{
-			if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID] && GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
+			if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID] && GateInfo[i][gGroupID] == INVALID_GROUP_ID)
 			{
 				format(GateInfo[i][gPass], 24, "%s", params);
 				SaveGate(i);
@@ -198,7 +192,7 @@ CMD:lockgate(playerid, params[])
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
 		if(IsPlayerInRangeOfPoint(playerid, GateInfo[i][gRange], X, Y, Z) && GetPlayerVirtualWorld(playerid) == GateInfo[i][gVW])
 		{
-			if(GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] == -1)
+			if(GateInfo[i][gGroupID] == INVALID_GROUP_ID)
 			{
 				if(GateInfo[i][gHID] != -1 && GetPlayerSQLId(playerid) == HouseInfo[GateInfo[i][gHID]][hOwnerID])
 				{
@@ -216,27 +210,9 @@ CMD:lockgate(playerid, params[])
 					}
 				}
 			}
-			else if(GateInfo[i][gGroupID] != -1 && GateInfo[i][gFamilyID] == -1)
+			else if(GateInfo[i][gGroupID] != INVALID_GROUP_ID)
 			{
 				if(PlayerInfo[playerid][pLeader] == GateInfo[i][gGroupID])
-				{
-					if(GateInfo[i][gLocked] == 0)
-					{
-						GateInfo[i][gLocked] = 1;
-						format(string, sizeof(string), "* %s has locked the gate.", GetPlayerNameEx(playerid));
-						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-					}
-					else
-					{
-						GateInfo[i][gLocked] = 0;
-						format(string, sizeof(string), "* %s has unlocked the gate.", GetPlayerNameEx(playerid));
-						ProxDetector(GateInfo[i][gRange], playerid, string, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
-					}
-				}
-			}
-			else if(GateInfo[i][gGroupID] == -1 && GateInfo[i][gFamilyID] != -1)
-			{
-				if(PlayerInfo[playerid][pFMember] == GateInfo[i][gFamilyID] && PlayerInfo[playerid][pRank] == 6)
 				{
 					if(GateInfo[i][gLocked] == 0)
 					{
@@ -337,7 +313,7 @@ CMD:gstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "XM: %f | YM: %f | ZM: %f | RotXM: %f | RotYM: %f | RotZM: %f", GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Model: %d | HID: %d | VW: %d | Int: %d | Allegiance: %d | Group Type: %d | Group: %d | Family: %d", GateInfo[gateid][gModel], GateInfo[gateid][gHID], GateInfo[gateid][gVW], GateInfo[gateid][gInt], GateInfo[gateid][gAllegiance], GateInfo[gateid][gGroupType], GateInfo[gateid][gGroupID], GateInfo[gateid][gFamilyID]);
+		format(string, sizeof(string), "Model: %d | HID: %d | VW: %d | Int: %d | Allegiance: %d | Group Type: %d | Group: %d", GateInfo[gateid][gModel], GateInfo[gateid][gHID], GateInfo[gateid][gVW], GateInfo[gateid][gInt], GateInfo[gateid][gAllegiance], GateInfo[gateid][gGroupType], GateInfo[gateid][gGroupID]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -427,7 +403,7 @@ CMD:gedit(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gedit [name] [gateid] [value]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: HID, Model, VW, Int, Open, Closed, PosX(M), PosY(M), PosZ(M), RotX(M), RotZ(M), ToMe(M)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Range, Speed, Allegiance, GroupType, GroupID, FamilyID, Stream, Timer, Auto");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Range, Speed, Allegiance, GroupType, GroupID, Stream, Timer");
 			return 1;
 		}
 
@@ -466,8 +442,7 @@ CMD:gedit(playerid, params[])
 				GateInfo[gateid][gInt] = 0;
 				GateInfo[gateid][gAllegiance] = 0;
 				GateInfo[gateid][gGroupType] = 0;
-				GateInfo[gateid][gGroupID] = -1;
-				GateInfo[gateid][gFamilyID] = -1;
+				GateInfo[gateid][gGroupID] = INVALID_GROUP_ID;
 			}
 
 		    GateInfo[gateid][gModel] = value;
@@ -715,17 +690,6 @@ CMD:gedit(playerid, params[])
 		    format(string, sizeof(string), "%s has edited GateID %d's Group ID to %d.", GetPlayerNameEx(playerid), gateid, value);
 		    Log("logs/gedit.log", string);
 		}
-		else if(strcmp(x_job, "familyid", true) == 0)
-		{
-		    new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gFamilyID] = value;
-		    format(string, sizeof(string), "Family ID %d assigned to Gate %d", GateInfo[gateid][gFamilyID], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    format(string, sizeof(string), "%s has edited GateID %d's Family ID to %d.", GetPlayerNameEx(playerid), gateid, value);
-		    Log("logs/gedit.log", string);
-		}
 		else if(strcmp(x_job, "stream", true) == 0)
 		{
 		    new value = floatround(ofloat, floatround_round);
@@ -749,25 +713,6 @@ CMD:gedit(playerid, params[])
 
 		    format(string, sizeof(string), "%s has edited GateID %d's timer to %d.", GetPlayerNameEx(playerid), gateid, value);
 		    Log("logs/gedit.log", string);
-		}
-		else if(strcmp(x_job, "auto", true) == 0)
-		{
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "Gate Automation has been disabled.");
-			/*new value = floatround(ofloat, floatround_round);
-		    GateInfo[gateid][gAutomate] = value;
-			if(GateInfo[gateid][gAutomate] == 1)
-			{
-				foreach(new i: Player) 
-				{	
-					SetTimerEx("AutomaticGateTimer", 1000, false, "ii", i, gateid);
-				}
-			}
-		    format(string, sizeof(string), "Automation %d assigned to Gate %d", GateInfo[gateid][gAutomate], gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-
-		    format(string, sizeof(string), "%s has edited GateID %d's automation to %d.", GetPlayerNameEx(playerid), gateid, value);
-		    Log("logs/gedit.log", string);*/
 		}
 	}
 	else

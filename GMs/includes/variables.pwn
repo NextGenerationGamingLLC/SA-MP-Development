@@ -813,7 +813,6 @@ new hInviteOffer[MAX_PLAYERS];
 new hInviteHouse[MAX_PLAYERS];
 new hInviteOfferTo[MAX_PLAYERS];
 new InviteOffer[MAX_PLAYERS];
-new InviteFamily[MAX_PLAYERS];
 new MatsOffer[MAX_PLAYERS];
 new MatsStorageID[MAX_PLAYERS];
 new MatsPrice[MAX_PLAYERS];
@@ -892,6 +891,7 @@ new AdminMOTD[128];
 new VIPMOTD[128];
 new CAMOTD[128];
 new pMOTD[256];
+new gMOTD[MAX_GROUPS][3][GROUP_MAX_MOTD_LEN];
 new Float:ShopTechPay;
 new TotalCitizens;
 new TRCitizens;
@@ -1199,10 +1199,6 @@ new Float:EventRCPS[20]; // RCP Size
 new EventRCPT[20]; // RCP Type
 new PaintBallArena[MAX_ARENAS][PaintBallArenaEnum];
 new TurfWars[MAX_TURFS][TurfWarsEnum];
-new FamilyInfo[MAX_FAMILY][fInfo];
-new FamilyRankInfo[MAX_FAMILY][7][GROUP_MAX_RANK_LEN];
-new FamilyDivisionInfo[MAX_FAMILY][5][GROUP_MAX_DIV_LEN];
-new FamilyMOTD[MAX_FAMILY][3][128];
 new Points[MAX_POINTS][fPoint];
 new Fishes[MAX_PLAYERS][pFishing];
 new News[hNews];
@@ -1224,7 +1220,7 @@ new ArrestPoints[MAX_ARRESTPOINTS][arrestInfo];
 new ImpoundPoints[MAX_IMPOUNDPOINTS][impoundInfo];
 new RFLInfo[MAX_RFLTEAMS][rflinfo];
 //new HelpInfo[TOTAL_COMMANDS][cmdInfo];
-new GangTags[MAX_GANGTAGS][GANG_TAG_INFO];
+//new GangTags[MAX_GANGTAGS][GANG_TAG_INFO];
 new fireworktog = 1;
 
 // Vehicle Lock Pick Timer Textdraw

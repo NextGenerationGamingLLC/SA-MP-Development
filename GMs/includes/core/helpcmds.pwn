@@ -38,17 +38,6 @@
 CMD:help(playerid, params[])
 {
 	new string[512];
-	// Work in progress? - Akatony
-	/*format(string, sizeof(string), "General Commands");
-	if(PlayerInfo[playerid][pAdmin] == 1) format(string, sizeof(string), "%s\nModerator Commands", string);
-	else if(PlayerInfo[playerid][pAdmin] > 1) format(string, sizeof(string), "%s\nAdministrator Commands", string);
-	if(PlayerInfo[playerid][pHelper] == 1) format(string, sizeof(string), "%s\nHelper Commands", string);
-	else if(PlayerInfo[playerid][pHelper] > 1) format(string, sizeof(string), "%s\nAdvisor Commands", string);
-	if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID) format(string, sizeof(string), "%s\nFaction Leader Commands", string);
-	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) format(string, sizeof(string), "%s\nFaction Commands", string);
-	if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID) format(string, sizeof(string), "%s\nGang Commands", string);
-	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID) format(string, sizeof(string), "%s\nBusiness Commands", string);
-	ShowPlayerDialog(playerid, DIALOG_HELP1, DIALOG_STYLE_LIST, "Help Center", string, "Select", "Cancel");*/
 	if(PlayerInfo[playerid][pLevel] <= 3)
 	{
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
@@ -198,7 +187,7 @@ CMD:help(playerid, params[])
 			}
 			case 10:
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes");
 			}
 		}
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
@@ -216,18 +205,6 @@ CMD:help(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /adjustwithdrawrank");
 			}
-		}
-	}
-	if (PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
-	{
-		if(PlayerInfo[playerid][pRank] < 5)
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /clothes /safehelp /movegate");
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /clothes /safehelp /movegate /fdeposit /fwithdraw /fbalance /claim /capture /adjust, /adjustdiv");
-			SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** /dvtrackcar /dvpark /adjustdvrank /fmotd");
 		}
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1)

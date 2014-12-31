@@ -103,21 +103,6 @@ CMD:impound(playerid, params[]) {
 						format(szMessage, sizeof(szMessage), "IMPOUND: %s has impounded %s's %s and gained $%s", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400], number_format(iCost));
 						GroupLog(PlayerInfo[playerid][pMember], szMessage);
 					}
-					/*case 2: {
-
-						new
-							szMessage[29 + MAX_PLAYER_NAME];
-
-						format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.",FamilyInfo[iTargetOwner][FamilyName], GetVehicleNameEx(iVehTowed));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-
-						format(szMessage, sizeof(szMessage), "Your %s has been impounded. You may release it at the DMV in Dillimore.", GetVehicleNameEx(iVehTowed));
-						SendNewFamilyMessage(iTargetOwner, COLOR_LIGHTBLUE, szMessage);
-
-						FamilyVehicleInfo[iTargetOwner][iVehIndex][fvImpounded] = 1;
-						FamilyVehicleInfo[iTargetOwner][iVehIndex][fvId] = INVALID_VEHICLE_ID;
-						DestroyVehicle(iVehTowed);
-					}*/
 				}
 				arr_Towing[playerid] = INVALID_VEHICLE_ID;
 			}

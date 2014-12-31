@@ -317,12 +317,11 @@ CMD:getmats(playerid, params[])
 	SetPVarInt(playerid, "MatDeliver", mydeliver);
 	SetPVarInt(playerid, "tpMatRunTimer", 10);
 	SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
-	for(new i = 0; i < sizeof(FamilyInfo); i++)
+	for(new i = 0; i < MAX_GROUPS; i++)
 	{
-		if(strcmp(Points[mypointex][Owner], FamilyInfo[i][FamilyName], true) == 0)
+		if(strcmp(Points[mypointex][Owner], arrGroupData[i][g_szGroupName], true) == 0)
 		{
-			FamilyInfo[i][FamilyBank] = FamilyInfo[i][FamilyBank]+125;
-			//SendClientMessageEx(playerid, COLOR_WHITE, " Family owner recieved 50 percent of the cost.");
+			arrGroupData[i][g_iBudget] +=125;
 		}
 	}
 	SetPlayerCheckpoint(playerid, Points[mypoint][Pointx], Points[mypoint][Pointy], Points[mypoint][Pointz], 5);

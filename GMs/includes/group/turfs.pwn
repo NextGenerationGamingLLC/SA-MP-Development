@@ -237,7 +237,7 @@ stock TakeoverTurfWarsZone(iGroupID, zone)
 	TurfWars[zone][twVulnerable] = 0;
 	TurfWars[zone][twAttemptId] = iGroupID;
 	TurfWars[zone][twFlash] = 1;
-	TurfWars[zone][twFlashColor] = arrGroupData[iGroupID][g_hDutyColour];
+	TurfWars[zone][twFlashColor] = arrGroupData[iGroupID-1][g_hDutyColour] * 256 + 255;
 
 	SyncTurfWarsRadarToAll();
 }
@@ -352,7 +352,7 @@ stock SyncTurfWarsRadar(playerid)
 	    {
 	        if(TurfWars[i][twOwnerId] >= 0 && TurfWars[i][twOwnerId] < MAX_GROUPS)
 	        {
-	            GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour]);
+	            GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour] * 256 + 255);
 	        }
 	        else
 	        {
@@ -361,7 +361,7 @@ stock SyncTurfWarsRadar(playerid)
 
 	        if(TurfWars[i][twFlash] == 1)
 	        {
-	        	GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour]);
+	        	GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour] * 256 + 255);
 	        }
 	        else
 	        {
@@ -381,11 +381,11 @@ stock TurfWarsEditTurfsSelection(playerid)
 		{
 			if(TurfWars[i][twOwnerId] < 0 || TurfWars[i][twOwnerId] > MAX_GROUPS)
 			{
-				format(string,sizeof(string),"%s%d) %s - (Invalid Family)\n",string,i,TurfWars[i][twName]);
+				format(string,sizeof(string),"%s%d) %s - (Invalid Group)\n",string,i,TurfWars[i][twName]);
 			}
 			else
 			{
-				format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],arrGroupData[i][g_szGroupName]);
+				format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],arrGroupData[TurfWars[i][twOwnerId]][g_szGroupName]);
 			}
 		}
 		else
@@ -394,16 +394,6 @@ stock TurfWarsEditTurfsSelection(playerid)
 		}
 	}
 	ShowPlayerDialog(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Selection Menu:",string,"Select","Back");
-}
-
-stock TurfWarsEditFColorsSelection(playerid)
-{
-	new string[1024];
-	for(new i = 1; i < MAX_FAMILY; i++)
-	{
-	    format(string,sizeof(string),"%s (ID: %d) %s - (%d)\n",string,i,arrGroupData[i][g_szGroupName],arrGroupData[i][g_hDutyColour]);
-	}
-	ShowPlayerDialog(playerid,TWEDITFCOLORSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Family Colors Selection:",string,"Select","Back");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -421,10 +411,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						TurfWarsEditTurfsSelection(playerid);
 					}
-					case 1:
+					/*case 1:
 					{
 						TurfWarsEditFColorsSelection(playerid);
-					}
+					}*/
 				}
 			}
 		}
@@ -440,10 +430,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 					}
 				}
-			}
-			else
-			{
-				ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
 			}
 		}
 		case TWEDITTURFSMENU:
@@ -506,7 +492,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a group ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
 					return 1;
 				}
-				SetOwnerTurfWarsZone(1, tw, strval(inputtext));
+				SetOwnerTurfWarsZone(1, tw, strval(inputtext)-1);
 				SaveTurfWar(tw);
 				ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 			}
@@ -579,50 +565,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 			}
 		}
-		/*case TWEDITFCOLORSSELECTION:
-		{
-			if(response == 1)
-			{
-				for(new i = 0; i < MAX_FAMILY-1; i++)
-				{
-					if(listitem == i)
-					{
-						SetPVarInt(playerid, "EditingFamC", i+1);
-						ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-					}
-				}
-			}
-			else
-			{
-				ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
-			}
-		}
-		case TWEDITFCOLORSMENU:
-		{
-			if(response == 1)
-			{
-				new fam = GetPVarInt(playerid, "EditingFamC");
-				if(isnull(inputtext))
-				{
-					ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-					return 1;
-				}
-				if(strval(inputtext) < 0 || strval(inputtext) > 14)
-				{
-					ShowPlayerDialog(playerid,TWEDITFCOLORSMENU,DIALOG_STYLE_INPUT,"Turf Wars - Edit Family Colors Menu:","Please enter a family color ID that wish to assign to the family:\n","Select","Back");
-					return 1;
-				}
-				FamilyInfo[fam][FamilyColor] = strval(inputtext);
-				SaveFamily(fam);
-				TurfWarsEditFColorsSelection(playerid);
-
-				SyncTurfWarsRadarToAll();
-			}
-			else
-			{
-				TurfWarsEditFColorsSelection(playerid);
-			}
-		}*/
 	}
 	return 1;
 }
@@ -763,7 +705,6 @@ CMD:twmenu(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pGangModerator] >= 1)
 	{
         ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...","Select","Exit");
-        //ShowPlayerDialog(playerid,TWADMINMENU,DIALOG_STYLE_LIST,"Turf Wars - Admin Menu:","Edit Turfs...\nEdit Family Colors...","Select","Exit");
     }
     else
 	{
@@ -805,7 +746,7 @@ CMD:shutdown(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_GRAD2, "The turf isn't in a active turf war, you have no reason to shutdown the turf!");
                 }
                 else {
-                    new count = 0;
+                    new count = 0; 
                     if(TurfWars[tw][twAttemptId] == -2) {
                         SendClientMessageEx(playerid, COLOR_GRAD2, "The LEO Factions are already attempting to shutdown the turf war!");
                         return 1;
@@ -855,7 +796,7 @@ CMD:claim(playerid, params[])
     new tw = GetPlayerTurfWarsZone(playerid);
     new family = PlayerInfo[playerid][pMember];
     new rank = PlayerInfo[playerid][pRank];
-    if(family == INVALID_FAMILY_ID || !IsACriminal(playerid)) {
+    if(family == INVALID_GROUP_ID || !IsACriminal(playerid)) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a family/gang, you can not claim turfs!");
         return 1;
     }

@@ -1763,11 +1763,11 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				}
 				if(GetPVarInt(playerid, "freeSkin") == 1)
 			    {
-					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to faction or family!");
+					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
 	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
 				} 
 				else {
-					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to faction or family!");
+					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
 	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
 				}
 			}
@@ -2190,8 +2190,6 @@ public OnPlayerConnect(playerid)
 	SetPVarInt(playerid, "EditingTurfs", -1);
 	SetPVarInt(playerid, "EditingTurfsStage", -1);
 	SetPVarInt(playerid, "EditingHillStage", -1);
-	SetPVarInt(playerid, "EditingFamC", -1);
-	SetPVarInt(playerid, "editingfamhq", INVALID_FAMILY_ID);
 	SetPVarInt(playerid, "UsingSurfAttachedObject", -1);
 	SetPVarInt(playerid, "UsingBriefAttachedObject", -1);
 	SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
@@ -2394,7 +2392,6 @@ public OnPlayerConnect(playerid)
 	HitOffer[playerid]= INVALID_PLAYER_ID;
 	HitToGet[playerid]= INVALID_PLAYER_ID;
 	InviteOffer[playerid]= INVALID_PLAYER_ID;
-	InviteFamily[playerid]=INVALID_FAMILY_ID;
 	hInviteHouse[playerid]=INVALID_HOUSE_ID;
 	hInviteOffer[playerid]= INVALID_PLAYER_ID;
 	hInviteOfferTo[playerid]= INVALID_PLAYER_ID;
@@ -2506,7 +2503,6 @@ public OnPlayerConnect(playerid)
 	PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 	PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
 	strcpy(PlayerInfo[playerid][pBadge], "None", 9);
-	PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 	PlayerInfo[playerid][pRank] = INVALID_RANK;
 	PlayerInfo[playerid][pOrder] = 0;
 	PlayerInfo[playerid][pOrderConfirmed] = 0;
@@ -2998,7 +2994,7 @@ public OnPlayerDisconnect(playerid, reason)
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
 				}
-				if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+				if(((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
 				{
 					new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
@@ -3035,13 +3031,6 @@ public OnPlayerDisconnect(playerid, reason)
 						format(string, sizeof string, "%s%s %s has lost connection.", badge, rank, GetPlayerNameEx(playerid));
 						GroupLog(PlayerInfo[playerid][pMember], string);
 					}
-					/*else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
-					{
-						format(string, sizeof(string), "** (%i) %s %s has lost connection **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
-						format(string, sizeof string, "%s %s has lost connection.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						FamilyLog(PlayerInfo[playerid][pFMember], string);
-					}*/
 				}
 			}
 			case 1:
@@ -3106,7 +3095,7 @@ public OnPlayerDisconnect(playerid, reason)
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
-				if((PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID || (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
+				if(((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) && (PlayerInfo[playerid][pAdmin] < 2 || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports])))
 				{
 					new badge[12], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[playerid][pBadge]);
@@ -3143,13 +3132,6 @@ public OnPlayerDisconnect(playerid, reason)
 						format(string, sizeof string, "%s%s has logged out.", badge, GetPlayerNameEx(playerid));
 						GroupLog(PlayerInfo[playerid][pMember], string);
 					}
-					/*else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID)
-					{
-						format(string, sizeof(string), "** (%i) %s %s has logged out **", PlayerInfo[playerid][pRank], FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						SendNewFamilyMessage(PlayerInfo[playerid][pFMember], FamilyInfo[PlayerInfo[playerid][pFMember]][FamColor] * 256 + 255, string);
-						format(string, sizeof string, "%s %s has logged out.", FamilyRankInfo[PlayerInfo[playerid][pFMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						FamilyLog(PlayerInfo[playerid][pFMember], string);
-					}*/
 				}
 			}
 			case 2:
@@ -4685,7 +4667,6 @@ public OnPlayerEnterCheckpoint(playerid)
 					if(strcmp(Points[h][Owner], arrGroupData[p][g_szGroupName], true) == 0)
 					{
 						arrGroupData[p][g_iBudget] += (payout/3);
-						//SendClientMessageEx(playerid, COLOR_WHITE, " Family owner recieved 50 percent of the cost.");
 					}
 				}
 				return 1;
@@ -5698,7 +5679,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}*/
-	else if(IsKeyJustDown(128, newkeys, oldkeys))
+	/*else if(IsKeyJustDown(128, newkeys, oldkeys))
 	{
 	    if(ConfigEventCPs[playerid][1] == 1 && ConfigEventCPs[playerid][0] == 1) {
         	SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled stage 1, you can't edit the checkpoint's position.");
@@ -5722,7 +5703,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			DeletePVar(playerid, "gt_Edit");
 			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing the position.");
 		}
-	}
+	}*/
 	else if (IsKeyJustDown(KEY_FIRE, newkeys, oldkeys))
  	{
  	    if(ConfigEventCPs[playerid][1] == 1 && ConfigEventCPs[playerid][0] == 1) {
@@ -5813,32 +5794,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    MoveEMS(playerid);
 			return 1;
  	    }
-		if(GetPVarInt(playerid, "editingfamhq") != INVALID_FAMILY_ID)
-		{
-		    if(GetPVarInt(playerid, "editingfamhqaction") == 1)
-		    {
-      			DeletePVar(playerid, "editingfamhqaction");
-		        TogglePlayerControllable(playerid, false);
-	        	ShowPlayerDialog(playerid,HQENTRANCE,DIALOG_STYLE_MSGBOX,"Warning:","Is this the entrance you want?","Ok","Cancel");
-		    }
-		    else if(GetPVarInt(playerid, "editingfamhqaction") == 2)
-		    {
-		        DeletePVar(playerid, "editingfamhqaction");
-		        TogglePlayerControllable(playerid, false);
-	        	ShowPlayerDialog(playerid,HQEXIT,DIALOG_STYLE_MSGBOX,"Warning:","Is this the exit you want?","Ok","Cancel");
-		    }
-		    else if(GetPVarInt(playerid, "editingfamhqaction") == 5)
-		    {
-		        TogglePlayerControllable(playerid, false);
-	        	ShowPlayerDialog(playerid,HQENTRANCE,DIALOG_STYLE_MSGBOX,"Warning:","Is this the entrance you want?","Ok","Cancel");
-		    }
-		    else if(GetPVarInt(playerid, "editingfamhqaction") == 6)
-		    {
-		        TogglePlayerControllable(playerid, false);
-	        	ShowPlayerDialog(playerid,HQEXIT,DIALOG_STYLE_MSGBOX,"Warning:","Is this the exit you want?","Ok","Cancel");
-		    }
-
-		}
 		if(GetPVarInt(playerid, "DraggingPlayer") != INVALID_PLAYER_ID)
 		{
 			new Float:dX, Float:dY, Float:dZ, string[128];
@@ -5862,7 +5817,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			SetPVarInt(playerid, "DraggingPlayer", INVALID_PLAYER_ID);
             SendClientMessage(playerid, COLOR_GRAD2, string);
 		}
-		if(GetPVarInt(playerid, "CreateGT") == 1)
+		/*if(GetPVarInt(playerid, "CreateGT") == 1)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action.");
 			new gangtag = GetFreeGangTag();
@@ -5917,7 +5872,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			DeletePVar(playerid, "gt_Spray");
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped spraying the wall.");
 			ClearAnimations(playerid);
-		}
+		}*/
 	}
 	else if((newkeys & KEY_SPRINT) && GetPlayerState(playerid) == 2)// Pressing the gas, detonates the bomb.
 	{
@@ -6448,12 +6403,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				arrGroupDivisions[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID]]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
-			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_ifID] != 0 && (PlayerInfo[playerid][pFMember] != DynVehicleInfo[DynVeh[vehicleid]][gv_ifID]))
-			{
-				RemovePlayerFromVehicle(playerid);
-				SetPlayerPos(playerid, slx, sly, slz+1.3);
-				defer NOPCheck(playerid);
-			}
 			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_irID] != 0 && (PlayerInfo[playerid][pRank] < DynVehicleInfo[DynVeh[vehicleid]][gv_irID]))
 			{
 				RemovePlayerFromVehicle(playerid);
@@ -6723,6 +6672,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 public OnPlayerText(playerid, text[])
 {
+	szMiscArray[0] = 0;
 	if(gPlayerLogged{playerid} != 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
@@ -7062,11 +7012,15 @@ public OnPlayerText(playerid, text[])
 		{
 			format(string, sizeof(string), "Live News Reporter %s: %s", GetPlayerNameEx(playerid), text);
 			OOCNews(COLOR_LIGHTGREEN, string);
+			format(szMiscArray, sizeof(szMiscArray), "[/LIVE] %s (%i): %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), text);
+			Log("logs/broadcast.log", szMiscArray);
 		}
 		else
 		{
 			format(string, sizeof(string), "Live Interview Guest %s: %s", GetPlayerNameEx(playerid), text);
 			OOCNews(COLOR_LIGHTGREEN, string);
+			format(szMiscArray, sizeof(szMiscArray), "[/LIVE] %s (%i): %s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), text);
+			Log("logs/broadcast.log", szMiscArray);
 		}
 		return 0;
 	}
@@ -7413,7 +7367,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	if(response == EDIT_RESPONSE_FINAL)
 	{
 		new string[128];
-		if(GetPVarInt(playerid, "gt_Edit") == 2)
+		/*if(GetPVarInt(playerid, "Edit") == 2)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gangtag = GetPVarInt(playerid, "gt_ID");
@@ -7431,7 +7385,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gt_ID");
 			DeletePVar(playerid, "gt_Edit");
 			SaveGangTag(gangtag);
-		}
+		}*/
 		if(GetPVarInt(playerid, "gEdit") == 1)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
@@ -7502,7 +7456,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			ClearCheckpoint(playerid);
 		}
 	}
-	if(response == EDIT_RESPONSE_CANCEL)
+	/*if(response == EDIT_RESPONSE_CANCEL)
 	{
 		if(GetPVarInt(playerid, "gt_Edit") == 2)
 		{
@@ -7529,6 +7483,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "editingsign");
 			ClearCheckpoint(playerid);
 		}
-	}
+	}*/
 	return 1;
 }

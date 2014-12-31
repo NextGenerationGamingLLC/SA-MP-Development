@@ -82,7 +82,6 @@ native gpci(playerid, serial[], maxlen);
 #define 		NEW_VULNERABLE 				(24)
 #define 		TIME_TO_CLAIM 				(1)
 #define 		TIME_TO_TAKEOVER 			(10)
-#define 		MAX_FAMILY 					(17)
 #define 		MAX_POINTS 					(8)
 #define 		MAX_DMAPICONS 				(400)
 #define 		MAX_DDOORS					(3000)
@@ -203,7 +202,6 @@ native gpci(playerid, serial[], maxlen);
 #define         MAX_AUCTIONS                10
 #define         MAX_PLANTS                  300
 #define         MAX_BUSINESSSALES           100
-#define 		INVALID_FAMILY_ID   		255
 #define 		INVALID_GROUP_ID 			-1
 #define 		INVALID_RANK     			255
 #define 		INVALID_DIVISION       		-1

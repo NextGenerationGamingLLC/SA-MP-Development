@@ -2457,7 +2457,7 @@ CMD:listbugs(playerid, params[])
 }
 
 CMD:online(playerid, params[]) {
-	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || IsACriminal(playerid))
 	{
 		if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, -1, "You are not a member of any group!");
 		new
@@ -2479,6 +2479,9 @@ CMD:online(playerid, params[]) {
 			else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
 				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
 				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
+			}
+			else if(IsACriminal(playerid)) {
+				format(szDialog, sizeof(szDialog), "%s\n* %s (%d)", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pRank]);
 			}
 		}	
 		if(!isnull(szDialog)) {
@@ -2574,68 +2577,6 @@ CMD:dvsiren(playerid, params[])
 	}
 	return 1;
 }
-
-/*CMD:testfundage(playerid, params[])
-{
-	new string[128];
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GRAD2, " You don't have access to this");
-	for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
-	{
-	    if(arrGroupData[iGroupID][g_iAllegiance] == 1)
-	    {
-	        if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
-	        {
-	            if(arrGroupData[iGroupID][g_iBudgetPayment] > 0)
-	            {
-	                if(Tax > arrGroupData[iGroupID][g_iBudgetPayment])
-	                {
-		                Tax -= arrGroupData[iGroupID][g_iBudgetPayment];
-		                arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
-	                	new str[128], file[32];
-		                format(str, sizeof(str), "Gov Paid $%d to %s budget fund.", arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_szGroupName]);
-		                new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
-		                Misc_Save();
-		                SaveGroup(iGroupID);
-					}
-					else
-					{
-						format(string, sizeof(string), "Warning: The Government Vault has insufficient funds to fund %s.", arrGroupData[iGroupID][g_szGroupName]);
-		    			SendGroupMessage(5, COLOR_RED, string);
-		    			SendFamilyMessage(iGroupID, COLOR_RED, string);
-					}
-	            }
-			    for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
-				{
-				    if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
-				    {
-					    if(DynVehicleInfo[iDvSlotID][gv_iModel] != 0 && (400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612))
-					    {
-					        if(arrGroupData[iGroupID][g_iBudget] >= DynVehicleInfo[iDvSlotID][gv_iUpkeep])
-					        {
-								arrGroupData[iGroupID][g_iBudget] -= DynVehicleInfo[iDvSlotID][gv_iUpkeep];
-								new str[128], file[32];
-				                format(str, sizeof(str), "Vehicle ID %d (Slot ID %d) Maintainence fee cost $%d to %s's budget fund.",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID, DynVehicleInfo[iDvSlotID][gv_iUpkeep], arrGroupData[iGroupID][g_szGroupName]);
-				                new month, day, year;
-								getdate(year,month,day);
-								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-								Log(file, str);
-							}
-							else
-							{
-							    DynVehicleInfo[iDvSlotID][gv_iDisabled] = 1;
-							}
-					    }
-					}
-				}
-				SaveGroup(iGroupID);
-	        }
-	    }
-	}
-	return 1;
-}*/
 
 CMD:viewbudget(playerid, params[])
 {
@@ -2813,8 +2754,7 @@ CMD:gdonate(playerid, params[])
 
 CMD:dvtrackcar(playerid, params[])
 {
-    new iGroupID = PlayerInfo[playerid][pMember],
-		iFamilyID = PlayerInfo[playerid][pFMember];
+    new iGroupID = PlayerInfo[playerid][pMember];
 
 	if((0 <= iGroupID <= MAX_GROUPS))
 	{
@@ -2830,25 +2770,6 @@ CMD:dvtrackcar(playerid, params[])
 				}
 				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 					format(vstring, sizeof(vstring), "%s\n(%d) %s (Upkeep: $%s) (VID: %d)", vstring, i, VehicleName[iModelID - 400], number_format(DynVehicleInfo[i][gv_iUpkeep]), DynVehicleInfo[i][gv_iSpawnedID]);
-				}
-			}
-		}
-		ShowPlayerDialog(playerid, DV_TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", vstring, "Track", "Cancel");
-	}
-	else if((1 <= iFamilyID <= MAX_FAMILY))
-	{
-        new vstring[2500];
-		for(new i; i < MAX_DYNAMIC_VEHICLES; i++) {
-			new iModelID = DynVehicleInfo[i][gv_iModel];
-			if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_ifID] == iFamilyID) {
-				if(DynVehicleInfo[i][gv_iDisabled] == 1) {
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (repo'd)", vstring, i, VehicleName[iModelID - 400]);
-				}
-				else if(DynVehicleInfo[i][gv_iDisabled] == 2) {
-					format(vstring, sizeof(vstring), "%s\n(%d)%s (stored)", vstring, i, VehicleName[iModelID - 400]);
-				}
-				else if(DynVehicleInfo[i][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
-					format(vstring, sizeof(vstring), "%s\n(%d) %s (VID: %d)", vstring, i, VehicleName[iModelID - 400], DynVehicleInfo[i][gv_iSpawnedID]);
 				}
 			}
 		}
@@ -2971,8 +2892,8 @@ CMD:gvbuyback(playerid, params[])
 CMD:adjustdvrank(playerid, params[])
 {
 	if(gettime() < GetPVarInt(playerid, "DvAdjust_Time")) return SendClientMessageEx(playerid, COLOR_GREY, " You need to wait 10 seconds before using this command again !");
-	if(PlayerInfo[playerid][pFMember] == INVALID_FAMILY_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a family!");
-	if(PlayerInfo[playerid][pRank] < 6) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a family leader!");
+	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a group!");
+	if(PlayerInfo[playerid][pRank] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have leadership!");
 	new vid, rank;
 	if(sscanf(params, "dd", vid, rank))
 	{
@@ -2983,9 +2904,9 @@ CMD:adjustdvrank(playerid, params[])
 	}	
 	new iDvSlotID = DynVeh[vid];
 	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!");
-	if(DynVehicleInfo[iDvSlotID][gv_ifID] != PlayerInfo[playerid][pFMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, " This Vehicle is not owned by your family!");
-	if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This Vehicle is owned by a faction!");
-	if(rank > 6 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 6");
+	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, " This Vehicle is not owned by your group!");
+	//if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This Vehicle is owned by a faction!");
+	if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 9");
 	new string[128];
 	SetPVarInt(playerid, "DvAdjust_Time", gettime()+10);
 	DynVehicleInfo[iDvSlotID][gv_irID] = rank;
@@ -3004,7 +2925,7 @@ CMD:dvpark(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!" );
 		}
-		if(PlayerInfo[playerid][pAdmin] >= 4 || (PlayerInfo[playerid][pLeader] == DynVehicleInfo[iDvSlotID][gv_igID]) && DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID || DynVehicleInfo[iDvSlotID][gv_ifID] != 0 && (PlayerInfo[playerid][pFMember] == DynVehicleInfo[iDvSlotID][gv_ifID] && PlayerInfo[playerid][pRank] >=6)) {
+		if(PlayerInfo[playerid][pAdmin] >= 4 || (PlayerInfo[playerid][pLeader] == DynVehicleInfo[iDvSlotID][gv_igID]) && DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) {
 			GetVehiclePos(vehicleid, DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ]);
 			GetVehicleZAngle(vehicleid, DynVehicleInfo[iDvSlotID][gv_fRotZ]);
 			DynVehicleInfo[iDvSlotID][gv_iVW] = GetPlayerVirtualWorld(playerid);
@@ -3071,7 +2992,7 @@ CMD:dvstatus(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREEN, string);
 			format(string, sizeof(string), "X: %f | Y: %f | Z: %f | Model: %d | Upkeep: $%d | Maxhealth: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | Disabled: %d | Family: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iDisabled], DynVehicleInfo[iDvSlotID][gv_ifID]);
+			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | VW: %d | Int: %d | LoadMax: %d", DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0],DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iLoadMax]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -3146,8 +3067,7 @@ CMD:freedvrespawn(playerid, params[]) return cmd_dvrespawn(playerid, "1");
 CMD:dvrespawn(playerid, params[])
 {
 	new szString[128],
-		iGroupID = PlayerInfo[playerid][pMember],
-	    iFamilyID = PlayerInfo[playerid][pFMember];
+		iGroupID = PlayerInfo[playerid][pMember];
 	    
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
@@ -3175,30 +3095,6 @@ CMD:dvrespawn(playerid, params[])
             format(szString, sizeof(szString), "%s has respawned group ID %d dynamic group vehicles.", GetPlayerNameEx(playerid), iGroupID+1);
    			Log("logs/group.log", szString);
 		}
-		else if((1 <= iFamilyID <= MAX_FAMILY))
-		{
-		    for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
-		    {
-		        new iModelID = DynVehicleInfo[i][gv_iModel];
-		        if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_ifID] == iFamilyID)
-		        {
-					if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
-					{
-						if(strval(params) == 1) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
-					}	
-		        }
-		    }
-			format(szString, sizeof(szString), "** Respawning all dynamic family vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
-		    foreach(new i: Player)
-			{
-				if(PlayerInfo[i][pFMember] == iFamilyID)
-				{
-					SendClientMessageEx(i, COLOR_LIGHTBLUE, szString);
-				}
-			}	
-		    format(szString, sizeof(szString), "%s has respawned family %d dynamic group vehicles.", GetPlayerNameEx(playerid), iFamilyID);
-      		Log("logs/family.log", szString);
-		}
 	}
 	return 1;
 }
@@ -3210,7 +3106,7 @@ CMD:dvedit(playerid, params[])
 		new vehicleid, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvedit [vehicleid] [v parameter] [value] [slot] (if applicable - indicated by *)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 family groupid divid loadmax maxhealth upkeep vtype vw delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank");
 			return 1;
@@ -3226,7 +3122,6 @@ CMD:dvedit(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1] = INVALID_OBJECT_ID;
 			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
 			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
-			DynVehicleInfo[iDvSlotID][gv_ifID] = INVALID_FAMILY_ID;
 			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
 			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
 			DynVeh_Save(iDvSlotID);
@@ -3292,21 +3187,6 @@ CMD:dvedit(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
 			DynVeh_Save(iDvSlotID);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "family", true) == 0)
-		{
-			if(value == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_ifID] = 0;
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the family id flag of the dynamic vehicle");
-				return 1;
-			}
-			if(!(0 <= value < MAX_FAMILY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
-			DynVehicleInfo[iDvSlotID][gv_ifID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the family id flag of the dynamic vehicle");
 			return 1;
 		}
 		if(strcmp(name, "divid", true) == 0)
@@ -3424,7 +3304,7 @@ CMD:dveditslot(playerid, params[])
 		new iDvSlotID, name[24], Float:value, slot, string[128];
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dveditslot [dv slot id] [v parameter] [value] [slot] (if applicable - indicated by *)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 family groupid divid loadmax maxhealth upkeep vtype vw delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank");
 			return 1;
@@ -3439,7 +3319,6 @@ CMD:dveditslot(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1] = INVALID_OBJECT_ID;
 			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
 			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
-			DynVehicleInfo[iDvSlotID][gv_ifID] = INVALID_FAMILY_ID;
 			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
 			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
 			DynVeh_Save(iDvSlotID);
@@ -3505,21 +3384,6 @@ CMD:dveditslot(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
 			DynVeh_Save(iDvSlotID);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "family", true) == 0)
-		{
-			if(value == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_ifID] = 0;
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the family id flag of the dynamic vehicle");
-				return 1;
-			}
-			if(!(0 <= value < MAX_FAMILY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
-			DynVehicleInfo[iDvSlotID][gv_ifID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the family id flag of the dynamic vehicle");
 			return 1;
 		}
 		if(strcmp(name, "divid", true) == 0)
@@ -4624,7 +4488,7 @@ CMD:hshowbadge(playerid, params[])
 
 CMD:showbadge(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_RACE))
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_RACE))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showbadge [player]");
@@ -5018,7 +4882,7 @@ CMD:g(playerid, params[])
 	{
 		format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
 		foreach(new i: Player) {
-	    	if (PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor], string);
+	    	if (PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
@@ -5156,44 +5020,6 @@ CMD:uninvite(playerid, params[]) {
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
-	else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pRank] >= 5)
-	{
-		new string[128], giveplayerid;
-		new family = PlayerInfo[playerid][pFMember];
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /uninvite [player]");
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pFMember] != PlayerInfo[playerid][pFMember])
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That player isn't in your family.");
-				return 1;
-			}
-			if(PlayerInfo[giveplayerid][pRank] > PlayerInfo[playerid][pRank])
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You can't uninvite higher ranks.");
-				return 1;
-			}
-			new file[32], month, day, year ;
-			getdate(year,month,day);
-			format(string, sizeof(string), "* You've kicked %s out of your family.",GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* Family leader %s has kicked you out of the family.",GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-			PlayerInfo[giveplayerid][pFMember] = INVALID_FAMILY_ID;
-			PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
-			FamilyInfo[family][FamilyMembers] --;
-			SaveFamilies();
-			format(string, sizeof(string), "%s uninvited %s from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), FamilyInfo[family][FamilyName]);
-			format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-			Log(file, string);
-			return 1;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-			return 1;
-		}
-	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
 }
@@ -5222,33 +5048,6 @@ CMD:ouninvite(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szQuery);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ouninvite [account name]");
-	}
-	else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pRank] >= 5)
-	{
-		if(isnull(params)) {
-		return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ouninvite [name]");
-		}
-
-		new query[512], tmpName[24];
-		mysql_escape_string(params, tmpName);
-		SetPVarString(playerid, "OnUninvite", tmpName);
-
-		format(query,sizeof(query),"UPDATE `accounts` SET `FMember` = 255, `Rank` = %d,`Model` = %d WHERE `Username`='%s' \
-			AND `GangModerator`=0 \
-			AND `AdminLevel` < 4 \
-			AND `FMember`=%d \
-			AND `Rank` < %d",
-			INVALID_RANK,
-			CIV[random(sizeof(CIV))],
-			tmpName,
-			PlayerInfo[playerid][pFMember],
-			PlayerInfo[playerid][pRank]
-		);
-		mysql_function_query(MainPipeline, query, false, "OnUninvite", "i", playerid);
-
-		new string[128];
-		format(string, sizeof(string), "Attempting to kick %s from the family...", tmpName);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
@@ -5301,60 +5100,6 @@ CMD:giverank(playerid, params[]) {
 			else SendClientMessageEx(playerid, COLOR_GRAD1, "That person is not in your group.");
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	}
-	else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pRank] >= 5) {
-		new string[128], giveplayerid, rank;
-		new family = PlayerInfo[playerid][pFMember];
-		if(sscanf(params, "ud", giveplayerid, rank)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giverank [player] [Rank (1-6)]");
-
-		if(PlayerInfo[playerid][pRank] == 6)
-		{
-			if(rank > 6 || rank < 0) { SendClientMessageEx(playerid, COLOR_GREY, "   Don't go below number 0, or above number 6!"); return 1; }
-		}
-		else if(PlayerInfo[playerid][pRank] == 5)
-		{
-			if(rank > 5 || rank < 0) { SendClientMessageEx(playerid, COLOR_GREY, "   Don't go below number 0, or above number 5!"); return 1; }
-		}
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-		    if(PlayerInfo[giveplayerid][pRank] > PlayerInfo[playerid][pRank])
-		    {
-		        SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot perform this command on a higher rank than you!");
-		        return 1;
-		    }
-			if(PlayerInfo[playerid][pFMember] != PlayerInfo[giveplayerid][pFMember])
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "   That person is not in your family!");
-				return 1;
-			}
-
-			if(rank > PlayerInfo[giveplayerid][pRank])
-			{
-				format(string, sizeof(string), "   You have been promoted to a higher rank by %s.", GetPlayerNameEx(playerid));
-			}
-			if(rank < PlayerInfo[giveplayerid][pRank])
-			{
-				format(string, sizeof(string), "   You have been demoted to a lower rank by %s.", GetPlayerNameEx(playerid));
-			}
-			new file[32], month, day, year;
-			getdate(year,month,day);
-			format(string, sizeof(string), "* You've given %s rank %d.",GetPlayerNameEx(giveplayerid),rank);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* Family leader %s has given you rank %d.",GetPlayerNameEx(playerid),rank);
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-			new temprank = PlayerInfo[giveplayerid][pRank];
-			PlayerInfo[giveplayerid][pRank] = rank;
-			format(string, sizeof(string), "%s set %s rank from %d to %d in %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), temprank, rank, FamilyInfo[family][FamilyName]);
-			format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-			Log(file, string);
-			return 1;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-			return 1;
-		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
@@ -5496,50 +5241,6 @@ CMD:setdiv(playerid, params[]) {
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
-	else if(PlayerInfo[playerid][pFMember] != 0 && PlayerInfo[playerid][pRank] >= 5) //Gotta do it like this since we dont have  Gang Leader system
-	{
-	    new
-			iFamily = PlayerInfo[playerid][pFMember],
-			iDiv,
-			targetid,
-			szMessage[128];
-
-	    if(sscanf(params, "ui", targetid, iDiv))
-	    {
-	        SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setdiv [player] [division]");
-	    } else {
-	        if(IsPlayerConnected(targetid))
-	        {
-	            if(PlayerInfo[targetid][pFMember] == PlayerInfo[playerid][pFMember])
-	            {
-	                if(PlayerInfo[targetid][pRank] <= PlayerInfo[playerid][pRank])
-	                {
-	                    if(iDiv != PlayerInfo[targetid][pDivision])
-	                    {
-                            if(0 <= iDiv <= 5)
-							{
-								new file[32], month, day, year ;
-								getdate(year,month,day);
-       							format(szMessage, sizeof(szMessage), "You have been moved to division %s by %s.", FamilyDivisionInfo[iFamily][iDiv], GetPlayerNameEx(playerid));
-              					SendClientMessageEx(targetid, COLOR_LIGHTBLUE, szMessage);
-                   				format(szMessage, sizeof(szMessage), "You moved %s to division %s.", GetPlayerNameEx(targetid), FamilyDivisionInfo[iFamily][iDiv]);
-                       			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                       			format(szMessage, sizeof(szMessage), "%s has moved %s to division %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid), FamilyDivisionInfo[iFamily][iDiv]);
-								format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", iFamily, year, month, day);
-								Log(file, szMessage);
-								PlayerInfo[targetid][pDivision] = iDiv;
-							}
-					  		else return SendClientMessageEx(playerid, COLOR_GREY, "Invalid division ID, Please choose one between 0-4");
-  						}
-						else return SendClientMessageEx(playerid, COLOR_GREY, "This player is already in that division!");
-					}
-					else return SendClientMessageEx(playerid, COLOR_GREY, "This player is a higher rank than you!");
-				}
-				else return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in your family/gang!");
-			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	    }
-	}
 	else
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
 	return 1;
@@ -5601,7 +5302,7 @@ CMD:invite(playerid, params[]) {
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 		    if (iTargetID != playerid) {
-				if(!(0 <= PlayerInfo[iTargetID][pLeader] < MAX_GROUPS) && !(0 <= PlayerInfo[iTargetID][pMember] < MAX_GROUPS) && PlayerInfo[iTargetID][pFMember] == INVALID_FAMILY_ID) {
+				if(!(0 <= PlayerInfo[iTargetID][pLeader] < MAX_GROUPS) && !(0 <= PlayerInfo[iTargetID][pMember] < MAX_GROUPS)) {
 
 					new
 						szQuery[128],
@@ -5618,49 +5319,6 @@ CMD:invite(playerid, params[]) {
 			else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself.");
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	}
-	else if(PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pRank] >= 5)
-	{
-		new
-			string[128],
-			iTargetID,
-			family = PlayerInfo[playerid][pFMember];
-
-		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /invite [player]");
-		}
-		else if(IsPlayerConnected(iTargetID))
-		{
-			if (!(0 <= PlayerInfo[iTargetID][pLeader] < MAX_GROUPS) && !(0 <= PlayerInfo[iTargetID][pMember] < MAX_GROUPS) && PlayerInfo[iTargetID][pFMember] == INVALID_FAMILY_ID)
-			{
-				if(PlayerInfo[iTargetID][pGangWarn] >= 3)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "That player can not be invited. They are banned from being in a gang.");
-					return 1;
-				}
-				new file[32], month, day, year;
-				getdate(year,month,day);
-				format(string, sizeof(string), "* You've invited %s to join '%s'.",GetPlayerNameEx(iTargetID), FamilyInfo[family][FamilyName]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* %s has invited you to join '%s'. (type /accept family)",GetPlayerNameEx(playerid), FamilyInfo[family][FamilyName]);
-				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
-				InviteOffer[iTargetID] = playerid;
-				InviteFamily[iTargetID] = family;
-				format(string, sizeof(string), "%s invited %s to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), FamilyInfo[family][FamilyName]);
-				format(file, sizeof(file), "family_logs/%d/%d-%02d-%02d.log", family, year, month, day);
-				Log(file, string);
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That player is already in a family/faction.");
-			}
-			return 1;
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-			return 1;
-		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
@@ -5755,14 +5413,31 @@ CMD:orgs(playerid, params[])
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "%s\n** %s | Members Online: %i", szMiscArray, arrGroupData[i][g_szGroupName]);
+			format(szMiscArray, sizeof(szMiscArray), "** %s | Members Online: %i", arrGroupData[i][g_szGroupName]);
+			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	return 1;
 }
 
 CMD:f(playerid, params[])
 {
 	return cmd_g(playerid, params);
+}
+
+CMD:clothes(playerid, params[])
+{
+	new biz = InBusiness(playerid);
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a Family/Gang!");
+	if (biz != INVALID_BUSINESS_ID && Businesses[biz][bType] == BUSINESS_TYPE_CLOTHING)
+	{
+		new fSkin[MAX_GROUP_RANKS];
+		for(new i = 0; i < MAX_GROUP_RANKS; i++)
+		{
+			fSkin[i] = arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes][i];
+		}
+		ShowModelSelectionMenuEx(playerid, fSkin, 8, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
+	return true;
 }

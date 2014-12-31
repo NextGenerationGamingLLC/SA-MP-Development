@@ -367,19 +367,24 @@ stock GetStaffRank(playerid)
 	}
 	return string;
 }
+
 CMD:resetvw(playerid, params[])
 {
+	szMiscArray[0] = 0;
 	new resetPlayer;
 	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	if(sscanf(params, "u", resetPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetvw [player]");
 	SetPlayerVirtualWorld(resetPlayer, 0);
+
 	PlayerInfo[resetPlayer][pVW] =  0;
 	SetPlayerInterior(resetPlayer, 0);
-	new string[80];
-	format(string,sizeof(string), "You have reset %s's virtual world.", GetPlayerNameEx(resetPlayer));
+	format(szMiscArray,sizeof(szMiscArray), "You have reset %s's virtual world.", GetPlayerNameEx(resetPlayer));
+	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+	SetPlayerInterior(resetPlayer, 0);
 	SendClientMessageEx(resetPlayer, COLOR_WHITE, "Your virtual world has been reset by an admin!");
 	return 1;
 }
+
 CMD:hhc(playerid, params[]) {
 	return cmd_hhcheck(playerid, params);
 }
@@ -723,7 +728,6 @@ CMD:savecfgs(playerid, params[])
     }
     SendClientMessageEx(playerid, COLOR_WHITE, "* Saving CFG Files..");
     SaveTurfWars();
-    SaveFamilies();
     SendClientMessageEx(playerid, COLOR_WHITE, "* Done");
     return 1;
 }
@@ -3562,7 +3566,7 @@ CMD:sendto(playerid, params[])
 CMD:bigears(playerid, params[])
 {
     if( PlayerInfo[playerid][pAdmin] >= 2) {
-        ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+        ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nGroup OOC Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
     }
     return 1;
 }
@@ -6244,7 +6248,7 @@ CMD:setstat(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setstat [player] [statcode] [amount]");
 			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 FMember |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
@@ -6324,8 +6328,7 @@ CMD:setstat(playerid, params[])
 				}
 			case 11:
 				{
-					PlayerInfo[giveplayerid][pFMember] = amount;
-					format(string, sizeof(string), "   %s's(%d) Family Membership has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_WHITE, "Family system has been merged to group system!");
 				}
 			case 12:
 				{
@@ -6609,7 +6612,7 @@ CMD:setmystat(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
 			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 FMember |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
@@ -6687,8 +6690,7 @@ CMD:setmystat(playerid, params[])
 			}
 		case 11:
 			{
-				PlayerInfo[playerid][pFMember] = amount;
-				format(string, sizeof(string), "   %s's Family Membership has been set to %d.", GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Family system has been merged to group system!");
 			}
 		case 12:
 			{
@@ -9014,16 +9016,6 @@ CMD:aimpound(playerid, params[]) {
 				break;
 			}
 		}
-		/*if(!iVehType) {
-			for(new i=1; i < MAX_FAMILY; ++i) {
-				iVehIndex = GetGangVehicle(i, iVehTowed);
-				if(iVehIndex != -1) {
-					iVehType = 2;
-					iTargetOwner = i;
-					break;
-				}
-			}
-		} */
 		switch(iVehType) {
 			case 0, 2: {
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot impound this vehicle, it has been respawned instead.");
@@ -9051,21 +9043,6 @@ CMD:aimpound(playerid, params[]) {
 				SendClientMessageEx(iTargetOwner, COLOR_LIGHTBLUE, szMessage);
 
 			}
-			/*case 2: {
-
-				new
-					szMessage[29 + MAX_PLAYER_NAME];
-
-				format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.",FamilyInfo[iTargetOwner][FamilyName], GetVehicleNameEx(iVehTowed));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-
-				format(szMessage, sizeof(szMessage), "Your %s has been impounded. You may release it at the DMV in Dillimore.", GetVehicleNameEx(iVehTowed));
-				SendNewFamilyMessage(iTargetOwner, COLOR_LIGHTBLUE, szMessage);
-
-				FamilyVehicleInfo[iTargetOwner][iVehIndex][fvImpounded] = 1;
-				FamilyVehicleInfo[iTargetOwner][iVehIndex][fvId] = INVALID_VEHICLE_ID;
-				DestroyVehicle(iVehTowed);
-			}*/
 		}
 		arr_Towing[playerid] = INVALID_VEHICLE_ID;
 	}

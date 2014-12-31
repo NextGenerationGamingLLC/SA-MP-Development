@@ -1248,7 +1248,6 @@ public DynVeh_CreateDVQuery(playerid, model, col1, col2)
 	DynVehicleInfo[sqlid][gv_fY] = Y;
 	DynVehicleInfo[sqlid][gv_fZ] = Z;
 	DynVehicleInfo[sqlid][gv_igID] = INVALID_GROUP_ID;
-	DynVehicleInfo[sqlid][gv_ifID] = 0;
 	format(szResult, sizeof(szResult), "%s's DV Creation query has returned - attempting to spawn vehicle - SQL ID %d", GetPlayerNameEx(playerid), sqlid);
 	Log("logs/dv.log", szResult);
 	DynVeh_Save(sqlid);
@@ -8104,7 +8103,6 @@ public SyncTime()
 			}
 		}
 		Misc_Save();
-		FMemberCounter(); // Family member counter (requested by game affairs to track gang activity)
 
 		for(new i = 0; i < MAX_TURFS; i++)
 		{
@@ -8116,7 +8114,7 @@ public SyncTime()
 			    	if(TurfWars[i][twOwnerId] != -1)
 			    	{
 			        	format(string,sizeof(string),"%s that you currently own is vulnerable for capture!",TurfWars[i][twName]);
-			        	SendNewFamilyMessage(i, COLOR_YELLOW, string);
+			        	foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_YELLOW, string);
 			    	}
 				}
 			}
@@ -8131,11 +8129,11 @@ public SyncTime()
 		        {
 					case 12:
 					{
-		        		SendNewFamilyMessage(i, COLOR_WHITE, "Your family/gang now has 1 Turf Token, you may /claim to use it.");
+		        		foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 1 Turf Token, you may now /claim to use it.");
 					}
 					case 24:
 					{
-					    SendNewFamilyMessage(i, COLOR_WHITE, "Your family/gang now has 2 Turf Tokens, you may /claim to use them.");
+					    foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 2 Turf Tokens, you may now /claim to use them.");
 					}
 		        }
 		    }
@@ -8530,23 +8528,6 @@ stock SendJobMessage(job, color, string[])
 			SendClientMessageEx(i, color, string);
 		}	
 	}
-}
-
-stock SendNewFamilyMessage(family, color, string[])
-{
-	foreach(new i: Player)
-	{
-		if(PlayerInfo[i][pFMember] == family) {
-			if(!gFam[i]) {
-				SendClientMessageEx(i, color, string);
-			}
-		}
-		if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEarFamily") == family && GetPVarInt(i, "BigEar") == 5) {
-			new szAntiprivacy[128];
-			format(szAntiprivacy, sizeof(szAntiprivacy), "(BE) %s", string);
-			SendClientMessageEx(i, color, szAntiprivacy);
-		}
-	}	
 }
 
 stock SendTaxiMessage(color, string[])
@@ -9440,12 +9421,6 @@ stock ShowStats(playerid,targetid)
 			GetPlayerGroupInfo(targetid, rank, division, employer);
 			format(org, sizeof(org), "Faction: %s (%d)\nRank: %s (%d)\nBadge Number: %s\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], PlayerInfo[targetid][pBadge], division, PlayerInfo[targetid][pDivision]);
 		}
-		else if(PlayerInfo[targetid][pFMember] < INVALID_FAMILY_ID)
-		{
-			if(0 <= PlayerInfo[targetid][pDivision] < 5) format(division, sizeof(division), "%s", FamilyDivisionInfo[PlayerInfo[targetid][pFMember]][PlayerInfo[targetid][pDivision]]);
-			else division = "None";
-			format(org, sizeof(org), "Family: %s (%d)\nRank: %s (%d)\nDivision: %s (%d)\n", FamilyInfo[PlayerInfo[targetid][pFMember]][FamilyName], PlayerInfo[targetid][pFMember], FamilyRankInfo[PlayerInfo[targetid][pFMember]][PlayerInfo[targetid][pRank]], PlayerInfo[targetid][pRank], division, PlayerInfo[targetid][pDivision]);
-		}
 		else format(org, sizeof(org), "");
 		if(PlayerInfo[targetid][pBusiness] != INVALID_BUSINESS_ID) format(biz, sizeof(biz), "Business: %s (%d)\nRank: %s (%d)\n", Businesses[PlayerInfo[targetid][pBusiness]][bName], PlayerInfo[targetid][pBusiness], GetBusinessRankName(PlayerInfo[targetid][pBusinessRank]), PlayerInfo[targetid][pBusinessRank]);
 		else format(biz, sizeof(biz), "");
@@ -9995,47 +9970,6 @@ stock CheckServerAd(szInput[]) {
 	}
 
 	return 0;
-}
-
-stock FMemberCounter()
-{
-
-	new
-		arrCounts[sizeof(FamilyInfo)],
-		szFileStr[128],
-		arrTimeStamp[2][3],
-		File: iFileHandle;
-	if(!fexist("logs/fmembercount.log")) {
-		iFileHandle = fopen("logs/fmembercount.log", io_write);
-	}
-	else {
-		iFileHandle = fopen("logs/fmembercount.log", io_append);
-	}
-	if(iFileHandle)
-	{
-		gettime(arrTimeStamp[0][0], arrTimeStamp[0][1], arrTimeStamp[0][2]);
-		getdate(arrTimeStamp[1][0], arrTimeStamp[1][1], arrTimeStamp[1][2]);
-		foreach(new i: Player)
-		{
-			if(PlayerInfo[i][pAdmin] < 2 && playerTabbed[i] == 0 && PlayerInfo[i][pFMember] != 255) ++arrCounts[PlayerInfo[i][pFMember]];
-		}
-		format(szFileStr, sizeof(szFileStr), "----------------------------------------\r\nDate: %d/%d/%d - Time: %d:%d\r\n", arrTimeStamp[1][1], arrTimeStamp[1][2], arrTimeStamp[1][0], arrTimeStamp[0][0], arrTimeStamp[0][1]);
-		fwrite(iFileHandle, szFileStr);
-
-		for(new iFam; iFam < sizeof(FamilyInfo); ++iFam) format(szFileStr, sizeof(szFileStr), "(%i) %s: %i\r\n", iFam+1, FamilyInfo[iFam][FamilyName], arrCounts[iFam]), fwrite(iFileHandle, szFileStr);
-		return fclose(iFileHandle);
-
-	}
-	return 0;
-}
-
-stock SaveFamilies()
-{
-	for(new i = 1; i < MAX_FAMILY; i++)
-	{
-		SaveFamily(i);
-	}
-	return 1;
 }
 
 stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
@@ -10659,69 +10593,6 @@ stock MoveAutomaticGate(playerid, gateid)
 		case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
 		case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
 		default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-	}
-	return 1;
-}
-
-forward AutomaticGateTimer(playerid, gateid);
-public AutomaticGateTimer(playerid, gateid)
-{
-	if(GateInfo[gateid][gLocked] == 0)
-	{
-		if(GateInfo[gateid][gStatus] == 0 && IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]))
-		{
-			if(GateInfo[gateid][gFamilyID] != -1 && PlayerInfo[playerid][pFMember] == GateInfo[gateid][gFamilyID]) MoveAutomaticGate(playerid, gateid);
-			else if(GateInfo[gateid][gGroupID] != -1 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pMember] == GateInfo[gateid][gGroupID]) MoveAutomaticGate(playerid, gateid);
-			else if(GateInfo[gateid][gAllegiance] != 0 && GateInfo[gateid][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[gateid][gAllegiance] && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[gateid][gGroupType]) MoveAutomaticGate(playerid, gateid);
-			else if(GateInfo[gateid][gAllegiance] != 0 && GateInfo[gateid][gGroupType] == 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[gateid][gAllegiance]) MoveAutomaticGate(playerid, gateid);
-			else if(GateInfo[gateid][gAllegiance] == 0 && GateInfo[gateid][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[gateid][gGroupType]) MoveAutomaticGate(playerid, gateid);
-			else MoveAutomaticGate(playerid, gateid);
-		}
-		SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-	}
-	else
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
-	}
-	return 1;
-}
-
-forward AutomaticGateTimerClose(playerid, gateid);
-public AutomaticGateTimerClose(playerid, gateid)
-{
-	if(GateInfo[gateid][gLocked] == 0)
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
-		switch(GateInfo[gateid][gTimer])
-		{
-			case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-			case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
-			case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
-			case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
-			default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-		}
-	}
-	else
-	{
-		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
-		{
-			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
-			GateInfo[gateid][gStatus] = 0;
-			return 1;
-		}
 	}
 	return 1;
 }

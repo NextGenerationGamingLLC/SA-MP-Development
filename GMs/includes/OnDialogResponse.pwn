@@ -253,12 +253,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DeletePVar(playerid, "ConfirmReport");
 		}
 
-		case BIGEARS3: if(response) {
-			SetPVarInt(playerid, "BigEar", 5);
-			SetPVarInt(playerid, "BigEarFamily", listitem+1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You will now hear all messages from this family's chat.");
+		case BIGEARS3: 
+		{
+			if(response) {
+				new group = ListItemTrackId[playerid][listitem];
+				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4)
+				{
+					SendClientMessage(playerid, COLOR_WHITE, "Only Senior Admins+ are allowed to use this feature.");
+					return 1;
+				}
+				SetPVarInt(playerid, "BigEar", 5);
+				SetPVarInt(playerid, "BigEarOOCGroup", group);
+			}
+			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nGroup OOC Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}
-		else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		case BIGEARS: if(response) switch(listitem) {
 			case 0: {
 				SetPVarInt(playerid, "BigEar", 1);
@@ -276,12 +284,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Group_ListGroups(playerid, BIGEARS2);
 			}
 			case 4: {
-				new bigstring[512];
-				for(new i = 0; i < sizeof(FamilyInfo); i++)
-				{
-					format(bigstring, sizeof(bigstring), "%s%s\n",bigstring,FamilyInfo[i][FamilyName]);
-				}
-				ShowPlayerDialog(playerid, BIGEARS3, DIALOG_STYLE_LIST, "{3399FF}Please choose an item to proceed", bigstring, "Select", "Back");
+				Group_ListGroups(playerid, BIGEARS3);
 			}
 			case 5: {
 				ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
@@ -293,7 +296,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				DeletePVar(playerid, "BigEar");
 				DeletePVar(playerid, "BigEarGroup");
 				DeletePVar(playerid, "BigEarPlayer");
-				DeletePVar(playerid, "BigEarFamily");
+				DeletePVar(playerid, "BigEarOOCGroup");
 				DeletePVar(playerid, "BigEarPM");
 				DeletePVar(playerid, "BigEarPlayerPM");
 				rBigEarT[playerid] = 0;
@@ -311,7 +314,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "BigEarPlayer", giveplayerid);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You can now see all the messages from this player.");
 			}
-			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nGroup OOC Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}
 		case BIGEARS5: {
 			if(response) {
@@ -325,7 +328,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(szString, sizeof(szString), "You will now receive all private messages from %s", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_WHITE, szString);
 			}
-			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nGroup OOC Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}	
 		case BIGEARS2: {
 			if(response) {
@@ -338,7 +341,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "BigEar", 4);
 				SetPVarInt(playerid, "BigEarGroup", group);
 			}
-			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+			else ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nFaction Chat\nGroup OOC Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
 		}
 		case DIALOG_DELETECAR:
 		{
@@ -4279,7 +4282,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[playerid][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
-				SendClientMesasgeEx(playerid, COLOR_WHITE, "Your vehicle has been released, type /vstorage to spawn it.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicle has been released, type /vstorage to spawn it.");
 				Vehicle_ResetData(PlayerVehicleInfo[playerid][listitem][pvId]);
 				g_mysql_SaveVehicle(playerid, listitem);
 			}
@@ -4513,7 +4516,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 1) //Skins
 			{
-				ShowPlayerDialog(playerid, SKINSFAQ, DIALOG_STYLE_MSGBOX, "Skins & Toys", "Information:\n\nSkins and toys can be bought at a clothes store, such as Binco, by typing /buyclothes and /buytoys.\nIf you are in a family or faction, you can type /clothes to change your skin for free.\nTo change your skin, you must know the SkinID. If you don't know it, then just search for it on Google.", "Thanks", "Cancel");
+				ShowPlayerDialog(playerid, SKINSFAQ, DIALOG_STYLE_MSGBOX, "Skins & Toys", "Information:\n\nSkins and toys can be bought at a clothes store, such as Binco, by typing /buyclothes and /buytoys.\nIf you are in a group, you can type /clothes to change your skin for free.\nTo change your skin, you must know the SkinID. If you don't know it, then just search for it on Google.", "Thanks", "Cancel");
 			}
 			else if(listitem == 2) //ATMs
 			{
@@ -8317,7 +8320,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 		PlayerInfo[playerid][pMember] = iGroupID;
 		PlayerInfo[playerid][pRank] = Group_GetMaxRank(iGroupID);
-		PlayerInfo[playerid][pFMember] = INVALID_FAMILY_ID;
 		PlayerInfo[playerid][pLeader] = -1;
 	}
 
@@ -8335,7 +8337,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerInfo[iTargetID][pMember] = iGroupID;
 			PlayerInfo[iTargetID][pRank] = Group_GetMaxRank(iGroupID);
 			PlayerInfo[iTargetID][pDivision] = -1;
-			PlayerInfo[iTargetID][pFMember] = INVALID_FAMILY_ID;
 			format(string, sizeof(string), "You have been made the leader of the %s by Administrator %s.", arrGroupData[iGroupID][g_szGroupName], GetPlayerNameEx(playerid));
 			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have made %s the leader of the %s.", GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName]);

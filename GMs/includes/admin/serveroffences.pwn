@@ -322,21 +322,6 @@ CMD:nonrp(playerid, params[])
 				pTazer{giveplayerid} = 0;
 			}
 
-			if(PlayerInfo[giveplayerid][pFMember] != INVALID_FAMILY_ID) {
-				PlayerInfo[giveplayerid][pGangWarn] += 1;
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been issued a gang warning as a result of your prison.");
-				if(PlayerInfo[giveplayerid][pGangWarn] >= 3) {
-					format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
-					Log("logs/admin.log", string);
-					format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_LIGHTRED, string, 2);
-					format(string, sizeof(string), "You have been banned from gangs by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(playerid));
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					PlayerInfo[giveplayerid][pFMember] = INVALID_FAMILY_ID;
-					PlayerInfo[giveplayerid][pRank] = 0;
-					PlayerInfo[giveplayerid][pGangWarn] = 3;
-				}
-			}
 			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
@@ -379,22 +364,6 @@ CMD:snonrp(playerid, params[])
 				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
-			}
-			
-			if(PlayerInfo[giveplayerid][pFMember] != INVALID_FAMILY_ID) {
-				PlayerInfo[giveplayerid][pGangWarn] += 1;
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have been issued a gang warning as a result of your prison.");
-				if(PlayerInfo[giveplayerid][pGangWarn] >= 3) {
-					format(string, sizeof(string), "AdmCmd: %s(%d) was banned from gangs (/nonrp) by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid));
-					Log("logs/admin.log", string);
-					format(string, sizeof(string), "AdmCmd: %s was banned from gangs by %s (had 3 Gang Warnings), reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_LIGHTRED, string, 2);
-					format(string, sizeof(string), "You have been banned from gangs by an Admin (had 3 Gang Warnings), reason: Non-RP Behaviour");
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, string);
-					PlayerInfo[giveplayerid][pFMember] = INVALID_FAMILY_ID;
-					PlayerInfo[giveplayerid][pRank] = 0;
-					PlayerInfo[giveplayerid][pGangWarn] = 3;
-				}
 			}
 			
 			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {

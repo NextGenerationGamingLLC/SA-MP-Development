@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.187"
+#define SERVER_GM_TEXT "NG:RP v3.0.188"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -187,7 +187,6 @@
 //dynamic group system includes
 #include "./includes/group/citizenship.pwn"
 #include "./includes/group/contract.pwn"
-#include "./includes/group/criminal.pwn"
 #include "./includes/group/fires.pwn"
 #include "./includes/group/gov.pwn"
 #include "./includes/group/groupcore.pwn"
@@ -200,10 +199,10 @@
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
 #include "./includes/group/turfs.pwn"
- #include "./includes/group/points.pwn"
+#include "./includes/group/points.pwn"
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
-#include "./includes/group/spraytags.pwn"
+//#include "./includes/group/spraytags.pwn"
 
 //job system includes
 #include "./includes/jobs/armsdealer.pwn"

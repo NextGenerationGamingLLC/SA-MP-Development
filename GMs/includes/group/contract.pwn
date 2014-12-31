@@ -416,13 +416,7 @@ CMD:profile(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
-		    new f2text[42], str2[64];
-
-			if(PlayerInfo[giveplayerid][pFMember] < INVALID_FAMILY_ID)
-			{
-				format(f2text, sizeof(f2text), "%s", FamilyInfo[PlayerInfo[giveplayerid][pFMember]][FamilyName]);
-			} else f2text = "None";
-
+		    new str2[64];
 			if(0 <= PlayerInfo[giveplayerid][pMember] < MAX_GROUPS)
 			{
 				format(str2, sizeof(str2), "%s", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName]);
@@ -436,9 +430,8 @@ CMD:profile(playerid, params[])
 			{FF6347}Date of Birth: {BFC0C2}%s\n\
 			{FF6347}Phone Number: {BFC0C2}%d\n\n\
 			{FF6347}Organization: {BFC0C2}%s\n\
-			{FF6347}Family: {BFC0C2}%s\n\
 			{FF6347}Bounty: {BFC0C2}$%d\n\
-			{FF6347}Bounty Reason: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, f2text, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
+			{FF6347}Bounty Reason: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
 			ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Target Profile", string, "OK", "");
 		}
 	}
