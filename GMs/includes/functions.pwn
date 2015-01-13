@@ -943,7 +943,7 @@ IsValidName(iPlayer) {
 	iLength = strlen(szPlayerName);
 
 	if(strfind(szPlayerName, "_", false) == -1 || szPlayerName[iLength - 1] == '_' || szPlayerName[0] == '_') return 0;
-	else if(szPlayerName[0] == '.' || szPlayerName[0] == '_') return 0;
+	else if(szPlayerName[0] == '.' || szPlayerName[0] == '_' || strfind(szPlayerName, "_says", true) != -1 || strfind(szPlayerName, "_shouts", true) != -1 || strfind(szPlayerName, "_quietly", true) != -1) return 0;
 	else for(new i; i < iLength; ++i) {
 		if(!('a' <= szPlayerName[i] <= 'z' || 'A' <= szPlayerName[i] <= 'Z' 
 			|| szPlayerName[i] == '_') && szPlayerName[i] != '.') return 0;
