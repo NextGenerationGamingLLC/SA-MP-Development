@@ -1770,7 +1770,7 @@ CMD:dropgun(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "You do not have that weapon!");
 		}
 	}
-	else if(strcmp(params, "uzi", true) == 0)
+	else if(strcmp(params, "tec9", true) == 0)
 	{
 		if(PlayerInfo[playerid][pGuns][ 4 ] == 32)
 		{

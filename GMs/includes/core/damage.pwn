@@ -252,7 +252,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	else // Player has armour
 	{
 		difference = armour - actual_damage;
-		if(difference < 0.1) 
+		if(difference < 0.1)
 		{
 			SetArmour(damagedid, 0.0);
 			health += difference;
@@ -283,7 +283,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	/*format(szMiscArray, sizeof(szMiscArray), "Playerid: %i Issuerid: %i, Amount: %f WeaponID: %i", playerid, issuerid, amount, weaponid);
 	SendClientMessageToAll(-1, szMiscArray);*/
 	if(issuerid == INVALID_PLAYER_ID && (weaponid == 51 || weaponid == 53 || weaponid == 54 || weaponid == 47 || weaponid == 37)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
-	else 
+	else
 	{
 		switch(weaponid)
 		{

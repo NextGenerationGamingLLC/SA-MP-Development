@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -411,6 +411,11 @@ CMD:dc(playerid, params[])
 {
 	if(GetPVarInt(playerid, "cameraactive") == 1)
 	{
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, GetPVarFloat(playerid, "cameraX"), GetPVarFloat(playerid, "cameraY"), GetPVarFloat(playerid, "cameraZ"))) {
+			SendClientMessageEx(playerid, COLOR_WHITE, "You are not near your camera.");
+			return 1;
+		}
+
 		if(GetPVarInt(playerid, "camerasc") == 1)
 		{
 			SetCameraBehindPlayer(playerid);
@@ -441,11 +446,13 @@ CMD:rccam(playerid, params[])
 		new string[128];
 		if(GetPVarInt(playerid, "rccam") == 0)
 		{
-			if(IsPlayerInAnyVehicle(playerid))
-			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You must be on foot to place an RCCam!");
-				return 1;
-			}
+			if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be on foot to place an RCCam!");
+			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this while in prison.");
+
 			PlayerInfo[playerid][pRccam]--;
 			SetPVarInt(playerid, "rccam", 1);
 			new Float:X, Float:Y, Float:Z;
@@ -919,7 +926,7 @@ CMD:craft(playerid, params[])
 
         else if(strcmp(choice,"metaldetector",true) == 0)
 		{
-			if(PlayerInfo[playerid][pMats] >= 12500)
+			/*if(PlayerInfo[playerid][pMats] >= 12500)
 			{
 				price = 12500;
 				weapon = 14;
@@ -928,7 +935,8 @@ CMD:craft(playerid, params[])
 			{
 				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
 				return 1;
-			}
+			}*/
+			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
 		}
 
 		else if(strcmp(choice,"mailbox",true) == 0)
@@ -1154,7 +1162,7 @@ CMD:craft(playerid, params[])
 								printf("Check 5");
 							}
 							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
-						}	
+						}
 						else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
 					}
 				case 18:

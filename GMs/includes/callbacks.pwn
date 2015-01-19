@@ -31,9 +31,9 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
  //=======================[Official SA:MP/Streamer Callbacks]============================
- 
+
 public OnVehicleSpawn(vehicleid) {
 	new Float:X, Float:Y, Float:Z;
 	new Float:XB, Float:YB, Float:ZB;
@@ -92,7 +92,7 @@ public OnVehicleSpawn(vehicleid) {
 		{
 			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
 		}
-	}	
+	}
     CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 	for(new i = 0; i < sizeof(CrateInfo); i++)
     {
@@ -131,7 +131,7 @@ public OnVehicleSpawn(vehicleid) {
 	}
 }
 
-public OnVehicleMod(playerid, vehicleid, componentid) 
+public OnVehicleMod(playerid, vehicleid, componentid)
 {
 	new string[128];
     for(new i = 0; i < sizeof(IsRim); i++)
@@ -176,8 +176,8 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 	if(!(1 <= GetPlayerInterior(playerid) <= 3) && !GetPVarType(playerid, "unMod")) {
 		new
 			szMessage[128];
-		
-		if(HackingMods[playerid] < 3)		
+
+		if(HackingMods[playerid] < 3)
 		{
 			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be hacking vehicle mods (%s (%d) %s to a %s (ID: %d))", GetPlayerNameEx(playerid), playerid, partName(componentid), componentid, partType(GetVehicleComponentType(componentid)), GetVehicleName(vehicleid), GetPlayerVehicleID(playerid));
 			ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -320,7 +320,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 				return 1;
 			}
 		}
-	}	
+	}
 	if(areaid == audiourlid)
 	{
 	    PlayAudioStreamForPlayerEx(playerid, audiourlurl, audiourlparams[0], audiourlparams[1], audiourlparams[2], audiourlparams[3], 1);
@@ -340,7 +340,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 				return 1;
 			}
 		}
-	}	
+	}
 	if(areaid == audiourlid)
 	{
 		StopAudioStreamForPlayerEx(playerid);
@@ -650,7 +650,7 @@ public OnPlayerUpdate(playerid)
 	}
 	// night vision and thermal goggle fixes added by Dom
 	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45)
-	{	
+	{
 		if((newkeys & KEY_FIRE) && (!IsPlayerInAnyVehicle(playerid))) return 0;
 	}
 	/*new gOPUtick, LastFireCheck[MAX_PLAYERS];
@@ -790,11 +790,11 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 		}
 	}
 	foreach(new i: Player)
-	{	
+	{
 		if(Spectating[i] > 0 && Spectate[i] == playerid) {
 			SetTimerEx("SpecUpdate", 1500, false, "i", i);
 		}
-	}	
+	}
 }
 
 public OnPlayerPressButton(playerid, buttonid)
@@ -1365,7 +1365,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	if(buttonid == DocElevatorInside)
 	{
 		new string[128];
-		
+
 		if(bDocElevatorMoving == true) return SendClientMessageEx(playerid, COLOR_RED, "The elevator is currently moving so you are unable to use this.");
 		else if(IsACop(playerid) || IsAHitman(playerid))
 		{
@@ -1379,7 +1379,7 @@ public OnPlayerPressButton(playerid, buttonid)
 			if(iDocElevatorLevel == 1) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms{00FF00}(Current)");
 			if(iDocElevatorLevel == 2) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms\nFloor 3 - Administration{00FF00}(Current)");
 		}
-		
+
 		ShowPlayerDialog(playerid, DIALOG_DOC_ELEVATOR, DIALOG_STYLE_LIST, "Choose a floor", string, "Select", "Cancel");
 	}
 	if(buttonid == DocCPButton)
@@ -1706,7 +1706,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				}
 			}
 			else if(GetPVarInt(playerid, "voucherdialog") == 1)
-			{	
+			{
 				if(!vehicleCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
 				if(!vehicleSpawnCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
 				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a car voucher.");
@@ -1714,7 +1714,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
 				CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), modelid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-				
+
 				PlayerInfo[playerid][pVehVoucher]--;
 				format(szString, sizeof(szString), "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
 				SendClientMessageEx(playerid, COLOR_CYAN, szString);
@@ -1738,7 +1738,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
    			ShowPlayerDialog(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Purchase", "Cancel");
 	    }
 	}
-	if(listid == SkinList) 
+	if(listid == SkinList)
 	{
 		if(response)
 		{
@@ -1746,11 +1746,11 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
 					return SendClientMessageEx(playerid, COLOR_GREY, "You're already wearing those clothes.");
-					
+
 				PlayerInfo[playerid][pModel] = modelid;
 				SetPlayerSkin(playerid, modelid);
 				return SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have changed your clothes for free.");
-			}	
+			}
 			if(IsValidSkin(modelid) == 0)
 			{
 				if(PlayerInfo[playerid][mInventory][13])
@@ -1765,7 +1765,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			    {
 					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
 	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
-				} 
+				}
 				else {
 					SendClientMessageEx(playerid, COLOR_GREY, "That skin ID is either invalid or restricted to a group / VIP!");
 	            	ShowModelSelectionMenu(playerid, SkinList, "Change your skin.");
@@ -1784,10 +1784,10 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			    }
 			    else
 			    {
-			        new 
+			        new
 						string[128],
 						iBusiness = InBusiness(playerid);
-					
+
 					if(iBusiness == INVALID_BUSINESS_ID || Businesses[iBusiness][bType] != BUSINESS_TYPE_CLOTHING) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not inside of a clothing shop!");
 			        if(GetPlayerCash(playerid) < GetPVarInt(playerid, "SkinChangeCost")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't afford these clothes!");
 					GameTextForPlayer(playerid, "~g~Clothes purchased!", 2000, 1);
@@ -1903,13 +1903,13 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			}
 		}
 	}
-	
+
 	if(PlayerCuffed[playerid] != 0) SetPVarInt( playerid, "ToBeEjected", 1 );
-	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
 		DeletePVar(playerid, "BackpackMedKit");
-	if(GetPVarInt(playerid, "BackpackMeal") == 1) 
+	if(GetPVarInt(playerid, "BackpackMeal") == 1)
 		DeletePVar(playerid, "BackpackMeal");
-	if(GetPVarType(playerid, "BackpackOpen")) 
+	if(GetPVarType(playerid, "BackpackOpen"))
 		DeletePVar(playerid, "BackpackOpen");
 	if(ispassenger) {
 		if(GetPVarType(playerid, "Injured")) {
@@ -1984,7 +1984,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponized vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
 					ABroadCast(COLOR_YELLOW, szString, 2);
 					SetPVarInt(playerid, "timeWepVeh", gettime()+5);
-				}	
+				}
 			}
 		}
 		else if(IsFamedVeh(vehicleid))
@@ -2163,7 +2163,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	return 1;
 }
 
-public OnPlayerConnect(playerid) 
+public OnPlayerConnect(playerid)
 {
 	if(IsPlayerNPC(playerid)) return 1;
 
@@ -2174,12 +2174,12 @@ public OnPlayerConnect(playerid)
 		MaxPlayersConnected = Iter_Count(Player);
 		getdate(MPYear,MPMonth,MPDay);
 	}
-	
+
 	RemoveVendingMachines(playerid);
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
-	
+
 	gPlayerUsingLoopingAnim[playerid] = 0;
 	gPlayerAnimLibsPreloaded[playerid] = 0;
 
@@ -2204,7 +2204,7 @@ public OnPlayerConnect(playerid)
 	SetPVarInt(playerid, "Undercover", 0);
 	SetPVarInt(playerid, "AlertedThisPlayer", INVALID_PLAYER_ID);
 	SetPVarInt(playerid, "SpectatingWatch", INVALID_PLAYER_ID);
-	
+
 	HackingMods[playerid] = 0;
 	pSpeed[playerid] = 0.0;
 	//SetTimerEx("HackingTimer", 1000, 0, "i", playerid);
@@ -2238,7 +2238,7 @@ public OnPlayerConnect(playerid)
 		PlayerVehicleInfo[playerid][i][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
 		PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 	}
-	
+
 	for(new i = 0; i < MAX_PLAYERTOYS; i++) {
 		PlayerToyInfo[playerid][i][ptID] = -1;
 		PlayerToyInfo[playerid][i][ptModelID] = 0;
@@ -2444,7 +2444,7 @@ public OnPlayerConnect(playerid)
 	gPlayerLogged{playerid} = 0;
 	gPlayerLogTries[playerid] = 0;
 	IsSpawned[playerid] = 0;
-	SpawnKick[playerid] = 0;	
+	SpawnKick[playerid] = 0;
 	PlayerStoned[playerid] = 0;
 	PlayerInfo[playerid][pPot] = 0;
 	StartTime[playerid] = 0;
@@ -2490,7 +2490,7 @@ public OnPlayerConnect(playerid)
 	IsPlayerFrozen[playerid] = 0;
 	strdel(PlayerInfo[playerid][pAutoTextReply], 0, 64);
 	rBigEarT[playerid] = 0;
-	aLastShot[playerid] = INVALID_PLAYER_ID;	
+	aLastShot[playerid] = INVALID_PLAYER_ID;
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}
@@ -2510,7 +2510,7 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][LastOnFootPosition][0] = 0.0; acstruct[playerid][LastOnFootPosition][1] = 0.0; acstruct[playerid][LastOnFootPosition][2] = 0.0;
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
-	
+
 	PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
 	foreach(new x: Player)
@@ -2541,10 +2541,10 @@ public OnPlayerConnect(playerid)
 	if(!InvalidNameCheck(playerid)) {
 		return 1;
 	}
-	
+
 	CheckAdminWhitelist(playerid);
 	CheckBanEx(playerid);
-	
+
 	new string[128], serial[64];
 	gpci(playerid, serial, sizeof(serial));
 	format(string, sizeof(string), "%s/checks/gpci.php?g=%s&n=%s&i=%s", SAMP_WEB, serial, GetPlayerNameExt(playerid), GetPlayerIpEx(playerid));
@@ -2565,9 +2565,9 @@ public OnPlayerConnect(playerid)
 	SyncPlayerTime(playerid);
 
 	ShowNoticeGUIFrame(playerid, 1);
-	
+
 	logincheck[playerid] = SetTimerEx("LoginCheck", 120000, 0, "i", playerid);
-	
+
 	SetTimerEx("LoginCheckEx", 5000, 0, "i", playerid);
 
 	RemoveBuildings(playerid);
@@ -2586,7 +2586,7 @@ public OnPlayerDisconnect(playerid, reason)
 	KillTimer(logincheck[playerid]);
 	if(GetPVarInt(playerid, "SpectatingWatch") != INVALID_PLAYER_ID) SetPVarInt(GetPVarInt(playerid, "SpectatingWatch"), "BeingSpectated", 0);
 	foreach(new i: Player)
-	{	
+	{
 		if(Spectating[i] > 0 && Spectate[i] == playerid) {
 			SetPVarInt(i, "StartedWatching", 0);
 			SetPVarInt(i, "NextWatch", 0);
@@ -2604,7 +2604,7 @@ public OnPlayerDisconnect(playerid, reason)
 			SendClientMessageEx(i, COLOR_WHITE, "The player you were damage checking has left the server.");
 		}
 		if(GetPVarType(i, "sellbackpack") && GetPVarInt(i, "sellbackpack") == playerid) DeletePVar(i, "sellbackpack");
-	}		
+	}
 	// Why save on people who haven't logged in!
 	if(gPlayerLogged{playerid} == 1)
 	{
@@ -2620,21 +2620,21 @@ public OnPlayerDisconnect(playerid, reason)
 					new szmessage[128];
 					format(szmessage, sizeof(szmessage), "** %s has came in third place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
-						
+
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
 					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
-							
+
 					ResetPlayerWeapons(playerid);
-						
+
 					HungerPlayerInfo[playerid][hgInEvent] = 0;
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 10;
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 10 Draw Chances for the Fall Into Fun Event.");
-					
+
 					for(new w = 0; w < 12; w++)
 					{
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
@@ -2649,21 +2649,21 @@ public OnPlayerDisconnect(playerid, reason)
 					new szmessage[128];
 					format(szmessage, sizeof(szmessage), "** %s has came in second place in the Hunger Games Event.", GetPlayerNameEx(playerid));
 					SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
-						
+
 					SetHealth(playerid, HungerPlayerInfo[playerid][hgLastHealth]);
 					SetArmour(playerid, HungerPlayerInfo[playerid][hgLastArmour]);
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
-							
+
 					ResetPlayerWeapons(playerid);
-						
+
 					HungerPlayerInfo[playerid][hgInEvent] = 0;
 					hgPlayerCount--;
 					HideHungerGamesTextdraw(playerid);
 					PlayerInfo[playerid][pRewardDrawChance] += 25;
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "** You have been given 25 Draw Chances for the Fall Into Fun Event.");
-					
+
 					for(new w = 0; w < 12; w++)
 					{
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
@@ -2672,29 +2672,29 @@ public OnPlayerDisconnect(playerid, reason)
 							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
 						}
 					}
-						
-					foreach(new i: Player) 
+
+					foreach(new i: Player)
 					{
 						if(HungerPlayerInfo[i][hgInEvent] == 1)
 						{
 							format(szmessage, sizeof(szmessage), "** %s has came in first place in the Hunger Games Event.", GetPlayerNameEx(i));
 							SendClientMessageToAll(COLOR_LIGHTBLUE, szmessage);
-								
+
 							SetHealth(i, HungerPlayerInfo[i][hgLastHealth]);
 							SetArmour(i, HungerPlayerInfo[i][hgLastArmour]);
 							SetPlayerVirtualWorld(i, HungerPlayerInfo[i][hgLastVW]);
 							SetPlayerInterior(i, HungerPlayerInfo[i][hgLastInt]);
 							SetPlayerPos(i, HungerPlayerInfo[i][hgLastPosition][0], HungerPlayerInfo[i][hgLastPosition][1], HungerPlayerInfo[i][hgLastPosition][2]);
-									
+
 							ResetPlayerWeapons(i);
-								
+
 							HungerPlayerInfo[i][hgInEvent] = 0;
 							hgPlayerCount--;
 							HideHungerGamesTextdraw(i);
 							PlayerInfo[i][pRewardDrawChance] += 50;
 							SendClientMessageEx(i, COLOR_LIGHTBLUE, "** You have been given 50 Draw Chances for the Fall Into Fun Event.");
 							hgActive = 0;
-							
+
 							for(new w = 0; w < 12; w++)
 							{
 								PlayerInfo[i][pGuns][w] = HungerPlayerInfo[i][hgLastWeapon][w];
@@ -2705,7 +2705,7 @@ public OnPlayerDisconnect(playerid, reason)
 							}
 						}
 					}
-					
+
 					for(new i = 0; i < 600; i++)
 					{
 						if(IsValidDynamic3DTextLabel(HungerBackpackInfo[i][hgBackpack3DText]))
@@ -2716,7 +2716,7 @@ public OnPlayerDisconnect(playerid, reason)
 						{
 							DestroyDynamicPickup(HungerBackpackInfo[i][hgBackpackPickupId]);
 						}
-						
+
 						HungerBackpackInfo[i][hgActiveEx] = 0;
 					}
 				}
@@ -2727,16 +2727,16 @@ public OnPlayerDisconnect(playerid, reason)
 					SetPlayerVirtualWorld(playerid, HungerPlayerInfo[playerid][hgLastVW]);
 					SetPlayerInterior(playerid, HungerPlayerInfo[playerid][hgLastInt]);
 					SetPlayerPos(playerid, HungerPlayerInfo[playerid][hgLastPosition][0], HungerPlayerInfo[playerid][hgLastPosition][1], HungerPlayerInfo[playerid][hgLastPosition][2]);
-							
+
 					ResetPlayerWeapons(playerid);
-						
+
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have died and has been removed from the Hunger Games Event, better luck next time.");
-						
+
 					HungerPlayerInfo[playerid][hgInEvent] = 0;
 					hgPlayerCount--;
-						
+
 					HideHungerGamesTextdraw(playerid);
-					
+
 					for(new w = 0; w < 12; w++)
 					{
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
@@ -2746,14 +2746,14 @@ public OnPlayerDisconnect(playerid, reason)
 						}
 					}
 				}
-				
+
 				new string[128];
 				format(string, sizeof(string), "Players in event: %d", hgPlayerCount);
-				foreach(new i: Player) 
+				foreach(new i: Player)
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgPlayerText], string);
 				}
-							
+
 				return true;
 			}
 		}
@@ -2813,13 +2813,13 @@ public OnPlayerDisconnect(playerid, reason)
 		        DestroyVehicle(GetPVarInt(playerid, "Gas_TrailerID"));
 		    }
 		}
-		
+
 		// added to prevent trucks holding shit after logging out. hotfix #1069
 		if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
 		{
 			SetVehicleToRespawn(TruckUsed[playerid]);
 		}
-		
+
 		if (GetPVarType(playerid, "_BoxingFight"))
 		{
 			new fighterid = GetPVarInt(playerid, "_BoxingFight") - 1;
@@ -2865,7 +2865,7 @@ public OnPlayerDisconnect(playerid, reason)
 						StopAudioStreamForPlayerEx(i);
 						SendClientMessage(i, COLOR_PURPLE, string);
 					}
-				}	
+				}
 			}
 		}
 		#if defined zombiemode
@@ -2923,12 +2923,12 @@ public OnPlayerDisconnect(playerid, reason)
 		if(PlayerInfo[playerid][pVehicleKeysFrom] != INVALID_PLAYER_ID) {
 			PlayerVehicleInfo[PlayerInfo[playerid][pVehicleKeysFrom]][PlayerInfo[playerid][pVehicleKeys]][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 		}
-		if(GetPVarInt(playerid, "ttSeller") != INVALID_PLAYER_ID) 
+		if(GetPVarInt(playerid, "ttSeller") != INVALID_PLAYER_ID)
 		{
 			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GRAD2, "The buyer has disconnected from the server.");
 			SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
 			SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
-			SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);		
+			SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
 			HideTradeToysGUI(playerid);
 		}
 		if(GetPVarInt(playerid, "buyerVoucher") != INVALID_PLAYER_ID)
@@ -2940,14 +2940,14 @@ public OnPlayerDisconnect(playerid, reason)
 			SetPVarInt(GetPVarInt(playerid, "sellerVoucher"), "buyerVoucher", INVALID_PLAYER_ID);
 		}
 		if(HackingMods[playerid] > 0) { HackingMods[playerid] = 0; }
-		
+
 		if(gettime() >= PlayerInfo[playerid][pMechTime]) PlayerInfo[playerid][pMechTime] = 0;
 		if(gettime() >= PlayerInfo[playerid][pLawyerTime]) PlayerInfo[playerid][pLawyerTime] = 0;
 		if(gettime() >= PlayerInfo[playerid][pDrugsTime]) PlayerInfo[playerid][pDrugsTime] = 0;
 		if(gettime() >= PlayerInfo[playerid][pSexTime]) PlayerInfo[playerid][pSexTime] = 0;
-		
+
 		if(GetPVarInt(playerid, "HidingKnife") == 1) PlayerInfo[playerid][pGuns][1] = 4;
-		
+
 		new string[128];
 		switch(reason)
 		{
@@ -2989,7 +2989,7 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - CWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
-					
+
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
@@ -3004,7 +3004,7 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
-							foreach(new i: Player) 
+							foreach(new i: Player)
 							{
 								if(GetPVarInt(i, "togRadio") == 0)
 								{
@@ -3020,7 +3020,7 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
-							foreach(new i: Player) 
+							foreach(new i: Player)
 							{
 								if(GetPVarInt(i, "togRadio") == 0)
 								{
@@ -3071,11 +3071,11 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
-					
+
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
-					
+
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -3086,11 +3086,11 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWT", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
-					
+
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
-					
+
 					new szMessage[80+MAX_PLAYER_NAME];
 					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being tackled.", GetPlayerNameEx(playerid));
 					ABroadCast(COLOR_YELLOW, szMessage, 2);
@@ -3105,7 +3105,7 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
-							foreach(new i: Player) 
+							foreach(new i: Player)
 							{
 								if(GetPVarInt(i, "togRadio") == 0)
 								{
@@ -3121,7 +3121,7 @@ public OnPlayerDisconnect(playerid, reason)
 						if(PlayerInfo[playerid][pDuty])
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
-							foreach(new i: Player) 
+							foreach(new i: Player)
 							{
 								if(GetPVarInt(i, "togRadio") == 0)
 								{
@@ -3292,7 +3292,7 @@ public OnPlayerDisconnect(playerid, reason)
 		if(reason == 0)
 		{
 			new Float:pos[4];
-			for(new v = 0; v < MAX_PLAYERVEHICLES; v++) 
+			for(new v = 0; v < MAX_PLAYERVEHICLES; v++)
 			{
 				if(PlayerVehicleInfo[playerid][v][pvId] != INVALID_PLAYER_VEHICLE_ID)
 				{
@@ -3311,7 +3311,7 @@ public OnPlayerDisconnect(playerid, reason)
 					}
 				}
 			}
-				
+
 		}
 		UnloadPlayerVehicles(playerid, 1, reason);
 		g_mysql_AccountOnline(playerid, 0);
@@ -3386,7 +3386,7 @@ public OnPlayerDisconnect(playerid, reason)
 			{
 			   OrderAssignedTo[i] = INVALID_PLAYER_ID;
 			}
-		}	
+		}
 		if(TransportCost[playerid] > 0 && TransportDriver[playerid] != INVALID_PLAYER_ID)
 		{
 			if(IsPlayerConnected(TransportDriver[playerid]))
@@ -3511,7 +3511,7 @@ public OnPlayerDisconnect(playerid, reason)
 		}
 		if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 			DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
-		}	
+		}
 		pSpeed[playerid] = 0.0;
 		SetPVarInt(playerid, "PlayerOwnASurf", 0);
 	}
@@ -3551,7 +3551,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 					Kick(i);
 				}
 			}
-		}	
+		}
     }
     return 1;
 }
@@ -3570,7 +3570,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			gPlayerUsingLoopingAnim[playerid] = 0;
 			TextDrawHideForPlayer(playerid,txtAnimHelper);
 		}
-		
+
 		SetPVarInt(playerid, "PlayerOwnASurf", 0);
 	    #if defined zombiemode
     	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
@@ -3590,7 +3590,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			SetPVarFloat(playerid, "MedicZ", mZ);
 		}
 	    #endif
-	    
+
 	    if(SpoofKill[playerid] == 0)
 			KillTime[playerid] = gettime();
 
@@ -3617,9 +3617,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 				SpoofKill[playerid] = 0;
 			}
 		}
-	    
+
 	    RemoveArmor(playerid);
-		
+
 		PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
 		if (GetPVarInt(playerid, "_SwimmingActivity") >= 1)
@@ -3658,21 +3658,21 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(GetPVarInt(playerid, "_InJailBoxing") > 0)
 		{
 			new string[60 + MAX_PLAYER_NAME];
-			
+
 			if(killerid == GetPVarInt(playerid, "_JailBoxingChallenger"))
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the boxing fight. You may now leave the arena.");
 				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the boxing fight. You may now leave the arena.");
-				
+
 				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
 				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
-				
+
 				PlayerInfo[playerid][pFitness] -= 10;
 				PlayerInfo[playerid][pHunger] -= 10;
 				PlayerInfo[killerid][pHunger] -= 10;
 				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 15;
 				else PlayerInfo[killerid][pFitness] += 10;
-				
+
 				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
 				RemoveFromJailBoxing(playerid);
 				RemoveFromJailBoxing(killerid);
@@ -3693,7 +3693,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				PlayerInfo[killerid][pHunger] -= 10;
 				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
 				else PlayerInfo[killerid][pFitness] += 5;
-				
+
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
 				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
 			}
@@ -3789,7 +3789,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				EMSCallTime[i] = 0;
 				DisablePlayerCheckpoint(i);
 			}
-		}	
+		}
      	SendClientMessageEx(playerid, COLOR_WHITE, "You appear to be stuck in limbo, medics are trying to revive you.");
 	    KillEMSQueue(playerid);
 	    ResetPlayerWeaponsEx(playerid);
@@ -3982,7 +3982,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
-	}	
+	}
+	if(PlayerTied[playerid]) {
+		DeletePVar(playerid, "IsFrozen");
+		TogglePlayerControllable(playerid, 1);
+		PlayerTied[playerid] = 0;
+	}
 	return 1;
 }
 
@@ -4023,7 +4028,7 @@ public OnVehicleDeath(vehicleid) {
 		{
 			TogglePlayerSpectating(i, 0);
 		}
-	}	
+	}
     /*if(DynVeh[vehicleid] != -1)
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
@@ -4061,7 +4066,7 @@ public OnPlayerSpawn(playerid)
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
 	PlayerIsDead[playerid] = false;
-	
+
 	if(!gPlayerAnimLibsPreloaded[playerid])
 	{
 	    PreloadAnimLib(playerid,"AIRPORT");
@@ -4364,7 +4369,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			}
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
-	    else 
+	    else
 		{
 	    	RCPIdCurrent[playerid]++;
             PlayerInfo[playerid][pHydration] -= 4;
@@ -4393,7 +4398,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			PlayerInfo[playerid][pHydration] = 100;
 			if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
-			}	
+			}
 			SetHealth(playerid, 0);
 			return 1;
 		}
@@ -4478,7 +4483,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")];
 			g_mysql_SaveVehicle(ownerid, slot);
 		}
-		
+
 		DestroyVehicle(GetPVarInt(playerid, "LockPickVehicle"));
 	    DisablePlayerCheckpoint(playerid);
 		DeletePVar(playerid, "DeliveringVehicleTime");
@@ -4513,7 +4518,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	    DisablePlayerCheckpoint(playerid);
 		DeletePVar(playerid, "GiftBoxCP");
 		return true;
-	}	
+	}
 	for(new h = 0; h < MAX_POINTS; h++)
 	{
 		if(Points[h][Type] == 3 && GetPVarInt(playerid, "CrateDeliver") == 1 && IsPlayerInRangeOfPoint(playerid, 6.0, 2166.3772,-1675.3829,15.0859))
@@ -5441,36 +5446,36 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				format(string, sizeof(string), "%s has declined the toy offer.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_LIGHTBLUE, string);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "You have declined the toy offer.");
-				
+
 				SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
 				SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
 				SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
-				
+
 				HideTradeToysGUI(playerid);
 				return 1;
-			}	
+			}
 			else {
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");		
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");
 				SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
-				
+
 				HideTradeToysGUI(playerid);
-			}	
+			}
 		}
 	}
     if(newkeys & KEY_YES)
     {
 		if(InsideTradeToys[playerid] == 1)
-		{		
+		{
 			if(IsPlayerConnected(GetPVarInt(playerid, "ttSeller")))
 			{
 				ShowPlayerDialog(playerid, CONFIRMSELLTOY, DIALOG_STYLE_MSGBOX, "Please confirm your choice", "Are you sure you want to purchase this toy for the amount specified?", "Yes", "No");
 			}
 			else {
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");		
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");
 				SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
-				
+
 				HideTradeToysGUI(playerid);
-			}	
+			}
 		}
         if(InsideTut{playerid} > 0)
 		{
@@ -5545,7 +5550,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						return 1;
 					}
 				}
-			}	
+			}
 		}
 	}
 	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 && PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
@@ -5695,7 +5700,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(GetPVarInt(playerid, "CreateGT") == 1)
 		{
 			DeletePVar(playerid, "CreateGT");
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped creating a new gang tag.");	
+			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped creating a new gang tag.");
 		}
 		if(GetPVarInt(playerid, "gt_Edit") == 1)
 		{
@@ -5976,7 +5981,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 	    new vehicleid = GetPlayerVehicleID(playerid);
 		new Float: pX, Float: pY, Float: pZ;
-		GetPlayerPos(playerid, pX, pY, pZ);		
+		GetPlayerPos(playerid, pX, pY, pZ);
 		if(GetVehicleModel(vehicleid) == 530)
 		{
 		    if(CrateVehicleLoad[vehicleid][vForkLoaded])
@@ -6015,13 +6020,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			{
 				SetPlayerPos(playerid, pX, pY, pZ);
 			}
-		}		
+		}
 	}
     if(newstate != 2) NOPTrigger[playerid] = 0;
 	//Specating
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER || newstate == PLAYER_STATE_ONFOOT)
 	{
-		foreach(new i: Player) 
+		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 || GetPVarType(i, "StartedWatching")) {
 				if(Spectating[i] > 0 && Spectate[i] == playerid) {
@@ -6029,16 +6034,16 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 						TogglePlayerSpectating(i, true);
 						new carid = GetPlayerVehicleID( playerid );
 						PlayerSpectateVehicle( i, carid );
-					}	
+					}
 					else if(newstate == PLAYER_STATE_ONFOOT) {
 						TogglePlayerSpectating(i, true);
 						PlayerSpectatePlayer( i, playerid );
 						SetPlayerInterior( i, GetPlayerInterior( playerid ) );
-					}	
+					}
 				}
-			}	
+			}
 		}
-	}	
+	}
 	if(newstate == PLAYER_STATE_ONFOOT)
 	{
 		StopAudioStreamForPlayerEx(playerid);
@@ -6048,7 +6053,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
     		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
       		DeletePVar(playerid, "Siren");
 		}
-		
+
 		/*if(GettingSpectated[playerid] != INVALID_PLAYER_ID && PlayerInfo[GettingSpectated[playerid]][pAdmin] >= 2) {
 			new spectator = GettingSpectated[playerid];
 	        // Preventing possible buffer overflows with the arrays
@@ -6106,7 +6111,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					TransportDriver[i] = INVALID_PLAYER_ID;
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, string);
 				}
-			}	
+			}
 
 			GivePlayerCash(playerid, TransportMoney[playerid]);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
@@ -6220,7 +6225,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					TransportMoney[i] += TransportValue[i];
 				}
 			}
-		}	
+		}
 	}
 	if(newstate == PLAYER_STATE_WASTED)
 	{
@@ -6272,7 +6277,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		gLastCar[playerid] = newcar;
 		format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
-		
+
 		if(GetPVarInt(playerid, "EventToken") == 1) {
 			if(EventKernel[EventFootRace] == 1) {
 				new Float:X, Float:Y, Float:Z;
@@ -6334,7 +6339,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 				return 1;
 			}
-		}	
+		}
 		new vehicleid = newcar;
 		if(IsVIPcar(vehicleid))
 		{
@@ -6616,7 +6621,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessage(playerid, COLOR_WHITE, "You are muted from submitting commands right now.");
 		return 0;
 	}
-	
+
 	if(GetPVarInt(playerid, "voucherdialog"))
 	{
 		if(GetPVarInt(playerid, "voucherdialog") == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please finalize your voucher transaction."), 0;
@@ -6627,7 +6632,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		Log("logs/vouchers.log", string);
 		return 0;
 	}
-	
+
 	if(PlayerInfo[playerid][pAdmin] < 4)
 	{
 		if(++CommandSpamTimes[playerid] >= 5) {
@@ -6729,7 +6734,7 @@ public OnPlayerText(playerid, text[])
 	    SendClientMessageEx(playerid, COLOR_RED, "You cannot use the '|' character in text.");
 		return 0;
 	}
-	
+
 	if(PlayerInfo[playerid][pMuted] == 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");
@@ -7176,18 +7181,18 @@ public OnPlayerText(playerid, text[])
 				strcat(string2,string, sizeof(string2));
 				SendClientMessageEx(i, COLOR_FADE1, string);
 			}
-		}	
+		}
 	}
 	SetPlayerChatBubble(playerid,text,COLOR_WHITE,20.0,5000);
 
 	format(string, sizeof(string), "(BE) %s: %s", GetPlayerNameEx(playerid), text);
 	foreach(new i: Player)
-	{	
+	{
 		if(PlayerInfo[i][pAdmin] > 1 && GetPVarInt(i, "BigEar") == 3)
 		{
 			SendClientMessageEx(i, COLOR_WHITE, string);
 		}
-	}	
+	}
 	return 0;
 }
 
@@ -7224,7 +7229,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		else
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You exit the clothes selection menu.");
 	}
-	else if(extraid == 1338) 
+	else if(extraid == 1338)
 	{
 		if(response)
 		{
@@ -7241,7 +7246,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the bomb selection menu.");
 		}
 	}
-	else if(extraid == 1339) 
+	else if(extraid == 1339)
 	{
 		if(response)
 		{
@@ -7265,12 +7270,12 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 					PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
 					PlayerToyInfo[playerid][i][ptTradable] = 1;
 					PlayerToyInfo[playerid][i][ptSpecial] = 2; // New special object with actual functionality
-					
-					g_mysql_NewToy(playerid, i); 
-					
+
+					g_mysql_NewToy(playerid, i);
+
 					SetPVarInt(playerid, "ToySlot", i);
 					ShowEditMenu(playerid);
-					
+
 					new iBusiness = GetPVarInt(playerid, "businessid");
 					new cost = GetPVarInt(playerid, "helcost");
 					new iItem = GetPVarInt(playerid, "item")-1;
@@ -7315,12 +7320,12 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			new toycount = GetFreeToySlot(playerid), string[144];
 			if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects, please detach one in order to use helmet.");
 			if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach another toy to slot 10 since you have a backpack equipped.");
-			
+
 			if(PlayerToyInfo[playerid][extralist_id][ptScaleX] == 0) {
 				PlayerToyInfo[playerid][extralist_id][ptScaleX] = 1.0;
 				PlayerToyInfo[playerid][extralist_id][ptScaleY] = 1.0;
 				PlayerToyInfo[playerid][extralist_id][ptScaleZ] = 1.0;
-			}			
+			}
 			new name[24];
 			format(name, sizeof(name), "Unknown");
 
@@ -7337,7 +7342,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			PlayerHoldingObject[playerid][toycount] = extralist_id;
 			SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][extralist_id][ptModelID], PlayerToyInfo[playerid][extralist_id][ptBone], PlayerToyInfo[playerid][extralist_id][ptPosX], PlayerToyInfo[playerid][extralist_id][ptPosY], PlayerToyInfo[playerid][extralist_id][ptPosZ],
 			PlayerToyInfo[playerid][extralist_id][ptRotX], PlayerToyInfo[playerid][extralist_id][ptRotY], PlayerToyInfo[playerid][extralist_id][ptRotZ], PlayerToyInfo[playerid][extralist_id][ptScaleX], PlayerToyInfo[playerid][extralist_id][ptScaleY], PlayerToyInfo[playerid][extralist_id][ptScaleZ]);
-		
+
 			Seatbelt[playerid] = 2;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and puts it on.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -7358,7 +7363,7 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 		format(string, sizeof(string), "Are you sure you want to offer %s a free namechange?", GetPlayerNameEx(clickedplayerid));
 		SetPVarString(playerid, "nrn", szString);
 		ShowPlayerDialog(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
-	} 
+	}
 	return true;
 }
 
