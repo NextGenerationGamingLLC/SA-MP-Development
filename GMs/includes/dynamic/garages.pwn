@@ -35,6 +35,36 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid == GARAGELOCK)
+	{
+		if(response)
+		{
+			new i = GetPVarInt(playerid, "Garage");
+			if(isnull(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "You did not enter anything" );
+			if(strlen(inputtext) > 24) return SendClientMessageEx(playerid, COLOR_GREY, "The password can not be greater than 24 characters.");
+			if(strcmp(inputtext, GarageInfo[i][gar_Pass], true) == 0)
+			{
+				if(GarageInfo[i][gar_Locked] == 0)
+				{
+					GarageInfo[i][gar_Locked] = 1;
+					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, garage locked.");
+				}
+				else
+				{
+					GarageInfo[i][gar_Locked] = 0;
+					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, garage unlocked.");
+				}
+				SaveGarage(i);
+			}
+			else SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+		}
+	}
+	return 1;
+}
+
 CMD:changegaragepass(playerid, params[])
 {
 	new garagepass[24];
@@ -444,6 +474,121 @@ CMD:garagehelp(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "*** GARAGE - Admin *** /garageedit /garageowner /agaragepass /garagenext /gotogarage /goingarage /garagenear /garagestatus /changeddtogarage");
+	}
+	return 1;
+}
+
+stock LoadGarages()
+{
+	printf("[LoadGarages] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `garages`", true, "OnLoadGarages", "");
+}
+
+forward OnLoadGarages();
+public OnLoadGarages()
+{
+	new i, rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	while(i < rows)
+	{
+		GarageInfo[i][gar_SQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		GarageInfo[i][gar_Owner] = cache_get_field_content_int(i, "Owner", MainPipeline);
+		cache_get_field_content(i, "OwnerName", GarageInfo[i][gar_OwnerName], MainPipeline, 24);
+		GarageInfo[i][gar_ExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
+		GarageInfo[i][gar_ExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
+		GarageInfo[i][gar_ExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
+		GarageInfo[i][gar_ExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
+		GarageInfo[i][gar_ExteriorVW] = cache_get_field_content_int(i, "ExteriorVW", MainPipeline);
+		GarageInfo[i][gar_ExteriorInt] = cache_get_field_content_int(i, "ExteriorInt", MainPipeline);
+		GarageInfo[i][gar_CustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
+		GarageInfo[i][gar_InteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
+		GarageInfo[i][gar_InteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
+		GarageInfo[i][gar_InteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
+		GarageInfo[i][gar_InteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
+		GarageInfo[i][gar_InteriorVW] = cache_get_field_content_int(i, "InteriorVW", MainPipeline);
+		cache_get_field_content(i, "Pass", GarageInfo[i][gar_Pass], MainPipeline, 24);
+		GarageInfo[i][gar_Locked] = cache_get_field_content_int(i, "Locked", MainPipeline);
+		if(GarageInfo[i][gar_ExteriorX] != 0.0) CreateGarage(i);
+		i++;
+	}
+	if(i > 0) printf("[LoadGarages] %d garages rehashed/loaded.", i);
+	else printf("[LoadGarages] Failed to load any garages.");
+	return 1;
+}
+
+stock SaveGarage(garageid)
+{
+	new string[512];
+	format(string, sizeof(string), "UPDATE `garages` SET \
+		`Owner`=%d, \
+		`OwnerName`='%s', \
+		`ExteriorX`=%f, \
+		`ExteriorY`=%f, \
+		`ExteriorZ`=%f, \
+		`ExteriorA`=%f, \
+		`ExteriorVW`=%d, \
+		`ExteriorInt`=%d, \
+		`CustomExterior`=%d, \
+		`InteriorX`=%f, \
+		`InteriorY`=%f, \
+		`InteriorZ`=%f, \
+		`InteriorA`=%f, \
+		`InteriorVW`=%d, \
+		`Pass`='%s', \
+		`Locked`=%d \
+		WHERE `id`=%d",
+		GarageInfo[garageid][gar_Owner],
+		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_OwnerName], MainPipeline),
+		GarageInfo[garageid][gar_ExteriorX],
+		GarageInfo[garageid][gar_ExteriorY],
+		GarageInfo[garageid][gar_ExteriorZ],
+		GarageInfo[garageid][gar_ExteriorA],
+		GarageInfo[garageid][gar_ExteriorVW],
+		GarageInfo[garageid][gar_ExteriorInt],
+		GarageInfo[garageid][gar_CustomExterior],
+		GarageInfo[garageid][gar_InteriorX],
+		GarageInfo[garageid][gar_InteriorY],
+		GarageInfo[garageid][gar_InteriorZ],
+		GarageInfo[garageid][gar_InteriorA],
+		GarageInfo[garageid][gar_InteriorVW],
+		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_Pass], MainPipeline),
+		GarageInfo[garageid][gar_Locked],
+		garageid
+	);
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock CreateGarage(garageid)
+{
+	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]);
+	if(GarageInfo[garageid][gar_ExteriorX] == 0.0) return 1;
+	new string[128];
+	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
+	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
+	return 1;
+}
+
+forward OnSetGarageOwner(playerid, garageid);
+public OnSetGarageOwner(playerid, garageid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		new rows, fields;
+		new string[128];
+		cache_get_data(rows, fields, MainPipeline);
+
+		if(rows)
+		{
+			GarageInfo[garageid][gar_Owner] = cache_get_field_content_int(0, "id", MainPipeline);
+			cache_get_field_content(0, "Username", GarageInfo[garageid][gar_OwnerName], MainPipeline, MAX_PLAYER_NAME);
+			format(string, sizeof(string), "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			CreateGarage(garageid);
+			SaveGarage(garageid);
+			format(string, sizeof(string), "%s has edited Garage ID: %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);
+			Log("logs/garage.log", string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
 	}
 	return 1;
 }

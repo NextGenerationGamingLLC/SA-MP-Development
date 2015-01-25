@@ -6413,6 +6413,10 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);
+				format(string, sizeof(string), "You need to be rank %s(%d) or above to drive this vehicle.",
+				arrGroupRanks[DynVehicleInfo[DynVeh[vehicleid]][gv_igID]][DynVehicleInfo[DynVeh[vehicleid]][gv_irID]],
+				DynVehicleInfo[DynVeh[vehicleid]][gv_irID]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
 	   	else if(IsAPlane(vehicleid))
@@ -6611,8 +6615,8 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 	}
 
 	playerLastTyped[playerid] = 0;
-	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), cmdtext);
-
+	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), (strfind(cmdtext, "/changepass", true) == 0 ? ("/changepass") : cmdtext));
+	if(PlayerInfo[playerid][pForcePasswordChange] == 1) return ShowLoginDialogs(playerid, 0), 0;
 	if(PlayerInfo[playerid][pMuted] == 1) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You cannot speak, you have been silenced!");
 		return 0;
@@ -7393,7 +7397,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}*/
 		if(GetPVarInt(playerid, "gEdit") == 1)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
 			GateInfo[gateid][gPosX] = x;
 			GateInfo[gateid][gPosY] = y;
@@ -7410,7 +7414,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
 		if(GetPVarInt(playerid, "gEdit") == 2)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
 			GateInfo[gateid][gPosXM] = x;
 			GateInfo[gateid][gPosYM] = y;

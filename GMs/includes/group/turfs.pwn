@@ -237,7 +237,7 @@ stock TakeoverTurfWarsZone(iGroupID, zone)
 	TurfWars[zone][twVulnerable] = 0;
 	TurfWars[zone][twAttemptId] = iGroupID;
 	TurfWars[zone][twFlash] = 1;
-	TurfWars[zone][twFlashColor] = arrGroupData[iGroupID-1][g_hDutyColour] * 256 + 255;
+	TurfWars[zone][twFlashColor] = arrGroupData[iGroupID][g_hDutyColour];
 
 	SyncTurfWarsRadarToAll();
 }
@@ -352,7 +352,7 @@ stock SyncTurfWarsRadar(playerid)
 	    {
 	        if(TurfWars[i][twOwnerId] >= 0 && TurfWars[i][twOwnerId] < MAX_GROUPS)
 	        {
-	            GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour] * 256 + 255);
+	            GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour] * 256 + 170);
 	        }
 	        else
 	        {
@@ -361,7 +361,7 @@ stock SyncTurfWarsRadar(playerid)
 
 	        if(TurfWars[i][twFlash] == 1)
 	        {
-	        	GangZoneShowForPlayer(playerid, TurfWars[i][twGangZoneId], arrGroupData[TurfWars[i][twOwnerId]][g_hDutyColour] * 256 + 255);
+	        	GangZoneFlashForPlayer(playerid, TurfWars[i][twGangZoneId], TurfWars[i][twFlashColor] * 256 + 170);
 	        }
 	        else
 	        {
@@ -374,26 +374,26 @@ stock SyncTurfWarsRadar(playerid)
 
 stock TurfWarsEditTurfsSelection(playerid)
 {
-	new string[4096];
+	szMiscArray[0] = 0;
 	for(new i = 0; i < MAX_TURFS; i++)
 	{
 		if(TurfWars[i][twOwnerId] != -1)
 		{
 			if(TurfWars[i][twOwnerId] < 0 || TurfWars[i][twOwnerId] > MAX_GROUPS)
 			{
-				format(string,sizeof(string),"%s%d) %s - (Invalid Group)\n",string,i,TurfWars[i][twName]);
+				format(szMiscArray,sizeof(szMiscArray),"%s%d) (Invalid Group)\n",szMiscArray,i/*,TurfWars[i][twName]*/);
 			}
 			else
 			{
-				format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],arrGroupData[TurfWars[i][twOwnerId]][g_szGroupName]);
+				format(szMiscArray,sizeof(szMiscArray),"%s%d) (%s)\n",szMiscArray,i,/*TurfWars[i][twName],*/arrGroupData[TurfWars[i][twOwnerId]][g_szGroupName]);
 			}
 		}
 		else
 		{
-			format(string,sizeof(string),"%s%d) %s - (%s)\n",string,i,TurfWars[i][twName],"Vacant");
+			format(szMiscArray,sizeof(szMiscArray),"%s%d) (%s)\n",szMiscArray,i,/*TurfWars[i][twName],*/"Vacant");
 		}
 	}
-	ShowPlayerDialog(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Selection Menu:",string,"Select","Back");
+	ShowPlayerDialog(playerid,TWEDITTURFSSELECTION,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Selection Menu:",szMiscArray,"Select","Back");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -898,4 +898,17 @@ CMD:claim(playerid, params[])
         ShowTurfWarsRadar(playerid);
     }
     return 1;
+}
+
+CMD:setturftokens(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pFactionModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	new family, amount;
+	if(sscanf(params, "dd", family, amount)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /setturftokens [groupid] [amount]");
+	if(!(0 <= family < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified!");
+	if(arrGroupData[family][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD2, "This group is not a criminal group type!");
+	arrGroupData[family][g_iTurfTokens] = amount;
+	format(szMiscArray, sizeof(szMiscArray), "You have set %s(%d) turf tokens to %s", arrGroupData[family][g_szGroupName], family, number_format(amount));
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	return 1;
 }

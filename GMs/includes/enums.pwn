@@ -81,8 +81,8 @@ enum eGroupData {
 	g_iTurfCapRank,
 	g_iPointCapRank,
 	g_iWithdrawRank,
-	g_iTurfTokens
-	
+	g_iTurfTokens,
+	g_iMemberCount
 }
 
 enum eLockerData {

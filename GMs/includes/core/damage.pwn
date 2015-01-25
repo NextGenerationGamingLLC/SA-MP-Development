@@ -42,6 +42,34 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
 	{
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
+		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
+		if(GetPVarInt(playerid, "EventToken") == 0 && GetPVarInt(playerid, "IsInArena") == -1 && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
+		{
+			if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid)
+			{
+				if(gettime() > GetPVarInt(playerid, "NopeWepWarn"))
+				{
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+					Log("logs/hack.log", szMiscArray);
+					SetPVarInt(playerid, "NopeWepWarn", gettime()+60);
+				}
+				return 1;
+			}
+			if((PlayerInfo[playerid][pWRestricted] > 0 || PlayerInfo[playerid][pConnectHours] < 2) && (weaponid != 0 && weaponid != 46)) 
+			{
+				if(gettime() > GetPVarInt(playerid, "WepResWarn"))
+				{
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage while being weapon restricted. WeaponID: %d", GetPlayerNameEx(playerid), playerid, weaponid);
+					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+					format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage while being weapon restricted. WeaponID: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponid);
+					Log("logs/hack.log", szMiscArray);
+					SetPVarInt(playerid, "WepResWarn", gettime()+60);
+				}
+				return 1;
+			}
+		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[damagedid][pHospital] == 1) return 1;
 		if(GetPVarInt(damagedid, "PlayerCuffed") == 1) return 1;
@@ -288,7 +316,8 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			case 50: { ClearAnimations(playerid); }
-			case 49, 51, 31, 35, 36, 37, 38, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
+			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
+			case 31, 38: if(IsPlayerInAnyVehicle(playerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
 		}
 	}
 	foreach(Player, i)

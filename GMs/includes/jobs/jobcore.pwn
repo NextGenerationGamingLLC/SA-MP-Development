@@ -440,7 +440,7 @@ CMD:join(playerid, params[])
 			GettingJob[playerid] = 16;
 			return 1;
 		}*/
-		else if (IsPlayerInRangeOfPoint(playerid,3.0,1741.5199,-1863.4615,13.5750) || IsPlayerInRangeOfPoint(playerid,3.0,-1981.144775, 133.063293, 27.687500)) {
+		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,1741.5199,-1863.4615,13.5750) || IsPlayerInRangeOfPoint(playerid,3.0,-1981.144775, 133.063293, 27.687500)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Taxi Driver, type /accept job.");
 				GettingJob[playerid] = 17;
@@ -458,7 +458,7 @@ CMD:join(playerid, params[])
 				GettingJob3[playerid] = 17;
 				return 1;
 			}			
-		}
+		}*/
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,2195.8335,-1973.0638,13.5589) || IsPlayerInRangeOfPoint(playerid,3.0,-1356.7195,2065.3450,52.4677) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2246.2598, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Craftsman, type /accept job.");

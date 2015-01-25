@@ -385,3 +385,19 @@ CMD:deliverpt(playerid, params[])
     }
     return 1;
 }
+
+CMD:renderaid(playerid, params[])
+{
+	if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
+	if(GetPVarInt(playerid, "MedVestKit") != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't carrying a kit.");
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /renderaid [player]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	if(!GetPVarType(target, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
+	SetPVarInt(target, "renderaid", playerid);
+	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(target, COLOR_LIGHTBLUE, szMiscArray);
+	return 1;
+}

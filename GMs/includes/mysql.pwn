@@ -70,7 +70,7 @@ Group_DisbandGroup(iGroupID) {
 
 	arrGroupData[iGroupID][g_hDutyColour] = 0xFFFFFF;
 	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
-
+	arrGroupData[iGroupID][g_iMemberCount] = 0;
 	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
 
 	while(i < MAX_GROUP_DIVS) {
@@ -157,16 +157,16 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
+		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
 		szMiscArray,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
 	);
 
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, arrGroupRanks[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
-	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, arrGroupDivisions[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, g_mysql_ReturnEscaped(arrGroupDivisions[iGroupID][i], MainPipeline));
 	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
 	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
@@ -824,6 +824,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		{
 			for(new i;i < rows;i++)
 			{
+				CheckAdminWhitelist(extraid);
 				new
 					szPass[129],
 					szResult[129],
@@ -858,7 +859,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					return 1;
 				}
 				if(PassComplexCheck && CheckPasswordComplexity(szBuffer) != 1) ShowLoginDialogs(extraid, 0);
-				DeletePVar(extraid, "PassAuth");
+				//DeletePVar(extraid, "PassAuth");
 				break;
 			}
 			HideNoticeGUIFrame(extraid);
@@ -1259,36 +1260,37 @@ public OnQueryFinish(resultid, extraid, handleid)
 				{
 					if(isnull(secureip) || strcmp(GetPlayerIpEx(extraid), secureip, false, strlen(secureip)) != 0)
 					{
-						if(strcmp(GetPlayerIpEx(extraid), "127.0.0.1", false, 16) != 0)
+						SendClientMessage(extraid, COLOR_WHITE, "SERVER: Your IP does not match the whitelisted IP of that account. Contact a Senior+ Admin to whitelist your current IP.");
+						foreach(new x: Player) 
 						{
-							SendClientMessage(extraid, COLOR_WHITE, "SERVER: Your IP does not match the whitelisted IP of that account. Contact a Senior+ Admin to whitelist your current IP.");
-							foreach(new x: Player) 
 							{
+								if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
 								{
-									if(PlayerInfo[x][pAdmin] < 1337 && (PlayerInfo[x][pAdmin] >= 2 || PlayerInfo[x][pWatchdog] >= 2))
-									{			
+									format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
+									SendClientMessageEx(x, COLOR_YELLOW, string);
+								}
+								else if(PlayerInfo[x][pAdmin] >= 1337)
+								{
+									if(alevel >= 1337) // If the person being checked for the whitelist is a HA+
+									{
+										format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP: %s) has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid), GetPlayerIpEx(extraid));
+										SendClientMessageEx(x, COLOR_YELLOW, string);
+									}
+									else
+									{
 										format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
 										SendClientMessageEx(x, COLOR_YELLOW, string);
 									}
-									else if(PlayerInfo[x][pAdmin] >= 1337)
-									{
-										if(alevel >= 1337) // If the person being checked for the whitelist is a HA+
-										{
-											format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (IP: %s) has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid), GetPlayerIpEx(extraid));
-											SendClientMessageEx(x, COLOR_YELLOW, string);
-										}
-										else
-										{
-											format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has been auto kicked for logging in with a non-whitelisted IP.", GetPlayerNameEx(extraid));
-											SendClientMessageEx(x, COLOR_YELLOW, string);
-										}
-									}
 								}
 							}
-							SetTimerEx("KickEx", 1000, 0, "i", extraid);
-							return true;
 						}
+						SetTimerEx("KickEx", 1000, 0, "i", extraid);
+						format(string, sizeof(string), "%s failed whitelist auth. Secure IP: %s | Connected IP: %s", GetPlayerNameEx(extraid), secureip, GetPlayerIpEx(extraid));
+						Log("logs/whitelist.log", string);
+						return true;
 					}
+					format(string, sizeof(string), "%s passed whitelist auth. Secure IP: %s | Connected IP: %s", GetPlayerNameEx(extraid), secureip, GetPlayerIpEx(extraid));
+					Log("logs/whitelist.log", string);
 				}
 			}
 			return true;
@@ -2221,278 +2223,6 @@ stock SQL_Log(szQuery[], szDesc[] = "none", iExtraID = 0) {
 	return 1;
 }
 
-stock LoadGates()
-{
-	printf("[LoadGates] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `gates`", true, "OnLoadGates", "");
-}
-
-stock SaveDynamicMapIcon(mapiconid)
-{
-	new string[512];
-
-	format(string, sizeof(string), "UPDATE `dmapicons` SET \
-		`MarkerType`=%d, \
-		`Color`=%d, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f WHERE `id`=%d",
-		DMPInfo[mapiconid][dmpMarkerType],
-		DMPInfo[mapiconid][dmpColor],
-		DMPInfo[mapiconid][dmpVW],
-		DMPInfo[mapiconid][dmpInt],
-		DMPInfo[mapiconid][dmpPosX],
-		DMPInfo[mapiconid][dmpPosY],
-		DMPInfo[mapiconid][dmpPosZ],
-		DMPInfo[mapiconid][dmpSQLId]
-	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock LoadDynamicMapIcon(mapiconid)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `dmapicons` WHERE `id`=%d", mapiconid);
-	mysql_function_query(MainPipeline, string, true, "OnLoadDynamicMapIcon", "i", mapiconid);
-}
-
-stock LoadDynamicMapIcons()
-{
-	printf("[LoadDynamicMapIcons] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `dmapicons`", true, "OnLoadDynamicMapIcons", "");
-}
-
-stock SaveDynamicDoor(doorid)
-{
-	new string[1024];
-	format(string, sizeof(string), "UPDATE `ddoors` SET \
-		`Description`='%s', \
-		`Owner`=%d, \
-		`OwnerName`='%s', \
-		`CustomInterior`=%d, \
-		`ExteriorVW`=%d, \
-		`ExteriorInt`=%d, \
-		`InteriorVW`=%d, \
-		`InteriorInt`=%d, \
-		`ExteriorX`=%f, \
-		`ExteriorY`=%f, \
-		`ExteriorZ`=%f, \
-		`ExteriorA`=%f, \
-		`InteriorX`=%f, \
-		`InteriorY`=%f, \
-		`InteriorZ`=%f, \
-		`InteriorA`=%f,",
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddDescription], MainPipeline),
-		DDoorsInfo[doorid][ddOwner],
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddOwnerName], MainPipeline),
-		DDoorsInfo[doorid][ddCustomInterior],
-		DDoorsInfo[doorid][ddExteriorVW],
-		DDoorsInfo[doorid][ddExteriorInt],
-		DDoorsInfo[doorid][ddInteriorVW],
-		DDoorsInfo[doorid][ddInteriorInt],
-		DDoorsInfo[doorid][ddExteriorX],
-		DDoorsInfo[doorid][ddExteriorY],
-		DDoorsInfo[doorid][ddExteriorZ],
-		DDoorsInfo[doorid][ddExteriorA],
-		DDoorsInfo[doorid][ddInteriorX],
-		DDoorsInfo[doorid][ddInteriorY],
-		DDoorsInfo[doorid][ddInteriorZ],
-		DDoorsInfo[doorid][ddInteriorA]
-	);
-
-	format(string, sizeof(string), "%s \
-		`CustomExterior`=%d, \
-		`Type`=%d, \
-		`Rank`=%d, \
-		`VIP`=%d, \
-		`Famed`=%d, \
-		`DPC`=%d, \
-		`Allegiance`=%d, \
-		`GroupType`=%d, \
-		`Faction`=%d, \
-		`Admin`=%d, \
-		`Wanted`=%d, \
-		`VehicleAble`=%d, \
-		`Color`=%d, \
-		`PickupModel`=%d, \
-		`Pass`='%s', \
-		`Locked`=%d, \
-		`LastLogin`=%d \
-		WHERE `id`=%d",
-		string,
-		DDoorsInfo[doorid][ddCustomExterior],
-		DDoorsInfo[doorid][ddType],
-		DDoorsInfo[doorid][ddRank],
-		DDoorsInfo[doorid][ddVIP],
-		DDoorsInfo[doorid][ddFamed],
-		DDoorsInfo[doorid][ddDPC],
-		DDoorsInfo[doorid][ddAllegiance],
-		DDoorsInfo[doorid][ddGroupType],
-		DDoorsInfo[doorid][ddFaction],
-		DDoorsInfo[doorid][ddAdmin],
-		DDoorsInfo[doorid][ddWanted],
-		DDoorsInfo[doorid][ddVehicleAble],
-		DDoorsInfo[doorid][ddColor],
-		DDoorsInfo[doorid][ddPickupModel],
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddPass], MainPipeline),
-		DDoorsInfo[doorid][ddLocked],
-		DDoorsInfo[doorid][ddLastLogin],
-		doorid+1
-	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock LoadDynamicDoor(doorid)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid+1); // Array starts at zero, MySQL starts at 1.
-	mysql_function_query(MainPipeline, string, true, "OnLoadDynamicDoor", "i", doorid);
-}
-
-stock LoadDynamicDoors()
-{
-	printf("[LoadDynamicDoors] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `ddoors`", true, "OnLoadDynamicDoors", "");
-}
-
-stock SaveHouse(houseid)
-{
-	new string[2048];
-	printf("Saving House ID %d", houseid);
-	format(string, sizeof(string), "UPDATE `houses` SET \
-		`Owned`=%d, \
-		`Level`=%d, \
-		`Description`='%s', \
-		`OwnerID`=%d, \
-		`ExteriorX`=%f, \
-		`ExteriorY`=%f, \
-		`ExteriorZ`=%f, \
-		`ExteriorR`=%f, \
-		`InteriorX`=%f, \
-		`InteriorY`=%f, \
-		`InteriorZ`=%f, \
-		`InteriorR`=%f, \
-		`ExtIW`=%d, \
-		`ExtVW`=%d, \
-		`IntIW`=%d, \
-		`IntVW`=%d,",
-		HouseInfo[houseid][hOwned],
-		HouseInfo[houseid][hLevel],
-		g_mysql_ReturnEscaped(HouseInfo[houseid][hDescription], MainPipeline),
-		HouseInfo[houseid][hOwnerID],
-		HouseInfo[houseid][hExteriorX],
-		HouseInfo[houseid][hExteriorY],
-		HouseInfo[houseid][hExteriorZ],
-		HouseInfo[houseid][hExteriorR],
-		HouseInfo[houseid][hInteriorX],
-		HouseInfo[houseid][hInteriorY],
-		HouseInfo[houseid][hInteriorZ],
-		HouseInfo[houseid][hInteriorR],
-		HouseInfo[houseid][hExtIW],
-		HouseInfo[houseid][hExtVW],
-		HouseInfo[houseid][hIntIW],
-		HouseInfo[houseid][hIntVW]
-	);
-
-	format(string, sizeof(string), "%s \
-		`Lock`=%d, \
-		`Rentable`=%d, \
-		`RentFee`=%d, \
-		`Value`=%d, \
-		`SafeMoney`=%d, \
-		`Pot`=%d, \
-		`Crack`=%d, \
-		`Materials`=%d, \
-		`Heroin`=%d, \
-		`Weapons0`=%d, \
-		`Weapons1`=%d, \
-		`Weapons2`=%d, \
-		`Weapons3`=%d, \
-		`Weapons4`=%d, \
-		`GLUpgrade`=%d, \
-		`CustomInterior`=%d, \
-		`CustomExterior`=%d, \
-		`ExteriorA`=%f, \
-		`InteriorA`=%f, \
-		`MailX`=%f, \
-		`MailY`=%f, \
-		`MailZ`=%f, \
-		`MailA`=%f, \
-		`MailType`=%d, \
-		`ClosetX`=%f, \
-		`ClosetY`=%f, \
-		`ClosetZ`=%f,",
-		string,
-		HouseInfo[houseid][hLock],
-		HouseInfo[houseid][hRentable],
-		HouseInfo[houseid][hRentFee],
-		HouseInfo[houseid][hValue],
-   		HouseInfo[houseid][hSafeMoney],
-		HouseInfo[houseid][hPot],
-		HouseInfo[houseid][hCrack],
-		HouseInfo[houseid][hMaterials],
-		HouseInfo[houseid][hHeroin],
-		HouseInfo[houseid][hWeapons][0],
-		HouseInfo[houseid][hWeapons][1],
-		HouseInfo[houseid][hWeapons][2],
-		HouseInfo[houseid][hWeapons][3],
-		HouseInfo[houseid][hWeapons][4],
-		HouseInfo[houseid][hGLUpgrade],
-		HouseInfo[houseid][hCustomInterior],
-		HouseInfo[houseid][hCustomExterior],
-		HouseInfo[houseid][hExteriorA],
-		HouseInfo[houseid][hInteriorA],
-		HouseInfo[houseid][hMailX],
-		HouseInfo[houseid][hMailY],
-		HouseInfo[houseid][hMailZ],
-		HouseInfo[houseid][hMailA],
-		HouseInfo[houseid][hMailType],
-		HouseInfo[houseid][hClosetX],
-		HouseInfo[houseid][hClosetY],
-		HouseInfo[houseid][hClosetZ]
-	);
-		
-	format(string, sizeof(string), "%s \
-		`SignDesc`='%s', \
-		`SignX`=%f, \
-		`SignY`=%f, \
-		`SignZ`=%f, \
-		`SignA`=%f, \
-		`SignExpire`=%d, \
-		`LastLogin`=%d \
-		WHERE `id`=%d",
-		string,
-		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
-		HouseInfo[houseid][hSign][0],
-		HouseInfo[houseid][hSign][1],
-		HouseInfo[houseid][hSign][2],
-		HouseInfo[houseid][hSign][3],
-		HouseInfo[houseid][hSignExpire],
-		HouseInfo[houseid][hLastLogin],
-		houseid+1
-	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock LoadHouse(houseid)
-{
-	new string[128];
-	printf("[LoadHouse] Loading HouseID %d's data from database...", houseid);
-	format(string, sizeof(string), "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id WHERE h.id = %d", houseid+1); // Array starts at zero, MySQL starts at one.
-	mysql_function_query(MainPipeline, string, true, "OnLoadHouse", "i", houseid);
-}
-
-stock LoadHouses()
-{
-	printf("[LoadHouses] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id", true, "OnLoadHouses", "");
-}
-
 stock LoadMailboxes()
 {
 	printf("[LoadMailboxes] Loading data from database...");
@@ -2530,294 +2260,12 @@ stock SaveMailbox(id)
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
-stock SaveSpeedCamera(i)
-{
-	if (SpeedCameras[i][_scActive] != true)
-		return;
-
-	new query[1024];
-	format(query, sizeof(query), "UPDATE speed_cameras SET pos_x=%f, pos_y=%f, pos_z=%f, rotation=%f, `range`=%f, speed_limit=%f WHERE id=%i",
-		SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ], SpeedCameras[i][_scRotation], SpeedCameras[i][_scRange], SpeedCameras[i][_scLimit],
-		SpeedCameras[i][_scDatabase]);
-
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock LoadSpeedCameras()
-{
-	printf("[SpeedCameras] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM speed_cameras", true, "OnLoadSpeedCameras", "");
-
-	return 1;
-}
-
-stock StoreNewSpeedCameraInMySQL(index)
-{
-	new string[512];
-	format(string, sizeof(string), "INSERT INTO speed_cameras (pos_x, pos_y, pos_z, rotation, `range`, speed_limit) VALUES (%f, %f, %f, %f, %f, %f)",
-		SpeedCameras[index][_scPosX], SpeedCameras[index][_scPosY], SpeedCameras[index][_scPosZ], SpeedCameras[index][_scRotation], SpeedCameras[index][_scRange], SpeedCameras[index][_scLimit]);
-
-	mysql_function_query(MainPipeline, string, true, "OnNewSpeedCamera", "i", index);
-	return 1;
-}
-
-stock SavePayNSpray(id)
-{
-	new string[1024];
-	format(string, sizeof(string), "UPDATE `paynsprays` SET \
-		`Status`=%d, \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`GroupCost`=%d, \
-		`RegCost`=%d WHERE `id`=%d",
-		PayNSprays[id][pnsStatus],
-		PayNSprays[id][pnsPosX],
-		PayNSprays[id][pnsPosY],
-		PayNSprays[id][pnsPosZ],
-		PayNSprays[id][pnsVW],
-		PayNSprays[id][pnsInt],
-		PayNSprays[id][pnsGroupCost],
-		PayNSprays[id][pnsRegCost],
-		id
-	);
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock SavePayNSprays()
-{
-	for(new i = 0; i < MAX_PAYNSPRAYS; i++)
-	{
-		SavePayNSpray(i);
-	}
-	return 1;
-}
-
-stock RehashPayNSpray(id)
-{
-	DestroyDynamicPickup(PayNSprays[id][pnsPickupID]);
-	DestroyDynamic3DTextLabel(PayNSprays[id][pnsTextID]);
-	DestroyDynamicMapIcon(PayNSprays[id][pnsMapIconID]);
-	PayNSprays[id][pnsSQLId] = -1;
-	PayNSprays[id][pnsStatus] = 0;
-	PayNSprays[id][pnsPosX] = 0.0;
-	PayNSprays[id][pnsPosY] = 0.0;
-	PayNSprays[id][pnsPosZ] = 0.0;
-	PayNSprays[id][pnsVW] = 0;
-	PayNSprays[id][pnsInt] = 0;
-	PayNSprays[id][pnsGroupCost] = 0;
-	PayNSprays[id][pnsRegCost] = 0;
-	LoadPayNSpray(id);
-}
-
-stock RehashPayNSprays()
-{
-	printf("[RehashPayNSprays] Deleting Pay N' Sprays from server...");
-	for(new i = 0; i < MAX_PAYNSPRAYS; i++)
-	{
-		RehashPayNSpray(i);
-	}
-	LoadPayNSprays();
-}
-
-stock LoadPayNSpray(id)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `paynsprays` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadPayNSprays", "i", id);
-}
-
 stock IsAdminSpawnedVehicle(vehicleid)
 {
 	for(new i = 0; i < sizeof(CreatedCars); ++i) {
 		if(CreatedCars[i] == vehicleid) return 1;
 	}
 	return 0;
-}
-
-forward OnLoadPayNSpray(index);
-public OnLoadPayNSpray(index)
-{
-	new rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  PayNSprays[index][pnsSQLId] = strval(tmp);
-		cache_get_field_content(row, "Status", tmp, MainPipeline); PayNSprays[index][pnsStatus] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); PayNSprays[index][pnsPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); PayNSprays[index][pnsPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); PayNSprays[index][pnsPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); PayNSprays[index][pnsVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); PayNSprays[index][pnsInt] = strval(tmp);
-		cache_get_field_content(row, "GroupCost", tmp, MainPipeline); PayNSprays[index][pnsGroupCost] = strval(tmp);
-		cache_get_field_content(row, "RegCost", tmp, MainPipeline); PayNSprays[index][pnsRegCost] = strval(tmp);
-		if(PayNSprays[index][pnsStatus] > 0)
-		{
-			format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[index][pnsRegCost]), number_format(PayNSprays[index][pnsGroupCost]), index);
-			PayNSprays[index][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[index][pnsVW], PayNSprays[index][pnsInt], -1);
-			PayNSprays[index][pnsPickupID] = CreateDynamicPickup(1239, 23, PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ], PayNSprays[index][pnsVW]);
-			PayNSprays[index][pnsMapIconID] = CreateDynamicMapIcon(PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ], 63, 0, PayNSprays[index][pnsVW], PayNSprays[index][pnsInt], -1, 500.0);
-		}
-	}
-	return 1;
-}
-
-stock LoadPayNSprays()
-{
-	printf("[LoadPayNSprays] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `paynsprays`", true, "OnLoadPayNSprays", "");
-}
-
-stock SaveArrestPoint(id)
-{
-	new string[1024];
-	format(string, sizeof(string), "UPDATE `arrestpoints` SET \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`Type`=%d, \
-		`jailVW`=%d, \
-		`jailInt`=%d, \
-		`jailpos1x`=%f, \
-		`jailpos1y`=%f, \
-		`jailpos1z`=%f, \
-		`jailpos2x`=%f, \
-		`jailpos2y`=%f, \
-		`jailpos2z`=%f WHERE `id`=%d",
-		ArrestPoints[id][arrestPosX],
-		ArrestPoints[id][arrestPosY],
-		ArrestPoints[id][arrestPosZ],
-		ArrestPoints[id][arrestVW],
-		ArrestPoints[id][arrestInt],
-		ArrestPoints[id][arrestType],
-		ArrestPoints[id][jailVW],
-		ArrestPoints[id][jailInt],
-		ArrestPoints[id][JailPos1][0],
-		ArrestPoints[id][JailPos1][1],
-		ArrestPoints[id][JailPos1][2],
-		ArrestPoints[id][JailPos2][0],
-		ArrestPoints[id][JailPos2][1],
-		ArrestPoints[id][JailPos2][2],
-		id
-	);
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock SaveArrestPoints()
-{
-	for(new i = 0; i < MAX_ARRESTPOINTS; i++)
-	{
-		SaveArrestPoint(i);
-	}
-	return 1;
-}
-
-stock RehashArrestPoint(id)
-{
-	DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
-	DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
-	ArrestPoints[id][arrestSQLId] = -1;
-	ArrestPoints[id][arrestPosX] = 0.0;
-	ArrestPoints[id][arrestPosY] = 0.0;
-	ArrestPoints[id][arrestPosZ] = 0.0;
-	ArrestPoints[id][arrestVW] = 0;
-	ArrestPoints[id][arrestInt] = 0;
-	ArrestPoints[id][arrestType] = 0;
-	LoadArrestPoint(id);
-}
-
-stock RehashArrestPoints()
-{
-	printf("[RehashArrestPoints] Deleting Arrest Points from server...");
-	for(new i = 0; i < MAX_ARRESTPOINTS; i++)
-	{
-		RehashArrestPoint(i);
-	}
-	LoadArrestPoints();
-}
-
-stock LoadArrestPoint(id)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `arrestpoints` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadArrestPoints", "i", id);
-}
-
-stock LoadArrestPoints()
-{
-	printf("[LoadArrestPoints] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `arrestpoints`", true, "OnLoadArrestPoints", "");
-}
-
-stock SaveImpoundPoint(id)
-{
-	new string[1024];
-	format(string, sizeof(string), "UPDATE `impoundpoints` SET \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`VW`=%d, \
-		`Int`=%d WHERE `id`=%d",
-		ImpoundPoints[id][impoundPosX],
-		ImpoundPoints[id][impoundPosY],
-		ImpoundPoints[id][impoundPosZ],
-		ImpoundPoints[id][impoundVW],
-		ImpoundPoints[id][impoundInt],
-		id
-	);
-
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock SaveImpoundPoints()
-{
-	for(new i = 0; i < MAX_ImpoundPoints; i++)
-	{
-		SaveImpoundPoint(i);
-	}
-	return 1;
-}
-
-stock RehashImpoundPoint(id)
-{
-	DestroyDynamic3DTextLabel(ImpoundPoints[id][impoundTextID]);
-	ImpoundPoints[id][impoundSQLId] = -1;
-	ImpoundPoints[id][impoundPosX] = 0.0;
-	ImpoundPoints[id][impoundPosY] = 0.0;
-	ImpoundPoints[id][impoundPosZ] = 0.0;
-	ImpoundPoints[id][impoundVW] = 0;
-	ImpoundPoints[id][impoundInt] = 0;
-	LoadImpoundPoint(id);
-}
-
-stock RehashImpoundPoints()
-{
-	printf("[RehashImpoundPoints] Deleting impound Points from server...");
-	for(new i = 0; i < MAX_ImpoundPoints; i++)
-	{
-		RehashImpoundPoint(i);
-	}
-	LoadImpoundPoints();
-}
-
-stock LoadImpoundPoint(id)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `impoundpoints` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadImpoundPoints", "i", id);
-}
-
-stock LoadImpoundPoints()
-{
-	printf("[LoadImpoundPoints] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `impoundpoints`", true, "OnLoadImpoundPoints", "");
 }
 
 // credits to Luk0r
@@ -3244,68 +2692,6 @@ stock g_mysql_SaveAccount(playerid)
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	g_mysql_SaveFIF(playerid);
 	return 1;
-}
-
-stock SaveGate(id) {
-	new string[512];
-	format(string, sizeof(string), "UPDATE `gates` SET \
-		`HID`=%d, \
-		`Speed`=%f, \
-		`Range`=%f, \
-		`Model`=%d, \
-		`VW`=%d, \
-		`Int`=%d, \
-		`Pass`='%s', \
-		`PosX`=%f, \
-		`PosY`=%f, \
-		`PosZ`=%f, \
-		`RotX`=%f, \
-		`RotY`=%f, \
-		`RotZ`=%f, \
-		`PosXM`=%f, \
-		`PosYM`=%f, \
-		`PosZM`=%f, \
-		`RotXM`=%f, \
-		`RotYM`=%f, \
-		`RotZM`=%f, \
-		`Allegiance`=%d, \
-		`GroupType`=%d, \
-		`GroupID`=%d, \
-		`RenderHQ`=%d, \
-		`Timer`=%d, \
-		`Automate`=%d, \
-		`Locked`=%d \
-		WHERE `ID` = %d",
-		GateInfo[id][gHID],
-		GateInfo[id][gSpeed],
-		GateInfo[id][gRange],
-		GateInfo[id][gModel],
-		GateInfo[id][gVW],
-		GateInfo[id][gInt],
-		g_mysql_ReturnEscaped(GateInfo[id][gPass], MainPipeline),
-		GateInfo[id][gPosX],
-		GateInfo[id][gPosY],
-		GateInfo[id][gPosZ],
-		GateInfo[id][gRotX],
-		GateInfo[id][gRotY],
-		GateInfo[id][gRotZ],
-		GateInfo[id][gPosXM],
-		GateInfo[id][gPosYM],
-		GateInfo[id][gPosZM],
-		GateInfo[id][gRotXM],
-		GateInfo[id][gRotYM],
-		GateInfo[id][gRotZM],
-		GateInfo[id][gAllegiance],
-		GateInfo[id][gGroupType],
-		GateInfo[id][gGroupID],
-		GateInfo[id][gRenderHQ],
-		GateInfo[id][gTimer],
-		GateInfo[id][gAutomate],
-		GateInfo[id][gLocked],
-		id+1
-	);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	return 0;
 }
 
 stock SaveAuction(auction) {
@@ -4615,352 +4001,6 @@ public MailDeliveryTimer()
 	return 1;
 }
 
-forward OnLoadGates();
-public OnLoadGates()
-{
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "HID", tmp, MainPipeline);  GateInfo[i][gHID] = strval(tmp);
-		cache_get_field_content(i, "Speed", tmp, MainPipeline); GateInfo[i][gSpeed] = floatstr(tmp);
-		cache_get_field_content(i, "Range", tmp, MainPipeline); GateInfo[i][gRange] = floatstr(tmp);
-		cache_get_field_content(i, "Model", tmp, MainPipeline); GateInfo[i][gModel] = strval(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); GateInfo[i][gVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); GateInfo[i][gInt] = strval(tmp);
-		cache_get_field_content(i, "Pass", GateInfo[i][gPass], MainPipeline, 24);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); GateInfo[i][gPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); GateInfo[i][gPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); GateInfo[i][gPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "RotX", tmp, MainPipeline); GateInfo[i][gRotX] = floatstr(tmp);
-		cache_get_field_content(i, "RotY", tmp, MainPipeline); GateInfo[i][gRotY] = floatstr(tmp);
-		cache_get_field_content(i, "RotZ", tmp, MainPipeline); GateInfo[i][gRotZ] = floatstr(tmp);
-		cache_get_field_content(i, "PosXM", tmp, MainPipeline); GateInfo[i][gPosXM] = floatstr(tmp);
-		cache_get_field_content(i, "PosYM", tmp, MainPipeline); GateInfo[i][gPosYM] = floatstr(tmp);
-		cache_get_field_content(i, "PosZM", tmp, MainPipeline); GateInfo[i][gPosZM] = floatstr(tmp);
-		cache_get_field_content(i, "RotXM", tmp, MainPipeline); GateInfo[i][gRotXM] = floatstr(tmp);
-		cache_get_field_content(i, "RotYM", tmp, MainPipeline); GateInfo[i][gRotYM] = floatstr(tmp);
-		cache_get_field_content(i, "RotZM", tmp, MainPipeline); GateInfo[i][gRotZM] = floatstr(tmp);
-		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); GateInfo[i][gAllegiance] = strval(tmp);
-		cache_get_field_content(i, "GroupType", tmp, MainPipeline); GateInfo[i][gGroupType] = strval(tmp);
-		cache_get_field_content(i, "GroupID", tmp, MainPipeline); GateInfo[i][gGroupID] = strval(tmp);
-		cache_get_field_content(i, "RenderHQ", tmp, MainPipeline); GateInfo[i][gRenderHQ] = strval(tmp);
-		cache_get_field_content(i, "Timer", tmp, MainPipeline); GateInfo[i][gTimer] = strval(tmp);
-		cache_get_field_content(i, "Automate", tmp, MainPipeline); GateInfo[i][gAutomate] = strval(tmp);
-		cache_get_field_content(i, "Locked", tmp, MainPipeline); GateInfo[i][gLocked] = strval(tmp);
-		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
-		i++;
-	}
-}
-
-forward OnLoadDynamicMapIcon(index);
-public OnLoadDynamicMapIcon(index)
-{
-	new rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  DMPInfo[index][dmpSQLId] = strval(tmp);
-		cache_get_field_content(row, "MarkerType", tmp, MainPipeline); DMPInfo[index][dmpMarkerType] = strval(tmp);
-		cache_get_field_content(row, "Color", tmp, MainPipeline); DMPInfo[index][dmpColor] = strval(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); DMPInfo[index][dmpVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); DMPInfo[index][dmpInt] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); DMPInfo[index][dmpPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); DMPInfo[index][dmpPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); DMPInfo[index][dmpPosZ] = floatstr(tmp);
-		if(DMPInfo[index][dmpPosX] != 0.0)
-		{
-			if(DMPInfo[index][dmpMarkerType] != 0) DMPInfo[index][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[index][dmpPosX], DMPInfo[index][dmpPosY], DMPInfo[index][dmpPosZ], DMPInfo[index][dmpMarkerType], DMPInfo[index][dmpColor], DMPInfo[index][dmpVW], DMPInfo[index][dmpInt], -1, 500.0);
-		}
-	}
-	return 1;
-}
-
-forward OnLoadDynamicMapIcons();
-public OnLoadDynamicMapIcons()
-{
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  DMPInfo[i][dmpSQLId] = strval(tmp);
-		cache_get_field_content(i, "MarkerType", tmp, MainPipeline); DMPInfo[i][dmpMarkerType] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); DMPInfo[i][dmpColor] = strval(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); DMPInfo[i][dmpVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); DMPInfo[i][dmpInt] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); DMPInfo[i][dmpPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); DMPInfo[i][dmpPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); DMPInfo[i][dmpPosZ] = floatstr(tmp);
-		if(DMPInfo[i][dmpPosX] != 0.0)
-		{
-			if(DMPInfo[i][dmpMarkerType] != 0) DMPInfo[i][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], DMPInfo[i][dmpMarkerType], DMPInfo[i][dmpColor], DMPInfo[i][dmpVW], DMPInfo[i][dmpInt], -1, 500.0);
-		}
-		i++;
-	}
-	if(i > 0) printf("[LoadDynamicMapIcons] %d map icons rehashed/loaded.", i);
-	else printf("[LoadDynamicMapIcons] Failed to load any map icons.");
-	return 1;
-}
-
-forward OnLoadDynamicDoor(index);
-public OnLoadDynamicDoor(index)
-{
-	new rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(rows, "id", tmp, MainPipeline);  DDoorsInfo[index][ddSQLId] = strval(tmp);
-		cache_get_field_content(rows, "Description", DDoorsInfo[index][ddDescription], MainPipeline, 128);
-		cache_get_field_content(rows, "Owner", tmp, MainPipeline); DDoorsInfo[index][ddOwner] = strval(tmp);
-		cache_get_field_content(rows, "OwnerName", DDoorsInfo[index][ddOwnerName], MainPipeline, 42);
-		cache_get_field_content(rows, "CustomExterior", tmp, MainPipeline); DDoorsInfo[index][ddCustomExterior] = strval(tmp);
-		cache_get_field_content(rows, "CustomInterior", tmp, MainPipeline); DDoorsInfo[index][ddCustomInterior] = strval(tmp);
-		cache_get_field_content(rows, "ExteriorVW", tmp, MainPipeline); DDoorsInfo[index][ddExteriorVW] = strval(tmp);
-		cache_get_field_content(rows, "ExteriorInt", tmp, MainPipeline); DDoorsInfo[index][ddExteriorInt] = strval(tmp);
-		cache_get_field_content(rows, "InteriorVW", tmp, MainPipeline); DDoorsInfo[index][ddInteriorVW] = strval(tmp);
-		cache_get_field_content(rows, "InteriorInt", tmp, MainPipeline); DDoorsInfo[index][ddInteriorInt] = strval(tmp);
-		cache_get_field_content(rows, "ExteriorX", tmp, MainPipeline); DDoorsInfo[index][ddExteriorX] = floatstr(tmp);
-		cache_get_field_content(rows, "ExteriorY", tmp, MainPipeline); DDoorsInfo[index][ddExteriorY] = floatstr(tmp);
-		cache_get_field_content(rows, "ExteriorZ", tmp, MainPipeline); DDoorsInfo[index][ddExteriorZ] = floatstr(tmp);
-		cache_get_field_content(rows, "ExteriorA", tmp, MainPipeline); DDoorsInfo[index][ddExteriorA] = floatstr(tmp);
-		cache_get_field_content(rows, "InteriorX", tmp, MainPipeline); DDoorsInfo[index][ddInteriorX] = floatstr(tmp);
-		cache_get_field_content(rows, "InteriorY", tmp, MainPipeline); DDoorsInfo[index][ddInteriorY] = floatstr(tmp);
-		cache_get_field_content(rows, "InteriorZ", tmp, MainPipeline); DDoorsInfo[index][ddInteriorZ] = floatstr(tmp);
-		cache_get_field_content(rows, "InteriorA", tmp, MainPipeline); DDoorsInfo[index][ddInteriorA] = floatstr(tmp);
-		cache_get_field_content(rows, "Type", tmp, MainPipeline); DDoorsInfo[index][ddType] = strval(tmp);
-		cache_get_field_content(rows, "Rank", tmp, MainPipeline); DDoorsInfo[index][ddRank] = strval(tmp);
-		cache_get_field_content(rows, "VIP", tmp, MainPipeline); DDoorsInfo[index][ddVIP] = strval(tmp);
-		cache_get_field_content(rows, "Famed", tmp, MainPipeline); DDoorsInfo[index][ddFamed] = strval(tmp);
-		cache_get_field_content(rows, "DPC", tmp, MainPipeline); DDoorsInfo[index][ddDPC] = strval(tmp);
-		cache_get_field_content(rows, "Allegiance", tmp, MainPipeline); DDoorsInfo[index][ddAllegiance] = strval(tmp);
-		cache_get_field_content(rows, "GroupType", tmp, MainPipeline); DDoorsInfo[index][ddGroupType] = strval(tmp);
-		cache_get_field_content(rows, "Faction", tmp, MainPipeline); DDoorsInfo[index][ddFaction] = strval(tmp);
-		cache_get_field_content(rows, "Admin", tmp, MainPipeline); DDoorsInfo[index][ddAdmin] = strval(tmp);
-		cache_get_field_content(rows, "Wanted", tmp, MainPipeline); DDoorsInfo[index][ddWanted] = strval(tmp);
-		cache_get_field_content(rows, "VehicleAble", tmp, MainPipeline); DDoorsInfo[index][ddVehicleAble] = strval(tmp);
-		cache_get_field_content(rows, "Color", tmp, MainPipeline); DDoorsInfo[index][ddColor] = strval(tmp);
-		cache_get_field_content(rows, "PickupModel", tmp, MainPipeline); DDoorsInfo[index][ddPickupModel] = strval(tmp);
-		cache_get_field_content(rows, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
-		cache_get_field_content(rows, "Locked", tmp, MainPipeline); DDoorsInfo[index][ddLocked] = strval(tmp);
-		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(rows, "LastLogin", MainPipeline);
-		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
-	}
-	return 1;
-}
-
-
-forward OnLoadDynamicDoors();
-public OnLoadDynamicDoors()
-{
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  DDoorsInfo[i][ddSQLId] = strval(tmp);
-		cache_get_field_content(i, "Description", DDoorsInfo[i][ddDescription], MainPipeline, 128);
-		cache_get_field_content(i, "Owner", tmp, MainPipeline); DDoorsInfo[i][ddOwner] = strval(tmp);
-		cache_get_field_content(i, "OwnerName", DDoorsInfo[i][ddOwnerName], MainPipeline, 42);
-		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); DDoorsInfo[i][ddCustomExterior] = strval(tmp);
-		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); DDoorsInfo[i][ddCustomInterior] = strval(tmp);
-		cache_get_field_content(i, "ExteriorVW", tmp, MainPipeline); DDoorsInfo[i][ddExteriorVW] = strval(tmp);
-		cache_get_field_content(i, "ExteriorInt", tmp, MainPipeline); DDoorsInfo[i][ddExteriorInt] = strval(tmp);
-		cache_get_field_content(i, "InteriorVW", tmp, MainPipeline); DDoorsInfo[i][ddInteriorVW] = strval(tmp);
-		cache_get_field_content(i, "InteriorInt", tmp, MainPipeline); DDoorsInfo[i][ddInteriorInt] = strval(tmp);
-		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); DDoorsInfo[i][ddExteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); DDoorsInfo[i][ddExteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); DDoorsInfo[i][ddExteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); DDoorsInfo[i][ddExteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); DDoorsInfo[i][ddInteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); DDoorsInfo[i][ddInteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); DDoorsInfo[i][ddInteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); DDoorsInfo[i][ddInteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "Type", tmp, MainPipeline); DDoorsInfo[i][ddType] = strval(tmp);
-		cache_get_field_content(i, "Rank", tmp, MainPipeline); DDoorsInfo[i][ddRank] = strval(tmp);
-		cache_get_field_content(i, "VIP", tmp, MainPipeline); DDoorsInfo[i][ddVIP] = strval(tmp);
-		cache_get_field_content(i, "Famed", tmp, MainPipeline); DDoorsInfo[i][ddFamed] = strval(tmp);
-		cache_get_field_content(i, "DPC", tmp, MainPipeline); DDoorsInfo[i][ddDPC] = strval(tmp);
-		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); DDoorsInfo[i][ddAllegiance] = strval(tmp);
-		cache_get_field_content(i, "GroupType", tmp, MainPipeline); DDoorsInfo[i][ddGroupType] = strval(tmp);
-		cache_get_field_content(i, "Faction", tmp, MainPipeline); DDoorsInfo[i][ddFaction] = strval(tmp);
-		cache_get_field_content(i, "Admin", tmp, MainPipeline); DDoorsInfo[i][ddAdmin] = strval(tmp);
-		cache_get_field_content(i, "Wanted", tmp, MainPipeline); DDoorsInfo[i][ddWanted] = strval(tmp);
-		cache_get_field_content(i, "VehicleAble", tmp, MainPipeline); DDoorsInfo[i][ddVehicleAble] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); DDoorsInfo[i][ddColor] = strval(tmp);
-		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); DDoorsInfo[i][ddPickupModel] = strval(tmp);
-		cache_get_field_content(i, "Pass", DDoorsInfo[i][ddPass], MainPipeline, 24);
-		cache_get_field_content(i, "Locked", tmp, MainPipeline); DDoorsInfo[i][ddLocked] = strval(tmp);
-		DDoorsInfo[i][ddLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
-		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);
-		i++;
-	}
-	if(i > 0) printf("[LoadDynamicDoors] %d doors rehashed/loaded.", i);
-	else printf("[LoadDynamicDoors] Failed to load any doors.");
-	return 1;
-}
-
-forward OnLoadHouse(index);
-public OnLoadHouse(index)
-{
-	new rows, fields, szField[24], tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline); HouseInfo[index][hSQLId] = strval(tmp);
-		cache_get_field_content(row, "Owned", tmp, MainPipeline); HouseInfo[index][hOwned] = strval(tmp);
-		cache_get_field_content(row, "Level", tmp, MainPipeline); HouseInfo[index][hLevel] = strval(tmp);
-		cache_get_field_content(row, "Description", HouseInfo[index][hDescription], MainPipeline, 16);
-		cache_get_field_content(row, "OwnerID", tmp, MainPipeline); HouseInfo[index][hOwnerID] = strval(tmp);
-		cache_get_field_content(row, "Username", HouseInfo[index][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(row, "ExteriorX", tmp, MainPipeline); HouseInfo[index][hExteriorX] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorY", tmp, MainPipeline); HouseInfo[index][hExteriorY] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorZ", tmp, MainPipeline); HouseInfo[index][hExteriorZ] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorR", tmp, MainPipeline); HouseInfo[index][hExteriorR] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorA", tmp, MainPipeline); HouseInfo[index][hExteriorA] = floatstr(tmp);
-		cache_get_field_content(row, "CustomExterior", tmp, MainPipeline); HouseInfo[index][hCustomExterior] = strval(tmp);
-		cache_get_field_content(row, "InteriorX", tmp, MainPipeline); HouseInfo[index][hInteriorX] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorY", tmp, MainPipeline); HouseInfo[index][hInteriorY] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorZ", tmp, MainPipeline); HouseInfo[index][hInteriorZ] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorR", tmp, MainPipeline); HouseInfo[index][hInteriorR] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorA", tmp, MainPipeline); HouseInfo[index][hInteriorA] = floatstr(tmp);
-		cache_get_field_content(row, "CustomInterior", tmp, MainPipeline); HouseInfo[index][hCustomInterior] = strval(tmp);
-		cache_get_field_content(row, "ExtIW", tmp, MainPipeline); HouseInfo[index][hExtIW] = strval(tmp);
-		cache_get_field_content(row, "ExtVW", tmp, MainPipeline); HouseInfo[index][hExtVW] = strval(tmp);
-		cache_get_field_content(row, "IntIW", tmp, MainPipeline); HouseInfo[index][hIntIW] = strval(tmp);
-		cache_get_field_content(row, "IntVW", tmp, MainPipeline); HouseInfo[index][hIntVW] = strval(tmp);
-		cache_get_field_content(row, "Lock", tmp, MainPipeline); HouseInfo[index][hLock] = strval(tmp);
-		cache_get_field_content(row, "Rentable", tmp, MainPipeline); HouseInfo[index][hRentable] = strval(tmp);
-		cache_get_field_content(row, "RentFee", tmp, MainPipeline); HouseInfo[index][hRentFee] = strval(tmp);
-		cache_get_field_content(row, "Value", tmp, MainPipeline); HouseInfo[index][hValue] = strval(tmp);
-		cache_get_field_content(row, "SafeMoney", tmp, MainPipeline); HouseInfo[index][hSafeMoney] = strval(tmp);
-		cache_get_field_content(row, "Pot", tmp, MainPipeline); HouseInfo[index][hPot] = strval(tmp);
-		cache_get_field_content(row, "Crack", tmp, MainPipeline); HouseInfo[index][hCrack] = strval(tmp);
-		cache_get_field_content(row, "Materials", tmp, MainPipeline); HouseInfo[index][hMaterials] = strval(tmp);
-		cache_get_field_content(row, "Heroin", tmp, MainPipeline); HouseInfo[index][hHeroin] = strval(tmp);
-		for(new i; i < 5; i++)
-		{
-			format(szField, sizeof(szField), "Weapons%d", i);
-			cache_get_field_content(row, szField, tmp, MainPipeline);
-			HouseInfo[index][hWeapons][i] = strval(tmp);
-		}
-		cache_get_field_content(row, "GLUpgrade", tmp, MainPipeline); HouseInfo[index][hGLUpgrade] = strval(tmp);
-		cache_get_field_content(row, "PickupID", tmp, MainPipeline); HouseInfo[index][hPickupID] = strval(tmp);
-		cache_get_field_content(row, "MailX", tmp, MainPipeline); HouseInfo[index][hMailX] = floatstr(tmp);
-		cache_get_field_content(row, "MailY", tmp, MainPipeline); HouseInfo[index][hMailY] = floatstr(tmp);
-		cache_get_field_content(row, "MailZ", tmp, MainPipeline); HouseInfo[index][hMailZ] = floatstr(tmp);
-		cache_get_field_content(row, "MailA", tmp, MainPipeline); HouseInfo[index][hMailA] = floatstr(tmp);
-		cache_get_field_content(row, "MailType", tmp, MainPipeline); HouseInfo[index][hMailType] = strval(tmp);
-		cache_get_field_content(row, "ClosetX", tmp, MainPipeline); HouseInfo[index][hClosetX] = floatstr(tmp);
-		cache_get_field_content(row, "ClosetY", tmp, MainPipeline); HouseInfo[index][hClosetY] = floatstr(tmp);
-		cache_get_field_content(row, "ClosetZ", tmp, MainPipeline); HouseInfo[index][hClosetZ] = floatstr(tmp);
-
-		cache_get_field_content(row, "SignDesc", HouseInfo[index][hSignDesc], MainPipeline, 64);
-		HouseInfo[index][hSign][0] = cache_get_field_content_float(row, "SignX", MainPipeline);
-		HouseInfo[index][hSign][1] = cache_get_field_content_float(row, "SignY", MainPipeline);
-		HouseInfo[index][hSign][2] = cache_get_field_content_float(row, "SignZ", MainPipeline);
-		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
-		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
-		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
-		
-		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
-		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
-		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
-		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
-		{
-			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", index);
-			Log("logs/house.log", tmp);
-			DeleteHouseSaleSign(index);
-		}
-		if(HouseInfo[index][hSign][0] != 0.0) CreateHouseSaleSign(index);
-	}
-	return 1;
-}
-
-forward OnLoadHouses();
-public OnLoadHouses()
-{
-	new i, rows, fields, szField[24], tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline); HouseInfo[i][hSQLId] = strval(tmp);
-		cache_get_field_content(i, "Owned", tmp, MainPipeline); HouseInfo[i][hOwned] = strval(tmp);
-		cache_get_field_content(i, "Level", tmp, MainPipeline); HouseInfo[i][hLevel] = strval(tmp);
-		cache_get_field_content(i, "Description", HouseInfo[i][hDescription], MainPipeline, 16);
-		cache_get_field_content(i, "OwnerID", tmp, MainPipeline); HouseInfo[i][hOwnerID] = strval(tmp);
-		cache_get_field_content(i, "Username", HouseInfo[i][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); HouseInfo[i][hExteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); HouseInfo[i][hExteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); HouseInfo[i][hExteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorR", tmp, MainPipeline); HouseInfo[i][hExteriorR] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); HouseInfo[i][hExteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); HouseInfo[i][hCustomExterior] = strval(tmp);
-		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); HouseInfo[i][hInteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); HouseInfo[i][hInteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); HouseInfo[i][hInteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorR", tmp, MainPipeline); HouseInfo[i][hInteriorR] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); HouseInfo[i][hInteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); HouseInfo[i][hCustomInterior] = strval(tmp);
-		cache_get_field_content(i, "ExtIW", tmp, MainPipeline); HouseInfo[i][hExtIW] = strval(tmp);
-		cache_get_field_content(i, "ExtVW", tmp, MainPipeline); HouseInfo[i][hExtVW] = strval(tmp);
-		cache_get_field_content(i, "IntIW", tmp, MainPipeline); HouseInfo[i][hIntIW] = strval(tmp);
-		cache_get_field_content(i, "IntVW", tmp, MainPipeline); HouseInfo[i][hIntVW] = strval(tmp);
-		cache_get_field_content(i, "Lock", tmp, MainPipeline); HouseInfo[i][hLock] = strval(tmp);
-		cache_get_field_content(i, "Rentable", tmp, MainPipeline); HouseInfo[i][hRentable] = strval(tmp);
-		cache_get_field_content(i, "RentFee", tmp, MainPipeline); HouseInfo[i][hRentFee] = strval(tmp);
-		cache_get_field_content(i, "Value", tmp, MainPipeline); HouseInfo[i][hValue] = strval(tmp);
-		cache_get_field_content(i, "SafeMoney", tmp, MainPipeline); HouseInfo[i][hSafeMoney] = strval(tmp);
-		cache_get_field_content(i, "Pot", tmp, MainPipeline); HouseInfo[i][hPot] = strval(tmp);
-		cache_get_field_content(i, "Crack", tmp, MainPipeline); HouseInfo[i][hCrack] = strval(tmp);
-		cache_get_field_content(i, "Materials", tmp, MainPipeline); HouseInfo[i][hMaterials] = strval(tmp);
-		cache_get_field_content(i, "Heroin", tmp, MainPipeline); HouseInfo[i][hHeroin] = strval(tmp);
-		for(new j; j < 5; j++)
-		{
-			format(szField, sizeof(szField), "Weapons%d", j);
-			cache_get_field_content(i, szField, tmp, MainPipeline);
-			HouseInfo[i][hWeapons][j] = strval(tmp);
-		}
-		cache_get_field_content(i, "GLUpgrade", tmp, MainPipeline); HouseInfo[i][hGLUpgrade] = strval(tmp);
-		cache_get_field_content(i, "PickupID", tmp, MainPipeline); HouseInfo[i][hPickupID] = strval(tmp);
-		cache_get_field_content(i, "MailX", tmp, MainPipeline); HouseInfo[i][hMailX] = floatstr(tmp);
-		cache_get_field_content(i, "MailY", tmp, MainPipeline); HouseInfo[i][hMailY] = floatstr(tmp);
-		cache_get_field_content(i, "MailZ", tmp, MainPipeline); HouseInfo[i][hMailZ] = floatstr(tmp);
-		cache_get_field_content(i, "MailA", tmp, MainPipeline); HouseInfo[i][hMailA] = floatstr(tmp);
-		cache_get_field_content(i, "MailType", tmp, MainPipeline); HouseInfo[i][hMailType] = strval(tmp);
-		cache_get_field_content(i, "ClosetX", tmp, MainPipeline); HouseInfo[i][hClosetX] = floatstr(tmp);
-		cache_get_field_content(i, "ClosetY", tmp, MainPipeline); HouseInfo[i][hClosetY] = floatstr(tmp);
-		cache_get_field_content(i, "ClosetZ", tmp, MainPipeline); HouseInfo[i][hClosetZ] = floatstr(tmp);
-
-		cache_get_field_content(i, "SignDesc", HouseInfo[i][hSignDesc], MainPipeline, 64);
-		HouseInfo[i][hSign][0] = cache_get_field_content_float(i, "SignX", MainPipeline);
-		HouseInfo[i][hSign][1] = cache_get_field_content_float(i, "SignY", MainPipeline);
-		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
-		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
-		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
-		HouseInfo[i][hLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
-		
-		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
-		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
-		if(HouseInfo[i][hMailX] != 0.0) RenderHouseMailbox(i);
-		if(HouseInfo[i][hSignExpire] != 0 && gettime() >= HouseInfo[i][hSignExpire]) 
-		{
-			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
-			Log("logs/house.log", tmp);
-			DeleteHouseSaleSign(i);
-		}
-		if(HouseInfo[i][hSign][0] != 0.0) CreateHouseSaleSign(i);
-		i++;
-	}
-	if(i > 0) printf("[LoadHouses] %d houses rehashed/loaded.", i);
-	else printf("[LoadHouses] Failed to load any houses.");
-}
-
 forward OnLoadMailboxes();
 public OnLoadMailboxes()
 {
@@ -4989,232 +4029,6 @@ public OnLoadMailboxes()
 	if(i > 0) printf("[LoadMailboxes] %d mailboxes rehashed/loaded.", i);
 	else printf("[LoadMailboxes] Failed to load any mailboxes.");
 	return 1;
-}
-// Someone fix this system, I hate it! - Nathan
-forward OnLoadSpeedCameras();
-public OnLoadSpeedCameras()
-{
-	new fields, rows, index, result[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while ((index < rows))
-	{
-		cache_get_field_content(index, "id", result, MainPipeline); SpeedCameras[index][_scDatabase] = strval(result);
-		cache_get_field_content(index, "pos_x", result, MainPipeline); SpeedCameras[index][_scPosX] = floatstr(result);
-		cache_get_field_content(index, "pos_y", result, MainPipeline); SpeedCameras[index][_scPosY] = floatstr(result);
-		cache_get_field_content(index, "pos_z", result, MainPipeline); SpeedCameras[index][_scPosZ] = floatstr(result);
-		cache_get_field_content(index, "rotation", result, MainPipeline); SpeedCameras[index][_scRotation] = floatstr(result);
-		cache_get_field_content(index, "range", result, MainPipeline); SpeedCameras[index][_scRange] = floatstr(result);
-		cache_get_field_content(index, "speed_limit", result, MainPipeline); SpeedCameras[index][_scLimit] = floatstr(result);
-
-		if(SpeedCameras[index][_scPosX] != 0.0)
-		{
-			SpeedCameras[index][_scActive] = true;
-			SpeedCameras[index][_scObjectId] = -1;
-			SpawnSpeedCamera(index);
-		}
-		index++;
-	}
-
-	if (index == 0)
-		printf("[SpeedCameras] No Speed Cameras loaded.");
-	else
-		printf("[SpeedCameras] Loaded %i Speed Cameras.", index);
-
-	return 1;
-}
-
-forward OnNewSpeedCamera(index);
-public OnNewSpeedCamera(index)
-{
-	new db = mysql_insert_id(MainPipeline);
-	SpeedCameras[index][_scDatabase] = db;
-}
-
-// @returns
-//  ID of new speed cam on success, or -1 on failure
-
-forward OnLoadPayNSprays();
-public OnLoadPayNSprays()
-{
-	new i, rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  PayNSprays[i][pnsSQLId] = strval(tmp);
-		cache_get_field_content(i, "Status", tmp, MainPipeline); PayNSprays[i][pnsStatus] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); PayNSprays[i][pnsPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); PayNSprays[i][pnsPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); PayNSprays[i][pnsPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); PayNSprays[i][pnsVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); PayNSprays[i][pnsInt] = strval(tmp);
-		cache_get_field_content(i, "GroupCost", tmp, MainPipeline); PayNSprays[i][pnsGroupCost] = strval(tmp);
-		cache_get_field_content(i, "RegCost", tmp, MainPipeline); PayNSprays[i][pnsRegCost] = strval(tmp);
-		if(PayNSprays[i][pnsStatus] > 0)
-		{
-			if(PayNSprays[i][pnsPosX] != 0.0)
-			{
-				format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[i][pnsRegCost]), number_format(PayNSprays[i][pnsGroupCost]), i);
-				PayNSprays[i][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1);
-				PayNSprays[i][pnsPickupID] = CreateDynamicPickup(1239, 23, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], PayNSprays[i][pnsVW]);
-				PayNSprays[i][pnsMapIconID] = CreateDynamicMapIcon(PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], 63, 0, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1, 500.0);
-			}
-		}
-		i++;
-	}
-}
-
-forward OnLoadArrestPoint(index);
-public OnLoadArrestPoint(index)
-{
-	new rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  ArrestPoints[index][arrestSQLId] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); ArrestPoints[index][arrestPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); ArrestPoints[index][arrestPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); ArrestPoints[index][arrestPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); ArrestPoints[index][arrestVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); ArrestPoints[index][arrestInt] = strval(tmp);
-		cache_get_field_content(row, "Type", tmp, MainPipeline); ArrestPoints[index][arrestType] = strval(tmp);
-		if(ArrestPoints[index][arrestPosX] != 0)
-		{
-			switch(ArrestPoints[index][arrestType])
-			{
-				case 0:
-				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
-					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
-					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
-				}
-				case 3:
-				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
-					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
-				}
-				case 4:
-				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
-					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-forward OnLoadArrestPoints();
-public OnLoadArrestPoints()
-{
-	new i, rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  ArrestPoints[i][arrestSQLId] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); ArrestPoints[i][arrestPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); ArrestPoints[i][arrestPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); ArrestPoints[i][arrestPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); ArrestPoints[i][arrestVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); ArrestPoints[i][arrestInt] = strval(tmp);
-		cache_get_field_content(i, "Type", tmp, MainPipeline); ArrestPoints[i][arrestType] = strval(tmp);
-		cache_get_field_content(i, "jailVW", tmp, MainPipeline); ArrestPoints[i][jailVW] = strval(tmp);
-		cache_get_field_content(i, "jailInt", tmp, MainPipeline); ArrestPoints[i][jailInt] = strval(tmp);
-		cache_get_field_content(i, "jailpos1x", tmp, MainPipeline); ArrestPoints[i][JailPos1][0] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos1y", tmp, MainPipeline); ArrestPoints[i][JailPos1][1] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos1z", tmp, MainPipeline); ArrestPoints[i][JailPos1][2] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2x", tmp, MainPipeline); ArrestPoints[i][JailPos2][0] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2y", tmp, MainPipeline); ArrestPoints[i][JailPos2][1] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2z", tmp, MainPipeline); ArrestPoints[i][JailPos2][2] = floatstr(tmp);
-		if(ArrestPoints[i][arrestPosX] != 0)
-		{
-			switch(ArrestPoints[i][arrestType])
-			{
-				case 0:
-				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
-					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
-				}
-				case 2:
-				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
-					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
-				}
-				case 3:
-				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
-					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
-				}
-				case 4:
-				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
-					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
-				}
-			}
-		}
-		i++;
-	}
-}
-
-forward OnLoadImpoundPoint(index);
-public OnLoadImpoundPoint(index)
-{
-	new rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	for(new row; row < rows; row++)
-	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  ImpoundPoints[index][impoundSQLId] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); ImpoundPoints[index][impoundPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); ImpoundPoints[index][impoundPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); ImpoundPoints[index][impoundPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); ImpoundPoints[index][impoundVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); ImpoundPoints[index][impoundInt] = strval(tmp);
-		if(ImpoundPoints[index][impoundPosX] != 0)
-		{
-			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", index);
-			ImpoundPoints[index][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[index][impoundPosX], ImpoundPoints[index][impoundPosY], ImpoundPoints[index][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[index][impoundVW], ImpoundPoints[index][impoundInt], -1);
-		}
-	}
-	return 1;
-}
-
-forward OnLoadImpoundPoints();
-public OnLoadImpoundPoints()
-{
-	new i, rows, fields, tmp[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  ImpoundPoints[i][impoundSQLId] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); ImpoundPoints[i][impoundPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); ImpoundPoints[i][impoundPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); ImpoundPoints[i][impoundPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); ImpoundPoints[i][impoundVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); ImpoundPoints[i][impoundInt] = strval(tmp);
-		if(ImpoundPoints[i][impoundPosX] != 0)
-		{
-			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", i);
-			ImpoundPoints[i][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[i][impoundPosX], ImpoundPoints[i][impoundPosY], ImpoundPoints[i][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[i][impoundVW], ImpoundPoints[i][impoundInt], -1);
-		}
-		i++;
-	}
 }
 
 forward LoadDynamicGroups();
@@ -6141,37 +4955,6 @@ public OnFine(index)
 	return 1;
 }
 
-forward OnSetDDOwner(playerid, doorid);
-public OnSetDDOwner(playerid, doorid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-	    new rows, fields;
-	    new string[128], sqlid[5], playername[MAX_PLAYER_NAME], id;
-    	cache_get_data(rows, fields, MainPipeline);
-
-    	if(rows)
-    	{
-			cache_get_field_content(0, "id", sqlid, MainPipeline); id = strval(sqlid);
-			cache_get_field_content(0, "Username", playername, MainPipeline, MAX_PLAYER_NAME);
-			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), playername, MAX_PLAYER_NAME);
-			DDoorsInfo[doorid][ddOwner] = id;
-
-			format(string, sizeof(string), "Successfully set the owner to %s.", playername);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-
-			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-			CreateDynamicDoor(doorid);
-			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, playername, id);
-			Log("logs/ddedit.log", string);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
-	}
-	return 1;
-}
-
 forward OnPrisonAccount(index);
 public OnPrisonAccount(index)
 {
@@ -6582,8 +5365,8 @@ public Group_QueryFinish(iType, iExtraID) {
 			}
 			
 			cache_get_field_content(iIndex, "Weapon_ID", szResult, MainPipeline);
-			arrGroupData[iGroupID][g_iClothes][j] = strval(szResult);
-			iIndex++;	
+			arrGroupData[iGroupID][g_iWeapons][j] = strval(szResult);
+			iIndex++;
 		}
 		case GROUP_QUERY_LOCKERS: while(iIndex < iRows) {
 
@@ -6623,13 +5406,15 @@ public Group_QueryFinish(iType, iExtraID) {
 
 		}
 		case GROUP_QUERY_LOAD: while(iIndex < iRows) {
+			format(szResult, sizeof(szResult), "SELECT NULL FROM accounts WHERE Member = %d", iIndex);
+			mysql_function_query(MainPipeline, szResult, true, "OnMemberCount", "i", iIndex);
 			cache_get_field_content(iIndex, "Name", arrGroupData[iIndex][g_szGroupName], MainPipeline, GROUP_MAX_NAME_LEN);
 
-			cache_get_field_content(iIndex, "MOTD", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
+			cache_get_field_content(iIndex, "MOTD", gMOTD[iIndex][0], MainPipeline, GROUP_MAX_MOTD_LEN);
 
-			cache_get_field_content(iIndex, "MOTD2", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
+			cache_get_field_content(iIndex, "MOTD2", gMOTD[iIndex][1], MainPipeline, GROUP_MAX_MOTD_LEN);
 
-			cache_get_field_content(iIndex, "MOTD3", gMOTD[iIndex][i], MainPipeline, GROUP_MAX_MOTD_LEN);
+			cache_get_field_content(iIndex, "MOTD3", gMOTD[iIndex][2], MainPipeline, GROUP_MAX_MOTD_LEN);
 
 			cache_get_field_content(iIndex, "Type", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iGroupType] = strval(szResult);
@@ -6749,6 +5534,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "Opium", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iOpium] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Mats", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iMaterials] = strval(szResult);
 
 			cache_get_field_content(iIndex, "TurfCapRank", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iTurfCapRank] = strval(szResult);
@@ -8216,7 +7004,7 @@ public WatchWatchlist(index)
 				SpectatePlayer(index, x);
 				SetPVarInt(x, "BeingSpectated", 1);
 				SendClientMessageEx(index, -1, "WATCHDOG: You have started watching, you may skip to another player in 3 minutes (/nextwatch).");
-				SetPVarInt(index, "NextWatch", gettime()+180);
+				if(PlayerInfo[index][pWatchdog] == 2) SetPVarInt(index, "NextWatch", gettime()+120); else SetPVarInt(index, "NextWatch", gettime()+180);
 				SetPVarInt(index, "SpectatingWatch", x);
 				SetPVarInt(index, "StartedWatching", 1);
 				WDReportCount[index]++;
@@ -8281,121 +7069,6 @@ public CheckTrunkContents(playerid)
 		GetPlayerIp(playerid, ip, sizeof(ip)), GetPVarString(playerid, "LockPickPlayerName", ownername, sizeof(ownername));
 		format(string, sizeof(string), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d SQLId %d Weapon ID: %d) owned by %s(Offline, SQLId:%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(vehicleid), vehicleid, GetPVarInt(playerid, "LockPickVehicleSQLId"), TrunkWeaps[i], ownername, GetPVarInt(playerid, "LockPickPlayerSQLId"));
 		Log("logs/playervehicle.log", string);
-	}
-	return 1;
-}
-
-stock LoadGarages()
-{
-	printf("[LoadGarages] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `garages`", true, "OnLoadGarages", "");
-}
-
-forward OnLoadGarages();
-public OnLoadGarages()
-{
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	while(i < rows)
-	{
-		GarageInfo[i][gar_SQLId] = cache_get_field_content_int(i, "id", MainPipeline);
-		GarageInfo[i][gar_Owner] = cache_get_field_content_int(i, "Owner", MainPipeline);
-		cache_get_field_content(i, "OwnerName", GarageInfo[i][gar_OwnerName], MainPipeline, 24);
-		GarageInfo[i][gar_ExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
-		GarageInfo[i][gar_ExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
-		GarageInfo[i][gar_ExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
-		GarageInfo[i][gar_ExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
-		GarageInfo[i][gar_ExteriorVW] = cache_get_field_content_int(i, "ExteriorVW", MainPipeline);
-		GarageInfo[i][gar_ExteriorInt] = cache_get_field_content_int(i, "ExteriorInt", MainPipeline);
-		GarageInfo[i][gar_CustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
-		GarageInfo[i][gar_InteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
-		GarageInfo[i][gar_InteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
-		GarageInfo[i][gar_InteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
-		GarageInfo[i][gar_InteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
-		GarageInfo[i][gar_InteriorVW] = cache_get_field_content_int(i, "InteriorVW", MainPipeline);
-		cache_get_field_content(i, "Pass", GarageInfo[i][gar_Pass], MainPipeline, 24);
-		GarageInfo[i][gar_Locked] = cache_get_field_content_int(i, "Locked", MainPipeline);
-		if(GarageInfo[i][gar_ExteriorX] != 0.0) CreateGarage(i);
-		i++;
-	}
-	if(i > 0) printf("[LoadGarages] %d garages rehashed/loaded.", i);
-	else printf("[LoadGarages] Failed to load any garages.");
-	return 1;
-}
-
-stock SaveGarage(garageid)
-{
-	new string[512];
-	format(string, sizeof(string), "UPDATE `garages` SET \
-		`Owner`=%d, \
-		`OwnerName`='%s', \
-		`ExteriorX`=%f, \
-		`ExteriorY`=%f, \
-		`ExteriorZ`=%f, \
-		`ExteriorA`=%f, \
-		`ExteriorVW`=%d, \
-		`ExteriorInt`=%d, \
-		`CustomExterior`=%d, \
-		`InteriorX`=%f, \
-		`InteriorY`=%f, \
-		`InteriorZ`=%f, \
-		`InteriorA`=%f, \
-		`InteriorVW`=%d, \
-		`Pass`='%s', \
-		`Locked`=%d \
-		WHERE `id`=%d",
-		GarageInfo[garageid][gar_Owner],
-		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_OwnerName], MainPipeline),
-		GarageInfo[garageid][gar_ExteriorX],
-		GarageInfo[garageid][gar_ExteriorY],
-		GarageInfo[garageid][gar_ExteriorZ],
-		GarageInfo[garageid][gar_ExteriorA],
-		GarageInfo[garageid][gar_ExteriorVW],
-		GarageInfo[garageid][gar_ExteriorInt],
-		GarageInfo[garageid][gar_CustomExterior],
-		GarageInfo[garageid][gar_InteriorX],
-		GarageInfo[garageid][gar_InteriorY],
-		GarageInfo[garageid][gar_InteriorZ],
-		GarageInfo[garageid][gar_InteriorA],
-		GarageInfo[garageid][gar_InteriorVW],
-		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_Pass], MainPipeline),
-		GarageInfo[garageid][gar_Locked],
-		garageid
-	);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-}
-
-stock CreateGarage(garageid)
-{
-	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]);
-	if(GarageInfo[garageid][gar_ExteriorX] == 0.0) return 1;
-	new string[128];
-	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
-	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
-	return 1;
-}
-
-forward OnSetGarageOwner(playerid, garageid);
-public OnSetGarageOwner(playerid, garageid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		new rows, fields;
-		new string[128];
-		cache_get_data(rows, fields, MainPipeline);
-
-		if(rows)
-		{
-			GarageInfo[garageid][gar_Owner] = cache_get_field_content_int(0, "id", MainPipeline);
-			cache_get_field_content(0, "Username", GarageInfo[garageid][gar_OwnerName], MainPipeline, MAX_PLAYER_NAME);
-			format(string, sizeof(string), "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			CreateGarage(garageid);
-			SaveGarage(garageid);
-			format(string, sizeof(string), "%s has edited Garage ID: %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), garageid, GarageInfo[garageid][gar_OwnerName], GarageInfo[garageid][gar_Owner]);
-			Log("logs/garage.log", string);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
 	}
 	return 1;
 }
@@ -8476,4 +7149,49 @@ stock g_mysql_SaveFIF(playerid)
 		format(szQuery, sizeof(szQuery), "UPDATE `FallIntoFun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
 		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	}
+}
+
+stock CheckPassAgain(playerid)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT `Key`, `Salt` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	mysql_function_query(MainPipeline, string, true, "OnCheckPassAgain", "i", playerid);
+	return 1;
+}
+
+forward OnCheckPassAgain(playerid);
+public OnCheckPassAgain(playerid)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	for(new i;i < rows;i++)
+	{
+		new szPass[129],
+			szResult[129],
+			szBuffer[129],
+			salt[11];
+		cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
+		cache_get_field_content(i, "Salt", salt, MainPipeline, 11);
+		GetPVarString(playerid, "PassAuth", szBuffer, sizeof(szBuffer));
+		if(!isnull(salt)) strcat(szBuffer, salt);
+		WP_Hash(szPass, sizeof(szPass), szBuffer);
+		if((isnull(szPass)) || (isnull(szResult)) || (strcmp(szPass, szResult) != 0)) {
+			// Invalid Password
+			format(szBuffer, sizeof(szBuffer), "%s(%d)(IP: %s) failed pass recheck.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid));
+			Log("logs/passcheck.log", szBuffer);
+			Kick(playerid);
+			return 1;
+		}
+		DeletePVar(playerid, "PassAuth");
+		break;
+	}
+	return 1;
+}
+
+forward OnMemberCount(groupid);
+public OnMemberCount(groupid)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	arrGroupData[groupid][g_iMemberCount] = rows;
 }

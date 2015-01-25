@@ -370,14 +370,13 @@ stock GetStaffRank(playerid)
 
 CMD:resetvw(playerid, params[])
 {
-	szMiscArray[0] = 0;
-	new resetPlayer;
 	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	new resetPlayer;
 	if(sscanf(params, "u", resetPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetvw [player]");
 	SetPlayerVirtualWorld(resetPlayer, 0);
-
 	PlayerInfo[resetPlayer][pVW] =  0;
 	SetPlayerInterior(resetPlayer, 0);
+	szMiscArray[0] = 0;
 	format(szMiscArray,sizeof(szMiscArray), "You have reset %s's virtual world.", GetPlayerNameEx(resetPlayer));
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 	SetPlayerInterior(resetPlayer, 0);
@@ -5375,6 +5374,15 @@ CMD:fine(playerid, params[])
 
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
+		if(strcmp(GetPlayerIpEx(playerid), PlayerInfo[playerid][pSecureIP], false, 16) != 0)
+		{
+			format(string, sizeof(string), "[/FINE] %s has had their account disabled for not matching their whitelisted ip, contact a member of security.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 4);
+			Log("logs/admin.log", string);
+			PlayerInfo[playerid][pDisabled] = 1;
+			Kick(playerid);
+			return 1;
+		}
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if (amount < 1)
@@ -5407,6 +5415,15 @@ CMD:sfine(playerid, params[])
 
 	if (PlayerInfo[playerid][pAdmin] >= 4)
 	{
+		if(strcmp(GetPlayerIpEx(playerid), PlayerInfo[playerid][pSecureIP], false, 16) != 0)
+		{
+			format(string, sizeof(string), "[/SFINE] %s has had their account disabled for not matching their whitelisted ip, contact a member of security.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 4);
+			Log("logs/admin.log", string);
+			PlayerInfo[playerid][pDisabled] = 1;
+			Kick(playerid);
+			return 1;
+		}
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if (amount < 1)
@@ -5776,8 +5793,7 @@ CMD:rcabuse(playerid, params[]) {
 		else if(GetPlayerState(iTargetID) == PLAYER_STATE_DRIVER && IsRestrictedVehicle(GetVehicleModel(GetPlayerVehicleID(iTargetID))))
 		{
 			new
-				iVehicleID = GetPlayerVehicleID(iTargetID),
-				iVehModel = GetVehicleModel(iVehicleID),
+				iVehicleID = GetPlayerVehicleID(iTargetID), 
 				iVehIndex = GetPlayerVehicle(iTargetID, iVehicleID),
 				Float: fPlayerPos[3],
 				szMessage[256]; // Dialog string - don't kill me!!!!!1
@@ -5802,7 +5818,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your first warning, it will be restricted from use for 8 hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your first warning, it will be restricted from use for 8 hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
@@ -5825,7 +5841,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
@@ -5838,7 +5854,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week, and the vehicle in question has been removed.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week, and the vehicle in question has been removed.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
@@ -5856,7 +5872,7 @@ CMD:rcabuse(playerid, params[]) {
 							GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your first warning, one of your restricted vehicles (if any) will not be able to be used for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehModel));
+							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your first warning, one of your restricted vehicles (if any) will not be able to be used for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
 							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
@@ -5875,7 +5891,7 @@ CMD:rcabuse(playerid, params[]) {
 							GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehModel));
+							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
 							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 						}
@@ -5887,12 +5903,12 @@ CMD:rcabuse(playerid, params[]) {
 							GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
-							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehModel));
+							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
 							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 						}
 					}
-					format(szMessage, sizeof szMessage, "%s has issued %s a warning for abusing your %s.\n\nThe vehicle in question has been respawned. Please be mindful of your restricted vehicles.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), GetVehicleName(iVehModel));
+					format(szMessage, sizeof szMessage, "%s has issued %s a warning for abusing your %s.\n\nThe vehicle in question has been respawned. Please be mindful of your restricted vehicles.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), GetVehicleName(iVehicleID));
 					ShowPlayerDialog(i, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					break;
@@ -5904,7 +5920,7 @@ CMD:rcabuse(playerid, params[]) {
 					case 1: {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your first warning, you will face no punishment.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your first warning, you will face no punishment.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
@@ -5914,7 +5930,7 @@ CMD:rcabuse(playerid, params[]) {
 
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two weeks and prisoned for two hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two weeks and prisoned for two hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
@@ -5944,7 +5960,7 @@ CMD:rcabuse(playerid, params[]) {
 
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
-						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for three weeks, kicked from your faction and banned for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehModel));
+						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for three weeks, kicked from your faction and banned for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
 						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
@@ -5978,7 +5994,7 @@ CMD:prison(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
+			//if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
 			if(prisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
 		}
 	}
@@ -6109,7 +6125,7 @@ CMD:prisonaccount(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 				return 1;
 			}
-			if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
+			//if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
 		}
 		else
 		{
@@ -6210,7 +6226,7 @@ CMD:sprison(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
+			//if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
 			if(prisonPlayer(playerid, giveplayerid, reason, minutes, .silent=1, .custom=1) == 0) return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -6454,6 +6470,7 @@ CMD:setstat(playerid, params[])
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] >= 2) {
 						PlayerInfo[giveplayerid][pWRestricted] = amount;
+						if(amount) ResetPlayerWeaponsEx(giveplayerid);
 						format(string, sizeof(string), "   %s's(%d) Weapon Restricted Time has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 					}
 					else {
@@ -7428,7 +7445,7 @@ CMD:givemoney(playerid, params[])
 
 CMD:slap(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] == 2)
 	{
 	    new szString[128], giveplayerid, Float:posx, Float:posy, Float:posz, Float:shealth;
 	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /slap [player]");
@@ -7795,7 +7812,15 @@ CMD:ban(playerid, params[])
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [player] [reason]");
-
+		if(strcmp(GetPlayerIpEx(playerid), PlayerInfo[playerid][pSecureIP], false, 16) != 0)
+		{
+			format(string, sizeof(string), "[/BAN] %s has had their account disabled for not matching their whitelisted ip, contact a member of security.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 4);
+			Log("logs/admin.log", string);
+			PlayerInfo[playerid][pDisabled] = 1;
+			Kick(playerid);
+			return 1;
+		}
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
@@ -8283,247 +8308,6 @@ CMD:givesprize(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "Invalid choice.");
 		}
-	}
-	return 1;
-}
-
-CMD:ddmove(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new doorid, giveplayerid, fee, minfee, choice[16];
-	if(sscanf(params, "s[16]dudd", choice, doorid, giveplayerid, fee, minfee))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddmove <Choice> <DoorID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
-		return 1;
-	}
-	if(doorid >= MAX_DDOORS) return SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Door ID!");
-	new string[128];
-	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
-	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
-	if(fee > 0)
-	{
-		fee = totalwealth / 100 * fee;
-		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
-		{
-			fee = fee / 100 * 95;
-		}
-		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
-		{
-			fee = fee / 100 * 85;
-		}
-	}
-	if(strcmp(choice, "interior", true) == 0)
-	{
-		GetPlayerPos(playerid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
-		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddInteriorA]);
-		DDoorsInfo[doorid][ddInteriorInt] = GetPlayerInterior(playerid);
-		DDoorsInfo[doorid][ddInteriorVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the interior!");
-		SaveDynamicDoor(doorid);
-		format(string, sizeof(string), "%s has edited DoorID %d's Interior.", GetPlayerNameEx(playerid), doorid);
-		Log("logs/ddedit.log", string);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-	}
-	else if(strcmp(choice, "exterior", true) == 0)
-	{
-		GetPlayerPos(playerid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]);
-		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddExteriorA]);
-		DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
-		DDoorsInfo[doorid][ddExteriorInt] = GetPlayerInterior(playerid);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
-		DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-		if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-		CreateDynamicDoor(doorid);
-		SaveDynamicDoor(doorid);
-		format(string, sizeof(string), "%s has edited DoorID %d's Exterior.", GetPlayerNameEx(playerid), doorid);
-		Log("logs/ddedit.log", string);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-	}
-	return 1;
-}
-
-CMD:hmove(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new houseid, giveplayerid, fee, minfee, choice[16];
-	if(sscanf(params, "s[16]dudd", choice, houseid, giveplayerid, fee, minfee))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hmove <Choice> <HouseID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
-		return 1;
-	}
-	new string[128];
-	new Float: Pos[3];
-	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
-	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
-	if(fee > 0)
-	{
-		fee = totalwealth / 100 * fee;
-		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
-		{
-			fee = fee / 100 * 95;
-		}
-		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
-		{
-			fee = fee / 100 * 85;
-		}
-	}
-	if(strcmp(choice, "interior", true) == 0)
-	{
-		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-		format(string, sizeof(string), "%s has edited HouseID %d's Interior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], Pos[0], Pos[1], Pos[2]);
-		Log("logs/hedit.log", string);
-		GetPlayerPos(playerid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]);
-		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hInteriorA]);
-		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
-		HouseInfo[houseid][hIntVW] = houseid+6000;
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
-		SaveHouse(houseid);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-	}	
-	else if(strcmp(choice, "exterior", true) == 0)
-	{
-		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-		format(string, sizeof(string), "%s has edited HouseID %d's Exterior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid,  HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], Pos[0], Pos[1], Pos[2]);
-		Log("logs/hedit.log", string);
-		GetPlayerPos(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]);
-		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hExteriorA]);
-		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
-		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
-		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the exterior!" );
-		SaveHouse(houseid);
-		ReloadHousePickup(houseid);
-		if(minfee > fee && minfee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-		else if(fee > 0)
-		{
-			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			Log("logs/admin.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		}
-	}
-	return 1;
-}
-
-CMD:gmove(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	new gateid, giveplayerid, fee, minfee;
-	if(sscanf(params, "dudd", gateid, giveplayerid, fee, minfee))
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /gmove <Choice> <GateID> <playerid> <Fine (Percent)> <min. fine>");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
-		return 1;
-	}
-	new string[128];
-	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
-	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
-	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
-	if(fee > 0)
-	{
-		fee = totalwealth / 100 * fee;
-		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
-		{
-			fee = fee / 100 * 95;
-		}
-		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
-		{
-			fee = fee / 100 * 85;
-		}
-	}
-	GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
-	GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
-	GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
-	format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	if(GateInfo[gateid][gModel] == 0)
-	{
-		GateInfo[gateid][gModel] = 18631;
-		GateInfo[gateid][gRange] = 10;
-		GateInfo[gateid][gSpeed] = 5.0;
-	}
-	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
-	CreateGate(gateid);
-	SaveGate(gateid);
-	format(string, sizeof(string), "%s has edited GateID %d's Position.", GetPlayerNameEx(playerid), gateid);
-	Log("logs/gedit.log", string);
-	if(minfee > fee && minfee > 0)
-	{
-		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
-		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-	}
-	else if(fee > 0)
-	{
-		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
-		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		Log("logs/admin.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 	}
 	return 1;
 }

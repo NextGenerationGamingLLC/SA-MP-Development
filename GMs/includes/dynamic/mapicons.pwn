@@ -35,6 +35,95 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock LoadDynamicMapIcon(mapiconid)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT * FROM `dmapicons` WHERE `id`=%d", mapiconid);
+	mysql_function_query(MainPipeline, string, true, "OnLoadDynamicMapIcon", "i", mapiconid);
+}
+
+stock LoadDynamicMapIcons()
+{
+	printf("[LoadDynamicMapIcons] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `dmapicons`", true, "OnLoadDynamicMapIcons", "");
+}
+
+forward OnLoadDynamicMapIcon(index);
+public OnLoadDynamicMapIcon(index)
+{
+	new rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	for(new row; row < rows; row++)
+	{
+		cache_get_field_content(row, "id", tmp, MainPipeline);  DMPInfo[index][dmpSQLId] = strval(tmp);
+		cache_get_field_content(row, "MarkerType", tmp, MainPipeline); DMPInfo[index][dmpMarkerType] = strval(tmp);
+		cache_get_field_content(row, "Color", tmp, MainPipeline); DMPInfo[index][dmpColor] = strval(tmp);
+		cache_get_field_content(row, "VW", tmp, MainPipeline); DMPInfo[index][dmpVW] = strval(tmp);
+		cache_get_field_content(row, "Int", tmp, MainPipeline); DMPInfo[index][dmpInt] = strval(tmp);
+		cache_get_field_content(row, "PosX", tmp, MainPipeline); DMPInfo[index][dmpPosX] = floatstr(tmp);
+		cache_get_field_content(row, "PosY", tmp, MainPipeline); DMPInfo[index][dmpPosY] = floatstr(tmp);
+		cache_get_field_content(row, "PosZ", tmp, MainPipeline); DMPInfo[index][dmpPosZ] = floatstr(tmp);
+		if(DMPInfo[index][dmpPosX] != 0.0)
+		{
+			if(DMPInfo[index][dmpMarkerType] != 0) DMPInfo[index][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[index][dmpPosX], DMPInfo[index][dmpPosY], DMPInfo[index][dmpPosZ], DMPInfo[index][dmpMarkerType], DMPInfo[index][dmpColor], DMPInfo[index][dmpVW], DMPInfo[index][dmpInt], -1, 500.0);
+		}
+	}
+	return 1;
+}
+
+forward OnLoadDynamicMapIcons();
+public OnLoadDynamicMapIcons()
+{
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "id", tmp, MainPipeline);  DMPInfo[i][dmpSQLId] = strval(tmp);
+		cache_get_field_content(i, "MarkerType", tmp, MainPipeline); DMPInfo[i][dmpMarkerType] = strval(tmp);
+		cache_get_field_content(i, "Color", tmp, MainPipeline); DMPInfo[i][dmpColor] = strval(tmp);
+		cache_get_field_content(i, "VW", tmp, MainPipeline); DMPInfo[i][dmpVW] = strval(tmp);
+		cache_get_field_content(i, "Int", tmp, MainPipeline); DMPInfo[i][dmpInt] = strval(tmp);
+		cache_get_field_content(i, "PosX", tmp, MainPipeline); DMPInfo[i][dmpPosX] = floatstr(tmp);
+		cache_get_field_content(i, "PosY", tmp, MainPipeline); DMPInfo[i][dmpPosY] = floatstr(tmp);
+		cache_get_field_content(i, "PosZ", tmp, MainPipeline); DMPInfo[i][dmpPosZ] = floatstr(tmp);
+		if(DMPInfo[i][dmpPosX] != 0.0)
+		{
+			if(DMPInfo[i][dmpMarkerType] != 0) DMPInfo[i][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], DMPInfo[i][dmpMarkerType], DMPInfo[i][dmpColor], DMPInfo[i][dmpVW], DMPInfo[i][dmpInt], -1, 500.0);
+		}
+		i++;
+	}
+	if(i > 0) printf("[LoadDynamicMapIcons] %d map icons rehashed/loaded.", i);
+	else printf("[LoadDynamicMapIcons] Failed to load any map icons.");
+	return 1;
+}
+
+stock SaveDynamicMapIcon(mapiconid)
+{
+	new string[512];
+
+	format(string, sizeof(string), "UPDATE `dmapicons` SET \
+		`MarkerType`=%d, \
+		`Color`=%d, \
+		`VW`=%d, \
+		`Int`=%d, \
+		`PosX`=%f, \
+		`PosY`=%f, \
+		`PosZ`=%f WHERE `id`=%d",
+		DMPInfo[mapiconid][dmpMarkerType],
+		DMPInfo[mapiconid][dmpColor],
+		DMPInfo[mapiconid][dmpVW],
+		DMPInfo[mapiconid][dmpInt],
+		DMPInfo[mapiconid][dmpPosX],
+		DMPInfo[mapiconid][dmpPosY],
+		DMPInfo[mapiconid][dmpPosZ],
+		DMPInfo[mapiconid][dmpSQLId]
+	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
+
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
 stock SaveDynamicMapIcons()
 {
 	for(new i = 1; i < MAX_DMAPICONS; i++)

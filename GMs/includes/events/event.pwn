@@ -155,7 +155,7 @@ CMD:joinevent(playerid, params[]) {
 					RemovePlayerAttachedObject(playerid, x); 
 				}
 			}
-			for(new i; i < 11; i++) {
+			for(new i; i < 10; i++) {
 				PlayerHoldingObject[playerid][i] = 0;
 			}
 

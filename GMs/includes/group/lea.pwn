@@ -957,6 +957,13 @@ CMD:vcheck(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
+				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+				{
+					new string[78 + MAX_PLAYER_NAME];
+					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
             }
             SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
         }
@@ -984,7 +991,7 @@ CMD:vcheck(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
-				else if(arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);

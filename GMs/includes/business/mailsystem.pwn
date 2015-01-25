@@ -34,6 +34,7 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#define		MAILBOX_RANGE	8.0
 
 stock DisplayStampDialog(playerid)
 {
@@ -257,7 +258,7 @@ CMD:placemailbox(playerid, params[])
 	if (GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be on foot to use this command!");
 	}
-	new h = InRangeOfWhichHouse(playerid, Mailbox_Range);
+	new h = InRangeOfWhichHouse(playerid, MAILBOX_RANGE);
 	if (h == INVALID_HOUSE_ID) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not at your house!");
 	}
@@ -313,7 +314,7 @@ CMD:movemailbox(playerid, params[])
 	if (!HasMailbox(playerid)) {
    		return SendClientMessageEx(playerid, COLOR_GREY, "You don't have a placed mailbox!");
    	}
-	new h = InRangeOfWhichHouse(playerid, Mailbox_Range);
+	new h = InRangeOfWhichHouse(playerid, MAILBOX_RANGE);
 	if (h == INVALID_HOUSE_ID || HouseInfo[h][hMailX] == 0.0) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are too far away from your house door for the new location of your mailbox!");
 	}

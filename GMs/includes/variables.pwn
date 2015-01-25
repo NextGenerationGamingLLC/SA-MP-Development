@@ -2119,8 +2119,6 @@ new const AreaName[161][] = {
 	"Verdant Meadows", "Verona Beach", "Vinewood", "Whitewood Estates", "Willowfield", "Yellow Bell Station"
 };
 
-new const Float: Mailbox_Range = 8.0;
-
 new const VehicleName[212][] = {
 	"Landstalker","Bravura","Buffalo","Linerunner","Perennial","Sentinel","Dumper","Firetruck","Trashmaster","Stretch",
 	"Manana","Infernus","Voodoo","Pony","Mule","Cheetah","Ambulance","Leviathan","Moonbeam","Esperanto","Taxi",

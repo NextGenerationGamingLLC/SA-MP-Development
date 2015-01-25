@@ -684,18 +684,6 @@ PayDay(i) {
 	return 1;
 }
 
-CreateGate(gateid) {
-	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
-	if(GateInfo[gateid][gPosX] == 0.0) return 1;
-	switch(GateInfo[gateid][gRenderHQ]) {
-		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);
-		case 2: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 150.0);
-		case 3: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 200.0);
-		default: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 60.0);
-	}
-	return 1;
-}
-
 AntiDeAMX()
 {
     new a[][] = {
@@ -2997,17 +2985,6 @@ public RevisionListHTTP(index, response_code, data[])
 	return 1;
 }
 
-forward MoveTimerGate(gateid);
-public MoveTimerGate(gateid)
-{
-	if(GateInfo[gateid][gTimer] != 0)
-	{
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		GateInfo[gateid][gStatus] = 0;
-	}
-	return 1;
-}
-
 forward StopMusic();
 public StopMusic()
 {
@@ -3241,32 +3218,6 @@ stock ClearMarriage(playerid)
 		PlayerInfo[playerid][pMarriedID] = -1;
 	}
 	return 1;
-}
-
-stock ClearHouse(houseid) {
-	HouseInfo[houseid][hOwned] = 0;
-	HouseInfo[houseid][hSafeMoney] = 0;
-	HouseInfo[houseid][hPot] = 0;
-	HouseInfo[houseid][hCrack] = 0;
-	HouseInfo[houseid][hMaterials] = 0;
-	HouseInfo[houseid][hHeroin] = 0;
-	for(new i = 0; i < 5; i++)
-	{
-		HouseInfo[houseid][hWeapons][i] = 0;
-	}
-	HouseInfo[houseid][hGLUpgrade] = 1;
-	HouseInfo[houseid][hClosetX] = 0.0;
-	HouseInfo[houseid][hClosetY] = 0.0;
-	HouseInfo[houseid][hClosetZ] = 0.0;
-	DestroyDynamic3DTextLabel(Text3D:HouseInfo[houseid][hClosetTextID]);
-	format(HouseInfo[houseid][hSignDesc], 64, "None");
-	HouseInfo[houseid][hSign][0] = 0.0;
-	HouseInfo[houseid][hSign][1] = 0.0;
-	HouseInfo[houseid][hSign][2] = 0.0;
-	HouseInfo[houseid][hSign][3] = 0.0;
-	HouseInfo[houseid][hSignExpire] = 0;
-	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
-	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
 }
 
 stock BubbleSort(a[], size)
@@ -5105,63 +5056,6 @@ stock SearchingHit(playerid)
 	return 0;
 }
 
-stock GetWeaponSlot(weaponid)
-{
-	switch( weaponid )
-	{
-		case 0, 1:
-		{
-			return 0;
-		}
-		case 2, 3, 4, 5, 6, 7, 8, 9:
-		{
-			return 1;
-		}
-		case 22, 23, 24:
-		{
-			return 2;
-		}
-		case 25, 26, 27:
-		{
-			return 3;
-		}
-		case 28, 29, 32:
-		{
-			return 4;
-		}
-		case 30, 31:
-		{
-			return 5;
-		}
-		case 33, 34:
-		{
-			return 6;
-		}
-		case 35, 36, 37, 38:
-		{
-			return 7;
-		}
-		case 16, 17, 18, 39, 40:
-		{
-			return 8;
-		}
-		case 41, 42, 43:
-		{
-			return 9;
-		}
-		case 10, 11, 12, 13, 14, 15:
-		{
-			return 10;
-		}
-		case 44, 45, 46:
-		{
-			return 11;
-		}
-	}
-	return 0;
-}
-
-
 stock ExecuteHackerAction( playerid, weaponid )
 {
 	if(!gPlayerLogged{playerid}) { return 1; }
@@ -6256,74 +6150,6 @@ stock IsAtBar(playerid)
 	return 0;
 }
 
-GetArrestPointID(playerid) {
-	new a = -1;
-	for(new x = 0; x < MAX_ARRESTPOINTS; x++) 
-	{
-		if(IsPlayerInRangeOfPoint(playerid, 8.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW])
-		{
-			a = x;
-			break;
-		}
-	}
-	return a;
-}
-
-stock IsAtArrestPoint(playerid, type)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		for(new x; x < MAX_ARRESTPOINTS; x++)
-		{
-			if(ArrestPoints[x][arrestPosX] != 0)
-			{
-				if(ArrestPoints[x][arrestType] == type)
-				{
-					switch(ArrestPoints[x][arrestType])
-					{
-						case 0:
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
-						}
-						case 1:
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 50.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
-						}
-						case 2:
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 10.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
-						}
-						case 3:
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
-						}
-						case 4:
-						{
-							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
-						}
-					}
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-stock IsAtImpoundingPoint(playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		for(new x; x < MAX_IMPOUNDPOINTS; x++)
-		{
-			if(ImpoundPoints[x][impoundPosX] != 0)
-			{
-				if(IsPlayerInRangeOfPoint(playerid, 4.0, ImpoundPoints[x][impoundPosX], ImpoundPoints[x][impoundPosY], ImpoundPoints[x][impoundPosZ]) && GetPlayerInterior(playerid) == ImpoundPoints[x][impoundInt] && GetPlayerVirtualWorld(playerid) == ImpoundPoints[x][impoundVW]) return 1;
-			}
-		}
-	}
-	return 0;
-}
-
 stock IsAtPostOffice(playerid)
 {
 	return IsPlayerInRangeOfPoint(playerid,100.0,-262.0643, 6.0924, 2000.9038);
@@ -6341,14 +6167,6 @@ stock IsNearPublicMailbox(playerid)
 {
     for(new i = 0; i < sizeof(MailBoxes); i++) if (IsPlayerInRangeOfPoint(playerid, 3.0, MailBoxes[i][mbPosX], MailBoxes[i][mbPosY], MailBoxes[i][mbPosZ])) return 1;
 	return 0;
-}
-
-stock InRangeOfWhichHouse(playerid, Float: range)
-{
-	if (PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hExtVW]) return PlayerInfo[playerid][pPhousekey];
-	if (PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExtVW]) return PlayerInfo[playerid][pPhousekey2];
-	if (PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExtVW]) return PlayerInfo[playerid][pPhousekey3];
-	return INVALID_HOUSE_ID;
 }
 
 stock IsVIPcar(carid)
@@ -8233,68 +8051,6 @@ stock UpdatePoints()
 	}
 }
 
-stock CreateDynamicDoor(doorid)
-{
-	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
-	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
-	if(DDoorsInfo[doorid][ddExteriorX] == 0.0) return 1;
-	new string[128];
-	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
-	else format(string, sizeof(string), "%s\nID: %d", DDoorsInfo[doorid][ddDescription], doorid);
-
-	switch(DDoorsInfo[doorid][ddColor])
-	{
-	    case -1:{ /* Disable 3d Textdraw */ }
-	    case 1:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWWHITE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 2:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPINK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 3:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWRED, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 4:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBROWN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 5:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGRAY, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 6:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWOLIVE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 7:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPURPLE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 8:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWORANGE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 9:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWAZURE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 10:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGREEN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 11:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLUE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	    case 12:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLACK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-		default:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
-	}
-
-	switch(DDoorsInfo[doorid][ddPickupModel])
-	{
-	    case -1: { /* Disable Pickup */ }
-		case 1:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1210, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 2:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1212, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 3:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1239, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 4:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1240, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 5:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1241, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 6:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1242, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 7:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1247, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 8:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1248, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 9:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1252, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 10:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1253, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 11:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1254, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 12:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1313, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 13:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1272, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 14:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1273, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 15:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1274, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 16:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1275, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 17:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1276, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 18:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1277, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 19:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1279, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 20:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1314, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 21:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1316, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 22:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1317, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 23:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 24:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1582, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-		case 25:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(2894, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
-	    default:
-	    {
-			DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1318, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);
-	    }
-	}
-	return 1;
-}
 
 stock InitEventPoints()
 {
@@ -8403,15 +8159,6 @@ stock ResetPlayerCash(playerid)
 {
 	PlayerInfo[playerid][pCash] = 0;
 	ResetPlayerMoney(playerid);
-	return 1;
-}
-
-stock SaveGates()
-{
-	for(new i = 0; i < MAX_GATES; i++)
-	{
-		SaveGate(i);
-	}
 	return 1;
 }
 
@@ -9419,7 +9166,8 @@ stock ShowStats(playerid,targetid)
 		if(PlayerInfo[targetid][pMember] != INVALID_GROUP_ID)
 		{
 			GetPlayerGroupInfo(targetid, rank, division, employer);
-			format(org, sizeof(org), "Faction: %s (%d)\nRank: %s (%d)\nBadge Number: %s\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], PlayerInfo[targetid][pBadge], division, PlayerInfo[targetid][pDivision]);
+			format(org, sizeof(org), "Group: %s (%d)\nRank: %s (%d)\nDivision: %s (%d)\n", employer, PlayerInfo[targetid][pMember], rank, PlayerInfo[targetid][pRank], division, PlayerInfo[targetid][pDivision]);
+			if(arrGroupData[PlayerInfo[targetid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) format(org, sizeof(org), "%sBadge Number: %s\n", org, PlayerInfo[targetid][pBadge]);
 		}
 		else format(org, sizeof(org), "");
 		if(PlayerInfo[targetid][pBusiness] != INVALID_BUSINESS_ID) format(biz, sizeof(biz), "Business: %s (%d)\nRank: %s (%d)\n", Businesses[PlayerInfo[targetid][pBusiness]][bName], PlayerInfo[targetid][pBusiness], GetBusinessRankName(PlayerInfo[targetid][pBusinessRank]), PlayerInfo[targetid][pBusinessRank]);
@@ -9492,10 +9240,10 @@ stock ShowStats(playerid,targetid)
 		new zone[MAX_ZONE_NAME];
 		GetPlayer3DZone(targetid, zone, sizeof(zone));
 		new fifstr[128];
-		//if(FIFEnabled)
-		//{
-		format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
-		//}
+		if(FIFEnabled)
+		{
+			format(fifstr, sizeof(fifstr), "{FF8000}FIF Hours:{FFFFFF} %d\n{FF8000}FIF Chances:{FFFFFF} %d\n", FIFInfo[targetid][FIFHours], FIFInfo[targetid][FIFChances]);
+		}
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
@@ -9743,62 +9491,6 @@ stock UpdateVehicleHUDForPlayer(p, fuel, speed)
 	else {
 		format(str, sizeof(str), "~b~Lights: ~g~ON");
 		PlayerTextDrawSetString(p, _vhudLights[p], str);
-	}
-}
-
-stock UpdateSpeedCamerasForPlayer(p)
-{
-	if (!IsPlayerConnected(p) || !IsPlayerInAnyVehicle(p) || GetPlayerState(p) != PLAYER_STATE_DRIVER) return;
-
-	// static speed cameras
-	for (new c = 0; c < MAX_SPEEDCAMERAS; c++)
-	{
-		if (SpeedCameras[c][_scActive] == false) continue;
-
-		if (IsPlayerInRangeOfPoint(p, SpeedCameras[c][_scRange], SpeedCameras[c][_scPosX], SpeedCameras[c][_scPosY], SpeedCameras[c][_scPosZ]))
-		{
-		    if(PlayerInfo[p][pConnectHours] > 16)
-		    {
-				new Float:speedLimit = SpeedCameras[c][_scLimit];
-				new Float:vehicleSpeed = player_get_speed(p);
-
-				if (vehicleSpeed > speedLimit && PlayerInfo[p][pTicketTime] == 0)
-				{
-					new vehicleid = GetPlayerVehicleID(p);
-					if(!IsAPlane(vehicleid) && !IsAHelicopter(vehicleid) && GetVehicleModel(vehicleid) != 481 && GetVehicleModel(vehicleid) != 509 && GetVehicleModel(vehicleid) != 510)
-					{
-						if(GetPVarType(p, "LockPickPlayerSQLId") && GetPVarInt(p, "LockPickVehicle") == vehicleid) {
-							new string[155], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
-							SetPVarInt(p, "VLPTickets", GetPVarInt(p, "VLPTickets")+Amount);
-							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
-							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
-							PlayerInfo[p][pTicketTime] = 60;
-							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
-							SendClientMessageEx(p, COLOR_WHITE, string);
-							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
-							PlayerTextDrawShow(p, _vhudFlash[p]);
-							SetTimerEx("TurnOffFlash", 500, 0, "i", p);
-						}
-					    foreach(new i: Player)
-						{
-							new v = GetPlayerVehicle(i, vehicleid);
-							if(v != -1)
-							{
-								new string[128], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
-								PlayerVehicleInfo[i][v][pvTicket] += Amount;
-								PlayerInfo[p][pTicketTime] = 60;
-								format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
-								SendClientMessageEx(p, COLOR_WHITE, string);
-								PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
-								PlayerTextDrawShow(p, _vhudFlash[p]);
-								SetTimerEx("TurnOffFlash", 500, 0, "i", p);
-								g_mysql_SaveVehicle(i, v);
-							}
-						}	
-					}
-			  	}
-			}
-		}
 	}
 }
 
@@ -10113,35 +9805,6 @@ stock GetClosestCar(iPlayer, iException = INVALID_VEHICLE_ID, Float: fRange = Fl
 	return iReturnID;
 }
 
-stock MoveGate(playerid, gateid)
-{
-	new string[128];
-	if(GateInfo[gateid][gStatus] == 0)
-	{
-		format(string, sizeof(string), "* %s uses their remote to open the gates.", GetPlayerNameEx(playerid));
-		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-		GateInfo[gateid][gStatus] = 1;
-		if(GateInfo[gateid][gTimer] != 0)
-		{
-			switch(GateInfo[gateid][gTimer])
-			{
-				case 1: SetTimerEx("MoveTimerGate", 3000, false, "i", gateid);
-				case 2: SetTimerEx("MoveTimerGate", 5000, false, "i", gateid);
-				case 3: SetTimerEx("MoveTimerGate", 8000, false, "i", gateid);
-				case 4: SetTimerEx("MoveTimerGate", 10000, false, "i", gateid);
-			}
-		}
-	}
-	else if(GateInfo[gateid][gStatus] == 1 && GateInfo[gateid][gTimer] == 0)
-	{
-		format(string, sizeof(string), "* %s uses their remote to close the gates.", GetPlayerNameEx(playerid));
-		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
-		GateInfo[gateid][gStatus] = 0;
-	}
-}
-
 stock IsAnAmbulance(carid)
 {
 	if(DynVeh[carid] != -1)
@@ -10150,7 +9813,7 @@ stock IsAnAmbulance(carid)
 	    if((0 <= iGroupID < MAX_GROUPS))
 	    {
 	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC) return 1;
-			else if(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) return 1;
+			else if(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) return 1;
 			else if(carid == 416) return 1;
 		}
 	}
@@ -10352,7 +10015,7 @@ stock CompleteToyTrade(playerid)
 			PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
 			PlayerToyInfo[playerid][i][ptTradable] = 1;
 			
-			if(PlayerToyInfo[playerid][i][ptSpecial] == 1) 
+			if(PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] == 1) 
 			{
 				PlayerToyInfo[playerid][i][ptSpecial] = 0;
 			}
@@ -10579,21 +10242,6 @@ forward ForceSpawn(playerid);
 public ForceSpawn(playerid)
 {
 	SpawnPlayer(playerid);
-	return 1;
-}
-
-stock MoveAutomaticGate(playerid, gateid)
-{
-	MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-	GateInfo[gateid][gStatus] = 1;
-	switch(GateInfo[gateid][gTimer])
-	{
-		case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-		case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
-		case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
-		case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
-		default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
-	}
 	return 1;
 }
 

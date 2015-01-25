@@ -54,6 +54,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 	PlayerCuffed[playerid] = 0;
 	DeletePVar(playerid, "PlayerCuffed");
 	DeletePVar(playerid, "IsFrozen");
+	DeletePVar(playerid, "renderaid");
 	PlayerCuffedTime[playerid] = 0;
 	if(PlayerInfo[playerid][pFitness] >= 6) PlayerInfo[playerid][pFitness] -= 6;
 	else PlayerInfo[playerid][pFitness] = 0;

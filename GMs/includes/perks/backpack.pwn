@@ -82,7 +82,7 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 	switch(dialogid) {
 		case DIALOG_OBACKPACK: {
 			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
-			if(PlayerInfo[playerid][pBItems][5] != 0) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
+			if(PlayerInfo[playerid][pBItems][5] != 0 && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid))) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
 			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
 		}
 		case DIALOG_BFOOD: {
@@ -601,7 +601,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
-						if(slot != 0) {
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
@@ -629,7 +629,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
-						if(slot != 0) {
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));
@@ -657,7 +657,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 						slot = GetBackpackFreeSlotGun(playerid);
-						if(slot != 0) {
+						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
 							GetWeaponName(wbid, weapname, sizeof(weapname));

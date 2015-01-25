@@ -35,6 +35,339 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid == DIALOG_HOUSEINVITE)
+	{
+		if(response)
+		{
+			if(IsPlayerConnected(hInviteOfferTo[playerid]))
+			{
+				new j = 0, zone[MAX_ZONE_NAME];
+				for(new i; i < MAX_HOUSES; i++)
+				{
+					if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID])
+					{
+						if(listitem == j)
+						{
+							Get3DZone(HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ], zone, MAX_ZONE_NAME);
+							SetPVarInt(playerid, "LastHouseInvite", gettime());
+							new istring[128];
+							hInviteHouse[hInviteOfferTo[playerid]] = i;
+							hInviteOffer[hInviteOfferTo[playerid]] = playerid;
+							format(istring, sizeof(istring), "   %s has invited you to their house in %s (type /accept invite).", GetPlayerNameEx(playerid), zone);
+							SendClientMessageEx(hInviteOfferTo[playerid], COLOR_LIGHTBLUE, istring);
+							format(istring, sizeof(istring), "   You have invited %s to your house in %s.", GetPlayerNameEx(hInviteOfferTo[playerid]), zone);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, istring);
+							return 1;
+						}
+						j++;
+					}
+				}
+			}
+			else
+			{
+				hInviteOfferTo[playerid] = INVALID_PLAYER_ID;
+				SendClientMessageEx(playerid, COLOR_GRAD2, "The player you attempted to invite to you house disconnected or timed out.");
+			}
+		}
+	}
+	return 1;
+}
+
+stock SaveHouse(houseid)
+{
+	new string[2048];
+	printf("Saving House ID %d", houseid);
+	format(string, sizeof(string), "UPDATE `houses` SET \
+		`Owned`=%d, \
+		`Level`=%d, \
+		`Description`='%s', \
+		`OwnerID`=%d, \
+		`ExteriorX`=%f, \
+		`ExteriorY`=%f, \
+		`ExteriorZ`=%f, \
+		`ExteriorR`=%f, \
+		`InteriorX`=%f, \
+		`InteriorY`=%f, \
+		`InteriorZ`=%f, \
+		`InteriorR`=%f, \
+		`ExtIW`=%d, \
+		`ExtVW`=%d, \
+		`IntIW`=%d, \
+		`IntVW`=%d,",
+		HouseInfo[houseid][hOwned],
+		HouseInfo[houseid][hLevel],
+		g_mysql_ReturnEscaped(HouseInfo[houseid][hDescription], MainPipeline),
+		HouseInfo[houseid][hOwnerID],
+		HouseInfo[houseid][hExteriorX],
+		HouseInfo[houseid][hExteriorY],
+		HouseInfo[houseid][hExteriorZ],
+		HouseInfo[houseid][hExteriorR],
+		HouseInfo[houseid][hInteriorX],
+		HouseInfo[houseid][hInteriorY],
+		HouseInfo[houseid][hInteriorZ],
+		HouseInfo[houseid][hInteriorR],
+		HouseInfo[houseid][hExtIW],
+		HouseInfo[houseid][hExtVW],
+		HouseInfo[houseid][hIntIW],
+		HouseInfo[houseid][hIntVW]
+	);
+
+	format(string, sizeof(string), "%s \
+		`Lock`=%d, \
+		`Rentable`=%d, \
+		`RentFee`=%d, \
+		`Value`=%d, \
+		`SafeMoney`=%d, \
+		`Pot`=%d, \
+		`Crack`=%d, \
+		`Materials`=%d, \
+		`Heroin`=%d, \
+		`Weapons0`=%d, \
+		`Weapons1`=%d, \
+		`Weapons2`=%d, \
+		`Weapons3`=%d, \
+		`Weapons4`=%d, \
+		`GLUpgrade`=%d, \
+		`CustomInterior`=%d, \
+		`CustomExterior`=%d, \
+		`ExteriorA`=%f, \
+		`InteriorA`=%f, \
+		`MailX`=%f, \
+		`MailY`=%f, \
+		`MailZ`=%f, \
+		`MailA`=%f, \
+		`MailType`=%d, \
+		`ClosetX`=%f, \
+		`ClosetY`=%f, \
+		`ClosetZ`=%f,",
+		string,
+		HouseInfo[houseid][hLock],
+		HouseInfo[houseid][hRentable],
+		HouseInfo[houseid][hRentFee],
+		HouseInfo[houseid][hValue],
+   		HouseInfo[houseid][hSafeMoney],
+		HouseInfo[houseid][hPot],
+		HouseInfo[houseid][hCrack],
+		HouseInfo[houseid][hMaterials],
+		HouseInfo[houseid][hHeroin],
+		HouseInfo[houseid][hWeapons][0],
+		HouseInfo[houseid][hWeapons][1],
+		HouseInfo[houseid][hWeapons][2],
+		HouseInfo[houseid][hWeapons][3],
+		HouseInfo[houseid][hWeapons][4],
+		HouseInfo[houseid][hGLUpgrade],
+		HouseInfo[houseid][hCustomInterior],
+		HouseInfo[houseid][hCustomExterior],
+		HouseInfo[houseid][hExteriorA],
+		HouseInfo[houseid][hInteriorA],
+		HouseInfo[houseid][hMailX],
+		HouseInfo[houseid][hMailY],
+		HouseInfo[houseid][hMailZ],
+		HouseInfo[houseid][hMailA],
+		HouseInfo[houseid][hMailType],
+		HouseInfo[houseid][hClosetX],
+		HouseInfo[houseid][hClosetY],
+		HouseInfo[houseid][hClosetZ]
+	);
+		
+	format(string, sizeof(string), "%s \
+		`SignDesc`='%s', \
+		`SignX`=%f, \
+		`SignY`=%f, \
+		`SignZ`=%f, \
+		`SignA`=%f, \
+		`SignExpire`=%d, \
+		`LastLogin`=%d \
+		WHERE `id`=%d",
+		string,
+		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
+		HouseInfo[houseid][hSign][0],
+		HouseInfo[houseid][hSign][1],
+		HouseInfo[houseid][hSign][2],
+		HouseInfo[houseid][hSign][3],
+		HouseInfo[houseid][hSignExpire],
+		HouseInfo[houseid][hLastLogin],
+		houseid+1
+	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
+
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock LoadHouse(houseid)
+{
+	new string[128];
+	printf("[LoadHouse] Loading HouseID %d's data from database...", houseid);
+	format(string, sizeof(string), "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id WHERE h.id = %d", houseid+1); // Array starts at zero, MySQL starts at one.
+	mysql_function_query(MainPipeline, string, true, "OnLoadHouse", "i", houseid);
+}
+
+stock LoadHouses()
+{
+	printf("[LoadHouses] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id", true, "OnLoadHouses", "");
+}
+
+forward OnLoadHouse(index);
+public OnLoadHouse(index)
+{
+	new rows, fields, szField[24], tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	for(new row; row < rows; row++)
+	{
+		cache_get_field_content(row, "id", tmp, MainPipeline); HouseInfo[index][hSQLId] = strval(tmp);
+		cache_get_field_content(row, "Owned", tmp, MainPipeline); HouseInfo[index][hOwned] = strval(tmp);
+		cache_get_field_content(row, "Level", tmp, MainPipeline); HouseInfo[index][hLevel] = strval(tmp);
+		cache_get_field_content(row, "Description", HouseInfo[index][hDescription], MainPipeline, 16);
+		cache_get_field_content(row, "OwnerID", tmp, MainPipeline); HouseInfo[index][hOwnerID] = strval(tmp);
+		cache_get_field_content(row, "Username", HouseInfo[index][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(row, "ExteriorX", tmp, MainPipeline); HouseInfo[index][hExteriorX] = floatstr(tmp);
+		cache_get_field_content(row, "ExteriorY", tmp, MainPipeline); HouseInfo[index][hExteriorY] = floatstr(tmp);
+		cache_get_field_content(row, "ExteriorZ", tmp, MainPipeline); HouseInfo[index][hExteriorZ] = floatstr(tmp);
+		cache_get_field_content(row, "ExteriorR", tmp, MainPipeline); HouseInfo[index][hExteriorR] = floatstr(tmp);
+		cache_get_field_content(row, "ExteriorA", tmp, MainPipeline); HouseInfo[index][hExteriorA] = floatstr(tmp);
+		cache_get_field_content(row, "CustomExterior", tmp, MainPipeline); HouseInfo[index][hCustomExterior] = strval(tmp);
+		cache_get_field_content(row, "InteriorX", tmp, MainPipeline); HouseInfo[index][hInteriorX] = floatstr(tmp);
+		cache_get_field_content(row, "InteriorY", tmp, MainPipeline); HouseInfo[index][hInteriorY] = floatstr(tmp);
+		cache_get_field_content(row, "InteriorZ", tmp, MainPipeline); HouseInfo[index][hInteriorZ] = floatstr(tmp);
+		cache_get_field_content(row, "InteriorR", tmp, MainPipeline); HouseInfo[index][hInteriorR] = floatstr(tmp);
+		cache_get_field_content(row, "InteriorA", tmp, MainPipeline); HouseInfo[index][hInteriorA] = floatstr(tmp);
+		cache_get_field_content(row, "CustomInterior", tmp, MainPipeline); HouseInfo[index][hCustomInterior] = strval(tmp);
+		cache_get_field_content(row, "ExtIW", tmp, MainPipeline); HouseInfo[index][hExtIW] = strval(tmp);
+		cache_get_field_content(row, "ExtVW", tmp, MainPipeline); HouseInfo[index][hExtVW] = strval(tmp);
+		cache_get_field_content(row, "IntIW", tmp, MainPipeline); HouseInfo[index][hIntIW] = strval(tmp);
+		cache_get_field_content(row, "IntVW", tmp, MainPipeline); HouseInfo[index][hIntVW] = strval(tmp);
+		cache_get_field_content(row, "Lock", tmp, MainPipeline); HouseInfo[index][hLock] = strval(tmp);
+		cache_get_field_content(row, "Rentable", tmp, MainPipeline); HouseInfo[index][hRentable] = strval(tmp);
+		cache_get_field_content(row, "RentFee", tmp, MainPipeline); HouseInfo[index][hRentFee] = strval(tmp);
+		cache_get_field_content(row, "Value", tmp, MainPipeline); HouseInfo[index][hValue] = strval(tmp);
+		cache_get_field_content(row, "SafeMoney", tmp, MainPipeline); HouseInfo[index][hSafeMoney] = strval(tmp);
+		cache_get_field_content(row, "Pot", tmp, MainPipeline); HouseInfo[index][hPot] = strval(tmp);
+		cache_get_field_content(row, "Crack", tmp, MainPipeline); HouseInfo[index][hCrack] = strval(tmp);
+		cache_get_field_content(row, "Materials", tmp, MainPipeline); HouseInfo[index][hMaterials] = strval(tmp);
+		cache_get_field_content(row, "Heroin", tmp, MainPipeline); HouseInfo[index][hHeroin] = strval(tmp);
+		for(new i; i < 5; i++)
+		{
+			format(szField, sizeof(szField), "Weapons%d", i);
+			cache_get_field_content(row, szField, tmp, MainPipeline);
+			HouseInfo[index][hWeapons][i] = strval(tmp);
+		}
+		cache_get_field_content(row, "GLUpgrade", tmp, MainPipeline); HouseInfo[index][hGLUpgrade] = strval(tmp);
+		cache_get_field_content(row, "PickupID", tmp, MainPipeline); HouseInfo[index][hPickupID] = strval(tmp);
+		cache_get_field_content(row, "MailX", tmp, MainPipeline); HouseInfo[index][hMailX] = floatstr(tmp);
+		cache_get_field_content(row, "MailY", tmp, MainPipeline); HouseInfo[index][hMailY] = floatstr(tmp);
+		cache_get_field_content(row, "MailZ", tmp, MainPipeline); HouseInfo[index][hMailZ] = floatstr(tmp);
+		cache_get_field_content(row, "MailA", tmp, MainPipeline); HouseInfo[index][hMailA] = floatstr(tmp);
+		cache_get_field_content(row, "MailType", tmp, MainPipeline); HouseInfo[index][hMailType] = strval(tmp);
+		cache_get_field_content(row, "ClosetX", tmp, MainPipeline); HouseInfo[index][hClosetX] = floatstr(tmp);
+		cache_get_field_content(row, "ClosetY", tmp, MainPipeline); HouseInfo[index][hClosetY] = floatstr(tmp);
+		cache_get_field_content(row, "ClosetZ", tmp, MainPipeline); HouseInfo[index][hClosetZ] = floatstr(tmp);
+
+		cache_get_field_content(row, "SignDesc", HouseInfo[index][hSignDesc], MainPipeline, 64);
+		HouseInfo[index][hSign][0] = cache_get_field_content_float(row, "SignX", MainPipeline);
+		HouseInfo[index][hSign][1] = cache_get_field_content_float(row, "SignY", MainPipeline);
+		HouseInfo[index][hSign][2] = cache_get_field_content_float(row, "SignZ", MainPipeline);
+		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
+		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
+		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
+		
+		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
+		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
+		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
+		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
+		{
+			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", index);
+			Log("logs/house.log", tmp);
+			DeleteHouseSaleSign(index);
+		}
+		if(HouseInfo[index][hSign][0] != 0.0) CreateHouseSaleSign(index);
+	}
+	return 1;
+}
+
+forward OnLoadHouses();
+public OnLoadHouses()
+{
+	new i, rows, fields, szField[24], tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "id", tmp, MainPipeline); HouseInfo[i][hSQLId] = strval(tmp);
+		cache_get_field_content(i, "Owned", tmp, MainPipeline); HouseInfo[i][hOwned] = strval(tmp);
+		cache_get_field_content(i, "Level", tmp, MainPipeline); HouseInfo[i][hLevel] = strval(tmp);
+		cache_get_field_content(i, "Description", HouseInfo[i][hDescription], MainPipeline, 16);
+		cache_get_field_content(i, "OwnerID", tmp, MainPipeline); HouseInfo[i][hOwnerID] = strval(tmp);
+		cache_get_field_content(i, "Username", HouseInfo[i][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); HouseInfo[i][hExteriorX] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); HouseInfo[i][hExteriorY] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); HouseInfo[i][hExteriorZ] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorR", tmp, MainPipeline); HouseInfo[i][hExteriorR] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); HouseInfo[i][hExteriorA] = floatstr(tmp);
+		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); HouseInfo[i][hCustomExterior] = strval(tmp);
+		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); HouseInfo[i][hInteriorX] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); HouseInfo[i][hInteriorY] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); HouseInfo[i][hInteriorZ] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorR", tmp, MainPipeline); HouseInfo[i][hInteriorR] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); HouseInfo[i][hInteriorA] = floatstr(tmp);
+		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); HouseInfo[i][hCustomInterior] = strval(tmp);
+		cache_get_field_content(i, "ExtIW", tmp, MainPipeline); HouseInfo[i][hExtIW] = strval(tmp);
+		cache_get_field_content(i, "ExtVW", tmp, MainPipeline); HouseInfo[i][hExtVW] = strval(tmp);
+		cache_get_field_content(i, "IntIW", tmp, MainPipeline); HouseInfo[i][hIntIW] = strval(tmp);
+		cache_get_field_content(i, "IntVW", tmp, MainPipeline); HouseInfo[i][hIntVW] = strval(tmp);
+		cache_get_field_content(i, "Lock", tmp, MainPipeline); HouseInfo[i][hLock] = strval(tmp);
+		cache_get_field_content(i, "Rentable", tmp, MainPipeline); HouseInfo[i][hRentable] = strval(tmp);
+		cache_get_field_content(i, "RentFee", tmp, MainPipeline); HouseInfo[i][hRentFee] = strval(tmp);
+		cache_get_field_content(i, "Value", tmp, MainPipeline); HouseInfo[i][hValue] = strval(tmp);
+		cache_get_field_content(i, "SafeMoney", tmp, MainPipeline); HouseInfo[i][hSafeMoney] = strval(tmp);
+		cache_get_field_content(i, "Pot", tmp, MainPipeline); HouseInfo[i][hPot] = strval(tmp);
+		cache_get_field_content(i, "Crack", tmp, MainPipeline); HouseInfo[i][hCrack] = strval(tmp);
+		cache_get_field_content(i, "Materials", tmp, MainPipeline); HouseInfo[i][hMaterials] = strval(tmp);
+		cache_get_field_content(i, "Heroin", tmp, MainPipeline); HouseInfo[i][hHeroin] = strval(tmp);
+		for(new j; j < 5; j++)
+		{
+			format(szField, sizeof(szField), "Weapons%d", j);
+			cache_get_field_content(i, szField, tmp, MainPipeline);
+			HouseInfo[i][hWeapons][j] = strval(tmp);
+		}
+		cache_get_field_content(i, "GLUpgrade", tmp, MainPipeline); HouseInfo[i][hGLUpgrade] = strval(tmp);
+		cache_get_field_content(i, "PickupID", tmp, MainPipeline); HouseInfo[i][hPickupID] = strval(tmp);
+		cache_get_field_content(i, "MailX", tmp, MainPipeline); HouseInfo[i][hMailX] = floatstr(tmp);
+		cache_get_field_content(i, "MailY", tmp, MainPipeline); HouseInfo[i][hMailY] = floatstr(tmp);
+		cache_get_field_content(i, "MailZ", tmp, MainPipeline); HouseInfo[i][hMailZ] = floatstr(tmp);
+		cache_get_field_content(i, "MailA", tmp, MainPipeline); HouseInfo[i][hMailA] = floatstr(tmp);
+		cache_get_field_content(i, "MailType", tmp, MainPipeline); HouseInfo[i][hMailType] = strval(tmp);
+		cache_get_field_content(i, "ClosetX", tmp, MainPipeline); HouseInfo[i][hClosetX] = floatstr(tmp);
+		cache_get_field_content(i, "ClosetY", tmp, MainPipeline); HouseInfo[i][hClosetY] = floatstr(tmp);
+		cache_get_field_content(i, "ClosetZ", tmp, MainPipeline); HouseInfo[i][hClosetZ] = floatstr(tmp);
+
+		cache_get_field_content(i, "SignDesc", HouseInfo[i][hSignDesc], MainPipeline, 64);
+		HouseInfo[i][hSign][0] = cache_get_field_content_float(i, "SignX", MainPipeline);
+		HouseInfo[i][hSign][1] = cache_get_field_content_float(i, "SignY", MainPipeline);
+		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
+		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
+		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
+		HouseInfo[i][hLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
+		
+		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
+		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
+		if(HouseInfo[i][hMailX] != 0.0) RenderHouseMailbox(i);
+		if(HouseInfo[i][hSignExpire] != 0 && gettime() >= HouseInfo[i][hSignExpire]) 
+		{
+			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
+			Log("logs/house.log", tmp);
+			DeleteHouseSaleSign(i);
+		}
+		if(HouseInfo[i][hSign][0] != 0.0) CreateHouseSaleSign(i);
+		i++;
+	}
+	if(i > 0) printf("[LoadHouses] %d houses rehashed/loaded.", i);
+	else printf("[LoadHouses] Failed to load any houses.");
+}
+
 stock ReloadHouseText(houseid)
 {
 	new string[128];
@@ -1143,4 +1476,127 @@ CMD:hnear(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	}
 	return 1;
+}
+
+CMD:hmove(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	new houseid, giveplayerid, fee, minfee, choice[16];
+	if(sscanf(params, "s[16]dudd", choice, houseid, giveplayerid, fee, minfee))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hmove <Choice> <HouseID> <playerid> <Fine (Percent)> <min. fine>");
+		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
+		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
+		return 1;
+	}
+	new string[128];
+	new Float: Pos[3];
+	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
+	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
+	if(fee > 0)
+	{
+		fee = totalwealth / 100 * fee;
+		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
+		{
+			fee = fee / 100 * 95;
+		}
+		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
+		{
+			fee = fee / 100 * 85;
+		}
+	}
+	if(strcmp(choice, "interior", true) == 0)
+	{
+		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
+		format(string, sizeof(string), "%s has edited HouseID %d's Interior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], Pos[0], Pos[1], Pos[2]);
+		Log("logs/hedit.log", string);
+		GetPlayerPos(playerid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]);
+		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hInteriorA]);
+		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
+		HouseInfo[houseid][hIntVW] = houseid+6000;
+		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
+		SaveHouse(houseid);
+		if(minfee > fee && minfee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+		else if(fee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+	}	
+	else if(strcmp(choice, "exterior", true) == 0)
+	{
+		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
+		format(string, sizeof(string), "%s has edited HouseID %d's Exterior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid,  HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], Pos[0], Pos[1], Pos[2]);
+		Log("logs/hedit.log", string);
+		GetPlayerPos(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]);
+		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hExteriorA]);
+		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
+		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
+		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the exterior!" );
+		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
+		if(minfee > fee && minfee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+		else if(fee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: House Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+	}
+	return 1;
+}
+
+stock ClearHouse(houseid) {
+	HouseInfo[houseid][hOwned] = 0;
+	HouseInfo[houseid][hSafeMoney] = 0;
+	HouseInfo[houseid][hPot] = 0;
+	HouseInfo[houseid][hCrack] = 0;
+	HouseInfo[houseid][hMaterials] = 0;
+	HouseInfo[houseid][hHeroin] = 0;
+	for(new i = 0; i < 5; i++)
+	{
+		HouseInfo[houseid][hWeapons][i] = 0;
+	}
+	HouseInfo[houseid][hGLUpgrade] = 1;
+	HouseInfo[houseid][hClosetX] = 0.0;
+	HouseInfo[houseid][hClosetY] = 0.0;
+	HouseInfo[houseid][hClosetZ] = 0.0;
+	DestroyDynamic3DTextLabel(Text3D:HouseInfo[houseid][hClosetTextID]);
+	format(HouseInfo[houseid][hSignDesc], 64, "None");
+	HouseInfo[houseid][hSign][0] = 0.0;
+	HouseInfo[houseid][hSign][1] = 0.0;
+	HouseInfo[houseid][hSign][2] = 0.0;
+	HouseInfo[houseid][hSign][3] = 0.0;
+	HouseInfo[houseid][hSignExpire] = 0;
+	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]);
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]);
+}
+
+stock InRangeOfWhichHouse(playerid, Float: range)
+{
+	if (PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey]][hExtVW]) return PlayerInfo[playerid][pPhousekey];
+	if (PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey2]][hExtVW]) return PlayerInfo[playerid][pPhousekey2];
+	if (PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,range,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hExtVW]) return PlayerInfo[playerid][pPhousekey3];
+	return INVALID_HOUSE_ID;
 }

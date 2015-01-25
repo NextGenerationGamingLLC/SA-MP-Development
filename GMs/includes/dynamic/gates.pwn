@@ -121,7 +121,6 @@ CMD:movegate(playerid, params[])
 					MoveDynamicObject(GateInfo[i][gGATE], GateInfo[i][gPosX], GateInfo[i][gPosY], GateInfo[i][gPosZ], GateInfo[i][gSpeed], GateInfo[i][gRotX], GateInfo[i][gRotY], GateInfo[i][gRotZ]);
 					GateInfo[i][gStatus] = 0;
 				}
-				break;
 			}
 		}
 	}
@@ -447,7 +446,6 @@ CMD:gedit(playerid, params[])
 
 		    GateInfo[gateid][gModel] = value;
 		    format(string, sizeof(string), "Model %d assigned to Gate %d", GateInfo[gateid][gModel], gateid);
-		    if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
             CreateGate(gateid);
 		    SendClientMessageEx(playerid, COLOR_WHITE, string);
 		    SaveGate(gateid);
@@ -460,7 +458,6 @@ CMD:gedit(playerid, params[])
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gVW] = value;
 		    format(string, sizeof(string), "Virtual World %d assigned to Gate %d", GateInfo[gateid][gVW], gateid);
-		    if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
             CreateGate(gateid);
 		    SendClientMessageEx(playerid, COLOR_WHITE, string);
 		    SaveGate(gateid);
@@ -473,7 +470,6 @@ CMD:gedit(playerid, params[])
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gInt] = value;
 		    format(string, sizeof(string), "Interior %d assigned to Gate %d", GateInfo[gateid][gInt], gateid);
-		    if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
 			CreateGate(gateid);
 		    SendClientMessageEx(playerid, COLOR_WHITE, string);
 		    SaveGate(gateid);
@@ -640,7 +636,6 @@ CMD:gedit(playerid, params[])
 			    GateInfo[gateid][gRange] = 10;
 			    GateInfo[gateid][gSpeed] = 5.0;
 			}
-		    if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
 			CreateGate(gateid);
 			SaveGate(gateid);
 
@@ -741,6 +736,313 @@ CMD:listgates(playerid, params[])
 		{
 			format(string, sizeof(string), "- %d", i);
 			SendClientMessageEx(playerid, COLOR_GREY, string);
+		}
+	}
+	return 1;
+}
+
+CMD:gmove(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	new gateid, giveplayerid, fee, minfee;
+	if(sscanf(params, "dudd", gateid, giveplayerid, fee, minfee))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /gmove <Choice> <GateID> <playerid> <Fine (Percent)> <min. fine>");
+		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
+		return 1;
+	}
+	new string[128];
+	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
+	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
+	if(fee > 0)
+	{
+		fee = totalwealth / 100 * fee;
+		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
+		{
+			fee = fee / 100 * 95;
+		}
+		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
+		{
+			fee = fee / 100 * 85;
+		}
+	}
+	GetPlayerPos(playerid,GateInfo[gateid][gPosX],GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
+	GateInfo[gateid][gVW] = GetPlayerVirtualWorld(playerid);
+	GateInfo[gateid][gInt] = GetPlayerInterior(playerid);
+	format(string, sizeof(string), "Gate %d Pos moved to %f %f %f, VW: %d INT: %d", gateid, GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	if(GateInfo[gateid][gModel] == 0)
+	{
+		GateInfo[gateid][gModel] = 18631;
+		GateInfo[gateid][gRange] = 10;
+		GateInfo[gateid][gSpeed] = 5.0;
+	}
+	CreateGate(gateid);
+	SaveGate(gateid);
+	format(string, sizeof(string), "%s has edited GateID %d's Position.", GetPlayerNameEx(playerid), gateid);
+	Log("logs/gedit.log", string);
+	if(minfee > fee && minfee > 0)
+	{
+		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
+		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+		Log("logs/admin.log", string);
+		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+	}
+	else if(fee > 0)
+	{
+		GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
+		format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+		Log("logs/admin.log", string);
+		format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+	}
+	return 1;
+}
+
+CreateGate(gateid) {
+	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
+	GateInfo[gateid][gGATE] = INVALID_OBJECT_ID;
+	if(GateInfo[gateid][gPosX] == 0.0) return 1;
+	switch(GateInfo[gateid][gRenderHQ]) {
+		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);
+		case 2: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 150.0);
+		case 3: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 200.0);
+		default: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 60.0);
+	}
+	return 1;
+}
+
+stock LoadGates()
+{
+	printf("[LoadGates] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `gates`", true, "OnLoadGates", "");
+}
+
+forward OnLoadGates();
+public OnLoadGates()
+{
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "HID", tmp, MainPipeline);  GateInfo[i][gHID] = strval(tmp);
+		cache_get_field_content(i, "Speed", tmp, MainPipeline); GateInfo[i][gSpeed] = floatstr(tmp);
+		cache_get_field_content(i, "Range", tmp, MainPipeline); GateInfo[i][gRange] = floatstr(tmp);
+		cache_get_field_content(i, "Model", tmp, MainPipeline); GateInfo[i][gModel] = strval(tmp);
+		cache_get_field_content(i, "VW", tmp, MainPipeline); GateInfo[i][gVW] = strval(tmp);
+		cache_get_field_content(i, "Int", tmp, MainPipeline); GateInfo[i][gInt] = strval(tmp);
+		cache_get_field_content(i, "Pass", GateInfo[i][gPass], MainPipeline, 24);
+		cache_get_field_content(i, "PosX", tmp, MainPipeline); GateInfo[i][gPosX] = floatstr(tmp);
+		cache_get_field_content(i, "PosY", tmp, MainPipeline); GateInfo[i][gPosY] = floatstr(tmp);
+		cache_get_field_content(i, "PosZ", tmp, MainPipeline); GateInfo[i][gPosZ] = floatstr(tmp);
+		cache_get_field_content(i, "RotX", tmp, MainPipeline); GateInfo[i][gRotX] = floatstr(tmp);
+		cache_get_field_content(i, "RotY", tmp, MainPipeline); GateInfo[i][gRotY] = floatstr(tmp);
+		cache_get_field_content(i, "RotZ", tmp, MainPipeline); GateInfo[i][gRotZ] = floatstr(tmp);
+		cache_get_field_content(i, "PosXM", tmp, MainPipeline); GateInfo[i][gPosXM] = floatstr(tmp);
+		cache_get_field_content(i, "PosYM", tmp, MainPipeline); GateInfo[i][gPosYM] = floatstr(tmp);
+		cache_get_field_content(i, "PosZM", tmp, MainPipeline); GateInfo[i][gPosZM] = floatstr(tmp);
+		cache_get_field_content(i, "RotXM", tmp, MainPipeline); GateInfo[i][gRotXM] = floatstr(tmp);
+		cache_get_field_content(i, "RotYM", tmp, MainPipeline); GateInfo[i][gRotYM] = floatstr(tmp);
+		cache_get_field_content(i, "RotZM", tmp, MainPipeline); GateInfo[i][gRotZM] = floatstr(tmp);
+		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); GateInfo[i][gAllegiance] = strval(tmp);
+		cache_get_field_content(i, "GroupType", tmp, MainPipeline); GateInfo[i][gGroupType] = strval(tmp);
+		cache_get_field_content(i, "GroupID", tmp, MainPipeline); GateInfo[i][gGroupID] = strval(tmp);
+		cache_get_field_content(i, "RenderHQ", tmp, MainPipeline); GateInfo[i][gRenderHQ] = strval(tmp);
+		cache_get_field_content(i, "Timer", tmp, MainPipeline); GateInfo[i][gTimer] = strval(tmp);
+		cache_get_field_content(i, "Automate", tmp, MainPipeline); GateInfo[i][gAutomate] = strval(tmp);
+		cache_get_field_content(i, "Locked", tmp, MainPipeline); GateInfo[i][gLocked] = strval(tmp);
+		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
+		i++;
+	}
+}
+
+stock SaveGate(id) {
+	new string[512];
+	format(string, sizeof(string), "UPDATE `gates` SET \
+		`HID`=%d, \
+		`Speed`=%f, \
+		`Range`=%f, \
+		`Model`=%d, \
+		`VW`=%d, \
+		`Int`=%d, \
+		`Pass`='%s', \
+		`PosX`=%f, \
+		`PosY`=%f, \
+		`PosZ`=%f, \
+		`RotX`=%f, \
+		`RotY`=%f, \
+		`RotZ`=%f, \
+		`PosXM`=%f, \
+		`PosYM`=%f, \
+		`PosZM`=%f, \
+		`RotXM`=%f, \
+		`RotYM`=%f, \
+		`RotZM`=%f, \
+		`Allegiance`=%d, \
+		`GroupType`=%d, \
+		`GroupID`=%d, \
+		`RenderHQ`=%d, \
+		`Timer`=%d, \
+		`Automate`=%d, \
+		`Locked`=%d \
+		WHERE `ID` = %d",
+		GateInfo[id][gHID],
+		GateInfo[id][gSpeed],
+		GateInfo[id][gRange],
+		GateInfo[id][gModel],
+		GateInfo[id][gVW],
+		GateInfo[id][gInt],
+		g_mysql_ReturnEscaped(GateInfo[id][gPass], MainPipeline),
+		GateInfo[id][gPosX],
+		GateInfo[id][gPosY],
+		GateInfo[id][gPosZ],
+		GateInfo[id][gRotX],
+		GateInfo[id][gRotY],
+		GateInfo[id][gRotZ],
+		GateInfo[id][gPosXM],
+		GateInfo[id][gPosYM],
+		GateInfo[id][gPosZM],
+		GateInfo[id][gRotXM],
+		GateInfo[id][gRotYM],
+		GateInfo[id][gRotZM],
+		GateInfo[id][gAllegiance],
+		GateInfo[id][gGroupType],
+		GateInfo[id][gGroupID],
+		GateInfo[id][gRenderHQ],
+		GateInfo[id][gTimer],
+		GateInfo[id][gAutomate],
+		GateInfo[id][gLocked],
+		id+1
+	);
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 0;
+}
+
+stock SaveGates()
+{
+	for(new i = 0; i < MAX_GATES; i++)
+	{
+		SaveGate(i);
+	}
+	return 1;
+}
+
+forward MoveTimerGate(gateid);
+public MoveTimerGate(gateid)
+{
+	if(GateInfo[gateid][gTimer] != 0)
+	{
+		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+		GateInfo[gateid][gStatus] = 0;
+	}
+	return 1;
+}
+
+stock MoveGate(playerid, gateid)
+{
+	new string[128];
+	if(GateInfo[gateid][gStatus] == 0)
+	{
+		format(string, sizeof(string), "* %s uses their remote to open the gates.", GetPlayerNameEx(playerid));
+		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
+		GateInfo[gateid][gStatus] = 1;
+		if(GateInfo[gateid][gTimer] != 0)
+		{
+			switch(GateInfo[gateid][gTimer])
+			{
+				case 1: SetTimerEx("MoveTimerGate", 3000, false, "i", gateid);
+				case 2: SetTimerEx("MoveTimerGate", 5000, false, "i", gateid);
+				case 3: SetTimerEx("MoveTimerGate", 8000, false, "i", gateid);
+				case 4: SetTimerEx("MoveTimerGate", 10000, false, "i", gateid);
+			}
+		}
+	}
+	else if(GateInfo[gateid][gStatus] == 1 && GateInfo[gateid][gTimer] == 0)
+	{
+		format(string, sizeof(string), "* %s uses their remote to close the gates.", GetPlayerNameEx(playerid));
+		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+		GateInfo[gateid][gStatus] = 0;
+	}
+}
+
+stock MoveAutomaticGate(playerid, gateid)
+{
+	MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
+	GateInfo[gateid][gStatus] = 1;
+	switch(GateInfo[gateid][gTimer])
+	{
+		case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
+		case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
+		case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
+		case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
+		default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
+	}
+	return 1;
+}
+
+forward AutomaticGateTimer(playerid, gateid);
+public AutomaticGateTimer(playerid, gateid)
+{
+	if(GateInfo[gateid][gLocked] == 0)
+	{
+		if(GateInfo[gateid][gStatus] == 0 && IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]))
+		{
+			if(GateInfo[gateid][gGroupID] != -1 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pMember] == GateInfo[gateid][gGroupID]) MoveAutomaticGate(playerid, gateid);
+			else if(GateInfo[gateid][gAllegiance] != 0 && GateInfo[gateid][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[gateid][gAllegiance] && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[gateid][gGroupType]) MoveAutomaticGate(playerid, gateid);
+			else if(GateInfo[gateid][gAllegiance] != 0 && GateInfo[gateid][gGroupType] == 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[gateid][gAllegiance]) MoveAutomaticGate(playerid, gateid);
+			else if(GateInfo[gateid][gAllegiance] == 0 && GateInfo[gateid][gGroupType] != 0 && (0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GateInfo[gateid][gGroupType]) MoveAutomaticGate(playerid, gateid);
+			else MoveAutomaticGate(playerid, gateid);
+		}
+		SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
+	}
+	else
+	{
+		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
+		{
+			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
+			GateInfo[gateid][gStatus] = 0;
+			return 1;
+		}
+	}
+	return 1;
+}
+
+forward AutomaticGateTimerClose(playerid, gateid);
+public AutomaticGateTimerClose(playerid, gateid)
+{
+	if(GateInfo[gateid][gLocked] == 0)
+	{
+		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
+		{
+			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
+			GateInfo[gateid][gStatus] = 0;
+			return 1;
+		}
+		switch(GateInfo[gateid][gTimer])
+		{
+			case 1: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
+			case 2: SetTimerEx("AutomaticGateTimerClose", 5000, false, "ii", playerid, gateid);
+			case 3: SetTimerEx("AutomaticGateTimerClose", 8000, false, "ii", playerid, gateid);
+			case 4: SetTimerEx("AutomaticGateTimerClose", 10000, false, "ii", playerid, gateid);
+			default: SetTimerEx("AutomaticGateTimerClose", 3000, false, "ii", playerid, gateid);
+		}
+	}
+	else
+	{
+		if(GateInfo[gateid][gStatus] == 1 && !IsPlayerInRangeOfPoint(playerid, GateInfo[gateid][gRange], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]))
+		{
+			MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
+			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
+			GateInfo[gateid][gStatus] = 0;
+			return 1;
 		}
 	}
 	return 1;

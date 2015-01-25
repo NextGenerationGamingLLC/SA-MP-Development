@@ -35,6 +35,291 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid == DOORLOCK)
+	{
+		if(response)
+		{
+			new i = GetPVarInt(playerid, "Door");
+			if(isnull(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "You did not enter anything" );
+			if(strlen(inputtext) > 24) return SendClientMessageEx(playerid, COLOR_GREY, "The password can not be greater than 24 characters.");
+			if(strcmp(inputtext, DDoorsInfo[i][ddPass], true) == 0)
+			{
+				if(DDoorsInfo[i][ddLocked] == 0)
+				{
+					DDoorsInfo[i][ddLocked] = 1;
+					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors locked.");
+				}
+				else
+				{
+					DDoorsInfo[i][ddLocked] = 0;
+					SendClientMessageEx(playerid, COLOR_WHITE, "Password accepted, doors unlocked.");
+				}
+				SaveDynamicDoor(i);
+			}
+			else SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
+		}
+	}
+	return 1;
+}
+
+stock CreateDynamicDoor(doorid)
+{
+	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+	if(DDoorsInfo[doorid][ddExteriorX] == 0.0) return 1;
+	new string[128];
+	if(DDoorsInfo[doorid][ddType] != 0) format(string, sizeof(string), "%s | Owner: %s\nID: %d", DDoorsInfo[doorid][ddDescription], StripUnderscore(DDoorsInfo[doorid][ddOwnerName]), doorid);
+	else format(string, sizeof(string), "%s\nID: %d", DDoorsInfo[doorid][ddDescription], doorid);
+
+	switch(DDoorsInfo[doorid][ddColor])
+	{
+	    case -1:{ /* Disable 3d Textdraw */ }
+	    case 1:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWWHITE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 2:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPINK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 3:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWRED, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 4:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBROWN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 5:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGRAY, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 6:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWOLIVE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 7:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWPURPLE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 8:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWORANGE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 9:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWAZURE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 10:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWGREEN, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 11:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLUE, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	    case 12:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_TWBLACK, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+		default:{DDoorsInfo[doorid][ddTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, DDoorsInfo[doorid][ddExteriorVW], DDoorsInfo[doorid][ddExteriorInt], -1);}
+	}
+
+	switch(DDoorsInfo[doorid][ddPickupModel])
+	{
+	    case -1: { /* Disable Pickup */ }
+		case 1:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1210, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 2:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1212, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 3:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1239, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 4:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1240, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 5:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1241, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 6:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1242, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 7:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1247, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 8:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1248, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 9:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1252, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 10:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1253, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 11:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1254, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 12:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1313, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 13:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1272, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 14:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1273, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 15:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1274, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 16:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1275, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 17:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1276, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 18:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1277, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 19:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1279, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 20:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1314, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 21:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1316, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 22:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1317, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 23:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 24:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1582, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+		case 25:{DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(2894, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);}
+	    default:
+	    {
+			DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1318, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);
+	    }
+	}
+	return 1;
+}
+
+stock SaveDynamicDoor(doorid)
+{
+	new string[1024];
+	format(string, sizeof(string), "UPDATE `ddoors` SET \
+		`Description`='%s', \
+		`Owner`=%d, \
+		`OwnerName`='%s', \
+		`CustomInterior`=%d, \
+		`ExteriorVW`=%d, \
+		`ExteriorInt`=%d, \
+		`InteriorVW`=%d, \
+		`InteriorInt`=%d, \
+		`ExteriorX`=%f, \
+		`ExteriorY`=%f, \
+		`ExteriorZ`=%f, \
+		`ExteriorA`=%f, \
+		`InteriorX`=%f, \
+		`InteriorY`=%f, \
+		`InteriorZ`=%f, \
+		`InteriorA`=%f,",
+		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddDescription], MainPipeline),
+		DDoorsInfo[doorid][ddOwner],
+		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddOwnerName], MainPipeline),
+		DDoorsInfo[doorid][ddCustomInterior],
+		DDoorsInfo[doorid][ddExteriorVW],
+		DDoorsInfo[doorid][ddExteriorInt],
+		DDoorsInfo[doorid][ddInteriorVW],
+		DDoorsInfo[doorid][ddInteriorInt],
+		DDoorsInfo[doorid][ddExteriorX],
+		DDoorsInfo[doorid][ddExteriorY],
+		DDoorsInfo[doorid][ddExteriorZ],
+		DDoorsInfo[doorid][ddExteriorA],
+		DDoorsInfo[doorid][ddInteriorX],
+		DDoorsInfo[doorid][ddInteriorY],
+		DDoorsInfo[doorid][ddInteriorZ],
+		DDoorsInfo[doorid][ddInteriorA]
+	);
+
+	format(string, sizeof(string), "%s \
+		`CustomExterior`=%d, \
+		`Type`=%d, \
+		`Rank`=%d, \
+		`VIP`=%d, \
+		`Famed`=%d, \
+		`DPC`=%d, \
+		`Allegiance`=%d, \
+		`GroupType`=%d, \
+		`Faction`=%d, \
+		`Admin`=%d, \
+		`Wanted`=%d, \
+		`VehicleAble`=%d, \
+		`Color`=%d, \
+		`PickupModel`=%d, \
+		`Pass`='%s', \
+		`Locked`=%d, \
+		`LastLogin`=%d \
+		WHERE `id`=%d",
+		string,
+		DDoorsInfo[doorid][ddCustomExterior],
+		DDoorsInfo[doorid][ddType],
+		DDoorsInfo[doorid][ddRank],
+		DDoorsInfo[doorid][ddVIP],
+		DDoorsInfo[doorid][ddFamed],
+		DDoorsInfo[doorid][ddDPC],
+		DDoorsInfo[doorid][ddAllegiance],
+		DDoorsInfo[doorid][ddGroupType],
+		DDoorsInfo[doorid][ddFaction],
+		DDoorsInfo[doorid][ddAdmin],
+		DDoorsInfo[doorid][ddWanted],
+		DDoorsInfo[doorid][ddVehicleAble],
+		DDoorsInfo[doorid][ddColor],
+		DDoorsInfo[doorid][ddPickupModel],
+		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddPass], MainPipeline),
+		DDoorsInfo[doorid][ddLocked],
+		DDoorsInfo[doorid][ddLastLogin],
+		doorid+1
+	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
+
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock LoadDynamicDoor(doorid)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid+1); // Array starts at zero, MySQL starts at 1.
+	mysql_function_query(MainPipeline, string, true, "OnLoadDynamicDoor", "i", doorid);
+}
+
+stock LoadDynamicDoors()
+{
+	printf("[LoadDynamicDoors] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `ddoors`", true, "OnLoadDynamicDoors", "");
+}
+
+forward OnLoadDynamicDoor(index);
+public OnLoadDynamicDoor(index)
+{
+	new rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	for(new row; row < rows; row++)
+	{
+		cache_get_field_content(rows, "id", tmp, MainPipeline);  DDoorsInfo[index][ddSQLId] = strval(tmp);
+		cache_get_field_content(rows, "Description", DDoorsInfo[index][ddDescription], MainPipeline, 128);
+		cache_get_field_content(rows, "Owner", tmp, MainPipeline); DDoorsInfo[index][ddOwner] = strval(tmp);
+		cache_get_field_content(rows, "OwnerName", DDoorsInfo[index][ddOwnerName], MainPipeline, 42);
+		cache_get_field_content(rows, "CustomExterior", tmp, MainPipeline); DDoorsInfo[index][ddCustomExterior] = strval(tmp);
+		cache_get_field_content(rows, "CustomInterior", tmp, MainPipeline); DDoorsInfo[index][ddCustomInterior] = strval(tmp);
+		cache_get_field_content(rows, "ExteriorVW", tmp, MainPipeline); DDoorsInfo[index][ddExteriorVW] = strval(tmp);
+		cache_get_field_content(rows, "ExteriorInt", tmp, MainPipeline); DDoorsInfo[index][ddExteriorInt] = strval(tmp);
+		cache_get_field_content(rows, "InteriorVW", tmp, MainPipeline); DDoorsInfo[index][ddInteriorVW] = strval(tmp);
+		cache_get_field_content(rows, "InteriorInt", tmp, MainPipeline); DDoorsInfo[index][ddInteriorInt] = strval(tmp);
+		cache_get_field_content(rows, "ExteriorX", tmp, MainPipeline); DDoorsInfo[index][ddExteriorX] = floatstr(tmp);
+		cache_get_field_content(rows, "ExteriorY", tmp, MainPipeline); DDoorsInfo[index][ddExteriorY] = floatstr(tmp);
+		cache_get_field_content(rows, "ExteriorZ", tmp, MainPipeline); DDoorsInfo[index][ddExteriorZ] = floatstr(tmp);
+		cache_get_field_content(rows, "ExteriorA", tmp, MainPipeline); DDoorsInfo[index][ddExteriorA] = floatstr(tmp);
+		cache_get_field_content(rows, "InteriorX", tmp, MainPipeline); DDoorsInfo[index][ddInteriorX] = floatstr(tmp);
+		cache_get_field_content(rows, "InteriorY", tmp, MainPipeline); DDoorsInfo[index][ddInteriorY] = floatstr(tmp);
+		cache_get_field_content(rows, "InteriorZ", tmp, MainPipeline); DDoorsInfo[index][ddInteriorZ] = floatstr(tmp);
+		cache_get_field_content(rows, "InteriorA", tmp, MainPipeline); DDoorsInfo[index][ddInteriorA] = floatstr(tmp);
+		cache_get_field_content(rows, "Type", tmp, MainPipeline); DDoorsInfo[index][ddType] = strval(tmp);
+		cache_get_field_content(rows, "Rank", tmp, MainPipeline); DDoorsInfo[index][ddRank] = strval(tmp);
+		cache_get_field_content(rows, "VIP", tmp, MainPipeline); DDoorsInfo[index][ddVIP] = strval(tmp);
+		cache_get_field_content(rows, "Famed", tmp, MainPipeline); DDoorsInfo[index][ddFamed] = strval(tmp);
+		cache_get_field_content(rows, "DPC", tmp, MainPipeline); DDoorsInfo[index][ddDPC] = strval(tmp);
+		cache_get_field_content(rows, "Allegiance", tmp, MainPipeline); DDoorsInfo[index][ddAllegiance] = strval(tmp);
+		cache_get_field_content(rows, "GroupType", tmp, MainPipeline); DDoorsInfo[index][ddGroupType] = strval(tmp);
+		cache_get_field_content(rows, "Faction", tmp, MainPipeline); DDoorsInfo[index][ddFaction] = strval(tmp);
+		cache_get_field_content(rows, "Admin", tmp, MainPipeline); DDoorsInfo[index][ddAdmin] = strval(tmp);
+		cache_get_field_content(rows, "Wanted", tmp, MainPipeline); DDoorsInfo[index][ddWanted] = strval(tmp);
+		cache_get_field_content(rows, "VehicleAble", tmp, MainPipeline); DDoorsInfo[index][ddVehicleAble] = strval(tmp);
+		cache_get_field_content(rows, "Color", tmp, MainPipeline); DDoorsInfo[index][ddColor] = strval(tmp);
+		cache_get_field_content(rows, "PickupModel", tmp, MainPipeline); DDoorsInfo[index][ddPickupModel] = strval(tmp);
+		cache_get_field_content(rows, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
+		cache_get_field_content(rows, "Locked", tmp, MainPipeline); DDoorsInfo[index][ddLocked] = strval(tmp);
+		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(rows, "LastLogin", MainPipeline);
+		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
+	}
+	return 1;
+}
+
+
+forward OnLoadDynamicDoors();
+public OnLoadDynamicDoors()
+{
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "id", tmp, MainPipeline);  DDoorsInfo[i][ddSQLId] = strval(tmp);
+		cache_get_field_content(i, "Description", DDoorsInfo[i][ddDescription], MainPipeline, 128);
+		cache_get_field_content(i, "Owner", tmp, MainPipeline); DDoorsInfo[i][ddOwner] = strval(tmp);
+		cache_get_field_content(i, "OwnerName", DDoorsInfo[i][ddOwnerName], MainPipeline, 42);
+		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); DDoorsInfo[i][ddCustomExterior] = strval(tmp);
+		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); DDoorsInfo[i][ddCustomInterior] = strval(tmp);
+		cache_get_field_content(i, "ExteriorVW", tmp, MainPipeline); DDoorsInfo[i][ddExteriorVW] = strval(tmp);
+		cache_get_field_content(i, "ExteriorInt", tmp, MainPipeline); DDoorsInfo[i][ddExteriorInt] = strval(tmp);
+		cache_get_field_content(i, "InteriorVW", tmp, MainPipeline); DDoorsInfo[i][ddInteriorVW] = strval(tmp);
+		cache_get_field_content(i, "InteriorInt", tmp, MainPipeline); DDoorsInfo[i][ddInteriorInt] = strval(tmp);
+		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); DDoorsInfo[i][ddExteriorX] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); DDoorsInfo[i][ddExteriorY] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); DDoorsInfo[i][ddExteriorZ] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); DDoorsInfo[i][ddExteriorA] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); DDoorsInfo[i][ddInteriorX] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); DDoorsInfo[i][ddInteriorY] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); DDoorsInfo[i][ddInteriorZ] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); DDoorsInfo[i][ddInteriorA] = floatstr(tmp);
+		cache_get_field_content(i, "Type", tmp, MainPipeline); DDoorsInfo[i][ddType] = strval(tmp);
+		cache_get_field_content(i, "Rank", tmp, MainPipeline); DDoorsInfo[i][ddRank] = strval(tmp);
+		cache_get_field_content(i, "VIP", tmp, MainPipeline); DDoorsInfo[i][ddVIP] = strval(tmp);
+		cache_get_field_content(i, "Famed", tmp, MainPipeline); DDoorsInfo[i][ddFamed] = strval(tmp);
+		cache_get_field_content(i, "DPC", tmp, MainPipeline); DDoorsInfo[i][ddDPC] = strval(tmp);
+		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); DDoorsInfo[i][ddAllegiance] = strval(tmp);
+		cache_get_field_content(i, "GroupType", tmp, MainPipeline); DDoorsInfo[i][ddGroupType] = strval(tmp);
+		cache_get_field_content(i, "Faction", tmp, MainPipeline); DDoorsInfo[i][ddFaction] = strval(tmp);
+		cache_get_field_content(i, "Admin", tmp, MainPipeline); DDoorsInfo[i][ddAdmin] = strval(tmp);
+		cache_get_field_content(i, "Wanted", tmp, MainPipeline); DDoorsInfo[i][ddWanted] = strval(tmp);
+		cache_get_field_content(i, "VehicleAble", tmp, MainPipeline); DDoorsInfo[i][ddVehicleAble] = strval(tmp);
+		cache_get_field_content(i, "Color", tmp, MainPipeline); DDoorsInfo[i][ddColor] = strval(tmp);
+		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); DDoorsInfo[i][ddPickupModel] = strval(tmp);
+		cache_get_field_content(i, "Pass", DDoorsInfo[i][ddPass], MainPipeline, 24);
+		cache_get_field_content(i, "Locked", tmp, MainPipeline); DDoorsInfo[i][ddLocked] = strval(tmp);
+		DDoorsInfo[i][ddLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
+		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);
+		i++;
+	}
+	if(i > 0) printf("[LoadDynamicDoors] %d doors rehashed/loaded.", i);
+	else printf("[LoadDynamicDoors] Failed to load any doors.");
+	return 1;
+}
+
 stock SaveDynamicDoors()
 {
 	for(new i = 0; i < MAX_DDOORS; i++)
@@ -87,6 +372,37 @@ stock RehashDynamicDoors()
 		RehashDynamicDoor(i);
 	}
 	LoadDynamicDoors();
+}
+
+forward OnSetDDOwner(playerid, doorid);
+public OnSetDDOwner(playerid, doorid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+	    new rows, fields;
+	    new string[128], sqlid[5], playername[MAX_PLAYER_NAME], id;
+    	cache_get_data(rows, fields, MainPipeline);
+
+    	if(rows)
+    	{
+			cache_get_field_content(0, "id", sqlid, MainPipeline); id = strval(sqlid);
+			cache_get_field_content(0, "Username", playername, MainPipeline, MAX_PLAYER_NAME);
+			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), playername, MAX_PLAYER_NAME);
+			DDoorsInfo[doorid][ddOwner] = id;
+
+			format(string, sizeof(string), "Successfully set the owner to %s.", playername);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+			DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+			CreateDynamicDoor(doorid);
+			SaveDynamicDoor(doorid);
+			format(string, sizeof(string), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, playername, id);
+			Log("logs/ddedit.log", string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
+	}
+	return 1;
 }
 
 CMD:changedoorpass(playerid, params[])
@@ -748,5 +1064,95 @@ CMD:ddedit(playerid, params[])
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	return 1;
+}
+
+CMD:ddmove(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	new doorid, giveplayerid, fee, minfee, choice[16];
+	if(sscanf(params, "s[16]dudd", choice, doorid, giveplayerid, fee, minfee))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddmove <Choice> <DoorID> <playerid> <Fine (Percent)> <min. fine>");
+		SendClientMessageEx(playerid, COLOR_GREY, "Choice: Exterior | Interior");
+		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Set fine as 0 if you don't want to fine this player.");
+		return 1;
+	}
+	if(doorid >= MAX_DDOORS) return SendClientMessageEx( playerid, COLOR_WHITE, "Invalid Door ID!");
+	new string[128];
+	new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
+	if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey2]][hSafeMoney];
+	if(PlayerInfo[giveplayerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey3]][hSafeMoney];
+	if(fee > 0)
+	{
+		fee = totalwealth / 100 * fee;
+		if(PlayerInfo[giveplayerid][pDonateRank] == 3)
+		{
+			fee = fee / 100 * 95;
+		}
+		if(PlayerInfo[giveplayerid][pDonateRank] >= 4)
+		{
+			fee = fee / 100 * 85;
+		}
+	}
+	if(strcmp(choice, "interior", true) == 0)
+	{
+		GetPlayerPos(playerid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
+		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddInteriorA]);
+		DDoorsInfo[doorid][ddInteriorInt] = GetPlayerInterior(playerid);
+		DDoorsInfo[doorid][ddInteriorVW] = GetPlayerVirtualWorld(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the interior!");
+		SaveDynamicDoor(doorid);
+		format(string, sizeof(string), "%s has edited DoorID %d's Interior.", GetPlayerNameEx(playerid), doorid);
+		Log("logs/ddedit.log", string);
+		if(minfee > fee && minfee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+			
+		}
+		else if(fee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+	}
+	else if(strcmp(choice, "exterior", true) == 0)
+	{
+		GetPlayerPos(playerid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]);
+		GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddExteriorA]);
+		DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
+		DDoorsInfo[doorid][ddExteriorInt] = GetPlayerInterior(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the exterior!");
+		DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]);
+		if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
+		CreateDynamicDoor(doorid);
+		SaveDynamicDoor(doorid);
+		format(string, sizeof(string), "%s has edited DoorID %d's Exterior.", GetPlayerNameEx(playerid), doorid);
+		Log("logs/ddedit.log", string);
+		if(minfee > fee && minfee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -minfee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(minfee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+		else if(fee > 0)
+		{
+			GivePlayerCashEx(giveplayerid, TYPE_ONHAND, -fee);
+			format(string, sizeof(string), "AdmCmd: %s(%d) was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			Log("logs/admin.log", string);
+			format(string, sizeof(string), "AdmCmd: %s was fined $%s by %s, reason: Dynamic Door Move", GetPlayerNameEx(giveplayerid), number_format(fee), GetPlayerNameEx(playerid));
+			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+		}
+	}
 	return 1;
 }

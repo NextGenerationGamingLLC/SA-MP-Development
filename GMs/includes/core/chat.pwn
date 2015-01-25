@@ -116,7 +116,7 @@ CMD:w(playerid, params[])
 			else format(string, sizeof(string), "* %s mutters something to herself.", GetPlayerNameEx(playerid));
 			return ProxDetector(5.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
-		if(ProxDetectorS(5.0, playerid, giveplayerid) || PlayerInfo[playerid][pAdmin] >= 2)
+		if(ProxDetectorS(5.0, playerid, giveplayerid) || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] == 2)
 		{
 		    foreach(new i: Player)
 			{

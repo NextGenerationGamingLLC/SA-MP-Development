@@ -35,6 +35,249 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock LoadArrestPoint(id)
+{
+	new string[128];
+	format(string, sizeof(string), "SELECT * FROM `arrestpoints` WHERE `id`=%d", id);
+	mysql_function_query(MainPipeline, string, true, "OnLoadArrestPoints", "i", id);
+}
+
+stock LoadArrestPoints()
+{
+	printf("[LoadArrestPoints] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `arrestpoints`", true, "OnLoadArrestPoints", "");
+}
+
+forward OnLoadArrestPoint(index);
+public OnLoadArrestPoint(index)
+{
+	new rows, fields, tmp[128], string[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	for(new row; row < rows; row++)
+	{
+		cache_get_field_content(row, "id", tmp, MainPipeline);  ArrestPoints[index][arrestSQLId] = strval(tmp);
+		cache_get_field_content(row, "PosX", tmp, MainPipeline); ArrestPoints[index][arrestPosX] = floatstr(tmp);
+		cache_get_field_content(row, "PosY", tmp, MainPipeline); ArrestPoints[index][arrestPosY] = floatstr(tmp);
+		cache_get_field_content(row, "PosZ", tmp, MainPipeline); ArrestPoints[index][arrestPosZ] = floatstr(tmp);
+		cache_get_field_content(row, "VW", tmp, MainPipeline); ArrestPoints[index][arrestVW] = strval(tmp);
+		cache_get_field_content(row, "Int", tmp, MainPipeline); ArrestPoints[index][arrestInt] = strval(tmp);
+		cache_get_field_content(row, "Type", tmp, MainPipeline); ArrestPoints[index][arrestType] = strval(tmp);
+		if(ArrestPoints[index][arrestPosX] != 0)
+		{
+			switch(ArrestPoints[index][arrestType])
+			{
+				case 0:
+				{
+					format(string, sizeof(string), "/arrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+				}
+				case 2:
+				{
+					format(string, sizeof(string), "/docarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+				}
+				case 3:
+				{
+					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+				}
+				case 4:
+				{
+					format(string, sizeof(string), "/jarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+forward OnLoadArrestPoints();
+public OnLoadArrestPoints()
+{
+	new i, rows, fields, tmp[128], string[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while(i < rows)
+	{
+		cache_get_field_content(i, "id", tmp, MainPipeline);  ArrestPoints[i][arrestSQLId] = strval(tmp);
+		cache_get_field_content(i, "PosX", tmp, MainPipeline); ArrestPoints[i][arrestPosX] = floatstr(tmp);
+		cache_get_field_content(i, "PosY", tmp, MainPipeline); ArrestPoints[i][arrestPosY] = floatstr(tmp);
+		cache_get_field_content(i, "PosZ", tmp, MainPipeline); ArrestPoints[i][arrestPosZ] = floatstr(tmp);
+		cache_get_field_content(i, "VW", tmp, MainPipeline); ArrestPoints[i][arrestVW] = strval(tmp);
+		cache_get_field_content(i, "Int", tmp, MainPipeline); ArrestPoints[i][arrestInt] = strval(tmp);
+		cache_get_field_content(i, "Type", tmp, MainPipeline); ArrestPoints[i][arrestType] = strval(tmp);
+		cache_get_field_content(i, "jailVW", tmp, MainPipeline); ArrestPoints[i][jailVW] = strval(tmp);
+		cache_get_field_content(i, "jailInt", tmp, MainPipeline); ArrestPoints[i][jailInt] = strval(tmp);
+		cache_get_field_content(i, "jailpos1x", tmp, MainPipeline); ArrestPoints[i][JailPos1][0] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos1y", tmp, MainPipeline); ArrestPoints[i][JailPos1][1] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos1z", tmp, MainPipeline); ArrestPoints[i][JailPos1][2] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2x", tmp, MainPipeline); ArrestPoints[i][JailPos2][0] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2y", tmp, MainPipeline); ArrestPoints[i][JailPos2][1] = floatstr(tmp);
+		cache_get_field_content(i, "jailpos2z", tmp, MainPipeline); ArrestPoints[i][JailPos2][2] = floatstr(tmp);
+		if(ArrestPoints[i][arrestPosX] != 0)
+		{
+			switch(ArrestPoints[i][arrestType])
+			{
+				case 0:
+				{
+					format(string, sizeof(string), "/arrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+				}
+				case 2:
+				{
+					format(string, sizeof(string), "/docarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+				}
+				case 3:
+				{
+					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+				}
+				case 4:
+				{
+					format(string, sizeof(string), "/jarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+				}
+			}
+		}
+		i++;
+	}
+}
+
+stock SaveArrestPoint(id)
+{
+	new string[1024];
+	format(string, sizeof(string), "UPDATE `arrestpoints` SET \
+		`PosX`=%f, \
+		`PosY`=%f, \
+		`PosZ`=%f, \
+		`VW`=%d, \
+		`Int`=%d, \
+		`Type`=%d, \
+		`jailVW`=%d, \
+		`jailInt`=%d, \
+		`jailpos1x`=%f, \
+		`jailpos1y`=%f, \
+		`jailpos1z`=%f, \
+		`jailpos2x`=%f, \
+		`jailpos2y`=%f, \
+		`jailpos2z`=%f WHERE `id`=%d",
+		ArrestPoints[id][arrestPosX],
+		ArrestPoints[id][arrestPosY],
+		ArrestPoints[id][arrestPosZ],
+		ArrestPoints[id][arrestVW],
+		ArrestPoints[id][arrestInt],
+		ArrestPoints[id][arrestType],
+		ArrestPoints[id][jailVW],
+		ArrestPoints[id][jailInt],
+		ArrestPoints[id][JailPos1][0],
+		ArrestPoints[id][JailPos1][1],
+		ArrestPoints[id][JailPos1][2],
+		ArrestPoints[id][JailPos2][0],
+		ArrestPoints[id][JailPos2][1],
+		ArrestPoints[id][JailPos2][2],
+		id
+	);
+
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock SaveArrestPoints()
+{
+	for(new i = 0; i < MAX_ARRESTPOINTS; i++)
+	{
+		SaveArrestPoint(i);
+	}
+	return 1;
+}
+
+stock RehashArrestPoint(id)
+{
+	DestroyDynamic3DTextLabel(ArrestPoints[id][arrestTextID]);
+	DestroyDynamicPickup(ArrestPoints[id][arrestPickupID]);
+	ArrestPoints[id][arrestSQLId] = -1;
+	ArrestPoints[id][arrestPosX] = 0.0;
+	ArrestPoints[id][arrestPosY] = 0.0;
+	ArrestPoints[id][arrestPosZ] = 0.0;
+	ArrestPoints[id][arrestVW] = 0;
+	ArrestPoints[id][arrestInt] = 0;
+	ArrestPoints[id][arrestType] = 0;
+	LoadArrestPoint(id);
+}
+
+stock RehashArrestPoints()
+{
+	printf("[RehashArrestPoints] Deleting Arrest Points from server...");
+	for(new i = 0; i < MAX_ARRESTPOINTS; i++)
+	{
+		RehashArrestPoint(i);
+	}
+	LoadArrestPoints();
+}
+
+GetArrestPointID(playerid) {
+	new a = -1;
+	for(new x = 0; x < MAX_ARRESTPOINTS; x++) 
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 8.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW])
+		{
+			a = x;
+			break;
+		}
+	}
+	return a;
+}
+
+stock IsAtArrestPoint(playerid, type)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		for(new x; x < MAX_ARRESTPOINTS; x++)
+		{
+			if(ArrestPoints[x][arrestPosX] != 0)
+			{
+				if(ArrestPoints[x][arrestType] == type)
+				{
+					switch(ArrestPoints[x][arrestType])
+					{
+						case 0:
+						{
+							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
+						}
+						case 1:
+						{
+							if(IsPlayerInRangeOfPoint(playerid, 50.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
+						}
+						case 2:
+						{
+							if(IsPlayerInRangeOfPoint(playerid, 10.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
+						}
+						case 3:
+						{
+							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
+						}
+						case 4:
+						{
+							if(IsPlayerInRangeOfPoint(playerid, 4.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW]) return 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 CMD:arrestedit(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 4)

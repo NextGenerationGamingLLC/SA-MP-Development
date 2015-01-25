@@ -74,6 +74,8 @@ DestroyPlant(i)
 
 CMD:useheroin(playerid, params[])
 {
+	if(PlayerInfo[playerid][pHospital])
+		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pHeroin] < 10)
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You need at least 10 milligrams of heroin.");
 

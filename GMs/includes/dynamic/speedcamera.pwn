@@ -35,6 +35,359 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if (dialogid == SPEEDCAM_DIALOG_MAIN)
+	{
+		if (!response) return 1;
+		switch (listitem)
+		{
+			case 0:
+			{
+				if (SpeedCameras[MAX_SPEEDCAMERAS - 1][_scActive])
+					return SendClientMessageEx(playerid, COLOR_GREY, "No more static speed cameras can be created.");
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+			}
+			case 1:
+			{
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.", "OK", "Back");
+			}
+			case 2:
+			{
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.", "OK", "Back");
+			}
+			case 3:
+			{
+				new Float:playerPos[3];
+				GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
+
+				new Float:distances[MAX_SPEEDCAMERAS];
+				for (new c = 0; c < MAX_SPEEDCAMERAS; c++)
+				{
+					distances[c] = -1.000;
+					if (SpeedCameras[c][_scActive] == true)
+					{
+						new Float:tmpPos[3];
+						tmpPos[0] = SpeedCameras[c][_scPosX];
+						tmpPos[1] = SpeedCameras[c][_scPosY];
+						tmpPos[2] = SpeedCameras[c][_scPosZ];
+						new Float:distance = floatsqroot(((playerPos[0] - tmpPos[0]) * (playerPos[0] - tmpPos[0])) + ((playerPos[1] - tmpPos[1]) * (playerPos[1] - tmpPos[1])) \
+							+ ((playerPos[2] - tmpPos[2]) * ((playerPos[2] - tmpPos[2]))));
+						distances[c] = distance;
+					}
+				}
+				
+				new lowest_index = -1;
+				for (new i = 0; i < MAX_SPEEDCAMERAS; i++)
+				{
+					if (distances[i] != -1.000)
+					{
+						if (lowest_index == -1.000)
+						{
+							lowest_index = i;
+						}
+						else
+						{
+							if (distances[i] < distances[lowest_index])
+								lowest_index = i;
+						}
+					}
+				}
+				if (lowest_index == -1) // no cameras exist, the closest cannot be calculated
+				{
+					ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", "{FFFFFF}No speed cameras exist, and thus the closest cannot be found.", "OK", "");
+				}
+				else
+				{
+					new msg[128];
+					format(msg, sizeof(msg), "{FFFFFF}The nearest speed camera is: {FFFF00}%i\n\n{FFFFFF}With a distance of {FFFF00}%f", lowest_index, distances[lowest_index]);
+					ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", msg, "OK", "");
+				}
+			}
+		}
+	}
+	if (dialogid == SPEEDCAM_DIALOG_RANGEC)
+	{
+		if (!response)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", \
+					"Create a speed camera\nEdit a speed camera\nDelete a speed camera\nGet nearest speedcamera", "Select", "Cancel");
+
+		new Float:range;
+		if (sscanf(inputtext, "f", range))
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.\
+					\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
+		}
+		SetPVarFloat(playerid, "_scCacheRange", range);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).", "OK", "Back");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_LIMIT)
+	{
+		if (!response)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+
+		new Float:limit;
+		if (sscanf(inputtext, "f", limit))
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).\
+				\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
+		}
+		SetPVarFloat(playerid, "_scCacheLimit", limit);
+		new Float:range = GetPVarFloat(playerid, "_scCacheRange");
+		new content[256];
+		format(content, sizeof(content), "{FFFF00}Range: {FFFFFF}%f\n{FFFF00}Limit: {FFFFFF}%f mph\n\nAre you sure you want to create this speed camera?", range, limit);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_OVERVIEW, DIALOG_STYLE_MSGBOX, "{FFFF00}Speed camera overview", content, "Confirm", "Cancel");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_OVERVIEW)
+	{
+		if (!response)
+		{
+			DeletePVar(playerid, "_scCacheRange");
+			DeletePVar(playerid, "_scCacheLimit");
+			return SendClientMessageEx(playerid, COLOR_RED, "Cancelled creation of speed camera.");
+		}
+		if (SpeedCameras[MAX_SPEEDCAMERAS - 1][_scActive])
+		{
+			DeletePVar(playerid, "_scCacheRange");
+			DeletePVar(playerid, "_scCacheLimit");
+			return SendClientMessageEx(playerid, COLOR_RED, "Error: Limit was reached whilst you were creating this camera.");
+		}
+		new Float:range = GetPVarFloat(playerid, "_scCacheRange");
+		new Float:limit = GetPVarFloat(playerid, "_scCacheLimit");
+		DeletePVar(playerid, "_scCacheRange");
+		DeletePVar(playerid, "_scCacheLimit");
+
+		new Float:x, Float:y, Float:z, Float:angle;
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, angle);
+
+		z -= 3.00000; // for height issues
+		angle += 180; // flip the angle
+
+		new cam = CreateSpeedCamera(x, y, z, angle, range, limit);
+		SendClientMessageEx(playerid, COLOR_GREEN, "Speed camera created!");
+
+		new logText[128];
+		format(logText, sizeof(logText), "%s(%d) has placed speed camera %d at [%f, %f, %f] with limit %f and range %f.",
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[cam][_scDatabase], SpeedCameras[cam][_scPosX], SpeedCameras[cam][_scPosY], SpeedCameras[cam][_scPosZ], SpeedCameras[cam][_scLimit], SpeedCameras[cam][_scRange]);
+		Log("logs/speedcam.log", logText);
+	}
+	if (dialogid == SPEEDCAM_DIALOG_EDIT)
+	{
+		if (!response)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+				Get nearest speedcamera", \
+				"Select", "Cancel");
+
+		new id;
+		if (sscanf(inputtext, "i", id))
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+				{FFFF00}ID must be a number.", "OK", "Back");
+
+		if (id >= MAX_SPEEDCAMERAS || id < 0)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
+
+		if (SpeedCameras[id][_scActive] == false)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+				{FFFF00}No active speed camera with that ID.", "OK", "Back");
+
+		SetPVarInt(playerid, "_scCacheEditId", id);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_EDIT_IDX)
+	{
+		if (!response)
+		{
+			DeletePVar(playerid, "_scCacheEditId");
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+				Get nearest speedcamera", \
+				"Select", "Cancel");
+		}
+
+		switch (listitem)
+		{
+			case 0:
+			{
+				new Float:x, Float:y, Float:z, Float:angle;
+				GetPlayerPos(playerid, x, y, z);
+				GetPlayerFacingAngle(playerid, angle);
+				new id = GetPVarInt(playerid, "_scCacheEditId");
+
+				SpeedCameras[id][_scPosX] = x;
+				SpeedCameras[id][_scPosY] = y;
+				SpeedCameras[id][_scPosZ] = z;
+				SpeedCameras[id][_scRotation] = angle - 180;
+
+				SetDynamicObjectPos(SpeedCameras[id][_scObjectId], x, y, z-3.000);
+				SetDynamicObjectRot(SpeedCameras[id][_scObjectId], 0, 0, angle - 180);
+				SetPlayerPos(playerid, x + 1, y, z);
+				SaveSpeedCamera(id);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera moved.");
+
+				new logText[128];
+				format(logText, sizeof(logText), "%s(%d) has moved speed camera %d to [%f, %f, %f]",
+					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scPosX], SpeedCameras[id][_scPosY], SpeedCameras[id][_scPosZ]);
+				Log("logs/speedcam.log", logText);
+
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			}
+			case 1:
+			{
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.", "OK", "Back");
+			}
+			case 2:
+			{
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.", "OK", "Back");
+			}
+			case 3:
+			{
+				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).", "OK", "Back");
+			}
+		}
+	}
+	if (dialogid == SPEEDCAM_DIALOG_EDIT_ROT)
+	{
+		if (!response)
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		}
+
+		new Float:angle;
+		if (sscanf(inputtext, "f", angle))
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.\n\n\
+				{FFFF00}The angle must be a number (decimals allowed).", "OK", "Back");
+		}
+
+		new id = GetPVarInt(playerid, "_scCacheEditId");
+		SetDynamicObjectRot(SpeedCameras[id][_scObjectId], 0, 0, angle);
+		SpeedCameras[id][_scRotation] = angle;
+		SaveSpeedCamera(id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's Z-angle changed.");
+
+		new logText[128];
+		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's z-angle to %f",
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRotation]);
+		Log("logs/speedcam.log", logText);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_EDIT_RANGE)
+	{
+		if (!response)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+
+		new Float:range;
+		if (sscanf(inputtext, "f", range))
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.\n\n\
+				{FFFF00}Range must be a number (decimals allowed).", "OK", "Back");
+		}
+
+		new id = GetPVarInt(playerid, "_scCacheEditId");
+		SpeedCameras[id][_scRange] = range;
+		SaveSpeedCamera(id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's ranged changed.");
+
+		new logText[128];
+		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's range to %f",
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRange]);
+		Log("logs/speedcam.log", logText);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_EDIT_LIMIT)
+	{
+		if (!response)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+
+		new Float:limit;
+		if (sscanf(inputtext, "f", limit))
+		{
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).\n\n\
+				{FFFF00}Limit must be a number (decimals allowed).", "OK", "Back");
+		}
+
+		new id = GetPVarInt(playerid, "_scCacheEditId");
+		SpeedCameras[id][_scLimit] = limit;
+
+		new szLimit[50];
+		format(szLimit, sizeof(szLimit), "{FFFFFF}Speed Limit\n{FF0000}%i {FFFFFF}MPH", floatround(SpeedCameras[id][_scLimit], floatround_round));
+		UpdateDynamic3DTextLabelText(SpeedCameras[id][_scTextID], COLOR_TWWHITE, szLimit);
+		SaveSpeedCamera(id);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Speed camera's limit changed.");
+
+		new logText[128];
+		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's limit to %f",
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scLimit]);
+		Log("logs/speedcam.log", logText);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_DELETE)
+	{
+		if (!response)
+		{
+			DeletePVar(playerid, "_scCacheDeleteId");
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+				Get nearest speedcamera (static only)", \
+				"Select", "Cancel");
+		}
+
+		new id;
+		if (sscanf(inputtext, "i", id))
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+				{FFFF00}ID must be a number.", "OK", "Back");
+
+		if (id >= MAX_SPEEDCAMERAS || id < 0)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
+
+		if (SpeedCameras[id][_scActive] == false)
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+				{FFFF00}No active camera with that ID.", "OK", "Back");
+
+		SetPVarInt(playerid, "_scCacheDeleteId", id);
+
+		new msg[256];
+		format(msg, sizeof(msg), "{FFFFFF}Are you sure you want to delete speed camera %i?\n\n{FFFF00}Range: {FFFFFF}%f\n\
+			{FFFF00}Limit: {FFFFFF}%f", id, SpeedCameras[id][_scRange], SpeedCameras[id][_scLimit]);
+		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_CONFIRMDEL, DIALOG_STYLE_MSGBOX, "{FFFF00}Delete a speed camera", msg, "Delete", "Cancel");
+	}
+	if (dialogid == SPEEDCAM_DIALOG_CONFIRMDEL)
+	{
+		if (!response)
+		{
+			DeletePVar(playerid, "_scCacheDeleteId");
+			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+				Get nearest speedcamera", \
+				"Select", "Cancel");
+		}
+
+		new id = GetPVarInt(playerid, "_scCacheDeleteId");
+		new db = SpeedCameras[id][_scDatabase];
+		DespawnSpeedCamera(id);
+		SpeedCameras[id][_scActive] = false;
+		new query[256];
+		format(query, sizeof(query), "DELETE FROM speed_cameras WHERE id=%i", SpeedCameras[id][_scDatabase]);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		//SaveSpeedCamera(id); dafuq is this doing here
+		SendClientMessageEx(playerid, COLOR_RED, "Speed camera deleted.");
+		DeletePVar(playerid, "_scCacheDeleteId");
+
+		new logText[56];
+		format(logText, sizeof(logText), "%s(%d) has deleted speed camera %d",
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), db);
+		Log("logs/speedcam.log", logText);
+	}
+	if (dialogid == SPEEDCAM_DIALOG_GETNEAREST)
+	{
+		return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+			Get nearest speedcamera", \
+			"Select", "Cancel");
+	}
+	return 1;
+}
+
 stock CreateSpeedCamera(Float:x, Float:y, Float:z, Float:rotation, Float:range, Float:limit)
 {
 	new loadedCams = 0;
@@ -69,33 +422,6 @@ stock CreateSpeedCamera(Float:x, Float:y, Float:z, Float:rotation, Float:range, 
 	SpawnSpeedCamera(index);
 
 	return index;
-}
-
-stock ShowPlayerCrimeDialog(playerid)
-{
-	new szCrime[1200];
-	format(szCrime, sizeof(szCrime), "----Misdemeanors----\n");
-	for(new i = 0; i < sizeof(SuspectCrimes); i++)
-	{
-		if(SuspectCrimeInfo[i][0] == 0)
-		{
-		    strcat(szCrime, "{FFFF00}");
-		    strcat(szCrime, SuspectCrimes[i]);
-		    strcat(szCrime, "\n");
-		}
-	}
-	strcat(szCrime, "----Felonies----\n");
-	for(new i = 0; i < sizeof(SuspectCrimes); i++)
-	{
-		if(SuspectCrimeInfo[i][0] == 1)
-		{
-		    strcat(szCrime, "{AA3333}");
-		    strcat(szCrime, SuspectCrimes[i]);
-			strcat(szCrime, "\n");
-		}
-	}
-	//strcat(szCrime, "Other (Not Listed)");
-	return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Select a committed crime", szCrime, "Select", "Exit");
 }
 
 stock SpawnSpeedCamera(i)
@@ -180,4 +506,130 @@ CMD:gotospeedcam(playerid, params[]) {
 	    SendClientMessageEx(playerid, COLOR_GRAD2, " You are not authorized.");
 	}
 	return 1;
+}
+
+stock SaveSpeedCamera(i)
+{
+	if (SpeedCameras[i][_scActive] != true)
+		return;
+
+	new query[1024];
+	format(query, sizeof(query), "UPDATE speed_cameras SET pos_x=%f, pos_y=%f, pos_z=%f, rotation=%f, `range`=%f, speed_limit=%f WHERE id=%i",
+		SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ], SpeedCameras[i][_scRotation], SpeedCameras[i][_scRange], SpeedCameras[i][_scLimit],
+		SpeedCameras[i][_scDatabase]);
+
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+stock LoadSpeedCameras()
+{
+	printf("[SpeedCameras] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM speed_cameras", true, "OnLoadSpeedCameras", "");
+	return 1;
+}
+
+forward OnLoadSpeedCameras();
+public OnLoadSpeedCameras()
+{
+	new fields, rows, index, result[128];
+	cache_get_data(rows, fields, MainPipeline);
+
+	while ((index < rows))
+	{
+		cache_get_field_content(index, "id", result, MainPipeline); SpeedCameras[index][_scDatabase] = strval(result);
+		cache_get_field_content(index, "pos_x", result, MainPipeline); SpeedCameras[index][_scPosX] = floatstr(result);
+		cache_get_field_content(index, "pos_y", result, MainPipeline); SpeedCameras[index][_scPosY] = floatstr(result);
+		cache_get_field_content(index, "pos_z", result, MainPipeline); SpeedCameras[index][_scPosZ] = floatstr(result);
+		cache_get_field_content(index, "rotation", result, MainPipeline); SpeedCameras[index][_scRotation] = floatstr(result);
+		cache_get_field_content(index, "range", result, MainPipeline); SpeedCameras[index][_scRange] = floatstr(result);
+		cache_get_field_content(index, "speed_limit", result, MainPipeline); SpeedCameras[index][_scLimit] = floatstr(result);
+
+		if(SpeedCameras[index][_scPosX] != 0.0)
+		{
+			SpeedCameras[index][_scActive] = true;
+			SpeedCameras[index][_scObjectId] = -1;
+			SpawnSpeedCamera(index);
+		}
+		index++;
+	}
+
+	if (index == 0)
+		printf("[SpeedCameras] No Speed Cameras loaded.");
+	else
+		printf("[SpeedCameras] Loaded %i Speed Cameras.", index);
+
+	return 1;
+}
+
+stock StoreNewSpeedCameraInMySQL(index)
+{
+	new string[512];
+	format(string, sizeof(string), "INSERT INTO speed_cameras (pos_x, pos_y, pos_z, rotation, `range`, speed_limit) VALUES (%f, %f, %f, %f, %f, %f)",
+		SpeedCameras[index][_scPosX], SpeedCameras[index][_scPosY], SpeedCameras[index][_scPosZ], SpeedCameras[index][_scRotation], SpeedCameras[index][_scRange], SpeedCameras[index][_scLimit]);
+
+	mysql_function_query(MainPipeline, string, true, "OnNewSpeedCamera", "i", index);
+	return 1;
+}
+
+forward OnNewSpeedCamera(index);
+public OnNewSpeedCamera(index)
+{
+	new db = mysql_insert_id(MainPipeline);
+	SpeedCameras[index][_scDatabase] = db;
+}
+
+stock UpdateSpeedCamerasForPlayer(p)
+{
+	if (!IsPlayerConnected(p) || !IsPlayerInAnyVehicle(p) || GetPlayerState(p) != PLAYER_STATE_DRIVER) return;
+
+	// static speed cameras
+	for (new c = 0; c < MAX_SPEEDCAMERAS; c++)
+	{
+		if (SpeedCameras[c][_scActive] == false) continue;
+
+		if (IsPlayerInRangeOfPoint(p, SpeedCameras[c][_scRange], SpeedCameras[c][_scPosX], SpeedCameras[c][_scPosY], SpeedCameras[c][_scPosZ]))
+		{
+		    if(PlayerInfo[p][pConnectHours] > 16)
+		    {
+				new Float:speedLimit = SpeedCameras[c][_scLimit];
+				new Float:vehicleSpeed = player_get_speed(p);
+
+				if (vehicleSpeed > speedLimit && PlayerInfo[p][pTicketTime] == 0)
+				{
+					new vehicleid = GetPlayerVehicleID(p);
+					if(!IsAPlane(vehicleid) && !IsAHelicopter(vehicleid) && GetVehicleModel(vehicleid) != 481 && GetVehicleModel(vehicleid) != 509 && GetVehicleModel(vehicleid) != 510)
+					{
+						if(GetPVarType(p, "LockPickPlayerSQLId") && GetPVarInt(p, "LockPickVehicle") == vehicleid) {
+							new string[155], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
+							SetPVarInt(p, "VLPTickets", GetPVarInt(p, "VLPTickets")+Amount);
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
+							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
+							PlayerInfo[p][pTicketTime] = 60;
+							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
+							SendClientMessageEx(p, COLOR_WHITE, string);
+							PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
+							PlayerTextDrawShow(p, _vhudFlash[p]);
+							SetTimerEx("TurnOffFlash", 500, 0, "i", p);
+						}
+					    foreach(new i: Player)
+						{
+							new v = GetPlayerVehicle(i, vehicleid);
+							if(v != -1)
+							{
+								new string[128], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
+								PlayerVehicleInfo[i][v][pvTicket] += Amount;
+								PlayerInfo[p][pTicketTime] = 60;
+								format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
+								SendClientMessageEx(p, COLOR_WHITE, string);
+								PlayerPlaySound(p, 1132, 0.0, 0.0, 0.0);
+								PlayerTextDrawShow(p, _vhudFlash[p]);
+								SetTimerEx("TurnOffFlash", 500, 0, "i", p);
+								g_mysql_SaveVehicle(i, v);
+							}
+						}	
+					}
+			  	}
+			}
+		}
+	}
 }

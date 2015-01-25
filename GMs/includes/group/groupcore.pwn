@@ -104,7 +104,7 @@ stock IsADocGuard(playerid)
 
 stock IsFirstAid(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess])) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pDivision] == arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess])) return 1;
 	return 0;
 }
 
@@ -312,7 +312,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 	
 	format(szDialog, sizeof(szDialog),
 		"%s\
-		{BBBBBB}Edit Medic Access:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit Medic Access:{FFFFFF} %s (Div %i)\n\
 		{BBBBBB}Edit DMV Release:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Color: {%s}(edit)\n\
@@ -320,7 +320,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Edit Turf Cap Rank{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit Point Cap Rank {FFFFFF} %s (rank %i)",
 		szDialog,
-		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
+		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
 		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess], 
 		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
@@ -429,8 +429,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 							else
 							{
-								format(szMiscArray, sizeof(szMiscArray), "%s\nUndefined", szMiscArray);
-							}						
+								format(szMiscArray, sizeof(szMiscArray), "%s\nNone", szMiscArray);
+							}
 						}
 						strcat(szMiscArray, "\nDeposit Weapon");
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Weapon Safe", szMiscArray, "Select", "Cancel");
@@ -985,10 +985,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 31: {
 					new
-						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+						szDialog[((32 + 5) * MAX_GROUP_DIVS) + 24];
 
-					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
-						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+					for(new i = 0; i != MAX_GROUP_DIVS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
 
 					strcat(szDialog, "\nRevoke from Group");
 
@@ -1873,14 +1873,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: {
-					arrGroupData[iGroupID][g_iMedicAccess] = INVALID_RANK;
-					format(string, sizeof(string), "%s has set the minimum rank for Medic Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				case MAX_GROUP_DIVS: {
+					if(arrGroupData[iGroupID][g_iMedicAccess] == INVALID_DIVISION) return 1;
+					format(string, sizeof(string), "%s has revoked Medic Access from division %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], arrGroupDivisions[iGroupID][arrGroupData[iGroupID][g_iMedicAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
+					arrGroupData[iGroupID][g_iMedicAccess] = INVALID_DIVISION;
 				}
 				default: {
 					arrGroupData[iGroupID][g_iMedicAccess] = listitem;
-					format(string, sizeof(string), "%s has set the minimum rank for Medic Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iMedicAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					format(string, sizeof(string), "%s has set the division for Medic Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iMedicAccess], arrGroupDivisions[iGroupID][arrGroupData[iGroupID][g_iMedicAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
 				}
 			}
@@ -2378,7 +2379,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			    // dont disallow VIPs / Famed + from depositing any weapon, just those they can obtain from the lockers
 			    if((PlayerInfo[playerid][pDonateRank] >= 3 || PlayerInfo[playerid][pFamed] >= 3) && (id == WEAPON_DEAGLE || id == WEAPON_SILENCED || id == WEAPON_MP5 || id == WEAPON_SHOTGUN))
-			    	return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot deposit these weapons as you have obtained them from the VIP Safe.");
+			    	return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot deposit these weapons as you may have obtained them from the VIP Safe.");
 
 				
 				// finding whether there are any free slots to deposit the weapons into
@@ -2397,7 +2398,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					arrGroupData[iGroupID][g_iWeapons][x] = id;
-					PlayerInfo[playerid][pGuns][Weapon_ReturnSlot(id)] = 0;
+					PlayerInfo[playerid][pGuns][GetWeaponSlot(id)] = 0;
 					SetPlayerWeaponsEx(playerid);
 					format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(id));
 					GroupLog(iGroupID, szMiscArray);
@@ -2476,12 +2477,12 @@ CMD:online(playerid, params[]) {
 				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty), %i calls accepted, %i patients delivered.", szDialog, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted], PlayerInfo[i][pPatientsDelivered]);
 			}
+			else if(IsACriminal(playerid) && PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) {
+				format(szDialog, sizeof(szDialog), "%s\n* %s (%d)", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pRank]);
+			}
 			else if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) switch(PlayerInfo[i][pDuty]) {
 				case 1: format(szDialog, sizeof(szDialog), "%s\n* %s%s (on duty)", szDialog, badge, GetPlayerNameEx(i));
 				default: format(szDialog, sizeof(szDialog), "%s\n* %s%s (off duty)", szDialog, badge, GetPlayerNameEx(i));
-			}
-			else if(IsACriminal(playerid)) {
-				format(szDialog, sizeof(szDialog), "%s\n* %s (%d)", szDialog, GetPlayerNameEx(i), PlayerInfo[i][pRank]);
 			}
 		}	
 		if(!isnull(szDialog)) {
@@ -2893,7 +2894,7 @@ CMD:adjustdvrank(playerid, params[])
 {
 	if(gettime() < GetPVarInt(playerid, "DvAdjust_Time")) return SendClientMessageEx(playerid, COLOR_GREY, " You need to wait 10 seconds before using this command again !");
 	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a group!");
-	if(PlayerInfo[playerid][pRank] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have leadership!");
+	if(PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have leadership!");
 	new vid, rank;
 	if(sscanf(params, "dd", vid, rank))
 	{
@@ -4206,6 +4207,7 @@ CMD:quitgroup(playerid, params[])
 		new string[128];
 		format(string, sizeof(string), "%s (%d) has quit the %s as a rank %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank]);
 		GroupLog(PlayerInfo[playerid][pMember], string);
+		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) ResetPlayerWeaponsEx(playerid);
 		PlayerInfo[playerid][pMember] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pRank] = INVALID_RANK;
 		PlayerInfo[playerid][pDuty] = 0;
@@ -4220,7 +4222,6 @@ CMD:quitgroup(playerid, params[])
 		}
 		SetPlayerToTeamColor(playerid);
 		player_remove_vip_toys(playerid);
-		ResetPlayerWeaponsEx(playerid);
    		pTazer{playerid} = 0;
 		DeletePVar(playerid, "HidingKnife");
 	}
@@ -4537,6 +4538,7 @@ CMD:groupkick(playerid, params[])
 				GroupLog(PlayerInfo[giveplayerid][pMember], string);
 				format(string, sizeof(string), "You have been faction-kicked, by %s.", GetPlayerNameEx( playerid ));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				arrGroupData[PlayerInfo[giveplayerid][pMember]][g_iMemberCount]--;
 				PlayerInfo[giveplayerid][pDuty] = 0;
 				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
 				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
@@ -4880,9 +4882,9 @@ CMD:g(playerid, params[])
 	if (iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
 	if(iRank >= arrGroupData[iGroupID][g_iOOCChat])
 	{
-		format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "** (%d) %s (%s) %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("")), GetPlayerNameEx(playerid), params);
 		foreach(new i: Player) {
-	    	if (PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
+	    	if (PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
@@ -5002,6 +5004,7 @@ CMD:uninvite(playerid, params[]) {
 					format(szMessage, sizeof szMessage, "%s %s (%d) (rank %i) has uninvited %s (%d) (rank %i) from %s (%i).", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), iRank, GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), PlayerInfo[iTargetID][pRank], arrGroupData[iGroupID][g_szGroupName], iGroupID + 1);
 					GroupLog(iGroupID, szMessage);
 
+					arrGroupData[iGroupID][g_iMemberCount]--;
 					PlayerInfo[iTargetID][pMember] = INVALID_GROUP_ID;
 					PlayerInfo[iTargetID][pDivision] = -1;
 					strcpy(PlayerInfo[iTargetID][pBadge], "None", 9);
@@ -5248,7 +5251,7 @@ CMD:setdiv(playerid, params[]) {
 
 CMD:setbadge(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
+	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 	{
 		new
 			iTargetID,
@@ -5401,6 +5404,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 	return 1;
 }
 
+CMD:families(playerid, params[]) return cmd_orgs(playerid, params);
 CMD:orgs(playerid, params[])
 {
 	szMiscArray[0] = 0;
@@ -5413,7 +5417,7 @@ CMD:orgs(playerid, params[])
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** %s | Members Online: %i", arrGroupData[i][g_szGroupName]);
+			format(szMiscArray, sizeof(szMiscArray), "** %s | Total Members: %d | Members Online: %i | Tokens: %d", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount, arrGroupData[i][g_iTurfTokens]);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}
@@ -5440,4 +5444,48 @@ CMD:clothes(playerid, params[])
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
 	return true;
+}
+
+stock ShowPlayerCrimeDialog(playerid)
+{
+	new szCrime[1200];
+	format(szCrime, sizeof(szCrime), "----Misdemeanors----\n");
+	for(new i = 0; i < sizeof(SuspectCrimes); i++)
+	{
+		if(SuspectCrimeInfo[i][0] == 0)
+		{
+		    strcat(szCrime, "{FFFF00}");
+		    strcat(szCrime, SuspectCrimes[i]);
+		    strcat(szCrime, "\n");
+		}
+	}
+	strcat(szCrime, "----Felonies----\n");
+	for(new i = 0; i < sizeof(SuspectCrimes); i++)
+	{
+		if(SuspectCrimeInfo[i][0] == 1)
+		{
+		    strcat(szCrime, "{AA3333}");
+		    strcat(szCrime, SuspectCrimes[i]);
+			strcat(szCrime, "\n");
+		}
+	}
+	//strcat(szCrime, "Other (Not Listed)");
+	return ShowPlayerDialog(playerid, DIALOG_SUSPECTMENU, DIALOG_STYLE_LIST, "Select a committed crime", szCrime, "Select", "Exit");
+}
+
+CMD:lockerbalance(playerid, params[])
+{
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+	{
+		new weps, GroupID = PlayerInfo[playerid][pMember];
+		for(new s = 0; s != 50; s++)
+		{
+			if(arrGroupData[GroupID][g_iWeapons][s] != 0) weps++;
+		}
+		szMiscArray[0] = 0;
+		format(szMiscArray, sizeof(szMiscArray), "Locker: Weapons: %d/50 | Cash: $%s | Pot: %d | Crack: %d | Heroin: %d | Syringes: %d | Opium: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack], arrGroupData[GroupID][g_iHeroin], arrGroupData[GroupID][g_iSyringes], arrGroupData[GroupID][g_iOpium], arrGroupData[GroupID][g_iMaterials]);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a criminal group.");
+	return 1;
 }

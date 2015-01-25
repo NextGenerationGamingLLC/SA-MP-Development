@@ -620,7 +620,7 @@ CMD:exit(playerid, params[])
 	if(GetPVarType(playerid, "StreamPrep")) {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
 	}
-    if( PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pBeingSentenced] != 0 ) {
+    if(PlayerInfo[playerid][pHospital] || PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pBeingSentenced] != 0 ) {
         SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
         return 1;
     }

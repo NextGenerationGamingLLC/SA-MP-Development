@@ -49,10 +49,28 @@ CMD:accept(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Pot, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
-            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss");
+            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid");
             return 1;
         }
-        if(strcmp(params, "kiss", true) == 0)
+		if(strcmp(params, "renderaid", true) == 0)
+		{
+			if(!GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a injured state.");
+			if(!GetPVarType(playerid, "renderaid")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you assistance!");
+			new target = GetPVarInt(playerid, "renderaid");
+			if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "The person who offered you assistance is no longer online.");
+			new Float:pos[3];
+			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+			if(!IsPlayerInRangeOfPoint(target, 5.0, pos[0], pos[1], pos[2])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the person who offered you assistance.");
+			if(GetPVarInt(target, "MedVestKit") != 1)
+				return SendClientMessageEx(target, COLOR_GRAD2, "You aren't carrying a kit."), SendClientMessageEx(playerid, COLOR_GRAD2, "The player was unable to assist you as they no longer have a med kit.");
+			ApplyAnimation(target, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0, 1);
+			SetHealth(playerid, 100);
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s renders aid to %s.", GetPlayerNameEx(target), GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			DeletePVar(playerid, "renderaid");
+			DeletePVar(target, "MedVestKit");
+		}
+        else if(strcmp(params, "kiss", true) == 0)
 		{
 	        if (!GetPVarType(playerid, "kissvaloffer")) {
        	 		return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a kiss!");
@@ -756,7 +774,7 @@ CMD:accept(playerid, params[])
 					PlayerInfo[playerid][pRank] = 0;
 					PlayerInfo[playerid][pDivision] = INVALID_DIVISION;
 					strcpy(PlayerInfo[playerid][pBadge], "None", 9);
-					
+					arrGroupData[iGroupID][g_iMemberCount]++;
 
 					format(szMessage, sizeof szMessage, "You have accepted %s %s's invite, and are now a member of %s.", arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(iInviter), arrGroupData[iGroupID][g_szGroupName]);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
@@ -2773,13 +2791,14 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Pot, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Divorce, Drink, House, Shipment, Help, Firstaid");
-		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer");
+		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer, RenderAid");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 		return 1;
 	}
 
-	if(strcmp(choice,"sex",true) == 0) {	
+	if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
+	else if(strcmp(choice,"sex",true) == 0) {	
 		if(GetPVarType(playerid, "SexOfferTo")) { 
 			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID; 
 			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0; 

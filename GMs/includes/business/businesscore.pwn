@@ -1558,7 +1558,7 @@ CMD:bsafe(playerid, params[])
 		return 1;
 	}
 	else {
-	    new choice[10], Amount, string[128];
+	    new choice[10], Amount, string[256];
 	    if(sscanf(params, "s[10]D", choice, Amount)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bsafe [name] [amount]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Balance, Withdraw, Deposit");
@@ -1578,10 +1578,10 @@ CMD:bsafe(playerid, params[])
 		    if(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] >= Amount) {
 		    	format(string, sizeof(string), "You have withdrew $%s from your business safe.", number_format(Amount));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] -= Amount;
 		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string,sizeof(string),"%s(%d) (IP: %s) has withdrawn $%s from their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
+		    	format(string,sizeof(string),"%s(%d) (IP: %s) has withdrawn $%s from their business safe (BusinessID - %d)[PT: $%s][NT: $%s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]), number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] - Amount));
+		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] -= Amount;
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -1595,10 +1595,10 @@ CMD:bsafe(playerid, params[])
 		    if(GetPlayerCash(playerid) >= Amount) {
 		    	format(string, sizeof(string), "You have deposited $%s into your business safe.", number_format(Amount));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] += Amount;
 		    	format(string, sizeof(string), "Business(%d) Safe Balance: $%s", PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]));
 		    	SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    	format(string,sizeof(string),"%s(%d) (IP: %s) has deposited $%s into their business safe (BusinessID - %d)",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness]);
+		    	format(string,sizeof(string),"%s(%d) (IP: %s) has deposited $%s into their business safe (BusinessID - %d)[PT: $%s][NT: $%s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(Amount), PlayerInfo[playerid][pBusiness], number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance]), number_format(Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] + Amount));
+		    	Businesses[PlayerInfo[playerid][pBusiness]][bSafeBalance] += Amount;
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, -Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
@@ -2293,7 +2293,7 @@ CMD:offermenu(playerid, params[])
 
    	if(iBusiness == INVALID_BUSINESS_ID || (Businesses[iBusiness][bType] != BUSINESS_TYPE_BAR && Businesses[iBusiness][bType] != BUSINESS_TYPE_CLUB && Businesses[iBusiness][bType] != BUSINESS_TYPE_RESTAURANT)) return SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not in a bar, club or restaurant!");
 	else if(Businesses[iBusiness][bInventory] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "   Business does not have enough inventory!");
-
+	if(GetPlayerInterior(playerid) != Businesses[iBusiness][bInt]) return 1;
 	new szDialog[512], pvar[25], line;
 
 	if (Businesses[iBusiness][bType] == BUSINESS_TYPE_BAR || Businesses[iBusiness][bType] == BUSINESS_TYPE_CLUB)
