@@ -3944,7 +3944,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		{
 			if(GoChase[killerid] == playerid) // && GetPVarInt(killerid, "HitCooldown") <= 0)
 			{
-				new szMessage[64 + MAX_PLAYER_NAME];
+				new szMessage[86 + MAX_PLAYER_NAME];
 				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
@@ -3959,11 +3959,16 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GotHit[playerid] = 0;
 				GetChased[playerid] = INVALID_PLAYER_ID;
 				GoChase[killerid] = INVALID_PLAYER_ID;
+
+				new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
+				GetWeaponName(reason, weaponname, sizeof(weaponname));
+				format(szMessage, sizeof szMessage, "[HMA] %s (%d) has succeeded in killing %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
+				GroupLog(iGroupID, szMessage);
 			}
 		}
 		if(GoChase[playerid] == killerid)
 		{
-			new szMessage[64 + MAX_PLAYER_NAME];
+			new szMessage[86 + MAX_PLAYER_NAME];
 			new takemoney = PlayerInfo[playerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
 			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), takemoney);
@@ -3977,6 +3982,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 			GotHit[playerid] = 0;
 			GetChased[killerid] = INVALID_PLAYER_ID;
 			GoChase[playerid] = INVALID_PLAYER_ID;
+
+			new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
+			GetWeaponName(reason, weaponname, sizeof(weaponname));
+			format(szMessage, sizeof szMessage, "[HMA] %s (%d) has has failed to kill %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
+			GroupLog(iGroupID, szMessage);
 		}
 	}
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);

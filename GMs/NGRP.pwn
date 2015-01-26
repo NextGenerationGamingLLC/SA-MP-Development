@@ -14,9 +14,9 @@
 				(created by Next Generation Gaming Development Team)
 
 				Current Developers:
-								***  Director of SA:MP Development: 
+								***  Director of SA:MP Development:
 									 Miguel (s0nic)
-								
+
 								**   Development Staff:
 									 Donuts
 									 Austin
@@ -37,7 +37,7 @@
 									Donuts
 									Mo Cena
 									Calgon
-	  
+
 								** 	Developers:
 									Neo
 									AlexR
@@ -69,12 +69,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.191"
+#define SERVER_GM_TEXT "NG:RP v3.0.192"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -104,7 +104,7 @@
 #include "./includes/countrycheck.pwn"
 
 
-//admin includes 
+//admin includes
 #include "./includes/admin/admin.pwn"
 #include "./includes/admin/advisory.pwn"
 #include "./includes/admin/auctionsystem.pwn"
