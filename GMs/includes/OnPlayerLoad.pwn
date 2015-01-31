@@ -394,13 +394,17 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pHospital] = 0;
 		SetPVarInt(playerid, "MedicBill", 1);
 	}
-
-	if(PlayerInfo[playerid][pBanAppealer] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pBanAppealer] = 0;
-	if(PlayerInfo[playerid][pPR] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pPR] = 0;
-	if(PlayerInfo[playerid][pShopTech] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pShopTech] = 0;
-	if(PlayerInfo[playerid][pUndercover] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pUndercover] = 0;
-	if(PlayerInfo[playerid][pFactionModerator] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pFactionModerator] = 0;
-	if(PlayerInfo[playerid][pGangModerator] >= 1 && PlayerInfo[playerid][pAdmin] < 2) PlayerInfo[playerid][pGangModerator] = 0;
+	if(PlayerInfo[playerid][pAdmin] < 2) { // If not admin, remove secondary tasks. More efficient because it's one check.
+		PlayerInfo[playerid][pBanAppealer] = 0;
+		PlayerInfo[playerid][pPR] = 0;
+		PlayerInfo[playerid][pShopTech] = 0;
+		PlayerInfo[playerid][pUndercover] = 0;
+		PlayerInfo[playerid][pFactionModerator];
+		PlayerInfo[playerid][pGangModerator] = 0;
+		PlayerInfo[playerid][pAP] = 0;
+		PlayerInfo[playerid][pHR] = 0;
+		PlayerInfo[playerid][pBM] = 0;
+	}
 	if(PlayerInfo[playerid][pHelper] == 1 && PlayerInfo[playerid][pAdmin] >= 1) PlayerInfo[playerid][pHelper] = 0;
 	if(gettime() >= PlayerInfo[playerid][pMechTime]) PlayerInfo[playerid][pMechTime] = 0;
 	if(gettime() >= PlayerInfo[playerid][pLawyerTime]) PlayerInfo[playerid][pLawyerTime] = 0;

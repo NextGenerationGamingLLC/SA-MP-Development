@@ -1928,6 +1928,10 @@ CMD:drag(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
+			if(giveplayerid == playerid) {
+				SendClientMessageEx(playerid, COLOR_WHITE, " You try to grab yourself, but nothing happens.");
+				return 1;
+			}
 			if(GetPVarInt(giveplayerid, "PlayerCuffed") == 2)
 			{
 				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, " You must be out of the vehicle to use this command.");

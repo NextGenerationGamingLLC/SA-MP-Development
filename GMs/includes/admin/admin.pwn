@@ -4258,7 +4258,7 @@ CMD:makeadmin(playerid, params[])  {
 				
 				PlayerInfo[iTargetID][pAdmin] = iAdminValue;
 				ABroadCast(COLOR_LIGHTRED, szRank, 2);
-				Log("logs/admin.log", szMessage);
+				Log("logs/admin.log", szRank);
 				
 				switch(iAdminValue) {
 					case 0: format(szRank, sizeof(szRank), "Your administrator rank has been removed by %s.", GetPlayerNameEx(playerid));
