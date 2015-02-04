@@ -35,6 +35,17 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock ClearMarriage(playerid)
+{
+	if(IsPlayerConnected(playerid)) {
+		new string[MAX_PLAYER_NAME];
+		format(string, sizeof(string), "Nobody");
+		strmid(PlayerInfo[playerid][pMarriedName], string, 0, strlen(string), MAX_PLAYER_NAME);
+		PlayerInfo[playerid][pMarriedID] = -1;
+	}
+	return 1;
+}
+
 CMD:divorce(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMarriedID] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not married!");

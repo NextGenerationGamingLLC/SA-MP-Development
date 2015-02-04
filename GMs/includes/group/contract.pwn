@@ -45,6 +45,45 @@ public PickUpC4(playerid)
 	return 1;
 }
 
+
+stock SearchingHit(playerid)
+{
+	new string[128], group = PlayerInfo[playerid][pMember];
+   	SendClientMessageEx(playerid, COLOR_WHITE, "Available Contracts:");
+   	new hits;
+	foreach(new i: Player)
+	{
+		if(!IsAHitman(i) && PlayerInfo[i][pHeadValue] > 0)
+		{
+			if(GotHit[i] == 0)
+			{
+				hits++;
+				format(string, sizeof(string), "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: Nobody", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+			else
+			{
+				format(string, sizeof(string), "%s (ID %d) | $%s | Placed By: %s | Reason: %s | Chased By: %s", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pHeadValue]), PlayerInfo[i][pContractBy], PlayerInfo[i][pContractDetail], GetPlayerNameEx(GetChased[i]));
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}
+	}	
+	if(hits && PlayerInfo[playerid][pRank] <= 1 && arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT)
+	{
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givemehit to assign a contract to yourself.");
+	}
+	if(hits && PlayerInfo[playerid][pRank] >= 6 && arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT)
+	{
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givehit to assign a contract to one of the hitmen.");
+	}
+	if(hits == 0)
+	{
+	    SendClientMessageEx(playerid, COLOR_GREY, "There are no hits available.");
+	}
+	return 0;
+}
+
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	szMiscArray[0] = 0;

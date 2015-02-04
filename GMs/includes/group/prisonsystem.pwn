@@ -41,6 +41,7 @@ DocIsolate(playerid, cellid)
 {
 	SetPlayerPos(playerid, DocIsolation[cellid][0], DocIsolation[cellid][1], DocIsolation[cellid][2]);
 	SetPlayerFacingAngle(playerid, 0);
+	SetPlayerInterior(playerid, 1);
 	Player_StreamPrep(playerid, DocIsolation[cellid][0], DocIsolation[cellid][1], DocIsolation[cellid][2], FREEZE_TIME);
 	
 	PlayerInfo[playerid][pIsolated] = cellid + 1;
@@ -86,26 +87,26 @@ LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
 
 ShowDocPrisonControls(playerid, icontrolid)
 {
-	new string[1024];
+	szMiscArray[0] = 0;
 	
 	switch(icontrolid)
 	{
 		case 0:
 		{
 			// main dialog
-			format(string, sizeof(string), "Cell-block A\nIsolation Cells\nArea Doors\nLockdown");
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Cell-block A\nIsolation Cells\nArea Doors\nLockdown");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Cancel");
 		}
 		case 1:
 		{
 			// sub-dialog 
-			format(string, sizeof(string), "Floor 1\nFloor 2\nAll Floor 1\nAll Floor 2");
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+			format(szMiscArray, sizeof(szMiscArray), "Floor 1\nFloor 2\nAll Floor 1\nAll Floor 2");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 2:
 		{
 			// floor 1
-			format(string, sizeof(string), "Cell 1 (%s)\n\
+			format(szMiscArray, sizeof(szMiscArray), "Cell 1 (%s)\n\
 			Cell 2 (%s)\n\
 			Cell 3 (%s)\n\
 			Cell 4 (%s)\n\
@@ -138,12 +139,12 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocCellOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocCellOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 3:
 		{
 			// floor 2
-			format(string, sizeof(string), "Cell 1 (%s)\n\
+			format(szMiscArray, sizeof(szMiscArray), "Cell 1 (%s)\n\
 			Cell 2 (%s)\n\
 			Cell 3 (%s)\n\
 			Cell 4 (%s)\n\
@@ -174,18 +175,16 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocCellOpen[29] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocCellOpen[30] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 4:
 		{
 			// area controls
-			format(string, sizeof(string), "Café%s)\n\
+			format(szMiscArray, sizeof(szMiscArray), "Café%s)\n\
 			Cell-block (%s)\n\
 			Cell-block Corridor (%s)\n\
 			Café Kitchen (%s)\n\
 			Courtyard Access (%s)\n\
-			Isolation Door 1 (%s)\n\
-			Isolation Door 2 (%s)\n\
 			Cell-block Hallway (%s)\n\
 			Showers (%s)\n\
 			Inside Gym (%s)\n\
@@ -202,29 +201,67 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocAreaOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 5: 
 		{
 			// isolation controls
-			format(string, sizeof(string), "Isolation Cell 1 (%s)\n\
+			format(szMiscArray, sizeof(szMiscArray), "Isolation Cell 1 (%s)\n\
 			Isolation Cell 2 (%s)\n\
 			Isolation Cell 3 (%s)\n\
 			Isolation Cell 4 (%s)\n\
 			Isolation Cell 5 (%s)\n\
-			Isolation Cell 6 (%s)", 
+			Isolation Cell 6 (%s)\n\
+			Isolation Cell 7 (%s)\n\
+			Isolation Cell 8 (%s)\n\
+			Isolation Cell 9 (%s)\n\
+			Isolation Cell 10 (%s)\n\
+			Isolation Cell 11 (%s)\n\
+			Isolation Cell 12 (%s)\n\
+			Isolation Cell 13 (%s)", 
 			((bDocIsolationOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocIsolationOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocIsolationOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocIsolationOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocIsolationOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocIsolationOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_ISOLATION, DIALOG_STYLE_LIST, "Doc Control Pannel", string, "Select", "Back");
+			format(szMiscArray, sizeof(szMiscArray), "%s\nIsolation Cell 14 (%s)\n\
+			Isolation Cell 15 (%s)\n\
+			Isolation Cell 16 (%s)\n\
+			Isolation Cell 17 (%s)\n\
+			Isolation Cell 18 (%s)\n\
+			Isolation Cell 19 (%s)\n\
+			Isolation Cell 20 (%s)\n\
+			Isolation Cell 21 (%s)\n\
+			Isolation Cell 22 (%s)\n\
+			Isolation Cell 23 (%s)\n\
+			Isolation Cell 24 (%s)\n\
+			Isolation Cell 25 (%s)",
+			szMiscArray,
+			((bDocIsolationOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[19] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[20] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[21] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[22] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[23] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocIsolationOpen[24] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			);
+			ShowPlayerDialog(playerid, DIALOG_DOC_CP_ISOLATION, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 	}
 	return 1;
@@ -246,7 +283,7 @@ DocLockdown(playerid)
 		{
 			OpenDocAreaDoors(i, 0);
 		}
-		for(new i = 0; i < 6; i++)
+		for(new i = 0; i < 25; i++)
 		{
 			OpenDocIsolationCells(i, 0);
 		}
@@ -296,33 +333,128 @@ public OpenDocIsolationCells(cellid, open)
 	{
 		case 0:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[0], 562.73242, 1454.49622, 5995.95801, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[0], 562.73242, 1454.49622 - 1.34, 5995.95801, 0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[0], -2139.23169, -150.71797, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[0], -2139.23169 + 1.3, -150.71797, 2010.47229, 0.9);
 		}
 		case 1:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[1], 562.73242, 1451.27612, 5995.95801, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[1], 562.73242, 1451.27612 - 1.34, 5995.95801, 0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[1], -2135.38452, -150.72092, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[1], -2135.38452 + 1.3, -150.72092, 2010.47229, 0.9);
 		}
 		case 2:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[2], 560.25751, 1450.35547, 5995.95801, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[2], 560.25751 - 1.34, 1450.35547, 5995.95801, 0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[2], -2131.57104, -150.67859, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[2], -2131.57104 + 1.3, -150.67859, 2010.47229, 0.9);
 		}
 		case 3:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[3], 557.04352, 1450.35547, 5995.95801, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[3], 557.04352 - 1.34, 1450.35547, 5995.95801, 0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[3], -2143.49438, -150.77216, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[3], -2143.49438 + 1.3, -150.77216, 2010.47229, 0.9);
 		}
 		case 4:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[4], 553.84729, 1450.35547, 5995.95801,   0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[4], 553.84729 - 1.34, 1450.35547, 5995.95801,   0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[4], -2147.36108, -150.60271, 2010.47229,   0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[4], -2147.36108 + 1.3, -150.60271, 2010.47229,   0.9);
 		}
 		case 5:
 		{
-			if(open == 0) MoveDynamicObject(DocIsolationCells[5], 550.66852, 1450.35547, 5995.95801, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationCells[5], 550.66852 - 1.34, 1450.35547, 5995.95801, 0.9);
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[5], -2147.28296, -150.68958, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[5], -2147.28296 + 1.3, -150.68958, 2014.5593, 0.9);
+		}
+		case 6:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[6], -2151.34473, -150.66469, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[6], -2151.34473 + 1.3, -150.66469, 2014.5593, 0.9);
+		}
+		case 7:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[7], -2154.62915, -150.68343, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[7], -2154.62915 + 1.3, -150.68343, 2014.55931, 0.9);
+		}
+		case 8:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[8], -2143.52930, -150.66467, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[8], -2143.52930 + 1.3, -150.66467, 2014.5593, 0.9);
+		}
+		case 9:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[9], -2139.22485, -150.67685, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[9], -2139.22485 + 1.3, -150.67685, 2014.5593, 0.9);
+		}
+		case 10:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[10], -2135.43311, -150.65767, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[10], -2135.43311 + 1.3, -150.65767, 2014.5593, 0.9);
+		}
+		case 11:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[11], -2131.43262, -150.6903, 2014.5593, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[11], -2131.43262 + 1.3, -150.6903, 2014.5593, 0.9);
+		}
+		case 12:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[12], -2147.46753, -137.1050, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[12], -2147.46753 + 1.3, -137.1050, 2010.47229, 0.9);
+		}
+		case 13:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[13], -2151.54419, -137.20715, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[13], -2151.54419 + 1.3, -137.20715, 2010.47229, 0.9);
+		}
+		case 14:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[14], -2143.61450, -137.09286, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[14], -2143.61450 + 1.3, -137.09286, 2010.47229, 0.9);
+		}
+		case 15:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[15], -2139.13940, -137.20073, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[15], -2139.13940 + 1.3, -137.20073, 2010.47229, 0.9);
+		}
+		case 16:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[16], -2135.33667, -137.10387, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[16], -2135.33667 + 1.3, -137.10387, 2010.47229, 0.9);
+		}
+		case 17:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[17], -2131.41870, -137.20285, 2010.47229, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[17], -2131.41870 + 1.3, -137.20285, 2010.47229, 0.9);
+		}
+		case 18:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[18], -2154.72876, -137.2157, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[18], -2154.72876 + 1.3, -137.2157, 2014.6953, 0.9);
+		}
+		case 19:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[19], -2151.53076, -137.23778, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[19], -2151.53076 + 1.3, -137.23778, 2014.6953, 0.9);
+		}
+		case 20:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[20], -2147.42139, -137.08806, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[20], -2147.42139 + 1.3, -137.08806, 2014.6953, 0.9);
+		}
+		case 21:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[21], -2143.48828, -137.1256, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[21], -2143.48828 + 1.3, -137.1256, 2014.6953, 0.9);
+		}
+		case 22:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[22], -2139.47119, -137.28308, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[22], -2139.47119 + 1.3, -137.28308, 2014.6953, 0.9);
+		}
+		case 23:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[23], -2135.35815, -137.12624, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[23], -2135.35815 + 1.3, -137.12624, 2014.6953, 0.9);
+		}
+		case 24:
+		{
+			if(open == 0) MoveDynamicObject(DocIsolationDoors[24], -2131.47437, -137.20755, 2014.6953, 0.9);
+			if(open == 1) MoveDynamicObject(DocIsolationDoors[24], -2131.47437 + 1.3, -137.20755, 2014.6953, 0.9);
 		}
 	}
 	if(open == 0) bDocIsolationOpen[cellid] = false;
@@ -457,7 +589,7 @@ public OpenDocAreaDoors(doorid, open)
 			if(open == 0) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794, 5995.95947, 0.9);
 			if(open == 1) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794 - 1.34, 5995.95947, 0.9);
 		}
-		case 5:
+		/*case 5:
 		{
 			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 551.03003, 1471.72058, 5995.95947, 0.9);
 			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 551.03003 - 1.34, 1471.72058, 5995.95947, 0.9);
@@ -466,26 +598,26 @@ public OpenDocAreaDoors(doorid, open)
 		{
 			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 551.03961, 1462.23999, 5995.95947, 0.9);
 			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 551.03961 - 1.34, 1462.23999, 5995.95947, 0.9);
+		}*/
+		case 5:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 573.79968, 1454.22156, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 573.79968 + 1.34, 1454.22156, 5999.47168, 0.9);
+		}
+		case 6:
+		{
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 576.60413, 1449.64075, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 576.60413, 1449.64075 + 1.34, 5999.47168, 0.9);
 		}
 		case 7:
 		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[7], 573.79968, 1454.22156, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[7], 573.79968 + 1.34, 1454.22156, 5999.47168, 0.9);
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[7], 566.11102, 1429.46960, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[7], 566.11102 + 1.34, 1429.46960, 5999.47168, 0.9);
 		}
 		case 8:
 		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[8], 576.60413, 1449.64075, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[8], 576.60413, 1449.64075 + 1.34, 5999.47168, 0.9);
-		}
-		case 9:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[9], 566.11102, 1429.46960, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[9], 566.11102 + 1.34, 1429.46960, 5999.47168, 0.9);
-		}
-		case 10:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[10], 553.28021, 1429.46667, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[10], 553.28021 + 1.34, 1429.46667, 5999.47168, 0.9);
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[8], 553.28021, 1429.46667, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[8], 553.28021 + 1.34, 1429.46667, 5999.47168, 0.9);
 		}
 	}
 	if(open == 0) bDocAreaOpen[doorid] = false;
@@ -988,15 +1120,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				if(listitem == 11)
+				if(listitem == 9)
 				{
-					if(bDocAreaOpen[11] == false) bDocAreaOpen[11] = true;
-					else bDocAreaOpen[11] = false;
+					if(bDocAreaOpen[9] == false) bDocAreaOpen[9] = true;
+					else bDocAreaOpen[9] = false;
 				}
-				else if(listitem == 12)
+				else if(listitem == 10)
 				{
-					if(bDocAreaOpen[12] == false) bDocAreaOpen[12] = true;
-					else bDocAreaOpen[12] = false;
+					if(bDocAreaOpen[10] == false) bDocAreaOpen[10] = true;
+					else bDocAreaOpen[10] = false;
 				}
 				else
 				{
@@ -1100,74 +1232,6 @@ CMD:bail(playerid, params[])
 	return 1;
 }
 
-CMD:backentrance(playerid, params[])
-{
-	if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 3) {
-	    if(BackEntrance) {
-	        BackEntrance = 0;
-	        SendClientMessageEx(playerid, COLOR_WHITE, "The back entrance has been locked.");
-	    }
-	    else {
-	        BackEntrance = 1;
-	        SendClientMessageEx(playerid, COLOR_WHITE, "The back entrance has been unlocked.");
-	    }
-	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	return 1;
-}
-
-/*CMD:isolate(playerid, params[])
-{
-	if(!IsACop(playerid)) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
-	}
-
-	else {
-
-		new
-		    iGivePlayer,
-			szMessage[128];
-
-	    if(sscanf(params, "u", iGivePlayer)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /isolate [player]");
-		}
-		else if(iGivePlayer == playerid) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on yourself!");
-		}
-		else if(!IsPlayerConnected(iGivePlayer)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		}
-		else if(!ProxDetectorS(10.0, playerid, iGivePlayer)) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "That person is to far from you.");
-		}
-		else {
-			if(strfind(PlayerInfo[iGivePlayer][pPrisonReason], "[IC]", true) != -1)
-   			{
-                strcpy(PlayerInfo[iGivePlayer][pPrisonReason], "[ISOLATE] EBCF Arrest", 128);
-         		format(szMessage, sizeof(szMessage), "You have sent %s to isolation.", GetPlayerNameEx(iGivePlayer));
-           		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-            	format(szMessage, sizeof(szMessage), "%s has sent you to isolation.", GetPlayerNameEx(playerid));
-	            SendClientMessageEx(iGivePlayer, COLOR_WHITE, szMessage);
-	            SetPlayerPos(iGivePlayer, -2095.3391, -215.8563, 978.8315);
-
-	        }
-	        else if(strfind(PlayerInfo[iGivePlayer][pPrisonReason], "[ISOLATE]", true) != -1)
-	        {
-         		new rand;
-           		strcpy(PlayerInfo[iGivePlayer][pPrisonReason], "[IC] EBCF Arrest", 128);
-	            format(szMessage, sizeof(szMessage), "You have released %s from isolation.", GetPlayerNameEx(iGivePlayer));
-	            SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-	            format(szMessage, sizeof(szMessage), "%s has released you from isolation.", GetPlayerNameEx(playerid));
-	            SendClientMessageEx(iGivePlayer, COLOR_WHITE, szMessage);
-          		rand = random(sizeof(DocPrison));
-				SetPlayerPos(iGivePlayer, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
-		    }
-		    else SendClientMessageEx(playerid, COLOR_WHITE, "That person isn't imprisoned.");
-		}
-	}
-	return 1;
-}*/
-
 CMD:docarrest(playerid, params[])
 {
 	if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
@@ -1198,75 +1262,6 @@ CMD:docarrest(playerid, params[])
 	}
 	return 1;
 }
-
-/*CMD:docarrest(playerid, params[])
-{
-	if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
-	else if(!IsAtArrestPoint(playerid, 2)) SendClientMessageEx(playerid, COLOR_GREY, "You are not at the DoC Prison arrest point." );
-
-	else
-	{
-   		new
-     		moneys,
-       		time,
-			string[128];
-
-        new suspect = GetClosestPlayer(playerid);
-  		if(sscanf(params, "dddd", moneys, time)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [fine] [minutes]");
-		else if(!(1 <= moneys <= 250000)) SendClientMessageEx(playerid, COLOR_GREY, "The jail fine can't be below $1 or above $250,000.");
-		else if(!(1 <= time <= 120)) SendClientMessageEx(playerid, COLOR_GREY, "Jail time can't be below 1 or above 120 minutes - take the person to prison for more time.");
-		else if(!IsPlayerConnected(suspect)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		else if(!ProxDetectorS(5.0, playerid, suspect)) SendClientMessageEx(playerid, COLOR_GREY, "You are close enough to the suspect.");
-		else if(PlayerInfo[suspect][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
-		else {
-
-			format(string, sizeof(string), "* You arrested %s!", GetPlayerNameEx(suspect));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			GivePlayerCash(suspect, -moneys);
-			new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
-			Tax += money;
-			arrGroupData[iGroupID][g_iBudget] += money;
-			new str[128], file[32];
-            format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money, arrGroupData[iGroupID][g_szGroupName]);
-            new month, day, year;
-			getdate(year,month,day);
-			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-			Log(file, str);
-			ResetPlayerWeaponsEx(suspect);
-			for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
-				PlayerVehicleInfo[suspect][x][pvTicket] = 0;
-			}
-			SetPlayerInterior(suspect, 10);
-			new rand = random(sizeof(DocPrison));
-			SetPlayerFacingAngle(suspect, 0);
-			SetPlayerPos(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
-			if(PlayerInfo[suspect][pDonateRank] >= 2) PlayerInfo[suspect][pJailTime] = ((time*60)*75)/100;
-			else PlayerInfo[suspect][pJailTime] = time * 60;
-			DeletePVar(suspect, "IsFrozen");
-			PhoneOnline[suspect] = 1;
-			PlayerInfo[suspect][pArrested] += 1;
-			SetPlayerFree(suspect,playerid, "was arrested");
-			PlayerInfo[suspect][pWantedLevel] = 0;
-			SetPlayerToTeamColor(suspect);
-			SetPlayerWantedLevel(suspect, 0);
-			WantLawyer[suspect] = 1;
-			TogglePlayerControllable(suspect, 1);
-			ClearAnimations(suspect);
-			SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
-			PlayerCuffed[suspect] = 0;
-			DeletePVar(suspect, "PlayerCuffed");
-			PlayerCuffedTime[suspect] = 0;
-			PlayerInfo[suspect][pVW] = 0;
-			SetPlayerVirtualWorld(suspect, 0);
-			SetHealth(suspect, 100);
-			strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
-			strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
-			SetPlayerToTeamColor(suspect);
-			Player_StreamPrep(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
-	    }
-	}
-	return 1;
-}*/
 
 CMD:arrest(playerid, params[])
 {
@@ -1617,7 +1612,7 @@ CMD:isolateinmate(playerid, params[])
 	else if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You cannot use this command on yourself.");
 	else if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
 	else if(strfind(PlayerInfo[iTargetID][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not in IC Jail.");
-	else if(!(0 <= iCellID < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Valid Isolation Cells [0-5]");
+	else if(!(0 <= iCellID < sizeof(DocIsolation))) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Valid Isolation Cells [0-24]");
 	else if(PlayerInfo[iTargetID][pIsolated] == 0)
 	{
 		DocIsolate(iTargetID, iCellID);
@@ -1970,5 +1965,25 @@ CMD:jailcuff(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
 	}
+	return 1;
+}
+
+CMD:isolationdoors(playerid, params[])
+{
+	new iCellRef;
+
+	if(!IsADocGuard(playerid))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DoC Guard to use this command. ");
+	if(!IsPlayerInRangeOfPoint(playerid, 300, -2137.26880, -173.30179, 2015.0880))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You must in the isolation rooms to use this command. ");
+	if(sscanf(params, "d", iCellRef))
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /isolationdoors [cellid]");
+	if(0 <= iCellRef <= 24)
+	{
+		if(bDocIsolationOpen[iCellRef] == false) OpenDocIsolationCells(iCellRef, 1);
+		else if(bDocIsolationOpen[iCellRef] == true) OpenDocIsolationCells(iCellRef, 0);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "Please specify a valid isolation cell id (0 - 24)");
+
 	return 1;
 }

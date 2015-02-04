@@ -51,19 +51,19 @@ stock LoadDynamicMapIcons()
 forward OnLoadDynamicMapIcon(index);
 public OnLoadDynamicMapIcon(index)
 {
-	new rows, fields, tmp[128];
+	new rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  DMPInfo[index][dmpSQLId] = strval(tmp);
-		cache_get_field_content(row, "MarkerType", tmp, MainPipeline); DMPInfo[index][dmpMarkerType] = strval(tmp);
-		cache_get_field_content(row, "Color", tmp, MainPipeline); DMPInfo[index][dmpColor] = strval(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); DMPInfo[index][dmpVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); DMPInfo[index][dmpInt] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); DMPInfo[index][dmpPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); DMPInfo[index][dmpPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); DMPInfo[index][dmpPosZ] = floatstr(tmp);
+		DMPInfo[index][dmpSQLId] = cache_get_field_content_int(row, "id", MainPipeline); 
+	 	DMPInfo[index][dmpMarkerType] = cache_get_field_content_int(row, "MarkerType", MainPipeline);
+		DMPInfo[index][dmpColor] = cache_get_field_content_int(row, "Color", MainPipeline); 
+		DMPInfo[index][dmpVW] = cache_get_field_content_int(row, "VW", MainPipeline);
+		DMPInfo[index][dmpInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
+		DMPInfo[index][dmpPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
+		DMPInfo[index][dmpPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
+		DMPInfo[index][dmpPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
 		if(DMPInfo[index][dmpPosX] != 0.0)
 		{
 			if(DMPInfo[index][dmpMarkerType] != 0) DMPInfo[index][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[index][dmpPosX], DMPInfo[index][dmpPosY], DMPInfo[index][dmpPosZ], DMPInfo[index][dmpMarkerType], DMPInfo[index][dmpColor], DMPInfo[index][dmpVW], DMPInfo[index][dmpInt], -1, 500.0);
@@ -75,19 +75,19 @@ public OnLoadDynamicMapIcon(index)
 forward OnLoadDynamicMapIcons();
 public OnLoadDynamicMapIcons()
 {
-	new i, rows, fields, tmp[128];
+	new i, rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  DMPInfo[i][dmpSQLId] = strval(tmp);
-		cache_get_field_content(i, "MarkerType", tmp, MainPipeline); DMPInfo[i][dmpMarkerType] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); DMPInfo[i][dmpColor] = strval(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); DMPInfo[i][dmpVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); DMPInfo[i][dmpInt] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); DMPInfo[i][dmpPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); DMPInfo[i][dmpPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); DMPInfo[i][dmpPosZ] = floatstr(tmp);
+		DMPInfo[i][dmpSQLId] = cache_get_field_content_int(i, "id", MainPipeline);  
+		DMPInfo[i][dmpMarkerType] = cache_get_field_content_int(i, "MarkerType", MainPipeline);
+		DMPInfo[i][dmpColor] = cache_get_field_content_int(i, "Color", MainPipeline); 
+		DMPInfo[i][dmpVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		DMPInfo[i][dmpInt] = cache_get_field_content_int(i, "Int", MainPipeline);
+		DMPInfo[i][dmpPosX] = cache_get_field_content_float(i, "PosX", MainPipeline); 
+		DMPInfo[i][dmpPosY] = cache_get_field_content_float(i, "PosY", MainPipeline); 
+		DMPInfo[i][dmpPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline); 
 		if(DMPInfo[i][dmpPosX] != 0.0)
 		{
 			if(DMPInfo[i][dmpMarkerType] != 0) DMPInfo[i][dmpMapIconID] = CreateDynamicMapIcon(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], DMPInfo[i][dmpMarkerType], DMPInfo[i][dmpColor], DMPInfo[i][dmpVW], DMPInfo[i][dmpInt], -1, 500.0);

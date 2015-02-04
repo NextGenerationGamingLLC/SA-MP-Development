@@ -130,6 +130,56 @@ public EatBar(playerid)
 	return 1;
 }
 
+stock HireCost(carid)
+{
+	switch (carid)
+	{
+		case 69:
+		{
+			return 90000; //bullit
+		}
+		case 70:
+		{
+			return 130000; //infurnus
+		}
+		case 71:
+		{
+			return 100000; //turismo
+		}
+		case 72:
+		{
+			return 80000;
+		}
+		case 73:
+		{
+			return 70000;
+		}
+		case 74:
+		{
+			return 60000;
+		}
+	}
+	return 0;
+}
+
+forward TeleportToShop(playerid);
+public TeleportToShop(playerid)
+{
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") == 1 || GetPVarInt(playerid, "IsInArena") >= 0 || !GetPVarInt(playerid, "ShopTP"))
+		return DeletePVar(playerid, "ShopTP"), SendClientMessage(playerid, COLOR_GRAD2, "SERVER: Shop Teleportation has been cancelled.");
+	if(gettime() - LastShot[playerid] < 30) return DeletePVar(playerid, "ShopTP"), SendClientMessageEx(playerid, COLOR_GRAD2, "You have been injured within the last 30 seconds, you will not be teleported to the shop.");
+	if(GetPVarInt(playerid, "ShopTP") == 1)
+	{
+		SetPlayerPos(playerid, 2957.9670, -1459.4045, 10.8092);
+		SetPlayerInterior(playerid, 0);
+		SetPlayerVirtualWorld(playerid, 0);
+		TogglePlayerControllable(playerid, 1);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "If you wish to leave the shop, type /leaveshop to return to your previous location.");
+		SendClientMessageEx(playerid, COLOR_ORANGE, "Note{ffffff}: You will {ff0000}not{ffffff} be able to return to your previous location upon purchasing a vehicle.");
+	}
+	return 1;
+}
+
 CMD:shopplate(playerid, params[])
 {
     if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)

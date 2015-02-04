@@ -34,6 +34,48 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock ShowBackupActiveForPlayer(playerid)
+{
+	PlayerTextDrawShow(playerid, BackupText[playerid]);
+}
+
+stock HideBackupActiveForPlayer(playerid)
+{
+	PlayerTextDrawHide(playerid, BackupText[playerid]);
+}
+
+forward SetPlayerFree(playerid,declare,reason[]);
+public SetPlayerFree(playerid,declare,reason[])
+{
+	if(IsPlayerConnected(playerid))
+	{
+		ClearCrimes(playerid, declare);
+		new string[128];
+		foreach(new i: Player)
+		{
+			if(IsACop(i))
+			{
+				format(string, sizeof(string), "HQ: All units, officer %s has completed their assignment.", GetPlayerNameEx(declare));
+				SendClientMessageEx(i, COLOR_DBLUE, string);
+				format(string, sizeof(string), "HQ: %s has been processed, %s.", GetPlayerNameEx(playerid), reason);
+				SendClientMessageEx(i, COLOR_DBLUE, string);
+			}
+		}	
+	}
+}
+
+stock IsACopCar(carid)
+{
+	if(DynVeh[carid] != -1)
+	{
+	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
+	    if((0 <= iGroupID < MAX_GROUPS))
+	    {
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) return 1;
+		}
+	}
+	return 0;
+}
 
 stock CuffTacklee(playerid, giveplayerid)
 {

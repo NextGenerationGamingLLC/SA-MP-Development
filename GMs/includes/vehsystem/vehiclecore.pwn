@@ -35,6 +35,1125 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock vehicle_lock_doors(vehicle) {
+
+	new
+		vParamArr[7];
+
+	GetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], vParamArr[3], vParamArr[4], vParamArr[5], vParamArr[6]);
+	return SetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], VEHICLE_PARAMS_ON, vParamArr[4], vParamArr[5], vParamArr[6]);
+}
+
+stock vehicle_unlock_doors(vehicle) {
+
+	new
+		vParamArr[7];
+
+	GetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], vParamArr[3], vParamArr[4], vParamArr[5], vParamArr[6]);
+	return SetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], VEHICLE_PARAMS_OFF, vParamArr[4], vParamArr[5], vParamArr[6]);
+}
+
+stock IsSeatAvailable(vehicleid, seat)
+{
+	switch(GetVehicleModel(vehicleid)) {
+		case 425, 430, 432, 441, 446, 448, 452, 453, 454, 464, 465, 472, 473, 476, 481, 484, 485, 486, 493, 501, 509, 510, 519, 520, 530, 531, 532, 539, 553, 564, 568, 571, 572, 574, 583, 592, 594, 595: return 0;
+		default: if(IsVehicleOccupied(vehicleid, seat)) return 0;
+	}
+	return 1;
+}
+
+stock IsPlayerInInvalidNosVehicle(playerid)
+{
+	switch(GetVehicleModel(GetPlayerVehicleID(playerid))) {
+		case 430, 446, 448, 449, 452, 453, 454, 461, 462, 463, 468, 472, 473, 481, 484, 493, 509, 510, 521, 522, 523, 537, 538, 569, 570, 581, 586, 590, 595: return 1;
+	}
+	return 0;
+}
+
+
+stock IsARC(carid)
+{
+	switch(GetVehicleModel(carid)) {
+		case 441, 464, 465, 501, 564: return 1;
+	}
+	return 0;
+}
+
+stock IsABoat(carid) {
+	switch(GetVehicleModel(carid)) {
+		case 472, 473, 493, 484, 430, 454, 453, 452, 446, 595: return 1;
+	}
+	return 0;
+}
+
+stock IsABike(carid) {
+	switch(GetVehicleModel(carid)) {
+		case 509, 481, 510, 462, 448, 581, 522, 461, 521, 523, 463, 586, 468, 471: return 1;
+	}
+	return 0;
+}
+
+stock IsATrain(modelid) {
+	switch(modelid) {
+		case 538, 537, 449, 590, 569, 570: return 1;
+	}
+	return 0;
+}
+
+stock IsASpawnedTrain(carid) {
+	switch(GetVehicleModel(carid)) {
+		case 538, 537, 449, 590, 569, 570: return 1;
+	}
+	return 0;
+}
+
+stock IsAPlane(carid, type = 0)
+{
+	if(type == 0)
+	{
+		switch(GetVehicleModel(carid)) {
+			case 592, 577, 511, 512, 593, 520, 553, 476, 519, 460, 513, 548, 425, 417, 487, 488, 497, 563, 447, 469: return 1;
+		}
+	}
+	else
+	{
+		switch(carid) {
+			case 592, 577, 511, 512, 593, 520, 553, 476, 519, 460, 513, 548, 425, 417, 487, 488, 497, 563, 447, 469: return 1;
+		}
+	}
+	return 0;
+}
+
+stock IsRestrictedVehicle(modelid)
+{
+	switch(modelid) {
+		case 406, 407, 408, 416, 425, 430, 432, 433, 447, 464, 465, 476, 486, 488, 490, 497, 501, 520, 523, 524, 525, 528, 532, 544, 548, 552, 563, 564, 577, 582, 592, 594, 596, 597, 598, 599, 601, 610, 611: return 1;
+	}
+	return 0;
+}
+
+stock IsWeaponizedVehicle(modelid)
+{
+	switch(modelid) {
+		case 425, 432, 447, 476, 520: return 1;
+	}
+	return 0;
+}	
+
+stock IsATruckerCar(carid)
+{
+	for(new v = 0; v < sizeof(TruckerVehicles); v++) {
+	    if(carid == TruckerVehicles[v]) return 1;
+	}
+	return 0;
+}
+
+stock IsAPizzaCar(carid)
+{
+	for (new v = 0; v < sizeof(PizzaVehicles); v++) {
+	    if(carid == PizzaVehicles[v]) return 1;
+	}
+	return 0;
+}
+
+stock IsATowTruck(carid)
+{
+	if(GetVehicleModel(carid) == 525) {
+		return 1;
+	}
+	return 0;
+}
+
+stock IsAAircraftTowTruck(carid)
+{
+	if(GetVehicleModel(carid) == 485 || GetVehicleModel(carid) == 583) {
+		return 1;
+	}
+	return 0;
+}
+stock IsAHelicopter(carid)
+{
+	if(GetVehicleModel(carid) == 548 || GetVehicleModel(carid) == 425 || GetVehicleModel(carid) == 417 || GetVehicleModel(carid) == 487 || GetVehicleModel(carid) == 488 || GetVehicleModel(carid) == 497 || GetVehicleModel(carid) == 563 || GetVehicleModel(carid) == 447 || GetVehicleModel(carid) == 469 || GetVehicleModel(carid) == 593) {
+		return 1;
+	}
+	return 0;
+}
+
+
+stock IsAnBus(carid)
+{
+	if(GetVehicleModel(carid) == 431 || GetVehicleModel(carid) == 437) {
+		return 1;
+	}
+	return 0;
+}
+
+stock IsAnTaxi(carid)
+{
+	if(GetVehicleModel(carid) == 420 || GetVehicleModel(carid) == 438) {
+		return 1;
+	}
+	return 0;
+}
+
+stock partType(type)
+{
+	new name[32];
+	switch(type)
+	{
+	    case 0:
+		{
+			name = "Spoiler";
+        }
+        case 1:
+		{
+			name = "Hood";
+        }
+        case 2:
+		{
+			name = "Roof";
+        }
+        case 3:
+		{
+			name = "Sideskirt";
+        }
+        case 4:
+		{
+			name = "Lamps";
+        }
+        case 5:
+		{
+			name = "Nitro";
+        }
+        case 6:
+		{
+			name = "Exhaust";
+        }
+        case 7:
+		{
+			name = "Wheels";
+        }
+        case 8:
+		{
+			name = "Stereo";
+        }
+        case 9:
+		{
+			name = "Hydraulics";
+        }
+        case 10:
+		{
+			name = "Front Bumper";
+        }
+        case 11:
+		{
+			name = "Rear Bumper";
+        }
+        case 12:
+		{
+			name = "Left Vent";
+        }
+        case 13:
+		{
+			name = "Right Vent";
+        }
+        default:
+        {
+            name = "Unknown";
+		}
+	}
+	return name;
+}
+
+stock partName(part)
+{
+	new name[32];
+	switch(part - 1000)
+	{
+		case 0:
+		{
+			name = "Pro";
+        }
+		case 1:
+        {
+			name = "Win";
+        }
+		case 2:
+        {
+			name = "Drag";
+        }
+		case 3:
+        {
+			name = "Alpha";
+        }
+		case 4:
+        {
+			name = "Champ Scoop";
+        }
+		case 5:
+        {
+			name = "Fury Scoop";
+        }
+		case 6:
+        {
+			name = "Roof Scoop";
+        }
+		case 7:
+        {
+			name = "Sideskirt";
+        }
+        case 8:
+        {
+            name = "2x";
+        }
+        case 9:
+        {
+            name = "5x";
+        }
+        case 10:
+        {
+            name = "10x";
+        }
+		case 11:
+        {
+			name = "Race Scoop";
+        }
+		case 12:
+        {
+			name = "Worx Scoop";
+        }
+		case 13:
+        {
+			name = "Round Fog";
+        }
+		case 14:
+        {
+			name = "Champ";
+        }
+		case 15:
+        {
+			name = "Race";
+        }
+		case 16:
+        {
+			name = "Worx";
+        }
+		case 17:
+        {
+			name = "Sideskirt";
+        }
+		case 18:
+        {
+			name = "Upswept";
+        }
+		case 19:
+        {
+			name = "Twin";
+        }
+		case 20:
+		{
+			name = "Large";
+        }
+		case 21:
+        {
+			name = "Medium";
+        }
+		case 22:
+        {
+			name = "Small";
+        }
+		case 23:
+        {
+			name = "Fury";
+        }
+		case 24:
+        {
+			name = "Square Fog";
+        }
+        case 25:
+        {
+            name = "Offroad";
+        }
+		case 26:
+        {
+			name = "Alien";
+        }
+		case 27:
+        {
+			name = "Alien";
+        }
+		case 28:
+        {
+			name = "Alien";
+        }
+		case 29:
+        {
+			name = "X-Flow";
+        }
+		case 30:
+        {
+			name = "X-Flow";
+        }
+		case 31:
+        {
+			name = "X-Flow";
+        }
+		case 32:
+        {
+			name = "Alien Roof Vent";
+        }
+		case 33:
+        {
+			name = "X-Flow Roof Vent";
+        }
+		case 34:
+        {
+			name = "Alien";
+        }
+		case 35:
+        {
+			name = "X-Flow Roof Vent";
+        }
+		case 36:
+        {
+			name = "Alien";
+        }
+		case 37:
+        {
+			name = "X-Flow";
+        }
+		case 38:
+        {
+			name = "Alien Roof Vent";
+        }
+		case 39:
+        {
+			name = "X-Flow";
+        }
+		case 40:
+        {
+			name = "Alien";
+        }
+		case 41:
+        {
+			name = "X-Flow";
+        }
+		case 42:
+        {
+			name = "Chrome";
+        }
+		case 43:
+        {
+			name = "Slamin";
+        }
+		case 44:
+        {
+			name = "Chrome";
+        }
+		case 45:
+        {
+			name = "X-Flow";
+        }
+		case 46:
+        {
+			name = "Alien";
+        }
+		case 47:
+        {
+			name = "Alien";
+        }
+		case 48:
+        {
+			name = "X-Flow";
+        }
+		case 49:
+        {
+			name = "Alien";
+        }
+		case 50:
+        {
+			name = "X-Flow";
+        }
+		case 51:
+        {
+			name = "Alien";
+        }
+		case 52:
+        {
+			name = "X-Flow";
+        }
+		case 53:
+        {
+			name = "X-Flow";
+        }
+		case 54:
+        {
+			name = "Alien";
+        }
+		case 55:
+        {
+			name = "Alien";
+        }
+		case 56:
+        {
+			name = "Alien";
+        }
+		case 57:
+        {
+			name = "X-Flow";
+        }
+		case 58:
+        {
+			name = "Alien";
+        }
+		case 59:
+        {
+			name = "X-Flow";
+        }
+		case 60:
+        {
+			name = "X-Flow";
+        }
+		case 61:
+        {
+			name = "X-Flow";
+        }
+		case 62:
+        {
+			name = "Alien";
+        }
+		case 63:
+        {
+			name = "X-Flow";
+        }
+		case 64:
+        {
+			name = "Alien";
+        }
+		case 65:
+        {
+			name = "Alien";
+        }
+		case 66:
+        {
+			name = "X-Flow";
+        }
+		case 67:
+        {
+			name = "Alien";
+        }
+		case 68:
+        {
+			name = "X-Flow";
+        }
+		case 69:
+        {
+			name = "Alien";
+        }
+		case 70:
+        {
+			name = "X-Flow";
+        }
+		case 71:
+        {
+			name = "Alien";
+        }
+		case 72:
+        {
+			name = "X-Flow";
+        }
+        case 73:
+        {
+            name = "Shadow";
+        }
+        case 74:
+        {
+            name = "Mega";
+        }
+        case 75:
+        {
+            name = "Rimshine";
+        }
+        case 76:
+        {
+            name = "Wires";
+        }
+        case 77:
+        {
+            name = "Classic";
+        }
+        case 78:
+        {
+            name = "Twist";
+        }
+        case 79:
+        {
+            name = "Cutter";
+        }
+        case 80:
+        {
+            name = "Switch";
+        }
+        case 81:
+        {
+            name = "Grove";
+        }
+        case 82:
+        {
+            name = "Import";
+        }
+        case 83:
+        {
+            name = "Dollar";
+        }
+        case 84:
+        {
+            name = "Trance";
+        }
+        case 85:
+        {
+            name = "Atomic";
+        }
+		case 88:
+        {
+			name = "Alien";
+        }
+		case 89:
+        {
+			name = "X-Flow";
+        }
+		case 90:
+        {
+			name = "Alien";
+        }
+		case 91:
+        {
+			name = "X-Flow";
+        }
+		case 92:
+        {
+			name = "Alien";
+        }
+		case 93:
+        {
+			name = "X-Flow";
+        }
+		case 94:
+        {
+			name = "Alien";
+        }
+		case 95:
+        {
+			name = "X-Flow";
+        }
+        case 96:
+        {
+            name = "Ahab";
+        }
+        case 97:
+        {
+            name = "Virtual";
+        }
+        case 98:
+        {
+            name = "Access";
+        }
+		case 99:
+        {
+			name = "Chrome";
+        }
+		case 100:
+        {
+			name = "Chrome Grill";
+        }
+ 		case 101:
+        {
+			name = "Chrome Flames";
+        }
+		case 102:
+        {
+			name = "Chrome Strip";
+        }
+		case 103:
+        {
+			name = "Covertible";
+        }
+		case 104:
+        {
+			name = "Chrome";
+        }
+		case 105:
+        {
+			name = "Slamin";
+        }
+		case 106:
+        {
+			name = "Chrome Arches";
+        }
+		case 107:
+        {
+			name = "Chrome Strip";
+        }
+		case 108:
+        {
+			name = "Chrome Strip";
+        }
+		case 109:
+        {
+			name = "Chrome";
+        }
+		case 110:
+        {
+			name = "Slamin";
+        }
+		case 113:
+        {
+			name = "Chrome";
+        }
+		case 114:
+        {
+			name = "Slamin";
+        }
+		case 115:
+        {
+			name = "Chrome";
+        }
+		case 116:
+        {
+			name = "Slamin";
+        }
+		case 117:
+        {
+			name = "Chrome";
+        }
+		case 118:
+        {
+			name = "Chrome Trim";
+        }
+		case 119:
+        {
+			name = "Wheelcovers";
+        }
+		case 120:
+        {
+			name = "Chrome Trim";
+        }
+		case 121:
+        {
+			name = "Wheelcovers";
+        }
+		case 122:
+        {
+			name = "Chrome Flames";
+        }
+		case 123:
+        {
+			name = "Bullbar Chrome Bars";
+        }
+		case 124:
+        {
+			name = "Chrome Arches";
+        }
+		case 125:
+        {
+			name = "Bullbar Chrome Lights";
+        }
+		case 126:
+        {
+			name = "Chrome";
+        }
+		case 127:
+        {
+			name = "Slamin";
+        }
+		case 128:
+        {
+			name = "Vinyl Hardtop";
+        }
+		case 129:
+        {
+			name = "Chrome";
+        }
+		case 130:
+        {
+			name = "Hardtop";
+        }
+		case 131:
+        {
+			name = "Softtop";
+        }
+		case 132:
+        {
+			name = "Slamin";
+        }
+		case 133:
+        {
+			name = "Chrome Strip";
+        }
+		case 134:
+        {
+			name = "Chrome Strip";
+        }
+		case 135:
+        {
+			name = "Slamin";
+        }
+		case 136:
+        {
+			name = "Chrome";
+        }
+		case 137:
+        {
+			name = "Chrome Strip";
+        }
+		case 138:
+        {
+			name = "Alien";
+        }
+		case 139:
+        {
+			name = "X-Flow";
+        }
+		case 140:
+        {
+			name = "X-Flow";
+        }
+		case 141:
+        {
+			name = "Alien";
+        }
+		case 142:
+        {
+			name = "Left Oval Vents";
+        }
+		case 143:
+        {
+			name = "Right Oval Vents";
+        }
+		case 144:
+        {
+			name = "Left Square Vents";
+        }
+		case 145:
+        {
+			name = "Right Square Vents";
+        }
+		case 146:
+        {
+			name = "X-Flow";
+        }
+		case 147:
+        {
+			name = "Alien";
+        }
+		case 148:
+        {
+			name = "X-Flow";
+        }
+		case 149:
+        {
+			name = "Alien";
+        }
+		case 150:
+        {
+			name = "Alien";
+        }
+		case 151:
+        {
+			name = "X-Flow";
+        }
+		case 152:
+        {
+			name = "X-Flow";
+        }
+		case 153:
+        {
+			name = "Alien";
+        }
+		case 154:
+        {
+			name = "Alien";
+        }
+		case 155:
+        {
+			name = "Alien";
+        }
+		case 156:
+        {
+			name = "X-Flow";
+        }
+		case 157:
+        {
+			name = "X-Flow";
+        }
+		case 158:
+        {
+			name = "X-Flow";
+        }
+		case 159:
+        {
+			name = "Alien";
+        }
+		case 160:
+        {
+			name = "Alien";
+        }
+		case 161:
+        {
+			name = "X-Flow";
+        }
+		case 162:
+        {
+			name = "Alien";
+        }
+		case 163:
+        {
+			name = "X-Flow";
+        }
+		case 164:
+        {
+			name = "Alien";
+        }
+		case 165:
+        {
+			name = "X-Flow";
+        }
+		case 166:
+        {
+			name = "Alien";
+        }
+		case 167:
+        {
+			name = "X-Flow";
+        }
+		case 168:
+        {
+			name = "Alien";
+        }
+		case 169:
+        {
+			name = "Alien";
+        }
+		case 170:
+        {
+			name = "X-Flow";
+        }
+		case 171:
+        {
+			name = "Alien";
+        }
+		case 172:
+        {
+			name = "X-Flow";
+        }
+		case 173:
+        {
+			name = "X-Flow";
+        }
+		case 174:
+        {
+			name = "Chrome";
+        }
+		case 175:
+        {
+			name = "Slamin";
+        }
+		case 176:
+        {
+			name = "Chrome";
+        }
+		case 177:
+        {
+			name = "Slamin";
+        }
+		case 178:
+        {
+			name = "Slamin";
+        }
+		case 179:
+        {
+			name = "Chrome";
+        }
+		case 180:
+        {
+			name = "Chrome";
+        }
+		case 181:
+        {
+			name = "Slamin";
+        }
+		case 182:
+        {
+			name = "Chrome";
+        }
+		case 183:
+        {
+			name = "Slamin";
+        }
+		case 184:
+        {
+			name = "Chrome";
+        }
+		case 185:
+        {
+			name = "Slamin";
+        }
+		case 186:
+        {
+			name = "Slamin";
+        }
+		case 187:
+        {
+			name = "Chrome";
+        }
+		case 188:
+        {
+			name = "Slamin";
+        }
+		case 189:
+        {
+			name = "Chrome";
+        }
+		case 190:
+        {
+			name = "Slamin";
+        }
+		case 191:
+        {
+			name = "Chrome";
+        }
+		case 192:
+        {
+			name = "Chrome";
+        }
+		case 193:
+        {
+			name = "Slamin";
+        }
+   	}
+	return name;
+}
+
+stock GetXYBehindVehicle(vehicleid, &Float:x, &Float:y, Float:distance)
+{
+    new
+        Float:a;
+    GetVehiclePos( vehicleid, x, y, a );
+    GetVehicleZAngle( vehicleid, a );
+    x += ( distance * floatsin( -a+180, degrees ));
+    y += ( distance * floatcos( -a+180, degrees ));
+}
+
+stock GetPosBehindVehicle(vehicleid, &Float:x, &Float:y, &Float:z, Float:offset=1.0)
+{
+	new Float:vehicleSize[3], Float:vehiclePos[3];
+	GetVehiclePos(vehicleid, vehiclePos[0], vehiclePos[1], vehiclePos[2]);
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehicleSize[0], vehicleSize[1], vehicleSize[2]);
+	GetXYBehindVehicle(vehicleid, vehiclePos[0], vehiclePos[1], (vehicleSize[1]/2)+offset);
+	x = vehiclePos[0];
+	y = vehiclePos[1];
+	z = vehiclePos[2];
+	return 1;
+}
+
+TriggerVehicleAlarm(triggerid, ownerid, vehicleid)
+{
+	new szMessage[128], szCarLocation[MAX_ZONE_NAME], slot = GetPlayerVehicle(ownerid, vehicleid), Float: CarPos[3], engine, lights, alarm, doors, bonnet, boot, objective;
+	if(PlayerVehicleInfo[ownerid][slot][pvAlarm] > 0) {
+		ProxDetector(30.0, triggerid, "(( A vehicle alarm has been triggered. ))", COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+		Get3DZone(CarPos[0], CarPos[1], CarPos[2], szCarLocation, sizeof(szCarLocation));
+		format(szMessage, sizeof(szMessage), "SMS: Your %s(%d)'s Alarm at %s has been triggered, call 911, Sender: Vehicle Security Company", VehicleName[PlayerVehicleInfo[ownerid][slot][pvModelId] - 400], vehicleid, szCarLocation);
+		SendClientMessageEx(ownerid, COLOR_YELLOW, szMessage);
+		PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 1;
+		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+		SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
+	}
+}
+
+stock GetVehicleRelativePos(vehicleid, &Float:x, &Float:y, &Float:z, Float:xoff=0.0, Float:yoff=0.0, Float:zoff=0.0)
+{
+    new Float:rot;
+    GetVehicleZAngle(vehicleid, rot);
+    rot = 360 - rot;    // Making the vehicle rotation compatible with pawns sin/cos
+	GetVehiclePos(vehicleid, x, y, z);
+    
+    x = floatsin(rot,degrees) * yoff + floatcos(rot,degrees) * xoff + x;
+    y = floatcos(rot,degrees) * yoff - floatsin(rot,degrees) * xoff + y;
+    z = zoff + z;
+
+    /*
+       where xoff/yoff/zoff are the offsets relative to the vehicle
+       x/y/z then are the coordinates of the point with the given offset to the vehicle
+       xoff = 1.0 would e.g. point to the right side of the vehicle, -1.0 to the left, etc.
+    */
+}
+
+stock RegisterVehicleNumberPlate(vehicleid, sz_NumPlate[]) {
+	new
+	    Float: a_CarPos[4], Float: fuel; // X, Y, Z, Z Angle, Fuel
+
+	GetVehiclePos(vehicleid, a_CarPos[0], a_CarPos[1], a_CarPos[2]);
+	GetVehicleZAngle(vehicleid, a_CarPos[3]);
+	fuel = VehicleFuel[vehicleid];
+	SetVehicleNumberPlate(vehicleid, sz_NumPlate);
+	SetVehicleToRespawn(vehicleid);
+	SetVehiclePos(vehicleid, a_CarPos[0], a_CarPos[1], a_CarPos[2]);
+	SetVehicleZAngle(vehicleid, a_CarPos[3]);
+	VehicleFuel[vehicleid] = fuel;
+	return 1;
+}
+
+
+stock legalRims(playerid, compenent, vehicleid)
+{
+	if(IsPlayerInRangeOfPoint(playerid, 20, 617.5360,-1.9900,1000.6592)) // Transfender
+	{
+		switch(compenent)
+		{
+		    case 1098, 1096, 1085, 1081, 1082, 1074, 1025, 1078, 1097, 1076:
+		    {
+		        switch(GetVehicleModel(vehicleid))
+		        {
+		            case  579, 400, 500, 418, 404, 489, 479, 442, 458, 602, 496, 401, 518, 527, 589, 419, 533, 526, 474, 545,
+		            517, 410, 600, 436, 439, 549, 491, 555, 445, 507, 585, 604, 466, 492, 546, 551, 516, 467, 426, 405, 580, 409, 550,
+		            540, 421, 529, 402, 542, 603, 475, 429, 541, 415, 480, 587, 411, 506, 451, 477, 422, 478, 438, 420, 547: return 1;
+		            default: return 0;
+		        }
+			}
+		}
+	}
+	if(IsPlayerInRangeOfPoint(playerid, 20,615.2861,-124.2390,997.6703)) //Wheel Arch
+	{
+	    switch(compenent)
+		{
+		    case 1085, 1077, 1079, 1083, 1081, 1082, 1074, 1075, 1073, 1080:
+		    {
+		        switch(GetVehicleModel(vehicleid))
+		        {
+		            case  562, 565, 559, 561, 560, 558: return 1;
+		            default: return 0;
+		        }
+			}
+		}
+	}
+	if(IsPlayerInRangeOfPoint(playerid, 20, 616.7914,-74.8150,997.8929)) // Loco
+	{
+	    switch(compenent)
+		{
+		    case 1098, 1077, 1079, 1083, 1075, 1084, 1078, 1097, 1076:
+		    {
+		        switch(GetVehicleModel(vehicleid))
+		        {
+		            case  536, 575, 534, 567, 535, 566, 576, 412: return 1;
+		            default: return 0;
+		        }
+			}
+		}
+	}
+	return 0;
+}
+
 vehicleSpawnCountCheck(playerid) {
 	switch(PlayerInfo[playerid][pDonateRank]) {
 		case 0, 1, 2: if(VehicleSpawned[playerid] >= 2) return 0;
@@ -187,6 +1306,498 @@ UnLockPlayerVehicle(ownerid, carid, type)
 encode_tires(tire1, tire2, tire3, tire4)
 {
 	return tire1 | (tire2 << 1) | (tire3 << 2) | (tire4 << 3);
+}
+
+stock SurfingCheck(vehicleid)
+{
+	foreach(new p: Player)
+	{
+		if(GetPlayerSurfingVehicleID(p) == vehicleid)
+		{
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(p, x, y, z);
+			SetTimerEx("SurfingFix", 2000, 0, "ifff", p, x, y, z);
+		}
+	}	
+}
+
+stock InvalidModCheck(model, partid) {
+    switch(model) {
+		case 430, 446, 452, 453, 454, 472, 473, 484, 493, 595, 573, 556, 557, 539, 471, 432, 406, 444,
+		448, 461, 462, 463, 468, 481, 509, 510, 521, 522, 581, 586, 417, 425, 447, 460, 469, 476, 487,
+		488, 511, 512, 513, 519, 520, 548, 553, 563, 577, 592, 593: return 0;
+		default: switch(GetVehicleComponentType(partid)) {
+			case 5: switch(partid) {
+				case 1008, 1009, 1010: return 1;
+				default: return 0;
+			}
+			case 7: switch(partid) {
+				case 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1096, 1097, 1098, 1025: return 1;
+				default: return 0;
+			}
+			case 8: switch(partid) {
+				case 1086: return 1;
+				default: return 0;
+			}
+			case 9: switch(partid) {
+				case 1087: return 1;
+				default: return 0;
+			}
+			case 12, 13: switch(partid) {
+				case 1142, 1144, 1143, 1145: return 1;
+				default: return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+
+stock SetVehicleLights(vehicleid, playerid)
+{
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+    GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+    if(lights == VEHICLE_PARAMS_ON)
+	{
+		SetVehicleParamsEx(vehicleid,engine,VEHICLE_PARAMS_OFF,alarm,doors,bonnet,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle lights successfully turned off.");
+	}
+    else if(lights == VEHICLE_PARAMS_OFF || lights == VEHICLE_PARAMS_UNSET)
+	{
+		SetVehicleParamsEx(vehicleid,engine,VEHICLE_PARAMS_ON,alarm,doors,bonnet,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle lights successfully turned on.");
+	}
+	return 1;
+}
+
+stock SetVehicleHood(vehicleid, playerid)
+{
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+    GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+    if(bonnet == VEHICLE_PARAMS_ON)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,VEHICLE_PARAMS_OFF,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle hood successfully closed.");
+	}
+    else if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,VEHICLE_PARAMS_ON,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle hood successfully opened.");
+	}
+	return 1;
+}
+
+stock SetVehicleTrunk(vehicleid, playerid)
+{
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+    GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+    if(boot == VEHICLE_PARAMS_ON)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_OFF,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle trunk successfully closed.");
+	}
+    else if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle trunk successfully opened.");
+	}
+	return 1;
+}
+
+stock SetVehicleDoors(vehicleid, playerid)
+{
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+    GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+    if(doors == VEHICLE_PARAMS_ON)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,VEHICLE_PARAMS_OFF,bonnet,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle {AA3333}Doors {FFFFFF}successfully {33AA33}closed{FFFFFF}.");
+	}
+    else if(doors == VEHICLE_PARAMS_OFF || doors == VEHICLE_PARAMS_UNSET)
+	{
+		SetVehicleParamsEx(vehicleid,engine,lights,alarm,VEHICLE_PARAMS_ON,bonnet,boot,objective);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle {AA3333}Doors {FFFFFF}successfully {33AA33}opened{FFFFFF}.");
+	}
+	return 1;
+}
+
+stock IsValidVehicleID(vehicleid)
+{
+   if(GetVehicleModel(vehicleid)) return 1;
+   return 0;
+}
+
+stock GetClosestCar(iPlayer, iException = INVALID_VEHICLE_ID, Float: fRange = Float: 0x7F800000) {
+
+	new
+		iReturnID = INVALID_VEHICLE_ID,
+		Float: fVehiclePos[4];
+
+	for(new i = 1; i <= MAX_VEHICLES; ++i) if(GetVehicleModel(i) && i != iException) {
+		GetVehiclePos(i, fVehiclePos[0], fVehiclePos[1], fVehiclePos[2]);
+		if((fVehiclePos[3] = GetPlayerDistanceFromPoint(iPlayer, fVehiclePos[0], fVehiclePos[1], fVehiclePos[2])) < fRange) {
+			fRange = fVehiclePos[3];
+			iReturnID = i;
+		}
+	}
+	return iReturnID;
+}
+
+stock Float: GetVehicleFuelCapacity(vehicleid)
+{
+	new Float: capacity;
+	if (IsABike(vehicleid)) {
+		capacity = 5.0;
+	}
+ 	else {
+	 	capacity = 20.00;
+	}
+	return capacity;
+	//TODO optimise more
+}
+
+stock RespawnNearbyVehicles(iPlayerID, Float: fRadius) {
+
+	new
+		Float: fPlayerPos[3];
+
+    GetPlayerPos(iPlayerID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
+    for(new i = 1; i < MAX_VEHICLES; i++)
+	{
+		if(GetVehicleModel(i) && GetVehicleDistanceFromPoint(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]) <= fRadius && !IsVehicleOccupied(i))
+		{
+			if(DynVeh[i] != -1)
+			{
+			    DynVeh_Spawn(DynVeh[i]);
+			    TruckDeliveringTo[i] = INVALID_BUSINESS_ID;
+			}
+			SetVehicleToRespawn(i);
+		}
+	}
+	return 1;
+}
+
+stock IsRefuelableVehicle(vehicleid)
+{
+	new modelid = GetVehicleModel(vehicleid);
+	switch (modelid)
+	{
+		case 481, 509, 510: return 0; // Bikes
+	}
+	return 1;
+}
+
+stock SetVehicleTireState(vehicleid, tire1, tire2, tire3, tire4)
+{
+    new panels, doors, Lights, tires;
+   	GetVehicleDamageStatus(vehicleid, panels, doors, Lights, tires);
+    tires = encode_tires(!tire1, !tire2, !tire3, !tire4);
+    UpdateVehicleDamageStatus(vehicleid, panels, doors, Lights, tires);
+}
+
+stock GetVehicleTireState(vehicleid, &tire1, &tire2, &tire3, &tire4)
+{
+    new panels, doors, Lights, tires;
+   	GetVehicleDamageStatus(vehicleid, panels, doors, Lights, tires);
+    tire1 = !(tires >> 0 & 0x1);
+	tire2 = !(tires >> 1 & 0x1);
+	tire3 = !(tires >> 2 & 0x1);
+	tire4 = !(tires >> 3 & 0x1);
+}
+
+stock IsVehicleOccupied(iVehicleID, iSeatID = 0) {
+	foreach(new x : Player)
+	{
+		if(GetPlayerVehicleID(x) == iVehicleID && GetPlayerVehicleSeat(x) == iSeatID) {
+			return 1;
+		}
+	}	
+	return 0;
+}
+
+stock IsVehicleInTow(iVehicleID) {
+	foreach(new x : Player)
+	{
+		if(arr_Towing[x] == iVehicleID) {
+			return 1;
+		}
+	}	
+	return 0;
+}
+
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+    IsPlayerEntering{playerid} = true;
+	Seatbelt[playerid] = 0;
+	if(GetPVarType(playerid, "HelmetOn"))
+	{
+		for(new i; i < 10; i++) {
+			if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
+				PlayerHoldingObject[playerid][i] = 0;
+				RemovePlayerAttachedObject(playerid, i);
+				DeletePVar(playerid, "HelmetOn");
+				break;
+			}
+		}
+	}
+
+	if(PlayerCuffed[playerid] != 0) SetPVarInt( playerid, "ToBeEjected", 1 );
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
+		DeletePVar(playerid, "BackpackMedKit");
+	if(GetPVarInt(playerid, "BackpackMeal") == 1)
+		DeletePVar(playerid, "BackpackMeal");
+	if(GetPVarType(playerid, "BackpackOpen"))
+		DeletePVar(playerid, "BackpackOpen");
+	if(ispassenger) {
+		if(GetPVarType(playerid, "Injured")) {
+			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
+			ClearAnimations(playerid);
+			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+		}
+		else if(PlayerCuffed[playerid] != 0) {
+			ClearAnimations(playerid);
+			ApplyAnimation(playerid,"ped","cower",1,1,0,0,0,0,1);
+			TogglePlayerControllable(playerid, false);
+		}
+	}
+	SetPVarInt(playerid, "LastWeapon", GetPlayerWeapon(playerid));
+
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+	if(engine == VEHICLE_PARAMS_UNSET) switch(GetVehicleModel(vehicleid)) {
+		case 509, 481, 510: VehicleFuel[vehicleid] = GetVehicleFuelCapacity(vehicleid), arr_Engine{vehicleid} = 1, SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
+		default: SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF,VEHICLE_PARAMS_OFF,alarm,doors,bonnet,boot,objective), arr_Engine{vehicleid} = 0;
+	}
+
+	if(GetPVarInt(playerid, "UsingSprunk") == 1)
+	{
+		SetPVarInt(playerid, "UsingSprunk", 0);
+		SetPVarInt(playerid, "DrinkCooledDown", 0);
+	}
+
+    if(GetPVarType(playerid, "Pizza") && !(IsAPizzaCar(vehicleid)))
+	{
+	    new Float:slx, Float:sly, Float:slz;
+		GetPlayerPos(playerid, slx, sly, slz);
+		SetPlayerPos(playerid, slx, sly, slz+1.3);
+		PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+		RemovePlayerFromVehicle(playerid);
+		defer NOPCheck(playerid);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a Pizzaboy when delivering pizzas!");
+		return 1;
+	}
+	if(!ispassenger)
+	{
+	    SetPlayerArmedWeapon(playerid, 0);
+		if(PlayerInfo[playerid][pAccountRestricted] == 1)
+		{
+			new Float:slx, Float:sly, Float:slz;
+			GetPlayerPos(playerid, slx, sly, slz);
+			SetPlayerPos(playerid, slx, sly, slz+1.3);
+			RemovePlayerFromVehicle(playerid);
+			defer NOPCheck(playerid);
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot drive any vehicles while your account is restricted!");
+		}
+		if(IsVIPcar(vehicleid))
+		{
+		    if(PlayerInfo[playerid][pDonateRank] == 0)
+			{
+			    new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz+1.3);
+				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+			    RemovePlayerFromVehicle(playerid);
+			    defer NOPCheck(playerid);
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a VIP, this is a vehicle from the VIP Garage!");
+			}
+		}
+		else if(IsWeaponizedVehicle(GetVehicleModel(vehicleid)))
+	    {
+	        if(PlayerInfo[playerid][pLevel] < 6)
+	        {
+				if(gettime() > GetPVarInt(playerid, "timeWepVeh"))
+				{
+					new szString[128];
+					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponized vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
+					ABroadCast(COLOR_YELLOW, szString, 2);
+					SetPVarInt(playerid, "timeWepVeh", gettime()+5);
+				}
+			}
+		}
+		else if(IsFamedVeh(vehicleid))
+		{
+		    if(PlayerInfo[playerid][pFamed] > 0 || PlayerInfo[playerid][pFamed] < 8)
+		    {
+				if(IsOSModel(vehicleid))
+				{
+				    if(PlayerInfo[playerid][pFamed] < 1)
+				    {
+                        new Float:slx, Float:sly, Float:slz;
+						GetPlayerPos(playerid, slx, sly, slz);
+						SetPlayerPos(playerid, slx, sly, slz+1.3);
+						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+					    RemovePlayerFromVehicle(playerid);
+					    defer NOPCheck(playerid);
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Old-School+ Vehicle, therefore you may not drive this.");
+					}
+				}
+				else if(IsCOSModel(vehicleid))
+				{
+					if(PlayerInfo[playerid][pFamed] < 1)
+					{
+					    new Float:slx, Float:sly, Float:slz;
+						GetPlayerPos(playerid, slx, sly, slz);
+						SetPlayerPos(playerid, slx, sly, slz+1.3);
+						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+					    RemovePlayerFromVehicle(playerid);
+					    defer NOPCheck(playerid);
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Chartered Old-School+ Vehicle, therefore you may not drive this.");
+					}
+				}
+				else if(IsFamedModel(vehicleid))
+				{
+				    if(PlayerInfo[playerid][pFamed] < 1)
+				    {
+				        new Float:slx, Float:sly, Float:slz;
+						GetPlayerPos(playerid, slx, sly, slz);
+						SetPlayerPos(playerid, slx, sly, slz+1.3);
+						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+					    RemovePlayerFromVehicle(playerid);
+					    defer NOPCheck(playerid);
+					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Famed+ Vehicle, therefore you may not drive this.");
+					}
+				}
+			}
+		}
+		else if(IsAPizzaCar(vehicleid))
+		{
+		    if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21)
+		    {
+			    new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz+1.3);
+				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+			    RemovePlayerFromVehicle(playerid);
+			    defer NOPCheck(playerid);
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Pizza Boy!");
+			}
+		}
+
+		else if(IsATruckerCar(vehicleid))
+		{
+		    if((PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20))
+			{
+				new string[128];
+				new iTruckContents = TruckContents{vehicleid};
+				new truckcontentname[50];
+				if(iTruckContents == 1)
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Food & beverages");}
+				else if(iTruckContents == 2)
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Clothing"); }
+				else if(iTruckContents == 3)
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Legal materials"); }
+				else if(iTruckContents == 4)
+				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}24/7 items"); }
+				else if(iTruckContents == 5)
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal weapons"); }
+				else if(iTruckContents == 6)
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal drugs"); }
+				else if(iTruckContents == 7)
+				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
+				if(iTruckContents == 0)
+				{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[vehicleid])); }
+				format(string, sizeof(string), "SHIPMENT CONTRACTOR: (Vehicle registration: %s %d) - (Content: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
+				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+
+				if(IsACop(playerid))
+				{
+					SendClientMessageEx(playerid, COLOR_DBLUE, "LAW ENFORCEMENT: To remove any illegal goods type /clearcargo near the Vehicle.");
+				}
+				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID && TruckUsed[playerid] == INVALID_VEHICLE_ID)
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To deliver the goods type /hijackcargo as the driver.");
+				}
+				else if(TruckUsed[playerid] == INVALID_VEHICLE_ID)
+				{
+    				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To get goods type /loadshipment as the driver.");
+				}
+				else if(TruckUsed[playerid] == vehicleid && gPlayerCheckpointStatus[playerid] == CHECKPOINT_RETURNTRUCK)
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not returned it to the docks yet for your pay.");
+				}
+				else if(TruckUsed[playerid] == vehicleid)
+   				{
+      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not delivered your goods yet.");
+     			}
+				else if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
+   				{
+      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: You are already on another delivery, type /cancel shipment to cancel that delivery.");
+     			}
+			}
+		    else if(!IsABoat(vehicleid))
+			{
+			    RemovePlayerFromVehicle(playerid);
+			    new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+			    defer NOPCheck(playerid);
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
+			}
+		}
+	   	else if(IsAPlane(vehicleid))
+		{
+	  		if(PlayerInfo[playerid][pFlyLic] != 1)
+	  		{
+				if(GetPVarInt(playerid, "SprunkGuardLic") == 0)
+				{
+					RemovePlayerFromVehicle(playerid);
+					new Float:slx, Float:sly, Float:slz;
+					GetPlayerPos(playerid, slx, sly, slz);
+					SetPlayerPos(playerid, slx, sly, slz);
+					defer NOPCheck(playerid);
+					SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
+				}
+	  		}
+		}
+		else if(IsAHelicopter(vehicleid))
+		{
+		    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
+			GivePlayerValidWeapon(playerid, 46, 60000);
+		}
+		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
+		{
+	        if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
+			{
+			}
+		    else
+			{
+		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
+		        RemovePlayerFromVehicle(playerid);
+		        new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+		    }
+		}
+		else if(IsASpawnedTrain(vehicleid))
+		{
+	        if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI))
+			{
+			}
+		    else
+			{
+		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not part of a transportation department!");
+		        RemovePlayerFromVehicle(playerid);
+		        new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+		    }
+		}
+	}
+	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || LockStatus{vehicleid} >= 1) { // G-bugging fix
+		ClearAnimations(playerid);
+	}
+
+	return 1;
 }
 
 CMD:carhelp(playerid, params[])

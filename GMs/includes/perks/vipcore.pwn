@@ -34,6 +34,25 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock IsVIPcar(carid)
+{
+	for(new i = 0; i < sizeof(VIPVehicles); i++)
+	{
+		if(carid == VIPVehicles[i]) return 1;
+	}
+	return 0;
+}
+
+stock IsVIPModel(carid)
+{
+	new Cars[] = { 451, 411, 429, 522, 444, 556, 557 };
+	for(new i = 0; i < sizeof(Cars); i++)
+	{
+		if(GetVehicleModel(carid) == Cars[i]) return 1;
+	}
+	return 0;
+}
+
 
 stock GetVIPRankName(i)
 {

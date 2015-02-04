@@ -824,37 +824,37 @@ stock LoadGates()
 forward OnLoadGates();
 public OnLoadGates()
 {
-	new i, rows, fields, tmp[128];
+	new i, rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "HID", tmp, MainPipeline);  GateInfo[i][gHID] = strval(tmp);
-		cache_get_field_content(i, "Speed", tmp, MainPipeline); GateInfo[i][gSpeed] = floatstr(tmp);
-		cache_get_field_content(i, "Range", tmp, MainPipeline); GateInfo[i][gRange] = floatstr(tmp);
-		cache_get_field_content(i, "Model", tmp, MainPipeline); GateInfo[i][gModel] = strval(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); GateInfo[i][gVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); GateInfo[i][gInt] = strval(tmp);
+		GateInfo[i][gHID] = cache_get_field_content_int(i, "HID", MainPipeline); 
+		GateInfo[i][gSpeed] = cache_get_field_content_int(i, "Speed", MainPipeline); 
+		GateInfo[i][gRange] = cache_get_field_content_int(i, "Range", MainPipeline); 
+		GateInfo[i][gModel] = cache_get_field_content_int(i, "Model", MainPipeline); 
+		GateInfo[i][gVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		GateInfo[i][gInt] = cache_get_field_content_int(i, "Int", MainPipeline);
 		cache_get_field_content(i, "Pass", GateInfo[i][gPass], MainPipeline, 24);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); GateInfo[i][gPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); GateInfo[i][gPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); GateInfo[i][gPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "RotX", tmp, MainPipeline); GateInfo[i][gRotX] = floatstr(tmp);
-		cache_get_field_content(i, "RotY", tmp, MainPipeline); GateInfo[i][gRotY] = floatstr(tmp);
-		cache_get_field_content(i, "RotZ", tmp, MainPipeline); GateInfo[i][gRotZ] = floatstr(tmp);
-		cache_get_field_content(i, "PosXM", tmp, MainPipeline); GateInfo[i][gPosXM] = floatstr(tmp);
-		cache_get_field_content(i, "PosYM", tmp, MainPipeline); GateInfo[i][gPosYM] = floatstr(tmp);
-		cache_get_field_content(i, "PosZM", tmp, MainPipeline); GateInfo[i][gPosZM] = floatstr(tmp);
-		cache_get_field_content(i, "RotXM", tmp, MainPipeline); GateInfo[i][gRotXM] = floatstr(tmp);
-		cache_get_field_content(i, "RotYM", tmp, MainPipeline); GateInfo[i][gRotYM] = floatstr(tmp);
-		cache_get_field_content(i, "RotZM", tmp, MainPipeline); GateInfo[i][gRotZM] = floatstr(tmp);
-		cache_get_field_content(i, "Allegiance", tmp, MainPipeline); GateInfo[i][gAllegiance] = strval(tmp);
-		cache_get_field_content(i, "GroupType", tmp, MainPipeline); GateInfo[i][gGroupType] = strval(tmp);
-		cache_get_field_content(i, "GroupID", tmp, MainPipeline); GateInfo[i][gGroupID] = strval(tmp);
-		cache_get_field_content(i, "RenderHQ", tmp, MainPipeline); GateInfo[i][gRenderHQ] = strval(tmp);
-		cache_get_field_content(i, "Timer", tmp, MainPipeline); GateInfo[i][gTimer] = strval(tmp);
-		cache_get_field_content(i, "Automate", tmp, MainPipeline); GateInfo[i][gAutomate] = strval(tmp);
-		cache_get_field_content(i, "Locked", tmp, MainPipeline); GateInfo[i][gLocked] = strval(tmp);
+		GateInfo[i][gPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
+		GateInfo[i][gPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
+		GateInfo[i][gPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
+		GateInfo[i][gRotX] = cache_get_field_content_float(i, "RotX", MainPipeline);
+		GateInfo[i][gRotY] = cache_get_field_content_float(i, "RotY", MainPipeline);
+		GateInfo[i][gRotZ] = cache_get_field_content_float(i, "RotZ", MainPipeline);
+		GateInfo[i][gPosXM] = cache_get_field_content_float(i, "PosXM", MainPipeline);
+		GateInfo[i][gPosYM] = cache_get_field_content_float(i, "PosYM", MainPipeline);
+		GateInfo[i][gPosZM] = cache_get_field_content_float(i, "PosZM", MainPipeline);
+		GateInfo[i][gRotXM] = cache_get_field_content_float(i, "RotXM", MainPipeline);
+		GateInfo[i][gRotYM] = cache_get_field_content_float(i, "RotYM", MainPipeline);
+		GateInfo[i][gRotZM] = cache_get_field_content_float(i, "RotZM", MainPipeline);
+		GateInfo[i][gAllegiance] = cache_get_field_content_int(i, "Allegiance", MainPipeline); 
+		GateInfo[i][gGroupType] = cache_get_field_content_int(i, "GroupType", MainPipeline); 
+		GateInfo[i][gGroupID] = cache_get_field_content_int(i, "GroupID", MainPipeline); 
+		GateInfo[i][gRenderHQ] = cache_get_field_content_int(i, "RenderHQ",  MainPipeline); 
+		GateInfo[i][gTimer] = cache_get_field_content_int(i, "Timer", MainPipeline); 
+		GateInfo[i][gAutomate] = cache_get_field_content_int(i, "Automate", MainPipeline); 
+		GateInfo[i][gLocked] = cache_get_field_content_int(i, "Locked", MainPipeline); 
 		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
 		i++;
 	}

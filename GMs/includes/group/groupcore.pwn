@@ -36,6 +36,178 @@
 */
 #include <YSI\y_hooks>
 
+Group_DisbandGroup(iGroupID) {
+
+	new
+		i = 0,
+		szQuery[128];
+
+	arrGroupData[iGroupID][g_iAllegiance] = 0;
+	arrGroupData[iGroupID][g_iBugAccess] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iRadioAccess] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iDeptRadioAccess] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iIntRadioAccess] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iGovAccess] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iFreeNameChange] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iSpikeStrips] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iBarricades] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iFlares] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iBarrels] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iBudget] = 0;
+	arrGroupData[iGroupID][g_iBudgetPayment] = 0;
+	arrGroupData[iGroupID][g_fCratePos][0] = 0;
+	arrGroupData[iGroupID][g_fCratePos][1] = 0;
+	arrGroupData[iGroupID][g_fCratePos][2] = 0;
+	arrGroupData[iGroupID][g_szGroupName][0] = 0;
+
+	arrGroupData[iGroupID][g_hDutyColour] = 0xFFFFFF;
+	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
+	arrGroupData[iGroupID][g_iMemberCount] = 0;
+	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
+
+	while(i < MAX_GROUP_DIVS) {
+		arrGroupDivisions[iGroupID][i++][0] = 0;
+	}
+	i = 0;
+
+	while(i < MAX_GROUP_RANKS) {
+		arrGroupRanks[iGroupID][i][0] = 0;
+		arrGroupData[iGroupID][g_iPaycheck][i++] = 0;
+	}
+	i = 0;
+
+	while(i < MAX_GROUP_WEAPONS) {
+		arrGroupData[iGroupID][g_iLockerGuns][i] = 0;
+		arrGroupData[iGroupID][g_iLockerCost][i++] = 0;
+	}
+
+	i = 0;
+	while(i < MAX_GROUP_LOCKERS) {
+		DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][i][g_tLocker3DLabel]);
+		arrGroupLockers[iGroupID][i][g_fLockerPos][0] = 0.0;
+		arrGroupLockers[iGroupID][i][g_fLockerPos][1] = 0.0;
+		arrGroupLockers[iGroupID][i][g_fLockerPos][2] = 0.0;
+		arrGroupData[iGroupID][g_iLockerGuns][i] = 0;
+		arrGroupData[iGroupID][g_iLockerCost][i++] = 0;
+	}
+	SaveGroup(iGroupID);
+
+	foreach(new x: Player)
+	{
+		if(PlayerInfo[x][pMember] == iGroupID || PlayerInfo[x][pLeader] == iGroupID) {
+			SendClientMessageEx(x, COLOR_WHITE, "Your group has been disbanded by an administrator. All members have been automatically removed.");
+			PlayerInfo[x][pLeader] = INVALID_GROUP_ID;
+			PlayerInfo[x][pMember] = INVALID_GROUP_ID;
+			PlayerInfo[x][pRank] = INVALID_RANK;
+			PlayerInfo[x][pDivision] = INVALID_DIVISION;
+			strcpy(PlayerInfo[x][pBadge], "None", 9);
+		}
+		if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
+	}	
+
+
+	format(szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
+	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID+1);
+
+	format(szQuery, sizeof szQuery, "UPDATE `accounts` SET `Member` = "#INVALID_GROUP_ID", `Leader` = "#INVALID_GROUP_ID", `Division` = "#INVALID_DIVISION", `Rank` = "#INVALID_RANK" WHERE `Member` = %i OR `Leader` = %i", iGroupID, iGroupID);
+	return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
+}
+
+SaveGroup(iGroupID) {
+
+	/*
+		Internally, every group array/subarray starts from zero (divisions, group ids etc)
+		When displaying to the clients or saving to the db, we add 1 to them!
+		The only exception is ranks which already start from zero.
+	*/
+
+	if(!(0 <= iGroupID < MAX_GROUPS)) // Array bounds check. Use it.
+		return 0;
+
+	szMiscArray[0] = 0; 
+
+	new
+		i = 0,
+		iIndex = 0;
+
+	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
+		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, \
+		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
+		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][0], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][1], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][2], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
+		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
+	);
+	format(szMiscArray, sizeof szMiscArray, "%s\
+		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
+		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
+		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d',",
+		szMiscArray,
+		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
+		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
+		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
+		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
+	);
+
+	format(szMiscArray, sizeof(szMiscArray), "%s\
+		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
+		szMiscArray,
+		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
+	);
+
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
+	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, g_mysql_ReturnEscaped(arrGroupDivisions[iGroupID][i], MainPipeline));
+	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
+	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+
+	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	}
+
+	for (i = 0; i < MAX_GROUPS; i++) {
+		for(new x = 0; x != 50; x++)
+		{
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+			iIndex++;
+		}
+	}
+	return 1;
+}
+
+stock SendGroupMessage(iGroupType, color, string[], allegiance = 0)
+{
+	new iGroupID;
+	foreach(new i: Player)
+	{
+		iGroupID = PlayerInfo[i][pMember];
+		if( iGroupType == -1 || ((0 <= iGroupID < MAX_GROUPS) && arrGroupData[iGroupID][g_iGroupType] == iGroupType) )
+		{
+			if(allegiance == 0 || allegiance == arrGroupData[iGroupID][g_iAllegiance])
+			{
+				SendClientMessageEx(i, color, string);
+			}
+		}
+	}	
+}
+
+stock SendDivisionMessage(member, division, color, string[])
+{
+	foreach(new i: Player)
+	{
+		if(PlayerInfo[i][pMember] == member && PlayerInfo[i][pDivision] == division) {
+			SendClientMessageEx(i, color, string);
+		}
+	}	
+}
+
+
 stock IsACop(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA)) return 1;

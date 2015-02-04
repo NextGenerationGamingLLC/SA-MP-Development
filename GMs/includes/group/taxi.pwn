@@ -34,10 +34,25 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock SendTaxiMessage(color, string[])
+{
+	foreach(new i: Player)
+	{
+		if(IsATaxiDriver(i) && PlayerInfo[i][pDuty] > 0) {
+			SendClientMessageEx(i, color, string);
+		}
+
+		if(TransportDuty[i] > 0 && (PlayerInfo[i][pJob] == 17 || PlayerInfo[i][pJob2] == 17 || PlayerInfo[i][pJob3] == 17 || PlayerInfo[i][pTaxiLicense] == 1)) {
+			if(!IsATaxiDriver(i)) {
+				SendClientMessageEx(i, color, string);
+			}
+		}
+	}	
+}
 
 CMD:fare(playerid, params[])
 {
-	if(IsATaxiDriver(playerid) || (PlayerInfo[playerid][pJob] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1) || (PlayerInfo[playerid][pJob2] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1) || (PlayerInfo[playerid][pJob3] == 17 && PlayerInfo[playerid][pTaxiLicense] == 1))
+	if(IsATaxiDriver(playerid))
 	{
 		new string[128], fare;
 		if(sscanf(params, "d", fare)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /fare [price]");
@@ -58,7 +73,8 @@ CMD:fare(playerid, params[])
 			TransportDuty[playerid] = 0;
 			format(string, sizeof(string), "* You are now off duty and earned $%d.", TransportMoney[playerid]);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			GivePlayerCash(playerid, TransportMoney[playerid]);
+			//GivePlayerCash(playerid, TransportMoney[playerid]);
+			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += TransportMoney[playerid];
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
 			SetPlayerToTeamColor(playerid);
 			return 1;
@@ -90,7 +106,7 @@ CMD:fare(playerid, params[])
 CMD:abus(playerid, params[]) return cmd_ataxi(playerid, params);
 CMD:ataxi(playerid, params[])
 {
-	if(!IsATaxiDriver(playerid) && PlayerInfo[playerid][pJob] != 17 && PlayerInfo[playerid][pJob2] != 17 && PlayerInfo[playerid][pJob3] != 17 && PlayerInfo[playerid][pTaxiLicense] != 1) 
+	if(!IsATaxiDriver(playerid)) 
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a taxi/bus driver!");
 	if(TransportDuty[playerid] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are currently not on duty.");
 

@@ -37,6 +37,14 @@
 
 // Akatony Note: You need to destroy the 3D Label text no matter what's the state of the capture.
 
+stock UpdatePoints()
+{
+	for(new i; i < MAX_POINTS; i++)
+	{
+		SavePoint(i);
+	}
+}
+
 stock SavePoint(pid)
 {
 	new szQuery[2048];

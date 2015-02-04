@@ -41,185 +41,6 @@ PinLogin(playerid)
 	mysql_function_query(MainPipeline, string, true, "OnPinCheck", "i", playerid);
 	return 1;
 }
-
-Group_DisbandGroup(iGroupID) {
-
-	new
-		i = 0,
-		szQuery[128];
-
-	arrGroupData[iGroupID][g_iAllegiance] = 0;
-	arrGroupData[iGroupID][g_iBugAccess] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iRadioAccess] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iDeptRadioAccess] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iIntRadioAccess] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iGovAccess] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iFreeNameChange] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iSpikeStrips] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iBarricades] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iFlares] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iBarrels] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
-	arrGroupData[iGroupID][g_iBudget] = 0;
-	arrGroupData[iGroupID][g_iBudgetPayment] = 0;
-	arrGroupData[iGroupID][g_fCratePos][0] = 0;
-	arrGroupData[iGroupID][g_fCratePos][1] = 0;
-	arrGroupData[iGroupID][g_fCratePos][2] = 0;
-	arrGroupData[iGroupID][g_szGroupName][0] = 0;
-
-	arrGroupData[iGroupID][g_hDutyColour] = 0xFFFFFF;
-	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
-	arrGroupData[iGroupID][g_iMemberCount] = 0;
-	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
-
-	while(i < MAX_GROUP_DIVS) {
-		arrGroupDivisions[iGroupID][i++][0] = 0;
-	}
-	i = 0;
-
-	while(i < MAX_GROUP_RANKS) {
-		arrGroupRanks[iGroupID][i][0] = 0;
-		arrGroupData[iGroupID][g_iPaycheck][i++] = 0;
-	}
-	i = 0;
-
-	while(i < MAX_GROUP_WEAPONS) {
-		arrGroupData[iGroupID][g_iLockerGuns][i] = 0;
-		arrGroupData[iGroupID][g_iLockerCost][i++] = 0;
-	}
-
-	i = 0;
-	while(i < MAX_GROUP_LOCKERS) {
-		DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][i][g_tLocker3DLabel]);
-		arrGroupLockers[iGroupID][i][g_fLockerPos][0] = 0.0;
-		arrGroupLockers[iGroupID][i][g_fLockerPos][1] = 0.0;
-		arrGroupLockers[iGroupID][i][g_fLockerPos][2] = 0.0;
-		arrGroupData[iGroupID][g_iLockerGuns][i] = 0;
-		arrGroupData[iGroupID][g_iLockerCost][i++] = 0;
-	}
-	SaveGroup(iGroupID);
-
-	foreach(new x: Player)
-	{
-		if(PlayerInfo[x][pMember] == iGroupID || PlayerInfo[x][pLeader] == iGroupID) {
-			SendClientMessageEx(x, COLOR_WHITE, "Your group has been disbanded by an administrator. All members have been automatically removed.");
-			PlayerInfo[x][pLeader] = INVALID_GROUP_ID;
-			PlayerInfo[x][pMember] = INVALID_GROUP_ID;
-			PlayerInfo[x][pRank] = INVALID_RANK;
-			PlayerInfo[x][pDivision] = INVALID_DIVISION;
-			strcpy(PlayerInfo[x][pBadge], "None", 9);
-		}
-		if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
-	}	
-
-
-	format(szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID+1);
-
-	format(szQuery, sizeof szQuery, "UPDATE `accounts` SET `Member` = "#INVALID_GROUP_ID", `Leader` = "#INVALID_GROUP_ID", `Division` = "#INVALID_DIVISION", `Rank` = "#INVALID_RANK" WHERE `Member` = %i OR `Leader` = %i", iGroupID, iGroupID);
-	return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
-}
-
-SaveGroup(iGroupID) {
-
-	/*
-		Internally, every group array/subarray starts from zero (divisions, group ids etc)
-		When displaying to the clients or saving to the db, we add 1 to them!
-		The only exception is ranks which already start from zero.
-	*/
-
-	if(!(0 <= iGroupID < MAX_GROUPS)) // Array bounds check. Use it.
-		return 0;
-
-	szMiscArray[0] = 0; 
-
-	new
-		i = 0,
-		iIndex = 0;
-
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, \
-		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
-		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][0], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][1], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][2], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
-		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
-	);
-	format(szMiscArray, sizeof szMiscArray, "%s\
-		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
-		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
-		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d',",
-		szMiscArray,
-		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
-		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
-		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
-	);
-
-	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i'",
-		szMiscArray,
-		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens]
-	);
-
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
-	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, g_mysql_ReturnEscaped(arrGroupDivisions[iGroupID][i], MainPipeline));
-	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
-	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-
-	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-	}
-
-	for (i = 0; i < MAX_GROUPS; i++) {
-		for(new x = 0; x != 50; x++)
-		{
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-			iIndex++;
-		}
-	}
-	return 1;
-}
-
-DynVeh_Save(iDvSlotID) {
-	if((iDvSlotID > MAX_DYNAMIC_VEHICLES)) // Array bounds check. Use it.
-		return 0;
-
-	new
-		szQuery[2248],
-		i = 0;
-
-	format(szQuery, sizeof szQuery,
-		"UPDATE `groupvehs` SET `SpawnedID`= '%d',`gID`= '%d',`gDivID`= '%d', `rID`='%d', `vModel`= '%d', \
-		`vPlate` = '%s',`vMaxHealth`= '%.2f',`vType`= '%d',`vLoadMax`= '%d',`vCol1`= '%d',`vCol2`= '%d', \
-		`vX`= '%.2f',`vY`= '%.2f',`vZ`= '%.2f',`vRotZ`= '%.2f', `vUpkeep` = '%d', `vVW` = '%d', `vDisabled` = '%d', \
-		`vInt` = '%d', `vFuel` = '%.5f'"
-		, DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iModel],
-		g_mysql_ReturnEscaped(DynVehicleInfo[iDvSlotID][gv_iPlate], MainPipeline), DynVehicleInfo[iDvSlotID][gv_fMaxHealth], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2],
-		DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iDisabled],
-		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel]);
-
-	for(i = 0; i != MAX_DV_OBJECTS; ++i) {
-		format(szQuery, sizeof szQuery, "%s, `vAttachedObjectModel%i` = '%d'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectX%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectX][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectY%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectY][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectZ%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectZ][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRX%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRX][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRY%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRY][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRZ%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
-	}
-
-	for(i = 0; i != MAX_DV_MODS; ++i) format(szQuery, sizeof szQuery, "%s, `vMod%d` = %i", szQuery, i, DynVehicleInfo[iDvSlotID][gv_iMod][i]);
-
-	format(szQuery, sizeof szQuery, "%s WHERE `id` = %i", szQuery, iDvSlotID);
-	return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-}
  
 //--------------------------------[ INITIATE/EXIT ]---------------------------
 
@@ -295,6 +116,7 @@ forward OnQueryFinish(resultid, extraid, handleid);
 public OnQueryFinish(resultid, extraid, handleid)
 {
     new rows, fields;
+    szMiscArray[0] = 0;
 	if(resultid != SENDDATA_THREAD) {
 		if(extraid != INVALID_PLAYER_ID) {
 			if(g_arrQueryHandle{extraid} != -1 && g_arrQueryHandle{extraid} != handleid) return 0;
@@ -408,314 +230,311 @@ public OnQueryFinish(resultid, extraid, handleid)
 					{
 						return 1;
 					}
-					cache_get_field_content(row,  "id", szResult, MainPipeline); PlayerInfo[extraid][pId] = strval(szResult);
-					cache_get_field_content(row,  "Online", szResult, MainPipeline); PlayerInfo[extraid][pOnline] = strval(szResult);
+					PlayerInfo[extraid][pId] 					= cache_get_field_content_int(row,  "id", MainPipeline); 
+					PlayerInfo[extraid][pOnline] 				= cache_get_field_content_int(row,  "Online", MainPipeline); 
 					cache_get_field_content(row,  "Email", PlayerInfo[extraid][pEmail], MainPipeline, 128);
 					cache_get_field_content(row,  "IP", PlayerInfo[extraid][pIP], MainPipeline, 16);
 					cache_get_field_content(row,  "SecureIP", PlayerInfo[extraid][pSecureIP], MainPipeline, 16);
-					cache_get_field_content(row,  "ConnectedTime", szResult, MainPipeline); PlayerInfo[extraid][pConnectHours] = strval(szResult);
+					PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
 					cache_get_field_content(row,  "BirthDate", PlayerInfo[extraid][pBirthDate], MainPipeline, 11);
-					cache_get_field_content(row,  "Sex", szResult, MainPipeline); PlayerInfo[extraid][pSex] = strval(szResult);
-					cache_get_field_content(row,  "Band", szResult, MainPipeline); PlayerInfo[extraid][pBanned] = strval(szResult);
-					cache_get_field_content(row,  "PermBand", szResult, MainPipeline); PlayerInfo[extraid][pPermaBanned] = strval(szResult);
-					cache_get_field_content(row,  "Registered", szResult, MainPipeline); PlayerInfo[extraid][pReg] = strval(szResult);
-					cache_get_field_content(row,  "Warnings", szResult, MainPipeline); PlayerInfo[extraid][pWarns] = strval(szResult);
-					cache_get_field_content(row,  "Disabled", szResult, MainPipeline); PlayerInfo[extraid][pDisabled] = strval(szResult);
-					cache_get_field_content(row,  "Level", szResult, MainPipeline); PlayerInfo[extraid][pLevel] = strval(szResult);
-					cache_get_field_content(row,  "AdminLevel", szResult, MainPipeline); PlayerInfo[extraid][pAdmin] = strval(szResult);
-					cache_get_field_content(row,  "SeniorModerator", szResult, MainPipeline); PlayerInfo[extraid][pSMod] = strval(szResult);
-					cache_get_field_content(row,  "DonateRank", szResult, MainPipeline); PlayerInfo[extraid][pDonateRank] = strval(szResult);
-					cache_get_field_content(row,  "Respect", szResult, MainPipeline); PlayerInfo[extraid][pExp] = strval(szResult);
-					cache_get_field_content(row,  "Money", szResult, MainPipeline); PlayerInfo[extraid][pCash] = strval(szResult);
-					cache_get_field_content(row,  "Bank", szResult, MainPipeline); PlayerInfo[extraid][pAccount] = strval(szResult);
-					cache_get_field_content(row,  "pHealth", szResult, MainPipeline); PlayerInfo[extraid][pHealth] = floatstr(szResult);
-					cache_get_field_content(row,  "pArmor", szResult, MainPipeline); PlayerInfo[extraid][pArmor] = floatstr(szResult);
-					cache_get_field_content(row,  "pSHealth", szResult, MainPipeline); PlayerInfo[extraid][pSHealth] = floatstr(szResult);
-					cache_get_field_content(row,  "Int", szResult, MainPipeline); PlayerInfo[extraid][pInt] = strval(szResult);
-					cache_get_field_content(row,  "VirtualWorld", szResult, MainPipeline); PlayerInfo[extraid][pVW] = strval(szResult);
-					cache_get_field_content(row,  "Model", szResult, MainPipeline); PlayerInfo[extraid][pModel] = strval(szResult);
-					cache_get_field_content(row,  "SPos_x", szResult, MainPipeline); PlayerInfo[extraid][pPos_x] = floatstr(szResult);
-					cache_get_field_content(row,  "SPos_y", szResult, MainPipeline); PlayerInfo[extraid][pPos_y] = floatstr(szResult);
-					cache_get_field_content(row,  "SPos_z", szResult, MainPipeline); PlayerInfo[extraid][pPos_z] = floatstr(szResult);
-					cache_get_field_content(row,  "SPos_r", szResult, MainPipeline); PlayerInfo[extraid][pPos_r] = floatstr(szResult);
-					cache_get_field_content(row,  "BanAppealer", szResult, MainPipeline); PlayerInfo[extraid][pBanAppealer] = strval(szResult);
-					cache_get_field_content(row,  "PR", szResult, MainPipeline); PlayerInfo[extraid][pPR] = strval(szResult);
-					cache_get_field_content(row,  "HR", szResult, MainPipeline); PlayerInfo[extraid][pHR] = strval(szResult);
-					cache_get_field_content(row,  "AP", szResult, MainPipeline); PlayerInfo[extraid][pAP] = strval(szResult);
-					cache_get_field_content(row,  "Security", szResult, MainPipeline); PlayerInfo[extraid][pSecurity] = strval(szResult);
-					cache_get_field_content(row,  "ShopTech", szResult, MainPipeline); PlayerInfo[extraid][pShopTech] = strval(szResult);
-					cache_get_field_content(row,  "FactionModerator", szResult, MainPipeline); PlayerInfo[extraid][pFactionModerator] = strval(szResult);
-					cache_get_field_content(row,  "GangModerator", szResult, MainPipeline); PlayerInfo[extraid][pGangModerator] = strval(szResult);
-					cache_get_field_content(row,  "Undercover", szResult, MainPipeline); PlayerInfo[extraid][pUndercover] = strval(szResult);
-					cache_get_field_content(row,  "TogReports", szResult, MainPipeline); PlayerInfo[extraid][pTogReports] = strval(szResult);
-					cache_get_field_content(row,  "Radio", szResult, MainPipeline); PlayerInfo[extraid][pRadio] = strval(szResult);
-					cache_get_field_content(row,  "RadioFreq", szResult, MainPipeline); PlayerInfo[extraid][pRadioFreq] = strval(szResult);
-					cache_get_field_content(row,  "UpgradePoints", szResult, MainPipeline); PlayerInfo[extraid][gPupgrade] = strval(szResult);
-					cache_get_field_content(row,  "Origin", szResult, MainPipeline); PlayerInfo[extraid][pOrigin] = strval(szResult);
-					cache_get_field_content(row,  "Muted", szResult, MainPipeline); PlayerInfo[extraid][pMuted] = strval(szResult);
-					cache_get_field_content(row,  "Crimes", szResult, MainPipeline); PlayerInfo[extraid][pCrimes] = strval(szResult);
-					cache_get_field_content(row,  "Accent", szResult, MainPipeline); PlayerInfo[extraid][pAccent] = strval(szResult);
-					cache_get_field_content(row,  "CHits", szResult, MainPipeline); PlayerInfo[extraid][pCHits] = strval(szResult);
-					cache_get_field_content(row,  "FHits", szResult, MainPipeline); PlayerInfo[extraid][pFHits] = strval(szResult);
-					cache_get_field_content(row,  "Arrested", szResult, MainPipeline); PlayerInfo[extraid][pArrested] = strval(szResult);
-					cache_get_field_content(row,  "Phonebook", szResult, MainPipeline); PlayerInfo[extraid][pPhoneBook] = strval(szResult);
-					cache_get_field_content(row,  "LottoNr", szResult, MainPipeline); PlayerInfo[extraid][pLottoNr] = strval(szResult);
-					cache_get_field_content(row,  "Fishes", szResult, MainPipeline); PlayerInfo[extraid][pFishes] = strval(szResult);
-					cache_get_field_content(row,  "BiggestFish", szResult, MainPipeline); PlayerInfo[extraid][pBiggestFish] = strval(szResult);
-					cache_get_field_content(row,  "Job", szResult, MainPipeline); PlayerInfo[extraid][pJob] = strval(szResult);
-					cache_get_field_content(row,  "Job2", szResult, MainPipeline); PlayerInfo[extraid][pJob2] = strval(szResult);
-					cache_get_field_content(row,  "Job3", szResult, MainPipeline); PlayerInfo[extraid][pJob3] = strval(szResult);
-					cache_get_field_content(row,  "Paycheck", szResult, MainPipeline); PlayerInfo[extraid][pPayCheck] = strval(szResult);
-					cache_get_field_content(row,  "HeadValue", szResult, MainPipeline); PlayerInfo[extraid][pHeadValue] = strval(szResult);
-					cache_get_field_content(row,  "JailTime", szResult, MainPipeline); PlayerInfo[extraid][pJailTime] = strval(szResult);
-					cache_get_field_content(row,  "WRestricted", szResult, MainPipeline); PlayerInfo[extraid][pWRestricted] = strval(szResult);
-					cache_get_field_content(row,  "Materials", szResult, MainPipeline); PlayerInfo[extraid][pMats] = strval(szResult);
-					cache_get_field_content(row,  "Crates", szResult, MainPipeline); PlayerInfo[extraid][pCrates] = strval(szResult);
-					cache_get_field_content(row,  "Pot", szResult, MainPipeline); PlayerInfo[extraid][pPot] = strval(szResult);
-					cache_get_field_content(row,  "Crack", szResult, MainPipeline); PlayerInfo[extraid][pCrack] = strval(szResult);
-					cache_get_field_content(row,  "Nation", szResult, MainPipeline); PlayerInfo[extraid][pNation] = strval(szResult);
-					cache_get_field_content(row,  "Leader", szResult, MainPipeline); PlayerInfo[extraid][pLeader] = strval(szResult);
-					cache_get_field_content(row,  "Member", szResult, MainPipeline); PlayerInfo[extraid][pMember] = strval(szResult);
-					cache_get_field_content(row,  "Division", szResult, MainPipeline); PlayerInfo[extraid][pDivision] = strval(szResult);
+					PlayerInfo[extraid][pSex] 					= cache_get_field_content_int(row,  "Sex", MainPipeline); 
+					PlayerInfo[extraid][pBanned] 				= cache_get_field_content_int(row,  "Band", MainPipeline); 
+					PlayerInfo[extraid][pPermaBanned] 			= cache_get_field_content_int(row, "PermBand", MainPipeline); 
+					PlayerInfo[extraid][pReg] 					= cache_get_field_content_int(row,  "Registered", MainPipeline);
+					PlayerInfo[extraid][pWarns] 				= cache_get_field_content_int(row,  "Warnings", MainPipeline);
+					PlayerInfo[extraid][pDisabled] 				= cache_get_field_content_int(row,  "Disabled", MainPipeline);
+					PlayerInfo[extraid][pLevel] 				= cache_get_field_content_int(row,  "Level", MainPipeline);
+					PlayerInfo[extraid][pAdmin] 				= cache_get_field_content_int(row,  "AdminLevel",  MainPipeline);
+					PlayerInfo[extraid][pSMod] 					= cache_get_field_content_int(row,  "SeniorModerator", MainPipeline); 
+					PlayerInfo[extraid][pDonateRank] 			= cache_get_field_content_int(row,  "DonateRank", MainPipeline);
+					PlayerInfo[extraid][pExp] 					= cache_get_field_content_int(row,  "Respect", MainPipeline);
+					PlayerInfo[extraid][pCash]					= cache_get_field_content_int(row,  "Money", MainPipeline);
+					PlayerInfo[extraid][pAccount] 				= cache_get_field_content_int(row,  "Bank", MainPipeline);
+					PlayerInfo[extraid][pHealth]  				= cache_get_field_content_float(row,  "pHealth", MainPipeline);
+					PlayerInfo[extraid][pArmor]   				= cache_get_field_content_float(row,  "pArmor", MainPipeline);
+					PlayerInfo[extraid][pSHealth]				= cache_get_field_content_float(row,  "pSHealth", MainPipeline); 
+					PlayerInfo[extraid][pInt]					= cache_get_field_content_int(row,  "Int", MainPipeline); 
+					PlayerInfo[extraid][pVW]					= cache_get_field_content_int(row,  "VirtualWorld", MainPipeline);
+					PlayerInfo[extraid][pModel]					= cache_get_field_content_int(row,  "Model", MainPipeline);
+					PlayerInfo[extraid][pPos_x]					= cache_get_field_content_float(row,  "SPos_x", MainPipeline);
+					PlayerInfo[extraid][pPos_y]					= cache_get_field_content_float(row,  "SPos_y", MainPipeline);
+					PlayerInfo[extraid][pPos_z]					= cache_get_field_content_float(row,  "SPos_z", MainPipeline);
+					PlayerInfo[extraid][pPos_r]					= cache_get_field_content_float(row,  "SPos_r", MainPipeline);
+					PlayerInfo[extraid][pBanAppealer]			= cache_get_field_content_int(row,  "BanAppealer", MainPipeline); 
+					PlayerInfo[extraid][pPR]					= cache_get_field_content_int(row,  "PR", MainPipeline); 
+					PlayerInfo[extraid][pHR]					= cache_get_field_content_int(row,  "HR", MainPipeline); 
+					PlayerInfo[extraid][pAP]					= cache_get_field_content_int(row,  "AP", MainPipeline); 
+					PlayerInfo[extraid][pSecurity]				= cache_get_field_content_int(row,  "Security", MainPipeline); 
+					PlayerInfo[extraid][pShopTech]				= cache_get_field_content_int(row,  "ShopTech", MainPipeline); 
+					PlayerInfo[extraid][pFactionModerator]		= cache_get_field_content_int(row,  "FactionModerator", MainPipeline); 
+					PlayerInfo[extraid][pGangModerator]			= cache_get_field_content_int(row,  "GangModerator", MainPipeline); 
+					PlayerInfo[extraid][pUndercover]			= cache_get_field_content_int(row,  "Undercover", MainPipeline); 
+					PlayerInfo[extraid][pTogReports]			= cache_get_field_content_int(row,  "TogReports", MainPipeline); 
+					PlayerInfo[extraid][pRadio]					= cache_get_field_content_int(row,  "Radio", MainPipeline); 
+					PlayerInfo[extraid][pRadioFreq]				= cache_get_field_content_int(row,  "RadioFreq", MainPipeline); 
+					PlayerInfo[extraid][gPupgrade]				= cache_get_field_content_int(row,  "UpgradePoints", MainPipeline); 
+					PlayerInfo[extraid][pOrigin]				= cache_get_field_content_int(row,  "Origin", MainPipeline); 
+					PlayerInfo[extraid][pMuted]					= cache_get_field_content_int(row,  "Muted", MainPipeline); 
+					PlayerInfo[extraid][pCrimes]				= cache_get_field_content_int(row,  "Crimes", MainPipeline); 
+					PlayerInfo[extraid][pAccent]				= cache_get_field_content_int(row,  "Accent", MainPipeline); 
+					PlayerInfo[extraid][pCHits]					= cache_get_field_content_int(row,  "CHits", MainPipeline); 
+					PlayerInfo[extraid][pFHits]					= cache_get_field_content_int(row,  "FHits", MainPipeline); 
+					PlayerInfo[extraid][pArrested]				= cache_get_field_content_int(row,  "Arrested", MainPipeline); 
+					PlayerInfo[extraid][pPhoneBook]				= cache_get_field_content_int(row,  "Phonebook", MainPipeline); 
+					PlayerInfo[extraid][pLottoNr]				= cache_get_field_content_int(row,  "LottoNr", MainPipeline); 
+					PlayerInfo[extraid][pFishes]				= cache_get_field_content_int(row,  "Fishes", MainPipeline); 
+					PlayerInfo[extraid][pBiggestFish]			= cache_get_field_content_int(row,  "BiggestFish", MainPipeline); 
+					PlayerInfo[extraid][pJob]					= cache_get_field_content_int(row,  "Job", MainPipeline); 
+					PlayerInfo[extraid][pJob2]					= cache_get_field_content_int(row,  "Job2", MainPipeline); 
+					PlayerInfo[extraid][pJob3]					= cache_get_field_content_int(row,  "Job3", MainPipeline); 
+					PlayerInfo[extraid][pPayCheck]				= cache_get_field_content_int(row,  "Paycheck", MainPipeline); 
+					PlayerInfo[extraid][pHeadValue]				= cache_get_field_content_int(row,  "HeadValue", MainPipeline);
+					PlayerInfo[extraid][pJailTime]				= cache_get_field_content_int(row,  "JailTime", MainPipeline);
+					PlayerInfo[extraid][pWRestricted]			= cache_get_field_content_int(row,  "WRestricted", MainPipeline); 
+					PlayerInfo[extraid][pMats]					= cache_get_field_content_int(row,  "Materials", MainPipeline); 
+					PlayerInfo[extraid][pCrates]				= cache_get_field_content_int(row,  "Crates", MainPipeline); 
+					PlayerInfo[extraid][pPot]					= cache_get_field_content_int(row,  "Pot", MainPipeline); 
+					PlayerInfo[extraid][pCrack]					= cache_get_field_content_int(row,  "Crack", MainPipeline); 
+					PlayerInfo[extraid][pNation]				= cache_get_field_content_int(row,  "Nation", MainPipeline); 
+					PlayerInfo[extraid][pLeader]				= cache_get_field_content_int(row,  "Leader", MainPipeline); 
+					PlayerInfo[extraid][pMember]				= cache_get_field_content_int(row,  "Member", MainPipeline); 
+					PlayerInfo[extraid][pDivision]				= cache_get_field_content_int(row,  "Division", MainPipeline); 
 					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 9);
-					cache_get_field_content(row,  "Rank", szResult, MainPipeline); PlayerInfo[extraid][pRank] = strval(szResult);
-					cache_get_field_content(row,  "DetSkill", szResult, MainPipeline); PlayerInfo[extraid][pDetSkill] = strval(szResult);
-					cache_get_field_content(row,  "SexSkill", szResult, MainPipeline); PlayerInfo[extraid][pSexSkill] = strval(szResult);
-					cache_get_field_content(row,  "BoxSkill", szResult, MainPipeline); PlayerInfo[extraid][pBoxSkill] = strval(szResult);
-					cache_get_field_content(row,  "LawSkill", szResult, MainPipeline); PlayerInfo[extraid][pLawSkill] = strval(szResult);
-					cache_get_field_content(row,  "MechSkill", szResult, MainPipeline); PlayerInfo[extraid][pMechSkill] = strval(szResult);
-					cache_get_field_content(row,  "TruckSkill", szResult, MainPipeline); PlayerInfo[extraid][pTruckSkill] = strval(szResult);
-					cache_get_field_content(row,  "DrugsSkill", szResult, MainPipeline); PlayerInfo[extraid][pDrugsSkill] = strval(szResult);
-					cache_get_field_content(row,  "ArmsSkill", szResult, MainPipeline); PlayerInfo[extraid][pArmsSkill] = strval(szResult);
-					cache_get_field_content(row,  "SmugglerSkill", szResult, MainPipeline); PlayerInfo[extraid][pSmugSkill] = strval(szResult);
-					cache_get_field_content(row,  "FishSkill", szResult, MainPipeline); PlayerInfo[extraid][pFishSkill] = strval(szResult);
-					cache_get_field_content(row,  "FightingStyle", szResult, MainPipeline); PlayerInfo[extraid][pFightStyle] = strval(szResult);
-					cache_get_field_content(row,  "PhoneNr", szResult, MainPipeline); PlayerInfo[extraid][pPnumber] = strval(szResult);
-					cache_get_field_content(row,  "Apartment", szResult, MainPipeline); PlayerInfo[extraid][pPhousekey] = strval(szResult);
-					cache_get_field_content(row,  "Apartment2", szResult, MainPipeline); PlayerInfo[extraid][pPhousekey2] = strval(szResult);
-					cache_get_field_content(row,  "Apartment3", szResult, MainPipeline); PlayerInfo[extraid][pPhousekey3] = strval(szResult);
-					cache_get_field_content(row,  "Renting", szResult, MainPipeline); PlayerInfo[extraid][pRenting] = strval(szResult);
-					cache_get_field_content(row,  "CarLic", szResult, MainPipeline); PlayerInfo[extraid][pCarLic] = strval(szResult);
-					cache_get_field_content(row,  "FlyLic", szResult, MainPipeline); PlayerInfo[extraid][pFlyLic] = strval(szResult);
-					cache_get_field_content(row,  "BoatLic", szResult, MainPipeline); PlayerInfo[extraid][pBoatLic] = strval(szResult);
-					cache_get_field_content(row,  "FishLic", szResult, MainPipeline); PlayerInfo[extraid][pFishLic] = strval(szResult);
-					cache_get_field_content(row,  "CheckCash", szResult, MainPipeline); PlayerInfo[extraid][pCheckCash] = strval(szResult);
-					cache_get_field_content(row,  "Checks", szResult, MainPipeline); PlayerInfo[extraid][pChecks] = strval(szResult);
-					cache_get_field_content(row,  "GunLic", szResult, MainPipeline); PlayerInfo[extraid][pGunLic] = strval(szResult);
+					PlayerInfo[extraid][pRank]					= cache_get_field_content_int(row,  "Rank", MainPipeline); 
+					PlayerInfo[extraid][pDetSkill]				= cache_get_field_content_int(row,  "DetSkill", MainPipeline); 
+					PlayerInfo[extraid][pSexSkill]				= cache_get_field_content_int(row,  "SexSkill", MainPipeline);
+					PlayerInfo[extraid][pBoxSkill]				= cache_get_field_content_int(row,  "BoxSkill", MainPipeline); 
+					PlayerInfo[extraid][pLawSkill]				= cache_get_field_content_int(row,  "LawSkill", MainPipeline);
+					PlayerInfo[extraid][pMechSkill]				= cache_get_field_content_int(row,  "MechSkill", MainPipeline); 
+					PlayerInfo[extraid][pTruckSkill]			= cache_get_field_content_int(row,  "TruckSkill", MainPipeline); 
+					PlayerInfo[extraid][pDrugsSkill]			= cache_get_field_content_int(row,  "DrugsSkill", MainPipeline); 
+					PlayerInfo[extraid][pArmsSkill]				= cache_get_field_content_int(row,  "ArmsSkill", MainPipeline); 
+					PlayerInfo[extraid][pSmugSkill]				= cache_get_field_content_int(row,  "SmugglerSkill", MainPipeline); 
+					PlayerInfo[extraid][pFishSkill]				= cache_get_field_content_int(row,  "FishSkill", MainPipeline); 
+					PlayerInfo[extraid][pFightStyle]			= cache_get_field_content_int(row,  "FightingStyle", MainPipeline); 
+					PlayerInfo[extraid][pPnumber]				= cache_get_field_content_int(row,  "PhoneNr", MainPipeline); 
+					PlayerInfo[extraid][pPhousekey]				= cache_get_field_content_int(row,  "Apartment", MainPipeline); 
+					PlayerInfo[extraid][pPhousekey2]			= cache_get_field_content_int(row,  "Apartment2", MainPipeline); 
+					PlayerInfo[extraid][pPhousekey3]			= cache_get_field_content_int(row,  "Apartment3", MainPipeline); 
+					PlayerInfo[extraid][pRenting]				= cache_get_field_content_int(row,  "Renting", MainPipeline); 
+					PlayerInfo[extraid][pCarLic]				= cache_get_field_content_int(row,  "CarLic", MainPipeline); 
+					PlayerInfo[extraid][pFlyLic]				= cache_get_field_content_int(row,  "FlyLic", MainPipeline); 
+					PlayerInfo[extraid][pBoatLic]				= cache_get_field_content_int(row,  "BoatLic", MainPipeline); 
+					PlayerInfo[extraid][pFishLic]				= cache_get_field_content_int(row,  "FishLic", MainPipeline); 
+					PlayerInfo[extraid][pCheckCash]				= cache_get_field_content_int(row,  "CheckCash", MainPipeline); 
+					PlayerInfo[extraid][pChecks]				= cache_get_field_content_int(row,  "Checks", MainPipeline); 
+					PlayerInfo[extraid][pGunLic]				= cache_get_field_content_int(row,  "GunLic", MainPipeline); 
 
 					for(new i = 0; i < 12; i++)
 					{
 						format(szField, sizeof(szField), "Gun%d", i);
-						cache_get_field_content(row,  szField, szResult, MainPipeline);
-						PlayerInfo[extraid][pGuns][i] = strval(szResult);
+						PlayerInfo[extraid][pGuns][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
 
-					cache_get_field_content(row,  "DrugsTime", szResult, MainPipeline); PlayerInfo[extraid][pDrugsTime] = strval(szResult);
-					cache_get_field_content(row,  "LawyerTime", szResult, MainPipeline); PlayerInfo[extraid][pLawyerTime] = strval(szResult);
-					cache_get_field_content(row,  "LawyerFreeTime", szResult, MainPipeline); PlayerInfo[extraid][pLawyerFreeTime] = strval(szResult);
-					cache_get_field_content(row,  "MechTime", szResult, MainPipeline); PlayerInfo[extraid][pMechTime] = strval(szResult);
-					cache_get_field_content(row,  "SexTime", szResult, MainPipeline); PlayerInfo[extraid][pSexTime] = strval(szResult);
-					cache_get_field_content(row,  "PayDay", szResult, MainPipeline); PlayerInfo[extraid][pConnectSeconds] = strval(szResult);
-					cache_get_field_content(row,  "PayDayHad", szResult, MainPipeline); PlayerInfo[extraid][pPayDayHad] = strval(szResult);
-					cache_get_field_content(row,  "CDPlayer", szResult, MainPipeline); PlayerInfo[extraid][pCDPlayer] = strval(szResult);
-					cache_get_field_content(row,  "Dice", szResult, MainPipeline); PlayerInfo[extraid][pDice] = strval(szResult);
-					cache_get_field_content(row,  "Spraycan", szResult, MainPipeline); PlayerInfo[extraid][pSpraycan] = strval(szResult);
-					cache_get_field_content(row,  "Rope", szResult, MainPipeline); PlayerInfo[extraid][pRope] = strval(szResult);
-					cache_get_field_content(row,  "Cigars", szResult, MainPipeline); PlayerInfo[extraid][pCigar] = strval(szResult);
-					cache_get_field_content(row,  "Sprunk", szResult, MainPipeline); PlayerInfo[extraid][pSprunk] = strval(szResult);
-					cache_get_field_content(row,  "Bombs", szResult, MainPipeline); PlayerInfo[extraid][pBombs] = strval(szResult);
-					cache_get_field_content(row,  "Wins", szResult, MainPipeline); PlayerInfo[extraid][pWins] = strval(szResult);
-					cache_get_field_content(row,  "Loses", szResult, MainPipeline); PlayerInfo[extraid][pLoses] = strval(szResult);
-					cache_get_field_content(row,  "Tutorial", szResult, MainPipeline); PlayerInfo[extraid][pTut] = strval(szResult);
-					cache_get_field_content(row,  "OnDuty", szResult, MainPipeline); PlayerInfo[extraid][pDuty] = strval(szResult);
-					cache_get_field_content(row,  "Hospital", szResult, MainPipeline); PlayerInfo[extraid][pHospital] = strval(szResult);
-					cache_get_field_content(row,  "MarriedID", szResult, MainPipeline); PlayerInfo[extraid][pMarriedID] = strval(szResult);
+					PlayerInfo[extraid][pDrugsTime]				= cache_get_field_content_int(row,  "DrugsTime", MainPipeline); 
+					PlayerInfo[extraid][pLawyerTime]			= cache_get_field_content_int(row,  "LawyerTime", MainPipeline); 
+					PlayerInfo[extraid][pLawyerFreeTime]		= cache_get_field_content_int(row,  "LawyerFreeTime", MainPipeline); 
+					PlayerInfo[extraid][pMechTime]				= cache_get_field_content_int(row,  "MechTime", MainPipeline); 
+					PlayerInfo[extraid][pSexTime]				= cache_get_field_content_int(row,  "SexTime", MainPipeline); 
+					PlayerInfo[extraid][pConnectSeconds]		= cache_get_field_content_int(row,  "PayDay", MainPipeline); 
+					PlayerInfo[extraid][pPayDayHad]				= cache_get_field_content_int(row,  "PayDayHad", MainPipeline); 
+					PlayerInfo[extraid][pCDPlayer]				= cache_get_field_content_int(row,  "CDPlayer", MainPipeline); 
+					PlayerInfo[extraid][pDice]					= cache_get_field_content_int(row,  "Dice", MainPipeline);
+					PlayerInfo[extraid][pSpraycan]				= cache_get_field_content_int(row,  "Spraycan", MainPipeline);
+					PlayerInfo[extraid][pRope]					= cache_get_field_content_int(row,  "Rope", MainPipeline); 
+					PlayerInfo[extraid][pCigar]					= cache_get_field_content_int(row,  "Cigars", MainPipeline); 
+					PlayerInfo[extraid][pSprunk]				= cache_get_field_content_int(row,  "Sprunk", MainPipeline);
+					PlayerInfo[extraid][pBombs]					= cache_get_field_content_int(row,  "Bombs", MainPipeline); 
+					PlayerInfo[extraid][pWins]					= cache_get_field_content_int(row,  "Wins", MainPipeline);
+					PlayerInfo[extraid][pLoses]					= cache_get_field_content_int(row,  "Loses", MainPipeline); 
+					PlayerInfo[extraid][pTut]					= cache_get_field_content_int(row,  "Tutorial", MainPipeline);
+					PlayerInfo[extraid][pDuty]					= cache_get_field_content_int(row,  "OnDuty", MainPipeline); 
+					PlayerInfo[extraid][pHospital]				= cache_get_field_content_int(row,  "Hospital", MainPipeline);
+					PlayerInfo[extraid][pMarriedID]				= cache_get_field_content_int(row,  "MarriedID", MainPipeline); 
 					cache_get_field_content(row,  "ContractBy", PlayerInfo[extraid][pContractBy], MainPipeline, MAX_PLAYER_NAME);
 					cache_get_field_content(row,  "ContractDetail", PlayerInfo[extraid][pContractDetail], MainPipeline, 64);
-					cache_get_field_content(row,  "WantedLevel", szResult, MainPipeline); PlayerInfo[extraid][pWantedLevel] = strval(szResult);
-					cache_get_field_content(row,  "Insurance", szResult, MainPipeline); PlayerInfo[extraid][pInsurance] = strval(szResult);
-					cache_get_field_content(row,  "911Muted", szResult, MainPipeline); PlayerInfo[extraid][p911Muted] = strval(szResult);
-					cache_get_field_content(row,  "NewMuted", szResult, MainPipeline); PlayerInfo[extraid][pNMute] = strval(szResult);
-					cache_get_field_content(row,  "NewMutedTotal", szResult, MainPipeline); PlayerInfo[extraid][pNMuteTotal] = strval(szResult);
-					cache_get_field_content(row,  "AdMuted", szResult, MainPipeline); PlayerInfo[extraid][pADMute] = strval(szResult);
-					cache_get_field_content(row,  "AdMutedTotal", szResult, MainPipeline); PlayerInfo[extraid][pADMuteTotal] = strval(szResult);
-					cache_get_field_content(row,  "HelpMute", szResult, MainPipeline); PlayerInfo[extraid][pHelpMute] = strval(szResult);
-					cache_get_field_content(row,  "Helper", szResult, MainPipeline); PlayerInfo[extraid][pHelper] = strval(szResult);
-					cache_get_field_content(row,  "ReportMuted", szResult, MainPipeline); PlayerInfo[extraid][pRMuted] = strval(szResult);
-					cache_get_field_content(row,  "ReportMutedTotal", szResult, MainPipeline); PlayerInfo[extraid][pRMutedTotal] = strval(szResult);
-					cache_get_field_content(row,  "ReportMutedTime", szResult, MainPipeline); PlayerInfo[extraid][pRMutedTime] = strval(szResult);
-					cache_get_field_content(row,  "DMRMuted", szResult, MainPipeline); PlayerInfo[extraid][pDMRMuted] = strval(szResult);
-					cache_get_field_content(row,  "VIPMuted", szResult, MainPipeline); PlayerInfo[extraid][pVMuted] = strval(szResult);
-					cache_get_field_content(row,  "VIPMutedTime", szResult, MainPipeline); PlayerInfo[extraid][pVMutedTime] = strval(szResult);
-					cache_get_field_content(row,  "GiftTime", szResult, MainPipeline); PlayerInfo[extraid][pGiftTime] = strval(szResult);
-					cache_get_field_content(row,  "AdvisorDutyHours", szResult, MainPipeline); PlayerInfo[extraid][pDutyHours] = strval(szResult);
-					cache_get_field_content(row,  "AcceptedHelp", szResult, MainPipeline); PlayerInfo[extraid][pAcceptedHelp] = strval(szResult);
-					cache_get_field_content(row,  "AcceptReport", szResult, MainPipeline); PlayerInfo[extraid][pAcceptReport] = strval(szResult);
-					cache_get_field_content(row,  "ShopTechOrders", szResult, MainPipeline); PlayerInfo[extraid][pShopTechOrders] = strval(szResult);
-					cache_get_field_content(row,  "TrashReport", szResult, MainPipeline); PlayerInfo[extraid][pTrashReport] = strval(szResult);
-					cache_get_field_content(row,  "GangWarn", szResult, MainPipeline); PlayerInfo[extraid][pGangWarn] = strval(szResult);
-					cache_get_field_content(row,  "CSFBanned", szResult, MainPipeline); PlayerInfo[extraid][pCSFBanned] = strval(szResult);
-					cache_get_field_content(row,  "VIPInviteDay", szResult, MainPipeline); PlayerInfo[extraid][pVIPInviteDay] = strval(szResult);
-					cache_get_field_content(row,  "TempVIP", szResult, MainPipeline); PlayerInfo[extraid][pTempVIP] = strval(szResult);
-					cache_get_field_content(row,  "BuddyInvite", szResult, MainPipeline); PlayerInfo[extraid][pBuddyInvited] = strval(szResult);
-					cache_get_field_content(row,  "Tokens", szResult, MainPipeline); PlayerInfo[extraid][pTokens] = strval(szResult);
-					cache_get_field_content(row,  "PTokens", szResult, MainPipeline); PlayerInfo[extraid][pPaintTokens] = strval(szResult);
-					cache_get_field_content(row,  "TriageTime", szResult, MainPipeline); PlayerInfo[extraid][pTriageTime] = strval(szResult);
+					PlayerInfo[extraid][pWantedLevel]			= cache_get_field_content_int(row,  "WantedLevel", MainPipeline); 
+					PlayerInfo[extraid][pInsurance]				= cache_get_field_content_int(row,  "Insurance", MainPipeline);
+					PlayerInfo[extraid][p911Muted]				= cache_get_field_content_int(row,  "911Muted", MainPipeline);
+					PlayerInfo[extraid][pNMute]					= cache_get_field_content_int(row,  "NewMuted", MainPipeline);
+					PlayerInfo[extraid][pNMuteTotal]			= cache_get_field_content_int(row,  "NewMutedTotal", MainPipeline); 
+					PlayerInfo[extraid][pADMute]				= cache_get_field_content_int(row,  "AdMuted", MainPipeline); 
+					PlayerInfo[extraid][pADMuteTotal]			= cache_get_field_content_int(row,  "AdMutedTotal", MainPipeline); 
+					PlayerInfo[extraid][pHelpMute]				= cache_get_field_content_int(row,  "HelpMute", MainPipeline); 
+					PlayerInfo[extraid][pHelper]				= cache_get_field_content_int(row,  "Helper", MainPipeline); 
+					PlayerInfo[extraid][pRMuted]				= cache_get_field_content_int(row,  "ReportMuted", MainPipeline);
+					PlayerInfo[extraid][pRMutedTotal]			= cache_get_field_content_int(row,  "ReportMutedTotal", MainPipeline); 
+					PlayerInfo[extraid][pRMutedTime]			= cache_get_field_content_int(row,  "ReportMutedTime", MainPipeline); 
+					PlayerInfo[extraid][pDMRMuted]				= cache_get_field_content_int(row,  "DMRMuted", MainPipeline); 
+					PlayerInfo[extraid][pVMuted]				= cache_get_field_content_int(row,  "VIPMuted", MainPipeline); 
+					PlayerInfo[extraid][pVMutedTime]			= cache_get_field_content_int(row,  "VIPMutedTime", MainPipeline); 
+					PlayerInfo[extraid][pGiftTime]				= cache_get_field_content_int(row,  "GiftTime", MainPipeline); 
+					PlayerInfo[extraid][pDutyHours]				= cache_get_field_content_int(row,  "AdvisorDutyHours", MainPipeline); 
+					PlayerInfo[extraid][pAcceptedHelp]			= cache_get_field_content_int(row,  "AcceptedHelp", MainPipeline); 
+					PlayerInfo[extraid][pAcceptReport]			= cache_get_field_content_int(row,  "AcceptReport", MainPipeline); 
+					PlayerInfo[extraid][pShopTechOrders]		= cache_get_field_content_int(row,  "ShopTechOrders", MainPipeline); 
+					PlayerInfo[extraid][pTrashReport]			= cache_get_field_content_int(row,  "TrashReport", MainPipeline); 
+					PlayerInfo[extraid][pGangWarn]				= cache_get_field_content_int(row,  "GangWarn", MainPipeline); 
+					PlayerInfo[extraid][pCSFBanned]				= cache_get_field_content_int(row,  "CSFBanned", MainPipeline); 
+					PlayerInfo[extraid][pVIPInviteDay]			= cache_get_field_content_int(row,  "VIPInviteDay", MainPipeline); 
+					PlayerInfo[extraid][pTempVIP]				= cache_get_field_content_int(row,  "TempVIP", MainPipeline); 
+					PlayerInfo[extraid][pBuddyInvited]			= cache_get_field_content_int(row,  "BuddyInvite", MainPipeline); 
+					PlayerInfo[extraid][pTokens]				= cache_get_field_content_int(row,  "Tokens", MainPipeline); 
+					PlayerInfo[extraid][pPaintTokens]			= cache_get_field_content_int(row,  "PTokens", MainPipeline); 
+					PlayerInfo[extraid][pTriageTime]			= cache_get_field_content_int(row,  "TriageTime", MainPipeline); 
 					cache_get_field_content(row,  "PrisonedBy", PlayerInfo[extraid][pPrisonedBy], MainPipeline, MAX_PLAYER_NAME);
 					cache_get_field_content(row,  "PrisonReason", PlayerInfo[extraid][pPrisonReason], MainPipeline, 128);
-					cache_get_field_content(row,  "TaxiLicense", szResult, MainPipeline); PlayerInfo[extraid][pTaxiLicense] = strval(szResult);
-					cache_get_field_content(row,  "TicketTime", szResult, MainPipeline); PlayerInfo[extraid][pTicketTime] = strval(szResult);
-					cache_get_field_content(row,  "Screwdriver", szResult, MainPipeline); PlayerInfo[extraid][pScrewdriver] = strval(szResult);
-					cache_get_field_content(row,  "Smslog", szResult, MainPipeline); PlayerInfo[extraid][pSmslog] = strval(szResult);
-					cache_get_field_content(row,  "Wristwatch", szResult, MainPipeline); PlayerInfo[extraid][pWristwatch] = strval(szResult);
-					cache_get_field_content(row,  "Surveillance", szResult, MainPipeline); PlayerInfo[extraid][pSurveillance] = strval(szResult);
-					cache_get_field_content(row,  "Tire", szResult, MainPipeline); PlayerInfo[extraid][pTire] = strval(szResult);
-					cache_get_field_content(row,  "Firstaid", szResult, MainPipeline); PlayerInfo[extraid][pFirstaid] = strval(szResult);
-					cache_get_field_content(row,  "Rccam", szResult, MainPipeline); PlayerInfo[extraid][pRccam] = strval(szResult);
-					cache_get_field_content(row,  "Receiver", szResult, MainPipeline); PlayerInfo[extraid][pReceiver] = strval(szResult);
-					cache_get_field_content(row,  "GPS", szResult, MainPipeline); PlayerInfo[extraid][pGPS] = strval(szResult);
-					cache_get_field_content(row,  "Sweep", szResult, MainPipeline); PlayerInfo[extraid][pSweep] = strval(szResult);
-					cache_get_field_content(row,  "SweepLeft", szResult, MainPipeline); PlayerInfo[extraid][pSweepLeft] = strval(szResult);
-					cache_get_field_content(row,  "Bugged", szResult, MainPipeline); PlayerInfo[extraid][pBugged] = strval(szResult);
-					cache_get_field_content(row,  "pWExists", szResult, MainPipeline); PlayerInfo[extraid][pWeedObject] = strval(szResult);
-					cache_get_field_content(row,  "pWSeeds", szResult, MainPipeline); PlayerInfo[extraid][pWSeeds] = strval(szResult);
+					PlayerInfo[extraid][pTaxiLicense]			= cache_get_field_content_int(row,  "TaxiLicense", MainPipeline); 
+					PlayerInfo[extraid][pTicketTime]			= cache_get_field_content_int(row,  "TicketTime", MainPipeline); 
+					PlayerInfo[extraid][pScrewdriver]			= cache_get_field_content_int(row,  "Screwdriver", MainPipeline); 
+					PlayerInfo[extraid][pSmslog]				= cache_get_field_content_int(row,  "Smslog", MainPipeline); 
+					PlayerInfo[extraid][pWristwatch]			= cache_get_field_content_int(row,  "Wristwatch", MainPipeline); 
+					PlayerInfo[extraid][pSurveillance]			= cache_get_field_content_int(row,  "Surveillance", MainPipeline); 
+					PlayerInfo[extraid][pTire]					= cache_get_field_content_int(row,  "Tire", MainPipeline); 
+					PlayerInfo[extraid][pFirstaid]				= cache_get_field_content_int(row,  "Firstaid", MainPipeline); 
+					PlayerInfo[extraid][pRccam]					= cache_get_field_content_int(row,  "Rccam", MainPipeline); 
+					PlayerInfo[extraid][pReceiver]				= cache_get_field_content_int(row,  "Receiver", MainPipeline); 
+					PlayerInfo[extraid][pGPS]					= cache_get_field_content_int(row,  "GPS", MainPipeline); 
+					PlayerInfo[extraid][pSweep]					= cache_get_field_content_int(row,  "Sweep", MainPipeline); 
+					PlayerInfo[extraid][pSweepLeft]				= cache_get_field_content_int(row,  "SweepLeft", MainPipeline); 
+					PlayerInfo[extraid][pBugged]				= cache_get_field_content_int(row,  "Bugged", MainPipeline); 
+					PlayerInfo[extraid][pWeedObject]			= cache_get_field_content_int(row,  "pWExists", MainPipeline); 
+					PlayerInfo[extraid][pWSeeds]				= cache_get_field_content_int(row,  "pWSeeds", MainPipeline);
 					cache_get_field_content(row,  "Warrants", PlayerInfo[extraid][pWarrant], MainPipeline, 128);
-					cache_get_field_content(row,  "JudgeJailTime", szResult, MainPipeline); PlayerInfo[extraid][pJudgeJailTime] = strval(szResult);
-					cache_get_field_content(row,  "JudgeJailType", szResult, MainPipeline); PlayerInfo[extraid][pJudgeJailType] = strval(szResult);
-					cache_get_field_content(row,  "BeingSentenced", szResult, MainPipeline); PlayerInfo[extraid][pBeingSentenced] = strval(szResult);
-					cache_get_field_content(row,  "ProbationTime", szResult, MainPipeline); PlayerInfo[extraid][pProbationTime] = strval(szResult);
-					cache_get_field_content(row,  "DMKills", szResult, MainPipeline); PlayerInfo[extraid][pDMKills] = strval(szResult);
-					cache_get_field_content(row,  "Order", szResult, MainPipeline); PlayerInfo[extraid][pOrder] = strval(szResult);
-					cache_get_field_content(row,  "OrderConfirmed", szResult, MainPipeline); PlayerInfo[extraid][pOrderConfirmed] = strval(szResult);
-					cache_get_field_content(row,  "CallsAccepted", szResult, MainPipeline); PlayerInfo[extraid][pCallsAccepted] = strval(szResult);
-					cache_get_field_content(row,  "PatientsDelivered", szResult, MainPipeline); PlayerInfo[extraid][pPatientsDelivered] = strval(szResult);
-					cache_get_field_content(row,  "LiveBanned", szResult, MainPipeline); PlayerInfo[extraid][pLiveBanned] = strval(szResult);
-					cache_get_field_content(row,  "FreezeBank", szResult, MainPipeline); PlayerInfo[extraid][pFreezeBank] = strval(szResult);
-					cache_get_field_content(row,  "FreezeHouse", szResult, MainPipeline); PlayerInfo[extraid][pFreezeHouse] = strval(szResult);
-					cache_get_field_content(row,  "FreezeCar", szResult, MainPipeline); PlayerInfo[extraid][pFreezeCar] = strval(szResult);
-					cache_get_field_content(row,  "Firework", szResult, MainPipeline); PlayerInfo[extraid][pFirework] = strval(szResult);
-					cache_get_field_content(row,  "Boombox", szResult, MainPipeline); PlayerInfo[extraid][pBoombox] = strval(szResult);
-					cache_get_field_content(row,  "Hydration", szResult, MainPipeline); PlayerInfo[extraid][pHydration] = strval(szResult);
-					cache_get_field_content(row,  "Speedo", szResult, MainPipeline); PlayerInfo[extraid][pSpeedo] = strval(szResult);
-					cache_get_field_content(row,  "DoubleEXP", szResult, MainPipeline); PlayerInfo[extraid][pDoubleEXP] = strval(szResult);
-					cache_get_field_content(row,  "EXPToken", szResult, MainPipeline); PlayerInfo[extraid][pEXPToken] = strval(szResult);
-					cache_get_field_content(row,  "RacePlayerLaps", szResult, MainPipeline); PlayerInfo[extraid][pRacePlayerLaps] = strval(szResult);
-					cache_get_field_content(row,  "Ringtone", szResult, MainPipeline); PlayerInfo[extraid][pRingtone] = strval(szResult);
-					cache_get_field_content(row,  "VIPM", szResult, MainPipeline); PlayerInfo[extraid][pVIPM] = strval(szResult);
-					cache_get_field_content(row,  "VIPMO", szResult, MainPipeline); PlayerInfo[extraid][pVIPMO] = strval(szResult);
-					cache_get_field_content(row,  "VIPExpire", szResult, MainPipeline); PlayerInfo[extraid][pVIPExpire] = strval(szResult);
-					cache_get_field_content(row,  "GVip", szResult, MainPipeline); PlayerInfo[extraid][pGVip] = strval(szResult);
-					cache_get_field_content(row,  "Watchdog", szResult, MainPipeline); PlayerInfo[extraid][pWatchdog] = strval(szResult);
-					cache_get_field_content(row,  "VIPSold", szResult, MainPipeline); PlayerInfo[extraid][pVIPSold] = strval(szResult);
-					cache_get_field_content(row,  "GoldBoxTokens", szResult, MainPipeline); PlayerInfo[extraid][pGoldBoxTokens] = strval(szResult);
-					cache_get_field_content(row,  "DrawChance", szResult, MainPipeline); PlayerInfo[extraid][pRewardDrawChance] = strval(szResult);
-					cache_get_field_content(row,  "RewardHours", szResult, MainPipeline); PlayerInfo[extraid][pRewardHours] = floatstr(szResult);
-					cache_get_field_content(row,  "CarsRestricted", szResult, MainPipeline); PlayerInfo[extraid][pRVehRestricted] = strval(szResult);
-					cache_get_field_content(row,  "LastCarWarning", szResult, MainPipeline); PlayerInfo[extraid][pLastRVehWarn] = strval(szResult);
-					cache_get_field_content(row,  "CarWarns", szResult, MainPipeline); PlayerInfo[extraid][pRVehWarns] = strval(szResult);
-					cache_get_field_content(row,  "Flagged", szResult, MainPipeline); PlayerInfo[extraid][pFlagged] = strval(szResult);
-					cache_get_field_content(row,  "Paper", szResult, MainPipeline); PlayerInfo[extraid][pPaper] = strval(szResult);
-					cache_get_field_content(row,  "MailEnabled", szResult, MainPipeline); PlayerInfo[extraid][pMailEnabled] = strval(szResult);
-					cache_get_field_content(row,  "Mailbox", szResult, MainPipeline); PlayerInfo[extraid][pMailbox] = strval(szResult);
-					cache_get_field_content(row,  "Business", szResult, MainPipeline); PlayerInfo[extraid][pBusiness] = strval(szResult);
-					cache_get_field_content(row,  "BusinessRank", szResult, MainPipeline); PlayerInfo[extraid][pBusinessRank] = strval(szResult);
-					cache_get_field_content(row,  "TreasureSkill", szResult, MainPipeline); PlayerInfo[extraid][pTreasureSkill] = strval(szResult);
-					cache_get_field_content(row,  "MetalDetector", szResult, MainPipeline); PlayerInfo[extraid][pMetalDetector] = strval(szResult);
-					cache_get_field_content(row,  "HelpedBefore", szResult, MainPipeline); PlayerInfo[extraid][pHelpedBefore] = strval(szResult);
-					cache_get_field_content(row,  "Trickortreat", szResult, MainPipeline); PlayerInfo[extraid][pTrickortreat] = strval(szResult);
-					cache_get_field_content(row,  "LastCharmReceived", szResult, MainPipeline); PlayerInfo[extraid][pLastCharmReceived] = strval(szResult);
-					cache_get_field_content(row,  "RHMutes", szResult, MainPipeline); PlayerInfo[extraid][pRHMutes] = strval(szResult);
-					cache_get_field_content(row,  "RHMuteTime", szResult, MainPipeline); PlayerInfo[extraid][pRHMuteTime] = strval(szResult);
-					cache_get_field_content(row,  "GiftCode", szResult, MainPipeline); PlayerInfo[extraid][pGiftCode] = strval(szResult);
-					cache_get_field_content(row,  "Table", szResult, MainPipeline); PlayerInfo[extraid][pTable] = strval(szResult);
-					cache_get_field_content(row,  "OpiumSeeds", szResult, MainPipeline); PlayerInfo[extraid][pOpiumSeeds] = strval(szResult);
-					cache_get_field_content(row,  "RawOpium", szResult, MainPipeline); PlayerInfo[extraid][pRawOpium] = strval(szResult);
-					cache_get_field_content(row,  "Heroin", szResult, MainPipeline); PlayerInfo[extraid][pHeroin] = strval(szResult);
-					cache_get_field_content(row,  "Syringe", szResult, MainPipeline); PlayerInfo[extraid][pSyringes] = strval(szResult);
-					cache_get_field_content(row,  "Skins", szResult, MainPipeline); PlayerInfo[extraid][pSkins] = strval(szResult);
-					cache_get_field_content(row,  "Hunger", szResult, MainPipeline); PlayerInfo[extraid][pHunger] = strval(szResult);
-					cache_get_field_content(row,  "HungerTimer", szResult, MainPipeline); PlayerInfo[extraid][pHungerTimer] = strval(szResult);
-					cache_get_field_content(row,  "HungerDeathTimer", szResult, MainPipeline); PlayerInfo[extraid][pHungerDeathTimer] = strval(szResult);
-					cache_get_field_content(row,  "Fitness", szResult, MainPipeline); PlayerInfo[extraid][pFitness] = strval(szResult);
-					cache_get_field_content(row,  "ForcePasswordChange", szResult, MainPipeline); PlayerInfo[extraid][pForcePasswordChange] = strval(szResult);
-					cache_get_field_content(row,  "Credits", szResult, MainPipeline); PlayerInfo[extraid][pCredits] = strval(szResult);
-					cache_get_field_content(row,  "HealthCare", szResult, MainPipeline); PlayerInfo[extraid][pHealthCare] = strval(szResult);
-					cache_get_field_content(row,  "TotalCredits", szResult, MainPipeline); PlayerInfo[extraid][pTotalCredits] = strval(szResult);
-					cache_get_field_content(row,  "ReceivedCredits", szResult, MainPipeline); PlayerInfo[extraid][pReceivedCredits] = strval(szResult);
-					cache_get_field_content(row,  "RimMod", szResult, MainPipeline); PlayerInfo[extraid][pRimMod] = strval(szResult);
-					cache_get_field_content(row,  "Tazer", szResult, MainPipeline); PlayerInfo[extraid][pHasTazer] = strval(szResult);
-					cache_get_field_content(row,  "Cuff", szResult, MainPipeline); PlayerInfo[extraid][pHasCuff] = strval(szResult);
-					cache_get_field_content(row,  "CarVoucher", szResult, MainPipeline); PlayerInfo[extraid][pCarVoucher] = strval(szResult);
+					PlayerInfo[extraid][pJudgeJailTime]			= cache_get_field_content_int(row,  "JudgeJailTime", MainPipeline); 
+					PlayerInfo[extraid][pJudgeJailType]			= cache_get_field_content_int(row,  "JudgeJailType", MainPipeline); 
+					PlayerInfo[extraid][pBeingSentenced]		= cache_get_field_content_int(row,  "BeingSentenced", MainPipeline); 
+					PlayerInfo[extraid][pProbationTime]			= cache_get_field_content_int(row,  "ProbationTime", MainPipeline); 
+					PlayerInfo[extraid][pDMKills]				= cache_get_field_content_int(row,  "DMKills", MainPipeline); 
+					PlayerInfo[extraid][pOrder]					= cache_get_field_content_int(row,  "Order", MainPipeline); 
+					PlayerInfo[extraid][pOrderConfirmed]		= cache_get_field_content_int(row,  "OrderConfirmed", MainPipeline); 
+					PlayerInfo[extraid][pCallsAccepted]			= cache_get_field_content_int(row,  "CallsAccepted", MainPipeline); 
+					PlayerInfo[extraid][pPatientsDelivered]		= cache_get_field_content_int(row,  "PatientsDelivered", MainPipeline); 
+					PlayerInfo[extraid][pLiveBanned]			= cache_get_field_content_int(row,  "LiveBanned", MainPipeline); 
+					PlayerInfo[extraid][pFreezeBank]			= cache_get_field_content_int(row,  "FreezeBank", MainPipeline); 
+					PlayerInfo[extraid][pFreezeHouse]			= cache_get_field_content_int(row,  "FreezeHouse", MainPipeline);
+					PlayerInfo[extraid][pFreezeCar]				= cache_get_field_content_int(row,  "FreezeCar", MainPipeline); 
+					PlayerInfo[extraid][pFirework]				= cache_get_field_content_int(row,  "Firework", MainPipeline); 
+					PlayerInfo[extraid][pBoombox]				= cache_get_field_content_int(row,  "Boombox", MainPipeline); 
+					PlayerInfo[extraid][pHydration]				= cache_get_field_content_int(row,  "Hydration", MainPipeline);
+					PlayerInfo[extraid][pSpeedo]				= cache_get_field_content_int(row,  "Speedo", MainPipeline); 
+					PlayerInfo[extraid][pDoubleEXP]				= cache_get_field_content_int(row,  "DoubleEXP", MainPipeline); 
+					PlayerInfo[extraid][pEXPToken]				= cache_get_field_content_int(row,  "EXPToken", MainPipeline); 
+					PlayerInfo[extraid][pRacePlayerLaps]		= cache_get_field_content_int(row,  "RacePlayerLaps", MainPipeline); 
+					PlayerInfo[extraid][pRingtone]				= cache_get_field_content_int(row,  "Ringtone", MainPipeline); 
+					PlayerInfo[extraid][pVIPM]					= cache_get_field_content_int(row,  "VIPM", MainPipeline); 
+					PlayerInfo[extraid][pVIPMO]					= cache_get_field_content_int(row,  "VIPMO", MainPipeline); 
+					PlayerInfo[extraid][pVIPExpire]				= cache_get_field_content_int(row,  "VIPExpire", MainPipeline);
+					PlayerInfo[extraid][pGVip]					= cache_get_field_content_int(row,  "GVip", MainPipeline); 
+					PlayerInfo[extraid][pWatchdog]				= cache_get_field_content_int(row,  "Watchdog", MainPipeline); 
+					PlayerInfo[extraid][pVIPSold]				= cache_get_field_content_int(row,  "VIPSold",MainPipeline); 
+					PlayerInfo[extraid][pGoldBoxTokens]			= cache_get_field_content_int(row,  "GoldBoxTokens", MainPipeline); 
+					PlayerInfo[extraid][pRewardDrawChance]		= cache_get_field_content_int(row,  "DrawChance", MainPipeline); 
+					PlayerInfo[extraid][pRewardHours]			= cache_get_field_content_int(row,  "RewardHours", MainPipeline); 
+					PlayerInfo[extraid][pRVehRestricted]		= cache_get_field_content_int(row,  "CarsRestricted", MainPipeline); 
+					PlayerInfo[extraid][pLastRVehWarn]			= cache_get_field_content_int(row,  "LastCarWarning", MainPipeline); 
+					PlayerInfo[extraid][pRVehWarns]				= cache_get_field_content_int(row,  "CarWarns", MainPipeline);
+					PlayerInfo[extraid][pFlagged]				= cache_get_field_content_int(row,  "Flagged", MainPipeline); 
+					PlayerInfo[extraid][pPaper]					= cache_get_field_content_int(row,  "Paper", MainPipeline); 
+					PlayerInfo[extraid][pMailEnabled]			= cache_get_field_content_int(row,  "MailEnabled", MainPipeline); 
+					PlayerInfo[extraid][pMailbox]				= cache_get_field_content_int(row,  "Mailbox", MainPipeline); 
+					PlayerInfo[extraid][pBusiness]				= cache_get_field_content_int(row,  "Business", MainPipeline); 
+					PlayerInfo[extraid][pBusinessRank]			= cache_get_field_content_int(row,  "BusinessRank", MainPipeline); 
+					PlayerInfo[extraid][pTreasureSkill]			= cache_get_field_content_int(row,  "TreasureSkill", MainPipeline); 
+					PlayerInfo[extraid][pMetalDetector]			= cache_get_field_content_int(row,  "MetalDetector", MainPipeline); 
+					PlayerInfo[extraid][pHelpedBefore]			= cache_get_field_content_int(row,  "HelpedBefore", MainPipeline); 
+					PlayerInfo[extraid][pTrickortreat]			= cache_get_field_content_int(row,  "Trickortreat", MainPipeline); 
+					PlayerInfo[extraid][pLastCharmReceived]		= cache_get_field_content_int(row,  "LastCharmReceived", MainPipeline);
+					PlayerInfo[extraid][pRHMutes]				= cache_get_field_content_int(row,  "RHMutes", MainPipeline); 
+					PlayerInfo[extraid][pRHMuteTime]			= cache_get_field_content_int(row,  "RHMuteTime", MainPipeline); 
+					PlayerInfo[extraid][pGiftCode]				= cache_get_field_content_int(row,  "GiftCode", MainPipeline); 
+					PlayerInfo[extraid][pTable]					= cache_get_field_content_int(row,  "Table", MainPipeline); 
+					PlayerInfo[extraid][pOpiumSeeds]			= cache_get_field_content_int(row,  "OpiumSeeds", MainPipeline); 
+					PlayerInfo[extraid][pRawOpium]				= cache_get_field_content_int(row,  "RawOpium", MainPipeline); 
+					PlayerInfo[extraid][pHeroin]				= cache_get_field_content_int(row,  "Heroin", MainPipeline); 
+					PlayerInfo[extraid][pSyringes]				= cache_get_field_content_int(row,  "Syringe", MainPipeline); 
+					PlayerInfo[extraid][pSkins]					= cache_get_field_content_int(row,  "Skins", MainPipeline); 
+					PlayerInfo[extraid][pHunger]				= cache_get_field_content_int(row,  "Hunger", MainPipeline); 
+					PlayerInfo[extraid][pHungerTimer]			= cache_get_field_content_int(row,  "HungerTimer", MainPipeline); 
+					PlayerInfo[extraid][pHungerDeathTimer]		= cache_get_field_content_int(row,  "HungerDeathTimer", MainPipeline); 
+					PlayerInfo[extraid][pFitness]				= cache_get_field_content_int(row,  "Fitness", MainPipeline); 
+					PlayerInfo[extraid][pForcePasswordChange]	= cache_get_field_content_int(row,  "ForcePasswordChange", MainPipeline); 
+					PlayerInfo[extraid][pCredits]				= cache_get_field_content_int(row,  "Credits", MainPipeline); 
+					PlayerInfo[extraid][pHealthCare]			= cache_get_field_content_int(row,  "HealthCare", MainPipeline); 
+					PlayerInfo[extraid][pTotalCredits]			= cache_get_field_content_int(row,  "TotalCredits", MainPipeline); 
+					PlayerInfo[extraid][pReceivedCredits]		= cache_get_field_content_int(row,  "ReceivedCredits", MainPipeline); 
+					PlayerInfo[extraid][pRimMod]				= cache_get_field_content_int(row,  "RimMod", MainPipeline); 
+					PlayerInfo[extraid][pHasTazer]				= cache_get_field_content_int(row,  "Tazer",MainPipeline); 
+					PlayerInfo[extraid][pHasCuff]				= cache_get_field_content_int(row,  "Cuff", MainPipeline); 
+					PlayerInfo[extraid][pCarVoucher]			= cache_get_field_content_int(row,  "CarVoucher", MainPipeline); 
 					cache_get_field_content(row,  "ReferredBy", PlayerInfo[extraid][pReferredBy], MainPipeline, MAX_PLAYER_NAME);
-					cache_get_field_content(row,  "PendingRefReward", szResult, MainPipeline); PlayerInfo[extraid][pPendingRefReward] = strval(szResult);
-					cache_get_field_content(row,  "Refers", szResult, MainPipeline); PlayerInfo[extraid][pRefers] = strval(szResult);
-					cache_get_field_content(row,  "Famed", szResult, MainPipeline); PlayerInfo[extraid][pFamed] = strval(szResult);
-					cache_get_field_content(row,  "FamedMuted", szResult, MainPipeline); PlayerInfo[extraid][pFMuted] = strval(szResult);
-					cache_get_field_content(row,  "DefendTime", szResult, MainPipeline); PlayerInfo[extraid][pDefendTime] = strval(szResult);
-					cache_get_field_content(row,  "VehicleSlot", szResult, MainPipeline); PlayerInfo[extraid][pVehicleSlot] = strval(szResult);
-					cache_get_field_content(row,  "PVIPVoucher", szResult, MainPipeline); PlayerInfo[extraid][pPVIPVoucher] = strval(szResult);
-					cache_get_field_content(row,  "ToySlot", szResult, MainPipeline); PlayerInfo[extraid][pToySlot] = strval(szResult);
-					cache_get_field_content(row,  "RFLTeam", szResult, MainPipeline); PlayerInfo[extraid][pRFLTeam] = strval(szResult);
-					cache_get_field_content(row,  "RFLTeamL", szResult, MainPipeline); PlayerInfo[extraid][pRFLTeamL] = strval(szResult);
-					cache_get_field_content(row,  "VehVoucher", szResult, MainPipeline); PlayerInfo[extraid][pVehVoucher] = strval(szResult);
-					cache_get_field_content(row,  "SVIPVoucher", szResult, MainPipeline); PlayerInfo[extraid][pSVIPVoucher] = strval(szResult);
-					cache_get_field_content(row,  "GVIPVoucher", szResult, MainPipeline); PlayerInfo[extraid][pGVIPVoucher] = strval(szResult);
-					cache_get_field_content(row,  "GiftVoucher", szResult, MainPipeline); PlayerInfo[extraid][pGiftVoucher] = strval(szResult);
-					cache_get_field_content(row,  "FallIntoFun", szResult, MainPipeline); PlayerInfo[extraid][pFallIntoFun] = strval(szResult);
-					cache_get_field_content(row,  "HungerVoucher", szResult, MainPipeline); PlayerInfo[extraid][pHungerVoucher] = strval(szResult);
-					cache_get_field_content(row,  "BoughtCure", szResult, MainPipeline); PlayerInfo[extraid][pBoughtCure] = strval(szResult);
-					cache_get_field_content(row,  "Vials", szResult, MainPipeline); PlayerInfo[extraid][pVials] = strval(szResult);
-					cache_get_field_content(row,  "AdvertVoucher", szResult, MainPipeline); PlayerInfo[extraid][pAdvertVoucher] = strval(szResult);
-					cache_get_field_content(row,  "ShopCounter", szResult, MainPipeline); PlayerInfo[extraid][pShopCounter] = strval(szResult);
-					cache_get_field_content(row,  "ShopNotice", szResult, MainPipeline); PlayerInfo[extraid][pShopNotice] = strval(szResult);
-					cache_get_field_content(row,  "SVIPExVoucher", szResult, MainPipeline); PlayerInfo[extraid][pSVIPExVoucher] = strval(szResult);
-					cache_get_field_content(row,  "GVIPExVoucher", szResult, MainPipeline); PlayerInfo[extraid][pGVIPExVoucher] = strval(szResult);		
-					cache_get_field_content(row,  "VIPSellable", szResult, MainPipeline); PlayerInfo[extraid][pVIPSellable] = strval(szResult);	
-					cache_get_field_content(row,  "ReceivedPrize", szResult, MainPipeline); PlayerInfo[extraid][pReceivedPrize] = strval(szResult);
-					cache_get_field_content(row,  "VIPSpawn", szResult, MainPipeline); PlayerInfo[extraid][pVIPSpawn] = strval(szResult);
-					cache_get_field_content(row,  "FreeAdsDay", szResult, MainPipeline); PlayerInfo[extraid][pFreeAdsDay] = strval(szResult);
-					cache_get_field_content(row,  "FreeAdsLeft", szResult, MainPipeline); PlayerInfo[extraid][pFreeAdsLeft] = strval(szResult);
-					cache_get_field_content(row,  "BuddyInvites", szResult, MainPipeline); PlayerInfo[extraid][pBuddyInvites] = strval(szResult);
-					cache_get_field_content(row,  "ReceivedBGift", szResult, MainPipeline); PlayerInfo[extraid][pReceivedBGift] = strval(szResult);
-					cache_get_field_content(row,  "pVIPJob", szResult, MainPipeline); PlayerInfo[extraid][pVIPJob] = strval(szResult);	
-					cache_get_field_content(row,  "LastBirthday", szResult, MainPipeline); PlayerInfo[extraid][pLastBirthday] = strval(szResult);
-					cache_get_field_content(row,  "AccountRestricted", szResult, MainPipeline); PlayerInfo[extraid][pAccountRestricted] = strval(szResult);
-					cache_get_field_content(row,  "Watchlist", szResult, MainPipeline); PlayerInfo[extraid][pWatchlist] = strval(szResult);
-					cache_get_field_content(row,  "WatchlistTime", szResult, MainPipeline); PlayerInfo[extraid][pWatchlistTime] = strval(szResult);
-					cache_get_field_content(row,  "Backpack", szResult, MainPipeline); PlayerInfo[extraid][pBackpack] = strval(szResult);
-					cache_get_field_content(row,  "BEquipped", szResult, MainPipeline); PlayerInfo[extraid][pBEquipped] = strval(szResult);
-					cache_get_field_content(row,  "BStoredH", szResult, MainPipeline); PlayerInfo[extraid][pBStoredH] = strval(szResult);
-					cache_get_field_content(row,  "BStoredV", szResult, MainPipeline); PlayerInfo[extraid][pBStoredV] = strval(szResult);
-					cache_get_field_content(row,  "BRTimeout", szResult, MainPipeline); PlayerInfo[extraid][pBugReportTimeout] = strval(szResult);
-					cache_get_field_content(row,  "NewbieTogged", szResult, MainPipeline); PlayerInfo[extraid][pNewbieTogged] = strval(szResult);
-					cache_get_field_content(row,  "VIPTogged", szResult, MainPipeline); PlayerInfo[extraid][pVIPTogged] = strval(szResult);
-					cache_get_field_content(row,  "FamedTogged", szResult, MainPipeline); PlayerInfo[extraid][pFamedTogged] = strval(szResult);
+					PlayerInfo[extraid][pPendingRefReward]		= cache_get_field_content_int(row,  "PendingRefReward", MainPipeline); 
+					PlayerInfo[extraid][pRefers]				= cache_get_field_content_int(row,  "Refers", MainPipeline); 
+					PlayerInfo[extraid][pFamed]					= cache_get_field_content_int(row,  "Famed", MainPipeline); 
+					PlayerInfo[extraid][pFMuted]				= cache_get_field_content_int(row,  "FamedMuted", MainPipeline); 
+					PlayerInfo[extraid][pDefendTime]			= cache_get_field_content_int(row,  "DefendTime", MainPipeline); 
+					PlayerInfo[extraid][pVehicleSlot]			= cache_get_field_content_int(row,  "VehicleSlot", MainPipeline); 
+					PlayerInfo[extraid][pPVIPVoucher]			= cache_get_field_content_int(row,  "PVIPVoucher", MainPipeline); 
+					PlayerInfo[extraid][pToySlot]				= cache_get_field_content_int(row,  "ToySlot", MainPipeline); 
+					PlayerInfo[extraid][pRFLTeam]				= cache_get_field_content_int(row,  "RFLTeam", MainPipeline); 
+					PlayerInfo[extraid][pRFLTeamL]				= cache_get_field_content_int(row,  "RFLTeamL", MainPipeline); 
+					PlayerInfo[extraid][pVehVoucher]			= cache_get_field_content_int(row,  "VehVoucher", MainPipeline); 
+					PlayerInfo[extraid][pSVIPVoucher]			= cache_get_field_content_int(row,  "SVIPVoucher", MainPipeline); 
+					PlayerInfo[extraid][pGVIPVoucher]			= cache_get_field_content_int(row,  "GVIPVoucher", MainPipeline);
+					PlayerInfo[extraid][pGiftVoucher]			= cache_get_field_content_int(row,  "GiftVoucher", MainPipeline); 
+					PlayerInfo[extraid][pFallIntoFun]			= cache_get_field_content_int(row,  "FallIntoFun", MainPipeline); 
+					PlayerInfo[extraid][pHungerVoucher]			= cache_get_field_content_int(row,  "HungerVoucher", MainPipeline); 
+					PlayerInfo[extraid][pBoughtCure]			= cache_get_field_content_int(row,  "BoughtCure", MainPipeline); 
+					PlayerInfo[extraid][pVials]					= cache_get_field_content_int(row,  "Vials", MainPipeline); 
+					PlayerInfo[extraid][pAdvertVoucher]			= cache_get_field_content_int(row,  "AdvertVoucher", MainPipeline); 
+					PlayerInfo[extraid][pShopCounter]			= cache_get_field_content_int(row,  "ShopCounter", MainPipeline); 
+					PlayerInfo[extraid][pShopNotice]			= cache_get_field_content_int(row,  "ShopNotice", MainPipeline); 
+					PlayerInfo[extraid][pSVIPExVoucher]			= cache_get_field_content_int(row,  "SVIPExVoucher", MainPipeline); 
+					PlayerInfo[extraid][pGVIPExVoucher]			= cache_get_field_content_int(row,  "GVIPExVoucher", MainPipeline); 	
+					PlayerInfo[extraid][pVIPSellable]			= cache_get_field_content_int(row,  "VIPSellable", MainPipeline); 
+					PlayerInfo[extraid][pReceivedPrize]			= cache_get_field_content_int(row,  "ReceivedPrize", MainPipeline); 
+					PlayerInfo[extraid][pVIPSpawn]				= cache_get_field_content_int(row,  "VIPSpawn", MainPipeline); 
+					PlayerInfo[extraid][pFreeAdsDay]			= cache_get_field_content_int(row,  "FreeAdsDay", MainPipeline); 
+					PlayerInfo[extraid][pFreeAdsLeft]			= cache_get_field_content_int(row,  "FreeAdsLeft", MainPipeline); 
+					PlayerInfo[extraid][pBuddyInvites]			= cache_get_field_content_int(row,  "BuddyInvites", MainPipeline); 
+					PlayerInfo[extraid][pReceivedBGift]			= cache_get_field_content_int(row,  "ReceivedBGift", MainPipeline); 
+					PlayerInfo[extraid][pVIPJob]				= cache_get_field_content_int(row,  "pVIPJob", MainPipeline); 
+					PlayerInfo[extraid][pLastBirthday]			= cache_get_field_content_int(row,  "LastBirthday", MainPipeline); 
+					PlayerInfo[extraid][pAccountRestricted]		= cache_get_field_content_int(row,  "AccountRestricted", MainPipeline);
+					PlayerInfo[extraid][pWatchlist]				= cache_get_field_content_int(row,  "Watchlist", MainPipeline); 
+					PlayerInfo[extraid][pWatchlistTime]			= cache_get_field_content_int(row,  "WatchlistTime", MainPipeline); 
+					PlayerInfo[extraid][pBackpack]				= cache_get_field_content_int(row,  "Backpack", MainPipeline); 
+					PlayerInfo[extraid][pBEquipped]				= cache_get_field_content_int(row,  "BEquipped", MainPipeline); 
+					PlayerInfo[extraid][pBStoredH]				= cache_get_field_content_int(row,  "BStoredH", MainPipeline); 
+					PlayerInfo[extraid][pBStoredV]				= cache_get_field_content_int(row,  "BStoredV", MainPipeline); 
+					PlayerInfo[extraid][pBugReportTimeout]		= cache_get_field_content_int(row,  "BRTimeout", MainPipeline); 
+					PlayerInfo[extraid][pNewbieTogged]			= cache_get_field_content_int(row,  "NewbieTogged", MainPipeline); 
+					PlayerInfo[extraid][pVIPTogged]				= cache_get_field_content_int(row,  "VIPTogged", MainPipeline); 
+					PlayerInfo[extraid][pFamedTogged]			= cache_get_field_content_int(row,  "FamedTogged", MainPipeline); 
 					for(new i = 0; i < 12; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
-						cache_get_field_content(row,  szField, szResult, MainPipeline);
-						PlayerInfo[extraid][pBItems][i] = strval(szResult);
+						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
-					cache_get_field_content(row,  "ToolBox", szResult, MainPipeline); PlayerInfo[extraid][pToolBox] = strval(szResult);
-					cache_get_field_content(row,  "CrowBar", szResult, MainPipeline); PlayerInfo[extraid][pCrowBar] = strval(szResult);
-					cache_get_field_content(row,  "CarLockPickSkill", szResult, MainPipeline); PlayerInfo[extraid][pCarLockPickSkill] = strval(szResult);
-					cache_get_field_content(row,  "LockPickVehCount", szResult, MainPipeline); PlayerInfo[extraid][pLockPickVehCount] = strval(szResult);
-					cache_get_field_content(row,  "LockPickTime", szResult, MainPipeline); PlayerInfo[extraid][pLockPickTime] = strval(szResult);
+					PlayerInfo[extraid][pToolBox]				= cache_get_field_content_int(row,  "ToolBox", MainPipeline); 
+					PlayerInfo[extraid][pCrowBar]				= cache_get_field_content_int(row,  "CrowBar", MainPipeline); 
+					PlayerInfo[extraid][pCarLockPickSkill]		= cache_get_field_content_int(row,  "CarLockPickSkill", MainPipeline); 
+					PlayerInfo[extraid][pLockPickVehCount]		= cache_get_field_content_int(row,  "LockPickVehCount", MainPipeline); 
+					PlayerInfo[extraid][pLockPickTime]			= cache_get_field_content_int(row,  "LockPickTime", MainPipeline); 
 					//cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
-					cache_get_field_content(row,  "BM", szResult, MainPipeline); PlayerInfo[extraid][pBM] = strval(szResult);
-					
-					cache_get_field_content(row,  "Isolated", szResult, MainPipeline); PlayerInfo[extraid][pIsolated] = strval(szResult);
-					cache_get_field_content(row,  "WantedJailTime", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailTime] = strval(szResult);
-					cache_get_field_content(row,  "WantedJailFine", szResult, MainPipeline); PlayerInfo[extraid][pWantedJailFine] = strval(szResult);
-					PlayerInfo[extraid][pNextNameChange] = cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
+					PlayerInfo[extraid][pBM]					= cache_get_field_content_int(row,  "BM", MainPipeline); 
+					PlayerInfo[extraid][pIsolated]				= cache_get_field_content_int(row,  "Isolated", MainPipeline); 
+					PlayerInfo[extraid][pWantedJailTime]		= cache_get_field_content_int(row,  "WantedJailTime", MainPipeline); 
+					PlayerInfo[extraid][pWantedJailFine]		= cache_get_field_content_int(row,  "WantedJailFine", MainPipeline); 
+					PlayerInfo[extraid][pNextNameChange] 		= cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
 					cache_get_field_content(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc], MainPipeline, 128);
 					cache_get_field_content(row,  "FavStation", PlayerInfo[extraid][pFavStation], MainPipeline, 255);
 					
 					// Austin's DP System
-					cache_get_field_content(row,  "pDedicatedPlayer", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedPlayer] = strval(szResult);
-					cache_get_field_content(row,  "pDedicatedEnabled",  szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedEnabled] = strval(szResult);
-					cache_get_field_content(row,  "pDedicatedMuted", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedMuted] = strval(szResult);
-					cache_get_field_content(row,  "pDedicatedWarn", szResult, MainPipeline, 128); PlayerInfo[extraid][pDedicatedWarn] = strval(szResult);
+					PlayerInfo[extraid][pDedicatedPlayer]		= cache_get_field_content_int(row,  "pDedicatedPlayer", MainPipeline); 
+					PlayerInfo[extraid][pDedicatedEnabled]		= cache_get_field_content_int(row,  "pDedicatedEnabled", MainPipeline); 
+					PlayerInfo[extraid][pDedicatedMuted]		= cache_get_field_content_int(row,  "pDedicatedMuted", MainPipeline); 
+					PlayerInfo[extraid][pDedicatedWarn]			= cache_get_field_content_int(row,  "pDedicatedWarn", MainPipeline); 
 
 					cache_get_field_content(row,  "mInventory", szResult, MainPipeline);
 					sscanf(szResult, MicroSpecifier, PlayerInfo[extraid][mInventory]);
@@ -884,63 +703,35 @@ public OnQueryFinish(resultid, extraid, handleid)
 					if(i >= MAX_PLAYERTOYS)
 						break;
 				
-					new szResult[32];
+					//new szResult[32];
 					
-					cache_get_field_content(i, "id", szResult, MainPipeline);
-					PlayerToyInfo[extraid][i][ptID] = strval(szResult);
-					
-					cache_get_field_content(i, "modelid", szResult, MainPipeline);
-					PlayerToyInfo[extraid][i][ptModelID] = strval(szResult);
+					PlayerToyInfo[extraid][i][ptID] 				= cache_get_field_content_int(i, "id", MainPipeline);			
+					PlayerToyInfo[extraid][i][ptModelID] 			= cache_get_field_content_int(i, "modelid", MainPipeline);
 					
 					if(PlayerToyInfo[extraid][i][ptModelID] != 0)
 					{					
-						cache_get_field_content(i, "bone", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptBone] = strval(szResult);
-						
+						PlayerToyInfo[extraid][i][ptBone] 			= cache_get_field_content_int(i, "bone", MainPipeline);
 						if(PlayerToyInfo[extraid][i][ptBone] > 18 || PlayerToyInfo[extraid][i][ptBone] < 1) PlayerToyInfo[extraid][i][ptBone] = 1;
 						
-						cache_get_field_content(i, "tradable", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptTradable] = strval(szResult);
-						
-						cache_get_field_content(i, "posx", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosX] = floatstr(szResult);
-						
-						cache_get_field_content(i, "posy", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosY] = floatstr(szResult);
-						
-						cache_get_field_content(i, "posz", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosZ] = floatstr(szResult);
-						
-						cache_get_field_content(i, "rotx", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotX] = floatstr(szResult);
-						
-						cache_get_field_content(i, "roty", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotY] = floatstr(szResult);
-						
-						cache_get_field_content(i, "rotz", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotZ] = floatstr(szResult);
-						
-						cache_get_field_content(i, "scalex", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleX] = floatstr(szResult);
-						
-						cache_get_field_content(i, "scaley", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleY] = floatstr(szResult);
-						
-						cache_get_field_content(i, "scalez", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleZ] = floatstr(szResult);
-						
-						cache_get_field_content(i, "special", szResult, MainPipeline);
-						PlayerToyInfo[extraid][i][ptSpecial] = strval(szResult);
-						
-						new szLog[128];
-						format(szLog, sizeof(szLog), "[TOYSLOAD] [User: %s(%i)] [Toy Model ID: %d] [Toy ID]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerToyInfo[extraid][i][ptModelID], PlayerToyInfo[extraid][i][ptID]);
-						Log("logs/toydebug.log", szLog);
+						PlayerToyInfo[extraid][i][ptTradable] 		= cache_get_field_content_int(i, "tradable", MainPipeline);
+						PlayerToyInfo[extraid][i][ptPosX] 			= cache_get_field_content_float(i, "posx", MainPipeline);
+						PlayerToyInfo[extraid][i][ptPosY] 			= cache_get_field_content_float(i, "posy", MainPipeline);
+						PlayerToyInfo[extraid][i][ptPosZ] 			= cache_get_field_content_float(i, "posz", MainPipeline);
+						PlayerToyInfo[extraid][i][ptRotX] 			= cache_get_field_content_float(i, "rotx", MainPipeline);
+						PlayerToyInfo[extraid][i][ptRotY] 			= cache_get_field_content_float(i, "roty", MainPipeline);
+						PlayerToyInfo[extraid][i][ptRotZ] 			= cache_get_field_content_float(i, "rotz", MainPipeline);
+						PlayerToyInfo[extraid][i][ptScaleX] 		= cache_get_field_content_float(i, "scalex", MainPipeline);
+						PlayerToyInfo[extraid][i][ptScaleY] 		= cache_get_field_content_float(i, "scaley", MainPipeline);
+						PlayerToyInfo[extraid][i][ptScaleZ] 		= cache_get_field_content_float(i, "scalez", MainPipeline);
+						PlayerToyInfo[extraid][i][ptSpecial] 		= cache_get_field_content_int(i, "special", MainPipeline);
+
+						format(szMiscArray, sizeof(szMiscArray), "[TOYSLOAD] [User: %s(%i)] [Toy Model ID: %d] [Toy ID]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerToyInfo[extraid][i][ptModelID], PlayerToyInfo[extraid][i][ptID]);
+						Log("logs/toydebug.log", szMiscArray);
 					}
 					else
 					{
-						new szQuery[128];
-						format(szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[extraid][i][ptID]);
-						mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+						format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[extraid][i][ptID]);
+						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 						printf("Deleting Toy ID %d for Player %s (%i)", PlayerToyInfo[extraid][i][ptID], GetPlayerNameEx(extraid), GetPlayerSQLId(extraid));
 					}
 					i++;	
@@ -957,125 +748,59 @@ public OnQueryFinish(resultid, extraid, handleid)
 				    if(i >= MAX_PLAYERVEHICLES)
 						break;
 
-				    new szResult[32];
+				    //new szResult[32];
 
-					cache_get_field_content(i,  "pvModelId", szResult, MainPipeline);
-					PlayerVehicleInfo[extraid][i][pvModelId] = strval(szResult);
-					
-					cache_get_field_content(i, "id", szResult, MainPipeline);
-	    			PlayerVehicleInfo[extraid][i][pvSlotId] = strval(szResult);
+					PlayerVehicleInfo[extraid][i][pvModelId] 				= cache_get_field_content_int(i,  "pvModelId", MainPipeline);
+					PlayerVehicleInfo[extraid][i][pvSlotId] 				= cache_get_field_content_int(i, "id", MainPipeline);
 
 					if(PlayerVehicleInfo[extraid][i][pvModelId] != 0)
 					{
-						cache_get_field_content(i,  "pvPosX", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosX] = floatstr(szResult);
-
-						cache_get_field_content(i,  "pvPosY", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosY] = floatstr(szResult);
-
-						cache_get_field_content(i,  "pvPosZ", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosZ] = floatstr(szResult);
-
-						cache_get_field_content(i,  "pvPosAngle", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosAngle] = floatstr(szResult);
-
-						cache_get_field_content(i,  "pvLock", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvLock] = strval(szResult);
-
-						cache_get_field_content(i,  "pvLocked", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvLocked] = strval(szResult);
-
-						cache_get_field_content(i,  "pvPaintJob", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPaintJob] = strval(szResult);
-
-						cache_get_field_content(i,  "pvColor1", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvColor1] = strval(szResult);
-
-						cache_get_field_content(i,  "pvColor2", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvColor2] = strval(szResult);
-
-						cache_get_field_content(i,  "pvPrice", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPrice] = strval(szResult);
-
-						cache_get_field_content(i,  "pvTicket", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvTicket] = strval(szResult);
-
-						cache_get_field_content(i,  "pvRestricted", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvRestricted] = strval(szResult);
-
-						cache_get_field_content(i,  "pvWeapon0", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][0] = strval(szResult);
-
-						cache_get_field_content(i,  "pvWeapon1", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][1] = strval(szResult);
-
-						cache_get_field_content(i,  "pvWeapon2", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][2] = strval(szResult);
-
-						cache_get_field_content(i,  "pvWepUpgrade", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWepUpgrade] = strval(szResult);
-
-						cache_get_field_content(i,  "pvFuel", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvFuel] = floatstr(szResult);
-
-						cache_get_field_content(i,  "pvImpound", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvImpounded] = strval(szResult);
-
-						cache_get_field_content(i,  "pvPlate", szResult, MainPipeline, 32);
-						format(PlayerVehicleInfo[extraid][i][pvPlate], 32, "%s", szResult, MainPipeline);
-
-						cache_get_field_content(i,  "pvVW", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvVW] = strval(szResult);
-
-						cache_get_field_content(i,  "pvInt", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvInt] = strval(szResult);
-
+						PlayerVehicleInfo[extraid][i][pvPosX]				= cache_get_field_content_float(i,  "pvPosX", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvPosY] 				= cache_get_field_content_float(i,  "pvPosY", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvPosZ] 				= cache_get_field_content_float(i,  "pvPosZ", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvPosAngle]			= cache_get_field_content_float(i, "pvPosAngle", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvLock] 				= cache_get_field_content_int(i,  "pvLock", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvLocked] 			= cache_get_field_content_int(i,  "pvLocked", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvPaintJob] 			= cache_get_field_content_int(i,  "pvPaintJob", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvColor1] 			= cache_get_field_content_int(i,  "pvColor1", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvColor2] 			= cache_get_field_content_int(i,  "pvColor2", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvPrice] 				= cache_get_field_content_int(i,  "pvPrice", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvTicket] 			= cache_get_field_content_int(i,  "pvTicket", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvRestricted] 		= cache_get_field_content_int(i,  "pvRestricted", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvWeapons][0] 		= cache_get_field_content_int(i,  "pvWeapon0", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvWeapons][1] 		= cache_get_field_content_int(i,  "pvWeapon1", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvWeapons][2] 		= cache_get_field_content_int(i,  "pvWeapon2", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvWepUpgrade] 		= cache_get_field_content_int(i,  "pvWepUpgrade", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvFuel] 				= cache_get_field_content_float(i, "pvFuel", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvImpounded]			= cache_get_field_content_int(i,  "pvImpound", MainPipeline);
+						cache_get_field_content(i,  "pvPlate", PlayerVehicleInfo[extraid][i][pvPlate], MainPipeline, 32);
+						PlayerVehicleInfo[extraid][i][pvVW]					=  cache_get_field_content_int(i,  "pvVW", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvInt]				= cache_get_field_content_int(i,  "pvInt", MainPipeline);
 						for(new m = 0; m < MAX_MODS; m++)
 						{
-		    				new szField[15];
-							format(szField, sizeof(szField), "pvMod%d", m);
-							cache_get_field_content(i,  szField, szResult, MainPipeline);
-							PlayerVehicleInfo[extraid][i][pvMods][m] = strval(szResult);
+							format(szMiscArray, sizeof(szMiscArray), "pvMod%d", m);
+							PlayerVehicleInfo[extraid][i][pvMods][m] = cache_get_field_content_int(i,  szMiscArray, MainPipeline);
 						}
 						
-						cache_get_field_content(i,  "pvCrashFlag", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashFlag] = strval(szResult);
+						PlayerVehicleInfo[extraid][i][pvCrashFlag] 			= cache_get_field_content_int(i,  "pvCrashFlag", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvCrashVW] 			= cache_get_field_content_int(i, "pvCrashVW", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvCrashX]				= cache_get_field_content_float(i,  "pvCrashX", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvCrashY] 			= cache_get_field_content_float(i,  "pvCrashY", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvCrashZ] 			= cache_get_field_content_float(i,  "pvCrashZ", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvCrashAngle] 		= cache_get_field_content_float(i,  "pvCrashAngle", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvAlarm] 				= cache_get_field_content_int(i,  "pvAlarm", MainPipeline);
+						cache_get_field_content(i,  "pvLastLockPickedBy", PlayerVehicleInfo[extraid][i][pvLastLockPickedBy], MainPipeline, MAX_PLAYER_NAME);
 						
-						cache_get_field_content(i, "pvCrashVW", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashVW] = strval(szResult);
+						PlayerVehicleInfo[extraid][i][pvLocksLeft] 			= cache_get_field_content_int(i,  "pvLocksLeft", MainPipeline);
+						PlayerVehicleInfo[extraid][i][pvHealth] 			= cache_get_field_content_float(i, "pvHealth", MainPipeline);
 						
-						cache_get_field_content(i,  "pvCrashX", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashX] = floatstr(szResult);
-						
-						cache_get_field_content(i,  "pvCrashY", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashY] = floatstr(szResult);
-						
-						cache_get_field_content(i,  "pvCrashZ", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashZ] = floatstr(szResult);
-						
-						cache_get_field_content(i,  "pvCrashAngle", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashAngle] = floatstr(szResult);
-						
-						cache_get_field_content(i,  "pvAlarm", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvAlarm] = strval(szResult);
-						
-						cache_get_field_content(i,  "pvLastLockPickedBy", szResult, MainPipeline, MAX_PLAYER_NAME);
-						format(PlayerVehicleInfo[extraid][i][pvLastLockPickedBy], MAX_PLAYER_NAME, "%s", szResult, MainPipeline);
-						
-						cache_get_field_content(i,  "pvLocksLeft", szResult, MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvLocksLeft] = strval(szResult);
-						
-						PlayerVehicleInfo[extraid][i][pvHealth] = cache_get_field_content_float(i, "pvHealth", MainPipeline);
-						
-						new szLog[128];
-						format(szLog, sizeof(szLog), "[VEHICLELOAD] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerVehicleInfo[extraid][i][pvModelId], PlayerVehicleInfo[extraid][i][pvSlotId]);
-						Log("logs/vehicledebug.log", szLog);
+						format(szMiscArray, sizeof(szMiscArray), "[VEHICLELOAD] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerVehicleInfo[extraid][i][pvModelId], PlayerVehicleInfo[extraid][i][pvSlotId]);
+						Log("logs/vehicledebug.log", szMiscArray);
 					}
 					else
 					{
-						new query[128];
-						format(query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[extraid][i][pvSlotId]);
-						mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
+						format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[extraid][i][pvSlotId]);
+						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
 					}
 					i++;
 				}
@@ -1091,37 +816,41 @@ public OnQueryFinish(resultid, extraid, handleid)
 					bVehRestore = true;
 					for(new v; v < MAX_PLAYERVEHICLES; v++)
 					{
-						new szResult[32], szPrefix[32], tmpVehModelId, Float:tmpVehArray[4];
+						new tmpVehModelId, Float:tmpVehArray[4];
 
-						format(szPrefix, sizeof(szPrefix), "pv%dModelId", v);
-						cache_get_field_content(i, szPrefix, szResult, MainPipeline); tmpVehModelId = strval(szResult);
-						format(szPrefix, sizeof(szPrefix), "pv%dPosX", v);
-						cache_get_field_content(i, szPrefix, szResult, MainPipeline); tmpVehArray[0] = floatstr(szResult);
-						format(szPrefix, sizeof(szPrefix), "pv%dPosY", v);
-						cache_get_field_content(i, szPrefix, szResult, MainPipeline); tmpVehArray[1] = floatstr(szResult);
-						format(szPrefix, sizeof(szPrefix), "pv%dPosZ", v);
-						cache_get_field_content(i, szPrefix, szResult, MainPipeline); tmpVehArray[2] = floatstr(szResult);
-						format(szPrefix, sizeof(szPrefix), "pv%dPosAngle", v);
-						cache_get_field_content(i, szPrefix, szResult, MainPipeline); tmpVehArray[3] = floatstr(szResult);
+						format(szMiscArray, sizeof(szMiscArray), "pv%dModelId", v);
+						tmpVehModelId = cache_get_field_content_int(i, szMiscArray, MainPipeline);
+						
+						format(szMiscArray, sizeof(szMiscArray), "pv%dPosX", v);
+						tmpVehArray[0] = cache_get_field_content_float(i, szMiscArray, MainPipeline); 
+						
+						format(szMiscArray, sizeof(szMiscArray), "pv%dPosY", v);
+						tmpVehArray[1] = cache_get_field_content_float(i, szMiscArray, MainPipeline); 
+						
+						format(szMiscArray, sizeof(szMiscArray), "pv%dPosZ", v);
+						tmpVehArray[2] = cache_get_field_content_float(i, szMiscArray, MainPipeline); 
+						
+						format(szMiscArray, sizeof(szMiscArray), "pv%dPosAngle", v);
+						tmpVehArray[3] = cache_get_field_content_float(i, szMiscArray, MainPipeline); 
 
 						if(tmpVehModelId >= 400)
 						{
 							printf("Stored %d Vehicle Slot", v);
 
-							format(szPrefix, sizeof(szPrefix), "tmpVeh%dModelId", v);
-							SetPVarInt(extraid, szPrefix, tmpVehModelId);
+							format(szMiscArray, sizeof(szMiscArray), "tmpVeh%dModelId", v);
+							SetPVarInt(extraid, szMiscArray, tmpVehModelId);
 
-							format(szPrefix, sizeof(szPrefix), "tmpVeh%dPosX", v);
-							SetPVarFloat(extraid, szPrefix, tmpVehArray[0]);
+							format(szMiscArray, sizeof(szMiscArray), "tmpVeh%dPosX", v);
+							SetPVarFloat(extraid, szMiscArray, tmpVehArray[0]);
 
-							format(szPrefix, sizeof(szPrefix), "tmpVeh%dPosY", v);
-							SetPVarFloat(extraid, szPrefix, tmpVehArray[1]);
+							format(szMiscArray, sizeof(szMiscArray), "tmpVeh%dPosY", v);
+							SetPVarFloat(extraid, szMiscArray, tmpVehArray[1]);
 
-							format(szPrefix, sizeof(szPrefix), "tmpVeh%dPosZ", v);
-							SetPVarFloat(extraid, szPrefix, tmpVehArray[2]);
+							format(szMiscArray, sizeof(szMiscArray), "tmpVeh%dPosZ", v);
+							SetPVarFloat(extraid, szMiscArray, tmpVehArray[2]);
 
-							format(szPrefix, sizeof(szPrefix), "tmpVeh%dAngle", v);
-							SetPVarFloat(extraid, szPrefix, tmpVehArray[3]);
+							format(szMiscArray, sizeof(szMiscArray), "tmpVeh%dAngle", v);
+							SetPVarFloat(extraid, szMiscArray, tmpVehArray[3]);
 						}
 					}
 					break;
@@ -1129,9 +858,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				if(bVehRestore == true) {
 					// person Vehicle Position Restore Granted, Now Purge them from the Table.
-					new query[128];
-					format(query, sizeof(query), "DELETE FROM `pvehpositions` WHERE `id`='%d'", PlayerInfo[extraid][pId]);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
+					format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `pvehpositions` WHERE `id`='%d'", PlayerInfo[extraid][pId]);
+					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
 				}
 
 				OnPlayerLoad(extraid);
@@ -1153,19 +881,20 @@ public OnQueryFinish(resultid, extraid, handleid)
 		{
 		    for(new i; i < rows; i++)
 		    {
-				new crateid, szResult[32], string[128];
-				cache_get_field_content(i, "id", szResult, MainPipeline); crateid = strval(szResult);
+				new crateid;
+				szMiscArray[0] = 0;
+				crateid = cache_get_field_content_int(i, "id", MainPipeline); 
 				if(crateid < MAX_CRATES)
 		        {
-					cache_get_field_content(i, "Active", szResult, MainPipeline); CrateInfo[crateid][crActive] = strval(szResult);
-					cache_get_field_content(i, "CrateX", szResult, MainPipeline); CrateInfo[crateid][crX] = floatstr(szResult);
-					cache_get_field_content(i, "CrateY", szResult, MainPipeline); CrateInfo[crateid][crY] = floatstr(szResult);
-					cache_get_field_content(i, "CrateZ", szResult, MainPipeline); CrateInfo[crateid][crZ] = floatstr(szResult);
-					cache_get_field_content(i, "Int", szResult, MainPipeline); CrateInfo[crateid][crInt] = strval(szResult);
-					cache_get_field_content(i, "VW", szResult, MainPipeline); CrateInfo[crateid][crVW] = strval(szResult);
-					cache_get_field_content(i, "PlacedBy", szResult, MainPipeline); format(CrateInfo[crateid][crPlacedBy], MAX_PLAYER_NAME, szResult);
-					cache_get_field_content(i, "GunQuantity", szResult, MainPipeline); CrateInfo[crateid][GunQuantity] = strval(szResult);
-					cache_get_field_content(i, "InVehicle", szResult, MainPipeline); CrateInfo[crateid][InVehicle] = strval(szResult);
+					CrateInfo[crateid][crActive] = cache_get_field_content_int(i, "Active", MainPipeline);
+					CrateInfo[crateid][crX] = cache_get_field_content_float(i, "CrateX", MainPipeline);
+					CrateInfo[crateid][crY] = cache_get_field_content_float(i, "CrateY", MainPipeline);
+					CrateInfo[crateid][crZ] = cache_get_field_content_float(i, "CrateZ", MainPipeline);
+					CrateInfo[crateid][crInt] = cache_get_field_content_int(i, "Int", MainPipeline);
+					CrateInfo[crateid][crVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+					cache_get_field_content(i, "PlacedBy", CrateInfo[crateid][crPlacedBy], MainPipeline);
+					CrateInfo[crateid][GunQuantity] = cache_get_field_content_int(i, "GunQuantity", MainPipeline); 
+					CrateInfo[crateid][InVehicle] = cache_get_field_content_int(i, "InVehicle", MainPipeline); 
 					if(CrateInfo[crateid][InVehicle] != INVALID_VEHICLE_ID)
 					{
 					    CrateInfo[crateid][crActive] = 0;
@@ -1177,8 +906,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 						{
 							CrateInfo[crateid][InVehicle] = INVALID_VEHICLE_ID;
 							CrateInfo[crateid][crObject] = CreateDynamicObject(964,CrateInfo[crateid][crX],CrateInfo[crateid][crY],CrateInfo[crateid][crZ],0.00000000,0.00000000,0.00000000,CrateInfo[i][crVW], CrateInfo[i][crInt]);
-							format(string, sizeof(string), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", i, CrateInfo[crateid][GunQuantity], CrateInfo[crateid][crPlacedBy]);
-							CrateInfo[crateid][crLabel] = CreateDynamic3DTextLabel(string, COLOR_ORANGE, CrateInfo[crateid][crX],CrateInfo[crateid][crY],CrateInfo[crateid][crZ]+1, 10.0, _, _, 1, CrateInfo[crateid][crVW], CrateInfo[crateid][crInt], _, 20.0);
+							format(szMiscArray, sizeof(szMiscArray), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", i, CrateInfo[crateid][GunQuantity], CrateInfo[crateid][crPlacedBy]);
+							CrateInfo[crateid][crLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_ORANGE, CrateInfo[crateid][crX],CrateInfo[crateid][crY],CrateInfo[crateid][crZ]+1, 10.0, _, _, 1, CrateInfo[crateid][crVW], CrateInfo[crateid][crInt], _, 20.0);
 						}
 					}
 				}
@@ -1624,70 +1353,6 @@ GivePlayerCredits(Player, Amount, Shop, option = 0)
 	format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[Player][pTotalCredits], GetPlayerSQLId(Player));
 	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 	print(szQuery);
-}
-
-// g_mysql_SaveVehicle(int playerid, int slotid)
-// Description: Saves a account's specified vehicle slot.
-stock g_mysql_SaveVehicle(playerid, slotid)
-{
-	new query[2048];
-	printf("%s (%i) saving their %s (slot %i) (Model %i)...", GetPlayerNameEx(playerid), playerid, VehicleName[PlayerVehicleInfo[playerid][slotid][pvModelId] - 400], slotid, PlayerVehicleInfo[playerid][slotid][pvModelId]);
-
-	format(query, sizeof(query), "UPDATE `vehicles` SET");
-	format(query, sizeof(query), "%s `pvPosX` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvPosX]);
-	format(query, sizeof(query), "%s `pvPosY` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvPosY]);
-	format(query, sizeof(query), "%s `pvPosZ` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvPosZ]);
-	format(query, sizeof(query), "%s `pvPosAngle` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvPosAngle]);
-	format(query, sizeof(query), "%s `pvLock` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLock]);
-	format(query, sizeof(query), "%s `pvLocked` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLocked]);
-	format(query, sizeof(query), "%s `pvPaintJob` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvPaintJob]);
-	format(query, sizeof(query), "%s `pvColor1` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvColor1]);
-	format(query, sizeof(query), "%s `pvColor2` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvColor2]);
-	format(query, sizeof(query), "%s `pvPrice` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvPrice]);
-	format(query, sizeof(query), "%s `pvWeapon0` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvWeapons][0]);
-	format(query, sizeof(query), "%s `pvWeapon1` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvWeapons][1]);
-	format(query, sizeof(query), "%s `pvWeapon2` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvWeapons][2]);
-	format(query, sizeof(query), "%s `pvLock` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLock]);
-	format(query, sizeof(query), "%s `pvWepUpgrade` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvWepUpgrade]);
-	format(query, sizeof(query), "%s `pvFuel` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvFuel]);
-	format(query, sizeof(query), "%s `pvImpound` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvImpounded]);
-	format(query, sizeof(query), "%s `pvDisabled` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvDisabled]);
-	format(query, sizeof(query), "%s `pvPlate` = '%s',", query, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvPlate], MainPipeline));
-	format(query, sizeof(query), "%s `pvTicket` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvTicket]);
-	format(query, sizeof(query), "%s `pvRestricted` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvRestricted]);
-	format(query, sizeof(query), "%s `pvVW` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvVW]);
-	format(query, sizeof(query), "%s `pvInt` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvInt]);
-	format(query, sizeof(query), "%s `pvCrashFlag` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvCrashFlag]);
-	format(query, sizeof(query), "%s `pvCrashVW` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvCrashVW]);
-	format(query, sizeof(query), "%s `pvCrashX` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashX]);
-	format(query, sizeof(query), "%s `pvCrashY` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashY]);
-	format(query, sizeof(query), "%s `pvCrashZ` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashZ]);
-	format(query, sizeof(query), "%s `pvCrashAngle` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvCrashAngle]);
-	format(query, sizeof(query), "%s `pvAlarm` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
-	format(query, sizeof(query), "%s `pvLastLockPickedBy` = '%s',", query, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy], MainPipeline));
-	format(query, sizeof(query), "%s `pvLocksLeft` = %d,", query, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);
-	new zyear, zmonth, zday;
-	getdate(zyear, zmonth, zday);
-	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) format(query, sizeof(query), "%s `pvHealth` = %0.5f,", query, PlayerVehicleInfo[playerid][slotid][pvHealth]);
-	
-	for(new m = 0; m < MAX_MODS; m++)
-	{
-		if(m == MAX_MODS-1)
-		{
-			format(query, sizeof(query), "%s `pvMod%d` = %d WHERE `id` = '%d'", query, m, PlayerVehicleInfo[playerid][slotid][pvMods][m], PlayerVehicleInfo[playerid][slotid][pvSlotId]);
-		}
-		else
-		{
-			format(query, sizeof(query), "%s `pvMod%d` = %d,", query, m, PlayerVehicleInfo[playerid][slotid][pvMods][m]);
-		}
-	}
-    //print(query);
-
-	new szLog[128];
-	format(szLog, sizeof(szLog), "[VEHICLESAVE] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerVehicleInfo[playerid][slotid][pvModelId], PlayerVehicleInfo[playerid][slotid][pvSlotId]);
-	Log("logs/vehicledebug.log", szLog);
-	
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 }
 
 // native g_mysql_SaveToys(int playerid, int slotid)

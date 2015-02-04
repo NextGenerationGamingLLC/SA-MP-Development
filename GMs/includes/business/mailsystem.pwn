@@ -36,6 +36,34 @@
 */
 #define		MAILBOX_RANGE	8.0
 
+stock SaveMailboxes()
+{
+	for(new i = 0; i < MAX_MAILBOXES; i++)
+	{
+		SaveMailbox(i);
+	}
+	return 1;
+}
+
+stock IsAtPostOffice(playerid)
+{
+	return IsPlayerInRangeOfPoint(playerid,100.0,-262.0643, 6.0924, 2000.9038);
+}
+
+stock IsNearHouseMailbox(playerid)
+{
+	if (PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey]][hMailZ])) return 1;
+	if (PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey2]][hMailZ])) return 1;
+	if (PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && IsPlayerInRangeOfPoint(playerid,3.0,HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hMailZ])) return 1;	
+	return 0;
+}
+
+stock IsNearPublicMailbox(playerid)
+{
+    for(new i = 0; i < sizeof(MailBoxes); i++) if (IsPlayerInRangeOfPoint(playerid, 3.0, MailBoxes[i][mbPosX], MailBoxes[i][mbPosY], MailBoxes[i][mbPosZ])) return 1;
+	return 0;
+}
+
 stock DisplayStampDialog(playerid)
 {
 	ShowPlayerDialog(playerid, DIALOG_POSTAMP, DIALOG_STYLE_LIST, "Buy a stamp", "Regular Mail		$100\nPriority Mail		$250\nPremium Mail		$500 (Gold VIP+)\nGovernment Mail	Free", "Next", "Cancel");

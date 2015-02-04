@@ -35,6 +35,126 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock SavePlants()
+{
+	new i = 0;
+	while(i < MAX_PLANTS)
+	{
+		SavePlant(i);
+		i++;
+	}
+	if(i > 0) printf("[plant] %i plants saved", i);
+	else printf("[plant] Error: No plants saved!");
+	return 1;
+}
+
+forward AttemptPurify(playerid);
+public AttemptPurify(playerid)
+{
+	if(IsPlayerInRangeOfPoint(playerid, 5.0, -882.2048,1109.3385,5442.8193))
+	{
+	    if(playerTabbed[playerid] != 0)
+		{
+   			SendClientMessageEx(playerid, COLOR_GREY, "You alt-tabbed during the purification process.");
+			Purification[0] = 0;
+	    	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
+	    	DeletePVar(playerid, "PurifyTime");
+	    	DeletePVar(playerid, "AttemptPurify");
+    		return 1;
+		}
+	    if(GetPVarInt(playerid, "PurifyTime") == 30)
+	    {
+	        new szMessage[128];
+	        if(PlayerInfo[playerid][pRawOpium] > 30)
+	        {
+	        	format(szMessage, sizeof(szMessage), "You have successfully purified %d milligrams of heroin!", 30);
+	        	SendClientMessageEx(playerid, COLOR_GREEN, szMessage);
+
+	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), 30);
+				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+				PlayerInfo[playerid][pHeroin] += 30;
+	        	PlayerInfo[playerid][pRawOpium] -= 30;
+            	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
+	        	Purification[0] = 0;
+	        	DeletePVar(playerid, "PurifyTime");
+	        	DeletePVar(playerid, "AttemptPurify");
+			}
+			else
+			{
+	        	format(szMessage, sizeof(szMessage), "You have successfully purified %d milligrams of heroin!", PlayerInfo[playerid][pRawOpium]);
+	        	SendClientMessageEx(playerid, COLOR_GREEN, szMessage);
+
+	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
+				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+				PlayerInfo[playerid][pHeroin] += PlayerInfo[playerid][pRawOpium];
+	        	PlayerInfo[playerid][pRawOpium] = 0;
+            	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
+	        	Purification[0] = 0;
+	        	DeletePVar(playerid, "PurifyTime");
+	        	DeletePVar(playerid, "AttemptPurify");
+			}
+		}
+	    else
+	    {
+	    	SetPVarInt(playerid, "PurifyTime", GetPVarInt(playerid, "PurifyTime")+1);
+		}
+	}
+	else
+	{
+	    DeletePVar(playerid, "PurifyTime");
+	    Purification[0] = 0;
+	    KillTimer(GetPVarInt(playerid, "AttemptPurify"));
+	    DeletePVar(playerid, "AttemptPurify");
+	    SendClientMessageEx(playerid, COLOR_GREY, "You stopped the purification process.");
+	}
+	return 1;
+}
+
+forward HeroinEffect(playerid);
+public HeroinEffect(playerid)
+{
+	if(GetPVarInt(playerid, "Health") != 0)
+	{
+		SetPVarInt(playerid, "Health", GetPVarInt(playerid, "Health")-1);
+		SetHealth(playerid, GetPVarInt(playerid, "Health"));
+	}
+	else
+	{
+	    KillTimer(GetPVarInt(playerid, "HeroinEffect"));
+	    DeletePVar(playerid, "HeroinEffect");
+	}
+	return 1;
+}
+
+forward InjectHeroin(playerid);
+public InjectHeroin(playerid)
+{
+    KillEMSQueue(playerid);
+	ClearAnimations(playerid);
+	SetHealth(playerid, 30);
+	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, 1, "i", playerid));
+	return 1;
+}
+
+forward HeroinEffectStanding(playerid);
+public HeroinEffectStanding(playerid)
+{
+	SetPVarInt(playerid, "HeroinDamageResist", 0);
+	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have worn off.");
+	return 1;
+}
+
+forward InjectHeroinStanding(playerid);
+public InjectHeroinStanding(playerid)
+{
+	SetPVarInt(playerid, "HeroinDamageResist", 1);
+	SendClientMessageEx(playerid, COLOR_GREEN, "The effects of the heroin have started.");
+	SetPVarInt(playerid, "HeroinEffectStanding", SetTimerEx("HeroinEffectStanding", 30000, 0, "i", playerid));
+	return 1;
+}
+
 PlacePlant(id, ownerid, planttype, objectid, drugskill, Float:x, Float:y, Float:z, virtualworld, interior)
 {
     Plants[id][pObjectSpawned] = 0;

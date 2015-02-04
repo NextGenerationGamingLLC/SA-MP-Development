@@ -35,6 +35,284 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock TaxSale(amount)
+{
+	new iTaxAmount = floatround(amount / 100 * BUSINESS_TAX_PERCENT);
+	Tax += iTaxAmount;
+	for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
+	{
+		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
+		{
+			new str[128], file[32], month, day, year;
+			getdate(year,month,day);
+			format(str, sizeof(str), "A Business has paid $%s in sales tax.", number_format(iTaxAmount));
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+			Log(file, str);
+		}
+	}
+	Misc_Save();
+	return amount - iTaxAmount;
+}
+
+stock GivePlayerStoreItem(playerid, type, business, item, price)
+{
+	if(Businesses[business][bInventory] <= StoreItemCost[item-1][ItemValue]) return SendClientMessageEx(playerid, COLOR_GRAD2, "The store does not have enough stock for that item!");
+	new string[256];
+	switch (item)
+  	{
+  		case ITEM_CELLPHONE:
+		{
+			new randphone = 99999 + random(900000);
+			new query[128];
+			SetPVarInt(playerid, "WantedPh", randphone);
+			SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
+	        SetPVarInt(playerid, "PhChangeCost", 500);
+			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",randphone);
+			mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 2);
+		}
+  		case ITEM_PHONEBOOK:
+		{
+			PlayerInfo[playerid][pPhoneBook] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Phonebook purchased, you can now look up other player's numbers.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /number <id/name>.");
+		}
+  		case ITEM_DICE:
+		{
+			PlayerInfo[playerid][pDice] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Dice purchased.");
+
+		}
+  		case ITEM_CONDOM:
+		{
+			Condom[playerid]++;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Condom Purchased.");
+		}
+  		case ITEM_MUSICPLAYER:
+		{
+			PlayerInfo[playerid][pCDPlayer] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Music Player purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /music");
+		}
+  		case ITEM_ROPE:
+		{
+			if(PlayerInfo[playerid][pRope] < 8)
+			{
+				PlayerInfo[playerid][pRope] += 3;
+				SendClientMessageEx(playerid, COLOR_GRAD4, "3 Ropes purchased.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /tie while driving a car to tie someone.");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD4, "You can't hold any more of this item!");
+		}
+  		case ITEM_CIGAR:
+		{
+			PlayerInfo[playerid][pCigar] = 10;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "10 cigars purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /usecigar to use your cigars. Left mouse button to smoke it, F to throw it away.");
+		}
+  		case ITEM_SPRUNK:
+		{
+			PlayerInfo[playerid][pSprunk] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Sprunk purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /usesprunk to drink a can of Sprunk. Left mouse button to take a sip, F to throw it away.");
+		}
+  		case ITEM_VEHICLELOCK:
+		{
+			PlayerInfo[playerid][pLock] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Vehicle Lock purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /lock to lock your vehicle.");
+		}
+		case ITEM_SPRAYCAN:
+		{
+			if(PlayerInfo[playerid][pSpraycan] < 20)
+			{
+				PlayerInfo[playerid][pSpraycan] += 10;
+				SendClientMessageEx(playerid, COLOR_GRAD4, "10 Spraycans purchased.");
+				SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /colorcar or /paintcar while inside a vehicle.");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD4, "You can't hold any more of this item!");
+		}
+  		case ITEM_RADIO:
+		{
+			PlayerInfo[playerid][pRadio] = 1;
+			PlayerInfo[playerid][pRadioFreq] = 0;
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Portable radio purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /pr to talk over your portable radio.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /setfreq to set the frequency of your portable radio.");
+		}
+  		case ITEM_CAMERA:
+		{
+			GivePlayerValidWeapon(playerid, WEAPON_CAMERA, 99999);
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Camera purchased.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Remember look into the viewfinder and take a picture.");
+		}
+  		case ITEM_LOTTERYTICKET:
+		{
+			ShowPlayerDialog(playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number", "Select", "Cancel" );
+		}
+  		case ITEM_CHECKBOOK:
+		{
+	        if(PlayerInfo[playerid][pChecks] == 0)
+	    	{
+		        PlayerInfo[playerid][pChecks] += 10;
+			    SendClientMessageEx(playerid, COLOR_GRAD4, "Checkbook purchased, you now have 10 checks.");
+			    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /writecheck to write a check.");
+		    }
+			else return SendClientMessageEx(playerid, COLOR_GREY, "You still have unused checks, please use them before getting another checkbook.");
+		}
+  		case ITEM_PAPERS:
+		{
+	        if(PlayerInfo[playerid][pPaper] == 0)
+	        {
+		        PlayerInfo[playerid][pPaper] = 15;
+			    SendClientMessageEx(playerid, COLOR_GRAD4, "Papers purchased, you now have 15 writing papers for sending letters.");
+		    }
+			else return SendClientMessageEx(playerid, COLOR_GREY, "You still have unused papers, please use them before getting more papers.");
+		}
+		case ITEM_SCALARM:
+		{
+			if(GetPlayerVehicleCount(playerid) != 0)
+			{
+				SetPVarInt(playerid, "lockmenu", 1);
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d| Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+			}
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
+		}
+		case ITEM_ELOCK:
+		{
+			if(GetPlayerVehicleCount(playerid) != 0)
+			{
+				SetPVarInt(playerid, "lockmenu", 2);
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+			}
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
+		}
+		case ITEM_ILOCK:
+		{
+			if(GetPlayerVehicleCount(playerid) != 0)
+			{
+				SetPVarInt(playerid, "lockmenu", 3);
+				for(new i=0; i<MAX_PLAYERVEHICLES; i++)
+				{
+					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID)
+					{
+						format(string, sizeof(string), "Vehicle %d | Name: %s.",i+1,GetVehicleName(PlayerVehicleInfo[playerid][i][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+			}
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
+		}
+		case ITEM_HELMET:
+		{
+			/* if(GetPlayerVehicleCount(playerid) != 0)
+			{ */
+			SetPVarInt(playerid, "helmetsel", 1);
+			SetPVarInt(playerid, "helcost", price);
+			SetPVarInt(playerid, "businessid", business);
+			SetPVarInt(playerid, "item", item);
+			new models[8] = {18936, 18937, 18938, 18976, 18977, 18978, 18979, 18645};
+			return ShowModelSelectionMenuEx(playerid, models, sizeof(models), "Helmet Selector", 1339, 0.0, 0.0, 120.0);
+			/* }
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?"); */
+		}
+		default:
+		{
+			printf("Error %d ITEM", item);
+		    return 0;
+		}
+	}
+	Businesses[business][bInventory] -= StoreItemCost[item-1][ItemValue];
+	Businesses[business][bTotalSales]++;
+	Businesses[business][bSafeBalance] += TaxSale(price);
+	GivePlayerCash(playerid, -price);
+	if(PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[business][bLevelProgress]++;
+	SaveBusiness(business);
+	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+	switch(type)
+	{
+		case 0:
+		{
+			format(string,sizeof(string),"%s(%d) (IP: %s) has bought a %s in %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), StoreItems[item-1], Businesses[business][bName], business, number_format(price));
+			Log("logs/business.log", string);
+			format(string,sizeof(string),"* You have purchased a %s from %s for $%s.", StoreItems[item-1], Businesses[business][bName], number_format(price));
+			SendClientMessage(playerid, COLOR_GRAD2, string);
+		}
+		case 1:
+		{
+			new offerer = GetPVarInt(playerid, "Business_ItemOfferer");
+			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s (IP: %s) for $%s in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), StoreItems[item-1], GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), number_format(price), Businesses[business][bName], business);
+			Log("logs/business.log", string);
+			format(string,sizeof(string),"* %s has purchased the %s from you for $%s.", GetPlayerNameEx(playerid), StoreItems[item-1], number_format(price));
+			SendClientMessage(offerer, COLOR_GRAD2, string);
+			format(string,sizeof(string),"* You have purchased the %s from %s for $%s.", StoreItems[item-1], GetPlayerNameEx(offerer), number_format(price));
+			SendClientMessage(playerid, COLOR_GRAD2, string);
+			DeletePVar(playerid, "Business_ItemType");
+			DeletePVar(playerid, "Business_ItemPrice");
+			DeletePVar(playerid, "Business_ItemOfferer");
+			DeletePVar(playerid, "Business_ItemOffererSQLId");
+		}
+	}
+	return 1;
+}
+
+
+stock DisplayItemPricesDialog(businessid, playerid)
+{
+
+	new szDialog[612], pvar[25], iListIndex, i;
+	if (Businesses[businessid][bType] == BUSINESS_TYPE_STORE || Businesses[businessid][bType] == BUSINESS_TYPE_GASSTATION) i = sizeof(StoreItems);
+	if (Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP) i = sizeof(SexItems);
+	if (Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT) i = sizeof(RestaurantItems);
+
+	for(new item; item < i; item++)
+	{
+	    if(Businesses[businessid][bItemPrices][item] == 0) continue;
+		new cost = (PlayerInfo[playerid][pDonateRank] >= 1) ? (floatround(Businesses[businessid][bItemPrices][item] * 0.8)) : (Businesses[businessid][bItemPrices][item]);
+	    if(Businesses[businessid][bType] == BUSINESS_TYPE_STORE || Businesses[businessid][bType] == BUSINESS_TYPE_GASSTATION) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, StoreItems[item], number_format(cost));
+	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[item], number_format(cost));
+	    else if(Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, RestaurantItems[item], number_format(cost));
+		format(pvar, sizeof(pvar), "Business_MenuItem%d", iListIndex);
+		SetPVarInt(playerid, pvar, item + 1);
+	    format(pvar, sizeof(pvar), "Business_MenuItemPrice%d", iListIndex++);
+		SetPVarInt(playerid, pvar, Businesses[businessid][bItemPrices][item]);
+	}
+
+   	if(strlen(szDialog) == 0) {
+        SendClientMessageEx(playerid, COLOR_GRAD2, "   Store is not selling any items!");
+    }
+    else {
+        if (Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP)
+        {
+			ShowPlayerDialog(playerid, SHOPMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+        }
+		else if (Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT)
+		{
+			ShowPlayerDialog(playerid, RESTAURANTMENU2, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+		}
+        else
+        {
+    		ShowPlayerDialog(playerid, STOREMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+		}
+    }
+}
+
 stock IsAt247(playerid)
 {
     new iBusiness = InBusiness(playerid);

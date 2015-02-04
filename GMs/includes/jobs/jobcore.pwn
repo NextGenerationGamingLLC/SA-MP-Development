@@ -37,6 +37,135 @@
 
 #include <YSI\y_hooks>
 
+stock SendJobMessage(job, color, string[])
+{
+	foreach(new i: Player)
+	{
+		if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && GetPVarInt(i, "LawyerDuty") == 1))) {
+			SendClientMessageEx(i, color, string);
+		}	
+	}
+}
+
+stock GetJobName(job)
+{
+	new name[20];
+	switch(job)
+	{
+		case 1: name = "Detective";
+		case 2: name = "Lawyer";
+		case 3: name = "Whore";
+		case 4: name = "Drugs Dealer";
+		case 6: name = "News Reporter";
+		case 7: name = "Car Mechanic";
+		case 8: name = "Bodyguard";
+		case 9: name = "Arms Dealer";
+		case 10: name = "Car Dealer";
+		case 12: name = "Boxer";
+		case 14: name = "Drug Smuggler";
+		case 15: name = "Paper Boy";
+		case 16: name = "Shipment Contractor";
+		case 17: name = "Taxi Driver";
+		case 18: name = "Craftsman";
+		case 19: name = "Bartender";
+		case 20: name = "Shipment Contractor";
+		case 21: name = "Pizza Boy";
+		default: name = "None";
+	}
+	return name;
+}
+
+stock GetJobLevel(playerid, job)
+{
+	new jlevel;
+	switch(job)
+	{
+		case 1:
+		{
+			new skilllevel = PlayerInfo[playerid][pDetSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 2:
+		{
+			new skilllevel = PlayerInfo[playerid][pLawSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 3:
+		{
+			new skilllevel = PlayerInfo[playerid][pSexSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 4:
+		{
+			new skilllevel = PlayerInfo[playerid][pDrugsSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 7:
+		{
+			new skilllevel = PlayerInfo[playerid][pMechSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 9:
+		{
+			new skilllevel = PlayerInfo[playerid][pArmsSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 12:
+		{
+			new skilllevel = PlayerInfo[playerid][pBoxSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 14: jlevel = 1;
+		case 20:
+		{
+			new skilllevel = PlayerInfo[playerid][pTruckSkill];
+			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel < 100) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel < 200) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel < 400) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
+		case 22:
+		{
+			new skilllevel = PlayerInfo[playerid][pTreasureSkill];
+			if(skilllevel >= 0 && skilllevel <= 24) jlevel = 1;
+			else if(skilllevel >= 25 && skilllevel <= 149) jlevel = 2;
+			else if(skilllevel >= 150 && skilllevel <= 299) jlevel = 3;
+			else if(skilllevel >= 300 && skilllevel <= 599) jlevel = 4;
+			else if(skilllevel >= 600) jlevel = 5;
+		}
+	}
+	return jlevel;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)

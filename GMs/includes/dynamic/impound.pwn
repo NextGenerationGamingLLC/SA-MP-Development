@@ -239,21 +239,22 @@ stock LoadImpoundPoints()
 forward OnLoadImpoundPoint(index);
 public OnLoadImpoundPoint(index)
 {
-	new rows, fields, tmp[128], string[128];
+	new rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  ImpoundPoints[index][impoundSQLId] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); ImpoundPoints[index][impoundPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); ImpoundPoints[index][impoundPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); ImpoundPoints[index][impoundPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); ImpoundPoints[index][impoundVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); ImpoundPoints[index][impoundInt] = strval(tmp);
+		ImpoundPoints[index][impoundSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
+		ImpoundPoints[index][impoundPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
+		ImpoundPoints[index][impoundPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
+		ImpoundPoints[index][impoundPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
+		ImpoundPoints[index][impoundVW] = cache_get_field_content_int(row, "VW", MainPipeline);
+		ImpoundPoints[index][impoundInt] = cache_get_field_content_int(row, "Int", MainPipeline);
 		if(ImpoundPoints[index][impoundPosX] != 0)
 		{
-			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", index);
-			ImpoundPoints[index][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[index][impoundPosX], ImpoundPoints[index][impoundPosY], ImpoundPoints[index][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[index][impoundVW], ImpoundPoints[index][impoundInt], -1);
+			format(szMiscArray, sizeof(szMiscArray), "Impound Yard #%d\nType /impound to impound a vehicle", index);
+			ImpoundPoints[index][impoundTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, ImpoundPoints[index][impoundPosX], ImpoundPoints[index][impoundPosY], ImpoundPoints[index][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[index][impoundVW], ImpoundPoints[index][impoundInt], -1);
 		}
 	}
 	return 1;
@@ -262,21 +263,22 @@ public OnLoadImpoundPoint(index)
 forward OnLoadImpoundPoints();
 public OnLoadImpoundPoints()
 {
-	new i, rows, fields, tmp[128], string[128];
+	new i, rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  ImpoundPoints[i][impoundSQLId] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); ImpoundPoints[i][impoundPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); ImpoundPoints[i][impoundPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); ImpoundPoints[i][impoundPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); ImpoundPoints[i][impoundVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); ImpoundPoints[i][impoundInt] = strval(tmp);
+		ImpoundPoints[i][impoundSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
+		ImpoundPoints[i][impoundPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
+		ImpoundPoints[i][impoundPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
+		ImpoundPoints[i][impoundPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
+		ImpoundPoints[i][impoundVW] = cache_get_field_content_int(i, "VW", MainPipeline);
+		ImpoundPoints[i][impoundInt] = cache_get_field_content_int(i, "Int", MainPipeline); 
 		if(ImpoundPoints[i][impoundPosX] != 0)
 		{
-			format(string, sizeof(string), "Impound Yard #%d\nType /impound to impound a vehicle", i);
-			ImpoundPoints[i][impoundTextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, ImpoundPoints[i][impoundPosX], ImpoundPoints[i][impoundPosY], ImpoundPoints[i][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[i][impoundVW], ImpoundPoints[i][impoundInt], -1);
+			format(szMiscArray, sizeof(szMiscArray), "Impound Yard #%d\nType /impound to impound a vehicle", i);
+			ImpoundPoints[i][impoundTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, ImpoundPoints[i][impoundPosX], ImpoundPoints[i][impoundPosY], ImpoundPoints[i][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[i][impoundVW], ImpoundPoints[i][impoundInt], -1);
 		}
 		i++;
 	}

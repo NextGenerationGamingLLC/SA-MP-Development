@@ -906,13 +906,6 @@ new gminute = 0;
 new gsecond = 0;
 new shifthour;
 new EventTimerHandle;
-new nooseenter[2];
-new radarroom[2];
-new intergate[3];
-new bottomroom[2];
-new ncontrolroom[2];
-new ncontrolroomobjects[3];
-new ncontrolroomopened;
 new cage;
 new entrancedoor;
 new BackEntrance, Purification[2];
@@ -1074,33 +1067,52 @@ new Float:DocPrison[31][3] = {
 {567.4249,1443.5105,6004.3784}
 };
 
-new Float:DocIsolation[6][3] = {
-{551.7999,1448.4619,5996.9590},
-{554.1416,1448.5869,5996.9590}, 
-{558.3823,1448.1624,5996.9590},
-{561.4105,1448.8300,5996.9590},
-{564.4495,1451.6481,5996.9590},
-{564.4314,1455.7474,5996.9590}
+new Float:DocIsolation[25][3] = {
+{-2147.5784,-154.2074,2010.2029},
+{-2143.3828,-154.7304,2010.2029},
+{-2138.9233,-154.2347,2010.2029},
+{-2135.3286,-154.1938,2010.2029},
+{-2131.3203,-154.3924,2010.2029},
+{-2131.1770,-134.7128,2010.2029},
+{-2135.5234,-134.6273,2010.2029},
+{-2139.4905,-134.6280,2010.2029},
+{-2143.8135,-134.4460,2010.2029},
+{-2147.4583,-134.6629,2010.2029},
+{-2151.3811,-134.5710,2010.2029},
+{-2154.8367,-153.8878,2014.2972},
+{-2150.9338,-153.9361,2014.2972},
+{-2147.5813,-154.1967,2014.2972},
+{-2142.9363,-154.0002,2014.2972},
+{-2139.0645,-153.9240,2014.2972},
+{-2135.0979,-154.0444,2014.2972},
+{-2131.2671,-154.0004,2014.2972},
+{-2154.3862,-134.5270,2014.4973},
+{-2151.4470,-134.4226,2014.4973},
+{-2147.3240,-134.3722,2014.4973},
+{-2143.4766,-134.5723,2014.4973},
+{-2139.1560,-134.3658,2014.4973},
+{-2135.1399,-134.0426,2014.4973},
+{-2131.2229,-133.6181,2014.4973}
 };
 
-new DocButtons[29];
+new DocButtons[27];
 new DocCPButton;
 new DocElevatorCall[3];
 new DocElevatorInside;
 new DocCellsFloor1[16];
 new DocCellsFloor2[15];
-new DocIsolationCells[6];
-new DocCellRoomDoors[12];
+new DocCellRoomDoors[11];
 new DocAdmFloor1[12];
 new DocAdmFloor2[7];
+new DocIsolationDoors[25];
 new DocInnerElevator[2];
 new DocElevator;
 new DocElevatorExt[6];
 new iDocElevatorLevel;
 new bool:bDocElevatorMoving = false;
 new bool:bDocCellOpen[31] = false;
-new bool:bDocAreaOpen[13] = false;
-new bool:bDocIsolationOpen[6] = false;
+new bool:bDocAreaOpen[11] = false;
+new bool:bDocIsolationOpen[25] = false;
 new bool:bDocCellsFloorOpen[2] = false;
 new bool:bDocLockdown = false;
 new arrJailBoxingData[MAX_JAIL_BOXINGS][eJailBoxing];

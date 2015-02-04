@@ -334,20 +334,20 @@ stock LoadTxtLabels()
 forward OnLoadTxtLabel(index);
 public OnLoadTxtLabel(index)
 {
-	new rows, fields, tmp[128];
+	new rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  TxtLabels[index][tlSQLId] = strval(tmp);
+		TxtLabels[index][tlSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
 		cache_get_field_content(row, "Text", TxtLabels[index][tlText], MainPipeline, 128);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); TxtLabels[index][tlPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); TxtLabels[index][tlPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); TxtLabels[index][tlPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); TxtLabels[index][tlVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); TxtLabels[index][tlInt] = strval(tmp);
-		cache_get_field_content(row, "Color", tmp, MainPipeline); TxtLabels[index][tlColor] = strval(tmp);
-		cache_get_field_content(row, "PickupModel", tmp, MainPipeline); TxtLabels[index][tlPickupModel] = strval(tmp);
+		TxtLabels[index][tlPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
+		TxtLabels[index][tlPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
+		TxtLabels[index][tlPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
+		TxtLabels[index][tlVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
+		TxtLabels[index][tlInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
+		TxtLabels[index][tlColor] = cache_get_field_content_int(row, "Color", MainPipeline);
+		TxtLabels[index][tlPickupModel] = cache_get_field_content_int(row, "PickupModel", MainPipeline); 
 		if(TxtLabels[index][tlPosX] != 0.0) CreateTxtLabel(index);
 	}
 	return 1;
@@ -356,20 +356,20 @@ public OnLoadTxtLabel(index)
 forward OnLoadTxtLabels();
 public OnLoadTxtLabels()
 {
-	new i, rows, fields, tmp[128];
+	new i, rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  TxtLabels[i][tlSQLId] = strval(tmp);
+		TxtLabels[i][tlSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
 		cache_get_field_content(i, "Text", TxtLabels[i][tlText], MainPipeline, 128);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); TxtLabels[i][tlPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); TxtLabels[i][tlPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); TxtLabels[i][tlPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); TxtLabels[i][tlVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); TxtLabels[i][tlInt] = strval(tmp);
-		cache_get_field_content(i, "Color", tmp, MainPipeline); TxtLabels[i][tlColor] = strval(tmp);
-		cache_get_field_content(i, "PickupModel", tmp, MainPipeline); TxtLabels[i][tlPickupModel] = strval(tmp);
+		TxtLabels[i][tlPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
+		TxtLabels[i][tlPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
+		TxtLabels[i][tlPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
+		TxtLabels[i][tlVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		TxtLabels[i][tlInt] = cache_get_field_content_int(i, "Int", MainPipeline); 
+		TxtLabels[i][tlColor] = cache_get_field_content_int(i, "Color", MainPipeline);
+		TxtLabels[i][tlPickupModel] = cache_get_field_content_int(i, "PickupModel", MainPipeline); 
 		if(TxtLabels[i][tlPosX] != 0.0) CreateTxtLabel(i);
 		i++;
 	}

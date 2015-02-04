@@ -799,47 +799,6 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 
 public OnPlayerPressButton(playerid, buttonid)
 {
-
-	if(buttonid == FBILobbyLeftBTN[0] || buttonid == FBILobbyLeftBTN[1])
-	{
-	    if(IsACop(playerid))
-	    {
-	        MoveDynamicObject(FBILobbyLeft,293.93002319,-1498.43457031,-46.13965225,4);
-			SetTimer("CloseFBILobbyLeft", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == FBILobbyRightBTN[0] || buttonid == FBILobbyRightBTN[1])
-	{
-	    if(IsACop(playerid))
-	    {
-	        MoveDynamicObject(FBILobbyRight,303.84756470,-1521.62988281,-46.13965225,4);
-			SetTimer("CloseFBILobbyRight", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == FBIPrivateBTN[0] || buttonid == FBIPrivateBTN[1])
-	{
-	    if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 5)
-	    {
-	        MoveDynamicObject(FBIPrivate[0],299.29986572,-1491.75842285,-28.73300552,4);
-	        MoveDynamicObject(FBIPrivate[1],299.33737183,-1496.86145020,-28.73300552,4);
-			SetTimer("CloseFBIPrivate", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
 	if(buttonid == sasdbtn1)
 	{
 	    if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 5)
@@ -905,57 +864,6 @@ public OnPlayerPressButton(playerid, buttonid)
 	        MoveDynamicObject(sasd4A,2510.84130859,-1660.08081055,561.79528809,4);
 	 		MoveDynamicObject(sasd4B,2515.81982422,-1660.04650879,561.80004883,4);
 			SetTimer("CloseSASD4", 2500, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == nooseenter[0] || buttonid == nooseenter[1])
-	{
-		if(IsACop(playerid))
-	    {
-	        MoveDynamicObject(entrancedoor,-766.27539062,2536.58691406,10023,2);
-			SetTimer("CloseEntranceDoor", 5000,0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == intergate[2])
-	{
-		if(IsACop(playerid))
-	    {
-			MoveDynamicObject(cage,-773.52050781,2545.62109375,10025,2);
-			SetTimer("CloseCage", 5000, 0);
-	    }
-	    else
-	    {
-	        SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
-			return 1;
-		}
-	}
-	if(buttonid == ncontrolroom[0] || buttonid == ncontrolroom[1])
-	{
-		if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 5)
-	    {
-	        if(ncontrolroomopened == 1)
-	        {
-				MoveDynamicObject(ncontrolroomobjects[0],-760.61718750,2544.21679688,10024.92480469,2);
-				MoveDynamicObject(ncontrolroomobjects[1],-759.52246094,2560.88574219,10024.79785156,2);
-				MoveDynamicObject(ncontrolroomobjects[2],-755.53906250,2538.61035156,10025.02636719,2);
-				ncontrolroomopened = 0;
-			}
-			else if(ncontrolroomopened == 0)
-			{
-				MoveDynamicObject(ncontrolroomobjects[0],-760.61718750,2544.21679688,10020.92480469,2);
-				MoveDynamicObject(ncontrolroomobjects[1],-759.52246094,2560.88574219,10020.79785156,2);
-				MoveDynamicObject(ncontrolroomobjects[2],-755.53906250,2538.61035156,10021.02636719,2);
-				ncontrolroomopened = 1;
-			}
 	    }
 	    else
 	    {
@@ -1062,7 +970,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if (buttonid == DocButtons[0])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// lobby
 			OpenDocAdmDoor(0, 1);
@@ -1072,7 +980,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[1])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// lobby to hallway
 			OpenDocAdmDoor(2, 1);
@@ -1082,7 +990,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[2])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// rear room
 			OpenDocAdmDoor(3, 1);
@@ -1092,7 +1000,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[3])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// elevator --> hallway
 			OpenDocAdmDoor(5, 1);
@@ -1102,7 +1010,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[4])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// security checkpoint 1
 			OpenDocAdmDoor(1, 1);
@@ -1112,7 +1020,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[5])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// security checkpoint 2
 			OpenDocAdmDoor(9, 1);
@@ -1122,7 +1030,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[6])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// garage elevator
 			OpenDocAdmDoor(6, 1);
@@ -1132,7 +1040,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[7])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// hospital
 			OpenDocAdmDoor(7, 1);
@@ -1142,7 +1050,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[8])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// prison area access
 			OpenDocAdmDoor(8, 1);
@@ -1152,7 +1060,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[9])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// yard access
 			OpenDocAreaDoors(4, 1);
@@ -1162,7 +1070,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[10])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// messhall access
 			OpenDocAreaDoors(0, 1);
@@ -1172,7 +1080,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[11])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// kitchen access
 			OpenDocAreaDoors(3, 1);
@@ -1182,27 +1090,7 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[12])
 	{
-		if(IsACop(playerid))
-		{
-			// isolation checkpoint 1
-			OpenDocAreaDoors(5, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 5, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[13])
-	{
-		if(IsACop(playerid))
-		{
-			// isolation checkpoint 2
-			OpenDocAreaDoors(6, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 6, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[14])
-	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// prisoner visitor security
 			OpenDocAdmDoor(10, 1);
@@ -1210,9 +1098,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[15])
+	if(buttonid == DocButtons[13])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// prisoner visitor room
 			OpenDocAdmDoor(4, 1);
@@ -1220,9 +1108,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[16])
+	if(buttonid == DocButtons[14])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// control room access
 			OpenDocAdmDoor(12, 1);
@@ -1230,9 +1118,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[17])
+	if(buttonid == DocButtons[15])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// control room hallway
 			OpenDocAdmDoor(11, 1);
@@ -1240,9 +1128,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[18])
+	if(buttonid == DocButtons[16])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// court rear room
 			OpenDocAdmDoor(15, 1);
@@ -1250,9 +1138,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[19])
+	if(buttonid == DocButtons[17])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// court access
 			OpenDocAdmDoor(16, 1);
@@ -1260,9 +1148,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[20])
+	if(buttonid == DocButtons[18])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// interogation room right
 			OpenDocAdmDoor(14, 1);
@@ -1270,9 +1158,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[21])
+	if(buttonid == DocButtons[19])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// interogation room left
 			OpenDocAdmDoor(13, 1);
@@ -1280,9 +1168,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[22])
+	if(buttonid == DocButtons[20])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// warden's office
 			OpenDocAdmDoor(17, 1);
@@ -1290,9 +1178,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[23])
+	if(buttonid == DocButtons[21])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// gym access
 			OpenDocAreaDoors(2, 1);
@@ -1300,9 +1188,9 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[24])
+	if(buttonid == DocButtons[22])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// prison access
 			OpenDocAreaDoors(1, 1);
@@ -1310,11 +1198,31 @@ public OnPlayerPressButton(playerid, buttonid)
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
-	if(buttonid == DocButtons[25])
+	if(buttonid == DocButtons[23])
 	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// prison hallway
+			OpenDocAreaDoors(5, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 5, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[24])
+	{
+		if(IsADocGuard(playerid))
+		{
+			// showers
+			OpenDocAreaDoors(6, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 6, 0);
+		}
+		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+	}
+	if(buttonid == DocButtons[25])
+	{
+		if(IsADocGuard(playerid))
+		{
+			// gym
 			OpenDocAreaDoors(7, 1);
 			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 7, 0);
 		}
@@ -1322,31 +1230,11 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == DocButtons[26])
 	{
-		if(IsACop(playerid))
-		{
-			// showers
-			OpenDocAreaDoors(8, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 8, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[27])
-	{
-		if(IsACop(playerid))
-		{
-			// gym
-			OpenDocAreaDoors(9, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 9, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[28])
-	{
-		if(IsACop(playerid))
+		if(IsADocGuard(playerid))
 		{
 			// phone room
-			OpenDocAreaDoors(10, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 10, 0);
+			OpenDocAreaDoors(8, 1);
+			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 8, 0);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 	}
@@ -1886,281 +1774,6 @@ public OnPlayerStreamOut(playerid, forplayerid)
 		}
 	}
     return 1;
-}
-
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
-{
-    IsPlayerEntering{playerid} = true;
-	Seatbelt[playerid] = 0;
-	if(GetPVarType(playerid, "HelmetOn"))
-	{
-		for(new i; i < 10; i++) {
-			if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "HelmetOn")) {
-				PlayerHoldingObject[playerid][i] = 0;
-				RemovePlayerAttachedObject(playerid, i);
-				DeletePVar(playerid, "HelmetOn");
-				break;
-			}
-		}
-	}
-
-	if(PlayerCuffed[playerid] != 0) SetPVarInt( playerid, "ToBeEjected", 1 );
-	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
-		DeletePVar(playerid, "BackpackMedKit");
-	if(GetPVarInt(playerid, "BackpackMeal") == 1)
-		DeletePVar(playerid, "BackpackMeal");
-	if(GetPVarType(playerid, "BackpackOpen"))
-		DeletePVar(playerid, "BackpackOpen");
-	if(ispassenger) {
-		if(GetPVarType(playerid, "Injured")) {
-			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
-			ClearAnimations(playerid);
-			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
-		}
-		else if(PlayerCuffed[playerid] != 0) {
-			ClearAnimations(playerid);
-			ApplyAnimation(playerid,"ped","cower",1,1,0,0,0,0,1);
-			TogglePlayerControllable(playerid, false);
-		}
-	}
-	SetPVarInt(playerid, "LastWeapon", GetPlayerWeapon(playerid));
-
-	new engine,lights,alarm,doors,bonnet,boot,objective;
-	GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-	if(engine == VEHICLE_PARAMS_UNSET) switch(GetVehicleModel(vehicleid)) {
-		case 509, 481, 510: VehicleFuel[vehicleid] = GetVehicleFuelCapacity(vehicleid), arr_Engine{vehicleid} = 1, SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
-		default: SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF,VEHICLE_PARAMS_OFF,alarm,doors,bonnet,boot,objective), arr_Engine{vehicleid} = 0;
-	}
-
-	if(GetPVarInt(playerid, "UsingSprunk") == 1)
-	{
-		SetPVarInt(playerid, "UsingSprunk", 0);
-		SetPVarInt(playerid, "DrinkCooledDown", 0);
-	}
-
-    if(GetPVarType(playerid, "Pizza") && !(IsAPizzaCar(vehicleid)))
-	{
-	    new Float:slx, Float:sly, Float:slz;
-		GetPlayerPos(playerid, slx, sly, slz);
-		SetPlayerPos(playerid, slx, sly, slz+1.3);
-		PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-		RemovePlayerFromVehicle(playerid);
-		defer NOPCheck(playerid);
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be in a Pizzaboy when delivering pizzas!");
-		return 1;
-	}
-	if(!ispassenger)
-	{
-	    SetPlayerArmedWeapon(playerid, 0);
-		if(PlayerInfo[playerid][pAccountRestricted] == 1)
-		{
-			new Float:slx, Float:sly, Float:slz;
-			GetPlayerPos(playerid, slx, sly, slz);
-			SetPlayerPos(playerid, slx, sly, slz+1.3);
-			RemovePlayerFromVehicle(playerid);
-			defer NOPCheck(playerid);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot drive any vehicles while your account is restricted!");
-		}
-		if(IsVIPcar(vehicleid))
-		{
-		    if(PlayerInfo[playerid][pDonateRank] == 0)
-			{
-			    new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz+1.3);
-				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-			    RemovePlayerFromVehicle(playerid);
-			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a VIP, this is a vehicle from the VIP Garage!");
-			}
-		}
-		else if(IsWeaponizedVehicle(GetVehicleModel(vehicleid)))
-	    {
-	        if(PlayerInfo[playerid][pLevel] < 6)
-	        {
-				if(gettime() > GetPVarInt(playerid, "timeWepVeh"))
-				{
-					new szString[128];
-					format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has entered a weaponized vehicle (Vehicle ID: %d) (Level: %d)", GetPlayerNameEx(playerid), playerid, vehicleid, PlayerInfo[playerid][pLevel]);
-					ABroadCast(COLOR_YELLOW, szString, 2);
-					SetPVarInt(playerid, "timeWepVeh", gettime()+5);
-				}
-			}
-		}
-		else if(IsFamedVeh(vehicleid))
-		{
-		    if(PlayerInfo[playerid][pFamed] > 0 || PlayerInfo[playerid][pFamed] < 8)
-		    {
-				if(IsOSModel(vehicleid))
-				{
-				    if(PlayerInfo[playerid][pFamed] < 1)
-				    {
-                        new Float:slx, Float:sly, Float:slz;
-						GetPlayerPos(playerid, slx, sly, slz);
-						SetPlayerPos(playerid, slx, sly, slz+1.3);
-						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-					    RemovePlayerFromVehicle(playerid);
-					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Old-School+ Vehicle, therefore you may not drive this.");
-					}
-				}
-				else if(IsCOSModel(vehicleid))
-				{
-					if(PlayerInfo[playerid][pFamed] < 1)
-					{
-					    new Float:slx, Float:sly, Float:slz;
-						GetPlayerPos(playerid, slx, sly, slz);
-						SetPlayerPos(playerid, slx, sly, slz+1.3);
-						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-					    RemovePlayerFromVehicle(playerid);
-					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Chartered Old-School+ Vehicle, therefore you may not drive this.");
-					}
-				}
-				else if(IsFamedModel(vehicleid))
-				{
-				    if(PlayerInfo[playerid][pFamed] < 1)
-				    {
-				        new Float:slx, Float:sly, Float:slz;
-						GetPlayerPos(playerid, slx, sly, slz);
-						SetPlayerPos(playerid, slx, sly, slz+1.3);
-						PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-					    RemovePlayerFromVehicle(playerid);
-					    defer NOPCheck(playerid);
-					    SendClientMessageEx(playerid, COLOR_GRAD2, "This is a Famed+ Vehicle, therefore you may not drive this.");
-					}
-				}
-			}
-		}
-		else if(IsAPizzaCar(vehicleid))
-		{
-		    if(PlayerInfo[playerid][pJob] != 21 && PlayerInfo[playerid][pJob2] != 21 && PlayerInfo[playerid][pJob3] != 21)
-		    {
-			    new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz+1.3);
-				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-			    RemovePlayerFromVehicle(playerid);
-			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Pizza Boy!");
-			}
-		}
-
-		else if(IsATruckerCar(vehicleid))
-		{
-		    if((PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20))
-			{
-				new string[128];
-				new iTruckContents = TruckContents{vehicleid};
-				new truckcontentname[50];
-				if(iTruckContents == 1)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Food & beverages");}
-				else if(iTruckContents == 2)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Clothing"); }
-				else if(iTruckContents == 3)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}Legal materials"); }
-				else if(iTruckContents == 4)
-				{ format(truckcontentname, sizeof(truckcontentname), "{00F70C}24/7 items"); }
-				else if(iTruckContents == 5)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal weapons"); }
-				else if(iTruckContents == 6)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal drugs"); }
-				else if(iTruckContents == 7)
-				{ format(truckcontentname, sizeof(truckcontentname), "{FF0606}Illegal materials"); }
-				if(iTruckContents == 0)
-				{ format(truckcontentname, sizeof(truckcontentname), "%s",  GetInventoryType(TruckDeliveringTo[vehicleid])); }
-				format(string, sizeof(string), "SHIPMENT CONTRACTOR: (Vehicle registration: %s %d) - (Content: %s{FFFF00})", GetVehicleName(vehicleid), vehicleid, truckcontentname);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
-
-				if(IsACop(playerid))
-				{
-					SendClientMessageEx(playerid, COLOR_DBLUE, "LAW ENFORCEMENT: To remove any illegal goods type /clearcargo near the Vehicle.");
-				}
-				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID && TruckUsed[playerid] == INVALID_VEHICLE_ID)
-				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To deliver the goods type /hijackcargo as the driver.");
-				}
-				else if(TruckUsed[playerid] == INVALID_VEHICLE_ID)
-				{
-    				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: To get goods type /loadshipment as the driver.");
-				}
-				else if(TruckUsed[playerid] == vehicleid && gPlayerCheckpointStatus[playerid] == CHECKPOINT_RETURNTRUCK)
-				{
-					SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not returned it to the docks yet for your pay.");
-				}
-				else if(TruckUsed[playerid] == vehicleid)
-   				{
-      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: This is your shipment, you have not delivered your goods yet.");
-     			}
-				else if(TruckUsed[playerid] != INVALID_VEHICLE_ID)
-   				{
-      				SendClientMessageEx(playerid, COLOR_YELLOW, "SHIPMENT CONTRACTOR JOB: You are already on another delivery, type /cancel shipment to cancel that delivery.");
-     			}
-			}
-		    else if(!IsABoat(vehicleid))
-			{
-			    RemovePlayerFromVehicle(playerid);
-			    new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz);
-			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
-			}
-		}
-	   	else if(IsAPlane(vehicleid))
-		{
-	  		if(PlayerInfo[playerid][pFlyLic] != 1)
-	  		{
-				if(GetPVarInt(playerid, "SprunkGuardLic") == 0)
-				{
-					RemovePlayerFromVehicle(playerid);
-					new Float:slx, Float:sly, Float:slz;
-					GetPlayerPos(playerid, slx, sly, slz);
-					SetPlayerPos(playerid, slx, sly, slz);
-					defer NOPCheck(playerid);
-					SendClientMessageEx(playerid,COLOR_GREY,"You don't have a pilot license!");
-				}
-	  		}
-		}
-		else if(IsAHelicopter(vehicleid))
-		{
-		    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
-			GivePlayerValidWeapon(playerid, 46, 60000);
-		}
-		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
-		{
-	        if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
-			{
-			}
-		    else
-			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
-		        RemovePlayerFromVehicle(playerid);
-		        new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz);
-		    }
-		}
-		else if(IsASpawnedTrain(vehicleid))
-		{
-	        if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI))
-			{
-			}
-		    else
-			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not part of a transportation department!");
-		        RemovePlayerFromVehicle(playerid);
-		        new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz);
-		    }
-		}
-	}
-	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || LockStatus{vehicleid} >= 1) { // G-bugging fix
-		ClearAnimations(playerid);
-	}
-
-	return 1;
 }
 
 public OnPlayerConnect(playerid)
@@ -5168,12 +4781,12 @@ public OnPlayerEnterCheckpoint(playerid)
 					{
 						if(PlayerInfo[playerid][pConnectHours] >= 2 && PlayerInfo[playerid][pWRestricted] <= 0)
 						{
-							if(level >= 0 && level <= 50)
+							if(level >= 0 && level < 50)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free 9mm as a bonus for taking the risk of transporting illegal weapons.");
 								GivePlayerValidWeapon(playerid, 22, 60000);
 							}
-							else if(level >= 51 && level <= 100)
+							else if(level >= 50 && level <= 100)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Shotgun as a bonus for taking the risk of transporting illegal weapons.");
 								GivePlayerValidWeapon(playerid, 25, 60000);
@@ -6123,7 +5736,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 			}
 
-			GivePlayerCash(playerid, TransportMoney[playerid]);
+			//GivePlayerCash(playerid, TransportMoney[playerid]);
+			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += TransportMoney[playerid];
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
 			if(!IsATaxiDriver(playerid)) { SetPlayerColor(playerid, TEAM_HIT_COLOR); }
 			TransportTime[playerid] = 0;

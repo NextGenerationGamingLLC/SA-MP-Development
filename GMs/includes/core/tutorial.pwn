@@ -35,6 +35,311 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock ShowTutGUIFrame(playerid, frame)
+{
+	switch(frame)
+	{
+		case 1:
+		{
+			for(new i = 4; i < 14; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 2:
+		{
+			for(new i = 14; i < 18; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 3:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[18]);
+		}
+		case 4:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[19]);
+		}
+		case 5:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[20]);
+		}
+		case 6:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[21]);
+		}
+		case 7:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[22]);
+		}
+		case 8:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[23]);
+		}
+		case 9:
+		{
+			TextDrawShowForPlayer(playerid, TutTxtdraw[24]);
+		}
+		case 10:
+		{
+			for(new i = 25; i < 34; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 11:
+		{
+			for(new i = 34; i < 40; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 12:
+		{
+			for(new i = 40; i < 46; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 13:
+		{
+			for(new i = 46; i < 52; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 14:
+		{
+			for(new i = 52; i < 58; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 15:
+		{
+			for(new i = 58; i < 65; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 16:
+		{
+			for(new i = 65; i < 71; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 17:
+		{
+			for(new i = 71; i < 77; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 18:
+		{
+			for(new i = 77; i < 82; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 19:
+		{
+			for(new i = 82; i < 87; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 20:
+		{
+			for(new i = 87; i < 93; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 21:
+		{
+			for(new i = 93; i < 100; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 22:
+		{
+			for(new i = 100; i < 108; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 23:
+		{
+			for(new i = 108; i < 114; i++) {
+				TextDrawShowForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+	}
+}
+
+stock HideTutGUIFrame(playerid, frame)
+{
+	switch(frame)
+	{
+		case 1:
+		{
+			for(new i = 4; i < 14; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 2:
+		{
+			for(new i = 14; i < 18; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 3:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[18]);
+		}
+		case 4:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[19]);
+		}
+		case 5:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[20]);
+		}
+		case 6:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[21]);
+		}
+		case 7:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[22]);
+		}
+		case 8:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[23]);
+		}
+		case 9:
+		{
+			TextDrawHideForPlayer(playerid, TutTxtdraw[24]);
+		}
+		case 10:
+		{
+			for(new i = 25; i < 34; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 11:
+		{
+			for(new i = 34; i < 40; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 12:
+		{
+			for(new i = 40; i < 46; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 13:
+		{
+			for(new i = 46; i < 52; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 14:
+		{
+			for(new i = 52; i < 58; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 15:
+		{
+			for(new i = 58; i < 65; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 16:
+		{
+			for(new i = 65; i < 71; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 17:
+		{
+			for(new i = 71; i < 77; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 18:
+		{
+			for(new i = 77; i < 82; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 19:
+		{
+			for(new i = 82; i < 87; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 20:
+		{
+			for(new i = 87; i < 93; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 21:
+		{
+			for(new i = 93; i < 100; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 22:
+		{
+			for(new i = 100; i < 108; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+		case 23:
+		{
+			for(new i = 108; i < 114; i++) {
+				TextDrawHideForPlayer(playerid, TutTxtdraw[i]);
+			}
+		}
+	}
+}
+
+stock ShowTutGUIBox(playerid)
+{
+	InsideTut{playerid} = true;
+
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[0]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[1]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[2]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[3]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[4]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[5]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[6]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[9]);
+	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[10]);
+
+	TextDrawShowForPlayer(playerid, TutTxtdraw[0]);
+	TextDrawShowForPlayer(playerid, TutTxtdraw[1]);
+	TextDrawShowForPlayer(playerid, TutTxtdraw[2]);
+	TextDrawShowForPlayer(playerid, TutTxtdraw[3]);
+	TextDrawShowForPlayer(playerid, TutTxtdraw[114]);
+
+}
+
+stock HideTutGUIBox(playerid)
+{
+	InsideTut{playerid} = false;
+
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[0]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[1]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[2]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[3]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[4]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[5]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[6]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[9]);
+	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[10]);
+
+	TextDrawHideForPlayer(playerid, TutTxtdraw[0]);
+	TextDrawHideForPlayer(playerid, TutTxtdraw[1]);
+	TextDrawHideForPlayer(playerid, TutTxtdraw[2]);
+	TextDrawHideForPlayer(playerid, TutTxtdraw[3]);
+	TextDrawHideForPlayer(playerid, TutTxtdraw[114]);
+}
+
 stock TutorialStep(playerid)
 {
 	if(gettime() - GetPVarInt(playerid, "pTutTime") < 5)

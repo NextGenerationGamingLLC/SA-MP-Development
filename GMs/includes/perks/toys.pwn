@@ -35,6 +35,180 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock CompleteToyTrade(playerid)
+{
+	new string[156],
+		sellerid = GetPVarInt(playerid, "ttSeller"),
+		name[24],
+		toyid = GetPVarInt(sellerid, "ttToy");
+				
+	for(new i;i<sizeof(HoldingObjectsAll);i++)
+	{
+		if(HoldingObjectsAll[i][holdingmodelid] == toyid)
+		{
+			format(name, sizeof(name), "(%s)", HoldingObjectsAll[i][holdingmodelname]);
+		}
+	}
+	if(toyid != 0 && (strcmp(name, "None", true) == 0))
+	{
+		format(name, sizeof(name), "(ID: %d)", toyid);
+	}
+	
+	new icount = GetPlayerToySlots(playerid);
+	
+	if(!toyCountCheck(playerid))
+	{
+		format(string, sizeof(string), "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(sellerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any free toy slots.");
+		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
+		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
+		SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+					
+		HideTradeToysGUI(playerid);
+		return 1;
+	}	
+	
+	if(GetPlayerCash(playerid) < GetPVarInt(sellerid, "ttCost"))
+	{
+		format(string, sizeof(string), "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(sellerid, COLOR_GREY, string);
+		SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough money on you.");
+		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
+		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
+		SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+				
+		HideTradeToysGUI(playerid);
+		return 1;
+	}	
+		
+	GivePlayerCash(playerid, -GetPVarInt(sellerid, "ttCost"));
+	GivePlayerCash(sellerid, GetPVarInt(sellerid, "ttCost"));
+	
+	for(new i = 0; i < icount; i++)
+	{
+		if(!PlayerToyInfo[playerid][i][ptModelID]) 
+		{
+			PlayerToyInfo[playerid][i][ptModelID] = toyid;
+			PlayerToyInfo[playerid][i][ptBone] = 1; // Doesn't need to be accurate, you can let the player choose.
+			PlayerToyInfo[playerid][i][ptPosX] = 1.0;
+			PlayerToyInfo[playerid][i][ptPosY] = 1.0;
+			PlayerToyInfo[playerid][i][ptPosZ] = 1.0;
+			PlayerToyInfo[playerid][i][ptRotX] = 0.0;
+			PlayerToyInfo[playerid][i][ptRotY] = 0.0;
+			PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+			PlayerToyInfo[playerid][i][ptScaleX] = 1.0;
+			PlayerToyInfo[playerid][i][ptScaleY] = 1.0;
+			PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
+			PlayerToyInfo[playerid][i][ptTradable] = 1;
+			
+			if(PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] == 1) 
+			{
+				PlayerToyInfo[playerid][i][ptSpecial] = 0;
+			}
+			else
+				PlayerToyInfo[playerid][i][ptSpecial] = PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial];
+			if(PlayerToyInfo[playerid][i][ptSpecial] == 2)
+			{
+				PlayerToyInfo[playerid][i][ptBone] = 2;
+				PlayerToyInfo[playerid][i][ptPosX] = 0.07;
+				PlayerToyInfo[playerid][i][ptPosY] = 0.0;
+				PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
+				PlayerToyInfo[playerid][i][ptRotX] = 88.0;
+				PlayerToyInfo[playerid][i][ptRotY] = 75.0;
+				PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleX] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleY] = 0.0;
+				PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
+			}
+			// Seller	
+			format(string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
+			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, sellerid);
+				
+			g_mysql_NewToy(playerid, i);
+			break;
+		}	
+	}
+	
+	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID] = 0;
+	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptModelID] = 0;
+	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptBone] = 0;
+	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] = 0;
+	
+	OnPlayerStatsUpdate(playerid);
+	OnPlayerStatsUpdate(sellerid);
+			
+	format(string, sizeof(string), "%s has accepted your offer and purchased your toy for $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
+	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), "You have accepted %s's offer and purchased the toy for $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), "[S %s(%d)][IP %s][B %s(%d)][IP %s][P $%s][T: %s(%d)]", GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid),
+	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
+	Log("logs/toys.log", string);
+			
+	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttSeller", INVALID_PLAYER_ID);
+	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
+	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
+	SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+			
+	HideTradeToysGUI(playerid);
+	return 1;
+}
+
+stock ShowEditMenu(playerid)
+{
+	new
+		iIndex = GetPVarInt(playerid, "ToySlot");
+
+	new toys = 99999;			
+	for(new i; i < 10; i++)
+	{
+		if(PlayerHoldingObject[playerid][i] == iIndex)
+		{
+			toys = i;
+			if(IsPlayerAttachedObjectSlotUsed(playerid, toys))
+			{
+				PlayerHoldingObject[playerid][i] = 0;
+				if(!PlayerInfo[playerid][pBEquipped]) RemovePlayerAttachedObject(playerid, toys);
+			}
+			break;
+		}
+	}	
+	if(PlayerToyInfo[playerid][iIndex][ptScaleX] == 0) {
+		PlayerToyInfo[playerid][iIndex][ptScaleX] = 1.0;
+		PlayerToyInfo[playerid][iIndex][ptScaleY] = 1.0;
+		PlayerToyInfo[playerid][iIndex][ptScaleZ] = 1.0;
+	}
+	if(IsPlayerInAnyVehicle(playerid) && PlayerToyInfo[playerid][iIndex][ptSpecial] == 2)
+		return ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
+	new toycount = GetFreeToySlot(playerid);
+	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
+	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+	PlayerHoldingObject[playerid][toycount] = iIndex;
+	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][iIndex][ptModelID],
+	PlayerToyInfo[playerid][iIndex][ptBone], PlayerToyInfo[playerid][iIndex][ptPosX],
+	PlayerToyInfo[playerid][iIndex][ptPosY], PlayerToyInfo[playerid][iIndex][ptPosZ],
+	PlayerToyInfo[playerid][iIndex][ptRotX], PlayerToyInfo[playerid][iIndex][ptRotY],
+	PlayerToyInfo[playerid][iIndex][ptRotZ], PlayerToyInfo[playerid][iIndex][ptScaleX],
+	PlayerToyInfo[playerid][iIndex][ptScaleY], PlayerToyInfo[playerid][iIndex][ptScaleZ]);
+
+    new stringg[128];
+    format(stringg, sizeof(stringg), "Bone (%s)\nOffset", HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]]);
+ 	ShowPlayerDialog(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
+	return 1;
+}
+
+stock FindFreeAttachedObjectSlot(playerid)
+{
+	new index;
+ 	while (index < MAX_PLAYER_ATTACHED_OBJECTS && IsPlayerAttachedObjectSlotUsed(playerid, index))
+	{
+		index++;
+	}
+	if (index == MAX_PLAYER_ATTACHED_OBJECTS) return -1;
+	return index;
+}
+
 toyCountCheck(playerid) {
 
 	new

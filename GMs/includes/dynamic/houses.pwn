@@ -213,58 +213,60 @@ stock LoadHouses()
 forward OnLoadHouse(index);
 public OnLoadHouse(index)
 {
-	new rows, fields, szField[24], tmp[128];
+	new rows, fields, szField[24];
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline); HouseInfo[index][hSQLId] = strval(tmp);
-		cache_get_field_content(row, "Owned", tmp, MainPipeline); HouseInfo[index][hOwned] = strval(tmp);
-		cache_get_field_content(row, "Level", tmp, MainPipeline); HouseInfo[index][hLevel] = strval(tmp);
+		HouseInfo[index][hSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
+		HouseInfo[index][hOwned] = cache_get_field_content_int(row, "Owned", MainPipeline);
+		HouseInfo[index][hLevel] = cache_get_field_content_int(row, "Level", MainPipeline);
 		cache_get_field_content(row, "Description", HouseInfo[index][hDescription], MainPipeline, 16);
-		cache_get_field_content(row, "OwnerID", tmp, MainPipeline); HouseInfo[index][hOwnerID] = strval(tmp);
+		HouseInfo[index][hOwnerID] = cache_get_field_content_int (row, "OwnerID", MainPipeline);
 		cache_get_field_content(row, "Username", HouseInfo[index][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(row, "ExteriorX", tmp, MainPipeline); HouseInfo[index][hExteriorX] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorY", tmp, MainPipeline); HouseInfo[index][hExteriorY] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorZ", tmp, MainPipeline); HouseInfo[index][hExteriorZ] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorR", tmp, MainPipeline); HouseInfo[index][hExteriorR] = floatstr(tmp);
-		cache_get_field_content(row, "ExteriorA", tmp, MainPipeline); HouseInfo[index][hExteriorA] = floatstr(tmp);
-		cache_get_field_content(row, "CustomExterior", tmp, MainPipeline); HouseInfo[index][hCustomExterior] = strval(tmp);
-		cache_get_field_content(row, "InteriorX", tmp, MainPipeline); HouseInfo[index][hInteriorX] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorY", tmp, MainPipeline); HouseInfo[index][hInteriorY] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorZ", tmp, MainPipeline); HouseInfo[index][hInteriorZ] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorR", tmp, MainPipeline); HouseInfo[index][hInteriorR] = floatstr(tmp);
-		cache_get_field_content(row, "InteriorA", tmp, MainPipeline); HouseInfo[index][hInteriorA] = floatstr(tmp);
-		cache_get_field_content(row, "CustomInterior", tmp, MainPipeline); HouseInfo[index][hCustomInterior] = strval(tmp);
-		cache_get_field_content(row, "ExtIW", tmp, MainPipeline); HouseInfo[index][hExtIW] = strval(tmp);
-		cache_get_field_content(row, "ExtVW", tmp, MainPipeline); HouseInfo[index][hExtVW] = strval(tmp);
-		cache_get_field_content(row, "IntIW", tmp, MainPipeline); HouseInfo[index][hIntIW] = strval(tmp);
-		cache_get_field_content(row, "IntVW", tmp, MainPipeline); HouseInfo[index][hIntVW] = strval(tmp);
-		cache_get_field_content(row, "Lock", tmp, MainPipeline); HouseInfo[index][hLock] = strval(tmp);
-		cache_get_field_content(row, "Rentable", tmp, MainPipeline); HouseInfo[index][hRentable] = strval(tmp);
-		cache_get_field_content(row, "RentFee", tmp, MainPipeline); HouseInfo[index][hRentFee] = strval(tmp);
-		cache_get_field_content(row, "Value", tmp, MainPipeline); HouseInfo[index][hValue] = strval(tmp);
-		cache_get_field_content(row, "SafeMoney", tmp, MainPipeline); HouseInfo[index][hSafeMoney] = strval(tmp);
-		cache_get_field_content(row, "Pot", tmp, MainPipeline); HouseInfo[index][hPot] = strval(tmp);
-		cache_get_field_content(row, "Crack", tmp, MainPipeline); HouseInfo[index][hCrack] = strval(tmp);
-		cache_get_field_content(row, "Materials", tmp, MainPipeline); HouseInfo[index][hMaterials] = strval(tmp);
-		cache_get_field_content(row, "Heroin", tmp, MainPipeline); HouseInfo[index][hHeroin] = strval(tmp);
+		HouseInfo[index][hExteriorX] = cache_get_field_content_float(row, "ExteriorX", MainPipeline);
+		HouseInfo[index][hExteriorY] = cache_get_field_content_float(row, "ExteriorY", MainPipeline);
+		HouseInfo[index][hExteriorZ] = cache_get_field_content_float(row, "ExteriorZ", MainPipeline);
+		HouseInfo[index][hExteriorR] = cache_get_field_content_float(row, "ExteriorR", MainPipeline);
+		HouseInfo[index][hExteriorA] = cache_get_field_content_float(row, "ExteriorA", MainPipeline);
+		HouseInfo[index][hCustomExterior] = cache_get_field_content_int(row, "CustomExterior", MainPipeline);
+		HouseInfo[index][hInteriorX] = cache_get_field_content_float(row, "InteriorX", MainPipeline);
+		HouseInfo[index][hInteriorY] = cache_get_field_content_float(row, "InteriorY", MainPipeline);
+		HouseInfo[index][hInteriorZ] = cache_get_field_content_float(row, "InteriorZ", MainPipeline);
+		HouseInfo[index][hInteriorR] = cache_get_field_content_float(row, "InteriorR", MainPipeline);
+		HouseInfo[index][hInteriorA] = cache_get_field_content_float(row, "InteriorA", MainPipeline);
+		HouseInfo[index][hCustomInterior] = cache_get_field_content_int(row, "CustomInterior", MainPipeline); 
+		HouseInfo[index][hExtIW] = cache_get_field_content_int(row, "ExtIW", MainPipeline); 
+		HouseInfo[index][hExtVW] = cache_get_field_content_int(row, "ExtVW", MainPipeline); 
+		HouseInfo[index][hIntIW] = cache_get_field_content_int(row, "IntIW", MainPipeline); 
+		HouseInfo[index][hIntVW] = cache_get_field_content_int(row, "IntVW", MainPipeline); 
+		HouseInfo[index][hLock] = cache_get_field_content_int(row, "Lock", MainPipeline); 
+		HouseInfo[index][hRentable] = cache_get_field_content_int(row, "Rentable", MainPipeline); 
+		HouseInfo[index][hRentFee] = cache_get_field_content_int(row, "RentFee", MainPipeline); 
+		HouseInfo[index][hValue] = cache_get_field_content_int(row, "Value", MainPipeline); 
+		HouseInfo[index][hSafeMoney] = cache_get_field_content_int(row, "SafeMoney", MainPipeline); 
+		HouseInfo[index][hPot] = cache_get_field_content_int(row, "Pot", MainPipeline); 
+		HouseInfo[index][hCrack] = cache_get_field_content_int(row, "Crack", MainPipeline); 
+		HouseInfo[index][hMaterials] = cache_get_field_content_int(row, "Materials", MainPipeline); 
+		HouseInfo[index][hHeroin] = cache_get_field_content_int(row, "Heroin", MainPipeline); 
+		
 		for(new i; i < 5; i++)
 		{
 			format(szField, sizeof(szField), "Weapons%d", i);
-			cache_get_field_content(row, szField, tmp, MainPipeline);
-			HouseInfo[index][hWeapons][i] = strval(tmp);
+			HouseInfo[index][hWeapons][i] = cache_get_field_content_int(row, szField, MainPipeline);
 		}
-		cache_get_field_content(row, "GLUpgrade", tmp, MainPipeline); HouseInfo[index][hGLUpgrade] = strval(tmp);
-		cache_get_field_content(row, "PickupID", tmp, MainPipeline); HouseInfo[index][hPickupID] = strval(tmp);
-		cache_get_field_content(row, "MailX", tmp, MainPipeline); HouseInfo[index][hMailX] = floatstr(tmp);
-		cache_get_field_content(row, "MailY", tmp, MainPipeline); HouseInfo[index][hMailY] = floatstr(tmp);
-		cache_get_field_content(row, "MailZ", tmp, MainPipeline); HouseInfo[index][hMailZ] = floatstr(tmp);
-		cache_get_field_content(row, "MailA", tmp, MainPipeline); HouseInfo[index][hMailA] = floatstr(tmp);
-		cache_get_field_content(row, "MailType", tmp, MainPipeline); HouseInfo[index][hMailType] = strval(tmp);
-		cache_get_field_content(row, "ClosetX", tmp, MainPipeline); HouseInfo[index][hClosetX] = floatstr(tmp);
-		cache_get_field_content(row, "ClosetY", tmp, MainPipeline); HouseInfo[index][hClosetY] = floatstr(tmp);
-		cache_get_field_content(row, "ClosetZ", tmp, MainPipeline); HouseInfo[index][hClosetZ] = floatstr(tmp);
+
+		HouseInfo[index][hGLUpgrade] = cache_get_field_content_int(row, "GLUpgrade", MainPipeline); 
+		HouseInfo[index][hPickupID] = cache_get_field_content_int(row, "PickupID", MainPipeline); 
+		HouseInfo[index][hMailX] = cache_get_field_content_float(row, "MailX", MainPipeline); 
+		HouseInfo[index][hMailY] = cache_get_field_content_float(row, "MailY", MainPipeline); 
+		HouseInfo[index][hMailZ] = cache_get_field_content_float(row, "MailZ", MainPipeline); 
+		HouseInfo[index][hMailA] = cache_get_field_content_float(row, "MailA", MainPipeline); 
+		HouseInfo[index][hMailType] = cache_get_field_content_int(row, "MailType", MainPipeline);
+		HouseInfo[index][hClosetX] = cache_get_field_content_float(row, "ClosetX", MainPipeline); 
+		HouseInfo[index][hClosetY] = cache_get_field_content_float(row, "ClosetY", MainPipeline); 
+		HouseInfo[index][hClosetZ] = cache_get_field_content_float(row, "ClosetZ", MainPipeline); 
 
 		cache_get_field_content(row, "SignDesc", HouseInfo[index][hSignDesc], MainPipeline, 64);
 		HouseInfo[index][hSign][0] = cache_get_field_content_float(row, "SignX", MainPipeline);
@@ -279,8 +281,8 @@ public OnLoadHouse(index)
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
 		if(HouseInfo[index][hSignExpire] != 0 && gettime() >= HouseInfo[index][hSignExpire]) 
 		{
-			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", index);
-			Log("logs/house.log", tmp);
+			format(szMiscArray, sizeof(szMiscArray), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", index);
+			Log("logs/house.log", szMiscArray);
 			DeleteHouseSaleSign(index);
 		}
 		if(HouseInfo[index][hSign][0] != 0.0) CreateHouseSaleSign(index);
@@ -291,58 +293,58 @@ public OnLoadHouse(index)
 forward OnLoadHouses();
 public OnLoadHouses()
 {
-	new i, rows, fields, szField[24], tmp[128];
+	new i, rows, fields, szField[24];
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline); HouseInfo[i][hSQLId] = strval(tmp);
-		cache_get_field_content(i, "Owned", tmp, MainPipeline); HouseInfo[i][hOwned] = strval(tmp);
-		cache_get_field_content(i, "Level", tmp, MainPipeline); HouseInfo[i][hLevel] = strval(tmp);
+		HouseInfo[i][hSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
+		HouseInfo[i][hOwned] = cache_get_field_content_int(i, "Owned", MainPipeline); 
+		HouseInfo[i][hLevel] = cache_get_field_content_int(i, "Level", MainPipeline); 
 		cache_get_field_content(i, "Description", HouseInfo[i][hDescription], MainPipeline, 16);
-		cache_get_field_content(i, "OwnerID", tmp, MainPipeline); HouseInfo[i][hOwnerID] = strval(tmp);
+		HouseInfo[i][hOwnerID] = cache_get_field_content_int(i, "OwnerID", MainPipeline);
 		cache_get_field_content(i, "Username", HouseInfo[i][hOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); HouseInfo[i][hExteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); HouseInfo[i][hExteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); HouseInfo[i][hExteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorR", tmp, MainPipeline); HouseInfo[i][hExteriorR] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); HouseInfo[i][hExteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); HouseInfo[i][hCustomExterior] = strval(tmp);
-		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); HouseInfo[i][hInteriorX] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); HouseInfo[i][hInteriorY] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); HouseInfo[i][hInteriorZ] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorR", tmp, MainPipeline); HouseInfo[i][hInteriorR] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); HouseInfo[i][hInteriorA] = floatstr(tmp);
-		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); HouseInfo[i][hCustomInterior] = strval(tmp);
-		cache_get_field_content(i, "ExtIW", tmp, MainPipeline); HouseInfo[i][hExtIW] = strval(tmp);
-		cache_get_field_content(i, "ExtVW", tmp, MainPipeline); HouseInfo[i][hExtVW] = strval(tmp);
-		cache_get_field_content(i, "IntIW", tmp, MainPipeline); HouseInfo[i][hIntIW] = strval(tmp);
-		cache_get_field_content(i, "IntVW", tmp, MainPipeline); HouseInfo[i][hIntVW] = strval(tmp);
-		cache_get_field_content(i, "Lock", tmp, MainPipeline); HouseInfo[i][hLock] = strval(tmp);
-		cache_get_field_content(i, "Rentable", tmp, MainPipeline); HouseInfo[i][hRentable] = strval(tmp);
-		cache_get_field_content(i, "RentFee", tmp, MainPipeline); HouseInfo[i][hRentFee] = strval(tmp);
-		cache_get_field_content(i, "Value", tmp, MainPipeline); HouseInfo[i][hValue] = strval(tmp);
-		cache_get_field_content(i, "SafeMoney", tmp, MainPipeline); HouseInfo[i][hSafeMoney] = strval(tmp);
-		cache_get_field_content(i, "Pot", tmp, MainPipeline); HouseInfo[i][hPot] = strval(tmp);
-		cache_get_field_content(i, "Crack", tmp, MainPipeline); HouseInfo[i][hCrack] = strval(tmp);
-		cache_get_field_content(i, "Materials", tmp, MainPipeline); HouseInfo[i][hMaterials] = strval(tmp);
-		cache_get_field_content(i, "Heroin", tmp, MainPipeline); HouseInfo[i][hHeroin] = strval(tmp);
+		HouseInfo[i][hExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
+		HouseInfo[i][hExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
+		HouseInfo[i][hExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
+		HouseInfo[i][hExteriorR] = cache_get_field_content_float(i, "ExteriorR", MainPipeline);
+		HouseInfo[i][hExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
+		HouseInfo[i][hCustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
+		HouseInfo[i][hInteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
+		HouseInfo[i][hInteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
+		HouseInfo[i][hInteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
+		HouseInfo[i][hInteriorR] = cache_get_field_content_float(i, "InteriorR", MainPipeline);
+		HouseInfo[i][hInteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
+		HouseInfo[i][hCustomInterior] = cache_get_field_content_int(i, "CustomInterior", MainPipeline); 
+		HouseInfo[i][hExtIW] = cache_get_field_content_int(i, "ExtIW", MainPipeline); 
+		HouseInfo[i][hExtVW] = cache_get_field_content_int(i, "ExtVW", MainPipeline); 
+		HouseInfo[i][hIntIW] = cache_get_field_content_int(i, "IntIW", MainPipeline); 
+		HouseInfo[i][hIntVW] = cache_get_field_content_int(i, "IntVW", MainPipeline); 
+		HouseInfo[i][hLock] = cache_get_field_content_int(i, "Lock", MainPipeline); 
+		HouseInfo[i][hRentable] = cache_get_field_content_int(i, "Rentable", MainPipeline); 
+		HouseInfo[i][hRentFee] = cache_get_field_content_int(i, "RentFee", MainPipeline); 
+		HouseInfo[i][hValue] = cache_get_field_content_int(i, "Value", MainPipeline); 
+		HouseInfo[i][hSafeMoney] = cache_get_field_content_int(i, "SafeMoney", MainPipeline); 
+		HouseInfo[i][hPot] = cache_get_field_content_int(i, "Pot", MainPipeline);
+		HouseInfo[i][hCrack] = cache_get_field_content_int(i, "Crack", MainPipeline); 
+		HouseInfo[i][hMaterials] = cache_get_field_content_int(i, "Materials", MainPipeline); 
+		HouseInfo[i][hHeroin] = cache_get_field_content_int(i, "Heroin", MainPipeline); 
 		for(new j; j < 5; j++)
 		{
 			format(szField, sizeof(szField), "Weapons%d", j);
-			cache_get_field_content(i, szField, tmp, MainPipeline);
-			HouseInfo[i][hWeapons][j] = strval(tmp);
+			HouseInfo[i][hWeapons][j] = cache_get_field_content_int(i, szField, MainPipeline);
 		}
-		cache_get_field_content(i, "GLUpgrade", tmp, MainPipeline); HouseInfo[i][hGLUpgrade] = strval(tmp);
-		cache_get_field_content(i, "PickupID", tmp, MainPipeline); HouseInfo[i][hPickupID] = strval(tmp);
-		cache_get_field_content(i, "MailX", tmp, MainPipeline); HouseInfo[i][hMailX] = floatstr(tmp);
-		cache_get_field_content(i, "MailY", tmp, MainPipeline); HouseInfo[i][hMailY] = floatstr(tmp);
-		cache_get_field_content(i, "MailZ", tmp, MainPipeline); HouseInfo[i][hMailZ] = floatstr(tmp);
-		cache_get_field_content(i, "MailA", tmp, MainPipeline); HouseInfo[i][hMailA] = floatstr(tmp);
-		cache_get_field_content(i, "MailType", tmp, MainPipeline); HouseInfo[i][hMailType] = strval(tmp);
-		cache_get_field_content(i, "ClosetX", tmp, MainPipeline); HouseInfo[i][hClosetX] = floatstr(tmp);
-		cache_get_field_content(i, "ClosetY", tmp, MainPipeline); HouseInfo[i][hClosetY] = floatstr(tmp);
-		cache_get_field_content(i, "ClosetZ", tmp, MainPipeline); HouseInfo[i][hClosetZ] = floatstr(tmp);
+		HouseInfo[i][hGLUpgrade] = cache_get_field_content_int(i, "GLUpgrade", MainPipeline); 
+		HouseInfo[i][hPickupID] = cache_get_field_content_int(i, "PickupID", MainPipeline); 
+		HouseInfo[i][hMailX] = cache_get_field_content_float(i, "MailX", MainPipeline); 
+		HouseInfo[i][hMailY] = cache_get_field_content_float(i, "MailY", MainPipeline); 
+		HouseInfo[i][hMailZ] = cache_get_field_content_float(i, "MailZ", MainPipeline); 
+		HouseInfo[i][hMailA] = cache_get_field_content_float(i, "MailA", MainPipeline); 
+		HouseInfo[i][hMailType] = cache_get_field_content_int(i, "MailType", MainPipeline);
+		HouseInfo[i][hClosetX] = cache_get_field_content_float(i, "ClosetX", MainPipeline);
+		HouseInfo[i][hClosetY] = cache_get_field_content_float(i, "ClosetY", MainPipeline);
+		HouseInfo[i][hClosetZ] = cache_get_field_content_float(i, "ClosetZ", MainPipeline);
 
 		cache_get_field_content(i, "SignDesc", HouseInfo[i][hSignDesc], MainPipeline, 64);
 		HouseInfo[i][hSign][0] = cache_get_field_content_float(i, "SignX", MainPipeline);
@@ -357,8 +359,8 @@ public OnLoadHouses()
 		if(HouseInfo[i][hMailX] != 0.0) RenderHouseMailbox(i);
 		if(HouseInfo[i][hSignExpire] != 0 && gettime() >= HouseInfo[i][hSignExpire]) 
 		{
-			format(tmp, sizeof(tmp), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
-			Log("logs/house.log", tmp);
+			format(szMiscArray, sizeof(szMiscArray), "[EXPIRE - OnLoad] House Sale Sign Expired - Housed ID: %d", i);
+			Log("logs/house.log", szMiscArray);
 			DeleteHouseSaleSign(i);
 		}
 		if(HouseInfo[i][hSign][0] != 0.0) CreateHouseSaleSign(i);

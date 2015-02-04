@@ -34,6 +34,70 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+LoadEventPoints() {
+
+	if(!fexist("eventpoints.cfg"))
+		return 1;
+
+	new
+		szFileStr[256],
+		File: fHandle = fopen("eventpoints.cfg", io_read),
+		iIndex;
+
+	while(iIndex < MAX_EVENTPOINTS && fread(fHandle, szFileStr)) {
+		if(!sscanf(szFileStr, "p<|>fffiis[64]i",
+			EventPoints[iIndex][epPosX],
+			EventPoints[iIndex][epPosY],
+			EventPoints[iIndex][epPosZ],
+			EventPoints[iIndex][epVW],
+			EventPoints[iIndex][epInt],
+			EventPoints[iIndex][epPrize],
+			EventPoints[iIndex][epFlagable]
+		) && EventPoints[iIndex][epPosX] != 0.0) {
+			EventPoints[iIndex][epObjectID] = CreateDynamicPickup(1274, 1, EventPoints[iIndex][epPosX], EventPoints[iIndex][epPosY], EventPoints[iIndex][epPosZ], EventPoints[iIndex][epVW]);
+			format(szFileStr,sizeof(szFileStr),"Event Point (ID: %d)\nPrize: %s\nType /claimpoint to claim your prize!", iIndex, EventPoints[iIndex][epPrize]);
+			EventPoints[iIndex][epText3dID] = CreateDynamic3DTextLabel(szFileStr, COLOR_YELLOW, EventPoints[iIndex][epPosX], EventPoints[iIndex][epPosY], EventPoints[iIndex][epPosZ]+0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, EventPoints[iIndex][epVW], EventPoints[iIndex][epInt]);
+			++iIndex;
+		}
+	}
+	printf("[LoadEventPoints] %i event points loaded.", iIndex);
+	return fclose(fHandle);
+}
+
+SaveEventPoints() {
+
+	new
+		szFileStr[256],
+		File: fHandle = fopen("eventpoints.cfg", io_write);
+
+	if(fHandle)
+	{
+		for(new iIndex; iIndex < MAX_EVENTPOINTS; iIndex++) {
+			format(szFileStr, sizeof(szFileStr), "%f|%f|%f|%d|%d|%s|%d\r\n",
+				EventPoints[iIndex][epPosX],
+				EventPoints[iIndex][epPosY],
+				EventPoints[iIndex][epPosZ],
+				EventPoints[iIndex][epVW],
+				EventPoints[iIndex][epInt],
+				EventPoints[iIndex][epPrize],
+				EventPoints[iIndex][epFlagable]
+			);
+			fwrite(fHandle, szFileStr);
+		}
+		return fclose(fHandle);
+	}
+	return 0;
+}
+
+
+stock InitEventPoints()
+{
+	for(new i = 0; i < MAX_EVENTPOINTS; i++)
+	{
+	    EventPoints[i][epObjectID] = 0;
+	}
+	return 1;
+}
 
 CMD:gotopoint(playerid, params[])
 {

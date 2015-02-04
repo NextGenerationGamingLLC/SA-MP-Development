@@ -34,6 +34,15 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock JudgeOnlineCheck()
+{
+	foreach(new i: Player)
+	{
+		if(IsAJudge(i))	return 1;
+	}	
+	return 0;
+}
+
 
 CMD:present(playerid, params[])
 {

@@ -34,6 +34,73 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock SendClientMessageEx(playerid, color, string[])
+{
+	if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1 || ActiveChatbox[playerid] == 0)
+		return 0;
+
+	else SendClientMessage(playerid, color, string);
+	return 1;
+}
+
+stock SendClientMessageToAllEx(color, string[])
+{
+	foreach(new i: Player)
+	{
+		if(InsideMainMenu{i} == 1 || InsideTut{i} == 1 || ActiveChatbox[i] == 0) {}
+		else SendClientMessage(i, color, string);
+	}	
+	return 1;
+}
+
+stock SendClientMessageWrap(playerid, color, width, string[])
+{
+	if(strlen(string) > width)
+	{
+		new firstline[128], secondline[128];
+		strmid(firstline, string, 0, 88);
+		strmid(secondline, string, 88, 128);
+		format(firstline, sizeof(firstline), "%s...", firstline);
+		format(secondline, sizeof(secondline), "...%s", secondline);
+		SendClientMessageEx(playerid, color, firstline);
+		SendClientMessageEx(playerid, color, secondline);
+	}
+	else SendClientMessageEx(playerid, color, string);
+}
+	
+stock ClearChatbox(playerid)
+{
+	for(new i = 0; i < 50; i++) {
+		SendClientMessage(playerid, COLOR_WHITE, "");
+	}
+	return 1;
+}
+
+stock OOCOff(color,string[])
+{
+	foreach(new i: Player)
+	{
+		if(!gOoc[i]) {
+			SendClientMessageEx(i, color, string);
+		}
+	}	
+}
+
+stock RadioBroadCast(playerid, string[])
+{
+	new MiscString[128], Float: aaaPositions[3];
+	foreach(new i: Player)
+	{
+		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
+		{
+			GetPlayerPos(i, aaaPositions[0], aaaPositions[1], aaaPositions[2]);
+			format(MiscString, sizeof(MiscString), "** Radio (%d khz) ** %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
+			SendClientMessageEx(i, PUBLICRADIO_COLOR, MiscString);
+			format(MiscString, sizeof(MiscString), "(radio) %s", string);
+			SetPlayerChatBubble(playerid,MiscString,COLOR_WHITE,15.0,5000);
+		}
+	}	
+}
 
 CMD:togooc(playerid, params[])
 {

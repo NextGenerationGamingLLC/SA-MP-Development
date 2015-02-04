@@ -37,6 +37,38 @@
 
 #include <YSI\y_hooks>
 
+stock ShowAdMuteFine(playerid)
+{
+	new string[128];
+	new playername[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, playername, sizeof(playername));
+
+	new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
+	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey]][hSafeMoney];
+	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
+	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
+
+    new fine = 10*totalwealth/100;
+	if(PlayerInfo[playerid][pADMuteTotal] < 4)
+	{
+		format(string,sizeof(string),"Jail for %d Minutes\nCash Fine ($%d)",PlayerInfo[playerid][pADMuteTotal]*15,fine);
+	}
+	if(PlayerInfo[playerid][pADMuteTotal] == 4)
+	{
+	    format(string,sizeof(string),"Prison for 1 Hour");
+	}
+	if(PlayerInfo[playerid][pADMuteTotal] == 5)
+	{
+	    format(string,sizeof(string),"Prison for 1 Hour and 15 Minutes)");
+	}
+	if(PlayerInfo[playerid][pADMuteTotal] == 6)
+	{
+	    format(string,sizeof(string),"Prison for 1 Hour and 30 Minutes");
+	}
+	ShowPlayerDialog(playerid,ADMUTE,DIALOG_STYLE_LIST,"Advertisements Unmute - Select your Punishment:",string,"Select","Cancel");
+}
+
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)

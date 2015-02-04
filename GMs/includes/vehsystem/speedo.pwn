@@ -35,6 +35,70 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock UpdateVehicleHUDForPlayer(p, fuel, speed)
+{
+	new str[128], vehicleid = GetPlayerVehicleID(p), szColor[4];
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+	switch(speed)
+	{
+	    case 0..40: szColor = "~w~";
+	    case 41..60: szColor = "~y~";
+	    default: szColor = "~r~";
+	}
+
+	if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid) || GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510)
+		format(str, sizeof(str), "~b~Fuel: ~w~U");
+	else
+		format(str, sizeof(str), "~b~Fuel: ~w~%i",fuel);
+
+	PlayerTextDrawSetString(p, _vhudTextFuel[p], str);
+
+	format(str, sizeof(str), "~b~MPH: %s%i",szColor, speed);
+	PlayerTextDrawSetString(p, _vhudTextSpeed[p], str);
+	
+	if(Seatbelt[p] == 0)
+	{
+		format(str, sizeof(str), "~b~SB: ~r~OFF");
+		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
+	}
+	else if(Seatbelt[p] == 2) {
+		format(str, sizeof(str), "~b~HM: ~g~ON");
+		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
+	}
+	else {
+		format(str, sizeof(str), "~b~SB: ~g~ON");
+		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
+	}
+	if(lights != VEHICLE_PARAMS_ON) {
+		format(str, sizeof(str), "~b~Lights: ~r~OFF");
+		PlayerTextDrawSetString(p, _vhudLights[p], str);	
+	}
+	else {
+		format(str, sizeof(str), "~b~Lights: ~g~ON");
+		PlayerTextDrawSetString(p, _vhudLights[p], str);
+	}
+}
+
+stock ShowVehicleHUDForPlayer(playerid)
+{
+	PlayerTextDrawShow(playerid, _vhudTextFuel[playerid]);
+	PlayerTextDrawShow(playerid, _vhudTextSpeed[playerid]);
+	PlayerTextDrawShow(playerid, _vhudSeatBelt[playerid]);
+	PlayerTextDrawShow(playerid, _vhudLights[playerid]);
+	_vhudVisible[playerid] = 1;
+}
+
+
+stock HideVehicleHUDForPlayer(playerid)
+{
+	PlayerTextDrawHide(playerid, _vhudTextFuel[playerid]);
+	PlayerTextDrawHide(playerid, _vhudTextSpeed[playerid]);
+	PlayerTextDrawHide(playerid, _vhudSeatBelt[playerid]);
+	PlayerTextDrawHide(playerid, _vhudLights[playerid]);
+	_vhudVisible[playerid] = 0;
+}
+
 /*CMD:speedo(playerid, params[]) {
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not driving a vehicle.");

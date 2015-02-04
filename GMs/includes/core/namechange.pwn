@@ -35,6 +35,16 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock IsAtNameChange(playerid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 3.0,1154.7295,-1440.2323,15.7969)) return 1;//LS
+		else if(IsPlayerInRangeOfPoint(playerid, 3.0,-2279.6545, 2311.2238, 4.9641)) return 1;//TR
+	}
+	return 0;
+}
+
 /*CMD:nchange(playerid, params[]) return cmd_namechanges(playerid, params);
 
 CMD:namechanges(playerid, params[])

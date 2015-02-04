@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.193"
+#define SERVER_GM_TEXT "NG:RP v3.0.194"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -101,7 +101,6 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
-#include "./includes/countrycheck.pwn"
 
 
 //admin includes
@@ -116,6 +115,10 @@
 #include "./includes/admin/vouchers.pwn"
 #include "./includes/admin/watchdogs.pwn"
 #include "./includes/admin/intlist.pwn"
+#include "./includes/admin/anticheat.pwn"
+#include "./includes/admin/spectate.pwn"
+#include "./includes/admin/teleport.pwn"
+#include "./includes/admin/watch.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"
@@ -147,6 +150,21 @@
 #include "./includes/core/damage.pwn"
 #include "./includes/core/health.pwn"
 #include "./includes/core/teams.pwn"
+#include "./includes/core/stats.pwn"
+#include "./includes/core/timefuncs.pwn"
+#include "./includes/core/camerafuncs.pwn"
+#include "./includes/core/clearcheckpoint.pwn" 
+#include "./includes/core/maintenance.pwn"
+#include "./includes/core/countrycheck.pwn"
+#include "./includes/core/countdown.pwn"
+#include "./includes/core/filehandle.pwn"
+#include "./includes/core/initgamemode.pwn"
+#include "./includes/core/login.pwn"
+#include "./includes/core/miscload.pwn" 
+#include "./includes/core/proxdetector.pwn"
+#include "./includes/core/setplayerspawn.pwn"
+#include "./includes/core/stats.pwn"
+#include "./includes/core/streamprep.pwn" 
 
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"
@@ -156,6 +174,8 @@
 #include "./includes/vehsystem/tow.pwn"
 #include "./includes/vehsystem/VLP.pwn"
 #include "./includes/vehsystem/helmet.pwn"
+#include "./includes/vehsystem/groupvehs.pwn"
+#include "./includes/vehsystem/playervehs.pwn"
 
 
 //dynamic core includes
@@ -234,8 +254,6 @@
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
 
-#include "./includes/initgamemode.pwn"
-
 #pragma unused DynamicBusiness
 
 main() {}
@@ -252,4 +270,13 @@ public OnGameModeExit()
 	print("Exiting the gamemode, please wait..."); // Added this for easier access to find logs about the gamemode exiting
     g_mysql_Exit();
 	return 1;
+}
+
+AntiDeAMX()
+{
+    new a[][] = {
+        "Unarmed (Fist)",
+        "Brass K"
+    };
+    #pragma unused a
 }

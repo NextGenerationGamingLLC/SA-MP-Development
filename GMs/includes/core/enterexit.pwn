@@ -493,27 +493,27 @@ CMD:enter(playerid, params[])
     	Player_StreamPrep(playerid, 876.6959,1421.9335,-82.3370, FREEZE_TIME);
     }
 	// DOC enter point
-	else if(IsPlayerInRangeOfPoint(playerid, 2.0, -2073.0698,-155.5515,35.3274))
+	else if(IsPlayerInRangeOfPoint(playerid, 2.0, -1608.7349,362.2210,7.5583))
 	{
-		if(bDocAreaOpen[11] == true)
+		if(bDocAreaOpen[9] == true) // a-side entrance
 		{
 			SetPlayerInterior(playerid, 1);
 			PlayerInfo[playerid][pInt] = 1;
-			SetPlayerFacingAngle(playerid, 180);
-			SetPlayerPos(playerid, 546.2566,1475.3230,5996.9590);
-			Player_StreamPrep(playerid, 546.2566,1475.3230,5996.9590, FREEZE_TIME);
+			SetPlayerFacingAngle(playerid, 270);
+			SetPlayerPos(playerid, 545.2914,1473.8733,5996.9590);
+			Player_StreamPrep(playerid, 545.2914,1473.8733,5996.9590, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}
-	else if(IsPlayerInRangeOfPoint(playerid, 2.0, -2028.1309,-155.6799,35.3204))
+	else if(IsPlayerInRangeOfPoint(playerid, 2.0, -1613.9714,309.6790,7.5581))
 	{
-		if(bDocAreaOpen[12] == true)
+		if(bDocAreaOpen[10] == true) // b-side entrance
 		{
 			SetPlayerInterior(playerid, 1);
 			PlayerInfo[playerid][pInt] = 1;
-			SetPlayerFacingAngle(playerid, 360);
-			SetPlayerPos(playerid, 546.5234,1472.1862,5996.9590);
-			Player_StreamPrep(playerid, 546.5234,1472.1862,5996.9590, FREEZE_TIME);
+			SetPlayerFacingAngle(playerid, 270);
+			SetPlayerPos(playerid, 546.1295,1432.1731,6000.4712);
+			Player_StreamPrep(playerid, 546.1295,1432.1731,6000.4712, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}
@@ -964,25 +964,25 @@ CMD:exit(playerid, params[])
         }
     }
 	// DOC exit point
-	else if(IsPlayerInRangeOfPoint(playerid, 1.0, 546.2566,1475.3230,5996.9590))
+	else if(IsPlayerInRangeOfPoint(playerid, 1.0, 545.2914,1473.8733,5996.9590))
 	{
-		if(bDocAreaOpen[11] == true)
+		if(bDocAreaOpen[9] == true) // side -a
 		{
 			SetPlayerInterior(playerid, 0);
 			PlayerInfo[playerid][pInt] = 0;
-			SetPlayerFacingAngle(playerid, 180);
-			Player_StreamPrep(playerid, -2073.0698,-155.5515,35.3274, FREEZE_TIME);
+			SetPlayerFacingAngle(playerid, 346);
+			Player_StreamPrep(playerid, -1608.7349,362.2210,7.69, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}
-	else if(IsPlayerInRangeOfPoint(playerid, 1.0, 546.5234,1472.1862,5996.9590))
+	else if(IsPlayerInRangeOfPoint(playerid, 1.0, 546.1295,1432.1731,6000.4712))
 	{
-		if(bDocAreaOpen[12] == true)
+		if(bDocAreaOpen[10] == true) // side b
 		{
 			SetPlayerInterior(playerid, 0);
 			PlayerInfo[playerid][pInt] = 0;
-			SetPlayerFacingAngle(playerid, 180);
-			Player_StreamPrep(playerid, -2028.1309,-155.6799,35.3204, FREEZE_TIME);
+			SetPlayerFacingAngle(playerid, 96.5711);
+			Player_StreamPrep(playerid, -1613.9714,309.6790,7.69, FREEZE_TIME);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Door is currently closed.");
 	}

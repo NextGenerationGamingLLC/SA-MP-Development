@@ -37,6 +37,374 @@
 
 #include <YSI\y_hooks>
 
+IsPlayerInArea(playerid, Float:minx, Float:maxx, Float:miny, Float:maxy)
+{
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+    if (x > minx && x < maxx && y > miny && y < maxy) return 1;
+    return 0;
+}
+
+stock PaintballEditMenu(playerid)
+{
+	new string[1024], status[64];
+	for(new i = 0; i < MAX_ARENAS; i++)
+	{
+	    if(PaintBallArena[i][pbLocked] == 0)
+ 	    {
+ 	        format(status,sizeof(status),"Open");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 1)
+ 	    {
+ 	        format(status,sizeof(status),"Active");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 2)
+ 	    {
+ 	        format(status,sizeof(status),"Closed");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 3)
+ 	    {
+ 	        format(status,sizeof(status),"Setup");
+ 	    }
+		format(string,sizeof(string),"%s%s - \t(%s)\n",string,PaintBallArena[i][pbArenaName],status);
+	}
+	ShowPlayerDialog(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",string,"Select","Back");
+}
+
+stock PaintballEditArenaMenu(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	new string[1024];
+	new arenaid = GetPVarInt(playerid, "ArenaNumber");
+	format(string,sizeof(string),"Edit Arena Name - (%s)\nEdit Deathmatch Positions...\nEdit Team Positions...\nEdit Flag Positions...\nEdit Hill Position...\nHill Radius (%f)\nInterior (%d)\nVirtual World (%d)\nWar Vehicle 1\nWar Vehicle 2\nWar Vehicle 3\nWar Vehicle 4\nWar Vehicle 5\nWar Vehicle 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
+	ShowPlayerDialog(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",string,"Select","Back");
+	return 1;
+}
+
+stock PaintballEditArenaName(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	new string[128];
+	new arenaid = GetPVarInt(playerid, "ArenaNumber");
+	format(string,sizeof(string),"Enter a new Arena Name for Arena Slot %d:",arenaid);
+	ShowPlayerDialog(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",string,"Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaDMSpawns(playerid)
+{
+    if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena DM Spawns:","Deathmatch Spawn 1\nDeathmatch Spawn 2\nDeathmatch Spawn 3\nDeathmatch Spawn 4","Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaTeamSpawns(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Team Spawns:","Red Team Spawn 1\nRed Team Spawn 2\nRed Team Spawn 3\nBlue Team Spawn 1\nBlue Team Spawn 2\nBlue Team Spawn 3","Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaFlagSpawns(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Flag Spawns:","Red Team Flag\nBlue Team Flag","Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaInt(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Interior:","Please enter a new interior id to place on the Arena:","Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaVW(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Virtual World:","Please enter a new virtual world id to place on the Arena:","Change","Back");
+	return 1;
+}
+
+stock PaintballEditArenaHillRadius(playerid)
+{
+	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	ShowPlayerDialog(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Hill Radius:","Please enter a new hill radius for the Arena:","Change","Back");
+	return 1;
+}
+
+stock PaintballScoreboard(playerid, arenaid)
+{
+	if(GetPVarInt(playerid, "IsInArena") == -1) { return 1; }
+	new titlestring[128];
+	new string[2048];
+ 	foreach(new p: Player)
+	{
+		if(GetPVarInt(p, "IsInArena") == arenaid)
+		{
+			if(PaintBallArena[arenaid][pbGameType] == 1)
+			{
+				format(string,sizeof(string),"%s(ID: %d) %s - (Kills: %d) (Deaths: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],PlayerInfo[p][pDeaths],GetPlayerPing(p));
+			}
+			if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3)
+			{
+				switch(PlayerInfo[p][pPaintTeam])
+				{
+					case 1: // Red Team
+					{
+						format(string,sizeof(string),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+					}
+					case 2: // Blue Team
+					{
+						format(string,sizeof(string),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+					}
+				}
+			}
+			if(PaintBallArena[arenaid][pbGameType] == 4)
+			{
+				format(string,sizeof(string),"%s(ID: %d) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+			}
+			if(PaintBallArena[arenaid][pbGameType] == 5)
+			{
+				switch(PlayerInfo[p][pPaintTeam])
+				{
+					case 1: // Red Team
+					{
+						format(string,sizeof(string),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+					}
+					case 2: // Blue Team
+					{
+						format(string,sizeof(string),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+					}
+				}
+			}
+		}
+	}	
+	switch (PaintBallArena[arenaid][pbGameType])
+	{
+		case 1: // Deathmatch
+		{
+			format(titlestring,sizeof(titlestring),"(DM) Scoreboard - Time Left: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
+		}
+		case 2: // Team Deathmatch
+		{
+		    format(titlestring,sizeof(titlestring),"(TDM) Scoreboard - Red: (%d) - Blue: (%d) - Time Left: (%d)",
+			PaintBallArena[arenaid][pbTeamRedKills],
+			PaintBallArena[arenaid][pbTeamBlueKills],
+			PaintBallArena[arenaid][pbTimeLeft]);
+		}
+		case 3: // Capture The Flag
+		{
+		    format(titlestring,sizeof(titlestring),"(CTF) Scoreboard - Red: (%d) - Blue: (%d) - Time Left: (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
+		}
+		case 4: // King of the Hill
+		{
+		    format(titlestring,sizeof(titlestring),"(KOTH) Scoreboard - Time Left: (%d)",PaintBallArena[arenaid][pbTimeLeft]);
+		}
+		case 5: // Team King of the Hill
+		{
+		    format(titlestring,sizeof(titlestring),"(TKOTH) Scoreboard - Red: (%d) - Blue: (%d) - Time Left (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
+		}
+	}
+	ShowPlayerDialog(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,string,"Update","Close");
+	return 1;
+}
+
+stock PaintballArenaSelection(playerid)
+{
+	new string[2048], status[64], gametype[64], eperm[64], war[32], limit, count, money;
+ 	for(new i = 0; i < MAX_ARENAS; i++) if(!isnull(PaintBallArena[i][pbArenaName]))
+ 	{
+ 	    limit = PaintBallArena[i][pbLimit];
+ 	    count = PaintBallArena[i][pbPlayers];
+ 	    money = PaintBallArena[i][pbBidMoney];
+
+ 	    if(PaintBallArena[i][pbLocked] == 0)
+ 	    {
+ 	        format(status,sizeof(status),"{00FF00}Open{FFFFFF}");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 1)
+ 	    {
+ 	        format(status,sizeof(status),"{00FF00}Active{FFFFFF}");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 2)
+ 	    {
+ 	        format(status,sizeof(status),"{FF0000}Closed{FFFFFF}");
+ 	    }
+ 	    if(PaintBallArena[i][pbLocked] == 3)
+ 	    {
+ 	        format(status,sizeof(status),"{FF6600}Setup{FFFFFF}");
+ 	    }
+
+ 	    if(PaintBallArena[i][pbGameType] == 1)
+ 	    {
+ 	        format(gametype,sizeof(gametype),"DM");
+		}
+		if(PaintBallArena[i][pbGameType] == 2)
+		{
+		    format(gametype,sizeof(gametype),"TDM");
+		}
+		if(PaintBallArena[i][pbGameType] == 3)
+		{
+		    format(gametype,sizeof(gametype),"CTF");
+		}
+		if(PaintBallArena[i][pbGameType] == 4)
+		{
+		    format(gametype,sizeof(gametype),"KOTH");
+		}
+		if(PaintBallArena[i][pbGameType] == 5)
+		{
+		    format(gametype,sizeof(gametype),"TKOTH");
+		}
+
+		if(PaintBallArena[i][pbExploitPerm] == 0)
+		{
+		    format(eperm,sizeof(eperm),"{FF0000}No QS/CS{FFFFFF}");
+		}
+		if(PaintBallArena[i][pbExploitPerm] == 1)
+		{
+		    format(eperm,sizeof(eperm),"{00FF00}QS/CS{FFFFFF}");
+		}
+		
+		if(PaintBallArena[i][pbWar] == 0)
+		{
+			format(war, sizeof(war), "");
+		}
+		if(PaintBallArena[i][pbWar] == 1)
+		{
+			format(war, sizeof(war), " ({FFFF00}War{FFFFFF})");
+		}
+
+		if(!strcmp(PaintBallArena[i][pbPassword], "None", false))
+		{
+ 	    	format(string,sizeof(string),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s\n",string,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
+		}
+		else
+		{
+		    format(string,sizeof(string),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s (PW)\n",string,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
+		}
+	}
+	ShowPlayerDialog(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",string,"Select","Back");
+}
+
+stock PaintballTokenBuyMenu(playerid)
+{
+	new string[150];
+	format(string,sizeof(string),"{FFFFFF}How many Paintball Tokens do you wish to purchase?\n\nEach token costs a total of $%d. You currently have {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
+	ShowPlayerDialog(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",string,"Buy","Back");
+}
+
+stock PaintballSetupArena(playerid)
+{
+	new string[1024], gametype[32], password[64], wepname1[128], wepname2[128], wepname3[128], eperm[64], finstagib[64], fnoweapons[64], war[32];
+	new timelimit, limit, money, Float:health, Float:armor, wep1, wep2, wep3;
+	new a = GetPVarInt(playerid, "ArenaNumber");
+
+	format(password,sizeof(password),"%s", PaintBallArena[a][pbPassword]);
+	timelimit = PaintBallArena[a][pbTimeLeft]/60;
+	limit = PaintBallArena[a][pbLimit];
+	money = PaintBallArena[a][pbBidMoney];
+	health = PaintBallArena[a][pbHealth];
+	armor = PaintBallArena[a][pbArmor];
+	wep1 = PaintBallArena[a][pbWeapons][0];
+	wep2 = PaintBallArena[a][pbWeapons][1];
+	wep3 = PaintBallArena[a][pbWeapons][2];
+
+	GetWeaponName(wep1,wepname1,sizeof(wepname1));
+	GetWeaponName(wep2,wepname2,sizeof(wepname2));
+	GetWeaponName(wep3,wepname3,sizeof(wepname3));
+
+	if(PaintBallArena[a][pbGameType] == 1)
+	{
+		format(gametype,sizeof(gametype),"DM");
+	}
+	if(PaintBallArena[a][pbGameType] == 2)
+	{
+	    format(gametype,sizeof(gametype),"TDM");
+	}
+	if(PaintBallArena[a][pbGameType] == 3)
+	{
+	    format(gametype,sizeof(gametype),"CTF");
+	}
+	if(PaintBallArena[a][pbGameType] == 4)
+	{
+	    format(gametype,sizeof(gametype),"KOTH");
+	}
+	if(PaintBallArena[a][pbGameType] == 5)
+	{
+	    format(gametype,sizeof(gametype),"TKOTH");
+	}
+
+	if(PaintBallArena[a][pbExploitPerm] == 0)
+	{
+		format(eperm,sizeof(eperm),"Not Allowed");
+	}
+	if(PaintBallArena[a][pbExploitPerm] == 1)
+	{
+	    format(eperm,sizeof(eperm),"Allowed");
+	}
+
+	if(PaintBallArena[a][pbFlagInstagib] == 0)
+	{
+	    format(finstagib,sizeof(finstagib),"Off");
+	}
+	if(PaintBallArena[a][pbFlagInstagib] == 1)
+	{
+	    format(finstagib,sizeof(finstagib),"On");
+	}
+
+	if(PaintBallArena[a][pbFlagNoWeapons] == 0)
+	{
+	    format(fnoweapons,sizeof(fnoweapons),"Off");
+	}
+	if(PaintBallArena[a][pbFlagNoWeapons] == 1)
+	{
+	    format(fnoweapons,sizeof(fnoweapons),"On");
+	}
+	if(PaintBallArena[a][pbWar] == 0)
+	{
+		format(war, sizeof(war), "Off");
+	}
+	if(PaintBallArena[a][pbWar] == 1)
+	{
+		format(war, sizeof(war), "On");
+	}
+
+	switch(PaintBallArena[a][pbGameType])
+	{
+	    case 1:
+	    {
+	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	    }
+	    case 2:
+	    {
+	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	    }
+	    case 3:
+	    {
+	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nFlag Instagib - (%s)\nFlag No Weapons - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war,finstagib,fnoweapons);
+	    }
+	    case 4:
+	    {
+	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	    }
+	    case 5:
+	    {
+	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	    }
+	}
+	ShowPlayerDialog(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",string,"Select","Leave");
+}
+
+stock PaintballSwitchTeam(playerid)
+{
+	new arenaid = GetPVarInt(playerid, "IsInArena");
+	new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
+	new string[128];
+	format(string,sizeof(string),"{FF0000}Red Team (%d/%d)\n{0000FF}Blue Team (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
+	ShowPlayerDialog(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:",string,"Switch","Cancel");
+}
+
 stock InitPaintballArenas()
 {
     new string[64];

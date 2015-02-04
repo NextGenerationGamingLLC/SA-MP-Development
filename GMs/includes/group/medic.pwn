@@ -35,6 +35,138 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward ShowPlayerBeaconForMedics(playerid);
+public ShowPlayerBeaconForMedics(playerid)
+{
+	foreach(new i: Player)
+	{
+		if(IsAMedic(i))
+		{
+			SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
+		}
+	}	
+	return 1;
+}
+
+forward HidePlayerBeaconForMedics(playerid);
+public HidePlayerBeaconForMedics(playerid)
+{
+	foreach(new i: Player)
+	{
+		if(IsAMedic(i))
+		{
+			SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
+		}
+	}	
+	SetPlayerToTeamColor(playerid);
+	return 1;
+}
+
+forward MoveEMS(playerid);
+public MoveEMS(playerid)
+{
+    new Float:mX, Float:mY, Float:mZ;
+    GetPlayerPos(playerid, mX, mY, mZ);
+
+    SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicX", mX);
+	SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicY", mY);
+	SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicZ", mZ);
+	SetPVarInt(GetPVarInt(playerid, "MovingStretcher"), "MedicVW", GetPlayerVirtualWorld(playerid));
+	SetPVarInt(GetPVarInt(playerid, "MovingStretcher"), "MedicInt", GetPlayerInterior(playerid));
+
+	Streamer_UpdateEx(GetPVarInt(playerid, "MovingStretcher"), mX, mY, mZ);
+	SetPlayerPos(GetPVarInt(playerid, "MovingStretcher"), mX, mY, mZ);
+	SetPlayerInterior(GetPVarInt(playerid, "MovingStretcher"), GetPlayerVirtualWorld(playerid));
+	SetPlayerVirtualWorld(GetPVarInt(playerid, "MovingStretcher"), GetPlayerVirtualWorld(playerid));
+
+	ClearAnimations(GetPVarInt(playerid, "MovingStretcher"));
+	ApplyAnimation(GetPVarInt(playerid, "MovingStretcher"), "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
+
+	DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
+	SetPVarInt(playerid, "MovingStretcher", -1);
+}
+
+forward KillEMSQueue(playerid);
+public KillEMSQueue(playerid)
+{
+    DeletePVar(playerid, "Injured");
+    DeletePVar(playerid, "InjuredWait");
+    DeletePVar(playerid, "EMSAttempt");
+	SetPVarInt(playerid, "MedicBill", 1);
+	DeletePVar(playerid, "MedicCall");
+	DeletePVar(playerid, "EMSWarns");
+	DeletePVar(playerid, "_energybar");
+	return 1;
+}
+
+forward SendEMSQueue(playerid,type);
+public SendEMSQueue(playerid,type)
+{
+    #if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
+	{
+		KillEMSQueue(playerid);
+		SpawnPlayer(playerid);
+		return 1;
+	}
+	if(zombieevent == 1 && GetPVarType(playerid, "pZombieBit"))
+	{
+ 		KillEMSQueue(playerid);
+		ClearAnimations(playerid);
+		MakeZombie(playerid);
+		return 1;
+	}
+	#endif
+	switch (type)
+	{
+		case 1:
+		{
+		    Streamer_UpdateEx(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
+			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
+			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid,"MedicVW"));
+	  		SetPlayerInterior(playerid, GetPVarInt(playerid,"MedicInt"));
+
+			SetPVarInt(playerid, "EMSAttempt", -1);
+
+			if(GetPlayerInterior(playerid) > 0) Player_StreamPrep(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"), FREEZE_TIME);
+			GameTextForPlayer(playerid, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
+			ClearAnimations(playerid);
+			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+			SetHealth(playerid, 100);
+			RemoveArmor(playerid);
+			if(GetPVarInt(playerid, "usingfirstaid") == 1)
+			{
+			    firstaidexpire(playerid);
+			}
+			SetPVarInt(playerid,"MedicCall",1);
+		}
+		case 2:
+		{
+		    SetPVarInt(playerid,"EMSAttempt", 2);
+			ClearAnimations(playerid);
+		 	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
+			SetHealth(playerid, 100);
+			RemoveArmor(playerid);
+		}
+	}
+	return 1;
+}
+
+stock IsAnAmbulance(carid)
+{
+	if(DynVeh[carid] != -1)
+	{
+	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
+	    if((0 <= iGroupID < MAX_GROUPS))
+	    {
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC) return 1;
+			else if(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) return 1;
+			else if(carid == 416) return 1;
+		}
+	}
+	return 0;
+}
+
 CMD:loadpt(playerid, params[])
 {
     if(IsAMedic(playerid) || IsFirstAid(playerid))

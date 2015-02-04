@@ -34,7 +34,40 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock CBroadCast(color,string[],level)
+{
+	foreach(new i: Player)
+	{
+		if (PlayerInfo[i][pHelper] >= level)
+		{
+			SendClientMessageEx(i, color, string);
+			//printf("%s", string);
+		}
+	}	
+	return 1;
+}
 
+stock ShowNMuteFine(playerid)
+{
+	new playername[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, playername, sizeof(playername));
+
+	new totalwealth = PlayerInfo[playerid][pAccount] + GetPlayerCash(playerid);
+	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey]][hSafeMoney];
+	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey2]][hSafeMoney];
+	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
+
+    new fine = 10*totalwealth/100;
+	if(PlayerInfo[playerid][pNMuteTotal] < 4)
+	{
+		new string[64];
+		format(string,sizeof(string),"Jail for %d Minutes\nCash Fine ($%d)",PlayerInfo[playerid][pNMuteTotal] * 15, fine);
+		ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:",string,"Select","Cancel");
+	}
+	else if(PlayerInfo[playerid][pNMuteTotal] == 4) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour","Select","Cancel");
+	else if(PlayerInfo[playerid][pNMuteTotal] == 5) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 15 Minutes","Select","Cancel");
+	else if(PlayerInfo[playerid][pNMuteTotal] == 6) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 30 Minutes","Select","Cancel");
+}
 
 stock SendAdvisorMessage(color, string[])
 {

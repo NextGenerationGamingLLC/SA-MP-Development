@@ -35,6 +35,45 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock IsFamedVeh(carid)
+{
+	for(new i = 0; i < sizeof(FamedVehicles); i++)
+	{
+	    if(carid == FamedVehicles[i]) return 1;
+	}
+	return 0;
+}
+
+stock IsOSModel(carid)
+{
+	new Cars[] = {461, 559, 579, 426, 468};
+	for(new i = 0; i < sizeof(Cars); i++)
+	{
+	    if(GetVehicleModel(carid) == Cars[i]) return 1;
+	}
+	return 0;
+}
+
+stock IsCOSModel(carid)
+{
+	new Cars[] = {560, 506, 411};
+	for(new i = 0; i < sizeof(Cars); i++)
+	{
+	    if(GetVehicleModel(carid) == Cars[i]) return 1;
+	}
+	return 0;
+}
+
+stock IsFamedModel(carid)
+{
+	new Cars[] = {415, 522, 480, 541, 429, 558};
+	for(new i = 0; i < sizeof(Cars); i++)
+	{
+	    if(GetVehicleModel(carid) == Cars[i]) return 1;
+	}
+	return 0;
+}
+
 stock GetFamedRankName(i)
 {
 	new string[128];

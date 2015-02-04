@@ -35,6 +35,166 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock GetWeaponParam(id, WeaponsEnum: param)
+{
+	for (new i; i < sizeof(Weapons); i++)
+	{
+		if (Weapons[i][WeaponId] == id)	return Weapons[i][param];
+	}
+	return 0;
+}
+
+stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
+{
+    #if defined zombiemode
+   	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't have guns.");
+	#endif
+	switch( WeaponID )
+	{
+  		case 0, 1:
+		{
+			PlayerInfo[playerid][pGuns][ 0 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 2, 3, 4, 5, 6, 7, 8, 9:
+		{
+			PlayerInfo[playerid][pGuns][ 1 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 22, 23, 24:
+		{
+			PlayerInfo[playerid][pGuns][ 2 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 25, 26, 27:
+		{
+			PlayerInfo[playerid][pGuns][ 3 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 28, 29, 32:
+		{
+			PlayerInfo[playerid][pGuns][ 4 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 30, 31:
+		{
+			PlayerInfo[playerid][pGuns][ 5 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 33, 34:
+		{
+			PlayerInfo[playerid][pGuns][ 6 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 35, 36, 37, 38:
+		{
+			PlayerInfo[playerid][pGuns][ 7 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 16, 17, 18, 39, 40:
+		{
+			PlayerInfo[playerid][pGuns][ 8 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 41, 42, 43:
+		{
+			PlayerInfo[playerid][pGuns][ 9 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 10, 11, 12, 13, 14, 15:
+		{
+			PlayerInfo[playerid][pGuns][ 10 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+		case 44, 45, 46:
+		{
+			PlayerInfo[playerid][pGuns][ 11 ] = WeaponID;
+			GivePlayerWeapon( playerid, WeaponID, Ammo );
+		}
+	}
+	return 1;
+}
+
+stock IsWeaponHandgun(weaponid) {
+	switch(weaponid) {
+		case 2..8: return true;
+		case 10..24: return true;
+		default: return false;
+	}
+	return false;
+}
+
+stock IsWeaponPrimary(weaponid) {
+	switch(weaponid) {
+		case 25..34: return true;
+		default: return false;
+	}
+	return false;
+}
+
+forward SetPlayerWeapons(playerid);
+public SetPlayerWeapons(playerid)
+{
+	if(HungerPlayerInfo[playerid][hgInEvent] == 1) { return 1;}
+    if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }
+	ResetPlayerWeapons(playerid);
+	for(new s = 0; s < 12; s++)
+	{
+		if(PlayerInfo[playerid][pGuns][s] > 0 && PlayerInfo[playerid][pAGuns][s] == 0)
+		{
+			GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
+		}
+	}
+	return 1;
+}
+
+stock SetPlayerWeaponsEx(playerid)
+{
+	if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }	
+	ResetPlayerWeapons(playerid);
+	for(new s = 0; s < 12; s++)
+	{
+		if(PlayerInfo[playerid][pGuns][s] > 0)
+		{
+			GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
+		}
+	}
+	SetPlayerArmedWeapon(playerid, GetPVarInt(playerid, "LastWeapon"));
+	return 1;
+}
+
+stock ResetPlayerWeaponsEx( playerid )
+{
+	DeletePVar(playerid, "HidingKnife");
+	ResetPlayerWeapons(playerid);
+	PlayerInfo[playerid][pGuns][ 0 ] = 0;
+	PlayerInfo[playerid][pGuns][ 1 ] = 0;
+	PlayerInfo[playerid][pGuns][ 2 ] = 0;
+	PlayerInfo[playerid][pGuns][ 3 ] = 0;
+	PlayerInfo[playerid][pGuns][ 4 ] = 0;
+	PlayerInfo[playerid][pGuns][ 5 ] = 0;
+	PlayerInfo[playerid][pGuns][ 6 ] = 0;
+	PlayerInfo[playerid][pGuns][ 7 ] = 0;
+	PlayerInfo[playerid][pGuns][ 8 ] = 0;
+	PlayerInfo[playerid][pGuns][ 9 ] = 0;
+	PlayerInfo[playerid][pGuns][ 10 ] = 0;
+	PlayerInfo[playerid][pGuns][ 11 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 0 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 1 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 2 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 3 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 4 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 5 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 6 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 7 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 8 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 9 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 10 ] = 0;
+	PlayerInfo[playerid][pAGuns][ 11 ] = 0;
+	return 1;
+}
+
+
 forward UnholsterWeapon(playerid, iWeaponSlot);
 public UnholsterWeapon(playerid, iWeaponSlot)
 {

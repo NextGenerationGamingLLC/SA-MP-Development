@@ -382,24 +382,25 @@ stock LoadPayNSprays()
 forward OnLoadPayNSpray(index);
 public OnLoadPayNSpray(index)
 {
-	new rows, fields, tmp[128], string[128];
+	new rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  PayNSprays[index][pnsSQLId] = strval(tmp);
-		cache_get_field_content(row, "Status", tmp, MainPipeline); PayNSprays[index][pnsStatus] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); PayNSprays[index][pnsPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); PayNSprays[index][pnsPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); PayNSprays[index][pnsPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); PayNSprays[index][pnsVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); PayNSprays[index][pnsInt] = strval(tmp);
-		cache_get_field_content(row, "GroupCost", tmp, MainPipeline); PayNSprays[index][pnsGroupCost] = strval(tmp);
-		cache_get_field_content(row, "RegCost", tmp, MainPipeline); PayNSprays[index][pnsRegCost] = strval(tmp);
+		PayNSprays[index][pnsSQLId] = cache_get_field_content_int(row, "id", MainPipeline);  
+		PayNSprays[index][pnsStatus] = cache_get_field_content_int(row, "Status", MainPipeline); 
+		PayNSprays[index][pnsPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
+		PayNSprays[index][pnsPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
+		PayNSprays[index][pnsPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
+		PayNSprays[index][pnsVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
+		PayNSprays[index][pnsInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
+		PayNSprays[index][pnsGroupCost] = cache_get_field_content_int(row, "GroupCost", MainPipeline); 
+		PayNSprays[index][pnsRegCost] = cache_get_field_content_int(row, "RegCost", MainPipeline); 
 		if(PayNSprays[index][pnsStatus] > 0)
 		{
-			format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[index][pnsRegCost]), number_format(PayNSprays[index][pnsGroupCost]), index);
-			PayNSprays[index][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[index][pnsVW], PayNSprays[index][pnsInt], -1);
+			format(szMiscArray, sizeof(szMiscArray), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[index][pnsRegCost]), number_format(PayNSprays[index][pnsGroupCost]), index);
+			PayNSprays[index][pnsTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_RED, PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[index][pnsVW], PayNSprays[index][pnsInt], -1);
 			PayNSprays[index][pnsPickupID] = CreateDynamicPickup(1239, 23, PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ], PayNSprays[index][pnsVW]);
 			PayNSprays[index][pnsMapIconID] = CreateDynamicMapIcon(PayNSprays[index][pnsPosX], PayNSprays[index][pnsPosY], PayNSprays[index][pnsPosZ], 63, 0, PayNSprays[index][pnsVW], PayNSprays[index][pnsInt], -1, 500.0);
 		}
@@ -410,26 +411,27 @@ public OnLoadPayNSpray(index)
 forward OnLoadPayNSprays();
 public OnLoadPayNSprays()
 {
-	new i, rows, fields, tmp[128], string[128];
+	new i, rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  PayNSprays[i][pnsSQLId] = strval(tmp);
-		cache_get_field_content(i, "Status", tmp, MainPipeline); PayNSprays[i][pnsStatus] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); PayNSprays[i][pnsPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); PayNSprays[i][pnsPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); PayNSprays[i][pnsPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); PayNSprays[i][pnsVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); PayNSprays[i][pnsInt] = strval(tmp);
-		cache_get_field_content(i, "GroupCost", tmp, MainPipeline); PayNSprays[i][pnsGroupCost] = strval(tmp);
-		cache_get_field_content(i, "RegCost", tmp, MainPipeline); PayNSprays[i][pnsRegCost] = strval(tmp);
+		PayNSprays[i][pnsSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		PayNSprays[i][pnsStatus] = cache_get_field_content_int(i, "Status", MainPipeline); 
+		PayNSprays[i][pnsPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
+		PayNSprays[i][pnsPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
+		PayNSprays[i][pnsPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
+		PayNSprays[i][pnsVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		PayNSprays[i][pnsInt] = cache_get_field_content_int(i, "Int", MainPipeline); 
+		PayNSprays[i][pnsGroupCost] = cache_get_field_content_int(i, "GroupCost", MainPipeline); 
+		PayNSprays[i][pnsRegCost] = cache_get_field_content_int(i, "RegCost", MainPipeline); 
 		if(PayNSprays[i][pnsStatus] > 0)
 		{
 			if(PayNSprays[i][pnsPosX] != 0.0)
 			{
-				format(string, sizeof(string), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[i][pnsRegCost]), number_format(PayNSprays[i][pnsGroupCost]), i);
-				PayNSprays[i][pnsTextID] = CreateDynamic3DTextLabel(string, COLOR_RED, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1);
+				format(szMiscArray, sizeof(szMiscArray), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[i][pnsRegCost]), number_format(PayNSprays[i][pnsGroupCost]), i);
+				PayNSprays[i][pnsTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_RED, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ]+0.5,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1);
 				PayNSprays[i][pnsPickupID] = CreateDynamicPickup(1239, 23, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], PayNSprays[i][pnsVW]);
 				PayNSprays[i][pnsMapIconID] = CreateDynamicMapIcon(PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], 63, 0, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1, 500.0);
 			}

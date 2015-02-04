@@ -25,6 +25,12 @@
 
 //-------------------------------------------------
 
+forward ClearAnims(playerid);
+public ClearAnims(playerid)
+{
+	ClearAnimations(playerid);
+}
+
 PlayAnim(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
 {
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);

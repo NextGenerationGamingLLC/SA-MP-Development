@@ -51,44 +51,45 @@ stock LoadArrestPoints()
 forward OnLoadArrestPoint(index);
 public OnLoadArrestPoint(index)
 {
-	new rows, fields, tmp[128], string[128];
+	new rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  ArrestPoints[index][arrestSQLId] = strval(tmp);
-		cache_get_field_content(row, "PosX", tmp, MainPipeline); ArrestPoints[index][arrestPosX] = floatstr(tmp);
-		cache_get_field_content(row, "PosY", tmp, MainPipeline); ArrestPoints[index][arrestPosY] = floatstr(tmp);
-		cache_get_field_content(row, "PosZ", tmp, MainPipeline); ArrestPoints[index][arrestPosZ] = floatstr(tmp);
-		cache_get_field_content(row, "VW", tmp, MainPipeline); ArrestPoints[index][arrestVW] = strval(tmp);
-		cache_get_field_content(row, "Int", tmp, MainPipeline); ArrestPoints[index][arrestInt] = strval(tmp);
-		cache_get_field_content(row, "Type", tmp, MainPipeline); ArrestPoints[index][arrestType] = strval(tmp);
+		ArrestPoints[index][arrestSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
+		ArrestPoints[index][arrestPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
+		ArrestPoints[index][arrestPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
+		ArrestPoints[index][arrestPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
+		ArrestPoints[index][arrestVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
+		ArrestPoints[index][arrestInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
+		ArrestPoints[index][arrestType] = cache_get_field_content_int(row, "Type", MainPipeline); 
 		if(ArrestPoints[index][arrestPosX] != 0)
 		{
 			switch(ArrestPoints[index][arrestType])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/arrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", index);
-					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nArrest Point #%d", index);
+					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
 				}
 			}
@@ -100,52 +101,53 @@ public OnLoadArrestPoint(index)
 forward OnLoadArrestPoints();
 public OnLoadArrestPoints()
 {
-	new i, rows, fields, tmp[128], string[128];
+	new i, rows, fields;
+	szMiscArray[0] = 0;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  ArrestPoints[i][arrestSQLId] = strval(tmp);
-		cache_get_field_content(i, "PosX", tmp, MainPipeline); ArrestPoints[i][arrestPosX] = floatstr(tmp);
-		cache_get_field_content(i, "PosY", tmp, MainPipeline); ArrestPoints[i][arrestPosY] = floatstr(tmp);
-		cache_get_field_content(i, "PosZ", tmp, MainPipeline); ArrestPoints[i][arrestPosZ] = floatstr(tmp);
-		cache_get_field_content(i, "VW", tmp, MainPipeline); ArrestPoints[i][arrestVW] = strval(tmp);
-		cache_get_field_content(i, "Int", tmp, MainPipeline); ArrestPoints[i][arrestInt] = strval(tmp);
-		cache_get_field_content(i, "Type", tmp, MainPipeline); ArrestPoints[i][arrestType] = strval(tmp);
-		cache_get_field_content(i, "jailVW", tmp, MainPipeline); ArrestPoints[i][jailVW] = strval(tmp);
-		cache_get_field_content(i, "jailInt", tmp, MainPipeline); ArrestPoints[i][jailInt] = strval(tmp);
-		cache_get_field_content(i, "jailpos1x", tmp, MainPipeline); ArrestPoints[i][JailPos1][0] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos1y", tmp, MainPipeline); ArrestPoints[i][JailPos1][1] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos1z", tmp, MainPipeline); ArrestPoints[i][JailPos1][2] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2x", tmp, MainPipeline); ArrestPoints[i][JailPos2][0] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2y", tmp, MainPipeline); ArrestPoints[i][JailPos2][1] = floatstr(tmp);
-		cache_get_field_content(i, "jailpos2z", tmp, MainPipeline); ArrestPoints[i][JailPos2][2] = floatstr(tmp);
+		ArrestPoints[i][arrestSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		ArrestPoints[i][arrestPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
+		ArrestPoints[i][arrestPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
+		ArrestPoints[i][arrestPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
+		ArrestPoints[i][arrestVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		ArrestPoints[i][arrestInt] = cache_get_field_content_int(i, "Int", MainPipeline); 
+		ArrestPoints[i][arrestType] = cache_get_field_content_int(i, "Type", MainPipeline); 
+		ArrestPoints[i][jailVW] = cache_get_field_content_int(i, "jailVW", MainPipeline); 
+		ArrestPoints[i][jailInt] = cache_get_field_content_int(i, "jailInt", MainPipeline);
+		ArrestPoints[i][JailPos1][0] = cache_get_field_content_float(i, "jailpos1x", MainPipeline);
+		ArrestPoints[i][JailPos1][1] = cache_get_field_content_float(i, "jailpos1y", MainPipeline);
+		ArrestPoints[i][JailPos1][2] = cache_get_field_content_float(i, "jailpos1z", MainPipeline);
+		ArrestPoints[i][JailPos2][0] = cache_get_field_content_float(i, "jailpos2x", MainPipeline);
+		ArrestPoints[i][JailPos2][1] = cache_get_field_content_float(i, "jailpos2y", MainPipeline);
+		ArrestPoints[i][JailPos2][2] = cache_get_field_content_float(i, "jailpos2z", MainPipeline);
 		if(ArrestPoints[i][arrestPosX] != 0)
 		{
 			switch(ArrestPoints[i][arrestType])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/arrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", i);
-					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nArrest Point #%d", i);
+					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
 				}
 			}

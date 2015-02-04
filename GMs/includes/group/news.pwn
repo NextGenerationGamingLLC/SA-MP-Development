@@ -34,6 +34,45 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock IsANewsCar(carid)
+{
+	if(DynVeh[carid] != -1)
+	{
+	    new iDvSlotID = DynVeh[carid], iGroupID = DynVehicleInfo[iDvSlotID][gv_igID];
+	    if((0 <= iGroupID < MAX_GROUPS))
+	    {
+	    	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS) return 1;
+		}
+	}
+	return 0;
+}
+
+stock OOCNews(color,string[])
+{
+	foreach(new i: Player)
+	{
+		if(!gNews[i]) {
+			SendClientMessageEx(i, color, string);
+		}
+	}	
+}
+
+stock UpdateSANewsBroadcast()
+{
+    new string[42];
+	if(broadcasting == 0)
+	{
+	    format(string, sizeof(string), "Currently: Not Broadcasting\nViewers: %d", viewers);
+	}
+	else
+	{
+	    format(string, sizeof(string), "Currently: LIVE\nViewers: %d", viewers);
+	}
+	for(new i = 0; i < 3; i++)
+	{
+		UpdateDynamic3DTextLabelText(SANews3DText[i], COLOR_LIGHTBLUE, string);
+	}
+}
 
 CMD:tognews(playerid, params[])
 {

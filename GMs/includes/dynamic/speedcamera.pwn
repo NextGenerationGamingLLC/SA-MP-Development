@@ -531,18 +531,18 @@ stock LoadSpeedCameras()
 forward OnLoadSpeedCameras();
 public OnLoadSpeedCameras()
 {
-	new fields, rows, index, result[128];
+	new fields, rows, index;
 	cache_get_data(rows, fields, MainPipeline);
 
 	while ((index < rows))
 	{
-		cache_get_field_content(index, "id", result, MainPipeline); SpeedCameras[index][_scDatabase] = strval(result);
-		cache_get_field_content(index, "pos_x", result, MainPipeline); SpeedCameras[index][_scPosX] = floatstr(result);
-		cache_get_field_content(index, "pos_y", result, MainPipeline); SpeedCameras[index][_scPosY] = floatstr(result);
-		cache_get_field_content(index, "pos_z", result, MainPipeline); SpeedCameras[index][_scPosZ] = floatstr(result);
-		cache_get_field_content(index, "rotation", result, MainPipeline); SpeedCameras[index][_scRotation] = floatstr(result);
-		cache_get_field_content(index, "range", result, MainPipeline); SpeedCameras[index][_scRange] = floatstr(result);
-		cache_get_field_content(index, "speed_limit", result, MainPipeline); SpeedCameras[index][_scLimit] = floatstr(result);
+		SpeedCameras[index][_scDatabase] = cache_get_field_content_int(index, "id", MainPipeline);
+		SpeedCameras[index][_scPosX] = cache_get_field_content_float(index, "pos_x", MainPipeline);
+		SpeedCameras[index][_scPosY] = cache_get_field_content_float(index, "pos_y", MainPipeline);
+		SpeedCameras[index][_scPosZ] = cache_get_field_content_float(index, "pos_z", MainPipeline);
+		SpeedCameras[index][_scRotation] = cache_get_field_content_float(index, "rotation", MainPipeline); 
+		SpeedCameras[index][_scRange] = cache_get_field_content_float(index, "range", MainPipeline); 
+		SpeedCameras[index][_scLimit] = cache_get_field_content_float(index, "speed_limit", MainPipeline); 
 
 		if(SpeedCameras[index][_scPosX] != 0.0)
 		{

@@ -37,6 +37,63 @@
 
 #include <YSI\y_hooks>
 
+stock SendAudioURLToRange(url[], Float:x, Float:y, Float:z, Float:range)
+{
+    audiourlid = CreateDynamicSphere(x, y, z, range);
+	format(audiourlurl, sizeof(audiourlurl), "%s", url);
+	audiourlparams[0] = x;
+	audiourlparams[1] = y;
+	audiourlparams[2] = z;
+	audiourlparams[3] = range;
+	return 1;
+}
+
+stock PlayerPlayMusic(playerid)
+{
+	if(IsPlayerConnected(playerid)) {
+		SetTimer("StopMusic", 5000, 0);
+		PlayerPlaySound(playerid, 1068, 0.0, 0.0, 0.0);
+	}
+}
+
+stock PlayerFixRadio(playerid)
+{
+	if(IsPlayerConnected(playerid)) {
+		SetTimer("PlayerFixRadio2", 1000, 0);
+		PlayerPlaySound(playerid, 1068, 0.0, 0.0, 0.0);
+		Fixr[playerid] = 1;
+	}
+}
+
+forward RevisionListHTTP(index, response_code, data[]);
+public RevisionListHTTP(index, response_code, data[])
+{
+	ShowPlayerDialog(index, DIALOG_REVISION, DIALOG_STYLE_LIST, "Current Version: "SERVER_GM_TEXT" -- View full changes at http://dev.ng-gaming.net", data, "Close", "");
+	return 1;
+}
+
+forward StopMusic();
+public StopMusic()
+{
+	foreach(new i: Player)
+	{
+		PlayerPlaySound(i, 1069, 0.0, 0.0, 0.0);
+	}	
+}
+
+forward PlayerFixRadio2();
+public PlayerFixRadio2()
+{
+	foreach(new i: Player)
+	{
+		if(Fixr[i])
+		{
+			PlayerPlaySound(i, 1069, 0.0, 0.0, 0.0);
+			Fixr[i] = 0;
+		}
+	}	
+}
+
 stock PlayAudioStreamForPlayerEx(playerid, url[], Float:posX = 0.0, Float:posY = 0.0, Float:posZ = 0.0, Float:distance = 50.0, usepos = 0)
 {
 	if(GetPVarType(playerid, "pAudioStream"))

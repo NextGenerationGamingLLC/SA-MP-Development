@@ -35,6 +35,16 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward ReplyTimer(reportid);
+public ReplyTimer(reportid)
+{
+    Reports[reportid][ReportPriority] = 0;
+    Reports[reportid][ReportLevel] = 0;
+    Reports[reportid][BeingUsed] = 0;
+	Reports[reportid][ReportFrom] = INVALID_PLAYER_ID;
+    Reports[reportid][CheckingReport] = INVALID_PLAYER_ID;
+}
+
 stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
 {
     new bool:breakingloop = false, newid = INVALID_REPORT_ID, string[128];

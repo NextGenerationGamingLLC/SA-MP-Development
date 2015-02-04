@@ -35,6 +35,34 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+stock IsAtFishPlace(playerid)
+{
+	if(IsPlayerConnected(playerid))
+	{
+		if(IsPlayerInRangeOfPoint(playerid,1.0,403.8266,-2088.7598,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,398.7553,-2088.7490,7.8359))
+		{//Fishplace at the bigwheel
+			return 1;
+		}
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,396.2197,-2088.6692,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,391.1094,-2088.7976,7.8359))
+		{//Fishplace at the bigwheel
+			return 1;
+		}
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,383.4157,-2088.7849,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,374.9598,-2088.7979,7.8359))
+		{//Fishplace at the bigwheel
+			return 1;
+		}
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,369.8107,-2088.7927,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,367.3637,-2088.7925,7.8359))
+		{//Fishplace at the bigwheel
+			return 1;
+		}
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,362.2244,-2088.7981,7.8359) || IsPlayerInRangeOfPoint(playerid,1.0,354.5382,-2088.7979,7.8359))
+		{//Fishplace at the bigwheel
+			return 1;
+		}
+	}
+	return 0;
+}
+
 stock FishCost(playerid, fish)
 {
 	if(IsPlayerConnected(playerid)) {

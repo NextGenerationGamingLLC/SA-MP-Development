@@ -399,7 +399,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pPR] = 0;
 		PlayerInfo[playerid][pShopTech] = 0;
 		PlayerInfo[playerid][pUndercover] = 0;
-		PlayerInfo[playerid][pFactionModerator];
+		PlayerInfo[playerid][pFactionModerator] = 0;
 		PlayerInfo[playerid][pGangModerator] = 0;
 		PlayerInfo[playerid][pAP] = 0;
 		PlayerInfo[playerid][pHR] = 0;

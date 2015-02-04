@@ -484,20 +484,25 @@ task MoneyUpdate[1000]()
 	    }
 	}
 
-	new minuitet=minuite;
+	new secondet=second;
 	gettime(hour,minuite,second);
 	FixHour(hour);
 	hour = shifthour;
-	if(minuitet != minuite)
+
+	new
+		iTempHour = CalculateWorldGameTime(hour, minuite),
+		iTempMinute = CalculateGameMinute(minuite, second);
+
+	if(secondet != second)
 	{
 		new tstring[7];
-		if(minuite < 10)
+		if(iTempMinute < 10)
 		{
-			format(tstring, sizeof(tstring), "%d:0%d", hour, minuite);
+			format(tstring, sizeof(tstring), "%d:0%d", iTempHour, iTempMinute);
 		}
 		else
 		{
-			format(tstring, sizeof(tstring), "%d:%d", hour, minuite);
+			format(tstring, sizeof(tstring), "%d:%d", iTempHour, iTempMinute);
 		}
 		TextDrawSetString(WristWatch, tstring);
 	}
@@ -1131,7 +1136,7 @@ task ServerHeartbeat[1000]() {
 					PlayerInfo[i][pInt] = 0;
 					SetPlayerVirtualWorld(i, 0);
 					PlayerInfo[i][pVW] = 0;
-					SetPlayerPos(i, -2028.5829,-96.5533,35.1641);
+					SetPlayerPos(i, -1528.5812,489.6914,7.1797);
 				}
 				else {
 					SetPlayerInterior(i, 0);

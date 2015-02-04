@@ -61,6 +61,39 @@ new Float:FloorZOffsets[21] =
     112.12735	// 8.5479 + (5.45155 * 19.0)
 };
 
+stock LoadElevatorStuff() {
+
+	if(!fexist("elevator.ini")) return 1;
+
+	new
+		szFileStr[64],
+		iIndex,
+		File: iFileHandle = fopen("elevator.ini", io_read);
+
+	while(iIndex < 20 && fread(iFileHandle, szFileStr)) {
+		sscanf(szFileStr, "p<|>s[24]s[24]", LAElevatorFloorData[0][iIndex], LAElevatorFloorData[1][iIndex]);
+		StripNL(LAElevatorFloorData[1][iIndex]);
+	 	iIndex++;
+	}
+	printf("[LoadElevatorStuff] %i floors loaded.", iIndex);
+	return fclose(iFileHandle);
+}
+
+stock SaveElevatorStuff() {
+
+	new
+		File: iFileHandle = fopen("elevator.ini", io_write);
+
+	for(new iIndex; iIndex < 20; ++iIndex) {
+		fwrite(iFileHandle, LAElevatorFloorData[0][iIndex]);
+		fputchar(iFileHandle, '|', false);
+		fwrite(iFileHandle, LAElevatorFloorData[1][iIndex]);
+		fwrite(iFileHandle, "\r\n");
+	}
+	return fclose(iFileHandle);
+}
+
+
 stock Float:GetElevatorZCoordForFloor(floorid)
 {
     return (GROUND_Z_COORD + FloorZOffsets[floorid] + ELEVATOR_OFFSET); // A small offset for the elevator object itself.

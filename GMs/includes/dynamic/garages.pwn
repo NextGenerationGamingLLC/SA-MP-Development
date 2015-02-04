@@ -36,6 +36,16 @@
 */
 
 #include <YSI\y_hooks>
+
+stock SaveGarages()
+{
+	for(new i = 0; i < MAX_GARAGES; i++)
+	{
+		SaveGarage(i);
+	}
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == GARAGELOCK)

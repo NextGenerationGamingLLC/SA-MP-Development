@@ -34,6 +34,37 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+UpdateVLPTextDraws(playerid, vehicleid, TYPE = 0) {
+	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
+	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+	Get3DZone(CarPos[0], CarPos[1], CarPos[2], tdCarLocation, sizeof(tdCarLocation));
+	format(tdMessage, sizeof(tdMessage), "%s Robbery", tdCarLocation);
+	PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], tdMessage);
+	switch(TYPE) {
+		case 0: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to lock pick vehicle");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "LockPickCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 1: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Attempting to crack the trunk");
+			format(tdMessage, sizeof(tdMessage), "%s", ConvertTimeS(GetPVarInt(playerid, "CrackTrunkCountdown"), 1));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+		case 2: {
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][0], "Deliver Vehicle");
+			format(tdMessage, sizeof(tdMessage), "00:%d", GetPVarInt(playerid, "DeliveringVehicleTime"));
+			PlayerTextDrawSetString(playerid, VLPTextDraws[playerid][3], tdMessage);
+		}
+	}
+}
+
+DestroyVLPTextDraws(playerid) {
+	for(new i = 0; i < 4; i++)
+		PlayerTextDrawDestroy(playerid, VLPTextDraws[playerid][i]);
+}
+
 //Vehicle Lock Pick Textdraws
 CreateVLPTextDraws(playerid)
 {
