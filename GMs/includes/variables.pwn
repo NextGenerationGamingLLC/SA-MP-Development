@@ -355,26 +355,6 @@ new DeckTextdrw[53][] = {
 "LD_CARD:cd13s" // K Spades - 51
 };
 
-// settings dynamic per player lists
-new gCustomList[MAX_PLAYERS][mS_CUSTOM_MAX_ITEMS];
-new gCustomExtraList[MAX_PLAYERS][mS_CUSTOM_MAX_ITEMS];
-new PlayerText:gCurrentPageTextDrawId[MAX_PLAYERS];
-new PlayerText:gHeaderTextDrawId[MAX_PLAYERS];
-new PlayerText:gBackgroundTextDrawId[MAX_PLAYERS];
-new PlayerText:gNextButtonTextDrawId[MAX_PLAYERS];
-new PlayerText:gPrevButtonTextDrawId[MAX_PLAYERS];
-new PlayerText:gCancelButtonTextDrawId[MAX_PLAYERS];
-new PlayerText:gSelectionItems[MAX_PLAYERS][mS_SELECTION_ITEMS];
-new gSelectionItemsTag[MAX_PLAYERS][mS_SELECTION_ITEMS];
-new gSelectionItemsExtra[MAX_PLAYERS][mS_SELECTION_ITEMS];
-new gItemAt[MAX_PLAYERS];
-new gLists[mS_TOTAL_LISTS][2]; // list information start/end index
-new gItemList[mS_TOTAL_ITEMS][2];
-new Float:gRotZoom[mS_TOTAL_ROT_ZOOM][4]; // Array for saving rotation and zoom info
-new gItemAmount = 0; // Amount of items used
-new gListAmount = 0; // Amount of lists used
-new gRotZoomAmount = 0; // Amount of Rotation/Zoom informations used
-
 // Textdraw Global Variables
 new Text:MainMenuTxtdraw[12];
 new Text:NoticeTxtdraw[8];
@@ -2726,3 +2706,5 @@ new gPlayerAnimLibsPreloaded[MAX_PLAYERS];
 new Text:txtAnimHelper;
 
 new bool:PlayerIsDead[MAX_PLAYERS];
+
+new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];

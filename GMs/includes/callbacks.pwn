@@ -1275,6 +1275,36 @@ public OnPlayerPressButton(playerid, buttonid)
 		if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		ShowDocPrisonControls(playerid, 0);
 	}
+	if(buttonid == SFPDHighCMDButton[0]) // Chief
+	{
+		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		SFPDDoors(0, 1);
+		SetTimerEx("SFPDDoors", 3000, false, "ii", 0, 0);
+	}
+	if(buttonid == SFPDHighCMDButton[1]) // Deputy Chief
+	{
+		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		SFPDDoors(1, 1);
+		SetTimerEx("SFPDDoors", 3000, false, "ii", 1, 0);
+	}
+	if(buttonid == SFPDHighCMDButton[2]) // Commander
+	{
+		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		SFPDDoors(2, 1);
+		SetTimerEx("SFPDDoors", 3000, false, "ii", 2, 0);
+	}
+	if(buttonid == SFPDLobbyButton[0])
+	{
+		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		SFPDDoors(3, 1);
+		SetTimerEx("SFPDDoors", 3000, false, "ii", 3, 0);
+	}
+	if(buttonid == SFPDLobbyButton[1])
+	{
+		if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		SFPDDoors(4, 1);
+		SetTimerEx("SFPDDoors", 3000, false, "ii", 4, 0);
+	}
 	return false;
 }
 
@@ -1304,127 +1334,11 @@ public OnVehicleRespray(playerid, vehicleid, color1, color2)
 
 public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
-    if(GetPVarInt(playerid, "mS_ignore_next_esc") == 1) {
-		SetPVarInt(playerid, "mS_ignore_next_esc", 0);
-		return CallLocalFunction("MP_OPCTD", "ii", playerid, _:clickedid);
-	}
-   	if(GetPVarInt(playerid, "mS_list_active") == 0) return CallLocalFunction("MP_OPCTD", "ii", playerid, _:clickedid);
-
-	// Handle: They cancelled (with ESC)
-	if(clickedid == Text:INVALID_TEXT_DRAW) {
-		new listid = mS_GetPlayerCurrentListID(playerid);
-		if(listid == mS_CUSTOM_LISTID)
-		{
-			new extraid = GetPVarInt(playerid, "mS_custom_extraid");
-			mS_DestroySelectionMenu(playerid);
-			CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 0, extraid, -1, -1);
-			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-		}
-		else
-		{
-			mS_DestroySelectionMenu(playerid);
-			CallLocalFunction("OnPlayerModelSelection", "dddd", playerid, 0, listid, -1);
-			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-		}
-        return 1;
-	}
-	return 0;
+	return 1;
 }
 
 public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	if(GetPVarInt(playerid, "mS_list_active") == 1 || (GetTickCount()-GetPVarInt(playerid, "mS_list_time")) > 200)
-	{
-		new curpage = GetPVarInt(playerid, "mS_list_page");
-
-		// Handle: cancel button
-		if(playertextid == gCancelButtonTextDrawId[playerid]) {
-			new listID = mS_GetPlayerCurrentListID(playerid);
-			if(listID == mS_CUSTOM_LISTID)
-			{
-				new extraid = GetPVarInt(playerid, "mS_custom_extraid");
-				HideModelSelectionMenu(playerid);
-				CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 0, extraid, -1, -1);
-				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-			}
-			else
-			{
-				HideModelSelectionMenu(playerid);
-				CallLocalFunction("OnPlayerModelSelection", "dddd", playerid, 0, listID, -1);
-				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-			}
-			return 1;
-		}
-
-		// Handle: next button
-		if(playertextid == gNextButtonTextDrawId[playerid]) {
-			new listID = mS_GetPlayerCurrentListID(playerid);
-			if(listID == mS_CUSTOM_LISTID)
-			{
-				if(curpage < (mS_GetNumberOfPagesEx(playerid) - 1)) {
-					SetPVarInt(playerid, "mS_list_page", curpage + 1);
-					mS_ShowPlayerMPs(playerid);
-					mS_UpdatePageTextDraw(playerid);
-					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-				} else {
-					PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				}
-			}
-			else
-			{
-				if(curpage < (mS_GetNumberOfPages(listID) - 1)) {
-					SetPVarInt(playerid, "mS_list_page", curpage + 1);
-					mS_ShowPlayerMPs(playerid);
-					mS_UpdatePageTextDraw(playerid);
-					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-				} else {
-					PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				}
-			}
-			return 1;
-		}
-
-		// Handle: previous button
-		if(playertextid == gPrevButtonTextDrawId[playerid]) {
-			if(curpage > 0) {
-				SetPVarInt(playerid, "mS_list_page", curpage - 1);
-				mS_ShowPlayerMPs(playerid);
-				mS_UpdatePageTextDraw(playerid);
-				PlayerPlaySound(playerid, 1084, 0.0, 0.0, 0.0);
-			} else {
-				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-			}
-			return 1;
-		}
-
-		// Search in the array of textdraws used for the items
-		new x=0;
-		while(x != mS_SELECTION_ITEMS) {
-			if(playertextid == gSelectionItems[playerid][x]) {
-				new listID = mS_GetPlayerCurrentListID(playerid);
-				if(listID == mS_CUSTOM_LISTID)
-				{
-					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-					new item_id = gSelectionItemsTag[playerid][x];
-					new extralist_id = gSelectionItemsExtra[playerid][x];
-					new extraid = GetPVarInt(playerid, "mS_custom_extraid");
-					HideModelSelectionMenu(playerid);
-					CallLocalFunction("OnPlayerModelSelectionEx", "ddddd", playerid, 1, extraid, item_id, extralist_id);
-					return 1;
-				}
-				else
-				{
-					PlayerPlaySound(playerid, 1083, 0.0, 0.0, 0.0);
-					new item_id = gSelectionItemsTag[playerid][x];
-					HideModelSelectionMenu(playerid);
-					CallLocalFunction("OnPlayerModelSelection", "dddd", playerid, 1, listID, item_id);
-					return 1;
-				}
-			}
-			x++;
-		}
-	}
-
 	new tableid = GetPVarInt(playerid, "pkrTableID")-1;
 	if(playertextid == PlayerPokerUI[playerid][38])
 	{
@@ -1516,7 +1430,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	        }
 	        else
 	        {
-				new stringg[4096];
+				szMiscArray[0] = 0;
 				for(new z;z<MAX_PLAYERTOYS;z++)
 				{
 					new name[24];
@@ -1530,10 +1444,10 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 						}
 					}
 
-					format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, z, name, HoldingBones[PlayerToyInfo[playerid][z][ptBone]]);
+					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, z, name, HoldingBones[PlayerToyInfo[playerid][z][ptBone]]);
 				}
 				printf("MODELID: %d", modelid);
-				ShowPlayerDialog(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", stringg, "Select", "Cancel");
+				ShowPlayerDialog(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	  			SetPVarInt(playerid, "ToyID", modelid);
 			}
 	    }
@@ -2185,6 +2099,8 @@ public OnPlayerConnect(playerid)
 
 	RemoveBuildings(playerid);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+	SetHealth(playerid, 100);
+	SetArmour(playerid, 0);
 	return 1;
 }
 
@@ -2630,7 +2546,7 @@ public OnPlayerDisconnect(playerid, reason)
 					}
 					else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
 					{
-						if(PlayerInfo[playerid][pDuty])
+						if(PlayerInfo[playerid][pDuty] || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
@@ -2731,7 +2647,7 @@ public OnPlayerDisconnect(playerid, reason)
 					}
 					else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
 					{
-						if(PlayerInfo[playerid][pDuty])
+						if(PlayerInfo[playerid][pDuty] || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 						{
 							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
@@ -7019,40 +6935,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gt_Edit");
 			SaveGangTag(gangtag);
 		}*/
-		if(GetPVarInt(playerid, "gEdit") == 1)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
-			GateInfo[gateid][gPosX] = x;
-			GateInfo[gateid][gPosY] = y;
-			GateInfo[gateid][gPosZ] = z;
-			GateInfo[gateid][gRotX] = rx;
-			GateInfo[gateid][gRotY] = ry;
-			GateInfo[gateid][gRotZ] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			format(string, sizeof(string), "You have finished editing the open position of Gate ID: %d", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, string);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-		}
-		if(GetPVarInt(playerid, "gEdit") == 2)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gateid = GetPVarInt(playerid, "EditingGateID");
-			GateInfo[gateid][gPosXM] = x;
-			GateInfo[gateid][gPosYM] = y;
-			GateInfo[gateid][gPosZM] = z;
-			GateInfo[gateid][gRotXM] = rx;
-			GateInfo[gateid][gRotYM] = ry;
-			GateInfo[gateid][gRotZM] = rz;
-			CreateGate(gateid);
-			SaveGate(gateid);
-			format(string, sizeof(string), "You have finished editing the closed position of Gate ID: %d", gateid);
-			SendClientMessage(playerid, COLOR_WHITE, string);
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-		}
 		if(GetPVarType(playerid, "editingsign"))
 		{
 			new h = GetPVarInt(playerid, "house");
@@ -7089,9 +6971,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			ClearCheckpoint(playerid);
 		}
 	}
-	/*if(response == EDIT_RESPONSE_CANCEL)
+	if(response == EDIT_RESPONSE_CANCEL)
 	{
-		if(GetPVarInt(playerid, "gt_Edit") == 2)
+		/*if(GetPVarInt(playerid, "gt_Edit") == 2)
 		{
 			new gangid = GetPVarInt(playerid, "gt_ID");
 			SetDynamicObjectPos(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosX], GangTags[gangid][gt_PosY], GangTags[gangid][gt_PosZ]);
@@ -7099,14 +6981,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "gt_Edit");
 			DeletePVar(playerid, "gt_ID");
 			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing this gang tag!");
-		}
-		if(GetPVarType(playerid, "gEdit") == 1)
-		{
-			CreateGate(GetPVarInt(playerid, "EditingGateID"));
-			DeletePVar(playerid, "gEdit");
-			DeletePVar(playerid, "EditingGateID");
-			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
-		}
+		}*/
 		if(GetPVarType(playerid, "editingsign"))
 		{
 			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
@@ -7116,6 +6991,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "editingsign");
 			ClearCheckpoint(playerid);
 		}
-	}*/
+	}
 	return 1;
 }

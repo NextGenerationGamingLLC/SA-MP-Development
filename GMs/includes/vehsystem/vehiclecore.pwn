@@ -1527,8 +1527,21 @@ stock IsVehicleInTow(iVehicleID) {
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-    IsPlayerEntering{playerid} = true;
+	szMiscArray[0] = 0;
+	IsPlayerEntering{playerid} = true;
 	Seatbelt[playerid] = 0;
+	if(InsideTut{playerid} > 0)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has been banned, reason: Warp Hacking (Tutorial).", GetPlayerNameEx(playerid));
+		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Warp Hacking (Tutorial).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+		PlayerInfo[playerid][pBanned] = 3;
+		Log("logs/ban.log", szMiscArray);
+		SystemBan(playerid, "[System] (Warp Hacking (Tutorial)");
+		MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Warp Hacking (Tutorial)", 1, "System");
+		Kick(playerid);
+		TotalAutoBan++;
+	}
 	if(GetPVarType(playerid, "HelmetOn"))
 	{
 		for(new i; i < 10; i++) {
@@ -2054,7 +2067,8 @@ CMD:vstorage(playerid, params[])
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pFreezeCar] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
+		szMiscArray[0] = 0;
+		new icount = GetPlayerVehicleSlots(playerid);
 		new szCarLocation[MAX_ZONE_NAME];
 		for(new i, iModelID; i < icount; i++)
 		{
@@ -2062,20 +2076,20 @@ CMD:vstorage(playerid, params[])
 			{
 				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-					format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[iModelID]);
 				}
-				else format(vstring, sizeof(vstring), "%s\n%s (spawned) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+				else format(szMiscArray, sizeof(szMiscArray), "%s\n%s (spawned) | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
 			}
-			else strcat(vstring, "\nEmpty");
+			else strcat(szMiscArray, "\nEmpty");
 		}
-		format(vstring, sizeof(vstring), "%s\n{40FFFF}Additional Vehicle Slot {FFD700}(Credits: %s){A9C4E4}", vstring, number_format(ShopItems[23][sItemPrice]));
-		ShowPlayerDialog(playerid, VEHICLESTORAGE, DIALOG_STYLE_LIST, "Vehicle storage", vstring, "(De)spawn", "Cancel");
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Vehicle Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[23][sItemPrice]));
+		ShowPlayerDialog(playerid, VEHICLESTORAGE, DIALOG_STYLE_LIST, "Vehicle storage", szMiscArray, "(De)spawn", "Cancel");
 	}
 	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Your vehicle assets have been frozen by the Judiciary.  Consult your local courthouse to have this cleared"); }
 	return 1;
@@ -2088,7 +2102,8 @@ CMD:trackcar(playerid, params[])
 	}
 	else
 	{
-		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
+		szMiscArray[0] = 0;
+		new icount = GetPlayerVehicleSlots(playerid);
 		new szCarLocation[MAX_ZONE_NAME];
 		for(new i, iModelID; i < icount; i++) 
 		{
@@ -2096,18 +2111,18 @@ CMD:trackcar(playerid, params[])
 			{
 				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-					format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-					format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[iModelID]);
 				}
-				else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+				else format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
 			}
 		}
-		ShowPlayerDialog(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", vstring, "Track", "Cancel");
+		ShowPlayerDialog(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", szMiscArray, "Track", "Cancel");
 	}
 	return 1;
 }
@@ -2144,18 +2159,19 @@ CMD:unmodcar(playerid, params[]) {
 
 CMD:deletecar(playerid, params[])
 {
-	new vstring[1024], icount = GetPlayerVehicleSlots(playerid);
+	szMiscArray[0] = 0;
+	new icount = GetPlayerVehicleSlots(playerid);
 	for(new i, iModelID; i < icount; i++) {
 		if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0)
 		{
-			if(PlayerVehicleInfo[playerid][i][pvImpounded]) format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[iModelID]);
-			else if(PlayerVehicleInfo[playerid][i][pvDisabled]) format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[iModelID]);
-			else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
-			else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[iModelID]);
+			if(PlayerVehicleInfo[playerid][i][pvImpounded]) format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, VehicleName[iModelID]);
+			else if(PlayerVehicleInfo[playerid][i][pvDisabled]) format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, VehicleName[iModelID]);
+			else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[iModelID]);
+			else format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, VehicleName[iModelID]);
 		}
-		else strcat(vstring, "\nEmpty");
+		else strcat(szMiscArray, "\nEmpty");
 	}
-	return ShowPlayerDialog(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Delete Vehicle", vstring, "Delete", "Cancel");
+	return ShowPlayerDialog(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Delete Vehicle", szMiscArray, "Delete", "Cancel");
 }
 
 CMD:parktrailer(playerid, params[]) {
@@ -2216,6 +2232,11 @@ CMD:park(playerid, params[])
 		Businesses[iBusiness][bVehID][iSlot] = CreateVehicle(Businesses[iBusiness][bModel][iSlot], Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],
 		Businesses[iBusiness][bParkAngle][iSlot], 0, 0, -1);
 
+		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]);
+		szMiscArray[0] = 0;
+		format(szMiscArray, sizeof(szMiscArray), "%s For Sale | Price: $%s", GetVehicleName(Businesses[iBusiness][bVehID][iSlot]), number_format(Businesses[iBusiness][bPrice][iSlot]));
+		Businesses[iBusiness][bVehicleLabel][iSlot] = CreateDynamic3DTextLabel(szMiscArray,COLOR_LIGHTBLUE,Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],8.0,INVALID_PLAYER_ID, Businesses[iBusiness][bVehID][iSlot]);
+		
         SaveDealershipVehicle(iBusiness, iSlot);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You've parked this vehicle.");
 		return 1;
@@ -2267,27 +2288,28 @@ CMD:park(playerid, params[])
 
 CMD:carkeys(playerid, params[])
 {
-    new vstring[4096], iValidVehicles;
+	szMiscArray[0] = 0;
+	new iValidVehicles;
 	for(new i=0; i<MAX_PLAYERVEHICLES; i++)
 	{
 	    if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID) {
 	        if(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId] != INVALID_PLAYER_ID) {
-				format(vstring, sizeof(vstring), "%s\n%s | Keys: %s", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], GetPlayerNameEx(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId])), ++iValidVehicles;
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: %s", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], GetPlayerNameEx(PlayerVehicleInfo[playerid][i][pvAllowedPlayerId])), ++iValidVehicles;
 			}
 			else {
-                format(vstring, sizeof(vstring), "%s\n%s | Keys: No-one", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+                format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: No-one", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
 			}
 		}
         else if((PlayerVehicleInfo[playerid][i][pvImpounded] == 1 || PlayerVehicleInfo[playerid][i][pvSpawned] == 0) && PlayerVehicleInfo[playerid][i][pvModelId] != 0) {
-            format(vstring, sizeof(vstring), "%s\n%s | Keys: Unavailable", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+            format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Keys: Unavailable", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
 		}
         else {
-			format(vstring, sizeof(vstring), "%s\nEmpty", vstring);
+			strcat(szMiscArray, "\nEmpty");
 		}
 	}
 	if(iValidVehicles != 0)
 	{
-		ShowPlayerDialog(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", vstring, "Remove Keys", "Cancel");
+		ShowPlayerDialog(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Remove Keys", "Cancel");
 	}
 	else
 	{
@@ -2382,29 +2404,28 @@ CMD:givekeys(playerid, params[])
         if(playerid == giveplayerid) return 1;
         if (ProxDetectorS(4.0, playerid, giveplayerid))
 		{
-            new
-				iValidVehicles,
-				vstring[4096];
+			szMiscArray[0] = 0;
+			new iValidVehicles;
 
 			for(new i; i < MAX_PLAYERVEHICLES; i++) if(PlayerVehicleInfo[playerid][i][pvModelId] >= 400)
 			{
 				if(PlayerVehicleInfo[playerid][i][pvImpounded] == 1)
-					format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
 
 				else if(PlayerVehicleInfo[playerid][i][pvDisabled] == 1)
-					format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
 
 				else if(PlayerVehicleInfo[playerid][i][pvSpawned] == 0)
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
 
 				else
-					format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]), ++iValidVehicles;
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]), ++iValidVehicles;
 			}
-			else strcat(vstring, "\nEmpty");
+			else strcat(szMiscArray, "\nEmpty");
             if(iValidVehicles != 0)
 			{
                 GiveKeysTo[playerid] = giveplayerid;
-                ShowPlayerDialog(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", vstring, "Give Keys", "Cancel");
+                ShowPlayerDialog(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Give Keys", "Cancel");
             }
             else
 			{

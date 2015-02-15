@@ -1210,7 +1210,13 @@ enum hInfo
 	hSignExpire,
 	hSignObj,
 	Text3D:hSignText,
-	hLastLogin
+	hLastLogin,
+	
+	//WIP
+	hExpire,
+	hInactive,
+	hIgnore,
+	hCounter
 };
 
 enum dmpInfo
@@ -1263,7 +1269,13 @@ enum ddInfo
 	ddPickupModel,
 	ddPass[24],
 	ddLocked,
-	ddLastLogin
+	ddLastLogin,
+	
+	//WIP
+	ddExpire,
+	ddInactive,
+	ddIgnore,
+	ddCounter
 };
 
 enum gInfo
@@ -1534,17 +1546,6 @@ enum DYNAMIC_BUSINESS_INFO
 	bRankName[MAX_DYNAMIC_BUSINESS_RANKS],
 	bRankPay[MAX_DYNAMIC_BUSINESS_RANKS]
 }
-
-/* Server Side Health WIP
-enum AC
-{
-	Float: acHealth,
-	Float: acArmour,
-	acState,
-	acTimer
-}
-new AntiCheat[MAX_PLAYERS][AC];
-*/
 
 /* Dynamic Gift Box Stuff
 Note: dgGVIP = 7 Days | dgGVIPEx = 1 Month

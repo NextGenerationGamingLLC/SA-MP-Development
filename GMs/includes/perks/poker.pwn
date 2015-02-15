@@ -1420,15 +1420,15 @@ ShowCasinoGamesMenu(playerid, dialogid)
 		}
 		case DIALOG_CGAMESSELECTPOKER:
 		{
-			new szString[4096];
+			szMiscArray[0] = 0;
 			new szPlaced[64];
 
 			for(new i = 0; i < MAX_POKERTABLES; i++) {
 				if(PokerTable[i][pkrPlaced] == 1) { format(szPlaced, sizeof(szPlaced), "{00FF00}Active{FFFFFF}"); }
 				if(PokerTable[i][pkrPlaced] == 0) { format(szPlaced, sizeof(szPlaced), "{FF0000}Deactived{FFFFFF}"); }
-				format(szString, sizeof(szString), "%sPoker Table %d (%s)\n", szString, i, szPlaced, PokerTable[i][pkrPlayers]);
+				format(szMiscArray, sizeof(szMiscArray), "%sPoker Table %d (%s)\n", szMiscArray, i, szPlaced, PokerTable[i][pkrPlayers]);
 			}
-			return ShowPlayerDialog(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szString, "Select", "Back");
+			return ShowPlayerDialog(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szMiscArray, "Select", "Back");
 		}
 		case DIALOG_CGAMESSETUPPOKER:
 		{

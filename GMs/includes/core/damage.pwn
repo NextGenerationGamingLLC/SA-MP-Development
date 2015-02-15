@@ -317,7 +317,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		{
 			case 50: { ClearAnimations(playerid); }
 			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
-			case 31, 38: if(IsPlayerInAnyVehicle(playerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
+			case 31, 38: if(IsPlayerInAnyVehicle(issuerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
 		}
 	}
 	foreach(Player, i)

@@ -74,7 +74,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.194"
+#define SERVER_GM_TEXT "NG:RP v3.0.195"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -87,6 +87,7 @@
 #include <crashdetect>
 #include <YSI\y_timers>
 #include <YSI\y_utils>
+#include <mSelection>
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
@@ -165,6 +166,10 @@
 #include "./includes/core/setplayerspawn.pwn"
 #include "./includes/core/stats.pwn"
 #include "./includes/core/streamprep.pwn" 
+
+//WIP
+#tryinclude "./includes/core/phones.pwn" 
+#tryinclude "./includes/core/inactive.pwn" 
 
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"

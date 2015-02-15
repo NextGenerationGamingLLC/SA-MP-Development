@@ -1297,3 +1297,18 @@ CMD:makevipmod(playerid, params[])
 	PlayerInfo[target][pVIPMod] = level;
 	return 1;
 }
+
+CMD:vipmods(playerid, params[])
+{
+	if(PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	SendClientMessageEx(playerid, -1, "VIP Moderators Online:");
+	foreach(Player, i)
+	{
+		if(PlayerInfo[i][pVIPMod])
+		{
+			format(szMiscArray, sizeof(szMiscArray), "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[i][pVIPTogged] == 1 ? ("On"):("Off"));
+			SendClientMessageEx(playerid, -1, szMiscArray);
+		}
+	}
+	return 1;
+}

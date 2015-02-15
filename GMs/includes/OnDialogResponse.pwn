@@ -954,7 +954,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if((dialogid == BUYTOYSCOP) && response)
 	{
-		new stringg[4096], icount = GetPlayerToySlots(playerid);
+		szMiscArray[0] = 0;
+		new icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
 			new name[24] = "None";
@@ -970,9 +971,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
-		ShowPlayerDialog(playerid, BUYTOYSCOP2, DIALOG_STYLE_LIST, "Select a Slot", stringg, "Select", "Cancel");
+		ShowPlayerDialog(playerid, BUYTOYSCOP2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
 
 	if((dialogid == BUYTOYSCOP2) && response)
@@ -1231,7 +1232,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if((dialogid == BUYTOYS) && response)
 	{
-		new stringg[4096], icount = GetPlayerToySlots(playerid);
+		szMiscArray[0] = 0;
+		new icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
 			new name[24];
@@ -1248,9 +1250,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
-		ShowPlayerDialog(playerid, BUYTOYS2, DIALOG_STYLE_LIST, "Select a Slot", stringg, "Select", "Cancel");
+		ShowPlayerDialog(playerid, BUYTOYS2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
 	if((dialogid == BUYTOYS2) && response)
 	{
@@ -1370,7 +1372,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}	
 	if((dialogid == TOYS) && response)
 	{
-		new stringg[4096], icount = GetPlayerToySlots(playerid);
+		szMiscArray[0] = 0;
+		new icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
 			new name[24];
@@ -1387,16 +1390,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 Since the toys list starts of from 1( As players see it )
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 Since the toys list starts of from 1( As players see it )
 		}
-		format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[28][sItemPrice]));
 		switch(listitem) {
 			case 0:
-				ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+				ShowPlayerDialog(playerid, WEARTOY, DIALOG_STYLE_LIST, "Select a Toy", szMiscArray, "Select", "Cancel");
 			case 1:
-				ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+				ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", szMiscArray, "Select", "Cancel");
 			case 2:
-				ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Delete", "Cancel");
+				ShowPlayerDialog(playerid, DELETETOY, DIALOG_STYLE_LIST, "Select a Toy", szMiscArray, "Delete", "Cancel");
 		}
 	}
 
@@ -1440,7 +1443,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			new stringg[4096], icount = GetPlayerToySlots(playerid);
+			szMiscArray[0] = 0;
+			new icount = GetPlayerToySlots(playerid);
 			if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptSpecial] == 2) for(new i; i < 10; i++) {
 				if(PlayerHoldingObject[playerid][i] == GetPVarInt(playerid, "ToySlot")) {
 					PlayerHoldingObject[playerid][i] = 0;
@@ -1465,10 +1469,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 since toys list starts off from 1 (From players view)
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x+1, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]); // x+1 since toys list starts off from 1 (From players view)
 			}
-			format(stringg, sizeof(stringg), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", stringg, number_format(ShopItems[28][sItemPrice]));
-			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", stringg, "Select", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Toy Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[28][sItemPrice]));
+			ShowPlayerDialog(playerid, EDITTOYS, DIALOG_STYLE_LIST, "Select a Toy", szMiscArray, "Select", "Cancel");
 		}
 	}
 	if(dialogid == EDITTOYSBONE)
@@ -4134,8 +4138,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(PlayerVehicleInfo[iTargetID][listitem][pvImpounded])
 			{
-				
-
 				format(szMessage, sizeof(szMessage), "You have released %s's %s.", GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 
@@ -4147,15 +4149,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				new rand = random(sizeof(DMVRelease));
 				PlayerVehicleInfo[iTargetID][listitem][pvImpounded] = 0;
-				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 1;
+				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
 				PlayerVehicleInfo[iTargetID][listitem][pvPosX] = DMVRelease[rand][0];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosY] = DMVRelease[rand][1];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[iTargetID][listitem][pvTicket] = 0;
-		
-
-			
 				g_mysql_SaveVehicle(iTargetID, listitem);
 			}
 			else SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle either does not exist, or does not need to be released or have its tickets paid.");
@@ -4237,14 +4236,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				new rand = random(sizeof(DMVRelease));
 				PlayerVehicleInfo[playerid][listitem][pvImpounded] = 0;
-				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 1;
+				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
 				PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
 				PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVRelease[rand][1];
 				PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[playerid][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicle has been released, type /vstorage to spawn it.");
-				Vehicle_ResetData(PlayerVehicleInfo[playerid][listitem][pvId]);
 				g_mysql_SaveVehicle(playerid, listitem);
 			}
 			else SendClientMessage(playerid, COLOR_GRAD2, "This vehicle either does not exist, or does not need to be released or have its tickets paid.");
@@ -6577,7 +6575,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2: ShowPlayerDialog(playerid, DIALOG_911POLICE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require police assistance.", "Enter", "End Call");
 				case 3: ShowPlayerDialog(playerid, DIALOG_911TOWING, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require towing services.", "Enter", "End Call");
 				case 4: {
-					new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
+					szMiscArray[0] = 0;
+					new icount = GetPlayerVehicleSlots(playerid);
 					new szCarLocation[MAX_ZONE_NAME];
 					for(new i, iModelID; i < icount; i++) 
 					{
@@ -6585,21 +6584,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 							if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-								format(vstring, sizeof(vstring), "%s\n%s (impounded) | Location: DMV", vstring, VehicleName[iModelID]);
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded) | Location: DMV", szMiscArray, VehicleName[iModelID]);
 							}
 							else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
-								format(vstring, sizeof(vstring), "%s\n%s (disabled) | Location: Unknown", vstring, VehicleName[iModelID]);
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled) | Location: Unknown", szMiscArray, VehicleName[iModelID]);
 							}
 							else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
-								format(vstring, sizeof(vstring), "%s\n%s (stored) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+								format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored) | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
 							}
 							else {
-								if(PlayerVehicleInfo[playerid][i][pvAlarmTriggered]) format(vstring, sizeof(vstring), "%s\n%s (alarm triggered) | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
-								else format(vstring, sizeof(vstring), "%s\n%s | Location: %s", vstring, VehicleName[iModelID], szCarLocation);
+								if(PlayerVehicleInfo[playerid][i][pvAlarmTriggered]) format(szMiscArray, sizeof(szMiscArray), "%s\n%s (alarm triggered) | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
+								else format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
 							}
 						}
 					}
-					ShowPlayerDialog(playerid, DIALOG_911PICKLOCK, DIALOG_STYLE_LIST, "Vehicle Burglary Report", vstring, "Track", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_911PICKLOCK, DIALOG_STYLE_LIST, "Vehicle Burglary Report", szMiscArray, "Track", "Cancel");
 				}
 				case 5: ShowPlayerDialog(playerid, DIALOG_911FIRE, DIALOG_STYLE_INPUT, "911 Emergency Services", "Please describe why you require the fire bridgade.", "Enter", "End Call");
 			}

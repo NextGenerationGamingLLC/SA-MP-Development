@@ -684,7 +684,7 @@ public OnPlayerLoad(playerid)
 		}
 		else if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && !IsACop(playerid))
 		{
-			if(PlayerInfo[playerid][pDuty])
+			if(PlayerInfo[playerid][pDuty] || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			{
 				format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
 				foreach(new i: Player) 

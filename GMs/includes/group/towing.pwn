@@ -122,9 +122,8 @@ CMD:dmvrelease(playerid, params[]) {
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dmvrelease [player]");
 			}
 			else if(IsPlayerConnected(iTargetID)) {
-
+				szMiscArray[0] = 0;
 				new
-					vstring[4096],
 					iCount,
 					pVehSlots = GetPlayerVehicleSlots(iTargetID);
 					
@@ -132,18 +131,18 @@ CMD:dmvrelease(playerid, params[]) {
 					if(PlayerVehicleInfo[iTargetID][i][pvPrice] < 1) PlayerVehicleInfo[iTargetID][i][pvPrice] = 2000000;
 					if(PlayerVehicleInfo[iTargetID][i][pvId] > INVALID_PLAYER_VEHICLE_ID) {
 						if(PlayerVehicleInfo[iTargetID][i][pvTicket]) {
-							format(vstring, sizeof(vstring), "%s\n%s (ticket - $%i)", vstring, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], PlayerVehicleInfo[iTargetID][i][pvTicket]);
+							format(szMiscArray, sizeof(szMiscArray), "%s\n%s (ticket - $%i)", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], PlayerVehicleInfo[iTargetID][i][pvTicket]);
 							++iCount;
 						}
-						else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400]);
+						else format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400]);
 					}	
 					else if(PlayerVehicleInfo[iTargetID][i][pvImpounded]) {
-						format(vstring, sizeof(vstring), "%s\n%s (impounded - $%i release)", vstring, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], (PlayerVehicleInfo[iTargetID][i][pvPrice] / 20) + PlayerVehicleInfo[iTargetID][i][pvTicket] + (PlayerInfo[iTargetID][pLevel] * 3000));
+						format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded - $%i release)", szMiscArray, VehicleName[PlayerVehicleInfo[iTargetID][i][pvModelId] - 400], (PlayerVehicleInfo[iTargetID][i][pvPrice] / 20) + PlayerVehicleInfo[iTargetID][i][pvTicket] + (PlayerInfo[iTargetID][pLevel] * 3000));
 						++iCount;
 					}
-					else format(vstring, sizeof(vstring), "%s\nNone", vstring);
+					else format(szMiscArray, sizeof(szMiscArray), "%s\nNone", szMiscArray);
 				}
-				if(iCount) ShowPlayerDialog(playerid, MPSPAYTICKETSCOP, DIALOG_STYLE_LIST, "Vehicles", vstring, "Release", "Cancel"), SetPVarInt(playerid, "vRel", iTargetID);
+				if(iCount) ShowPlayerDialog(playerid, MPSPAYTICKETSCOP, DIALOG_STYLE_LIST, "Vehicles", szMiscArray, "Release", "Cancel"), SetPVarInt(playerid, "vRel", iTargetID);
 				else SendClientMessageEx(playerid, COLOR_GRAD2, "This person doesn't have any tickets to be paid or vehicles to be released.");
 			}
 			else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");

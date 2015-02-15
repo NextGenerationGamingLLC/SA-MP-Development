@@ -907,7 +907,7 @@ CMD:setturftokens(playerid, params[])
 	if(sscanf(params, "dd", family, amount)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /setturftokens [groupid] [amount]");
 	if(!(0 <= family < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified!");
 	if(arrGroupData[family][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD2, "This group is not a criminal group type!");
-	arrGroupData[family][g_iTurfTokens] = amount;
+	arrGroupData[family][g_iTurfTokens] = amount * 12;
 	format(szMiscArray, sizeof(szMiscArray), "You have set %s(%d) turf tokens to %s", arrGroupData[family][g_szGroupName], family, number_format(amount));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	return 1;

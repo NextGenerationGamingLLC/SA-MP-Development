@@ -2317,11 +2317,16 @@ task ServerHeartbeatTwo[1000]() {
 		}
 		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 		{
-			new string[74 + MAX_PLAYER_NAME];
-			format( string, sizeof( string ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be jetpack hacking.", GetPlayerNameEx(i), i);
-			ABroadCast( COLOR_YELLOW, string, 2 );
-			format(string, sizeof(string), "%s(%d) (ID %d) may possibly be jetpack hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), i);
-			Log("logs/hack.log", string);
+			szMiscArray[0] = 0;
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has been banned, reason: Jetpack Hacking.", GetPlayerNameEx(i));
+			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Jetpack Hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
+			PlayerInfo[i][pBanned] = 3;
+			Log("logs/ban.log", szMiscArray);
+			SystemBan(i, "[System] (Jetpack Hacking)");
+			MySQLBan(GetPlayerSQLId(i), GetPlayerIpEx(i), "Jetpack Hacking", 1, "System");
+			Kick(i);
+			TotalAutoBan++;
 		}
 
 		if( IsPlayerInRangeOfPoint( i, 2, 1544.2, -1353.4, 329.4 ) )

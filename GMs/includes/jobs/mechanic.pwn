@@ -171,7 +171,7 @@ CMD:hyd(playerid, params[])
 {
     if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7) {
         if(IsPlayerInAnyVehicle(playerid)) {
-			if(IsPlayerInInvalidNosVehicle(playerid) || (DynVeh[GetPlayerVehicleID(playerid)] != -1 && DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_igID] != INVALID_GROUP_ID)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
+			if(IsPlayerInInvalidNosVehicle(playerid) || (DynVeh[GetPlayerVehicleID(playerid)] != -1 && DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)) return SendClientMessageEx(playerid, COLOR_WHITE, "Hydraulics cannot be installed in this vehicle.");
 			if(gettime() < PlayerInfo[playerid][pServiceTime]) return SendClientMessage(playerid, COLOR_GREY, "You must wait 20 seconds before using this command again.");
 			new string[128];
 			PlayerPlaySound(playerid,1133,0.0,0.0,0.0);

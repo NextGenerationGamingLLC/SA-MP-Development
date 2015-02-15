@@ -31,10 +31,10 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvInt` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvInt]);
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashFlag` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashFlag]);
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashVW` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashVW]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashX` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashX]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashY` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashY]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashZ` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashZ]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashAngle` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashAngle]);
+	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashX` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashX]));
+	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashY` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashY]));
+	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashZ` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashZ]));
+	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashAngle` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashAngle]));
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvAlarm` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvLastLockPickedBy` = '%s',", szMiscArray, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy], MainPipeline));
 	format(szMiscArray, sizeof(szMiscArray), "%s `pvLocksLeft` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);

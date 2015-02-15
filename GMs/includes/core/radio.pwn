@@ -428,7 +428,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", inputtext);
-				format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid));
 				ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				DeletePVar(playerid, "pSelectGenre");
 				DeletePVar(playerid, "pSelectStation");

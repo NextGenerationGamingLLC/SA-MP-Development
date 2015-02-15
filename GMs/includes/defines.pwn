@@ -34,8 +34,6 @@
  
  			/*  ---------------- Enable the Windows/Android Application ----------------- */
 //#define SOCKET_ENABLED
-			/*  ---------------- SERVER SIDE HEALH ---------------- */
-//#define ANTICHEAT_ENABLED - Only uncomment this if you want to enable SSH
 			/*  ---------------- SERVER PLATFORM ---------------- */
 //#define _WIN32
 #define _LINUX
@@ -639,7 +637,8 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_GROUP_WEAPONSAFE				(3410)
 #define 		DIALOG_GROUP_SACTIONTYPE			(3411)
 #define     	DIALOG_GROUP_SACTIONEXEC			(3412)
-#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3413)   	
+#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3413)
+#define			DIALOG_GROUP_TURNOUT				(3414)
 
 
 #define         DIALOG_REPORTMENU           (3490)
@@ -1109,29 +1108,6 @@ native gpci(playerid, serial[], maxlen);
 #define ELEVATOR_STATE_WAITING  (1)
 #define ELEVATOR_STATE_MOVING   (2)
 #define INVALID_FLOOR           (-1)
-
-			/*  ---------------- mSelection ----------------- */
-#define mS_TOTAL_ITEMS         	1000 // Max amount of items from all lists
-#define mS_TOTAL_LISTS			20 // Max amount of lists
-#define mS_TOTAL_ROT_ZOOM		100 // Max amount of items using extra information like zoom or rotations
-#define mS_CUSTOM_MAX_ITEMS		20
-#define mS_INVALID_LISTID		mS_TOTAL_LISTS
-#define mS_CUSTOM_LISTID		(mS_TOTAL_LISTS+1)
-#define mS_NEXT_TEXT   "Next"
-#define mS_PREV_TEXT   "Prev"
-#define mS_CANCEL_TEXT   "Cancel"
-#define mS_SELECTION_ITEMS 		21
-#define mS_ITEMS_PER_LINE  		7
-#define mS_DIALOG_BASE_X   	75.0
-#define mS_DIALOG_BASE_Y   	130.0
-#define mS_DIALOG_WIDTH    	550.0
-#define mS_DIALOG_HEIGHT   	180.0
-#define mS_SPRITE_DIM_X    	60.0
-#define mS_SPRITE_DIM_Y    	70.0
-#define mS_LIST_START			0
-#define mS_LIST_END				1
-#define mS_ITEM_MODEL			0
-#define mS_ITEM_ROT_ZOOM_ID 	1
 
 			/*  ---------------- MySQL ----------------- */
 #define 		NO_THREAD 						-1

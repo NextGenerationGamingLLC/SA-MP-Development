@@ -802,6 +802,7 @@ CMD:loadforklift(playerid, params[]) {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "The San Andreas Government cannot afford this crate");
 		                return 1;
 		            }
+					if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot take crates from the factory.");
 		            if(LoadForkliftStatus)
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "A Crate is already being loaded.");

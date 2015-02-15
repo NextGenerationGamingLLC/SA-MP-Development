@@ -35,6 +35,7 @@ public SyncTime()
 
 	if ((tmphour > ghour) || (tmphour == 0 && ghour == 23))
 	{
+		if(tmphour == 0 && ghour == 23) CallLocalFunction("InactiveCheck", ""); //WIP
 	    SavePlants();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else
@@ -52,6 +53,7 @@ public SyncTime()
 		}
 		for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
 		{
+			MemberCount(iGroupID);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 			{
 				new str[128], file[32];

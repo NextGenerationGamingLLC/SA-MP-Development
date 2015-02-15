@@ -558,6 +558,14 @@ public LoadStreamerDynamicButtons()
 	DocElevatorCall[2] = CreateButton(579.07770, 1488.00403, 6015.20801, 90.00000);
 	DocElevatorInside = CreateButton(578.91467, 1492.18884, 6001.04785, 270.00000);
 	
+	//SFPD
+	SFPDHighCMDButton[0] = CreateButton(-1576.30066, 702.27972, 20.18620, 0); // Chief
+	SFPDHighCMDButton[1] = CreateButton(-1576.38074, 696.90778, 20.18620, 180); // Deputy Chief
+	SFPDHighCMDButton[2] = CreateButton(-1585.98792, 697.89203, 20.18620, 180); // Commander
+	
+	SFPDLobbyButton[0] =  CreateButton(-1602.30322, 705.35291, 14.34120, -90);
+	SFPDLobbyButton[1] =  CreateButton(-1596.22266, 702.63599, 14.34120, 0);
+	
 	print("[Streamer] Dynamic Buttons has been loaded.");
 	
 	return 1;
@@ -785,6 +793,14 @@ public LoadStreamerDynamicObjects()
 	//FDSA Static object roof
 	CreateDynamicObject(19377, 1296.63, -2584.18, 16.73,   0.00, 90.00, 6.00, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(19377, 1301.41, -2578.00, 16.81,   0.00, 90.00, 6.00, .worldid = 0, .streamdistance = 200);
+	
+	//SFPD
+	SFPDHighCMDDoor[0] = CreateDynamicObject(1536, -1578.19397, 702.29370, 18.64510,   0.00000, 0.00000, 0.00000, .streamdistance = 50); // Chief
+	SFPDHighCMDDoor[1] = CreateDynamicObject(1536, -1578.26196, 696.84729, 18.64510,   0.00000, 0.00000, 0.00000, .streamdistance = 50); //Deputy Chief
+	SFPDHighCMDDoor[2] = CreateDynamicObject(1536, -1587.77795, 697.84589, 18.64510,   0.00000, 0.00000, 0.00000, .streamdistance = 50); //Commander
+	
+	SFPDLobbyDoor[0] = CreateDynamicObject(1495, -1602.26709, 704.99298, 12.85020,   0.00000, 0.00000, -90.00000, .streamdistance = 50);
+	SFPDLobbyDoor[1] = CreateDynamicObject(1495, -1598.17004, 702.68219, 12.85020,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
 	
 	print("[Streamer] Dynamic Objects has been loaded.");
 	
@@ -1279,5 +1295,36 @@ public CloseFBIPrivate()
 {
 	MoveDynamicObject(FBIPrivate[0],299.29986572,-1492.82666016,-28.73300552,4);
 	MoveDynamicObject(FBIPrivate[1],299.33737183,-1495.83911133,-28.73300552,4);
+	return 1;
+}
+
+forward SFPDDoors(doorid, status);
+public SFPDDoors(doorid, status)
+{
+	if(doorid == 0) // Chief
+	{
+		if(status == 0) MoveDynamicObject(SFPDHighCMDDoor[0], -1578.19397, 702.29370, 18.64510, 0.9);
+		if(status == 1) MoveDynamicObject(SFPDHighCMDDoor[0], -1579.6340, 702.2937, 18.6451, 0.9);
+	}
+	if(doorid == 1) // Deputy Chief
+	{
+		if(status == 0) MoveDynamicObject(SFPDHighCMDDoor[1], -1578.26196, 696.84729, 18.64510, 0.9);
+		if(status == 1) MoveDynamicObject(SFPDHighCMDDoor[1], -1579.7220, 696.8473, 18.6451, 0.9);
+	}
+	if(doorid == 2) // Commander
+	{
+		if(status == 0) MoveDynamicObject(SFPDHighCMDDoor[2], -1587.77795, 697.84589, 18.64510, 0.9);
+		if(status == 1) MoveDynamicObject(SFPDHighCMDDoor[2], -1589.2380, 697.8459, 18.6451, 0.9);
+	}
+	if(doorid == 3) // Lobby 1
+	{
+		if(status == 0) MoveDynamicObject(SFPDLobbyDoor[0], -1602.26709, 704.99298, 12.85020, 0.9);
+		if(status == 1) MoveDynamicObject(SFPDLobbyDoor[0], -1602.2671, 706.3130, 12.8502, 0.9);
+	}
+	if(doorid == 4) // Lobby 2
+	{
+		if(status == 0) MoveDynamicObject(SFPDLobbyDoor[1], -1598.17004, 702.68219, 12.85020, 0.9);
+		if(status == 1) MoveDynamicObject(SFPDLobbyDoor[1], -1599.4900, 702.6822, 12.8502, 0.9);
+	}
 	return 1;
 }

@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 CMD:gate(playerid, params[])
 {
 	new Float:X, Float:Y, Float:Z;
@@ -830,8 +832,8 @@ public OnLoadGates()
 	while(i < rows)
 	{
 		GateInfo[i][gHID] = cache_get_field_content_int(i, "HID", MainPipeline); 
-		GateInfo[i][gSpeed] = cache_get_field_content_int(i, "Speed", MainPipeline); 
-		GateInfo[i][gRange] = cache_get_field_content_int(i, "Range", MainPipeline); 
+		GateInfo[i][gSpeed] = cache_get_field_content_float(i, "Speed", MainPipeline); 
+		GateInfo[i][gRange] = cache_get_field_content_float(i, "Range", MainPipeline); 
 		GateInfo[i][gModel] = cache_get_field_content_int(i, "Model", MainPipeline); 
 		GateInfo[i][gVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
 		GateInfo[i][gInt] = cache_get_field_content_int(i, "Int", MainPipeline);
@@ -1043,6 +1045,59 @@ public AutomaticGateTimerClose(playerid, gateid)
 			SetTimerEx("AutomaticGateTimer", 1000, false, "ii", playerid, gateid);
 			GateInfo[gateid][gStatus] = 0;
 			return 1;
+		}
+	}
+	return 1;
+}
+
+hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	if(response == EDIT_RESPONSE_FINAL)
+	{
+		szMiscArray[0] = 0;
+		if(GetPVarInt(playerid, "gEdit") == 1)
+		{
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			new gateid = GetPVarInt(playerid, "EditingGateID");
+			GateInfo[gateid][gPosX] = x;
+			GateInfo[gateid][gPosY] = y;
+			GateInfo[gateid][gPosZ] = z;
+			GateInfo[gateid][gRotX] = rx;
+			GateInfo[gateid][gRotY] = ry;
+			GateInfo[gateid][gRotZ] = rz;
+			CreateGate(gateid);
+			SaveGate(gateid);
+			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the open position of Gate ID: %d", gateid);
+			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+			DeletePVar(playerid, "gEdit");
+			DeletePVar(playerid, "EditingGateID");
+		}
+		if(GetPVarInt(playerid, "gEdit") == 2)
+		{
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			new gateid = GetPVarInt(playerid, "EditingGateID");
+			GateInfo[gateid][gPosXM] = x;
+			GateInfo[gateid][gPosYM] = y;
+			GateInfo[gateid][gPosZM] = z;
+			GateInfo[gateid][gRotXM] = rx;
+			GateInfo[gateid][gRotYM] = ry;
+			GateInfo[gateid][gRotZM] = rz;
+			CreateGate(gateid);
+			SaveGate(gateid);
+			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the closed position of Gate ID: %d", gateid);
+			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+			DeletePVar(playerid, "gEdit");
+			DeletePVar(playerid, "EditingGateID");
+		}
+	}
+	if(response == EDIT_RESPONSE_CANCEL)
+	{
+		if(GetPVarType(playerid, "gEdit") == 1)
+		{
+			CreateGate(GetPVarInt(playerid, "EditingGateID"));
+			DeletePVar(playerid, "gEdit");
+			DeletePVar(playerid, "EditingGateID");
+			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
 		}
 	}
 	return 1;

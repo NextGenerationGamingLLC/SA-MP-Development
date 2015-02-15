@@ -315,9 +315,8 @@ CMD:shopvest(playerid, params[])
 CMD:listtoys(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1) {
 
-		new
-			giveplayerid, stringg[4096], string[64];
-
+		new giveplayerid, string[64];
+		szMiscArray[0] = 0;
 		if(sscanf(params, "u", giveplayerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listtoys [player]");
 		}
@@ -340,10 +339,10 @@ CMD:listtoys(playerid, params[]) {
 				{
 				    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 				}
-				format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s%s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
+				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s%s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
 			}
 			format(string, sizeof(string), "Listing %s's Toys - Select a Slot", GetPlayerNameEx(giveplayerid));
-			ShowPlayerDialog(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, stringg, "Delete", "Cancel");
+			ShowPlayerDialog(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Delete", "Cancel");
 			SetPVarInt(playerid, "listtoys_giveplayerid", giveplayerid);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
@@ -578,7 +577,7 @@ CMD:dt(playerid, params[])
 	{
 		if(PlayerHoldingObject[playerid][i] == toyslot)
 		{
-			if(IsPlayerAttachedObjectSlotUsed(playerid, i))
+			if(IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i])
 			{
 				if(i == 9 && PlayerInfo[playerid][pBEquipped] || PlayerToyInfo[playerid][toyslot-1][ptSpecial] == 2) 
 					break;
@@ -619,10 +618,10 @@ CMD:wat(playerid, params[])
 
 CMD:dat(playerid, params[])
 {
-	SendClientMessageEx(playerid, COLOR_WHITE, "* Deattached all toys.");
+	SendClientMessageEx(playerid, COLOR_WHITE, "* Detached all toys.");
 	for(new i; i < 10; i++)
 	{
-		if(IsPlayerAttachedObjectSlotUsed(playerid, i) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2) 
+		if((IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i]) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2) 
 		{
 			if(i == 9 && PlayerInfo[playerid][pBEquipped]) 
 				break;
