@@ -1088,6 +1088,14 @@ Weapon_ReturnName(iModelID) {
 		case 44: szWepName = "Nightvision Goggles";
 		case 45: szWepName = "Thermal Goggles";
 		case 46: szWepName = "Parachute";
+		case 47: szWepName = "";
+		case 48: szWepName = "";
+		case 49: szWepName = "vehicle";
+		case 50: szWepName = "helicopter blades";
+		case 51: szWepName = "explosion";
+		case 52: szWepName = "";
+		case 53: szWepName = "drowning";
+		case 54: szWepName = "falling";
 	}
 	return szWepName;
 }
@@ -2260,4 +2268,21 @@ CMD:holster(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You must disable tackling before unholstering");
 		}
 	}
+}
+
+ReturnBoneName(iBoneID)
+{
+	new szBone[10];
+	switch(iBoneID)
+	{
+		case BODY_PART_TORSO: szBone = "torso";
+		case BODY_PART_GROIN: szBone = "groin";
+		case BODY_PART_HEAD: szBone = "head";
+		case BODY_PART_LEFT_ARM: szBone = "left arm";
+		case BODY_PART_RIGHT_ARM: szBone = "right arm";
+		case BODY_PART_LEFT_LEG: szBone = "left leg";
+		case BODY_PART_RIGHT_LEG: szBone = "right leg";
+		default: szBone = "";
+	}
+	return szBone;
 }

@@ -532,9 +532,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(IsACriminal(playerid))
 					{
 						format(szMiscArray, sizeof(szMiscArray), "%s reaches into the locker grabbing their clothes", GetPlayerNameEx(playerid));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						PlayerInfo[playerid][pModel] = arrGroupData[iGroupID][g_iClothes][PlayerInfo[playerid][pRank]];
-						return SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
+						new fSkin[MAX_GROUP_RANKS];
+						for(new i = 0; i < MAX_GROUP_RANKS; i++)
+						{
+							fSkin[i] = arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes][i];
+						}
+						ShowModelSelectionMenuEx(playerid, fSkin, 8, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+						return 1;
 					}
 					if(PlayerInfo[playerid][pDuty]==0)
 					{
@@ -5086,11 +5090,26 @@ CMD:g(playerid, params[])
 	{
 		format(string, sizeof(string), "** (%d) %s (%s) %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("")), GetPlayerNameEx(playerid), params);
 		foreach(new i: Player) {
-	    	if (PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
+	    	if (PlayerInfo[i][pMember] == iGroupID && GetPVarInt(i, "OOCRadioTogged") == 0) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
 
+	return 1;
+}
+
+CMD:togfam(playerid, params[])
+{
+	if(GetPVarInt(playerid, "OOCRadioTogged") == 1)
+	{
+		DeletePVar(playerid, "OOCRadioTogged");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled your OOC group chat. ");
+	}
+	else 
+	{
+		SetPVarInt(playerid, "OOCRadioTogged", 1);
+		SendClientMessage(playerid, COLOR_WHITE, "You have disabled your OOC group chat.");
+	}
 	return 1;
 }
 

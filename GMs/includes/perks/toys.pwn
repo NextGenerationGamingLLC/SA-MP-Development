@@ -513,7 +513,7 @@ CMD:toyhelp(playerid, params[])
 
 CMD:toys(playerid, params[])
 {
-	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment.");
 	ShowPlayerDialog( playerid, TOYS, DIALOG_STYLE_LIST, "Toy Menu", "Attach/Dettach a Toy\nEdit a Toy\nDelete a Toy","Select", "Cancel" );
 	return 1;
 }
@@ -524,7 +524,7 @@ CMD:wt(playerid, params[])
 	if(sscanf(params, "d", toyslot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
 
 	if(toyslot < 1 || toyslot > MAX_PLAYERTOYS+1) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wt [toyslot]");
-	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment.");
 
 	for(new i; i < 10; i++)
 	{
@@ -592,7 +592,7 @@ CMD:dt(playerid, params[])
 
 CMD:wat(playerid, params[])
 {
-	if(GetPVarInt(playerid, "EventToken" ) == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command while in an event.");
+	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment");
 	new count = 0;
 	SendClientMessageEx(playerid, COLOR_WHITE, "* Attached max toys allowed.");
 	for(new x;x<MAX_PLAYERTOYS;x++)

@@ -96,6 +96,8 @@ public KillEMSQueue(playerid)
 	DeletePVar(playerid, "MedicCall");
 	DeletePVar(playerid, "EMSWarns");
 	DeletePVar(playerid, "_energybar");
+	DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "InjuredTL"));
+	DeletePVar(playerid, "InjuredTL");
 	return 1;
 }
 

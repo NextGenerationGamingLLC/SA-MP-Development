@@ -1099,36 +1099,6 @@ CMD:refuel(playerid, params[])
 	return 1;
 }
 
-CMD:eba(playerid, params[]) {
-	return cmd_emergencybutton(playerid, params);
-}
-
-CMD:emergencybutton(playerid, params[]) {
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI) {
-		new
-	    	string[128],
-			Location[MAX_ZONE_NAME];
-
-        if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerTied[playerid] > 0 ) {
-			SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
-		}
-
-		GetPlayer2DZone(playerid, Location, MAX_ZONE_NAME);
-		foreach(new i: Player)
-		{
-			if(IsACop(i)) {
-				SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
-				format(string, sizeof(string), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), Location);
-				SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-			}
-		}	
-		format(string, sizeof(string), "* An alarm engages in %s's taxi at %s. A message is dispatched to the Companies office.", GetPlayerNameEx(playerid), Location);
-		SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
-		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button, police have been informed.");
-	}
-	return 1;
-}
-
 CMD:editcarspawn(playerid, params[])
 {
     if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID) {

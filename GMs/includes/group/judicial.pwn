@@ -346,8 +346,8 @@ CMD:pardon(playerid, params[])
 		    if(PlayerInfo[giveplayerid][pJudgeJailTime] != 0)
 		    {
 				new string[58 + (MAX_PLAYER_NAME * 2)];
-		        if(PlayerInfo[giveplayerid][pJailTime] != 0) PlayerInfo[giveplayerid][pJailTime] = 0;
-		        PlayerInfo[giveplayerid][pJudgeJailTime] = 0;
+		        if(PlayerInfo[giveplayerid][pJailTime] != 0) PlayerInfo[giveplayerid][pJailTime] = 2;
+		        PlayerInfo[giveplayerid][pJudgeJailTime] = 2;
 		        switch(PlayerInfo[playerid][pSex])
 				{
 				    case 1: format(string, sizeof(string), "President %s has forgiven %s of his crimes, he's now free.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));

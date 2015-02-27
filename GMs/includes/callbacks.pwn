@@ -2018,6 +2018,7 @@ public OnPlayerConnect(playerid)
 	strdel(PlayerInfo[playerid][pAutoTextReply], 0, 64);
 	rBigEarT[playerid] = 0;
 	aLastShot[playerid] = INVALID_PLAYER_ID;
+	aLastShotBone[playerid] = 0;
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}
@@ -3342,6 +3343,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				SetPVarFloat(playerid, "MedicZ", mZ);
 				SetPVarInt(playerid, "MedicVW", GetPlayerVirtualWorld(playerid));
 				SetPVarInt(playerid, "MedicInt", GetPlayerInterior(playerid));
+
 			}
 		}
 	}

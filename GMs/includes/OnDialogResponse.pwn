@@ -5291,6 +5291,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, query);
 			PlayerInfo[suspect][pWantedJailFine] = 0;
 			PlayerInfo[suspect][pWantedJailTime] = 0;
+			for(new x;x<MAX_PLAYERTOYS;x++) {
+				if(IsPlayerAttachedObjectSlotUsed(suspect, x)) 
+				{
+					if(x == 9 && PlayerInfo[suspect][pBEquipped]) 
+						break;
+					RemovePlayerAttachedObject(suspect, x); 
+				}
+			}
+			for(new i; i < 10; i++) {
+				PlayerHoldingObject[suspect][i] = 0;
+			}
 			DeletePVar(suspect, "jailcuffs");
 			DeletePVar(playerid, "Arrest_Price");
 			DeletePVar(playerid, "Arrest_Time");

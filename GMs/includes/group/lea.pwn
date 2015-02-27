@@ -1621,7 +1621,7 @@ CMD:vradar(playerid, params[])
 	if (!IsPlayerInAnyVehicle(playerid))
 		return SendClientMessageEx(playerid, 0xFF0000FF, "You cannot use a dashboard radar outside of a vehicle.");
 
-	if(!IsACop(playerid))
+	if(!IsACop(playerid) || IsATowman(playerid))
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
 
 	switch (CarRadars[playerid])

@@ -76,6 +76,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		ShotPlayer[playerid][damagedid] = gettime();
 		LastShot[damagedid] = gettime();
 		aLastShot[damagedid] = playerid;
+		aLastShotBone[damagedid] = bodypart;
+		aLastShotWeapon[damagedid] = weaponid;
 		//if(GetPVarType(damagedid, "gt_Spraying")) DeletePVar(damagedid, "gt_Spraying");
 		if(zombieevent && GetPVarInt(playerid, "z50Cal") == 1 && PlayerInfo[playerid][mInventory][17] && (weaponid == WEAPON_SNIPER || weaponid == WEAPON_RIFLE))
 		{

@@ -103,6 +103,51 @@ CMD:fare(playerid, params[])
 	return 1;
 }
 
+CMD:eba(playerid, params[]) {
+	return cmd_emergencybutton(playerid, params);
+}
+
+CMD:emergencybutton(playerid, params[]) {
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI) {
+		new
+	    	string[128],
+			Location[MAX_ZONE_NAME];
+
+        if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerTied[playerid] > 0 ) {
+			return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
+		}
+		if( GetPVarInt(playerid, "UsedTaxiEBA") == 1)
+		{
+			foreach(new i: Player)
+			{
+				if(IsACop(i)) {
+					format(string, sizeof(string), "HQ: The taxi co. distress signal from %s has be cancelled",GetPlayerNameEx(playerid));
+					SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+				}
+			}	
+			SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
+			SendClientMessage(playerid, COLOR_WHITE, "You have cancelled the emergency button.");
+			DeletePVar(playerid, "UsedTaxiEBA");
+			return 1;
+		}
+
+		GetPlayer2DZone(playerid, Location, MAX_ZONE_NAME);
+		foreach(new i: Player)
+		{
+			if(IsACop(i)) {
+				SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
+				format(string, sizeof(string), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), Location);
+				SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+			}
+		}	
+		format(string, sizeof(string), "* An alarm engages in %s's taxi at %s. A message is dispatched to the Companies office.", GetPlayerNameEx(playerid), Location);
+		SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
+		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button, police have been informed.");
+		SetPVarInt(playerid, "UsedTaxiEBA", 1);
+	}
+	return 1;
+}
+
 CMD:abus(playerid, params[]) return cmd_ataxi(playerid, params);
 CMD:ataxi(playerid, params[])
 {

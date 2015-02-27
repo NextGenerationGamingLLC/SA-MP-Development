@@ -923,6 +923,8 @@ new Float: pSpeed[MAX_PLAYERS];
 new HackingMods[MAX_PLAYERS];
 new rBigEarT[MAX_PLAYERS];
 new aLastShot[MAX_PLAYERS];
+new aLastShotBone[MAX_PLAYERS];
+new aLastShotWeapon[MAX_PLAYERS];
 new IsSpawned[MAX_PLAYERS];
 new SpawnKick[MAX_PLAYERS];
 
@@ -1129,8 +1131,8 @@ new Float:DMVRelease[4][3] = {
 {216.39, 110.0, 999.02}
 }; */
 new Float:WarrantJail[2][3] = {
-{1409.861, -1768.24, 7308.95},
-{1410.06, -1780.85, 7308.95}
+{2220.8818, -1037.0145, 1200.4186},
+{2221.4016, -1034.1516, 1200.4186}
 };
 /*new Float:ICPrisonSpawns[3][3] = {
 {-284.5741,1871.2554,29.8929},

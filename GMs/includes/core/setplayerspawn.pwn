@@ -286,6 +286,48 @@ SetPlayerSpawn(playerid)
 		}
 		if(GetPVarInt(playerid, "Injured") == 1)
 		{
+		    switch(aLastShotWeapon[playerid])
+			{
+				case WEAPON_BRASSKNUCKLE, WEAPON_GOLFCLUB, WEAPON_BAT, WEAPON_SHOVEL, WEAPON_POOLSTICK, WEAPON_DILDO, WEAPON_DILDO2, WEAPON_VIBRATOR,
+					WEAPON_VIBRATOR2, WEAPON_FLOWER, WEAPON_CANE:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player brutally beaten with a %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
+				}
+				case WEAPON_KATANA, WEAPON_KNIFE:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player was brutally slashed with a %s.", Weapon_ReturnName(aLastShotWeapon[playerid]));
+				}
+				case WEAPON_GRENADE, WEAPON_ROCKETLAUNCHER, WEAPON_HEATSEEKER, 51:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player suffered critical damage from an explosive blast.");
+				}
+				case WEAPON_FIREEXTINGUISHER, WEAPON_SPRAYCAN:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player would appear suffocated and poisoned.");
+				}
+				case WEAPON_MOLTOV, WEAPON_FLAMETHROWER:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player suffered from critical severe burn injuries.");
+				}
+				case WEAPON_COLT45, WEAPON_SILENCED, WEAPON_DEAGLE, WEAPON_SHOTGUN, WEAPON_SAWEDOFF, WEAPON_SHOTGSPA, WEAPON_UZI, WEAPON_MP5, WEAPON_AK47,
+					WEAPON_M4, WEAPON_TEC9, WEAPON_RIFLE, WEAPON_SNIPER, WEAPON_MINIGUN:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player was critically shot in the %s by a %s.", ReturnBoneName(aLastShotBone[playerid]), Weapon_ReturnName(aLastShotWeapon[playerid]));
+				}
+				case WEAPON_VEHICLE, WEAPON_COLLISION:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player would appear to have multiple broken bones.");
+				}
+				case WEAPON_DROWN:
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Player lost consciousness through drowning.");
+				}
+				case 0: format(szMiscArray, sizeof(szMiscArray), "Player would appear to be brutally beaten by someone's fists.");
+				default: format(szMiscArray, sizeof(szMiscArray), "Player passed away from unknown causes.");
+			}
+			new Float: mX, Float: mY, Float: mZ;
+			GetPlayerPos(playerid, mX, mY, mZ);
+			SetPVarInt(playerid, "InjuredTL", _:CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, mX, mY, mZ+0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
 		    SendEMSQueue(playerid,1);
 		    return 1;
 		}

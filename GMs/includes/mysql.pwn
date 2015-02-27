@@ -5020,11 +5020,10 @@ public Group_QueryFinish(iType, iExtraID) {
 		}
 		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
 				
-			cache_get_field_content(iIndex, "Group_ID", szResult, MainPipeline);
-			new iGroupID = strval(szResult)-1;
+			new iGroupID = cache_get_field_content_int(iIndex, "Group_ID", MainPipeline);
 			new j = 0;
 
-			while(arrGroupData[iGroupID][g_iWeapons][j] != 0)
+			while(arrGroupData[iGroupID][g_iWeapons][j] != 0 && j < 50)
 			{
 				j++;
 			}
