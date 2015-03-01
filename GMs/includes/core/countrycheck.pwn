@@ -48,6 +48,14 @@ public CountryCheckResponse(playerid, response_code, data[]) {
 				SendClientMessage(playerid, COLOR_RED, "Your account is not set to log in from your current country. Make an Admin Request @ http://ng-gaming.net/forums");
 				SetTimerEx("KickEx", 5000, 0, "i", playerid);
 			}
+			case 4: {
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (IP:%s) has attempted to log in while locked by the Geosecurity system, and was auto-kicked.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pIP]);
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s(%d) (IP:%s) has attempted to log in while locked by the Geosecurity system.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), PlayerInfo[playerid][pIP]);
+				Log("logs/geocheck.log", szMiscArray);
+				SendClientMessage(playerid, COLOR_RED, "Your account is locked due to numerous logins from incorrect countries. Make an Admin Request @ http://ng-gaming.net/forums");
+				SetTimerEx("KickEx", 5000, 0, "i", playerid);
+			}
 			default: {
 				printf("GEOCHECK: Unknown code returned, returned %d", resCode);
 			}
