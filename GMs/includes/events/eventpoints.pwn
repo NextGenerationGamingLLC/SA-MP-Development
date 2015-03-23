@@ -129,8 +129,8 @@ CMD:createpoint(playerid, params[])
 		return 1;
 	}
 
-	new string[128], flagable, pointid, prize[64];
-	if(sscanf(params, "dds[64]", flagable, pointid, prize)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /createpoint [flagable] [pointid] [prize]");
+	new string[128], objectid, flagable, pointid, prize[64];
+	if(sscanf(params, "ddds[64]", objectid, flagable, pointid, prize)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /createpoint [objectid] [flagable] [pointid] [prize]");
 
 	if(EventPoints[pointid][epObjectID] != 0)
 	{
@@ -162,7 +162,7 @@ CMD:createpoint(playerid, params[])
 	format(EventPoints[pointid][epPrize], 64, "%s", prize);
 
 	format(string,sizeof(string),"Event Point (ID: %d)\nPrize: %s\nType /claimpoint to claim your prize!", pointid, EventPoints[pointid][epPrize]);
-	EventPoints[pointid][epObjectID] = CreateDynamicPickup(1274, 1, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ], EventPoints[pointid][epVW]);
+	EventPoints[pointid][epObjectID] = CreateDynamicPickup(objectid, 1, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ], EventPoints[pointid][epVW]);
 	EventPoints[pointid][epText3dID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, EventPoints[pointid][epPosX], EventPoints[pointid][epPosY], EventPoints[pointid][epPosZ]+0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, EventPoints[pointid][epVW], EventPoints[pointid][epInt]);
 
 	format(string,sizeof(string),"You have placed PointID %d at your current position.", pointid);

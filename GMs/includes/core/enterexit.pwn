@@ -240,6 +240,8 @@ CMD:enter(playerid, params[])
     for(new i = 0; i < sizeof(Businesses); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3,Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
 	        if (Businesses[i][bExtPos][1] == 0.0) return 1;
+			if(Businesses[i][bMaxLevel] > 0 && PlayerInfo[playerid][pLevel] > Businesses[i][bMaxLevel])
+				return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, your level is above the max level allowed.");
 			if (Businesses[i][bStatus]) {
 				if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 				{
@@ -547,7 +549,7 @@ CMD:enter(playerid, params[])
 	}
 	
 	// added as part of the large vehicle interior project
-	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508 || GetVehicleModel(cCar) == 570) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar)
+	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508 || GetVehicleModel(cCar) == 570) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar && GetPlayerVirtualWorld(playerid) == GetVehicleVirtualWorld(cCar))
 	{
 	    if(VehicleStatus{cCar} == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not allowed to enter this vehicle as it's been damaged!");
 	    new string[47 + MAX_PLAYER_NAME];
@@ -828,9 +830,9 @@ CMD:exit(playerid, params[])
 				}
 			}
         }
-
-        PlayerInfo[playerid][pVW] = 0;
-        SetPlayerVirtualWorld(playerid, 0);
+		DeletePVar(playerid, "InsideCar");
+		PlayerInfo[playerid][pVW] = GetVehicleVirtualWorld(InsidePlane[playerid]);
+		SetPlayerVirtualWorld(playerid, GetVehicleVirtualWorld(InsidePlane[playerid]));
         PlayerInfo[playerid][pInt] = 0;
         SetPlayerInterior(playerid, 0);
         InsidePlane[playerid] = INVALID_VEHICLE_ID;

@@ -731,13 +731,6 @@ task MoneyUpdate[1000]()
 			}
 			if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
 			{
-				/*if((GetPlayerAnimationIndex(i) == 1660) && ((PlayerInfo[i][pCash] - GetPlayerMoney(i)) == 1))
-				{
-					new Float:hp;
-					GetHealth(i, hp);
-					if(hp + 35 >= 100.0) pSSHealth[i] = 100.0;
-					else pSSHealth[i] = hp + 35.0;
-				}*/
 				ResetPlayerMoney(i);
 				GivePlayerMoney(i, PlayerInfo[i][pCash]);
 			}
@@ -2288,20 +2281,7 @@ task ServerHeartbeat[1000]() {
 
 	UpdateCarRadars();
 
-/*	if (CharmReloadTimer == 0 && ++CharmMainTimer == 1800)
-	{
-		RemoveCharmPoint();
-	}
-
-	if (CharmMainTimer >= 1800)
-	{
-		if (++CharmReloadTimer == 5400)
-		{
-			SelectCharmPoint();
-			CharmReloadTimer = 0;
-			CharmMainTimer = 0;
-		}
-	} */
+	//CharmTimer();
 }
 
 // Timer Name: ServerHeartbeatTwo()

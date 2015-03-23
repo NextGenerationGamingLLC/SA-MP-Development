@@ -220,7 +220,9 @@ enum eBiz {
 	bGymBoxingArena1[2],
 	bGymBoxingArena2[2],
 	bGymBikePlayers[10],
-	bGymBikeVehicles[10]
+	bGymBikeVehicles[10],
+	
+	bMaxLevel
 }
 
 enum StoreItemCostEnum
@@ -1091,7 +1093,8 @@ enum pInfo
 	bTicket,
 	pJailedInfo[5], // 0 id - 1 fine - 2 time - 3 warn - 4 wep restriction
 	pJailedWeapons[12],
-	pVIPMod
+	pVIPMod,
+	pLastPass[65]
 };
 
 enum pvInfo

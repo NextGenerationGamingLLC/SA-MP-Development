@@ -91,24 +91,26 @@ public OnVehicleSpawn(vehicleid) {
 		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
 		{
 			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			CrateVehicleLoad[vehicleid][vForkObject] = -1;
 		}
 	}
-    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 	for(new i = 0; i < sizeof(CrateInfo); i++)
-    {
+	{
 		if(CrateInfo[i][InVehicle] == vehicleid)
 		{
-	    	CrateInfo[i][crActive] = 0;
-		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-		    CrateInfo[i][crObject] = 0;
-		    CrateInfo[i][crX] = 0;
-		    CrateInfo[i][crY] = 0;
-		    CrateInfo[i][crZ] = 0;
-		    break;
+			CrateInfo[i][crActive] = 0;
+			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
+			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+			CrateInfo[i][crObject] = -1;
+			CrateInfo[i][crX] = 0;
+			CrateInfo[i][crY] = 0;
+			CrateInfo[i][crZ] = 0;
+			break;
 		}
-    }
-    // Make sure no one is in the vehicle window if plane.
-    foreach(new i: Player)
+	}
+	// Make sure no one is in the vehicle window if plane.
+	foreach(new i: Player)
 	{
 		if(InsidePlane[i] == vehicleid)
 		{
@@ -1544,6 +1546,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	{
 		if(response)
 		{
+			ClearAnimations(playerid);
 			if(PlayerInfo[playerid][pDonateRank] >= 2)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
@@ -3093,6 +3096,16 @@ public OnPlayerDeath(playerid, killerid, reason)
 	PlayerIsDead[playerid] = true;
 	IsSpawned[playerid] = 0;
 	SpawnKick[playerid] = 0;
+	for(new x; x < MAX_PLAYERTOYS; x++)
+	{
+		if(IsPlayerAttachedObjectSlotUsed(playerid, x))
+		{
+			if(x == 9 && PlayerInfo[playerid][pBEquipped])
+				break;
+			RemovePlayerAttachedObject(playerid, x);
+		}
+	}
+	for(new i; i < 10; i++) PlayerHoldingObject[playerid][i] = 0;
 	if(IsPlayerConnected(playerid) && IsPlayerConnected(killerid))
 	{
 		if(gPlayerUsingLoopingAnim[playerid])
@@ -3500,12 +3513,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(GoChase[playerid] == killerid)
 		{
 			new szMessage[86 + MAX_PLAYER_NAME];
-			new takemoney = PlayerInfo[playerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
+			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
-			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), takemoney);
+			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
 			SendGroupMessage(2, COLOR_YELLOW, szMessage);
 			GivePlayerCash(playerid, -takemoney);
-			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%d, removing the contract on your head.", takemoney);
+			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
 			PlayerInfo[killerid][pContractDetail][0] = 0;
 			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
 			PlayerInfo[killerid][pHeadValue] = 0;
@@ -3516,7 +3529,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 			new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
 			GetWeaponName(reason, weaponname, sizeof(weaponname));
-			format(szMessage, sizeof szMessage, "[HMA] %s (%d) has has failed to kill %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
+			format(szMessage, sizeof szMessage, "[HMA] %s (%d) has has failed to kill %s (%d) with a %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), weaponname);
 			GroupLog(iGroupID, szMessage);
 		}
 	}
@@ -3533,10 +3546,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 }
 
 public OnVehicleDeath(vehicleid) {
-    new Float:X, Float:Y, Float:Z;
-    new Float:XB, Float:YB, Float:ZB;
-    VehicleStatus{vehicleid} = 1;
-    TruckContents{vehicleid} = 0;
+	new Float:X, Float:Y, Float:Z;
+	new Float:XB, Float:YB, Float:ZB;
+	VehicleStatus{vehicleid} = 1;
+	TruckContents{vehicleid} = 0;
 	foreach(new i: Player)
 	{
 		if(TruckUsed[i] == vehicleid)
@@ -3570,28 +3583,30 @@ public OnVehicleDeath(vehicleid) {
 			TogglePlayerSpectating(i, 0);
 		}
 	}
-    /*if(DynVeh[vehicleid] != -1)
+	/*if(DynVeh[vehicleid] != -1)
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
 	}*/
-    if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]) && CrateVehicleLoad[vehicleid][vForkLoaded] == 1)
-    {
-    	DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+	if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]) && CrateVehicleLoad[vehicleid][vForkLoaded] == 1)
+	{
+		DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+		CrateVehicleLoad[vehicleid][vForkObject] = -1;
 	}
-    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-    for(new i = 0; i < sizeof(CrateInfo); i++)
-    {
+	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+	for(new i = 0; i < sizeof(CrateInfo); i++)
+	{
 		if(CrateInfo[i][InVehicle] == vehicleid)
 		{
-		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-		    CrateInfo[i][crObject] = INVALID_OBJECT_ID;
-		    CrateInfo[i][crActive] = 0;
-		    CrateInfo[i][crX] = 0;
-		    CrateInfo[i][crY] = 0;
-		    CrateInfo[i][crZ] = 0;
-		    break;
+			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
+			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+			CrateInfo[i][crObject] = -1;
+			CrateInfo[i][crActive] = 0;
+			CrateInfo[i][crX] = 0;
+			CrateInfo[i][crY] = 0;
+			CrateInfo[i][crZ] = 0;
+			break;
 		}
-    }
+	}
 	arr_Engine{vehicleid} = 0;
 }
 
@@ -5113,6 +5128,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    {
 		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
 		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -5133,6 +5149,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    {
 		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
 		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -5155,6 +5172,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				DeletePVar(playerid, "UsingSprunk");
 				SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 			}
 			DeletePVar(playerid, "DrinkCooledDown");
 			SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -6896,6 +6914,22 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		else
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
+	}
+	else if(extraid == DIALOG_STPATRICKSSHOP) // St Patrick's Day
+	{
+		if(!response) return 1;
+		new name[24] = "None";
+		for(new i; i < sizeof(HoldingObjectsAll); i++)
+		{
+			if(HoldingObjectsAll[i][holdingmodelid] == modelid)
+			{
+				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				break;
+			}
+		}
+		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
+		SetPVarInt(playerid, "StPatrickToy", modelid);
+		ShowPlayerDialog(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
 	return 1;
 }

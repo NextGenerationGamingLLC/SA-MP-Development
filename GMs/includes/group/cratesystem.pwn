@@ -87,8 +87,7 @@ public DeliverCrate(playerid)
         {
             if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 530 && CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] == 1)
             {
-			    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-			    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
+				if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject])) DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]), CrateVehicleLoad[vehicleid][vForkObject] = -1;
 			    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 			    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
 			}
@@ -115,8 +114,7 @@ public DeliverCrate(playerid)
 		{
 		    if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 530 && CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] == 1)
             {
-			    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-			    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
+				if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject])) DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]), CrateVehicleLoad[vehicleid][vForkObject] = -1;
 			    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 			    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
 			}
@@ -287,11 +285,10 @@ CMD:destroycrate(playerid, params[]) {
 	    		GetDynamicObjectPos(CrateInfo[i][crObject], cX, cY, cZ);
 	    		if(IsPlayerInRangeOfPoint(playerid, 5.0, cX, cY, cZ))
 	    		{
-	    		    DestroyDynamicObject(CrateInfo[i][crObject]);
-	    		    DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]);
+					if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]), CrateInfo[i][crObject] = -1;
+					if(IsValidDynamic3DTextLabel(CrateInfo[i][crLabel])) DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]), CrateInfo[i][crLabel] = Text3D:-1;
 	    		    CrateInfo[i][crActive] = 0;
 	    		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-				    CrateInfo[i][crObject] = INVALID_OBJECT_ID;
 				    CrateInfo[i][crX] = 0;
 				    CrateInfo[i][crY] = 0;
 				    CrateInfo[i][crZ] = 0;
@@ -326,11 +323,10 @@ CMD:adestroycrate(playerid, params[]) {
 	    new string[128];
     	if(CrateInfo[i][crActive])
     	{
-		    DestroyDynamicObject(CrateInfo[i][crObject]);
-		    DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]);
+			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+			if(IsValidDynamic3DTextLabel(CrateInfo[i][crLabel])) DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]), CrateInfo[i][crLabel] = Text3D:-1;
 		    CrateInfo[i][crActive] = 0;
 		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-		    CrateInfo[i][crObject] = INVALID_OBJECT_ID;
 		    CrateInfo[i][crX] = 0;
 		    CrateInfo[i][crY] = 0;
 		    CrateInfo[i][crZ] = 0;
@@ -534,9 +530,8 @@ CMD:loadcrate(playerid, params[]) {
 			}
 			if(TruckFound == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near a Loaded Crate Vehicle!");
 			if(FreeSlot == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The truck is fully loaded!");
-		    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject])) DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]), CrateVehicleLoad[vehicleid][vForkObject] = -1;
 		    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-		    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
 			CrateVehicleLoad[TruckFound][vCrateID][FreeSlot] = CrateVehicleLoad[vehicleid][vCrateID][0];
 			CrateInfo[CrateVehicleLoad[TruckFound][vCrateID][FreeSlot]][InVehicle] = TruckFound;
 		    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
@@ -656,9 +651,8 @@ CMD:loadplane(playerid, params[]) {
 			}
 			if(PlaneFound == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near a plane!");
 			if(FreeSlot == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The Plane is fully loaded!");
-		    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject])) DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]), CrateVehicleLoad[vehicleid][vForkObject] = -1;
 		    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-		    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
 			CrateVehicleLoad[PlaneFound][vCrateID][FreeSlot] = CrateVehicleLoad[vehicleid][vCrateID][0];
 			CrateInfo[CrateVehicleLoad[PlaneFound][vCrateID][FreeSlot]][InVehicle] = PlaneFound;
 		    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
@@ -841,7 +835,7 @@ CMD:loadforklift(playerid, params[]) {
 			    		GetDynamicObjectPos(CrateInfo[i][crObject], cX, cY, cZ);
 			    		if(IsPlayerInRangeOfPoint(playerid, 5.0, cX, cY, cZ))
 			    		{
-			    		    DestroyDynamicObject(CrateInfo[i][crObject]);
+							if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]), CrateInfo[i][crObject] = -1;
 			    		    CrateInfo[i][InVehicle] = vehicleid;
 			    		    CrateVehicleLoad[vehicleid][vCrateID][0] = i;
 			    		    CrateVehicleLoad[vehicleid][vForkLoaded] = 1;
@@ -871,8 +865,7 @@ CMD:loadforklift(playerid, params[]) {
 		    new Float: vX, Float: vY, Float: vZ;
 		    GetVehiclePos(vehicleid, vX, vY, vZ);
 		    GetXYInFrontOfPlayer(playerid, vX, vY, 2);
-		    DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-		    CrateVehicleLoad[vehicleid][vForkObject] = INVALID_OBJECT_ID;
+			if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject])) DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]), CrateVehicleLoad[vehicleid][vForkObject] = -1;
 		    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 		    CrateVehicleLoad[vehicleid][vCrateID][0] = -1;
 		    for(new i = 0; i < sizeof(CrateInfo); i++)
@@ -1032,11 +1025,10 @@ CMD:cgun(playerid, params[]) {
     		    if(CrateInfo[i][GunQuantity] < 1)
     		    {
     		        SendClientMessageEx(playerid, COLOR_GRAD2, "The crate is empty! ");
-    		        DestroyDynamicObject(CrateInfo[i][crObject]);
-    		        DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]);
+					if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]), CrateInfo[i][crObject] = -1;
+					if(IsValidDynamic3DTextLabel(CrateInfo[i][crLabel])) DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]), CrateInfo[i][crLabel] = Text3D:-1;
 	    		    CrateInfo[i][crActive] = 0;
 	    		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-				    CrateInfo[i][crObject] = 0;
 				    CrateInfo[i][crX] = 0;
 				    CrateInfo[i][crY] = 0;
 				    CrateInfo[i][crZ] = 0;

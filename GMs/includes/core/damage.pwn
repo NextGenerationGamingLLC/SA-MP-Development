@@ -71,7 +71,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			}
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
-		if(PlayerInfo[damagedid][pHospital] == 1) return 1;
+		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
 		if(GetPVarInt(damagedid, "PlayerCuffed") == 1) return 1;
 		ShotPlayer[playerid][damagedid] = gettime();
 		LastShot[damagedid] = gettime();
@@ -233,7 +233,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if (playerid != INVALID_PLAYER_ID && (weaponid == 0 || weaponid == 1 || weaponid == 2 || weaponid == 3 || weaponid == 5 || weaponid == 6 || weaponid == 7 || weaponid == 8) )
 	{
 		new Float: multiply;
-		if(PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2 || PlayerInfo[damagedid][pJailTime] > 0 || HelpingNewbie[damagedid] != INVALID_PLAYER_ID || GetPVarInt(damagedid, "eventStaff") >= 1) return 1;
+		if(PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2 || (PlayerInfo[damagedid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) || HelpingNewbie[damagedid] != INVALID_PLAYER_ID || GetPVarInt(damagedid, "eventStaff") >= 1) return 1;
 		if(hgActive == 1 && HungerPlayerInfo[damagedid][hgInEvent] == 1) return 1;
 		if (PlayerInfo[playerid][pFitness] < 50)
 		{
@@ -347,15 +347,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
 	{
 		++PlayerShots[playerid];
-	}
-	if(IsAHitman(playerid) && GetPVarInt(playerid, "ExecutionMode") == 1 && (weaponid == WEAPON_DEAGLE || weaponid == WEAPON_SNIPER))
-	{
-		if(hittype != BULLET_HIT_TYPE_PLAYER && hitid != GoChase[playerid])
-		{
-			SetPVarInt(playerid, "ExecutionMode", 0);
-			SendClientMessage(playerid, COLOR_RED, "You missed the target, wait 5 minutes before re-loading a HP Round.");
-			SetPVarInt(playerid, "KillShotCooldown", gettime());
-		}
 	}
 	if(GetPVarInt(playerid, "FireStart") == 1)
 	{

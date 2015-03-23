@@ -487,7 +487,6 @@ CMD:deliverpt(playerid, params[])
 						
                         KillEMSQueue(giveplayerid);
                         SetPVarInt(giveplayerid, "_HospitalBeingDelivered", 1);
-						DeletePVar(giveplayerid, "Injured");
                         
 						new iHospitalDeliver = GetClosestDeliverPatientPoint(playerid);
 						new iHospital = ReturnDeliveryPoint(iHospitalDeliver);
@@ -527,6 +526,7 @@ CMD:renderaid(playerid, params[])
 	new target;
 	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /renderaid [player]");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not aid yourself!");
 	if(!GetPVarType(target, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
 	SetPVarInt(target, "renderaid", playerid);
 	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(playerid));

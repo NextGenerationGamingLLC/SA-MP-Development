@@ -182,90 +182,6 @@ GlobalPlaySound(soundid, Float:x, Float:y, Float:z)
 	}
 }
 
-/*
-RemoveCharmPoint()
-{
-	if (ActiveCharmPoint == -1)
-		return;
-
-	if (IsValidDynamicPickup(ActiveCharmPointPickup))
-	{
-		DestroyDynamicPickup(ActiveCharmPointPickup);
-		ActiveCharmPointPickup = -1;
-	}
-
-	if (IsValidDynamic3DTextLabel(ActiveCharmPoint3DText))
-	{
-		DestroyDynamic3DTextLabel(ActiveCharmPoint3DText);
-	}
-
-	// DON'T RESET ActiveCharmPoint
-	// IT IS USED TO MAKE SURE NO POINT IS PICKED TWICE!
-}
-
-SelectCharmPoint()
-{
-	new rand = random(sizeof(CharmPoints));
-
-	while (rand == ActiveCharmPoint) // force new point
-	{
-		rand = random(sizeof(CharmPoints));
-	}
-
-	if (ActiveCharmPoint != -1)
-	{
-		if (IsValidDynamicPickup(ActiveCharmPointPickup))
-		{
-			DestroyDynamicPickup(ActiveCharmPointPickup);
-			ActiveCharmPointPickup = -1;
-		}
-
-		if (IsValidDynamic3DTextLabel(ActiveCharmPoint3DText))
-		{
-			DestroyDynamic3DTextLabel(ActiveCharmPoint3DText);
-		}
-	}
-
-	new vw = 0, int = 0;
-
-	switch (rand)
-	{
-		case 0:
-		{
-			vw = 123051;
-			int = 1;
-		}
-
-		case 1:
-		{
-			vw = 100078;
-			int = 17;
-		}
-
-		case 2:
-		{
-			vw = 2345;
-			int = 1;
-		}
-
-		case 3:
-		{
-			vw = 100084;
-			int = 1;
-		}
-
-		case 4:
-		{
-			vw = 20083;
-			int = 11;
-		}
-	}
-
-	ActiveCharmPointPickup = CreateDynamicPickup(1318, 23, CharmPoints[rand][0], CharmPoints[rand][1], CharmPoints[rand][2], .worldid = vw, .interiorid = int);
-	ActiveCharmPoint3DText = CreateDynamic3DTextLabel("Collect your Lucky Charm tokens!\n/claimtokens", 0x37A621FF, CharmPoints[rand][0], CharmPoints[rand][1], CharmPoints[rand][2] + 1.0, 100.0, .worldid = vw, .interiorid = int);
-	ActiveCharmPoint = rand;
-} */
-
 GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 {
     new Float:a;
@@ -1381,28 +1297,31 @@ public UpdateCarRadars()
 			else
 			{	
 				new targetVehicle = GetPlayerVehicleID(target);
-				new Float: speed = player_get_speed(target);
-
-				new str[60];
-
-				format(str, sizeof(str), "Target Vehicle: ~r~%s (%i)", GetVehicleName(targetVehicle), targetVehicle);
-				PlayerTextDrawSetString(p, _crTextTarget[p], str);
-				format(str, sizeof(str), "Speed: ~r~%d MPH", floatround(speed, floatround_round));
-				PlayerTextDrawSetString(p, _crTextSpeed[p], str);
-				foreach(new i : Player)
+				if(GetVehicleModel(targetVehicle))
 				{
-					new veh = GetPlayerVehicle(i, targetVehicle);
-					if (veh != -1 && PlayerVehicleInfo[i][veh][pvTicket] > 0)
+					new Float: speed = player_get_speed(target);
+
+					new str[60];
+
+					format(str, sizeof(str), "Target Vehicle: ~r~%s (%i)", GetVehicleName(targetVehicle), targetVehicle);
+					PlayerTextDrawSetString(p, _crTextTarget[p], str);
+					format(str, sizeof(str), "Speed: ~r~%d MPH", floatround(speed, floatround_round));
+					PlayerTextDrawSetString(p, _crTextSpeed[p], str);
+					foreach(new i : Player)
 					{
-						format(str, sizeof(str), "Tickets: ~r~$%s", number_format(PlayerVehicleInfo[i][veh][pvTicket]));
-						PlayerTextDrawSetString(p, _crTickets[p], str);
-						if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
+						new veh = GetPlayerVehicle(i, targetVehicle);
+						if (veh != -1 && PlayerVehicleInfo[i][veh][pvTicket] > 0)
 						{
-							SetPVarInt(p, "_lastTicketWarning", gettime());
-							PlayerPlaySound(p, 4202, 0.0, 0.0, 0.0);
+							format(str, sizeof(str), "Tickets: ~r~$%s", number_format(PlayerVehicleInfo[i][veh][pvTicket]));
+							PlayerTextDrawSetString(p, _crTickets[p], str);
+							if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
+							{
+								SetPVarInt(p, "_lastTicketWarning", gettime());
+								PlayerPlaySound(p, 4202, 0.0, 0.0, 0.0);
+							}
 						}
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -1616,58 +1535,6 @@ stock IsFemaleSkin(skinid)
 
 	return 0;
 }
-
-/*
-stock IsPlayerInRangeOfCharm(playerid)
-{
-	if (ActiveCharmPoint == -1 || !IsValidDynamicPickup(ActiveCharmPointPickup))
-		return false;
-
-	new Float:x, Float:y, Float:z, vw, int;
-	x = CharmPoints[ActiveCharmPoint][0];
-	y = CharmPoints[ActiveCharmPoint][1];
-	z = CharmPoints[ActiveCharmPoint][2];
-
-	switch (ActiveCharmPoint)
-	{
-		case 0:
-		{
-			vw = 123051;
-			int = 1;
-		}
-
-		case 1:
-		{
-			vw = 100078;
-			int = 17;
-		}
-
-		case 2:
-		{
-			vw = 2345;
-			int = 1;
-		}
-
-		case 3:
-		{
-			vw = 100084;
-			int = 1;
-		}
-
-		case 4:
-		{
-			vw = 20083;
-			int = 11;
-		}
-	}
-
-	if (GetPlayerVirtualWorld(playerid) == vw && GetPlayerInterior(playerid) == int && IsPlayerInRangeOfPoint(playerid, 1.0, x, y, z))
-	{
-		return true;
-	}
-
-	return false;
-} */
 
 stock PlayerFacePlayer( playerid, targetplayerid )
 {

@@ -570,7 +570,7 @@ stock SaveGarage(garageid)
 
 stock CreateGarage(garageid)
 {
-	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]);
+	if(IsValidDynamic3DTextLabel(GarageInfo[garageid][gar_TextID])) DestroyDynamic3DTextLabel(GarageInfo[garageid][gar_TextID]), GarageInfo[garageid][gar_TextID] = Text3D:-1;
 	if(GarageInfo[garageid][gar_ExteriorX] == 0.0) return 1;
 	new string[128];
 	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);

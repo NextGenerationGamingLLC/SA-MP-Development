@@ -309,7 +309,13 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 			if(arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]][0]) { format(division, (GROUP_MAX_DIV_LEN), "%s", arrGroupDivisions[iGroupID][PlayerInfo[targetid][pDivision]]); }
 			else format(division, (GROUP_MAX_DIV_LEN), "undefined");
 		}
-	    else format(division, (GROUP_MAX_DIV_LEN), "G.D.");
+		else
+		{
+			if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+				format(division, (GROUP_MAX_DIV_LEN), "G.D.");
+			else
+				format(division, (GROUP_MAX_DIV_LEN), "None");
+		}
 	    if(arrGroupData[iGroupID][g_szGroupName][0]) {
 			format(employer, (GROUP_MAX_NAME_LEN), "%s", arrGroupData[iGroupID][g_szGroupName]);
 		}
@@ -2481,6 +2487,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
+									OnPlayerStatsUpdate(playerid);
 								}
 								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
 							}
@@ -2611,8 +2618,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 279); // SF Fire
 				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
 			}
-			if(listitem == 2 && IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 278); // LV Fire
-			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
+			if(listitem == 2)
+			{
+				if(IsAnAmbulance(closestCar)) SetPlayerSkin(playerid, 278); // LV Fire
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
+			}
 			SetPVarInt(playerid, "turnoutVeh", closestCar);
 			return 1;
 		}
@@ -4109,16 +4119,16 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
 			{
-				if(!(0 <= type < sizeof(Barricades)) || (Barricades[iGroup][type][sX] == 0 && Barricades[iGroup][type][sY] == 0 && Barricades[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barricade ID.");
+				if(!(0 <= type < MAX_BARRICADES) || (Barricades[iGroup][type][sX] == 0 && Barricades[iGroup][type][sY] == 0 && Barricades[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barricade ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Barricades[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barricade that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Barricades[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(Barricades[iGroup][type][sObjectID])) DestroyDynamicObject(Barricades[iGroup][type][sObjectID]);
 					Barricades[iGroup][type][sX] = 0;
 					Barricades[iGroup][type][sY] = 0;
 					Barricades[iGroup][type][sZ] = 0;
-					Barricades[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Barricades[iGroup][type][sObjectID] = -1;
 					Barricades[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barricades[iGroup][type][sDeployedByStatus] = 0;
 					format(string, sizeof(string), "Barricade ID: %d successfully deleted.", type);
@@ -4146,17 +4156,17 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
 			{
-				if(!(0 <= type < sizeof(SpikeStrips)) || (SpikeStrips[iGroup][type][sX] == 0 && SpikeStrips[iGroup][type][sY] == 0 && SpikeStrips[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
+				if(!(0 <= type < MAX_SPIKES) || (SpikeStrips[iGroup][type][sX] == 0 && SpikeStrips[iGroup][type][sY] == 0 && SpikeStrips[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid spike ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && SpikeStrips[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a spikestrip that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(SpikeStrips[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) DestroyDynamicObject(SpikeStrips[iGroup][type][sObjectID]);
 					DestroyDynamicPickup(SpikeStrips[iGroup][type][sPickupID]);
 					SpikeStrips[iGroup][type][sX] = 0;
 					SpikeStrips[iGroup][type][sY] = 0;
 					SpikeStrips[iGroup][type][sZ] = 0;
-					SpikeStrips[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					SpikeStrips[iGroup][type][sObjectID] = -1;
 					SpikeStrips[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
@@ -4184,16 +4194,16 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares])
 			{
-				if(!(0 <= type < sizeof(Flares)) || (Flares[iGroup][type][sX] == 0 && Flares[iGroup][type][sY] == 0 && Flares[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid flare ID.");
+				if(!(0 <= type < MAX_FLARES) || (Flares[iGroup][type][sX] == 0 && Flares[iGroup][type][sY] == 0 && Flares[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid flare ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Flares[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a flare that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(Flares[iGroup][type][sObjectID])) DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
 					Flares[iGroup][type][sX] = 0;
 					Flares[iGroup][type][sY] = 0;
 					Flares[iGroup][type][sZ] = 0;
-					Flares[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Flares[iGroup][type][sObjectID] = -1;
 					Flares[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Flares[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Flare ID: %d successfully deleted.", type);
@@ -4207,16 +4217,16 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 			{
-				if(!(0 <= type < sizeof(Cones)) || (Cones[iGroup][type][sX] == 0 && Cones[iGroup][type][sY] == 0 && Cones[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid cone ID.");
+				if(!(0 <= type < MAX_CONES) || (Cones[iGroup][type][sX] == 0 && Cones[iGroup][type][sY] == 0 && Cones[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid cone ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Cones[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a cone that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(Cones[iGroup][type][sObjectID])) DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
 					Cones[iGroup][type][sX] = 0;
 					Cones[iGroup][type][sY] = 0;
 					Cones[iGroup][type][sZ] = 0;
-					Cones[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Cones[iGroup][type][sObjectID] = -1;
 					Cones[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Cones[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Cone ID: %d successfully deleted.", type);
@@ -4230,16 +4240,16 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
 			{
-				if(!(0 <= type < sizeof(Barrels)) || (Barrels[iGroup][type][sX] == 0 && Barrels[iGroup][type][sY] == 0 && Barrels[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barrel ID.");
+				if(!(0 <= type < MAX_BARRELS) || (Barrels[iGroup][type][sX] == 0 && Barrels[iGroup][type][sY] == 0 && Barrels[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid barrel ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a barrel that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(Barrels[iGroup][type][sObjectID])) DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
 					Barrels[iGroup][type][sX] = 0;
 					Barrels[iGroup][type][sY] = 0;
 					Barrels[iGroup][type][sZ] = 0;
-					Barrels[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Barrels[iGroup][type][sObjectID] = -1;
 					Barrels[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Barrels[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Barrel ID: %d successfully deleted.", type);
@@ -4253,16 +4263,16 @@ CMD:destroy(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
 			{
-				if(!(0 <= type < sizeof(Ladders)) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid ladder ID.");
+				if(!(0 <= type < MAX_LADDERS) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid ladder ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
-					DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
+					if(IsValidDynamicObject(Ladders[iGroup][type][sObjectID])) DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
 					Ladders[iGroup][type][sX] = 0;
 					Ladders[iGroup][type][sY] = 0;
 					Ladders[iGroup][type][sZ] = 0;
-					Ladders[iGroup][type][sObjectID] = INVALID_OBJECT_ID;
+					Ladders[iGroup][type][sObjectID] = -1;
 					Ladders[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Ladders[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Ladder ID: %d successfully deleted.", type);
@@ -4487,7 +4497,7 @@ CMD:bug(playerid, params[])
         else if(PlayerInfo[iTargetID][pAdmin] >= 2) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on admins.");
 		}
-		else if(GetPVarInt(iTargetID, "AdvisorDuty") == 1) {
+		else if(GetPVarInt(iTargetID, "AdvisorDuty") == 1 && (GetPVarType(iTargetID, "HelpingSomeone") || GetPVarType(iTargetID, "pGodMode"))) {
     		SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on advisors while they are on duty.");
 		}
   		else if(PlayerInfo[iTargetID][pBugged] != INVALID_GROUP_ID) {
@@ -4849,6 +4859,7 @@ CMD:int(playerid, params[])
 
 CMD:international(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new iGroupID = PlayerInfo[playerid][pMember],
 	    iRank = PlayerInfo[playerid][pRank];
 
@@ -4894,6 +4905,7 @@ CMD:togdept(playerid, params[])
 
 CMD:dept(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
@@ -5076,25 +5088,23 @@ CMD:hfind(playerid, params[])
 	return 1;
 }
 
+CMD:f(playerid, params[]) return cmd_g(playerid, params);
 CMD:g(playerid, params[])
 {
-
-	new
-		string[128],
-		iGroupID = PlayerInfo[playerid][pMember],
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	new iGroupID = PlayerInfo[playerid][pMember],
 		iRank = PlayerInfo[playerid][pRank];
-
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/g)roup [group chat]");
-	if (iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
+	if(iGroupID == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a part of a group!");
 	if(iRank >= arrGroupData[iGroupID][g_iOOCChat])
 	{
-		format(string, sizeof(string), "** (%d) %s (%s) %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("")), GetPlayerNameEx(playerid), params);
+		new string[128];
+		format(string, sizeof(string), "** (%d) %s (%s) %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("None")), GetPlayerNameEx(playerid), params);
 		foreach(new i: Player) {
-	    	if (PlayerInfo[i][pMember] == iGroupID && GetPVarInt(i, "OOCRadioTogged") == 0) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
+			if(PlayerInfo[i][pMember] == iGroupID && GetPVarInt(i, "OOCRadioTogged") == 0) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
-
 	return 1;
 }
 
@@ -5335,11 +5345,11 @@ CMD:setdivname(playerid, params[])
 	{
 		new
 			iDiv,
-			iName[8],
+			iName[GROUP_MAX_DIV_LEN],
 			iGroupID = PlayerInfo[playerid][pLeader],
 			szMessage[128];
 
-		if(sscanf(params, "is[8]", iDiv, iName))
+		if(sscanf(params, "is[16]", iDiv, iName))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setdivname [division] [name] -- Use 'none' as name to remove division");
 			format(szMessage, sizeof(szMessage), "%s", "0 (None), ");
@@ -5643,11 +5653,6 @@ CMD:orgs(playerid, params[])
 		}
 	}
 	return 1;
-}
-
-CMD:f(playerid, params[])
-{
-	return cmd_g(playerid, params);
 }
 
 CMD:clothes(playerid, params[])

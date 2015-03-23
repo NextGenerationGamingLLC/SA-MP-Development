@@ -213,6 +213,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "PumpkinStock", szResult, MainPipeline); PumpkinStock = strval(szResult);
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
+				//LoadInactiveSettings(i);
 				break;
 			}
 		}
@@ -557,6 +558,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					sscanf(szResult, "p<|>e<dddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
 
 					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
+					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -681,6 +683,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				//DeletePVar(extraid, "PassAuth");
 				break;
 			}
+			GetPVarString(extraid, "PassAuth", PlayerInfo[extraid][pLastPass], 65);
 			HideNoticeGUIFrame(extraid);
 			g_mysql_LoadAccount(extraid);
 			return 1;
@@ -1412,7 +1415,7 @@ stock g_mysql_NewToy(playerid, slotid)
 // Description: Loads the MOTDs from the MySQL Database.
 stock g_mysql_LoadMOTD()
 {
-	mysql_function_query(MainPipeline, "SELECT `gMOTD`,`aMOTD`,`vMOTD`,`cMOTD`,`pMOTD`,`ShopTechPay`,`GiftCode`,`GiftCodeBypass`,`TotalCitizens`,`TRCitizens`,`SecurityCode`,`ShopClosed`,`RimMod`,`CarVoucher`,`PVIPVoucher`, `GarageVW`, `PumpkinStock`, `HalloweenShop`, `PassComplexCheck` FROM `misc`", true, "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
+	mysql_function_query(MainPipeline, "SELECT * FROM `misc`", true, "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock g_mysql_LoadSales()
@@ -1468,6 +1471,7 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
 	format(query, sizeof(query), "%s `PassComplexCheck` = '%d'", query, PassComplexCheck);
+	//SaveInactiveSettings(query, sizeof(query));
 
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
@@ -1688,7 +1692,7 @@ forward OnAddOFlag(psqlid, name[], admin[], flag[]);
 public OnAddOFlag(psqlid, name[], admin[], flag[])
 {
 	new string[128], flag_sqlid = mysql_insert_id(MainPipeline);
-	format(string, sizeof(string), "FLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, name, psqlid);
+	format(string, sizeof(string), "OFLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, name, psqlid);
 	Log("logs/flags.log", string);
 	return 1;
 }
@@ -2367,29 +2371,6 @@ stock SaveAuction(auction) {
     mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 }
 
-stock SaveDealershipSpawn(businessid) {
-	new query[200];
-	format(query, sizeof(query), "UPDATE `businesses` SET");
-	format(query, sizeof(query), "%s `PurchaseX` = %0.5f, `PurchaseY` = %0.5f, `PurchaseZ` = %0.5f, `PurchaseAngle` = %0.5f", query, Businesses[businessid][bPurchaseX], Businesses[businessid][bPurchaseY], Businesses[businessid][bPurchaseZ], Businesses[businessid][bPurchaseAngle]);
-    format(query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
-    mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-}
-
-stock SaveDealershipVehicle(businessid, slotid)
-{
-	new query[256];
-	//slotid++;
-	format(query, sizeof(query), "UPDATE `businesses` SET");
-	format(query, sizeof(query), "%s `Car%dPosX` = %0.5f,", query, slotid, Businesses[businessid][bParkPosX][slotid]);
-	format(query, sizeof(query), "%s `Car%dPosY` = %0.5f,", query, slotid, Businesses[businessid][bParkPosY][slotid]);
-	format(query, sizeof(query), "%s `Car%dPosZ` = %0.5f,", query, slotid, Businesses[businessid][bParkPosZ][slotid]);
-	format(query, sizeof(query), "%s `Car%dPosAngle` = %0.5f,", query, slotid, Businesses[businessid][bParkAngle][slotid]);
-	format(query, sizeof(query), "%s `Car%dModelId` = %d,", query, slotid, Businesses[businessid][bModel][slotid]);
-	format(query, sizeof(query), "%s `Car%dPrice` = %d", query, slotid, Businesses[businessid][bPrice][slotid]);
-	format(query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-}
-
 stock GetLatestKills(playerid, giveplayerid)
 {
 	new query[256];
@@ -2404,17 +2385,6 @@ stock GetSMSLog(playerid)
 	mysql_function_query(MainPipeline, query, true, "OnGetSMSLog", "i", playerid);
 }
 
-stock LoadBusinessSales() {
-
-	print("[LoadBusinessSales] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `businesssales`", true, "LoadBusinessesSaless", "");
-}
-
-stock LoadBusinesses() {
-	printf("[LoadBusinesses] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT OwnerName.Username, b.* FROM businesses b LEFT JOIN accounts OwnerName ON b.OwnerID = OwnerName.id", true, "BusinessesLoadQueryFinish", "");
-}
-
 stock LoadAuctions() {
 	printf("[LoadAuctions] Loading data from database...");
 	mysql_function_query(MainPipeline, "SELECT * FROM `auctions`", true, "AuctionLoadQuery", "");
@@ -2425,16 +2395,6 @@ stock LoadPlants() {
 	mysql_function_query(MainPipeline, "SELECT * FROM `plants`", true, "PlantsLoadQuery", "");
 }
 
-stock SaveBusinessSale(id)
-{
-	new query[200];
-	format(query, 200, "UPDATE `businesssales` SET `BusinessID` = '%d', `Text` = '%s', `Price` = '%d', `Available` = '%d', `Purchased` = '%d', `Type` = '%d' WHERE `bID` = '%d'", BusinessSales[id][bBusinessID], BusinessSales[id][bText],
-	BusinessSales[id][bPrice], BusinessSales[id][bAvailable], BusinessSales[id][bPurchased], BusinessSales[id][bType], BusinessSales[id][bID]);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	printf("[BusinessSale] saved %i", id);
-	return 1;
-}
-
 stock SavePlant(plant)
 {
 	new query[300];
@@ -2442,45 +2402,6 @@ stock SavePlant(plant)
 	`Interior` = %d, `Growth` = %d, `Expires` = %d, `DrugsSkill` = %d WHERE `PlantID` = %d",Plants[plant][pOwner], Plants[plant][pObject], Plants[plant][pPlantType], Plants[plant][pPos][0], Plants[plant][pPos][1], Plants[plant][pPos][2],
 	Plants[plant][pVirtual], Plants[plant][pInterior], Plants[plant][pGrowth], Plants[plant][pExpires], Plants[plant][pDrugsSkill], plant+1);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	return 1;
-}
-
-stock SaveBusiness(id)
-{
-	new query[4019];
-
-	format(query, sizeof(query), "UPDATE `businesses` SET ");
-
-	format(query, sizeof(query), "%s \
-	`Name` = '%s', `Type` = %d, `Value` = %d, `OwnerID` = %d, `Months` = %d, `SafeBalance` = %d, `Inventory` = %d, `InventoryCapacity` = %d, `Status` = %d, `Level` = %d, \
-	`LevelProgress` = %d, `AutoSale` = %d, `OrderDate` = '%s', `OrderAmount` = %d, `OrderBy` = '%s', `OrderState` = %d, `TotalSales` = %d, ",
-	query,
-	g_mysql_ReturnEscaped(Businesses[id][bName], MainPipeline), Businesses[id][bType], Businesses[id][bValue], Businesses[id][bOwner], Businesses[id][bMonths], Businesses[id][bSafeBalance], Businesses[id][bInventory], Businesses[id][bInventoryCapacity], Businesses[id][bStatus], Businesses[id][bLevel],
-	Businesses[id][bLevelProgress], Businesses[id][bAutoSale], Businesses[id][bOrderDate], Businesses[id][bOrderAmount], g_mysql_ReturnEscaped(Businesses[id][bOrderBy], MainPipeline), Businesses[id][bOrderState], Businesses[id][bTotalSales]);
-
-	format(query, sizeof(query), "%s \
-	`ExteriorX` = %f, `ExteriorY` = %f, `ExteriorZ` = %f, `ExteriorA` = %f, \
-	`InteriorX` = %f, `InteriorY` = %f, `InteriorZ` = %f, `InteriorA` = %f, \
-	`Interior` = %d, `CustomExterior` = %d, `CustomInterior` = %d, `Grade` = %d, `CustomVW` = %d, `SupplyPointX` = %f, `SupplyPointY` = %f, `SupplyPointZ` = %f, ",
-	query,
-	Businesses[id][bExtPos][0],	Businesses[id][bExtPos][1],	Businesses[id][bExtPos][2],	Businesses[id][bExtPos][3],
-	Businesses[id][bIntPos][0],	Businesses[id][bIntPos][1], Businesses[id][bIntPos][2], Businesses[id][bIntPos][3],
-	Businesses[id][bInt], Businesses[id][bCustomExterior], Businesses[id][bCustomInterior], Businesses[id][bGrade], Businesses[id][bVW], Businesses[id][bSupplyPos][0],Businesses[id][bSupplyPos][1], Businesses[id][bSupplyPos][2]);
-
-	for (new i; i < sizeof(StoreItems); i++) format(query, sizeof(query), "%s`Item%dPrice` = %d, ", query, i+1, Businesses[id][bItemPrices][i]);
-	for (new i; i < 5; i++)	format(query, sizeof(query), "%s`Rank%dPay` = %d, ", query, i, Businesses[id][bRankPay][i], id);
-	for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) format(query, sizeof(query), "%s `GasPump%dPosX` = %f, `GasPump%dPosY` = %f, `GasPump%dPosZ` = %f, `GasPump%dAngle` = %f, `GasPump%dModel` = %d, `GasPump%dCapacity` = %f, `GasPump%dGas` = %f, ", query, i+1, Businesses[id][GasPumpPosX][i],	i+1, Businesses[id][GasPumpPosY][i], i+1, Businesses[id][GasPumpPosZ][i], i+1, Businesses[id][GasPumpAngle][i], i+1, 1646,i+1, Businesses[id][GasPumpCapacity],	i+1, Businesses[id][GasPumpGallons]);
-
-	format(query, sizeof(query), "%s \
-	`Pay` = %d, `GasPrice` = %f, `MinInviteRank` = %d, `MinSupplyRank` = %d, `MinGiveRankRank` = %d, `MinSafeRank` = %d, `GymEntryFee` = %d, `GymType` = %d, `TotalProfits` = %d WHERE `Id` = %d",
-	query,
-	Businesses[id][bAutoPay], Businesses[id][bGasPrice], Businesses[id][bMinInviteRank], Businesses[id][bMinSupplyRank], Businesses[id][bMinGiveRankRank], Businesses[id][bMinSafeRank], Businesses[id][bGymEntryFee], Businesses[id][bGymType], Businesses[id][bTotalProfits], id+1);
-
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
- 	//printf("Len :%d", strlen(query));
-	printf("[business] saved %i", id);
-
 	return 1;
 }
 
@@ -3758,12 +3679,10 @@ public OnPlayerChangePass(index)
 {
 	if(mysql_affected_rows(MainPipeline)) {
 
-		new
-			szBuffer[129],
-			szMessage[103];
+		new szMessage[103];
 
-		GetPVarString(index, "PassChange", szBuffer, sizeof(szBuffer));
-		format(szMessage, sizeof(szMessage), "You have changed your password to '%s'.", szBuffer);
+		GetPVarString(index, "PassChange", PlayerInfo[index][pLastPass], 65);
+		format(szMessage, sizeof(szMessage), "You have changed your password to '%s'.", PlayerInfo[index][pLastPass]);
 		SendClientMessageEx(index, COLOR_YELLOW, szMessage);
 
 		format(szMessage, sizeof(szMessage), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), GetPlayerSQLId(index), PlayerInfo[index][pIP]);
@@ -5492,30 +5411,6 @@ public DynVeh_QueryFinish(iType, iExtraID) {
 	return 1;
 }
 
-forward LoadBusinessesSaless();
-public LoadBusinessesSaless() {
-
-	new
-		iFields,
-		iRows,
-		iIndex,
-		szResult[128];
-
-	cache_get_data(iRows, iFields, MainPipeline);
-
-	while((iIndex < iRows)) {
-		cache_get_field_content(iIndex, "bID", szResult, MainPipeline); BusinessSales[iIndex][bID] = strval(szResult);
-		cache_get_field_content(iIndex, "BusinessID", szResult, MainPipeline); BusinessSales[iIndex][bBusinessID] = strval(szResult);
-		cache_get_field_content(iIndex, "Text", BusinessSales[iIndex][bText], MainPipeline, 128);
-		cache_get_field_content(iIndex, "Price", szResult, MainPipeline); BusinessSales[iIndex][bPrice] = strval(szResult);
-		cache_get_field_content(iIndex, "Available", szResult, MainPipeline); BusinessSales[iIndex][bAvailable] = strval(szResult);
-		cache_get_field_content(iIndex, "Purchased", szResult, MainPipeline); BusinessSales[iIndex][bPurchased] = strval(szResult);
-		cache_get_field_content(iIndex, "Type", szResult, MainPipeline); BusinessSales[iIndex][bType] = strval(szResult);
-		iIndex++;
-	}
-	return 1;
-}
-
 forward AuctionLoadQuery();
 public AuctionLoadQuery() {
 
@@ -5577,158 +5472,6 @@ public PlantsLoadQuery() {
 	if(iIndex > 0) printf("[LoadPlants] Successfully loaded %d plants", iIndex);
 	else printf("[LoadPlants] Error: Failed to load any plants!");
 	return 1;
-}
-
-forward BusinessesLoadQueryFinish();
-public BusinessesLoadQueryFinish()
-{
-
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-	while(i < rows)
-	{
-		cache_get_field_content(i, "Name", Businesses[i][bName], MainPipeline, MAX_BUSINESS_NAME);
-		cache_get_field_content(i, "OwnerID", tmp, MainPipeline); Businesses[i][bOwner] = strval(tmp);
-		cache_get_field_content(i, "Username", Businesses[i][bOwnerName], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "Type", tmp, MainPipeline); Businesses[i][bType] = strval(tmp);
-		cache_get_field_content(i, "Value", tmp, MainPipeline); Businesses[i][bValue] = strval(tmp);
-		cache_get_field_content(i, "Status", tmp, MainPipeline); Businesses[i][bStatus] = strval(tmp);
-		cache_get_field_content(i, "Level", tmp, MainPipeline); Businesses[i][bLevel] = strval(tmp);
-		cache_get_field_content(i, "LevelProgress", tmp, MainPipeline); Businesses[i][bLevelProgress] = strval(tmp);
-		cache_get_field_content(i, "SafeBalance", tmp, MainPipeline); Businesses[i][bSafeBalance] = strval(tmp);
-		cache_get_field_content(i, "Inventory", tmp, MainPipeline); Businesses[i][bInventory] = strval(tmp);
-		cache_get_field_content(i, "InventoryCapacity", tmp, MainPipeline); Businesses[i][bInventoryCapacity] = strval(tmp);
-		cache_get_field_content(i, "AutoSale", tmp, MainPipeline); Businesses[i][bAutoSale] = strval(tmp);
-		cache_get_field_content(i, "TotalSales", tmp, MainPipeline); Businesses[i][bTotalSales] = strval(tmp);
-		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); Businesses[i][bExtPos][0] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); Businesses[i][bExtPos][1] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); Businesses[i][bExtPos][2] = floatstr(tmp);
-		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); Businesses[i][bExtPos][3] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); Businesses[i][bIntPos][0] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); Businesses[i][bIntPos][1] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); Businesses[i][bIntPos][2] = floatstr(tmp);
-		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); Businesses[i][bIntPos][3] = floatstr(tmp);
-		cache_get_field_content(i, "Interior", tmp, MainPipeline); Businesses[i][bInt] = strval(tmp);
-		cache_get_field_content(i, "SupplyPointX", tmp, MainPipeline); Businesses[i][bSupplyPos][0] = floatstr(tmp);
-		cache_get_field_content(i, "SupplyPointY", tmp, MainPipeline); Businesses[i][bSupplyPos][1] = floatstr(tmp);
-		cache_get_field_content(i, "SupplyPointZ", tmp, MainPipeline); Businesses[i][bSupplyPos][2] = floatstr(tmp);
-		cache_get_field_content(i, "GasPrice", tmp, MainPipeline); Businesses[i][bGasPrice] = floatstr(tmp);
-		cache_get_field_content(i, "OrderBy", Businesses[i][bOrderBy], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "OrderState", tmp, MainPipeline); Businesses[i][bOrderState] = strval(tmp);
-		cache_get_field_content(i, "OrderAmount", tmp, MainPipeline); Businesses[i][bOrderAmount] = strval(tmp);
-		cache_get_field_content(i, "OrderDate", Businesses[i][bOrderDate], MainPipeline, 30);
-		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); Businesses[i][bCustomExterior] = strval(tmp);
-		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); Businesses[i][bCustomInterior] = strval(tmp);
-		cache_get_field_content(i, "Grade", tmp, MainPipeline); Businesses[i][bGrade] = strval(tmp);
-		cache_get_field_content(i, "CustomVW", tmp, MainPipeline); Businesses[i][bVW] = strval(tmp);
-		cache_get_field_content(i, "Pay", tmp, MainPipeline); Businesses[i][bAutoPay] = strval(tmp);
-		cache_get_field_content(i, "MinInviteRank", tmp, MainPipeline); Businesses[i][bMinInviteRank] = strval(tmp);
-		cache_get_field_content(i, "MinSupplyRank", tmp, MainPipeline); Businesses[i][bMinSupplyRank] = strval(tmp);
-		cache_get_field_content(i, "MinGiveRankRank", tmp, MainPipeline); Businesses[i][bMinGiveRankRank] = strval(tmp);
-		cache_get_field_content(i, "MinSafeRank", tmp, MainPipeline); Businesses[i][bMinSafeRank] = strval(tmp);
-		cache_get_field_content(i, "Months", tmp, MainPipeline); Businesses[i][bMonths] = strval(tmp);
-		cache_get_field_content(i, "GymEntryFee", tmp, MainPipeline); Businesses[i][bGymEntryFee] = strval(tmp);
-		cache_get_field_content(i, "GymType", tmp, MainPipeline); Businesses[i][bGymType] = strval(tmp);
-
-		if (Businesses[i][bOrderState] == 2) {
-		    Businesses[i][bOrderState] = 1;
-		}
-
-		if(Businesses[i][bExtPos][0] != 0.0) RefreshBusinessPickup(i); // If the business is at blueberry, do not spawn it
-
-		for (new j; j <= 5; j++)
-		{
-		    new col[9];
-			format(col, sizeof(col), "Rank%dPay", j);
-			cache_get_field_content(i, col, tmp, MainPipeline);
-			Businesses[i][bRankPay][j] = strval(tmp);
-		}
-
-		if (Businesses[i][bType] == BUSINESS_TYPE_GASSTATION)
-		{
-			for (new j, column[17]; j < MAX_BUSINESS_GAS_PUMPS; j++)
-			{
-			    format(column, sizeof(column), "GasPump%dPosX", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosX][j] = floatstr(tmp);
-			    format(column, sizeof(column), "GasPump%dPosY", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosY][j] = floatstr(tmp);
-			    format(column, sizeof(column), "GasPump%dPosZ", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosZ][j] = floatstr(tmp);
-			    format(column, sizeof(column), "GasPump%dAngle", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpAngle][j] = floatstr(tmp);
-			    format(column, sizeof(column), "GasPump%dCapacity", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpCapacity][j] = floatstr(tmp);
-			    format(column, sizeof(column), "GasPump%dGas", j + 1);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpGallons][j] = floatstr(tmp);
-				
-				if(Businesses[i][GasPumpPosX][j] != 0.0) CreateDynamicGasPump(_, i, j);
-
-				for (new z; z < sizeof(StoreItems); z++)
-				{
-			    	new col[12];
-					format(col, sizeof(col), "Item%dPrice", z + 1);
-					cache_get_field_content(i, col, tmp, MainPipeline);
-					Businesses[i][bItemPrices][z] = strval(tmp);
-				}
-			}
-		}
-		else if (Businesses[i][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP || Businesses[i][bType] == BUSINESS_TYPE_OLDCARDEALERSHIP)
-		{
-			for (new j, column[16], label[50]; j < MAX_BUSINESS_DEALERSHIP_VEHICLES; j++)
-			{
-
-			    format(column, sizeof(column), "Car%dModelId", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bModel][j] = strval(tmp);
-			    format(column, sizeof(column), "Car%dPosX", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosX][j] = floatstr(tmp);
-			    format(column, sizeof(column), "Car%dPosY", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosY][j] = floatstr(tmp);
-			    format(column, sizeof(column), "Car%dPosZ", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosZ][j] = floatstr(tmp);
-			    format(column, sizeof(column), "Car%dPosAngle", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkAngle][j] = floatstr(tmp);
-			    format(column, sizeof(column), "Car%dPrice", j);
-				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bPrice][j] = strval(tmp);
-
-				cache_get_field_content(i, "PurchaseX", tmp, MainPipeline); Businesses[i][bPurchaseX][j] = strval(tmp);
-				cache_get_field_content(i, "PurchaseY", tmp, MainPipeline); Businesses[i][bPurchaseY][j] = strval(tmp);
-				cache_get_field_content(i, "PurchaseZ", tmp, MainPipeline); Businesses[i][bPurchaseZ][j] = strval(tmp);
-				cache_get_field_content(i, "PurchaseAngle", tmp, MainPipeline); Businesses[i][bPurchaseAngle][j] = strval(tmp);
-
-				if(400 < Businesses[i][bModel][j] < 612 || Businesses[i][bParkPosX][j] != 0.0) 
-				{
-			 		Businesses[i][bVehID][j] = CreateVehicle(Businesses[i][bModel][j], Businesses[i][bParkPosX][j], Businesses[i][bParkPosY][j], Businesses[i][bParkPosZ][j], Businesses[i][bParkAngle][j], Businesses[i][bColor1][j], Businesses[i][bColor2][j], 10);
-     				format(label, sizeof(label), "%s For Sale | Price: $%s", GetVehicleName(Businesses[i][bVehID][j]), number_format(Businesses[i][bPrice][j]));
-					Businesses[i][bVehicleLabel][j] = CreateDynamic3DTextLabel(label,COLOR_LIGHTBLUE,Businesses[i][bParkPosX][j], Businesses[i][bParkPosY][j], Businesses[i][bParkPosZ][j],8.0,INVALID_PLAYER_ID, Businesses[i][bVehID][j]);
-				}
-			}
-		}
-		else
-		{
-			for (new j; j < sizeof(StoreItems); j++)
-			{
-			    new col[12];
-				format(col, sizeof(col), "Item%dPrice", j + 1);
-				cache_get_field_content(i, col, tmp, MainPipeline);
-				Businesses[i][bItemPrices][j] = strval(tmp);
-			}
-		}
-
-		Businesses[i][bGymBoxingArena1][0] = INVALID_PLAYER_ID;
-		Businesses[i][bGymBoxingArena1][1] = INVALID_PLAYER_ID;
-		Businesses[i][bGymBoxingArena2][0] = INVALID_PLAYER_ID;
-		Businesses[i][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
-
-		for (new it = 0; it < 10; ++it)
-		{
-			Businesses[i][bGymBikePlayers][it] = INVALID_PLAYER_ID;
-			Businesses[i][bGymBikeVehicles][it] = INVALID_VEHICLE_ID;
-		}
-
-		i++;
-	}
-	if(i > 0) printf("[LoadBusinesses] %d businesses rehashed/loaded.", i);
-	else printf("[LoadBusinesses] Failed to load any businesses.");
 }
 
 forward ReturnMoney(index);
@@ -6596,26 +6339,6 @@ public OnSetVMute(playerid, task)
 	return 1;
 }
 
-forward OnBugReport(playerid);
-public OnBugReport(playerid)
-{
-	new string[128], bug[41];
-	GetPVarString(playerid, "BugSubject", bug, 40);
-	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
-	Log("logs/bugreport.log", string);
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
-	"{FFFFFF}Your bug report has been successfully submitted.\n\
-	 We highly suggest adding more information regarding the bug by visiting: http://devcp.ng-gaming.net\n\
-	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
-	PlayerInfo[playerid][pBugReportTimeout] = gettime();
-	DeletePVar(playerid, "BugStep");
-	DeletePVar(playerid, "BugSubject");
-	DeletePVar(playerid, "BugDetail");
-	DeletePVar(playerid, "BugAnonymous");
-	DeletePVar(playerid, "BugListItem");
-	return 1;
-}
-
 forward CheckClientWatchlist(index);
 public CheckClientWatchlist(index)
 {
@@ -6624,29 +6347,6 @@ public CheckClientWatchlist(index)
 	if(rows == 0) PlayerInfo[index][pWatchlist] = 0;
 	else PlayerInfo[index][pWatchlist] = 1;
 	return true;
-}
-
-forward CheckBugReportBans(playerid, check);
-public CheckBugReportBans(playerid, check)
-{
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	if(rows == 0)
-	{
-		if(check == 1) ShowBugReportMainMenu(playerid);
-		if(check == 2)
-		{
-			SetPVarInt(playerid, "BugStep", 3);
-			SetPVarInt(playerid, "BugListItem", 2);
-			ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
-		}
-	}
-	else
-	{
-		if(check == 1) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
-		if(check == 2) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
-	}
-	return 1;
 }
 
 forward WatchWatchlist(index);
@@ -6684,25 +6384,6 @@ public WatchWatchlist(index)
 		SendClientMessageEx(index, COLOR_GRAD1, "No-one is available to spectate!");
 	}
 	return true;
-}
-
-forward CheckPendingBugReports(playerid);
-public CheckPendingBugReports(playerid)
-{
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	if(rows == 0) return 1;
-	new string[256], szResult[41];
-	format(string, sizeof(string), "{BFC0C2}You have {4A8BC2}%d{BFC0C2} bug report(s) pending your response.", rows);
-	strcat(string, "\nPlease follow up with the bug reports listed below and provide as many details as you can.\n{4A8BC2}BugID\tBug{BFC0C2}");
-	for(new i = 0; i < rows; i++)
-	{
-		cache_get_field_content(i, "id", szResult, MainPipeline);
-		format(string, sizeof(string), "%s\n%s\t", string, szResult);
-		cache_get_field_content(i, "Bug", szResult, MainPipeline);
-		format(string, sizeof(string), "%s%s", string, szResult);
-	}
-	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
 }
 
 forward CheckTrunkContents(playerid);

@@ -71,7 +71,7 @@ PreloadAnimLib(playerid, animlib[])
 
 IsAblePedAnimation(playerid)
 {
-    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive")) {
+    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1) {
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}

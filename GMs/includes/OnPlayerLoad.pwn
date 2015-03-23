@@ -387,6 +387,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][bTicket] = 0;
 		SetHealth(playerid, 50);
 		SetArmour(playerid, 0);
+		PlayerInfo[playerid][pLastPass][0] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -416,9 +417,11 @@ public OnPlayerLoad(playerid)
 	
 	if(PlayerInfo[playerid][pVIPExpire] > 0 && (1 <= PlayerInfo[playerid][pDonateRank] <= 3) && (PlayerInfo[playerid][pVIPExpire] < gettime()) && PlayerInfo[playerid][pAdmin] < 2)
 	{
-	    PlayerInfo[playerid][pVIPSellable] = 0;
-	    format(string, sizeof(string), "[DEBUG] %s(%d) (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
-	    Log("logs/vipremove.log", string);
+		format(string, sizeof(string), "%s(%d) (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
+		Log("logs/vipremove.log", string);
+		PlayerInfo[playerid][pDonateRank] = 0;
+		PlayerInfo[playerid][pVIPExpire] = 0;
+		PlayerInfo[playerid][pVIPSellable] = 0;
 	}
 
 	if(PlayerInfo[playerid][pPendingRefReward] >= 1)
@@ -1059,5 +1062,8 @@ public OnPlayerLoad(playerid)
 	if((PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) && !PlayerInfo[playerid][pDonateRank]) PlayerInfo[playerid][pInsurance] = random(2);
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) ShowLoginDialogs(playerid, 0);
 	CountryCheck(playerid);
+	if(2 <= PlayerInfo[playerid][pAdmin] <= 4) ResetPlayerCash(playerid), PlayerInfo[playerid][pAccount] = 0;
+	CallLocalFunction("NotifyInactiveStatus", "i", playerid);
+	if(PlayerInfo[playerid][pTut] && emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);
 	return 1;
 }

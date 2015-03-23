@@ -223,9 +223,7 @@ PayDay(i) {
 				iRank = PlayerInfo[i][pRank];
 			
 			if((0 <= iGroupID < MAX_GROUPS) && 0 <= iRank <= 9 && arrGroupData[iGroupID][g_iPaycheck][iRank] > 0) { // added for sanews to get their own paychecks from their vaults.
-				
-				
-				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS)
+				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 				{
 					if(arrGroupData[iGroupID][g_iBudget] > 0) {
 						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iPaycheck][iRank];
@@ -238,9 +236,8 @@ PayDay(i) {
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 						Log(file, str);
 					}
-					else SendClientMessageEx(i, COLOR_RED, "The SA government is in debt; no money is available for pay.");
+					else SendClientMessageEx(i, COLOR_RED, "Your company is in debt; no money is available for pay.");
 				}
-				
 				else if(arrGroupData[iGroupID][g_iAllegiance] == 1 && arrGroupData[iGroupID][g_iGroupType] != 4)
 				{
 					if(Tax > 0) {
@@ -474,6 +471,7 @@ PayDay(i) {
 				}
 				g_mysql_SaveFIF(i);
 			}
+			CallLocalFunction("InactivityCounter", "i", i);
 		}
 		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");
 	}
@@ -617,7 +615,7 @@ CMD:pay(playerid, params[])
 	else if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
 	}
-	else if((2 <= PlayerInfo[playerid][pAdmin] < 4) || (2 <= PlayerInfo[id][pAdmin] <= 4)) return 1;
+	else if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[id][pAdmin] <= 4) return 1;
 	else if(ProxDetectorS(5.0, playerid, id)) {
 		TransferStorage(id, -1, playerid, storageid, 1, amount, -1, -1);
 		OnPlayerStatsUpdate(playerid);
@@ -714,24 +712,17 @@ CMD:writecheck(playerid, params[])
 
 CMD:charity(playerid, params[])
 {
-	new string[128], moneys;
+	new moneys;
 	if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /charity [amount]");
-
-	if(moneys < 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "That is not enough.");
-		return 1;
-	}
-	if(GetPlayerCash(playerid) < moneys)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have that much money.");
-		return 1;
-	}
+	if(moneys < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That is not enough.");
+	if(GetPlayerCash(playerid) < moneys) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have that much money.");
 	GivePlayerCash(playerid, -moneys);
-	format(string, sizeof(string), "%s, thank you for your donation of $%d.",GetPlayerNameEx(playerid), moneys);
+	new string[128];
+	format(string, sizeof(string), "%s, thank you for your donation of $%s.", GetPlayerNameEx(playerid), number_format(moneys));
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	//Log("logs/pay.log", string);
+	format(string, sizeof(string), "[CHARITY] %s has donated $%s", GetPlayerNameEx(playerid), number_format(moneys));
+	Log("logs/pay.log", string);
 	return 1;
 }
 
@@ -853,29 +844,16 @@ CMD:abalance(playerid, params[])
 CMD:awiretransfer(playerid, params[])
 {
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
-	if(PlayerInfo[playerid][pLevel] < 3)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3!");
-		return 1;
-	}
-
-	if(!IsAtATM(playerid))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not at an ATM!");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
-		return 1;
-	}
+	if(PlayerInfo[playerid][pLevel] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be at least level 3!");
+	if(!IsAtATM(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not at an ATM!");
+	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your cash on-hand or in the bank is currently at a negative value!");
     if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
     if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
 	new string[128], giveplayerid, amount;
 	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /awiretransfer [player] [amount]");
-
 	if (IsPlayerConnected(giveplayerid))
 	{
+		if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[giveplayerid][pAdmin] <= 4) return 1;
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			if(gPlayerLogged{giveplayerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "* The player you are trying to transfer money to is not logged in!");
@@ -1034,10 +1012,9 @@ CMD:wiretransfer(playerid, params[])
 		if(PlayerInfo[playerid][pFreezeBank] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "Your bank is currently frozen");
 		new string[128], giveplayerid, amount;
 		if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wiretransfer [player] [amount]");
-
-
 		if (IsPlayerConnected(giveplayerid))
 		{
+			if(2 <= PlayerInfo[playerid][pAdmin] <= 4 || 2 <= PlayerInfo[giveplayerid][pAdmin] <= 4) return 1;
 			if(giveplayerid != INVALID_PLAYER_ID)
 			{
 				if(gPlayerLogged{giveplayerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "* The player you are trying to transfer money to is not logged in!");

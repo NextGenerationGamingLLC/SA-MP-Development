@@ -9,11 +9,14 @@
 	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
 	|__/  \__/ \______/         |__/  |__/|__/
 
-						Bug Report System
+					Bug Report System
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+	
+	Developers:
+		(*) Miguel
+	
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -150,4 +153,67 @@ CMD:changes(playerid, params[])
 	format(string, sizeof(string), "%s/devlog/server.php?revision=%s", SAMP_WEB, rev);
 	HTTP(playerid, HTTP_GET, string, "", "RevisionListHTTP");
 	return 1;
+}
+
+forward OnBugReport(playerid);
+public OnBugReport(playerid)
+{
+	new string[128], bug[41];
+	GetPVarString(playerid, "BugSubject", bug, 40);
+	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
+	Log("logs/bugreport.log", string);
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
+	"{FFFFFF}Your bug report has been successfully submitted.\n\
+	 We highly suggest adding more information regarding the bug by visiting: http://devcp.ng-gaming.net\n\
+	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
+	PlayerInfo[playerid][pBugReportTimeout] = gettime();
+	DeletePVar(playerid, "BugStep");
+	DeletePVar(playerid, "BugSubject");
+	DeletePVar(playerid, "BugDetail");
+	DeletePVar(playerid, "BugAnonymous");
+	DeletePVar(playerid, "BugListItem");
+	return 1;
+}
+
+forward CheckBugReportBans(playerid, check);
+public CheckBugReportBans(playerid, check)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0)
+	{
+		if(check == 1) ShowBugReportMainMenu(playerid);
+		if(check == 2)
+		{
+			SetPVarInt(playerid, "BugStep", 3);
+			SetPVarInt(playerid, "BugListItem", 2);
+			ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
+		}
+	}
+	else
+	{
+		if(check == 1) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
+		if(check == 2) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
+	}
+	return 1;
+}
+
+
+forward CheckPendingBugReports(playerid);
+public CheckPendingBugReports(playerid)
+{
+	new rows, fields;
+	cache_get_data(rows, fields, MainPipeline);
+	if(rows == 0) return 1;
+	new string[256], szResult[41];
+	format(string, sizeof(string), "{BFC0C2}You have {4A8BC2}%d{BFC0C2} bug report(s) pending your response.", rows);
+	strcat(string, "\nPlease follow up with the bug reports listed below and provide as many details as you can.\n{4A8BC2}BugID\tBug{BFC0C2}");
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_field_content(i, "id", szResult, MainPipeline);
+		format(string, sizeof(string), "%s\n%s\t", string, szResult);
+		cache_get_field_content(i, "Bug", szResult, MainPipeline);
+		format(string, sizeof(string), "%s%s", string, szResult);
+	}
+	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
 }

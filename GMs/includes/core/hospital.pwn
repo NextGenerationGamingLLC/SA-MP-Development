@@ -263,7 +263,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	file[32], month, day, year;
 	getdate(year,month,day);
 	
-	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
+	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0 && PlayerInfo[playerid][pHospital])
 	{
 		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 		DeletePVar(playerid, "_SpawningAtHospital");
@@ -305,7 +305,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
 		Tax += HospitalSpawnInfo[iHospital][0];
 		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
-		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		format(file, sizeof(file), "grouppay/5/%d-%d-%d.log", month, day, year);
 		Log(file, string);
 		if(!GetPVarType(playerid, "HealthCareActive")) PlayerInfo[playerid][pHunger] = 50;
 		else PlayerInfo[playerid][pHunger] = 83;
@@ -318,6 +318,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 			PlayerInfo[playerid][pHunger] = 100;
 		}
 		DeletePVar(playerid, "VIPSpawn");
+		arrHospitalBedData[iHospital][iCountDown][iBed] = 0;
 	}
 	else
 	{
@@ -330,7 +331,6 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		SetHealth(playerid, curhealth+1);
 		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
 	}
-	
 	return 1;
 }
 

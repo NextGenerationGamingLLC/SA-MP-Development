@@ -780,21 +780,8 @@ CMD:setvip(playerid, params[])
 		{
    			if(giveplayerid != INVALID_PLAYER_ID)
 			{
-				if(level < 0 || level > 4)
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "VIP Level can not be below 0 or above 4!");
-					return 1;
-				}
-				if(level == 3)
-				{
-				    SendClientMessage(playerid, COLOR_GRAD1, "VIP Level can not be set to 3 through this command");
-				    return 1;
-				}
-				PlayerInfo[giveplayerid][pDonateRank] = level;
-				PlayerInfo[giveplayerid][pTempVIP] = 0;
-				PlayerInfo[giveplayerid][pBuddyInvited] = 0;
-				PlayerInfo[giveplayerid][pVIPSellable] = 0;
-				LoadPlayerDisabledVehicles(giveplayerid);
+				if(level < 0 || level > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "VIP Level can not be below 0 or above 4!");
+				if(level == 3) return SendClientMessage(playerid, COLOR_GRAD1, "VIP Level can not be set to 3 through this command");
 				new playerip[32];
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
 				if(level == 0)
@@ -812,7 +799,6 @@ CMD:setvip(playerid, params[])
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to None (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
-					return 1;
 				}
 				if(level == 1)
 				{
@@ -834,7 +820,6 @@ CMD:setvip(playerid, params[])
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Bronze (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
-					return 1;
 				}
 				if(level == 2)
 				{
@@ -856,17 +841,17 @@ CMD:setvip(playerid, params[])
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Silver (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
-					return 1;
 				}
 				if(level == 3)
 				{
-				    if(!GetPVarType(playerid, "ConfirmGold")) {
-				        SendClientMessageEx(playerid, COLOR_WHITE, "You are about to set someone's vip level to gold. If this is a gold vip order please use the new system.");
-				        SendClientMessageEx(playerid, COLOR_WHITE, "For a new purchase of Gold Vip use(/newgvip).For renewals use(/renewgvip). If you wish to continue using this command type it again(/setvip)");
-				        SetPVarInt(playerid, "ConfirmGold", 1);
-				    }
-				    else {
-				        DeletePVar(playerid, "ConfirmGold");
+					if(!GetPVarType(playerid, "ConfirmGold")) {
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are about to set someone's vip level to gold. If this is a gold vip order please use the new system.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "For a new purchase of Gold Vip use(/newgvip). For renewals use(/renewgvip). If you wish to continue using this command type it again(/setvip)");
+						SetPVarInt(playerid, "ConfirmGold", 1);
+						return 1;
+					}
+					else {
+						DeletePVar(playerid, "ConfirmGold");
 						if (PlayerInfo[playerid][pAdmin] < 1337)
 						{
 							format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Gold (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
@@ -874,7 +859,7 @@ CMD:setvip(playerid, params[])
 						}
 						if(PlayerInfo[giveplayerid][pVIPM] == 0)
 						{
-						    PlayerInfo[giveplayerid][pVIPM] = VIPM;
+							PlayerInfo[giveplayerid][pVIPM] = VIPM;
 							VIPM++;
 						}
 						PlayerInfo[giveplayerid][pVIPExpire] = gettime()+2592000*months;
@@ -884,7 +869,6 @@ CMD:setvip(playerid, params[])
 						SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 						format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Gold (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 						Log("logs/setvip.log", string);
-						return 1;
 					}
 				}
 				if(level == 4)
@@ -897,7 +881,7 @@ CMD:setvip(playerid, params[])
 					}
 					if(PlayerInfo[giveplayerid][pVIPM] == 0)
 					{
-					   	PlayerInfo[giveplayerid][pVIPM] = VIPM;
+						PlayerInfo[giveplayerid][pVIPM] = VIPM;
 						VIPM++;
 					}
 					format(string, sizeof(string), "AdmCmd: %s has set %s's VIP level to Platinum (%d).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), level);
@@ -910,8 +894,12 @@ CMD:setvip(playerid, params[])
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Platinum (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);
-					return 1;
 				}
+				PlayerInfo[giveplayerid][pDonateRank] = level;
+				PlayerInfo[giveplayerid][pTempVIP] = 0;
+				PlayerInfo[giveplayerid][pBuddyInvited] = 0;
+				PlayerInfo[giveplayerid][pVIPSellable] = 0;
+				LoadPlayerDisabledVehicles(giveplayerid);
 			}
 			Misc_Save();
 		}

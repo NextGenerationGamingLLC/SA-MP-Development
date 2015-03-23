@@ -464,11 +464,6 @@ new pFPS[MAX_PLAYERS];
 new File:logfile; // global variable for buffer overflow protection
 #endif
 
-//Server side health
-/*new Float:pSSHealth[MAX_PLAYERS];
-new Float:pSSArmour[MAX_PLAYERS];
-new pSSHealthTime[MAX_PLAYERS][2];*/
-
 new
 	iRewardPlay,
 	Text3D: tRewardText,
@@ -600,20 +595,6 @@ new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, ga
 new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
 new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
 new AkaDoor[4], AkaCell[8];
-
-/*new const Float:CharmPoints[][] = {
-	{1978.8195,914.7600,850.9688},
-	{378.6092,-181.4935,1000.6328},
-	{2235.8684,1678.7169,1008.3594},
-	{681.5250,-458.7599,-25.6172},
-	{508.4144,-84.0463,998.9609}
-};
-new ActiveCharmPoint = -1;
-new ActiveCharmPointPickup = -1;
-new Text3D:ActiveCharmPoint3DText;
-
-new CharmMainTimer = 0;
-new CharmReloadTimer = 0; */
 
 /* LA ELEVATOR STUFF - ORIGINALLY SCRIPTED BY SCOTT, PORTED CODE OVER FROM KYE ON 10/12/11 */
 
@@ -1403,7 +1384,9 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {1002, 0, "Spoiler3"},
 {2036, 0, "Rusty Sniper Rifle"},
 {2044, 0, "Rusty MP5"},
-{367, 0, "Camera"}
+{367, 0, "Camera"},
+{1543, 0, "Pissh Beer Bottle"},
+{1544, 0, "Revolver Beer Bottle"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1745,7 +1728,9 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {1002, 0, "Spoiler3"},
 {2036, 0, "Rusty Sniper Rifle"},
 {2044, 0, "Rusty MP5"},
-{367, 0, "Camera"}
+{367, 0, "Camera"},
+{1543, 0, "Pissh Beer Bottle"},
+{1544, 0, "Revolver Beer Bottle"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {
@@ -2710,3 +2695,5 @@ new Text:txtAnimHelper;
 new bool:PlayerIsDead[MAX_PLAYERS];
 
 new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];
+
+new bool:emailcheck = true;

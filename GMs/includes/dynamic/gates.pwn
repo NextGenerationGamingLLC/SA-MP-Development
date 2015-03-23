@@ -692,7 +692,6 @@ CMD:gedit(playerid, params[])
 		    new value = floatround(ofloat, floatround_round);
 		    GateInfo[gateid][gRenderHQ] = value;
 		    format(string, sizeof(string), "Stream distance %d assigned to Gate %d", GateInfo[gateid][gRenderHQ], gateid);
-		    if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
             CreateGate(gateid);
 		    SendClientMessageEx(playerid, COLOR_WHITE, string);
 		    SaveGate(gateid);
@@ -806,7 +805,7 @@ CMD:gmove(playerid, params[])
 
 CreateGate(gateid) {
 	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
-	GateInfo[gateid][gGATE] = INVALID_OBJECT_ID;
+	GateInfo[gateid][gGATE] = -1;
 	if(GateInfo[gateid][gPosX] == 0.0) return 1;
 	switch(GateInfo[gateid][gRenderHQ]) {
 		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);

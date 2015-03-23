@@ -306,7 +306,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case BIGEARS4: {
 			if(response) {
 				new giveplayerid;
-				if(sscanf(inputtext, "u", giveplayerid)) {
+				if(sscanf(inputtext, "u", giveplayerid) || PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin]) {
 					ShowPlayerDialog(playerid, BIGEARS4, DIALOG_STYLE_INPUT, "{3399FF}Big Ears Player", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 					return 1;
 				}
@@ -319,7 +319,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case BIGEARS5: {
 			if(response) {
 				new giveplayerid, szString[128];
-				if(sscanf(inputtext, "u", giveplayerid)) {
+				if(sscanf(inputtext, "u", giveplayerid) || PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin]) {
 					ShowPlayerDialog(playerid, BIGEARS5, DIALOG_STYLE_INPUT, "{3399FF}Big Ears | Private Messages", "Error - Please type in the name or the Id of the person you want to use the Big Ears function", "Select", "Back");
 					return 1;
 				} 
@@ -883,31 +883,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		SetPVarInt(playerid, "ViewedPMOTD", 1);
 		if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
 	}
-	if(dialogid == NULLEMAIL)
-	{
-		if(response)
-		{
-			new email[256];
-			mysql_escape_string(inputtext, email);
-		}
-		else
-		{
-			if(PlayerInfo[playerid][pForcePasswordChange] == 1) ShowLoginDialogs(playerid, 0);
-			else if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0 && PlayerInfo[playerid][pTut] != 0) ShowLoginDialogs(playerid, 1);
-			else if(pMOTD[0] && GetPVarInt(playerid, "ViewedPMOTD") != 1) ShowLoginDialogs(playerid, 4);
-			else if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
-		}
-	}
-	else if(dialogid == EMAIL_VALIDATION)
-	{
-		DeletePVar(playerid, "NullEmail");
-		if(PlayerInfo[playerid][pForcePasswordChange] == 1) ShowLoginDialogs(playerid, 0);
-		else if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0 && PlayerInfo[playerid][pTut] != 0) ShowLoginDialogs(playerid, 1);
-		else if(pMOTD[0] && GetPVarInt(playerid, "ViewedPMOTD") != 1) ShowLoginDialogs(playerid, 4);
-		else if(PlayerInfo[playerid][pReceivedCredits] != 0) ShowLoginDialogs(playerid, 5);
-		return 1;
-	}
-
 	if(dialogid == DIALOG_LOADTRUCK)
 	{
 		if(response)
@@ -2046,7 +2021,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else if(dialogid == MAINMENU)
 		{
-			if(!isnull(inputtext) && strlen(inputtext) <= 64)
+			if(!isnull(inputtext) && strlen(inputtext) <= 64 && gPlayerLogged{playerid} == 0)
 			{
 				SetPVarString(playerid, "PassAuth", inputtext);
 				g_mysql_AccountLoginCheck(playerid);
@@ -2976,11 +2951,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			if(PassComplexCheck && CheckPasswordComplexity(inputtext) != 1) return ShowLoginDialogs(playerid, 0);
-			if(strlen(inputtext) > 64)
-			{
-				ShowLoginDialogs(playerid, 0);
-				return SendClientMessageEx(playerid, COLOR_GREY, "You can't select a password that's above 64 characters.");
-			}
+			if(strlen(inputtext) > 64) return ShowLoginDialogs(playerid, 0), SendClientMessageEx(playerid, COLOR_GREY, "You can't select a password that's above 64 characters.");
+			if(!strcmp(PlayerInfo[playerid][pLastPass], inputtext, true)) return ShowLoginDialogs(playerid, 0), SendClientMessageEx(playerid, COLOR_RED, "There was an issue with processing your request.");
 			new
 				szBuffer[129],
 				szQuery[256],
@@ -3009,7 +2981,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				- Your password must contain a combination of letters, numbers and special characters.\n\
 				- Invalid Character: %", "Change", "Exit" );
 			if(strlen(inputtext) > 64) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't select a password that's above 64 characters.");
-
+			if(!strcmp(PlayerInfo[playerid][pLastPass], inputtext, true)) return SendClientMessageEx(playerid, COLOR_RED, "There was an issue with processing your request.");
 			new
 				szBuffer[129],
 				szQuery[256],

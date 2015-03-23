@@ -48,6 +48,29 @@ stock ClearMarriage(playerid)
 
 CMD:divorce(playerid, params[])
 {
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
+	new targets[2];
+	if(sscanf(params, "uu", targets[0], targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /divorce [Part Of Name/ ID] [Part Of Name/ ID]");
+	if(!IsPlayerConnected(targets[0]) || !IsPlayerConnected(targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player(s) specified.");
+	if(strcmp(GetPlayerNameEx(targets[0]), PlayerInfo[targets[1]][pMarriedName], true) != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The two players specified aren't married to one another.");
+	if(!ProxDetectorS(25.0, playerid, targets[0]) || !ProxDetectorS(25.0, playerid, targets[1])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't near the couple you are attempting to divorce.");
+	ClearMarriage(targets[0]);
+	ClearMarriage(targets[1]);
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "You have divorced %s and %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "You have been divorced from %s by %s.", GetPlayerNameEx(targets[1]), GetPlayerNameEx(playerid));
+	SendClientMessageEx(targets[0], COLOR_LIGHTBLUE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "You have been divorced from %s by %s.", GetPlayerNameEx(targets[0]), GetPlayerNameEx(playerid));
+	SendClientMessageEx(targets[1], COLOR_LIGHTBLUE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s has divorced %s and %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(targets[0]), GetPlayerNameEx(targets[1]));
+	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+	return 1;
+}
+
+/*CMD:divorce(playerid, params[])
+{
 	if(PlayerInfo[playerid][pMarriedID] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not married!");
 
 	new string[128], giveplayerid;
@@ -92,7 +115,7 @@ CMD:divorce(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 		return 1;
 	}
-}
+}*/
 
 CMD:adivorce(playerid, params[])
 {

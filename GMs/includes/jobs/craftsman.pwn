@@ -1080,7 +1080,7 @@ CMD:craft(playerid, params[])
 					}
 				case 11:
 					{
-						PlayerInfo[playerid][pGPS]++;
+						PlayerInfo[playerid][pGPS] = 1;
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/gps");
 					}
 				case 12:

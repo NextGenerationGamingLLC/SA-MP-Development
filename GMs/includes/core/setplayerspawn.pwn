@@ -233,7 +233,7 @@ SetPlayerSpawn(playerid)
 			else courtjail[playerid] = 1;
 			Player_StreamPrep(playerid, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2], FREEZE_TIME);
 			PlayerInfo[playerid][pInt] = 0;
-			DeletePVar(playerid, "Injured");
+			KillEMSQueue(playerid);
 			SetPlayerColor(playerid, SHITTY_JUDICIALSHITHOTCH);
 			return 1;
 		}
@@ -249,7 +249,7 @@ SetPlayerSpawn(playerid)
 				//SetPlayerSkin(playerid, 50); 
 				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
 				SetHealth(playerid, 100);
-				DeletePVar(playerid, "Injured");
+				KillEMSQueue(playerid);
 				DeletePVar(playerid, "ArrestPoint");
 				ResetPlayerWeaponsEx(playerid);
 				rand = random(sizeof(DocPrison));
@@ -279,7 +279,7 @@ SetPlayerSpawn(playerid)
 				format(string, sizeof(string), "You are in prison, reason: %s", PlayerInfo[playerid][pPrisonReason]);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
 				ResetPlayerWeaponsEx(playerid);
-				DeletePVar(playerid, "Injured");
+				KillEMSQueue(playerid);
 				Player_StreamPrep(playerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
 				return 1;
 		    }

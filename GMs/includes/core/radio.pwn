@@ -448,8 +448,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				PlayAudioStreamForPlayerEx(playerid, inputtext);
 				SetPVarInt(playerid, "MusicIRadio", 1);
-				format(szMiscArray, sizeof(szMiscArray), "You are now playing %s", inputtext);
-				SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+				//format(szMiscArray, sizeof(szMiscArray), "You are now playing %s", inputtext);
+				//SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 			}
 		}
 		else

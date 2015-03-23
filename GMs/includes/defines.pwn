@@ -175,7 +175,7 @@ native gpci(playerid, serial[], maxlen);
 #define			MAX_DYNAMIC_VEHICLES        700
 #define         MAX_DV_OBJECTS          	2
 #define         MAX_DV_MODS                 15
-#define 		MAX_GROUP_LOCKERS           5
+#define 		MAX_GROUP_LOCKERS           10
 #define 		MAX_GROUP_JURISDICTIONS     10
 
 #define			DYNAMIC_FAMILY_CLOTHES		1337
@@ -977,6 +977,8 @@ native gpci(playerid, serial[], maxlen);
 
 #define 		DIALOG_LIST_INTERIORS		(6019)
 #define 		DIALOG_LIST_INTERIORS2		(6020)
+
+#define			DIALOG_STPATRICKSSHOP		(0317)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

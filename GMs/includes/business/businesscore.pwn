@@ -1833,6 +1833,7 @@ CMD:bsafe(playerid, params[])
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
+				OnPlayerStatsUpdate(playerid);
 			}
 			else {
 			    SendClientMessageEx(playerid, COLOR_GREY, "You don't have that much in your business safe.");
@@ -1850,6 +1851,7 @@ CMD:bsafe(playerid, params[])
 				Log("logs/business.log", string);
 		   		GivePlayerCash(playerid, -Amount);
 		   		SaveBusiness(PlayerInfo[playerid][pBusiness]);
+				OnPlayerStatsUpdate(playerid);
 			}
 			else {
 			    SendClientMessageEx(playerid, COLOR_GREY, "You don't have that much cash on you.");
@@ -1873,7 +1875,7 @@ CMD:bedit(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bedit [name] [businessid] [amount]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, SupplyPoint, Price, Type, Inventory, InventoryCapacity, SafeBalance, Delete");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: CustomInterior, CustomExterior, Months, GymEntryFee, GymType, VW, Grade");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: CustomInterior, CustomExterior, Months, GymEntryFee, GymType, VW, Grade, MaxLevel");
 		return 1;
 	}
 
@@ -1881,6 +1883,13 @@ CMD:bedit(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "Invalid business ID entered.");
 		return 1;
+	}
+	if(!strcmp(choice, "maxlevel", true))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the max level allowed to enter this business!");
+		format(string, sizeof(string), "%s has changed BusinessID %d's MaxLevel to %i", GetPlayerNameEx(playerid), businessid, amount);
+		Businesses[businessid][bMaxLevel] = amount;
+		Log("logs/bedit.log", string);
 	}
 	if(!strcmp(choice, "grade", true))
 	{
@@ -2933,7 +2942,6 @@ CMD:togbiz(playerid, params[])
 
 CMD:bizradio(playerid, params[])
 {
-
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new
 		string[128],
@@ -3119,4 +3127,263 @@ CMD:bizlock(playerid, params[])
 		return 1;
 	}
 	return 1;
+}
+
+stock LoadBusinesses() {
+	printf("[LoadBusinesses] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT OwnerName.Username, b.* FROM businesses b LEFT JOIN accounts OwnerName ON b.OwnerID = OwnerName.id", true, "BusinessesLoadQueryFinish", "");
+}
+
+forward BusinessesLoadQueryFinish();
+public BusinessesLoadQueryFinish()
+{
+
+	new i, rows, fields, tmp[128];
+	cache_get_data(rows, fields, MainPipeline);
+	while(i < rows)
+	{
+		cache_get_field_content(i, "Name", Businesses[i][bName], MainPipeline, MAX_BUSINESS_NAME);
+		cache_get_field_content(i, "OwnerID", tmp, MainPipeline); Businesses[i][bOwner] = strval(tmp);
+		cache_get_field_content(i, "Username", Businesses[i][bOwnerName], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(i, "Type", tmp, MainPipeline); Businesses[i][bType] = strval(tmp);
+		cache_get_field_content(i, "Value", tmp, MainPipeline); Businesses[i][bValue] = strval(tmp);
+		cache_get_field_content(i, "Status", tmp, MainPipeline); Businesses[i][bStatus] = strval(tmp);
+		cache_get_field_content(i, "Level", tmp, MainPipeline); Businesses[i][bLevel] = strval(tmp);
+		cache_get_field_content(i, "LevelProgress", tmp, MainPipeline); Businesses[i][bLevelProgress] = strval(tmp);
+		cache_get_field_content(i, "SafeBalance", tmp, MainPipeline); Businesses[i][bSafeBalance] = strval(tmp);
+		cache_get_field_content(i, "Inventory", tmp, MainPipeline); Businesses[i][bInventory] = strval(tmp);
+		cache_get_field_content(i, "InventoryCapacity", tmp, MainPipeline); Businesses[i][bInventoryCapacity] = strval(tmp);
+		cache_get_field_content(i, "AutoSale", tmp, MainPipeline); Businesses[i][bAutoSale] = strval(tmp);
+		cache_get_field_content(i, "TotalSales", tmp, MainPipeline); Businesses[i][bTotalSales] = strval(tmp);
+		cache_get_field_content(i, "ExteriorX", tmp, MainPipeline); Businesses[i][bExtPos][0] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorY", tmp, MainPipeline); Businesses[i][bExtPos][1] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorZ", tmp, MainPipeline); Businesses[i][bExtPos][2] = floatstr(tmp);
+		cache_get_field_content(i, "ExteriorA", tmp, MainPipeline); Businesses[i][bExtPos][3] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorX", tmp, MainPipeline); Businesses[i][bIntPos][0] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorY", tmp, MainPipeline); Businesses[i][bIntPos][1] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorZ", tmp, MainPipeline); Businesses[i][bIntPos][2] = floatstr(tmp);
+		cache_get_field_content(i, "InteriorA", tmp, MainPipeline); Businesses[i][bIntPos][3] = floatstr(tmp);
+		cache_get_field_content(i, "Interior", tmp, MainPipeline); Businesses[i][bInt] = strval(tmp);
+		cache_get_field_content(i, "SupplyPointX", tmp, MainPipeline); Businesses[i][bSupplyPos][0] = floatstr(tmp);
+		cache_get_field_content(i, "SupplyPointY", tmp, MainPipeline); Businesses[i][bSupplyPos][1] = floatstr(tmp);
+		cache_get_field_content(i, "SupplyPointZ", tmp, MainPipeline); Businesses[i][bSupplyPos][2] = floatstr(tmp);
+		cache_get_field_content(i, "GasPrice", tmp, MainPipeline); Businesses[i][bGasPrice] = floatstr(tmp);
+		cache_get_field_content(i, "OrderBy", Businesses[i][bOrderBy], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(i, "OrderState", tmp, MainPipeline); Businesses[i][bOrderState] = strval(tmp);
+		cache_get_field_content(i, "OrderAmount", tmp, MainPipeline); Businesses[i][bOrderAmount] = strval(tmp);
+		cache_get_field_content(i, "OrderDate", Businesses[i][bOrderDate], MainPipeline, 30);
+		cache_get_field_content(i, "CustomExterior", tmp, MainPipeline); Businesses[i][bCustomExterior] = strval(tmp);
+		cache_get_field_content(i, "CustomInterior", tmp, MainPipeline); Businesses[i][bCustomInterior] = strval(tmp);
+		cache_get_field_content(i, "Grade", tmp, MainPipeline); Businesses[i][bGrade] = strval(tmp);
+		cache_get_field_content(i, "CustomVW", tmp, MainPipeline); Businesses[i][bVW] = strval(tmp);
+		cache_get_field_content(i, "Pay", tmp, MainPipeline); Businesses[i][bAutoPay] = strval(tmp);
+		cache_get_field_content(i, "MinInviteRank", tmp, MainPipeline); Businesses[i][bMinInviteRank] = strval(tmp);
+		cache_get_field_content(i, "MinSupplyRank", tmp, MainPipeline); Businesses[i][bMinSupplyRank] = strval(tmp);
+		cache_get_field_content(i, "MinGiveRankRank", tmp, MainPipeline); Businesses[i][bMinGiveRankRank] = strval(tmp);
+		cache_get_field_content(i, "MinSafeRank", tmp, MainPipeline); Businesses[i][bMinSafeRank] = strval(tmp);
+		cache_get_field_content(i, "Months", tmp, MainPipeline); Businesses[i][bMonths] = strval(tmp);
+		cache_get_field_content(i, "GymEntryFee", tmp, MainPipeline); Businesses[i][bGymEntryFee] = strval(tmp);
+		cache_get_field_content(i, "GymType", tmp, MainPipeline); Businesses[i][bGymType] = strval(tmp);
+
+		if (Businesses[i][bOrderState] == 2) {
+		    Businesses[i][bOrderState] = 1;
+		}
+
+		if(Businesses[i][bExtPos][0] != 0.0) RefreshBusinessPickup(i); // If the business is at blueberry, do not spawn it
+
+		for (new j; j <= 5; j++)
+		{
+		    new col[9];
+			format(col, sizeof(col), "Rank%dPay", j);
+			cache_get_field_content(i, col, tmp, MainPipeline);
+			Businesses[i][bRankPay][j] = strval(tmp);
+		}
+
+		if (Businesses[i][bType] == BUSINESS_TYPE_GASSTATION)
+		{
+			for (new j, column[17]; j < MAX_BUSINESS_GAS_PUMPS; j++)
+			{
+			    format(column, sizeof(column), "GasPump%dPosX", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosX][j] = floatstr(tmp);
+			    format(column, sizeof(column), "GasPump%dPosY", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosY][j] = floatstr(tmp);
+			    format(column, sizeof(column), "GasPump%dPosZ", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpPosZ][j] = floatstr(tmp);
+			    format(column, sizeof(column), "GasPump%dAngle", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpAngle][j] = floatstr(tmp);
+			    format(column, sizeof(column), "GasPump%dCapacity", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpCapacity][j] = floatstr(tmp);
+			    format(column, sizeof(column), "GasPump%dGas", j + 1);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][GasPumpGallons][j] = floatstr(tmp);
+				
+				if(Businesses[i][GasPumpPosX][j] != 0.0) CreateDynamicGasPump(_, i, j);
+
+				for (new z; z < sizeof(StoreItems); z++)
+				{
+			    	new col[12];
+					format(col, sizeof(col), "Item%dPrice", z + 1);
+					cache_get_field_content(i, col, tmp, MainPipeline);
+					Businesses[i][bItemPrices][z] = strval(tmp);
+				}
+			}
+		}
+		else if (Businesses[i][bType] == BUSINESS_TYPE_NEWCARDEALERSHIP || Businesses[i][bType] == BUSINESS_TYPE_OLDCARDEALERSHIP)
+		{
+			for (new j, column[16], label[50]; j < MAX_BUSINESS_DEALERSHIP_VEHICLES; j++)
+			{
+
+			    format(column, sizeof(column), "Car%dModelId", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bModel][j] = strval(tmp);
+			    format(column, sizeof(column), "Car%dPosX", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosX][j] = floatstr(tmp);
+			    format(column, sizeof(column), "Car%dPosY", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosY][j] = floatstr(tmp);
+			    format(column, sizeof(column), "Car%dPosZ", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkPosZ][j] = floatstr(tmp);
+			    format(column, sizeof(column), "Car%dPosAngle", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bParkAngle][j] = floatstr(tmp);
+			    format(column, sizeof(column), "Car%dPrice", j);
+				cache_get_field_content(i, column, tmp, MainPipeline); Businesses[i][bPrice][j] = strval(tmp);
+
+				cache_get_field_content(i, "PurchaseX", tmp, MainPipeline); Businesses[i][bPurchaseX][j] = strval(tmp);
+				cache_get_field_content(i, "PurchaseY", tmp, MainPipeline); Businesses[i][bPurchaseY][j] = strval(tmp);
+				cache_get_field_content(i, "PurchaseZ", tmp, MainPipeline); Businesses[i][bPurchaseZ][j] = strval(tmp);
+				cache_get_field_content(i, "PurchaseAngle", tmp, MainPipeline); Businesses[i][bPurchaseAngle][j] = strval(tmp);
+
+				if(400 < Businesses[i][bModel][j] < 612 || Businesses[i][bParkPosX][j] != 0.0) 
+				{
+			 		Businesses[i][bVehID][j] = CreateVehicle(Businesses[i][bModel][j], Businesses[i][bParkPosX][j], Businesses[i][bParkPosY][j], Businesses[i][bParkPosZ][j], Businesses[i][bParkAngle][j], Businesses[i][bColor1][j], Businesses[i][bColor2][j], 10);
+     				format(label, sizeof(label), "%s For Sale | Price: $%s", GetVehicleName(Businesses[i][bVehID][j]), number_format(Businesses[i][bPrice][j]));
+					Businesses[i][bVehicleLabel][j] = CreateDynamic3DTextLabel(label,COLOR_LIGHTBLUE,Businesses[i][bParkPosX][j], Businesses[i][bParkPosY][j], Businesses[i][bParkPosZ][j],8.0,INVALID_PLAYER_ID, Businesses[i][bVehID][j]);
+				}
+			}
+		}
+		else
+		{
+			for (new j; j < sizeof(StoreItems); j++)
+			{
+			    new col[12];
+				format(col, sizeof(col), "Item%dPrice", j + 1);
+				cache_get_field_content(i, col, tmp, MainPipeline);
+				Businesses[i][bItemPrices][j] = strval(tmp);
+			}
+		}
+
+		Businesses[i][bGymBoxingArena1][0] = INVALID_PLAYER_ID;
+		Businesses[i][bGymBoxingArena1][1] = INVALID_PLAYER_ID;
+		Businesses[i][bGymBoxingArena2][0] = INVALID_PLAYER_ID;
+		Businesses[i][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
+
+		for (new it = 0; it < 10; ++it)
+		{
+			Businesses[i][bGymBikePlayers][it] = INVALID_PLAYER_ID;
+			Businesses[i][bGymBikeVehicles][it] = INVALID_VEHICLE_ID;
+		}
+		Businesses[i][bMaxLevel] = cache_get_field_content_int(i, "MaxLevel", MainPipeline);
+		i++;
+	}
+	if(i > 0) printf("[LoadBusinesses] %d businesses rehashed/loaded.", i);
+	else printf("[LoadBusinesses] Failed to load any businesses.");
+}
+
+stock SaveBusiness(id)
+{
+	new query[4019];
+
+	format(query, sizeof(query), "UPDATE `businesses` SET ");
+
+	format(query, sizeof(query), "%s \
+	`Name` = '%s', `Type` = %d, `Value` = %d, `OwnerID` = %d, `Months` = %d, `SafeBalance` = %d, `Inventory` = %d, `InventoryCapacity` = %d, `Status` = %d, `Level` = %d, \
+	`LevelProgress` = %d, `AutoSale` = %d, `OrderDate` = '%s', `OrderAmount` = %d, `OrderBy` = '%s', `OrderState` = %d, `TotalSales` = %d, ",
+	query,
+	g_mysql_ReturnEscaped(Businesses[id][bName], MainPipeline), Businesses[id][bType], Businesses[id][bValue], Businesses[id][bOwner], Businesses[id][bMonths], Businesses[id][bSafeBalance], Businesses[id][bInventory], Businesses[id][bInventoryCapacity], Businesses[id][bStatus], Businesses[id][bLevel],
+	Businesses[id][bLevelProgress], Businesses[id][bAutoSale], Businesses[id][bOrderDate], Businesses[id][bOrderAmount], g_mysql_ReturnEscaped(Businesses[id][bOrderBy], MainPipeline), Businesses[id][bOrderState], Businesses[id][bTotalSales]);
+
+	format(query, sizeof(query), "%s \
+	`ExteriorX` = %f, `ExteriorY` = %f, `ExteriorZ` = %f, `ExteriorA` = %f, \
+	`InteriorX` = %f, `InteriorY` = %f, `InteriorZ` = %f, `InteriorA` = %f, \
+	`Interior` = %d, `CustomExterior` = %d, `CustomInterior` = %d, `Grade` = %d, `CustomVW` = %d, `SupplyPointX` = %f, `SupplyPointY` = %f, `SupplyPointZ` = %f, ",
+	query,
+	Businesses[id][bExtPos][0],	Businesses[id][bExtPos][1],	Businesses[id][bExtPos][2],	Businesses[id][bExtPos][3],
+	Businesses[id][bIntPos][0],	Businesses[id][bIntPos][1], Businesses[id][bIntPos][2], Businesses[id][bIntPos][3],
+	Businesses[id][bInt], Businesses[id][bCustomExterior], Businesses[id][bCustomInterior], Businesses[id][bGrade], Businesses[id][bVW], Businesses[id][bSupplyPos][0],Businesses[id][bSupplyPos][1], Businesses[id][bSupplyPos][2]);
+
+	for (new i; i < sizeof(StoreItems); i++) format(query, sizeof(query), "%s`Item%dPrice` = %d, ", query, i+1, Businesses[id][bItemPrices][i]);
+	for (new i; i < 5; i++)	format(query, sizeof(query), "%s`Rank%dPay` = %d, ", query, i, Businesses[id][bRankPay][i], id);
+	for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) format(query, sizeof(query), "%s `GasPump%dPosX` = %f, `GasPump%dPosY` = %f, `GasPump%dPosZ` = %f, `GasPump%dAngle` = %f, `GasPump%dModel` = %d, `GasPump%dCapacity` = %f, `GasPump%dGas` = %f, ", query, i+1, Businesses[id][GasPumpPosX][i],	i+1, Businesses[id][GasPumpPosY][i], i+1, Businesses[id][GasPumpPosZ][i], i+1, Businesses[id][GasPumpAngle][i], i+1, 1646,i+1, Businesses[id][GasPumpCapacity],	i+1, Businesses[id][GasPumpGallons]);
+
+	format(query, sizeof(query), "%s \
+	`Pay` = %d, `GasPrice` = %f, `MinInviteRank` = %d, `MinSupplyRank` = %d, `MinGiveRankRank` = %d, `MinSafeRank` = %d, `GymEntryFee` = %d, `GymType` = %d, `TotalProfits` = %d, `MaxLevel` = %d WHERE `Id` = %d",
+	query,
+	Businesses[id][bAutoPay], Businesses[id][bGasPrice], Businesses[id][bMinInviteRank], Businesses[id][bMinSupplyRank], Businesses[id][bMinGiveRankRank], Businesses[id][bMinSafeRank], Businesses[id][bGymEntryFee], Businesses[id][bGymType], Businesses[id][bTotalProfits], Businesses[id][bMaxLevel], id+1);
+
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+ 	//printf("Len :%d", strlen(query));
+	printf("[business] saved %i", id);
+
+	return 1;
+}
+
+stock LoadBusinessSales() {
+
+	print("[LoadBusinessSales] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `businesssales`", true, "LoadBusinessesSaless", "");
+}
+
+forward LoadBusinessesSaless();
+public LoadBusinessesSaless() {
+
+	new
+		iFields,
+		iRows,
+		iIndex,
+		szResult[128];
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	while((iIndex < iRows)) {
+		cache_get_field_content(iIndex, "bID", szResult, MainPipeline); BusinessSales[iIndex][bID] = strval(szResult);
+		cache_get_field_content(iIndex, "BusinessID", szResult, MainPipeline); BusinessSales[iIndex][bBusinessID] = strval(szResult);
+		cache_get_field_content(iIndex, "Text", BusinessSales[iIndex][bText], MainPipeline, 128);
+		cache_get_field_content(iIndex, "Price", szResult, MainPipeline); BusinessSales[iIndex][bPrice] = strval(szResult);
+		cache_get_field_content(iIndex, "Available", szResult, MainPipeline); BusinessSales[iIndex][bAvailable] = strval(szResult);
+		cache_get_field_content(iIndex, "Purchased", szResult, MainPipeline); BusinessSales[iIndex][bPurchased] = strval(szResult);
+		cache_get_field_content(iIndex, "Type", szResult, MainPipeline); BusinessSales[iIndex][bType] = strval(szResult);
+		iIndex++;
+	}
+	return 1;
+}
+
+stock SaveBusinessSale(id)
+{
+	new query[200];
+	format(query, 200, "UPDATE `businesssales` SET `BusinessID` = '%d', `Text` = '%s', `Price` = '%d', `Available` = '%d', `Purchased` = '%d', `Type` = '%d' WHERE `bID` = '%d'", BusinessSales[id][bBusinessID], BusinessSales[id][bText],
+	BusinessSales[id][bPrice], BusinessSales[id][bAvailable], BusinessSales[id][bPurchased], BusinessSales[id][bType], BusinessSales[id][bID]);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	printf("[BusinessSale] saved %i", id);
+	return 1;
+}
+
+stock SaveDealershipSpawn(businessid) {
+	new query[200];
+	format(query, sizeof(query), "UPDATE `businesses` SET");
+	format(query, sizeof(query), "%s `PurchaseX` = %0.5f, `PurchaseY` = %0.5f, `PurchaseZ` = %0.5f, `PurchaseAngle` = %0.5f", query, Businesses[businessid][bPurchaseX], Businesses[businessid][bPurchaseY], Businesses[businessid][bPurchaseZ], Businesses[businessid][bPurchaseAngle]);
+    format(query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
+    mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+}
+
+stock SaveDealershipVehicle(businessid, slotid)
+{
+	new query[256];
+	//slotid++;
+	format(query, sizeof(query), "UPDATE `businesses` SET");
+	format(query, sizeof(query), "%s `Car%dPosX` = %0.5f,", query, slotid, Businesses[businessid][bParkPosX][slotid]);
+	format(query, sizeof(query), "%s `Car%dPosY` = %0.5f,", query, slotid, Businesses[businessid][bParkPosY][slotid]);
+	format(query, sizeof(query), "%s `Car%dPosZ` = %0.5f,", query, slotid, Businesses[businessid][bParkPosZ][slotid]);
+	format(query, sizeof(query), "%s `Car%dPosAngle` = %0.5f,", query, slotid, Businesses[businessid][bParkAngle][slotid]);
+	format(query, sizeof(query), "%s `Car%dModelId` = %d,", query, slotid, Businesses[businessid][bModel][slotid]);
+	format(query, sizeof(query), "%s `Car%dPrice` = %d", query, slotid, Businesses[businessid][bPrice][slotid]);
+	format(query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 }

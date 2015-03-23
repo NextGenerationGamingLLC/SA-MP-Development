@@ -339,7 +339,7 @@ CMD:accept(playerid, params[])
                 ResetPlayerWeaponsEx(playerid);
                 SpawnPlayer(playerid);
             }
-            else SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now !");
+            else SendClientMessageEx(playerid, COLOR_GREY, "   You are not injured, you can't do this right now!");
         }
         else if(strcmp(params, "car", true) == 0) {
             if(VehicleOffer[playerid] != INVALID_PLAYER_ID) {
@@ -726,7 +726,7 @@ CMD:accept(playerid, params[])
             else return SendClientMessageEx(playerid, COLOR_GREY, "Nobody sent you a house invite.");
             return 1;
         }
-        else if(strcmp(params, "divorce", true) == 0) {
+        /*else if(strcmp(params, "divorce", true) == 0) {
             if(DivorceOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(DivorceOffer[playerid])) {
                     if(ProxDetectorS(10.0, playerid, DivorceOffer[playerid])) {
@@ -751,7 +751,7 @@ CMD:accept(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_GREY, "Nobody sent you any divorce papers.");
                 return 1;
             }
-        }
+        }*/
         else if(strcmp(params, "group", true) == 0) {
             if(GetPVarType(playerid, "Group_Inviter")) {
 
@@ -2245,7 +2245,7 @@ CMD:accept(playerid, params[])
                             }
                             case 11:
                             {
-                                PlayerInfo[playerid][pGPS]++;
+                                PlayerInfo[playerid][pGPS] = 1;
                                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/gps");
                             }
                             case 12:
@@ -2790,7 +2790,7 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Pot, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Divorce, Drink, House, Shipment, Help, Firstaid");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid");
 		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer, RenderAid");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
@@ -2833,7 +2833,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"boxing",true) == 0) { BoxOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"witness",true) == 0) { MarryWitnessOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"marriage",true) == 0) { DeletePVar(ProposeOffer[playerid], "marriagelastname"), ProposeOffer[playerid] = INVALID_PLAYER_ID, DeletePVar(playerid, "marriagelastname"); }
-	else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
+	//else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"firstaid",true) == 0) 
 	{

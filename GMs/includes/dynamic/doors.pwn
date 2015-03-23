@@ -183,7 +183,11 @@ stock SaveDynamicDoor(doorid)
 		`PickupModel`=%d, \
 		`Pass`='%s', \
 		`Locked`=%d, \
-		`LastLogin`=%d \
+		`LastLogin`=%d, \
+		`Expire`=%d, \
+		`Inactive`=%d, \
+		`Ignore`=%d, \
+		`Counter`=%d \
 		WHERE `id`=%d",
 		string,
 		DDoorsInfo[doorid][ddCustomExterior],
@@ -203,6 +207,10 @@ stock SaveDynamicDoor(doorid)
 		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddPass], MainPipeline),
 		DDoorsInfo[doorid][ddLocked],
 		DDoorsInfo[doorid][ddLastLogin],
+		DDoorsInfo[doorid][ddExpire],
+		DDoorsInfo[doorid][ddInactive],
+		DDoorsInfo[doorid][ddIgnore],
+		DDoorsInfo[doorid][ddCounter],
 		doorid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -264,6 +272,10 @@ public OnLoadDynamicDoor(index)
 		cache_get_field_content(rows, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
 		DDoorsInfo[index][ddLocked] = cache_get_field_content_int(rows, "Locked", MainPipeline); 
 		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(rows, "LastLogin", MainPipeline);
+		DDoorsInfo[index][ddExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
+		DDoorsInfo[index][ddInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
+		DDoorsInfo[index][ddIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
+		DDoorsInfo[index][ddCounter] = cache_get_field_content_int(row, "Counter", MainPipeline);
 		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
 	}
 	return 1;
@@ -312,6 +324,10 @@ public OnLoadDynamicDoors()
 		cache_get_field_content(i, "Pass", DDoorsInfo[i][ddPass], MainPipeline, 24);
 		DDoorsInfo[i][ddLocked] = cache_get_field_content_int(i, "Locked", MainPipeline); 
 		DDoorsInfo[i][ddLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
+		DDoorsInfo[i][ddExpire] = cache_get_field_content_int(i, "Expire", MainPipeline);
+		DDoorsInfo[i][ddInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
+		DDoorsInfo[i][ddIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
+		DDoorsInfo[i][ddCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
 		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);
 		i++;
 	}

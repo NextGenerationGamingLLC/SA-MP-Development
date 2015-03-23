@@ -663,6 +663,7 @@ stock TutorialStep(playerid)
 			TextDrawShowForPlayer(playerid, txtNationSelHelper);
 			TextDrawShowForPlayer(playerid, txtNationSelMain);
     		PlayerNationSelection[playerid] = -1;
+			if(emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);
 		}
 	}
 	return 1;

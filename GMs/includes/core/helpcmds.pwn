@@ -175,7 +175,7 @@ CMD:help(playerid, params[])
 			}
 			case 7:
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** TRANSPORT *** /fare /ataxi /tonline /r /invite /giverank /eba /gdonate");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** TRANSPORT *** /fare /ataxi /r /invite /giverank /eba /gdonate");
 			}
 			case 8:
 			{

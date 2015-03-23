@@ -1621,8 +1621,8 @@ CMD:vradar(playerid, params[])
 	if (!IsPlayerInAnyVehicle(playerid))
 		return SendClientMessageEx(playerid, 0xFF0000FF, "You cannot use a dashboard radar outside of a vehicle.");
 
-	if(!IsACop(playerid) || IsATowman(playerid))
-	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
+	if(!IsACop(playerid) && !IsATowman(playerid))
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer/towman!");
 
 	switch (CarRadars[playerid])
 	{
@@ -1920,7 +1920,7 @@ CMD:detain(playerid, params[])
 								floatcmp(floatabs(floatsub(pos[2], pos[5])), 10.0) != -1) return false;
 						format(string, sizeof(string), "* You were detained by %s .", GetPlayerNameEx(playerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-						format(string, sizeof(string), "* You detained %s .", GetPlayerNameEx(giveplayerid));
+						format(string, sizeof(string), "* You detained %s.", GetPlayerNameEx(giveplayerid));
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

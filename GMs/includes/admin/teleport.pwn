@@ -515,7 +515,18 @@ CMD:goto(playerid, params[])
 		}
 		else if(strcmp(params, "doc", true) == 0)
 		{
-			SetPlayerPos(playerid, -1528.5812,489.6914,7.1797);
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, -1528.5812,489.6914,7.1797);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, -1528.5812,489.6914,7.1797);
+			}
 			SetPlayerInterior(playerid, 0);
 			PlayerInfo[playerid][pInt] = 0;
 			SetPlayerVirtualWorld(playerid, 0);
@@ -851,6 +862,48 @@ CMD:goto(playerid, params[])
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
 		}
+		else if(strcmp(params,"fc",true) == 0)
+		{
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, -203.2537, 1105.27, 18.73);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, -203.2537, 1105.27, 18.73);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+
+		}
+		else if(strcmp(params,"unity",true) == 0)
+		{
+			if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, 1811.48, -1891.17, 12.3936);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, 1811.48, -1891.17, 12.3936);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+
+		}
 	}
 	else if(PlayerInfo[playerid][pWatchdog] >= 2)
 	{
@@ -895,49 +948,6 @@ CMD:goto(playerid, params[])
 			PlayerInfo[playerid][pInt] = 0;
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
-
-		}
-		else if(strcmp(params,"fc",true) == 0)
-		{
-			if (GetPlayerState(playerid) == 2)
-			{
-				new tmpcar = GetPlayerVehicleID(playerid);
-				SetVehiclePos(tmpcar, -203.2537, 1105.27, 18.73);
-				LinkVehicleToInterior(tmpcar, 0);
-				SetVehicleVirtualWorld(tmpcar, 0);
-				fVehSpeed[playerid] = 0.0;
-			}
-			else
-			{
-				SetPlayerPos(playerid, -203.2537, 1105.27, 18.73);
-			}
-			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
-			SetPlayerInterior(playerid,0);
-			PlayerInfo[playerid][pInt] = 0;
-			SetPlayerVirtualWorld(playerid, 0);
-			PlayerInfo[playerid][pVW] = 0;
-
-		}
-		else if(strcmp(params,"unity",true) == 0)
-		{
-			if (GetPlayerState(playerid) == 2)
-			{
-				new tmpcar = GetPlayerVehicleID(playerid);
-				SetVehiclePos(tmpcar, 1811.48, -1891.17, 12.3936);
-				LinkVehicleToInterior(tmpcar, 0);
-				SetVehicleVirtualWorld(tmpcar, 0);
-				fVehSpeed[playerid] = 0.0;
-			}
-			else
-			{
-				SetPlayerPos(playerid, 1811.48, -1891.17, 12.3936);
-			}
-			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
-			SetPlayerInterior(playerid,0);
-			PlayerInfo[playerid][pInt] = 0;
-			SetPlayerVirtualWorld(playerid, 0);
-			PlayerInfo[playerid][pVW] = 0;
-
 		}
 	}
 	else
@@ -1127,7 +1137,7 @@ CMD:sendto(playerid, params[])
 			}
 			else
 			{
-				SetPlayerPos(giveplayerid,-2029.2322, -78.3302, 35.32034);
+				SetPlayerPos(giveplayerid,-1528.5812,489.6914,7.1797);
 			}
 			format(string, sizeof(string), " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);

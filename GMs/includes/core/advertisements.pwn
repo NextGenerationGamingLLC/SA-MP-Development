@@ -73,183 +73,37 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)
 	{
-		case DIALOG_ADCATEGORY: if(response) switch(listitem) {
-			case 0: {
+		case DIALOG_ADCATEGORY:
+		{
+			if(!response) return 1;
+			szMiscArray[0] = 0;
+			new szBuffer[32],
+				arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
+				iDialogCount,
+				iCount,
+				iBreak,
+				iRand;
+			for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
+			foreach(new i: Player) if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
 
-				new
-					szDialog[2256],
-					szBuffer[32],
-					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
-					iDialogCount,
-					iCount,
-					iBreak,
-					iRand;
-
-				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				foreach(new i: Player)
-				{				
-					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-				}
-
-				while(iDialogCount < 50 && iBreak < 500) {
-					iRand = random(iCount);
-					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
-						if(AdvertType[arrAdverts[iRand]] == 1) //Real Estate
-						{
-							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
-							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
-							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
-							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
-							arrAdverts[iRand] = INVALID_PLAYER_ID;	
-						}
+			while(iDialogCount < 50 && iBreak < 500) {
+				iRand = random(iCount);
+				if(iCount && arrAdverts[iRand] != INVALID_PLAYER_ID) {
+					if(AdvertType[arrAdverts[iRand]] == listitem+1)
+					{
+						strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
+						if(PlayerInfo[playerid][pAdmin] <= 1) format(szMiscArray, sizeof(szMiscArray), "%s%s... (%i)\r\n", szMiscArray, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
+						else format(szMiscArray, sizeof(szMiscArray), "%s%s... (%s)\r\n", szMiscArray, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
+						ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
+						arrAdverts[iRand] = INVALID_PLAYER_ID;
 					}
-					++iBreak;
 				}
-				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+				++iBreak;
 			}
-			case 1: {
-
-				new
-					szDialog[2256],
-					szBuffer[32],
-					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
-					iDialogCount,
-					iCount,
-					iBreak,
-					iRand;
-
-				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				foreach(new i: Player)
-				{				
-					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-				}
-
-				while(iDialogCount < 50 && iBreak < 500) {
-					iRand = random(iCount);
-					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
-						if(AdvertType[arrAdverts[iRand]] == 2) //Automobile
-						{
-							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
-							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
-							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
-							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
-							arrAdverts[iRand] = INVALID_PLAYER_ID;
-						}
-					}
-					++iBreak;
-				}
-				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
-			}
-			case 2: {
-
-				new
-					szDialog[2256],
-					szBuffer[32],
-					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
-					iDialogCount,
-					iCount,
-					iBreak,
-					iRand;
-
-				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				foreach(new i: Player)
-				{				
-					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-				}
-
-				while(iDialogCount < 50 && iBreak < 500) {
-					iRand = random(iCount);
-					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
-						if(AdvertType[arrAdverts[iRand]] == 3) //Buying
-						{
-							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
-							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
-							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
-							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
-							arrAdverts[iRand] = INVALID_PLAYER_ID;
-						}
-					}
-					++iBreak;
-				}
-				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
-			}
-			case 3: {
-
-				new
-					szDialog[2256],
-					szBuffer[32],
-					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
-					iDialogCount,
-					iCount,
-					iBreak,
-					iRand;
-
-				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				foreach(new i: Player)
-				{				
-					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-				}
-
-				while(iDialogCount < 50 && iBreak < 500) {
-					iRand = random(iCount);
-					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
-						if(AdvertType[arrAdverts[iRand]] == 4) //Selling
-						{
-							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
-							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
-							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
-							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
-							arrAdverts[iRand] = INVALID_PLAYER_ID;	
-						}
-					}
-					++iBreak;
-				}
-				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
-			}
-			case 4: {
-
-				new
-					szDialog[2256],
-					szBuffer[32],
-					arrAdverts[MAX_PLAYERS] = INVALID_PLAYER_ID,
-					iDialogCount,
-					iCount,
-					iBreak,
-					iRand;
-
-				for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
-				foreach(new i: Player)
-				{				
-					if(!isnull(szAdvert[i])) arrAdverts[iCount++] = i;
-				}
-
-				while(iDialogCount < 50 && iBreak < 500) {
-					iRand = random(iCount);
-					if(arrAdverts[iRand] != INVALID_PLAYER_ID) {
-						if(AdvertType[arrAdverts[iRand]] == 5) //Miscellaneous
-						{
-							strcpy(szBuffer, szAdvert[arrAdverts[iRand]], sizeof(szBuffer));
-							if(PlayerInfo[playerid][pAdmin] <= 1) format(szDialog, sizeof(szDialog), "%s%s... (%i)\r\n", szDialog, szBuffer, PlayerInfo[arrAdverts[iRand]][pPnumber]);
-							else format(szDialog, sizeof(szDialog), "%s%s... (%s)\r\n", szDialog, szBuffer, GetPlayerNameEx(arrAdverts[iRand]));
-							ListItemTrackId[playerid][iDialogCount++] = arrAdverts[iRand];
-							arrAdverts[iRand] = INVALID_PLAYER_ID;
-						}	
-					}
-					++iBreak;
-				}
-				if(!isnull(szDialog)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szDialog, "Select", "Return");
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-				SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
-			}
-		}	
+			if(!isnull(szMiscArray)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szMiscArray, "Select", "Return");
+			ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
+		}
 		case DIALOG_ADMAIN: if(response) switch(listitem) {
 			case 0: ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			case 1: ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Enter a search phrase.", "Search", "Return");
