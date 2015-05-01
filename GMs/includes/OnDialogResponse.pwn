@@ -5002,7 +5002,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			new moneys = GetPVarInt(playerid, "Arrest_Price"), time = GetPVarInt(playerid, "Arrest_Time"),
-			//bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = GetPVarInt(playerid, "Arrest_BailPrice"), 
+			bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = GetPVarInt(playerid, "Arrest_BailPrice"), 
 			suspect = GetPVarInt(playerid, "Arrest_Suspect"), arresttype = GetPVarInt(playerid, "Arrest_Type"),
 			query[1100];
 			if(strlen(inputtext) < 30 || strlen(inputtext) > 128)
@@ -5013,12 +5013,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			switch(arresttype)
 			{
 				case 0, 1: { //arrest
-					/*if(bail && bailprice > 0)
+					if(bail && bailprice > 0)
 					{
 						format(string, sizeof(string), "You have been given the option to post bail.  Your bail is set at $%s. (/bail)", number_format(bailprice));
 						SendClientMessageEx(suspect, COLOR_RED, string);
 						JailPrice[suspect] = bailprice;
-					}*/
+					}
 					format(string, sizeof(string), "* You have sent %s to the Local PD Jail.", GetPlayerNameEx(suspect));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					GivePlayerCash(suspect, -moneys);

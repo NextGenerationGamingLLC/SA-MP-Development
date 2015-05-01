@@ -1254,6 +1254,8 @@ CMD:docarrest(playerid, params[])
 		else {
 			SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
 			SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
+			SetPVarInt(playerid, "Arrest_Bail", 1);
+			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
 			SetPVarInt(playerid, "Arrest_Suspect", suspect);
 			SetPVarInt(playerid, "Arrest_Type", 2);
 			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
@@ -1276,28 +1278,9 @@ CMD:arrest(playerid, params[])
 
 
    		new
-     		/*moneys,
-       		time,
-         	bail,
-          	bailprice,*/
 			string[256];
 
         new suspect = GetClosestPlayer(playerid);
-  		/*if(sscanf(params, "dddd", moneys, time, bail, bailprice)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arrest [price] [time (minutes)] [bail (0=no 1=yes)] [bailprice]");
-		}
-		else if(!(1 <= moneys <= 30000)) {
-  			SendClientMessageEx(playerid, COLOR_GREY, "The jail price can't be below $1 or above $30,000.");
-		}
-		else if(!(1 <= time <= 30)) {
-  			SendClientMessageEx(playerid, COLOR_GREY, "Jail time can't be below 1 or above 30 minutes - take the person to prison for more time.");
-		}
-		else if(!(0 <= bail <= 1)) {
-  			SendClientMessageEx(playerid, COLOR_GREY, "The bail option must be set to 0 or 1.");
-		}
-		else if(!(0 <= bailprice <= 100000)) {
-  			SendClientMessageEx(playerid, COLOR_GREY, "The bail price can't be below $0 or above $100,000.");
-		}*/
 		if(!IsPlayerConnected(suspect)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 		}
@@ -1310,8 +1293,8 @@ CMD:arrest(playerid, params[])
 		else {
 			SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
 			SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
-			//SetPVarInt(playerid, "Arrest_Bail", bail);
-			//SetPVarInt(playerid, "Arrest_BailPrice", bailprice);
+			SetPVarInt(playerid, "Arrest_Bail", 1);
+			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
 			SetPVarInt(playerid, "Arrest_Suspect", suspect);
 			SetPVarInt(playerid, "Arrest_Type", 0);
 			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));

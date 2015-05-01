@@ -23,6 +23,7 @@ InitiateGamemode()
 	LoadImpoundPoints();
 	LoadRelayForLifeTeams();
 	LoadGarages();
+	LoadCrimes();
 		/*---[Shop Automation]---*/
 	
  	g_mysql_LoadSales();

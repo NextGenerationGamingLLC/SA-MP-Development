@@ -197,6 +197,8 @@
 #include "./includes/dynamic/impound.pwn"
 #include "./includes/dynamic/speedcamera.pwn"
 #include "./includes/dynamic/arrestpoints.pwn"
+#include "./includes/dynamic/dynsu.pwn"
+
 
 //event kernels includes
 //#include "./includes/events/bday.pwn"
@@ -210,6 +212,7 @@
 #include "./includes/events/xmas.pwn"
 #include "./includes/events/zombies.pwn"
 #include "./includes/events/valentine.pwn"
+
 //#include "./includes/events/festival.pwn"
 //#include "./includes/events/stpatricks.pwn"
 

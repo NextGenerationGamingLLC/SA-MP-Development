@@ -1049,35 +1049,7 @@ CMD:vcheck(playerid, params[])
     return 1;
 }
 
-CMD:su(playerid, params[]) {
-	if(IsACop(playerid)) {
-		if(PlayerInfo[playerid][pJailTime] > 0) {
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
-		}
 
-		new
-			iTargetID;
-
-		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
-		}
-		else if(!IsPlayerConnected(iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-		}
-		else if(IsACop(iTargetID) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance])) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
-		}
-		else if(PlayerInfo[iTargetID][pWantedLevel] >= 6) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Target is already most wanted.");
-		}
-		else {
-		    SetPVarInt(playerid, "suspect_TargetID", iTargetID);
-		    ShowPlayerCrimeDialog(playerid);
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
-	return 1;
-}
 
 CMD:ram(playerid, params[])
 {
