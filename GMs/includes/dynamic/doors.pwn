@@ -762,14 +762,16 @@ CMD:ddedit(playerid, params[])
 
 		if(strcmp(choice, "interior", true) == 0)
 		{
+			new Float:pos[3];
+			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited DoorID %d's Interior (B: %f, %f, %f | A: %f, %f, %f)", GetPlayerNameEx(playerid), doorid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], pos[0], pos[1], pos[2]);
+			Log("logs/ddedit.log", szMiscArray);
 			GetPlayerPos(playerid, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
 			GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddInteriorA]);
 			DDoorsInfo[doorid][ddInteriorInt] = GetPlayerInterior(playerid);
 			DDoorsInfo[doorid][ddInteriorVW] = GetPlayerVirtualWorld(playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have changed the interior!");
 			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited DoorID %d's Interior.", GetPlayerNameEx(playerid), doorid);
-			Log("logs/ddedit.log", string);
 			return 1;
 		}
 		else if(strcmp(choice, "custominterior", true) == 0)
@@ -808,6 +810,10 @@ CMD:ddedit(playerid, params[])
 		}
 		else if(strcmp(choice, "exterior", true) == 0)
 		{
+			new Float:pos[3];
+			GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited DoorID %d's Exterior (B: %f, %f, %f | A: %f, %f, %f)", GetPlayerNameEx(playerid), doorid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], pos[0], pos[1], pos[2]);
+			Log("logs/ddedit.log", szMiscArray);
 			GetPlayerPos(playerid, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ]);
 			GetPlayerFacingAngle(playerid, DDoorsInfo[doorid][ddExteriorA]);
 			DDoorsInfo[doorid][ddExteriorVW] = GetPlayerVirtualWorld(playerid);
@@ -817,8 +823,6 @@ CMD:ddedit(playerid, params[])
 			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited DoorID %d's Exterior.", GetPlayerNameEx(playerid), doorid);
-			Log("logs/ddedit.log", string);
 		}
 		else if(strcmp(choice, "type", true) == 0)
 		{
@@ -1170,5 +1174,54 @@ CMD:ddmove(playerid, params[])
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 		}
 	}
+	return 1;
+}
+
+forward DeleteDynamicDoor(doorid, adminid);
+public DeleteDynamicDoor(doorid, adminid)
+{
+	format(DDoorsInfo[doorid][ddDescription], 128, "None");
+	DDoorsInfo[doorid][ddOwner] = -1;
+	format(DDoorsInfo[doorid][ddOwnerName], MAX_PLAYER_NAME, "Nobody");
+	if(IsValidDynamicPickup(DDoorsInfo[doorid][ddPickupID])) DestroyDynamicPickup(DDoorsInfo[doorid][ddPickupID]), DDoorsInfo[doorid][ddPickupID] = -1;
+	if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]), DDoorsInfo[doorid][ddTextID] = Text3D:-1;
+	DDoorsInfo[doorid][ddCustomInterior] = 0;
+	DDoorsInfo[doorid][ddExteriorVW] = 0;
+	DDoorsInfo[doorid][ddExteriorInt] = 0;
+	DDoorsInfo[doorid][ddInteriorVW] = 0;
+	DDoorsInfo[doorid][ddInteriorInt] = 0;
+	DDoorsInfo[doorid][ddExteriorX] = 0.0;
+	DDoorsInfo[doorid][ddExteriorY] = 0.0;
+	DDoorsInfo[doorid][ddExteriorZ] = 0.0;
+	DDoorsInfo[doorid][ddExteriorA] = 0.0;
+	DDoorsInfo[doorid][ddInteriorX] = 0.0;
+	DDoorsInfo[doorid][ddInteriorY] = 0.0;
+	DDoorsInfo[doorid][ddInteriorZ] = 0.0;
+	DDoorsInfo[doorid][ddInteriorA] = 0.0;
+	DDoorsInfo[doorid][ddCustomExterior] = 0;
+	DDoorsInfo[doorid][ddType] = 0;
+	DDoorsInfo[doorid][ddRank] = 0;
+	DDoorsInfo[doorid][ddVIP] = 0;
+	DDoorsInfo[doorid][ddFamed] = 0;
+	DDoorsInfo[doorid][ddDPC] = 0;
+	DDoorsInfo[doorid][ddAllegiance] = 0;
+	DDoorsInfo[doorid][ddGroupType] = 0;
+	DDoorsInfo[doorid][ddFaction] = 0;
+	DDoorsInfo[doorid][ddAdmin] = 0;
+	DDoorsInfo[doorid][ddWanted] = 0;
+	DDoorsInfo[doorid][ddVehicleAble] = 0;
+	DDoorsInfo[doorid][ddColor] = 0;
+	DDoorsInfo[doorid][ddPickupModel] = 0;
+	DDoorsInfo[doorid][ddPass][0] = 0;
+	DDoorsInfo[doorid][ddLocked] = 0;
+	DDoorsInfo[doorid][ddLastLogin] = 0;
+	DDoorsInfo[doorid][ddExpire] = 0;
+	DDoorsInfo[doorid][ddInactive] = 0;
+	DDoorsInfo[doorid][ddIgnore] = 0;
+	DDoorsInfo[doorid][ddCounter] = 0;
+	SaveDynamicDoor(doorid);
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "%s has deleted door id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), doorid);
+	Log("logs/ddedit.log", szMiscArray);
 	return 1;
 }

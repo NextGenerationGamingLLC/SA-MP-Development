@@ -68,7 +68,7 @@ stock g_mysql_Init()
 	}
 	fclose(fileHandle);
 
-	mysql_log(SQL_DEBUG, SQL_DEBUGLOG);
+	mysql_log(E_LOGLEVEL:SQL_DEBUG, E_LOGTYPE:SQL_DEBUGLOG);
 	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_DB, SQL_PASS);
 
 	printf("[MySQL] (Main Pipelines) Connecting to %s...", SQL_HOST);
@@ -213,7 +213,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "PumpkinStock", szResult, MainPipeline); PumpkinStock = strval(szResult);
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
-				//LoadInactiveSettings(i);
+				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
 				break;
 			}
 		}
@@ -517,6 +517,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						format(szField, sizeof(szField), "BItem%d", i);
 						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
+					PlayerInfo[extraid][pDigCooldown] = cache_get_field_content_int(row,  "pDigCooldown", MainPipeline);
 					PlayerInfo[extraid][pToolBox]				= cache_get_field_content_int(row,  "ToolBox", MainPipeline); 
 					PlayerInfo[extraid][pCrowBar]				= cache_get_field_content_int(row,  "CrowBar", MainPipeline); 
 					PlayerInfo[extraid][pCarLockPickSkill]		= cache_get_field_content_int(row,  "CarLockPickSkill", MainPipeline); 
@@ -559,6 +560,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
 					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
+					PlayerInfo[extraid][pEventTokens] = cache_get_field_content_int(row,  "pEventTokens", MainPipeline);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -1471,7 +1473,7 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
 	format(query, sizeof(query), "%s `PassComplexCheck` = '%d'", query, PassComplexCheck);
-	//SaveInactiveSettings(query, sizeof(query));
+	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
@@ -2305,6 +2307,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pFamedTogged]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDigCooldown", PlayerInfo[playerid][pDigCooldown]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ToolBox", PlayerInfo[playerid][pToolBox]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CrowBar", PlayerInfo[playerid][pCrowBar]);
@@ -2358,8 +2361,9 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
-	g_mysql_SaveFIF(playerid);
+	if(FIFEnabled) g_mysql_SaveFIF(playerid);
 	return 1;
 }
 
@@ -3625,13 +3629,6 @@ public LoadDynamicGroups()
 	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
-}
-
-forward LoadDynamicGroupVehicles();
-public LoadDynamicGroupVehicles()
-{
-    mysql_function_query(MainPipeline, "SELECT * FROM `groupvehs`", true, "DynVeh_QueryFinish", "ii", GV_QUERY_LOAD, 0);
-    return 1;
 }
 
 forward ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z);
@@ -5313,102 +5310,6 @@ public Jurisdiction_RehashFinish(iGroup) {
 		}
 		iIndex++;
 	}
-}
-
-forward DynVeh_QueryFinish(iType, iExtraID);
-public DynVeh_QueryFinish(iType, iExtraID) {
-
-	new
-		iFields,
-		iRows,
-		iIndex,
-		i = 0,
-		sqlid,
-		szResult[128];
-
-	cache_get_data(iRows, iFields, MainPipeline);
-	switch(iType) {
-		case GV_QUERY_LOAD:
-		{
-		    format(szResult, sizeof(szResult), "UPDATE `groupvehs` SET `SpawnedID` = %d", INVALID_VEHICLE_ID);
-			mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			while((iIndex < iRows) && (iIndex < MAX_DYNAMIC_VEHICLES)) {
-			    cache_get_field_content(iIndex, "id", szResult, MainPipeline); sqlid = strval(szResult);
-				if((sqlid >= MAX_DYNAMIC_VEHICLES)) {// Array bounds check. Use it.
-					format(szResult, sizeof(szResult), "DELETE FROM `groupvehs` WHERE `id` = %d", sqlid);
-					mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-					return printf("SQL ID %d exceeds Max Dynamic Vehicles", sqlid);
-				}
-				cache_get_field_content(iIndex, "gID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igID] = strval(szResult);
-				cache_get_field_content(iIndex, "gDivID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igDivID] = strval(szResult);
-				cache_get_field_content(iIndex, "rID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_irID] = strval(szResult);
-				cache_get_field_content(iIndex, "vModel", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iModel] = strval(szResult);
-                switch(DynVehicleInfo[sqlid][gv_iModel]) {
-					case 538, 537, 449, 590, 569, 570: {
-					    DynVehicleInfo[sqlid][gv_iModel] = 0;
-					}
-				}
-				cache_get_field_content(iIndex, "vPlate", DynVehicleInfo[sqlid][gv_iPlate], MainPipeline, 32);
-				cache_get_field_content(iIndex, "vMaxHealth", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fMaxHealth] = floatstr(szResult);
-				cache_get_field_content(iIndex, "vType", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iType] = strval(szResult);
-				cache_get_field_content(iIndex, "vLoadMax", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iLoadMax] = strval(szResult);
-				if(DynVehicleInfo[sqlid][gv_iLoadMax] > 6) {
-                    DynVehicleInfo[sqlid][gv_iLoadMax] = 6;
-				}
-				cache_get_field_content(iIndex, "vCol1", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iCol1] = strval(szResult);
-				cache_get_field_content(iIndex, "vCol2", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iCol2] = strval(szResult);
-				cache_get_field_content(iIndex, "vX", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fX] = floatstr(szResult);
-				cache_get_field_content(iIndex, "vY", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fY] = floatstr(szResult);
-				cache_get_field_content(iIndex, "vZ", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fZ] = floatstr(szResult);
-				cache_get_field_content(iIndex, "vVW", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iVW] = strval(szResult);
-				cache_get_field_content(iIndex, "vInt", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iInt] = strval(szResult);
-				cache_get_field_content(iIndex, "vDisabled", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iDisabled] = strval(szResult);
-				cache_get_field_content(iIndex, "vRotZ", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fRotZ] = floatstr(szResult);
-				cache_get_field_content(iIndex, "vUpkeep", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iUpkeep] = strval(szResult);
-				i = 1;
-				while(i <= MAX_DV_OBJECTS) {
-					format(szResult, sizeof szResult, "vAttachedObjectModel%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i-1] = strval(szResult);
-					format(szResult, sizeof szResult, "vObjectX%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectX][i-1] = floatstr(szResult);
-					format(szResult, sizeof szResult, "vObjectY%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectY][i-1] = floatstr(szResult);
-					format(szResult, sizeof szResult, "vObjectZ%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectZ][i-1] = floatstr(szResult);
-					format(szResult, sizeof szResult, "vObjectRX%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRX][i-1] = floatstr(szResult);
-					format(szResult, sizeof szResult, "vObjectRY%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRY][i-1] = floatstr(szResult);
-					format(szResult, sizeof szResult, "vObjectRZ%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRZ][i-1] = floatstr(szResult);
-					i++;
-				}
-				i = 0;
-				while(i < MAX_DV_MODS) {
-					format(szResult, sizeof szResult, "vMod%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iMod][i++] = strval(szResult);
-				}
-				
-				if(400 < DynVehicleInfo[sqlid][gv_iModel] < 612) {
-					if(!IsWeaponizedVehicle(DynVehicleInfo[sqlid][gv_iModel])) {
-						DynVeh_Spawn(iIndex);
-						//printf("[DynVeh] Loaded Dynamic Vehicle %i.", iIndex);
-						for(i = 0; i != MAX_DV_OBJECTS; i++)
-						{
-							if(DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == 0 || DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == INVALID_OBJECT_ID) {
-								DynVehicleInfo[sqlid][gv_iAttachedObjectID][i] = INVALID_OBJECT_ID;
-								DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] = INVALID_OBJECT_ID;
-							}
-						}
-					} else {
-						DynVehicleInfo[sqlid][gv_iSpawnedID] = INVALID_VEHICLE_ID;
-					}	
-				}
-				iIndex++;
-			}
-		}
-	}
-	return 1;
 }
 
 forward AuctionLoadQuery();

@@ -60,8 +60,8 @@ DeleteStructureFire(iFireID)
 	{
 		arrStructureFires[iFireID][fFirePos][i] = 0.0;
 	}
-	if(IsValidDynamicObject(arrStructureFires[iFireID][iFireObj])) DestroyDynamicObject(arrStructureFires[iFireID][iFireObj]);
-	if(IsValidDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel])) DestroyDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel]);
+	if(IsValidDynamicObject(arrStructureFires[iFireID][iFireObj])) DestroyDynamicObject(arrStructureFires[iFireID][iFireObj]), arrStructureFires[iFireID][iFireObj] = -1;
+	if(IsValidDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel])) DestroyDynamic3DTextLabel(arrStructureFires[iFireID][szFireLabel]), arrStructureFires[iFireID][szFireLabel] = Text3D:-1;
 	if(iServerFires) --iServerFires;
 	return 1;
 }

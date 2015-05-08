@@ -229,14 +229,12 @@ IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float:
 	ApplyAnimation(playerid,animlib,"null",0.0,0,0,0,0,0,1);
 }*/
 
-IsValidName(iPlayer) {
+IsValidName(szPlayerName[]) {
 
 	new
 		iLength,
-		szPlayerName[MAX_PLAYER_NAME], tmpName[MAX_PLAYER_NAME],
+		tmpName[MAX_PLAYER_NAME],
 		invalids;
-
-	GetPlayerName(iPlayer, szPlayerName, sizeof(szPlayerName));
 
 	mysql_escape_string(szPlayerName, tmpName);
 	if(strcmp(szPlayerName, tmpName, false) != 0)
@@ -2149,7 +2147,7 @@ stock strfindcount(substring[], string[], bool:ignorecase = false, startpos = 0)
 }
 
 stock IsInvalidSkin(skin) {
-	if(!(0 <= skin <= 299)) return 1;
+	if(!(0 <= skin <= 311)) return 1;
     return 0;
 }
 

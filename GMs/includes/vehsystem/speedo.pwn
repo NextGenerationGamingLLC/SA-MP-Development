@@ -59,7 +59,7 @@ stock UpdateVehicleHUDForPlayer(p, fuel, speed)
 	
 	if(Seatbelt[p] == 0)
 	{
-		format(str, sizeof(str), "~b~SB: ~r~OFF");
+		format(str, sizeof(str), "~b~%s: ~r~OFF", IsABike(vehicleid) ? ("HM"):("SB"));
 		PlayerTextDrawSetString(p, _vhudSeatBelt[p], str);
 	}
 	else if(Seatbelt[p] == 2) {

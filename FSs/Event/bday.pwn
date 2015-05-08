@@ -7,7 +7,8 @@
 #define MAX_PLAYERS (700)
 
 new musicarea;
-new startcount = 3;
+new startcount = 3,
+	kartlaps = 6;
 
 enum posenum
 {
@@ -130,7 +131,7 @@ public OnFilterScriptExit()
 	}
 }
 
-public OnPlayerDisconnect(playerid)
+public OnPlayerDisconnect(playerid, reason)
 {
 	if(GetPVarType(playerid, "pBumperCar"))
 	{
@@ -173,8 +174,8 @@ public OnPlayerEnterCheckpoint(playerid)
 			SetPlayerCheckpoint(playerid, kartcheckpoints[0][posx], kartcheckpoints[0][posy], kartcheckpoints[0][posz], 5.0);
 			SetPVarInt(playerid, "pKartCheckpoint", 0);
 			SetPVarInt(playerid, "pKartLap", GetPVarInt(playerid, "pKartLap")+1);
-		    if(GetPVarInt(playerid, "pKartLap") == 3) GameTextForPlayer(playerid, "~r~Final Lap!", 1100, 3);
-			if(GetPVarInt(playerid, "pKartLap") == 4)
+		    if(GetPVarInt(playerid, "pKartLap") == kartlaps-1) GameTextForPlayer(playerid, "~r~Final Lap!", 1100, 3);
+			if(GetPVarInt(playerid, "pKartLap") == kartlaps)
 			{
 				kartraceinfo[place]++;
 				if(kartraceinfo[place] > 3)
@@ -296,6 +297,17 @@ LeaveBumper(playerid)
 //Bumper
 
 //Kart
+CMD:kartlaps(playerid, params[])
+{
+	if(GetPVarInt(playerid, "aLvl") < 1337) return 1;
+	new laps, string[22];
+	if(sscanf(params, "d", laps)) return SendClientMessage(playerid, -1, "USAGE: /kartlaps [laps]");
+	kartlaps = laps;
+	format(string, sizeof(string), "Kart Laps set to: %d", kartlaps);
+	SendClientMessage(playerid, -1, string);
+	return 1;
+}
+
 CMD:startcount(playerid, params[])
 {
 	if(GetPVarInt(playerid, "aLvl") < 1337) return 1;

@@ -128,7 +128,7 @@ stock SafeLogin(playerid, type)
 		}
 		case 2: // No Account Exists
 		{
-			if(!IsValidName(playerid))
+			if(!IsValidName(GetPlayerNameExt(playerid)))
 			{
 			    SetPVarString(playerid, "KickNonRP", GetPlayerNameEx(playerid));
 			    SetTimerEx("KickNonRP", 3000, false, "i", playerid);

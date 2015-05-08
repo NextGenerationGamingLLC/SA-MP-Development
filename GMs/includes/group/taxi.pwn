@@ -75,6 +75,7 @@ CMD:fare(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			//GivePlayerCash(playerid, TransportMoney[playerid]);
 			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += TransportMoney[playerid];
+			if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
 			SetPlayerToTeamColor(playerid);
 			return 1;

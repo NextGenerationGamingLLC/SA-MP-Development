@@ -56,8 +56,7 @@ new Float:_t_scatter[7][3] = {
 	{505.900, -1970.852, 2.007}
 };
 
-// OnGameModeInit() call -> _t_init()
-_t_init()
+hook OnGameModeInit()
 {
 	_t_zone = CreateDynamicRectangle(496.749359, -2013.100585, 526.126831, -1963.961425);
 	_t_resetTreasure();

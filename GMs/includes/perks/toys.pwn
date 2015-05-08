@@ -134,7 +134,18 @@ stock CompleteToyTrade(playerid)
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptModelID] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptBone] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] = 0;
-	
+	for(new i; i < 10; i++)
+	{
+		if(PlayerHoldingObject[sellerid][i] == GetPVarInt(sellerid, "ttToySlot"))
+		{
+			if(IsPlayerAttachedObjectSlotUsed(sellerid, i))
+			{
+				RemovePlayerAttachedObject(sellerid, i);
+				PlayerHoldingObject[sellerid][i] = 0;
+				break;
+			}
+		}
+	}
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);
 			

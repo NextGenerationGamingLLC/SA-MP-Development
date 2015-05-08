@@ -247,6 +247,7 @@ CMD:pickveh(playerid, params[])
 }
 CMD:cracktrunk(playerid, params[])
 {
+	if(PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
 	new szMessage[150], Float: x, Float: y, Float: z;
 
 	if(gettime() < PlayerInfo[playerid][pLockPickTime]) {

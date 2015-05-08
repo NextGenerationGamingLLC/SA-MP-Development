@@ -35,7 +35,20 @@ public SyncTime()
 
 	if ((tmphour > ghour) || (tmphour == 0 && ghour == 23))
 	{
-		if(tmphour == 0 && ghour == 23) CallLocalFunction("InactiveCheck", ""); //WIP
+		if(tmphour == 0 && ghour == 23)
+		{
+			CallLocalFunction("InactiveResourceCheck", "");
+			/*new month, day, year;
+			getdate(year,month,day);
+			if(month == 4 && (day == 25 || day == 26)) // NGG B-Day 2015
+			{
+				foreach(Player, i)
+				{
+					PlayerInfo[i][pReceivedPrize] = 0;
+				}
+				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			}*/
+		}
 	    SavePlants();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else

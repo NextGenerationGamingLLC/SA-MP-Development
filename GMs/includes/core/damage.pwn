@@ -312,6 +312,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	/*format(szMiscArray, sizeof(szMiscArray), "Playerid: %i Issuerid: %i, Amount: %f WeaponID: %i", playerid, issuerid, amount, weaponid);
 	SendClientMessageToAll(-1, szMiscArray);*/
+	if(weaponid == WEAPON_COLLISION && (1061 <= GetPlayerAnimationIndex(playerid) <= 1067)) // Climb Bug
+	{
+		ClearAnimations(playerid);
+		new Float:hp;
+		GetHealth(playerid, hp);
+		SetHealth(playerid, hp);
+		return 0;
+	}
 	if(issuerid == INVALID_PLAYER_ID && (weaponid == 51 || weaponid == 53 || weaponid == 54 || weaponid == 47 || weaponid == 37)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
 	else
 	{
@@ -354,6 +362,464 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		{
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
+	}
+	return 1;
+}
+
+public OnPlayerDeath(playerid, killerid, reason)
+{
+	if(IsPlayerNPC(playerid)) return 1;
+	if(PlayerIsDead[playerid]) return 1;
+	PlayerIsDead[playerid] = true;
+	IsSpawned[playerid] = 0;
+	SpawnKick[playerid] = 0;
+	for(new x; x < MAX_PLAYERTOYS; x++)
+	{
+		if(IsPlayerAttachedObjectSlotUsed(playerid, x))
+		{
+			if(x == 9 && PlayerInfo[playerid][pBEquipped])
+				break;
+			RemovePlayerAttachedObject(playerid, x);
+		}
+	}
+	for(new i; i < 10; i++) PlayerHoldingObject[playerid][i] = 0;
+	SetPVarInt(playerid, "Health", 0);
+	if(GetPVarInt(playerid, "HeroinDamageResist") == 1) HeroinEffectStanding(playerid), KillTimer(GetPVarInt(playerid, "HeroinEffectStanding"));
+	if(IsPlayerConnected(playerid) && IsPlayerConnected(killerid))
+	{
+		if(gPlayerUsingLoopingAnim[playerid])
+		{
+			gPlayerUsingLoopingAnim[playerid] = 0;
+			TextDrawHideForPlayer(playerid,txtAnimHelper);
+		}
+
+		SetPVarInt(playerid, "PlayerOwnASurf", 0);
+		#if defined zombiemode
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
+		{
+			new string[128];
+			format(string, sizeof(string), "INSERT INTO humankills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(killerid));
+			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
+		}
+
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
+		{
+			new Float:mX, Float:mY, Float:mZ;
+			GetPlayerPos(playerid, mX, mY, mZ);
+
+			SetPVarFloat(playerid, "MedicX", mX);
+			SetPVarFloat(playerid, "MedicY", mY);
+			SetPVarFloat(playerid, "MedicZ", mZ);
+		}
+		#endif
+
+		if(SpoofKill[playerid] == 0)
+			KillTime[playerid] = gettime();
+
+		SpoofKill[playerid]++;
+
+
+		if(SpoofKill[playerid] >= 4)
+		{
+			if((gettime() - KillTime[playerid]) <= 2)
+			{
+				new string[128];
+				format(string, sizeof(string), "WARNING: %s (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
+				ABroadCast(COLOR_YELLOW, string, 2);
+				PlayerInfo[playerid][pBanned] = 3;
+				MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Tried to spoof kills", 1, "System");
+				SystemBan(playerid, "[System] (Tried to spoof kills)");
+				format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP] );
+				Log("logs/ban.log", string);
+				TotalAutoBan++;
+				Kick(playerid);
+			}
+			else
+			{
+				SpoofKill[playerid] = 0;
+			}
+		}
+
+		RemoveArmor(playerid);
+
+		PlayerInfo[playerid][pHolsteredWeapon] = 0;
+
+		if (GetPVarInt(playerid, "_SwimmingActivity") >= 1)
+		{
+			DisablePlayerCheckpoint(playerid);
+			DeletePVar(playerid, "_SwimmingActivity");
+		}
+		if (GetPVarInt(playerid, "_BoxingQueue") == 1)
+		{
+			DeletePVar(playerid, "_BoxingQueue");
+		}
+		if (GetPVarInt(playerid, "_BoxingFight") != 0)
+		{
+			new winner = GetPVarInt(playerid, "_BoxingFight") - 1;
+			SendClientMessageEx(winner, COLOR_GREEN, "You have won the fight!");
+			SendClientMessageEx(playerid, COLOR_RED, "You have lost the fight!");
+
+			DeletePVar(winner, "_BoxingFight");
+			DeletePVar(playerid, "_BoxingFight");
+
+			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[winner][pFitness] += 9;
+			else PlayerInfo[winner][pFitness] += 6;
+			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[playerid][pFitness] += 6;
+			else PlayerInfo[playerid][pFitness] += 4;
+
+			if (PlayerInfo[winner][pFitness] > 100)
+				PlayerInfo[winner][pFitness] = 100;
+
+			if (PlayerInfo[playerid][pFitness] > 100)
+				PlayerInfo[playerid][pFitness] = 100;
+
+			new time = gettime();
+			SetPVarInt(playerid, "_BoxingFightOver", time + 8);
+			SetPVarInt(winner, "_BoxingFightOver", time + 1);
+		}
+		if(GetPVarInt(playerid, "_InJailBoxing") > 0)
+		{
+			new string[60 + MAX_PLAYER_NAME];
+
+			if(killerid == GetPVarInt(playerid, "_JailBoxingChallenger"))
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the boxing fight. You may now leave the arena.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the boxing fight. You may now leave the arena.");
+
+				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
+				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
+
+				PlayerInfo[playerid][pFitness] -= 10;
+				PlayerInfo[playerid][pHunger] -= 10;
+				PlayerInfo[killerid][pHunger] -= 10;
+				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 15;
+				else PlayerInfo[killerid][pFitness] += 10;
+
+				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
+				RemoveFromJailBoxing(playerid);
+				RemoveFromJailBoxing(killerid);
+			}
+			else
+			{
+				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
+				RemoveFromJailBoxing(playerid);
+				RemoveFromJailBoxing(killerid);
+			}
+		}
+		if(GetPVarInt(playerid, "_InJailBrawl") != 0)
+		{
+			if(killerid == GetPVarInt(playerid, "_InJailBrawl") - 1)
+			{
+				PlayerInfo[playerid][pFitness] -= 5;
+				PlayerInfo[playerid][pHunger] -= 10;
+				PlayerInfo[killerid][pHunger] -= 10;
+				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
+				else PlayerInfo[killerid][pFitness] += 5;
+
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
+				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
+			}
+			DeletePVar(playerid, "_InJailBrawl");
+			DeletePVar(killerid, "_InJailBrawl");
+			DeletePVar(GetPVarInt(playerid, "_InJailBrawl") - 1, "_InJailBrawl");
+		}
+		if (_vhudVisible[playerid] == 1)
+		{
+			HideVehicleHUDForPlayer(playerid); // incase vehicle despawns
+		}
+		if (CarRadars[playerid] > 0)
+		{
+			CarRadars[playerid] = 0;
+			PlayerTextDrawHide(playerid, _crTextTarget[playerid]);
+			PlayerTextDrawHide(playerid, _crTextSpeed[playerid]);
+			PlayerTextDrawHide(playerid, _crTickets[playerid]);
+			DeletePVar(playerid, "_lastTicketWarning");
+		}
+		if(GetPVarInt(playerid, "AttemptPurify"))
+		{
+			Purification[0] = 0;
+			KillTimer(GetPVarInt(playerid, "AttemptPurify"));
+		}
+		if(GetPVarInt(playerid, "HeroinEffect"))
+		{
+			DeletePVar(playerid, "HeroinEffect");
+			KillTimer(GetPVarInt(playerid, "HeroinEffect"));
+		}
+		if(GetPVarInt(playerid, "InjectHeroin"))
+		{
+			KillTimer(GetPVarInt(playerid, "InjectHeroin"));
+		}
+		new weaponname[32];
+		GetWeaponName(reason, weaponname, sizeof(weaponname));
+
+		new query[256];
+		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+		if(GetPVarInt(killerid, "IsInArena") >= 0) PlayerInfo[killerid][pDMKills]++;
+	}
+
+	TextDrawHideForPlayer(playerid, BFText);
+	DeletePVar(playerid, "BlindFolded");
+	pTazer{playerid} = 0;
+	InsidePlane[playerid] = INVALID_VEHICLE_ID;
+	DeletePVar(playerid, "SpeedRadar");
+	DeletePVar(playerid, "UsingSprunk");
+	KillTimer(GetPVarInt(playerid, "firstaid5"));
+	DeletePVar(playerid, "usingfirstaid");
+	if(GetPVarInt(playerid, "MovingStretcher") != -1)
+	{
+		KillTimer(GetPVarInt(playerid, "TickEMSMove"));
+		DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
+		SetPVarInt(playerid, "MovingStretcher", -1);
+	}
+	if(GetPVarInt(playerid, "DraggingPlayer") != INVALID_PLAYER_ID)
+	{
+		DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
+		SetPVarInt(playerid, "DraggingPlayer", INVALID_PLAYER_ID);
+	}
+	if(IsPlayerConnected(Mobile[playerid]))
+	{
+		new
+			iCaller = Mobile[playerid],
+			szMessage[64];
+
+		SendClientMessageEx(iCaller, COLOR_GRAD2, "The line went dead.");
+		format(szMessage, sizeof(szMessage), "* %s puts away their cellphone.", GetPlayerNameEx(iCaller));
+		ProxDetector(30.0, iCaller, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		CellTime[iCaller] = 0;
+		Mobile[iCaller] = INVALID_PLAYER_ID;
+	}
+	Mobile[playerid] = INVALID_PLAYER_ID;
+	CellTime[playerid] = 0;
+	RingTone[playerid] = 0;
+
+	if(GetPVarType(playerid, "SpecOff"))
+	{
+		SpawnPlayer(playerid);
+		return 1;
+	}
+
+	if(GetPVarInt(playerid, "Injured") == 1)
+	{
+		foreach(new i: Player)
+		{
+			if(EMSAccepted[i] == playerid)
+			{
+				EMSAccepted[i] = INVALID_PLAYER_ID;
+				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Has Died", 5000, 1);
+				EMSCallTime[i] = 0;
+				DisablePlayerCheckpoint(i);
+			}
+		}
+		SendClientMessageEx(playerid, COLOR_WHITE, "You appear to be stuck in limbo, medics are trying to revive you.");
+		KillEMSQueue(playerid);
+		ResetPlayerWeaponsEx(playerid);
+		return 1;
+	}
+
+	if(GetPVarInt(playerid, "EventToken") == 0)
+	{
+		if(GetPVarInt(playerid, "IsInArena") == -1)
+		{
+			if(HungerPlayerInfo[playerid][hgInEvent] != 1)
+			{
+				SetPVarInt(playerid, "Injured", 1);
+				SetPVarInt(playerid, "InjuredWait", gettime()+5);
+
+				new Float:mX, Float:mY, Float:mZ;
+				GetPlayerPos(playerid, mX, mY, mZ);
+
+				SetPVarFloat(playerid, "MedicX", mX);
+				SetPVarFloat(playerid, "MedicY", mY);
+				SetPVarFloat(playerid, "MedicZ", mZ);
+				SetPVarInt(playerid, "MedicVW", GetPlayerVirtualWorld(playerid));
+				SetPVarInt(playerid, "MedicInt", GetPlayerInterior(playerid));
+
+			}
+		}
+	}
+
+	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	{
+		new
+			iPlayer = GetPVarInt(playerid, "IsInArena"),
+			iKiller = GetPVarInt(killerid, "IsInArena"),
+			szMessage[96];
+
+		if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
+		{
+			switch(PlayerInfo[playerid][pPaintTeam])
+			{
+				case 1:
+				{
+					DropFlagPaintballArena(playerid, iPlayer, 2);
+				}
+				case 2:
+				{
+					DropFlagPaintballArena(playerid, iPlayer, 1);
+				}
+			}
+		}
+		if(reason >= 0 && reason <= 46)
+		{
+			new weapon[24];
+			++PlayerInfo[killerid][pKills];
+			++PlayerInfo[playerid][pDeaths];
+			if(PlayerInfo[killerid][pPaintTeam] == 1)
+			{
+				if(PlayerInfo[killerid][pPaintTeam] == PlayerInfo[playerid][pPaintTeam])
+				{
+					--PaintBallArena[iKiller][pbTeamRedKills];
+					++PaintBallArena[iPlayer][pbTeamBlueKills];
+					SetHealth(killerid, 0);
+					PlayerInfo[killerid][pKills] -= 2;
+					++PlayerInfo[killerid][pDeaths];
+					--PlayerInfo[playerid][pDeaths];
+					SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
+				}
+				else
+				{
+					++PaintBallArena[iKiller][pbTeamRedKills];
+					++PaintBallArena[iPlayer][pbTeamBlueDeaths];
+				}
+			}
+			if(PlayerInfo[killerid][pPaintTeam] == 2)
+			{
+				if(PlayerInfo[killerid][pPaintTeam] == PlayerInfo[playerid][pPaintTeam])
+				{
+					--PaintBallArena[iKiller][pbTeamBlueKills];
+					++PaintBallArena[iPlayer][pbTeamRedKills];
+					SetHealth(killerid, 0);
+					PlayerInfo[killerid][pKills] -= 2;
+					++PlayerInfo[killerid][pDeaths];
+					--PlayerInfo[playerid][pDeaths];
+					SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
+				}
+				++PaintBallArena[iKiller][pbTeamBlueKills];
+				++PaintBallArena[iPlayer][pbTeamRedDeaths];
+			}
+			GetWeaponName(reason,weapon,sizeof(weapon));
+			if(PaintBallArena[iKiller][pbTimeLeft] < 12)
+			{
+				GivePlayerCash(killerid, 1000);
+				format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has earned $1000 bonus for a sudden death kill!",GetPlayerNameEx(killerid));
+				SendPaintballArenaMessage(iKiller, COLOR_YELLOW, szMessage);
+				////SendAudioToPlayer(killerid, 19, 100);
+			}
+			if(reason == 0) format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with their bare hands!",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid));
+			else format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with a %s.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),weapon);
+		}
+		else
+		{
+			++PlayerInfo[playerid][pDeaths];
+			format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has died.",GetPlayerNameEx(playerid));
+		}
+		SendPaintballArenaMessage(iPlayer, COLOR_RED, szMessage);
+	}
+
+	if(GetPVarInt(playerid, "Injured") == 0)
+	{
+		new arenaid = GetPVarInt(playerid, "IsInArena");
+		if(GetPVarInt(playerid, "EventToken") >= 1 || (arenaid >= 0 && (PaintBallArena[arenaid][pbGameType] < 4 || PaintBallArena[arenaid][pbGameType] > 5)))
+		{
+			DisablePlayerCheckpoint(playerid);
+			ResetPlayerWeapons(playerid);
+		}
+		else
+		{
+			ResetPlayerWeaponsEx(playerid);
+		}
+	}
+	if(IsPlayerConnected(killerid) && PlayerInfo[killerid][pAdmin] < 2 && GetPlayerState(killerid) == PLAYER_STATE_DRIVER)
+	{
+		switch(reason)
+		{
+			case 49: {
+				new szMessage[128];
+				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just car-rammed %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+				ABroadCast(COLOR_YELLOW, szMessage, 2);
+			}
+			case 50: if(IsAHelicopter(GetPlayerVehicleID(killerid))) {
+				new szMessage[128];
+				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just blade-killed %s (ID %d).", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+				ABroadCast(COLOR_YELLOW, szMessage, 2);
+			}
+			default: switch(GetPlayerWeapon(killerid)) {
+				case 32, 28, 29: {
+					new szMessage[128];
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just driver-shot %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
+					ABroadCast(COLOR_YELLOW, szMessage, 2);
+				}
+			}
+		}
+	}
+
+	if (gPlayerCheckpointStatus[playerid] > 4 && gPlayerCheckpointStatus[playerid] < 11)
+	{
+		DisablePlayerCheckpoint(playerid);
+		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+	}
+
+	if(IsPlayerConnected(killerid))
+	{
+		if(PlayerInfo[playerid][pHeadValue] >= 1)
+		{
+			if(GoChase[killerid] == playerid) // && GetPVarInt(killerid, "HitCooldown") <= 0)
+			{
+				new szMessage[86 + MAX_PLAYER_NAME];
+				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
+				GivePlayerCash(killerid, takemoney);
+				GivePlayerCash(playerid, -takemoney);
+				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
+				SendGroupMessage(2, COLOR_YELLOW, szMessage);
+				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
+				PlayerInfo[playerid][pContractDetail][0] = 0;
+				ResetPlayerWeaponsEx(playerid);
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
+				PlayerInfo[playerid][pHeadValue] = 0;
+				PlayerInfo[killerid][pCHits] += 1;
+				GotHit[playerid] = 0;
+				GetChased[playerid] = INVALID_PLAYER_ID;
+				GoChase[killerid] = INVALID_PLAYER_ID;
+
+				new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
+				GetWeaponName(reason, weaponname, sizeof(weaponname));
+				format(szMessage, sizeof szMessage, "[HMA] %s (%d) has succeeded in killing %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
+				GroupLog(iGroupID, szMessage);
+			}
+		}
+		if(GoChase[playerid] == killerid)
+		{
+			new szMessage[86 + MAX_PLAYER_NAME];
+			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
+			GivePlayerCash(killerid, takemoney);
+			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
+			SendGroupMessage(2, COLOR_YELLOW, szMessage);
+			GivePlayerCash(playerid, -takemoney);
+			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
+			PlayerInfo[killerid][pContractDetail][0] = 0;
+			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
+			PlayerInfo[killerid][pHeadValue] = 0;
+			PlayerInfo[playerid][pFHits] += 1;
+			GotHit[playerid] = 0;
+			GetChased[killerid] = INVALID_PLAYER_ID;
+			GoChase[playerid] = INVALID_PLAYER_ID;
+
+			new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
+			GetWeaponName(reason, weaponname, sizeof(weaponname));
+			format(szMessage, sizeof szMessage, "[HMA] %s (%d) has has failed to kill %s (%d) with a %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), weaponname);
+			GroupLog(iGroupID, szMessage);
+		}
+	}
+	SetPlayerColor(playerid,TEAM_HIT_COLOR);
+	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
+		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+	}
+	if(PlayerTied[playerid]) {
+		DeletePVar(playerid, "IsFrozen");
+		TogglePlayerControllable(playerid, 1);
+		PlayerTied[playerid] = 0;
 	}
 	return 1;
 }

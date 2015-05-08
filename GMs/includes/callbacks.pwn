@@ -91,24 +91,26 @@ public OnVehicleSpawn(vehicleid) {
 		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
 		{
 			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			CrateVehicleLoad[vehicleid][vForkObject] = -1;
 		}
 	}
-    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
 	for(new i = 0; i < sizeof(CrateInfo); i++)
-    {
+	{
 		if(CrateInfo[i][InVehicle] == vehicleid)
 		{
-	    	CrateInfo[i][crActive] = 0;
-		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-		    CrateInfo[i][crObject] = 0;
-		    CrateInfo[i][crX] = 0;
-		    CrateInfo[i][crY] = 0;
-		    CrateInfo[i][crZ] = 0;
-		    break;
+			CrateInfo[i][crActive] = 0;
+			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
+			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+			CrateInfo[i][crObject] = -1;
+			CrateInfo[i][crX] = 0;
+			CrateInfo[i][crY] = 0;
+			CrateInfo[i][crZ] = 0;
+			break;
 		}
-    }
-    // Make sure no one is in the vehicle window if plane.
-    foreach(new i: Player)
+	}
+	// Make sure no one is in the vehicle window if plane.
+	foreach(new i: Player)
 	{
 		if(InsidePlane[i] == vehicleid)
 		{
@@ -1277,19 +1279,19 @@ public OnPlayerPressButton(playerid, buttonid)
 	}
 	if(buttonid == SFPDHighCMDButton[0]) // Chief
 	{
-		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		SFPDDoors(0, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 0, 0);
 	}
 	if(buttonid == SFPDHighCMDButton[1]) // Deputy Chief
 	{
-		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		SFPDDoors(1, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 1, 0);
 	}
 	if(buttonid == SFPDHighCMDButton[2]) // Commander
 	{
-		if(PlayerInfo[playerid][pLeader] != 3) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+		if(PlayerInfo[playerid][pLeader] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		SFPDDoors(2, 1);
 		SetTimerEx("SFPDDoors", 3000, false, "ii", 2, 0);
 	}
@@ -1544,6 +1546,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	{
 		if(response)
 		{
+			ClearAnimations(playerid);
 			if(PlayerInfo[playerid][pDonateRank] >= 2)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
@@ -2018,6 +2021,7 @@ public OnPlayerConnect(playerid)
 	strdel(PlayerInfo[playerid][pAutoTextReply], 0, 64);
 	rBigEarT[playerid] = 0;
 	aLastShot[playerid] = INVALID_PLAYER_ID;
+	aLastShotBone[playerid] = 0;
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 	}
@@ -3085,456 +3089,11 @@ public OnRconLoginAttempt(ip[], password[], success)
     return 1;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
-{
-    if(IsPlayerNPC(playerid)) return 1;
-	if(PlayerIsDead[playerid]) return 1;
-	PlayerIsDead[playerid] = true;
-	IsSpawned[playerid] = 0;
-	SpawnKick[playerid] = 0;
-	if(IsPlayerConnected(playerid) && IsPlayerConnected(killerid))
-	{
-		if(gPlayerUsingLoopingAnim[playerid])
-		{
-			gPlayerUsingLoopingAnim[playerid] = 0;
-			TextDrawHideForPlayer(playerid,txtAnimHelper);
-		}
-
-		SetPVarInt(playerid, "PlayerOwnASurf", 0);
-	    #if defined zombiemode
-    	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
-		{
-			new string[128];
-   			format(string, sizeof(string), "INSERT INTO humankills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(killerid));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
-		}
-
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
-		{
-  			new Float:mX, Float:mY, Float:mZ;
-			GetPlayerPos(playerid, mX, mY, mZ);
-
-			SetPVarFloat(playerid, "MedicX", mX);
-			SetPVarFloat(playerid, "MedicY", mY);
-			SetPVarFloat(playerid, "MedicZ", mZ);
-		}
-	    #endif
-
-	    if(SpoofKill[playerid] == 0)
-			KillTime[playerid] = gettime();
-
-		SpoofKill[playerid]++;
-
-
-		if(SpoofKill[playerid] >= 4)
-		{
-			if((gettime() - KillTime[playerid]) <= 2)
-			{
-				new string[128];
-				format(string, sizeof(string), "WARNING: %s (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
-				ABroadCast(COLOR_YELLOW, string, 2);
-				PlayerInfo[playerid][pBanned] = 3;
-				MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Tried to spoof kills", 1, "System");
-				SystemBan(playerid, "[System] (Tried to spoof kills)");
-				format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP] );
-				Log("logs/ban.log", string);
-				TotalAutoBan++;
-				Kick(playerid);
-			}
-			else
-			{
-				SpoofKill[playerid] = 0;
-			}
-		}
-
-	    RemoveArmor(playerid);
-
-		PlayerInfo[playerid][pHolsteredWeapon] = 0;
-
-		if (GetPVarInt(playerid, "_SwimmingActivity") >= 1)
-		{
-			DisablePlayerCheckpoint(playerid);
-			DeletePVar(playerid, "_SwimmingActivity");
-		}
-		if (GetPVarInt(playerid, "_BoxingQueue") == 1)
-		{
-			DeletePVar(playerid, "_BoxingQueue");
-		}
-		if (GetPVarInt(playerid, "_BoxingFight") != 0)
-		{
-			new winner = GetPVarInt(playerid, "_BoxingFight") - 1;
-			SendClientMessageEx(winner, COLOR_GREEN, "You have won the fight!");
-			SendClientMessageEx(playerid, COLOR_RED, "You have lost the fight!");
-
-			DeletePVar(winner, "_BoxingFight");
-			DeletePVar(playerid, "_BoxingFight");
-
-			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[winner][pFitness] += 9;
-			else PlayerInfo[winner][pFitness] += 6;
-			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[playerid][pFitness] += 6;
-			else PlayerInfo[playerid][pFitness] += 4;
-
-			if (PlayerInfo[winner][pFitness] > 100)
-				PlayerInfo[winner][pFitness] = 100;
-
-			if (PlayerInfo[playerid][pFitness] > 100)
-				PlayerInfo[playerid][pFitness] = 100;
-
-			new time = gettime();
-			SetPVarInt(playerid, "_BoxingFightOver", time + 8);
-			SetPVarInt(winner, "_BoxingFightOver", time + 1);
-		}
-		if(GetPVarInt(playerid, "_InJailBoxing") > 0)
-		{
-			new string[60 + MAX_PLAYER_NAME];
-
-			if(killerid == GetPVarInt(playerid, "_JailBoxingChallenger"))
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the boxing fight. You may now leave the arena.");
-				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the boxing fight. You may now leave the arena.");
-
-				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
-				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
-
-				PlayerInfo[playerid][pFitness] -= 10;
-				PlayerInfo[playerid][pHunger] -= 10;
-				PlayerInfo[killerid][pHunger] -= 10;
-				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 15;
-				else PlayerInfo[killerid][pFitness] += 10;
-
-				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
-				RemoveFromJailBoxing(playerid);
-				RemoveFromJailBoxing(killerid);
-			}
-			else
-			{
-				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
-				RemoveFromJailBoxing(playerid);
-				RemoveFromJailBoxing(killerid);
-			}
-		}
-		if(GetPVarInt(playerid, "_InJailBrawl") != 0)
-		{
-			if(killerid == GetPVarInt(playerid, "_InJailBrawl") - 1)
-			{
-				PlayerInfo[playerid][pFitness] -= 5;
-				PlayerInfo[playerid][pHunger] -= 10;
-				PlayerInfo[killerid][pHunger] -= 10;
-				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
-				else PlayerInfo[killerid][pFitness] += 5;
-
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
-				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
-			}
-			DeletePVar(playerid, "_InJailBrawl");
-			DeletePVar(killerid, "_InJailBrawl");
-			DeletePVar(GetPVarInt(playerid, "_InJailBrawl") - 1, "_InJailBrawl");
-		}
-	    if (_vhudVisible[playerid] == 1)
-		{
-			HideVehicleHUDForPlayer(playerid); // incase vehicle despawns
-		}
-		if (CarRadars[playerid] > 0)
-		{
-			CarRadars[playerid] = 0;
-			PlayerTextDrawHide(playerid, _crTextTarget[playerid]);
-			PlayerTextDrawHide(playerid, _crTextSpeed[playerid]);
-			PlayerTextDrawHide(playerid, _crTickets[playerid]);
-			DeletePVar(playerid, "_lastTicketWarning");
-		}
-	    if(GetPVarInt(playerid, "AttemptPurify"))
-		{
-			Purification[0] = 0;
-	    	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
-		}
-		if(GetPVarInt(playerid, "HeroinEffect"))
-		{
-		    DeletePVar(playerid, "HeroinEffect");
-			KillTimer(GetPVarInt(playerid, "HeroinEffect"));
-		}
-		if(GetPVarInt(playerid, "InjectHeroin"))
-		{
-		    KillTimer(GetPVarInt(playerid, "InjectHeroin"));
-		}
-		new weaponname[32];
-		GetWeaponName(reason, weaponname, sizeof(weaponname));
-
-	 	new query[256];
-		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-	 	if(GetPVarInt(killerid, "IsInArena") >= 0) PlayerInfo[killerid][pDMKills]++;
-	}
-
-    TextDrawHideForPlayer(playerid, BFText);
-    DeletePVar(playerid, "BlindFolded");
-	pTazer{playerid} = 0;
-	InsidePlane[playerid] = INVALID_VEHICLE_ID;
-	DeletePVar(playerid, "SpeedRadar");
-    DeletePVar(playerid, "UsingSprunk");
-    KillTimer(GetPVarInt(playerid, "firstaid5"));
-  	DeletePVar(playerid, "usingfirstaid");
-	if(GetPVarInt(playerid, "MovingStretcher") != -1)
-	{
-	    KillTimer(GetPVarInt(playerid, "TickEMSMove"));
-	    DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
-	    SetPVarInt(playerid, "MovingStretcher", -1);
-	}
-	if(GetPVarInt(playerid, "DraggingPlayer") != INVALID_PLAYER_ID)
-	{
-		DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
-		SetPVarInt(playerid, "DraggingPlayer", INVALID_PLAYER_ID);
-	}
-	if(IsPlayerConnected(Mobile[playerid]))
-	{
-		new
-			iCaller = Mobile[playerid],
-			szMessage[64];
-
-		SendClientMessageEx(iCaller, COLOR_GRAD2, "The line went dead.");
-		format(szMessage, sizeof(szMessage), "* %s puts away their cellphone.", GetPlayerNameEx(iCaller));
-		ProxDetector(30.0, iCaller, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		CellTime[iCaller] = 0;
-		Mobile[iCaller] = INVALID_PLAYER_ID;
-	}
-	Mobile[playerid] = INVALID_PLAYER_ID;
-	CellTime[playerid] = 0;
-	RingTone[playerid] = 0;
-
-	if(GetPVarType(playerid, "SpecOff"))
-	{
-		SpawnPlayer(playerid);
-		return 1;
-	}
-
-	if(GetPVarInt(playerid, "Injured") == 1)
-	{
-		foreach(new i: Player)
-		{
-			if(EMSAccepted[i] == playerid)
-			{
-				EMSAccepted[i] = INVALID_PLAYER_ID;
-				GameTextForPlayer(i, "~w~EMS Caller~n~~r~Has Died", 5000, 1);
-				EMSCallTime[i] = 0;
-				DisablePlayerCheckpoint(i);
-			}
-		}
-     	SendClientMessageEx(playerid, COLOR_WHITE, "You appear to be stuck in limbo, medics are trying to revive you.");
-	    KillEMSQueue(playerid);
-	    ResetPlayerWeaponsEx(playerid);
-	    return 1;
-	}
-
-	if(GetPVarInt(playerid, "EventToken") == 0)
-	{
-	    if(GetPVarInt(playerid, "IsInArena") == -1)
-		{
-			if(HungerPlayerInfo[playerid][hgInEvent] != 1)
-			{
-				SetPVarInt(playerid, "Injured", 1);
-				SetPVarInt(playerid, "InjuredWait", gettime()+5);
-
-				new Float:mX, Float:mY, Float:mZ;
-				GetPlayerPos(playerid, mX, mY, mZ);
-
-				SetPVarFloat(playerid, "MedicX", mX);
-				SetPVarFloat(playerid, "MedicY", mY);
-				SetPVarFloat(playerid, "MedicZ", mZ);
-				SetPVarInt(playerid, "MedicVW", GetPlayerVirtualWorld(playerid));
-				SetPVarInt(playerid, "MedicInt", GetPlayerInterior(playerid));
-			}
-		}
-	}
-
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
-	{
-		new
-			iPlayer = GetPVarInt(playerid, "IsInArena"),
-			iKiller = GetPVarInt(killerid, "IsInArena"),
-			szMessage[96];
-
-	    if(GetPVarInt(playerid, "AOSlotPaintballFlag") != -1)
-	    {
-     		switch(PlayerInfo[playerid][pPaintTeam])
-       		{
-         		case 1:
-           		{
-					DropFlagPaintballArena(playerid, iPlayer, 2);
-     			}
-        		case 2:
-          		{
-            		DropFlagPaintballArena(playerid, iPlayer, 1);
-            	}
-        	}
-	    }
-		if(reason >= 0 && reason <= 46)
-		{
-		    new weapon[24];
-			++PlayerInfo[killerid][pKills];
-		    ++PlayerInfo[playerid][pDeaths];
-			if(PlayerInfo[killerid][pPaintTeam] == 1)
-			{
-			    if(PlayerInfo[killerid][pPaintTeam] == PlayerInfo[playerid][pPaintTeam])
-			    {
-			        --PaintBallArena[iKiller][pbTeamRedKills];
-			        ++PaintBallArena[iPlayer][pbTeamBlueKills];
-			        SetHealth(killerid, 0);
-			        PlayerInfo[killerid][pKills] -= 2;
-			        ++PlayerInfo[killerid][pDeaths];
-		    		--PlayerInfo[playerid][pDeaths];
-			        SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
-			    }
-			    else
-			    {
-		    		++PaintBallArena[iKiller][pbTeamRedKills];
-		    		++PaintBallArena[iPlayer][pbTeamBlueDeaths];
-				}
-			}
-			if(PlayerInfo[killerid][pPaintTeam] == 2)
-			{
-			    if(PlayerInfo[killerid][pPaintTeam] == PlayerInfo[playerid][pPaintTeam])
-			    {
-			        --PaintBallArena[iKiller][pbTeamBlueKills];
-			        ++PaintBallArena[iPlayer][pbTeamRedKills];
-			        SetHealth(killerid, 0);
-			        PlayerInfo[killerid][pKills] -= 2;
-			        ++PlayerInfo[killerid][pDeaths];
-		    		--PlayerInfo[playerid][pDeaths];
-			        SendClientMessageEx(killerid, COLOR_WHITE, "You have been warned, do not team-kill!");
-			    }
-		    	++PaintBallArena[iKiller][pbTeamBlueKills];
-		    	++PaintBallArena[iPlayer][pbTeamRedDeaths];
-			}
-			GetWeaponName(reason,weapon,sizeof(weapon));
-			if(PaintBallArena[iKiller][pbTimeLeft] < 12)
-			{
-				GivePlayerCash(killerid, 1000);
-				format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has earned $1000 bonus for a sudden death kill!",GetPlayerNameEx(killerid));
-				SendPaintballArenaMessage(iKiller, COLOR_YELLOW, szMessage);
-				////SendAudioToPlayer(killerid, 19, 100);
-			}
-			if(reason == 0) format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with their bare hands!",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid));
-			else format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has killed %s with a %s.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),weapon);
-		}
-		else
-		{
-		    ++PlayerInfo[playerid][pDeaths];
-			format(szMessage,sizeof(szMessage),"[Paintball Arena] %s has died.",GetPlayerNameEx(playerid));
-		}
-	    SendPaintballArenaMessage(iPlayer, COLOR_RED, szMessage);
-	}
-
-	if(GetPVarInt(playerid, "Injured") == 0)
-	{
-		new arenaid = GetPVarInt(playerid, "IsInArena");
-		if(GetPVarInt(playerid, "EventToken") >= 1 || (arenaid >= 0 && (PaintBallArena[arenaid][pbGameType] < 4 || PaintBallArena[arenaid][pbGameType] > 5)))
-		{
-			DisablePlayerCheckpoint(playerid);
-			ResetPlayerWeapons(playerid);
-		}
-		else
-		{
-			ResetPlayerWeaponsEx(playerid);
-		}
-	}
-	if(IsPlayerConnected(killerid) && PlayerInfo[killerid][pAdmin] < 2 && GetPlayerState(killerid) == PLAYER_STATE_DRIVER)
-	{
-		switch(reason)
-		{
-			case 49: {
-			    new szMessage[128];
-				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just car-rammed %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
-				ABroadCast(COLOR_YELLOW, szMessage, 2);
-			}
-			case 50: if(IsAHelicopter(GetPlayerVehicleID(killerid))) {
-			    new szMessage[128];
-				format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just blade-killed %s (ID %d).", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
-				ABroadCast(COLOR_YELLOW, szMessage, 2);
-			}
-			default: switch(GetPlayerWeapon(killerid)) {
-				case 32, 28, 29: {
-				    new szMessage[128];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has possibly just driver-shot %s (ID %d) to death.", GetPlayerNameEx(killerid), killerid, GetPlayerNameEx(playerid), playerid);
-					ABroadCast(COLOR_YELLOW, szMessage, 2);
-				}
-			}
-		}
-	}
-
-	if (gPlayerCheckpointStatus[playerid] > 4 && gPlayerCheckpointStatus[playerid] < 11)
-	{
-		DisablePlayerCheckpoint(playerid);
-		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-	}
-
-	if(IsPlayerConnected(killerid))
-	{
-		if(PlayerInfo[playerid][pHeadValue] >= 1)
-		{
-			if(GoChase[killerid] == playerid) // && GetPVarInt(killerid, "HitCooldown") <= 0)
-			{
-				new szMessage[86 + MAX_PLAYER_NAME];
-				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
-				GivePlayerCash(killerid, takemoney);
-				GivePlayerCash(playerid, -takemoney);
-				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
-				SendGroupMessage(2, COLOR_YELLOW, szMessage);
-				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
-				PlayerInfo[playerid][pContractDetail][0] = 0;
-				ResetPlayerWeaponsEx(playerid);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
-				PlayerInfo[playerid][pHeadValue] = 0;
-				PlayerInfo[killerid][pCHits] += 1;
-				GotHit[playerid] = 0;
-				GetChased[playerid] = INVALID_PLAYER_ID;
-				GoChase[killerid] = INVALID_PLAYER_ID;
-
-				new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
-				GetWeaponName(reason, weaponname, sizeof(weaponname));
-				format(szMessage, sizeof szMessage, "[HMA] %s (%d) has succeeded in killing %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
-				GroupLog(iGroupID, szMessage);
-			}
-		}
-		if(GoChase[playerid] == killerid)
-		{
-			new szMessage[86 + MAX_PLAYER_NAME];
-			new takemoney = PlayerInfo[playerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
-			GivePlayerCash(killerid, takemoney);
-			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), takemoney);
-			SendGroupMessage(2, COLOR_YELLOW, szMessage);
-			GivePlayerCash(playerid, -takemoney);
-			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%d, removing the contract on your head.", takemoney);
-			PlayerInfo[killerid][pContractDetail][0] = 0;
-			SendClientMessageEx(killerid, COLOR_YELLOW, szMessage);
-			PlayerInfo[killerid][pHeadValue] = 0;
-			PlayerInfo[playerid][pFHits] += 1;
-			GotHit[playerid] = 0;
-			GetChased[killerid] = INVALID_PLAYER_ID;
-			GoChase[playerid] = INVALID_PLAYER_ID;
-
-			new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
-			GetWeaponName(reason, weaponname, sizeof(weaponname));
-			format(szMessage, sizeof szMessage, "[HMA] %s (%d) has has failed to kill %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
-			GroupLog(iGroupID, szMessage);
-		}
-	}
-	SetPlayerColor(playerid,TEAM_HIT_COLOR);
-	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
-		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
-	}
-	if(PlayerTied[playerid]) {
-		DeletePVar(playerid, "IsFrozen");
-		TogglePlayerControllable(playerid, 1);
-		PlayerTied[playerid] = 0;
-	}
-	return 1;
-}
-
 public OnVehicleDeath(vehicleid) {
-    new Float:X, Float:Y, Float:Z;
-    new Float:XB, Float:YB, Float:ZB;
-    VehicleStatus{vehicleid} = 1;
-    TruckContents{vehicleid} = 0;
+	new Float:X, Float:Y, Float:Z;
+	new Float:XB, Float:YB, Float:ZB;
+	VehicleStatus{vehicleid} = 1;
+	TruckContents{vehicleid} = 0;
 	foreach(new i: Player)
 	{
 		if(TruckUsed[i] == vehicleid)
@@ -3568,28 +3127,30 @@ public OnVehicleDeath(vehicleid) {
 			TogglePlayerSpectating(i, 0);
 		}
 	}
-    /*if(DynVeh[vehicleid] != -1)
+	/*if(DynVeh[vehicleid] != -1)
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
 	}*/
-    if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]) && CrateVehicleLoad[vehicleid][vForkLoaded] == 1)
-    {
-    	DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+	if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]) && CrateVehicleLoad[vehicleid][vForkLoaded] == 1)
+	{
+		DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+		CrateVehicleLoad[vehicleid][vForkObject] = -1;
 	}
-    CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-    for(new i = 0; i < sizeof(CrateInfo); i++)
-    {
+	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+	for(new i = 0; i < sizeof(CrateInfo); i++)
+	{
 		if(CrateInfo[i][InVehicle] == vehicleid)
 		{
-		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-		    CrateInfo[i][crObject] = INVALID_OBJECT_ID;
-		    CrateInfo[i][crActive] = 0;
-		    CrateInfo[i][crX] = 0;
-		    CrateInfo[i][crY] = 0;
-		    CrateInfo[i][crZ] = 0;
-		    break;
+			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
+			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+			CrateInfo[i][crObject] = -1;
+			CrateInfo[i][crActive] = 0;
+			CrateInfo[i][crX] = 0;
+			CrateInfo[i][crY] = 0;
+			CrateInfo[i][crZ] = 0;
+			break;
 		}
-    }
+	}
 	arr_Engine{vehicleid} = 0;
 }
 
@@ -5111,6 +4672,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    {
 		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
 		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -5131,6 +4693,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		    {
 		        SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 		        SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 		    }
 			DeletePVar(playerid, "DrinkCooledDown");
 		    SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -5153,6 +4716,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				DeletePVar(playerid, "UsingSprunk");
 				SendClientMessageEx(playerid, COLOR_GREY, "* You finish up the drink and throw it away.");
 				SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+				SetHealth(playerid, 100);
 			}
 			DeletePVar(playerid, "DrinkCooledDown");
 			SetTimerEx("DrinkCooldown", 2500, 0, "i", playerid);
@@ -5654,6 +5218,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 			//GivePlayerCash(playerid, TransportMoney[playerid]);
 			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += TransportMoney[playerid];
+			if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
 			if(!IsATaxiDriver(playerid)) { SetPlayerColor(playerid, TEAM_HIT_COLOR); }
 			TransportTime[playerid] = 0;
@@ -6575,7 +6140,6 @@ public OnPlayerText(playerid, text[])
 	}
 	if(Mobile[playerid] != INVALID_PLAYER_ID)
 	{
-		
 		format(string, sizeof(string), "(cellphone) %s says: %s", GetPlayerNameEx(playerid), text);
 		ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 		if(IsPlayerConnected(Mobile[playerid]))
@@ -6915,6 +6479,22 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		else
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the helmet selection menu.");
+	}
+	else if(extraid == DIALOG_STPATRICKSSHOP) // St Patrick's Day
+	{
+		if(!response) return 1;
+		new name[24] = "None";
+		for(new i; i < sizeof(HoldingObjectsAll); i++)
+		{
+			if(HoldingObjectsAll[i][holdingmodelid] == modelid)
+			{
+				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				break;
+			}
+		}
+		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
+		SetPVarInt(playerid, "StPatrickToy", modelid);
+		ShowPlayerDialog(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
 	return 1;
 }

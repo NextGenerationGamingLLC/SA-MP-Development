@@ -1946,6 +1946,9 @@ CMD:car(playerid, params[])
 	}
 	else if(strcmp(params, "windows", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
+		new driver, passenger, backleft, backright;
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
+		SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, !passenger, !backleft, !backright);
 	    if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows])
 	    {
 	    	CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] = 0;
@@ -2230,7 +2233,7 @@ CMD:park(playerid, params[])
 
 		DestroyVehicle(Businesses[iBusiness][bVehID][iSlot]);
 		Businesses[iBusiness][bVehID][iSlot] = CreateVehicle(Businesses[iBusiness][bModel][iSlot], Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],
-		Businesses[iBusiness][bParkAngle][iSlot], 0, 0, -1);
+		Businesses[iBusiness][bParkAngle][iSlot], 0, 0, 10);
 
 		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]);
 		szMiscArray[0] = 0;

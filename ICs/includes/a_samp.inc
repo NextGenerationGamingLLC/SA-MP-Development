@@ -1,6 +1,6 @@
 /*  SA-MP Functions
  *
- *  (c) Copyright 2005-2014, SA-MP Team
+ *  (c) Copyright 2005-2015, SA-MP Team
  *
  */
 
@@ -23,14 +23,17 @@
 #include <a_players>
 #include <a_vehicles>
 #include <a_objects>
+#include <a_actor>
 #include <a_sampdb>
 
 // Limits and internal constants
 #define MAX_PLAYER_NAME							(24)
-#define MAX_PLAYERS								(500)
+#define MAX_PLAYERS								(1000)
 #define MAX_VEHICLES							(2000)
+#define MAX_ACTORS								(1000)
 #define INVALID_PLAYER_ID						(0xFFFF)
 #define INVALID_VEHICLE_ID						(0xFFFF)
+#define INVALID_ACTOR_ID						(0xFFFF)
 #define NO_TEAM									(255)
 #define MAX_OBJECTS								(1000)
 #define INVALID_OBJECT_ID						(0xFFFF)
@@ -74,6 +77,8 @@ native Float:asin(Float:value);
 native Float:acos(Float:value);
 native Float:atan(Float:value);
 native Float:atan2(Float:x, Float:y);
+native GetPlayerPoolSize();
+native GetVehiclePoolSize();
 
 // Game
 native SetGameModeText(const string[]);
@@ -81,7 +86,7 @@ native SetTeamCount(count);
 native AddPlayerClass(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo);
 native AddPlayerClassEx(teamid, modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo);
 native AddStaticVehicle(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, color1, color2);
-native AddStaticVehicleEx(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, color1, color2, respawn_delay);
+native AddStaticVehicleEx(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, color1, color2, respawn_delay, addsiren=0);
 native AddStaticPickup(model, type, Float:X, Float:Y, Float:Z, virtualworld = 0);
 native CreatePickup(model, type, Float:X, Float:Y, Float:Z, virtualworld = 0);
 native DestroyPickup(pickup);
@@ -201,10 +206,12 @@ native DeletePlayer3DTextLabel(playerid, PlayerText3D:id);
 native UpdatePlayer3DTextLabelText(playerid, PlayerText3D:id, color, text[]);
 
 // Player GUI Dialog
-#define DIALOG_STYLE_MSGBOX		0
-#define DIALOG_STYLE_INPUT		1
-#define DIALOG_STYLE_LIST		2
-#define DIALOG_STYLE_PASSWORD	3
+#define DIALOG_STYLE_MSGBOX				0
+#define DIALOG_STYLE_INPUT				1
+#define DIALOG_STYLE_LIST				2
+#define DIALOG_STYLE_PASSWORD			3
+#define DIALOG_STYLE_TABLIST			4
+#define DIALOG_STYLE_TABLIST_HEADERS	5
 
 native ShowPlayerDialog(playerid, dialogid, style, caption[], info[], button1[], button2[]);
 
@@ -354,6 +361,7 @@ forward OnPlayerClickTextDraw(playerid, Text:clickedid);
 forward OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid);
 forward OnIncomingConnection(playerid, ip_address[], port);
 forward OnTrailerUpdate(playerid, vehicleid);
+forward OnVehicleSirenStateChange(playerid, vehicleid, newstate);
 
 #define CLICK_SOURCE_SCOREBOARD		0
 forward OnPlayerClickPlayer(playerid, clickedplayerid, source);

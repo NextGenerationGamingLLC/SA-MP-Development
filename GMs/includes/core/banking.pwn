@@ -471,6 +471,11 @@ PayDay(i) {
 				}
 				g_mysql_SaveFIF(i);
 			}
+			if(month == 4 && (day == 25 || day == 26)) // NGG B-Day 2015
+			{
+				SendClientMessageEx(i, -1, "You have earned 3 event tokens for playing 1 hour! Use /inv to view your total token amount.");
+				PlayerInfo[i][pEventTokens] += 3;
+			}
 			CallLocalFunction("InactivityCounter", "i", i);
 		}
 		else SendClientMessageEx(i, COLOR_LIGHTRED, "* You haven't played long enough to obtain a paycheck.");

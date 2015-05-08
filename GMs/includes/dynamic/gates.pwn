@@ -1101,3 +1101,40 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 	}
 	return 1;
 }
+
+forward DeleteGate(gateid, adminid);
+public DeleteGate(gateid, adminid)
+{
+	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]), GateInfo[gateid][gGATE] = -1;
+	GateInfo[gateid][gHID] = INVALID_HOUSE_ID;
+	GateInfo[gateid][gSpeed] = 1.0;
+	GateInfo[gateid][gRange] = 1.0;
+	GateInfo[gateid][gModel] = 0;
+	GateInfo[gateid][gVW] = 0;
+	GateInfo[gateid][gInt] = 0;
+	GateInfo[gateid][gPosX] = 0.0;
+	GateInfo[gateid][gPosY] = 0.0;
+	GateInfo[gateid][gPosZ] = 0.0;
+	GateInfo[gateid][gRotX] = 0.0;
+	GateInfo[gateid][gRotY] = 0.0;
+	GateInfo[gateid][gRotZ] = 0.0;
+	GateInfo[gateid][gPosXM] = 0.0;
+	GateInfo[gateid][gPosYM] = 0.0;
+	GateInfo[gateid][gPosZM] = 0.0;
+	GateInfo[gateid][gRotXM] = 0.0;
+	GateInfo[gateid][gRotYM] = 0.0;
+    GateInfo[gateid][gRotZM] = 0.0;
+    GateInfo[gateid][gStatus] = 0;
+    GateInfo[gateid][gPass][0] = 0;
+	GateInfo[gateid][gAllegiance] = 0;
+	GateInfo[gateid][gGroupType] = 0;
+	GateInfo[gateid][gGroupID] = INVALID_GROUP_ID;
+    GateInfo[gateid][gRenderHQ] = 0;
+	GateInfo[gateid][gTimer] = 0;
+	GateInfo[gateid][gAutomate] = 0;
+	GateInfo[gateid][gLocked] = 0;
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "%s has deleted gate id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), gateid);
+	Log("logs/gedit.log", szMiscArray);
+	return 1;
+}

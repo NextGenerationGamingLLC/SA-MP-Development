@@ -355,6 +355,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pNewbieTogged] = 0;
 		PlayerInfo[playerid][pVIPTogged] = 0;
 		PlayerInfo[playerid][pFamedTogged] = 0;
+		PlayerInfo[playerid][pDigCooldown] = 0;
 		PlayerInfo[playerid][pBugReportTimeout] = 0;
 		PlayerInfo[playerid][pToolBox] = 0;
 		PlayerInfo[playerid][pCrowBar] = 0;
@@ -388,6 +389,7 @@ public OnPlayerLoad(playerid)
 		SetHealth(playerid, 50);
 		SetArmour(playerid, 0);
 		PlayerInfo[playerid][pLastPass][0] = 0;
+		PlayerInfo[playerid][pEventTokens] = 0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -953,7 +955,7 @@ public OnPlayerLoad(playerid)
 	    }
 		PlayerInfo[playerid][pWeedObject] = 0;
 	}
-	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] == 0 && !IsValidName(playerid))
+	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] == 0 && !IsValidName(GetPlayerNameExt(playerid)))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have been kicked for having a Non RP Name.");
 		SetPVarString(playerid, "KickNonRP", GetPlayerNameEx(playerid));
@@ -1065,5 +1067,24 @@ public OnPlayerLoad(playerid)
 	if(2 <= PlayerInfo[playerid][pAdmin] <= 4) ResetPlayerCash(playerid), PlayerInfo[playerid][pAccount] = 0;
 	CallLocalFunction("NotifyInactiveStatus", "i", playerid);
 	if(PlayerInfo[playerid][pTut] && emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);
+	if(month == 4 && (day == 25 || day == 26)) // NGG B-Day 2015
+	{
+		if(PlayerInfo[playerid][pLevel] >= 3 && !PlayerInfo[playerid][pDonateRank])
+		{
+			PlayerInfo[playerid][pDonateRank] = 2;
+			PlayerInfo[playerid][pTempVIP] = 0;
+			PlayerInfo[playerid][pBuddyInvited] = 0;
+			PlayerInfo[playerid][pVIPSellable] = 1;
+			PlayerInfo[playerid][pVIPExpire] = 1430110800;
+			LoadPlayerDisabledVehicles(playerid);
+			SendClientMessageEx(playerid, -1, "You have been gifted Silver VIP for playing on NGG's B-Day weekend!");
+		}
+		if(PlayerInfo[playerid][pDonateRank] == 4 && !PlayerInfo[playerid][pReceivedPrize])
+		{
+			PlayerInfo[playerid][pEventTokens] += 10;
+			PlayerInfo[playerid][pReceivedPrize] = 1;
+			SendClientMessageEx(playerid, -1, "You have been given 10 event tokens for logging in as a PVIP!");
+		}
+	}
 	return 1;
 }

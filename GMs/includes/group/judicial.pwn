@@ -883,32 +883,22 @@ CMD:judgeprison(playerid, params[])
 
 CMD:judgefine(playerid, params[])
 {
-    if(!IsAJudge(playerid))
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-  		return 1;
-	}
-	if(PlayerInfo[playerid][pRank] < 3)
-	{
-  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
-  		return 1;
-	}
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
 
 	new giveplayerid, judgefine, reason[64], totalwealth;
 
 	if(sscanf(params, "uds[64]", giveplayerid, judgefine, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /judgefine [player] [amount] [reason]");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
 	if(!(1 <= judgefine <= 2000000)) return SendClientMessageEx(playerid, COLOR_GREY, "Fine amount cannot be lower than $1 or higher than $2,000,000!");
 	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already in debt - contact an administrator.");
-	if(IsPlayerConnected(giveplayerid))
-	{
-	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
-		SetPVarInt(playerid, "judgefine", judgefine);
-		SetPVarInt(playerid, "jfined", giveplayerid);
-		SetPVarString(playerid, "jreason", reason);
-		Group_ListGroups(playerid, DIALOG_JFINECONFIRM);
-	}
+	if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
+	SetPVarInt(playerid, "judgefine", judgefine);
+	SetPVarInt(playerid, "jfined", giveplayerid);
+	SetPVarString(playerid, "jreason", reason);
+	Group_ListGroups(playerid, DIALOG_JFINECONFIRM);
 	return 1;
 }
 

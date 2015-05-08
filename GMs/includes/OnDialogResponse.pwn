@@ -855,7 +855,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			SetPVarInt(playerid, "ShopOrderTimer", 60); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_SHOPORDERTIMER);
 
-			format(string, sizeof(string), "%s/shop/idcheck.php?id=%d", SAMP_WEB, orderid);
+			format(string, sizeof(string), "shop.ng-gaming.net/idcheck.php?id=%d", orderid);
 			HTTP(playerid, HTTP_GET, string, "", "HttpCallback_ShopIDCheck");
 		}
 	}
@@ -1112,7 +1112,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
 
-		if(GetPlayerCash(playerid) < HoldingObjects[listitem][holdingprice])
+		if(GetPlayerCash(playerid) < HoldingObjectsAll[listitem][holdingprice])
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "* You can't afford that!");
 		}
@@ -1466,7 +1466,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == SELLTOY)
 	{
 		if(response)
-		{	
+		{
 			new buyerid = GetPVarInt(playerid, "ttBuyer"),
 				cost = GetPVarInt(playerid, "ttCost");
 			if(PlayerToyInfo[playerid][listitem][ptModelID] == 0) {
@@ -1474,7 +1474,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "ttCost", 0);
 				SetPVarInt(playerid, "ttBuyer", INVALID_PLAYER_ID);
 				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Sell your toy", "Woops! You don't have anything to sell from that slot.", "Okay", "");
-			}	
+			}
 			if(PlayerToyInfo[playerid][listitem][ptTradable] == 0) {
 				SendClientMessageEx(playerid, COLOR_GREY, "This toy isn't tradable.");
 				SetPVarInt(buyerid, "ttSeller", INVALID_PLAYER_ID);
@@ -1502,15 +1502,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "ttToy", toyid);
 				SetPVarInt(playerid, "ttToySlot", listitem);
 				PrepTradeToysGUI(buyerid, playerid, cost, toyid);
-			}		
+			}
 			else {
 				SendClientMessageEx(playerid, COLOR_GREY, "You currently have this toy attached, please deattach it and try again.");
 				SetPVarInt(buyerid, "ttSeller", INVALID_PLAYER_ID);
 				SetPVarInt(playerid, "ttCost", 0);
 				SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
-			}	
-		}	
-	}		
+			}
+		}
+		else
+		{
+			SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+			SetPVarInt(playerid, "ttCost", 0);
+			SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+		}
+	}
 	if(dialogid == CONFIRMSELLTOY)
 	{
 		if(response)
@@ -3014,7 +3020,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					if(!IsValidName(playerid)) {
+					if(!IsValidName(inputtext)) {
 						SendClientMessageEx(playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname.");
 						return 1;
 					}

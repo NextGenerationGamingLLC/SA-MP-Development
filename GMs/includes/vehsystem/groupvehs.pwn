@@ -1,3 +1,107 @@
+forward LoadDynamicGroupVehicles();
+public LoadDynamicGroupVehicles()
+{
+	mysql_function_query(MainPipeline, "SELECT * FROM `groupvehs`", true, "DynVeh_QueryFinish", "ii", GV_QUERY_LOAD, 0);
+	return 1;
+}
+
+forward DynVeh_QueryFinish(iType, iExtraID);
+public DynVeh_QueryFinish(iType, iExtraID) {
+
+	new
+		iFields,
+		iRows,
+		iIndex,
+		i = 0,
+		sqlid,
+		szResult[128];
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	switch(iType) {
+		case GV_QUERY_LOAD:
+		{
+		    format(szResult, sizeof(szResult), "UPDATE `groupvehs` SET `SpawnedID` = %d", INVALID_VEHICLE_ID);
+			mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			while((iIndex < iRows) && (iIndex < MAX_DYNAMIC_VEHICLES)) {
+			    cache_get_field_content(iIndex, "id", szResult, MainPipeline); sqlid = strval(szResult);
+				if((sqlid >= MAX_DYNAMIC_VEHICLES)) {// Array bounds check. Use it.
+					format(szResult, sizeof(szResult), "DELETE FROM `groupvehs` WHERE `id` = %d", sqlid);
+					mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					return printf("SQL ID %d exceeds Max Dynamic Vehicles", sqlid);
+				}
+				cache_get_field_content(iIndex, "gID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igID] = strval(szResult);
+				cache_get_field_content(iIndex, "gDivID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_igDivID] = strval(szResult);
+				cache_get_field_content(iIndex, "rID", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_irID] = strval(szResult);
+				cache_get_field_content(iIndex, "vModel", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iModel] = strval(szResult);
+                switch(DynVehicleInfo[sqlid][gv_iModel]) {
+					case 538, 537, 449, 590, 569, 570: {
+					    DynVehicleInfo[sqlid][gv_iModel] = 0;
+					}
+				}
+				cache_get_field_content(iIndex, "vPlate", DynVehicleInfo[sqlid][gv_iPlate], MainPipeline, 32);
+				cache_get_field_content(iIndex, "vMaxHealth", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fMaxHealth] = floatstr(szResult);
+				cache_get_field_content(iIndex, "vType", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iType] = strval(szResult);
+				cache_get_field_content(iIndex, "vLoadMax", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iLoadMax] = strval(szResult);
+				if(DynVehicleInfo[sqlid][gv_iLoadMax] > 6) {
+                    DynVehicleInfo[sqlid][gv_iLoadMax] = 6;
+				}
+				cache_get_field_content(iIndex, "vCol1", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iCol1] = strval(szResult);
+				cache_get_field_content(iIndex, "vCol2", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iCol2] = strval(szResult);
+				cache_get_field_content(iIndex, "vX", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fX] = floatstr(szResult);
+				cache_get_field_content(iIndex, "vY", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fY] = floatstr(szResult);
+				cache_get_field_content(iIndex, "vZ", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fZ] = floatstr(szResult);
+				cache_get_field_content(iIndex, "vVW", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iVW] = strval(szResult);
+				cache_get_field_content(iIndex, "vInt", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iInt] = strval(szResult);
+				cache_get_field_content(iIndex, "vDisabled", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iDisabled] = strval(szResult);
+				cache_get_field_content(iIndex, "vRotZ", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fRotZ] = floatstr(szResult);
+				cache_get_field_content(iIndex, "vUpkeep", szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iUpkeep] = strval(szResult);
+				DynVehicleInfo[sqlid][gv_iSiren] = cache_get_field_content_int(iIndex, "vSiren", MainPipeline);
+				i = 1;
+				while(i <= MAX_DV_OBJECTS) {
+					format(szResult, sizeof szResult, "vAttachedObjectModel%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i-1] = strval(szResult);
+					format(szResult, sizeof szResult, "vObjectX%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectX][i-1] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectY%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectY][i-1] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectZ%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectZ][i-1] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectRX%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRX][i-1] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectRY%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRY][i-1] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectRZ%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRZ][i-1] = floatstr(szResult);
+					i++;
+				}
+				i = 0;
+				while(i < MAX_DV_MODS) {
+					format(szResult, sizeof szResult, "vMod%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iMod][i++] = strval(szResult);
+				}
+				
+				if(400 < DynVehicleInfo[sqlid][gv_iModel] < 612) {
+					if(!IsWeaponizedVehicle(DynVehicleInfo[sqlid][gv_iModel])) {
+						DynVeh_Spawn(iIndex);
+						//printf("[DynVeh] Loaded Dynamic Vehicle %i.", iIndex);
+						for(i = 0; i != MAX_DV_OBJECTS; i++)
+						{
+							if(DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == 0 || DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == INVALID_OBJECT_ID) {
+								DynVehicleInfo[sqlid][gv_iAttachedObjectID][i] = INVALID_OBJECT_ID;
+								DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] = INVALID_OBJECT_ID;
+							}
+						}
+					} else {
+						DynVehicleInfo[sqlid][gv_iSpawnedID] = INVALID_VEHICLE_ID;
+					}	
+				}
+				iIndex++;
+			}
+		}
+	}
+	return 1;
+}
+
 DynVeh_Save(iDvSlotID) {
 	if((iDvSlotID > MAX_DYNAMIC_VEHICLES)) // Array bounds check. Use it.
 		return 0;
@@ -10,11 +114,11 @@ DynVeh_Save(iDvSlotID) {
 		"UPDATE `groupvehs` SET `SpawnedID`= '%d',`gID`= '%d',`gDivID`= '%d', `rID`='%d', `vModel`= '%d', \
 		`vPlate` = '%s',`vMaxHealth`= '%.2f',`vType`= '%d',`vLoadMax`= '%d',`vCol1`= '%d',`vCol2`= '%d', \
 		`vX`= '%.2f',`vY`= '%.2f',`vZ`= '%.2f',`vRotZ`= '%.2f', `vUpkeep` = '%d', `vVW` = '%d', `vDisabled` = '%d', \
-		`vInt` = '%d', `vFuel` = '%.5f'"
+		`vInt` = '%d', `vFuel` = '%.5f', `vSiren` = '%d'"
 		, DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iModel],
 		g_mysql_ReturnEscaped(DynVehicleInfo[iDvSlotID][gv_iPlate], MainPipeline), DynVehicleInfo[iDvSlotID][gv_fMaxHealth], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2],
 		DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iDisabled],
-		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel]);
+		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 
 	for(i = 0; i != MAX_DV_OBJECTS; ++i) {
 		format(szQuery, sizeof szQuery, "%s, `vAttachedObjectModel%i` = '%d'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i]);
@@ -89,7 +193,7 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 			}
 		}
 	}
-	DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = CreateVehicle(DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2], VEHICLE_RESPAWN);
+	DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = CreateVehicle(DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2], VEHICLE_RESPAWN, DynVehicleInfo[iDvSlotID][gv_iSiren]);
 	DynVeh_Save(iDvSlotID);
 	format(string, sizeof(string), "Vehicle ID %d spawned for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
 	Log("logs/dvspawn.log", string);

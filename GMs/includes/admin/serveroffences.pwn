@@ -454,7 +454,7 @@ CMD:dprison(playerid, params[])
 
 prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0) 
 {
-	new string[128], shortreason[5], jailtime, twarn, warn, fine;
+	new string[128], shortreason[5], jailtime, twarn, warn, fine, nonrp;
 	new rand = random(sizeof(OOCPrisonSpawns));
 	
 	// Reset.
@@ -637,8 +637,6 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 
 	if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
-	format(string, 128, "AdmCmd: %s(%d) has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
-	Log("logs/admin.log", string);
 	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 	else format(string, 128, "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	SendClientMessageToAllEx(COLOR_LIGHTRED, string);
@@ -677,146 +675,167 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) {
 			if(GetPVarInt(playerid, "PendingAction") == 1) // DM
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued 5 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 5;
+				format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 5, gettime()+2592000, "Deathmatching", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 5;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Deathmatching", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 5 Non RP Points for Deathmatching.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Deathmatching.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 5 Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 2) // RK
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Revenge Killing Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 3;
+				format(string, sizeof(string), "You have taken action on %s after processing a Revenge Killing Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Revenge Killing", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Revenge Killing", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Revenge Killing.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Revenge Killing.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 3) // KoS
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued 3 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 3;
+				format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 3, gettime()+2592000, "Killing on Sight", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 3;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Killing on Sight", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 3 Non RP Points for Killing on Sight.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Killing on Sight.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 3 Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 4) // Car Ramming
 			{
-				print("5");
-				format(string, sizeof(string), "You have taken action on %s after processing a Car Ramming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 2;
+				format(string, sizeof(string), "You have taken action on %s after processing a Car Ramming Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Car Ramming", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Car Ramming", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Car Ramming.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Car Ramming.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 5) // OOC Hit
 			{
+				nonrp = 1;
 				format(string, sizeof(string), "You have taken action on %s after processing a OOC Contract Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "OOC Contract", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "OOC Contract", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for OOC Contract.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for OOC Contract.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 6) // Spamming
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Spamming Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 2;
+				format(string, sizeof(string), "You have taken action on %s after processing a Spamming Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Spamming", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Spamming", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Spamming.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Spamming.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 7) // Gun Discharge Exploit
 			{
+				nonrp = 1;
 				format(string, sizeof(string), "You have taken action on %s after processing a Gun Discharge Exploit Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Gun Discharge Exploit", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Gun Discharge Exploit", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Gun Discharge Exploit.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for Gun Discharge Exploit.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 8) // Non-RP Name
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Non-RP Name Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 2;
+				format(string, sizeof(string), "You have taken action on %s after processing a Non-RP Name Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non-RP Name", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Non-RP Name", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non-RP Name.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Non-RP Name.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 9) // Logging to avoid
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Logging to avoid Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 2;
+				format(string, sizeof(string), "You have taken action on %s after processing a Logging to avoid Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Logging to avoid", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 2;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Logging to avoid", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Logging to avoid.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Logging to avoid.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 10) // Car Surfing
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Car Surfing Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 1;
+				format(string, sizeof(string), "You have taken action on %s after processing a Car Surfing Alert, we've automatically issued %d point to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 1, gettime()+2592000, "Car Surfing", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Car Surfing", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 1 Non RP Point for Car Surfing.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for Car Surfing.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 1 Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s(%d) has been issued %d Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			else if(GetPVarInt(playerid, "PendingAction") == 11) // Non RP Behavior
 			{
-				format(string, sizeof(string), "You have taken action on %s after processing a Non RP Behavior Alert, we've automatically issued 2 points to the player.", GetPlayerNameEx(giveplayerid));
+				nonrp = 2;
+				format(string, sizeof(string), "You have taken action on %s after processing a Non RP Behavior Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 				
-				AddNonRPPoint(giveplayerid, 2, gettime()+2592000, "Non RP Behavior", playerid, 0);
-				PlayerInfo[giveplayerid][pNonRPMeter] += 1;
+				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Non RP Behavior", playerid, 0);
+				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
-				SendClientMessageEx(giveplayerid, COLOR_CYAN, "The server has automatically issued you 2 Non RP Points for Non RP Behavior.");
+				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Non RP Behavior.", nonrp);
+				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
 				
-				format(string, sizeof(string), "%s(%d) has been issued 2 Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+				format(string, sizeof(string), "%s(%d) has been issued %d Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
 			if(PlayerInfo[giveplayerid][pNonRPMeter] >= 15) {
@@ -827,6 +846,8 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 			}
 		}
 	}
+	format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) has been prisoned by %s, reason: %s (F:%s|W:%d|WR:%d|NonRP:%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason, number_format(fine), warn, PlayerInfo[giveplayerid][pWRestricted], nonrp);
+	Log("logs/admin.log", szMiscArray);
 	DeletePVar(playerid, "PendingAction");
 	DeletePVar(playerid, "PendingAction2");
 	if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) AlertTime[GetPVarInt(playerid, "PendingAction3")] = 0;

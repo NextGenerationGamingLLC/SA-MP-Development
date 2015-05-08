@@ -263,7 +263,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	file[32], month, day, year;
 	getdate(year,month,day);
 	
-	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0 && PlayerInfo[playerid][pHospital])
+	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
 	{
 		ApplyAnimation(playerid, "SUNBATHE", "Lay_Bac_out", 4.0, 0, 1, 1, 0, 0, 1);
 		DeletePVar(playerid, "_SpawningAtHospital");
@@ -329,6 +329,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		new Float:curhealth;
 		GetHealth(playerid, curhealth);
 		SetHealth(playerid, curhealth+1);
+		if(curhealth > 100) SetHealth(playerid, 100);
 		arrHospitalBedData[iHospital][iTimer][iBed] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, iBed);
 	}
 	return 1;
@@ -382,6 +383,8 @@ ReturnDeliveryPoint(iDPID)
 		case 13: iPoint = HOSPITAL_LASVENTURAS;
 		case 14: iPoint = HOSPITAL_ANGELPINE;
 		case 15: iPoint = HOSPITAL_DOCJAIL;
+		case 16: iPoint = HOSPITAL_DEMORGAN;
+		case 17: iPoint = HOSPITAL_DOCJAIL;
 	}
 	
 	return iPoint;

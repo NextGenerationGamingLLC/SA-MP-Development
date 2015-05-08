@@ -1202,7 +1202,7 @@ CMD:editcarprice(playerid, params[])
 }
 
 CMD:deletecdveh(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2) {
 
 		new
 		    iBusiness,
@@ -1243,7 +1243,7 @@ CMD:deletecdveh(playerid, params[]) {
 }
 
 CMD:createcdveh(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2) {
 
 		new
 		    iBusiness,
@@ -1275,7 +1275,7 @@ CMD:createcdveh(playerid, params[]) {
 			for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++)
 			{
 				if (Businesses[iBusiness][bVehID][i] == 0) {
-					Businesses[iBusiness][bVehID][i] = CreateVehicle(iVehicle, fVehPos[0], fVehPos[1], fVehPos[2], fVehPos[3], iColors[0], iColors[1], -1);
+					Businesses[iBusiness][bVehID][i] = CreateVehicle(iVehicle, fVehPos[0], fVehPos[1], fVehPos[2], fVehPos[3], iColors[0], iColors[1], 10);
 					VehicleFuel[Businesses[iBusiness][bVehID][i]] = 100.0;
 
 					Businesses[iBusiness][bModel][i] = iVehicle;
@@ -2128,7 +2128,7 @@ CMD:bnext(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available business...");
 		for(new i; i<MAX_BUSINESSES;i++)
 		{
-		    if(Businesses[i][bType] == 0)
+		    if(Businesses[i][bExtPos] == 0.0)
 		    {
 		        new string[128];
 		        format(string, sizeof(string), "%d is available to use.", i);
@@ -2605,7 +2605,8 @@ CMD:buyfood(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "This restaurant is closed!");
 		return 1;
 	}
-
+	if(Businesses[iBusiness][bMaxLevel] > 0 && PlayerInfo[playerid][pConnectHours] > Businesses[iBusiness][bMaxLevel])
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "The cashier has denied you service, this discount store is for new citizens only.");
 	new szDialog[512], pvar[25], line;
 
 	for (new item; item < sizeof(RestaurantItems); ++item)
@@ -3386,4 +3387,17 @@ stock SaveDealershipVehicle(businessid, slotid)
 	format(query, sizeof(query), "%s `Car%dPrice` = %d", query, slotid, Businesses[businessid][bPrice][slotid]);
 	format(query, sizeof(query), "%s WHERE `Id` = %d", query, businessid+1);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+}
+
+CMD:dealershiprespawn(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pBM]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	new business = PlayerInfo[playerid][pBusiness];
+	if(business == INVALID_BUSINESS_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a business, use /switchbiz first.");
+	SendClientMessageEx(playerid, COLOR_GREY, "** Respawning dealership vehicles..");
+	for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++)
+	{
+		if(Businesses[business][bVehID][i] != 0) SetVehicleToRespawn(Businesses[business][bVehID][i]);
+	}
+	return 1;
 }

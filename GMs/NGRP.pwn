@@ -74,11 +74,11 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.198"
+#define SERVER_GM_TEXT "NG:RP v3.0.200"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
-#define MAX_PLAYERS (700)
+#define MAX_PLAYERS (500)
 #include <a_mysql>
 #include <streamer>
 #include <yom_buttons>
@@ -199,7 +199,6 @@
 #include "./includes/dynamic/arrestpoints.pwn"
 #include "./includes/dynamic/dynsu.pwn"
 
-
 //event kernels includes
 //#include "./includes/events/bday.pwn"
 #include "./includes/events/event.pwn"
@@ -212,7 +211,6 @@
 #include "./includes/events/xmas.pwn"
 #include "./includes/events/zombies.pwn"
 #include "./includes/events/valentine.pwn"
-
 //#include "./includes/events/festival.pwn"
 //#include "./includes/events/stpatricks.pwn"
 

@@ -4129,7 +4129,7 @@ CMD:setstat(playerid, params[])
 
 			case 54:
 				{
-					PlayerInfo[giveplayerid][pTrickortreat] = amount;
+					PlayerInfo[giveplayerid][pEventTokens] = amount;
 					format(string, sizeof(string), "   %s's(%d) Event Tokens have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 55:
@@ -4491,7 +4491,7 @@ CMD:setmystat(playerid, params[])
 
 		case 54:
 			{
-				PlayerInfo[playerid][pTrickortreat] = amount;
+				PlayerInfo[playerid][pEventTokens] = amount;
 				format(string, sizeof(string), "   %s's Event Tokens have been set to %i.", GetPlayerNameEx(playerid), amount);
 			}
 		case 55:
@@ -6464,4 +6464,28 @@ CMD:dice(playerid, params[])
         return 1;
     }
     return 1;
+}
+
+CMD:giveeventtokens(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR])
+	{
+		new giveplayerid, amount;
+		
+		if (sscanf(params, "ui", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /giveeventtokens [player] [amount]");
+		if (amount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "  Amount cannot be 0!");
+		szMiscArray[0] = 0;
+		if (amount < 0)
+		{
+			if(-amount > PlayerInfo[giveplayerid][pEventTokens]) return SendClientMessageEx(playerid, -1, "The amount stated is more than they have to take.");
+			format(szMiscArray, sizeof(szMiscArray), "You have taken %i of %s's tokens away.", -amount, GetPlayerNameEx(giveplayerid));
+		}
+		else
+		{
+			format(szMiscArray, sizeof(szMiscArray), "You have given %s %i tokens.", GetPlayerNameEx(giveplayerid), amount);
+		}
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		PlayerInfo[giveplayerid][pEventTokens] += amount;
+	}
+	return 1;
 }

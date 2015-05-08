@@ -200,30 +200,6 @@ CMD:gotocharmpoint(playerid, params[])
 	return 1;
 }
 
-CMD:giveeventtokens(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR])
-	{
-		new giveplayerid, amount;
-		
-		if (sscanf(params, "ui", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /giveeventtokens [player] [amount]");
-		if (amount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "  Amount cannot be 0!");
-		szMiscArray[0] = 0;
-		if (amount < 0)
-		{
-			if(-amount > PlayerInfo[giveplayerid][pTrickortreat]) return SendClientMessageEx(playerid, -1, "The amount stated is more than they have to take.");
-			format(szMiscArray, sizeof(szMiscArray), "You have taken %i of %s's tokens away.", -amount, GetPlayerNameEx(giveplayerid));
-		}
-		else
-		{
-			format(szMiscArray, sizeof(szMiscArray), "You have given %s %i tokens.", GetPlayerNameEx(giveplayerid), amount);
-		}
-		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-		PlayerInfo[giveplayerid][pTrickortreat] += amount;
-	}
-	return 1;
-}
-
 CMD:claimtokens(playerid, params[])
 {
 	if (IsPlayerInRangeOfCharm(playerid))
@@ -232,7 +208,7 @@ CMD:claimtokens(playerid, params[])
 		{
 			SendClientMessageEx(playerid, 0x37A621FF, "You collected 5 tokens!");
 			PlayerInfo[playerid][pLastCharmReceived] = gettime();
-			PlayerInfo[playerid][pTrickortreat] += 5;
+			PlayerInfo[playerid][pEventTokens] += 5;
 			return 1;
 		}
 		else

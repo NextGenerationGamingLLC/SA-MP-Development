@@ -240,8 +240,6 @@ CMD:enter(playerid, params[])
     for(new i = 0; i < sizeof(Businesses); i++) {
         if (IsPlayerInRangeOfPoint(playerid,3,Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
 	        if (Businesses[i][bExtPos][1] == 0.0) return 1;
-			if(Businesses[i][bMaxLevel] > 0 && PlayerInfo[playerid][pLevel] > Businesses[i][bMaxLevel])
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, your level is above the max level allowed.");
 			if (Businesses[i][bStatus]) {
 				if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 				{

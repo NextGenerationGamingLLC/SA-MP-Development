@@ -51,7 +51,8 @@ native gpci(playerid, serial[], maxlen);
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
-#define			SAMP_WEB					"127.0.0.1"
+#define			SAMP_WEB					"samp.ng-gaming.net"
+#define			CP_WEB						"cp.ng-gaming.net"
 			/*  ---------------- TIMERS ----------------- */
 #define			TYPE_TPMATRUNTIMER 			1
 #define			TYPE_TPDRUGRUNTIMER 		2
@@ -978,6 +979,16 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_LIST_INTERIORS		(6019)
 #define 		DIALOG_LIST_INTERIORS2		(6020)
 
+#define			DIALOG_SHOW_CRIMES			(6021)
+#define			DIALOG_EDIT_CRIMES			(6022)
+#define			DIALOG_CRIMES_LIST			(6023)
+#define			DIALOG_CRIMES_EDIT			(6024)
+#define			DIALOG_CRIMES_TYPE			(6025)
+#define			DIALOG_CRIMES_NATION		(6026)
+#define			DIALOG_CRIMES_NAME			(6027)
+#define			DIALOG_CRIMES_TIME			(6028)
+#define			DIALOG_CRIMES_FINE			(6029)
+
 #define			DIALOG_STPATRICKSSHOP		(0317)
 
 // Objects
@@ -1168,7 +1179,7 @@ native gpci(playerid, serial[], maxlen);
 #define		MAX_HOSPITALS				(17)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(4)
-#define		MAX_DELIVERY_POINTS			(16)
+#define		MAX_DELIVERY_POINTS			(18)
 
 // hospital location definitions
 #define		HOSPITAL_ALLSAINTS			(0)

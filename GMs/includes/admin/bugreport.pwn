@@ -150,7 +150,7 @@ CMD:changes(playerid, params[])
 {
 	new rev[16], string[64];
 	format(rev, sizeof(rev), "%s", str_replace("NG:RP ", "", SERVER_GM_TEXT));
-	format(string, sizeof(string), "%s/devlog/server.php?revision=%s", SAMP_WEB, rev);
+	format(string, sizeof(string), "dev.ng-gaming.net/server.php?revision=%s", rev);
 	HTTP(playerid, HTTP_GET, string, "", "RevisionListHTTP");
 	return 1;
 }

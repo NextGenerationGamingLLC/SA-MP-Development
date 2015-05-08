@@ -129,8 +129,8 @@ SaveGroup(iGroupID) {
 	szMiscArray[0] = 0; 
 
 	new
-		i = 0,
-		iIndex = 0;
+		i = 0;
+		//iIndex = 0;
 
 	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
 		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, \
@@ -170,14 +170,14 @@ SaveGroup(iGroupID) {
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
 
-	for (i = 0; i < MAX_GROUPS; i++) {
+	/*for (i = 0; i < MAX_GROUPS; i++) {
 		for(new x = 0; x != 50; x++)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
 			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 			iIndex++;
 		}
-	}
+	}*/
 	return 1;
 }
 
@@ -276,7 +276,7 @@ stock IsADocGuard(playerid)
 
 stock IsFirstAid(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pDivision] == arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess])) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess] != INVALID_DIVISION && PlayerInfo[playerid][pDivision] == arrGroupData[PlayerInfo[playerid][pMember]][g_iMedicAccess]) return 1;
 	return 0;
 }
 
@@ -543,7 +543,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							fSkin[i] = arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes][i];
 						}
-						ShowModelSelectionMenuEx(playerid, fSkin, 8, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+						ShowModelSelectionMenuEx(playerid, fSkin, MAX_GROUP_RANKS, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
 						return 1;
 					}
 					if(PlayerInfo[playerid][pDuty]==0)
@@ -2828,7 +2828,7 @@ CMD:setbudget(playerid, params[])
 				{
 				    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[i][g_iAllegiance])
 				    {
-					    if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI)
+					    if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
 					    {
 						    if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "%d - {%6x}%s {AFAFAF} [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
 							else if(arrGroupData[i][g_szGroupName][0]) format(string, sizeof(string), "%d - %s [Balance: $%s] [Current Budget: $%s]| ", i, arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -2838,7 +2838,7 @@ CMD:setbudget(playerid, params[])
 				}
 				return 1;
 			}
-			if(0 <= iGroupID < MAX_GROUPS && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI))
+			if(0 <= iGroupID < MAX_GROUPS && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING))
 			{
 			    if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[iGroupID][g_iAllegiance])
 			    {
@@ -2925,7 +2925,7 @@ CMD:gdonate(playerid, params[])
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if((0 <= iGroupID <= MAX_GROUPS))
 	{
-		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT )
+		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 		{
 			new string[128], moneys;
 			if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gdonate [amount]");
@@ -3211,7 +3211,7 @@ CMD:dvstatus(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | VW: %d | Int: %d | LoadMax: %d", DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0],DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iLoadMax]);
+			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | VW: %d | Int: %d | LoadMax: %d | Siren: %d", DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0],DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle Slot ID.");
@@ -3325,13 +3325,21 @@ CMD:dvedit(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvedit [vehicleid] [v parameter] [value] [slot] (if applicable - indicated by *)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank siren");
 			return 1;
 		}
 		new iDvSlotID = DynVeh[vehicleid];
 		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
 		format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
 		Log("logs/dv.log", string);
+		if(strcmp(name, "siren", true) == 0)
+		{
+			DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
+			DynVeh_Save(iDvSlotID);
+			DynVeh_Spawn(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
+			return 1;
+		}
 		if(strcmp(name, "delete", true) == 0)
 		{
 			DynVehicleInfo[iDvSlotID][gv_iModel] = 0;
@@ -3341,6 +3349,7 @@ CMD:dvedit(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
 			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
 			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
+			DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
 			DynVeh_Save(iDvSlotID);
 			DynVeh_Spawn(iDvSlotID);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
@@ -3523,12 +3532,20 @@ CMD:dveditslot(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dveditslot [dv slot id] [v parameter] [value] [slot] (if applicable - indicated by *)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank siren");
 			return 1;
 		}
 		if(iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iModel] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
 		format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
 		Log("logs/dv.log", string);
+		if(strcmp(name, "siren", true) == 0)
+		{
+			DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
+			DynVeh_Save(iDvSlotID);
+			DynVeh_Spawn(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
+			return 1;
+		}
 		if(strcmp(name, "delete", true) == 0)
 		{
 			DynVehicleInfo[iDvSlotID][gv_iModel] = 0;
@@ -3538,6 +3555,7 @@ CMD:dveditslot(playerid, params[])
 			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
 			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
 			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
+			DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
 			DynVeh_Save(iDvSlotID);
 			DynVeh_Spawn(iDvSlotID);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
@@ -5666,7 +5684,7 @@ CMD:clothes(playerid, params[])
 		{
 			fSkin[i] = arrGroupData[PlayerInfo[playerid][pMember]][g_iClothes][i];
 		}
-		ShowModelSelectionMenuEx(playerid, fSkin, 8, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
+		ShowModelSelectionMenuEx(playerid, fSkin, MAX_GROUP_RANKS, "Change your clothes.", DYNAMIC_FAMILY_CLOTHES, 0.0, 0.0, -55.0);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a clothing shop.");
 	return true;

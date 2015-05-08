@@ -1608,7 +1608,7 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pPaintTokens]),
 		number_format(PlayerInfo[targetid][pEXPToken]),
 		number_format(PlayerInfo[targetid][pDoubleEXP]),
-		number_format(PlayerInfo[targetid][pTrickortreat]),
+		number_format(PlayerInfo[targetid][pEventTokens]),
 		number_format(PlayerInfo[targetid][pMats]),
 		number_format(PlayerInfo[targetid][pCrack]),
 		number_format(PlayerInfo[targetid][pPot]),

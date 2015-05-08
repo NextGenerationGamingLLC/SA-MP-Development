@@ -432,7 +432,7 @@ CMD:changeuserpassword(playerid, params[])
 	new tmpName[24];
 	mysql_escape_string(accountName, tmpName, MainPipeline);
 
-    format(query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2",passbuffer,tmpName,salt);
+    format(query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, salt, tmpName);
 	mysql_function_query(MainPipeline, query, false, "OnChangeUserPassword", "i", playerid);
 	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
 	return 1;
@@ -538,7 +538,7 @@ CMD:givemeorder(playerid, params[])
 		if(sscanf(params, "ui", giveplayerid, orderid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustoid [player] [new orderid]");
 		SendClientMessageEx(playerid, COLOR_WHITE, "Processing..");
   		PlayerInfo[giveplayerid][pOrder] = orderid;
-		format(string, sizeof(string), "%s/shop/idcheck.php?id=%d", SAMP_WEB, orderid);
+		format(string, sizeof(string), "shop.ng-gaming.net/idcheck.php?id=%d", orderid);
 		HTTP(giveplayerid, HTTP_GET, string, "", "HttpCallback_ShopIDCheck");
 		format(string, sizeof(string), "%s has edited %s's Order ID to %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), orderid);
 		Log("logs/shoporders.log", string);
@@ -1573,6 +1573,7 @@ CMD:editsign(playerid, params[])
 			format(HouseInfo[h][hSignDesc], 64, "%s", g_mysql_ReturnEscaped(desc, MainPipeline));
 			format(string, sizeof(string), "%s has edited house ID: %d sale sign text to %s", GetPlayerNameEx(playerid), h, HouseInfo[h][hSignDesc]);
 			Log("logs/hedit.log", string);
+			SendClientMessageEx(playerid, -1, string);
 		}
 		if(!strcmp(option, "position", true))
 		{
@@ -1767,7 +1768,6 @@ public OnShopOrder(index)
 		    new string[512];
 		    new ipsql[16], ip[16];
 	    	GetPlayerIp(index, ip, sizeof(ip));
-		    mysql_fetch_field_row(ipsql, "ip", MainPipeline);
 		    cache_get_field_content(0, "ip", ipsql, ShopPipeline);
 		    if(!isnull(ipsql) && strcmp(ipsql, ip, true) == 0)
 			{

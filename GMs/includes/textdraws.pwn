@@ -1249,7 +1249,7 @@ public LoadTextDraws()
 	textdrawscount++;
 
 	// Tutorial (Frame 11) (Line 5)
-	TutTxtdraw[39] = TextDrawCreate(175.000000, 204.000000, "If you want to report a emergency, purchase a cellphone and ~g~/call 911~w~");
+	TutTxtdraw[39] = TextDrawCreate(175.000000, 204.000000, "If you want to report an emergency, purchase a cellphone and ~g~/call 911~w~");
 	TextDrawBackgroundColor(TutTxtdraw[39], 255);
 	TextDrawFont(TutTxtdraw[39], 2);
 	TextDrawLetterSize(TutTxtdraw[39], 0.159997, 0.899999);

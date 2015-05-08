@@ -129,6 +129,7 @@ enum eGroupVehData {
 	Float:gv_fObjectRX[2],
 	Float:gv_fObjectRY[2],
 	Float:gv_fObjectRZ[2],
+	gv_iSiren
 }
 
 enum eBiz {
@@ -1065,6 +1066,7 @@ enum pInfo
 	pNewbieTogged,
 	pVIPTogged,
 	pFamedTogged,
+	pDigCooldown,
 	pToolBox,
 	pCrowBar,
 	pCarLockPickSkill,
@@ -1094,7 +1096,8 @@ enum pInfo
 	pJailedInfo[5], // 0 id - 1 fine - 2 time - 3 warn - 4 wep restriction
 	pJailedWeapons[12],
 	pVIPMod,
-	pLastPass[65]
+	pLastPass[65],
+	pEventTokens
 };
 
 enum pvInfo

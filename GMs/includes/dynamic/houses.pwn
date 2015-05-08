@@ -775,11 +775,7 @@ CMD:asellhouse(playerid, params[])
 		format(string, sizeof(string), "~w~You have sold house %d.", house);
 		GameTextForPlayer(playerid, string, 10000, 3);
 		SaveHouse(house);
-		DestroyDynamicPickup(HouseInfo[house][hPickupID]);
-		HouseInfo[house][hPickupID] = CreateDynamicPickup(1273, 23, HouseInfo[house][hExteriorX], HouseInfo[house][hExteriorY], HouseInfo[house][hExteriorZ], .worldid = HouseInfo[house][hExtVW], .interiorid = HouseInfo[house][hExtIW]);
-		DestroyDynamic3DTextLabel(HouseInfo[house][hTextID]);
-		format(string, sizeof(string), "This home is\n for sale!\n Description: %s\nCost: $%d\n Level: %d\n/buyhouse to buy it.",HouseInfo[house][hDescription],HouseInfo[house][hValue],HouseInfo[house][hLevel]);
-		HouseInfo[house][hTextID] = CreateDynamic3DTextLabel( string, COLOR_GREEN, HouseInfo[house][hExteriorX], HouseInfo[house][hExteriorY], HouseInfo[house][hExteriorZ]+0.5, 10.0, .testlos = 1, .worldid = HouseInfo[house][hExtVW], .interiorid = HouseInfo[house][hExtIW], .streamdistance = 10.0);
+		ReloadHousePickup(house);
 		return 1;
 	}
 	else
@@ -898,11 +894,24 @@ CMD:hedit(playerid, params[])
 	if(sscanf(params, "s[32]dD", choice, houseid, amount))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hedit [name] [houseid] [(Optional)amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, VW, CustomInterior, CustomExterior, Class (1-3), Level, Price, Delete");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Exterior, Interior, VW, CustomInterior, CustomExterior, Class (1-3), Level, Price, Delete, Ignore");
 		return 1;
 	}
 
-	if(strcmp(choice, "delete", true) == 0)
+	if(strcmp(choice, "ignore", true) == 0)
+	{
+		if(PlayerInfo[playerid][pAdmin] < 99999) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+		SendClientMessageEx(playerid, COLOR_WHITE, HouseInfo[houseid][hIgnore] ? ("House set to be checked in Inactive Player Resource checks!"):("House set to be ignored from Inactive Player Resource checks!"));
+		HouseInfo[houseid][hIgnore] = !HouseInfo[houseid][hIgnore];
+		HouseInfo[houseid][hInactive] = 0;
+		HouseInfo[houseid][hExpire] = 0;
+		HouseInfo[houseid][hCounter] = 0;
+		SaveHouse(houseid);
+
+		format(string, sizeof(string), "%s has edited HouseID %d's Ignore state to %d.", GetPlayerNameEx(playerid), houseid, HouseInfo[houseid][hIgnore]);
+		Log("logs/hedit.log", string);
+	}
+	else if(strcmp(choice, "delete", true) == 0)
 	{
 		if(HouseInfo[houseid][hExteriorX] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house does not exist!");
 		// Do not reset the SQL ID as the house still exists but is not owned by any player and it isn't spawned
@@ -965,8 +974,8 @@ CMD:hedit(playerid, params[])
 	{
 		new Float: Pos[3];
 		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-		format(string, sizeof(string), "%s has edited HouseID %d's Interior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], Pos[0], Pos[1], Pos[2]);
-		Log("logs/hedit.log", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s has edited HouseID %d's Interior. (B:  %f, %f, %f | A: %f, %f, %f)", GetPlayerNameEx(playerid), houseid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], Pos[0], Pos[1], Pos[2]);
+		Log("logs/hedit.log", szMiscArray);
 		GetPlayerPos(playerid, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]);
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hInteriorA]);
 		HouseInfo[houseid][hIntIW] = GetPlayerInterior( playerid );
@@ -1015,8 +1024,8 @@ CMD:hedit(playerid, params[])
 	{
 	    new Float: Pos[3];
 		GetPlayerPos(playerid, Pos[0], Pos[1], Pos[2]);
-		format(string, sizeof(string), "%s has edited HouseID %d's Exterior. (Before:  %f, %f, %f | After: %f, %f, %f)", GetPlayerNameEx(playerid), houseid,  HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], Pos[0], Pos[1], Pos[2]);
-		Log("logs/hedit.log", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s has edited HouseID %d's Exterior. (B:  %f, %f, %f | A: %f, %f, %f)", GetPlayerNameEx(playerid), houseid,  HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], Pos[0], Pos[1], Pos[2]);
+		Log("logs/hedit.log", szMiscArray);
 		GetPlayerPos(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]);
 		GetPlayerFacingAngle(playerid, HouseInfo[houseid][hExteriorA]);
 		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
@@ -1435,6 +1444,8 @@ CMD:hstatus(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "Sale Sign - Description: %s | Expires in: %s", HouseInfo[hid][hSignDesc], (HouseInfo[hid][hSignExpire]) ? ConvertTimeS(HouseInfo[hid][hSignExpire]-gettime()):("None"));
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Inactivity - Status: %s | Expires: %s | Ignore: %d (1 = admin | 2 = shop) | Counter: %d", HouseInfo[hid][hInactive] ? ("Inactive"):("Active"), !HouseInfo[hid][hExpire] ? ("N/A"):date(HouseInfo[hid][hExpire], 4), HouseInfo[hid][hIgnore], HouseInfo[hid][hCounter]);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	return 1;
 }
 
@@ -1668,9 +1679,13 @@ public DeleteHouse(houseid, adminid)
 	if(IsValidDynamicObject(HouseInfo[houseid][hSignObj])) DestroyDynamicObject(HouseInfo[houseid][hSignObj]), HouseInfo[houseid][hSignObj] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hSignText])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hSignText]), HouseInfo[houseid][hSignText] = Text3D:-1;
 	HouseInfo[houseid][hLastLogin] = 0;
+	HouseInfo[houseid][hExpire] = 0;
+	HouseInfo[houseid][hInactive] = 0;
+	HouseInfo[houseid][hIgnore] = 0;
+	HouseInfo[houseid][hCounter] = 0;
 	SaveHouse(houseid);
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Resource System)"), houseid);
+	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), houseid);
 	Log("logs/hedit.log", szMiscArray);
 	return 1;
 }
