@@ -1223,7 +1223,7 @@ CMD:deletecdveh(playerid, params[]) {
 				ID = GetBusinessCarSlot(iVehicle);
 
 			if(Businesses[iBusiness][bVehID][ID] != INVALID_VEHICLE_ID) {
-			    if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][ID])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][ID]);
+			    if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][ID])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][ID]), Businesses[iBusiness][bVehicleLabel][ID] = Text3D:-1;
                 DestroyVehicle(Businesses[iBusiness][bVehID][ID]);
                	Businesses[iBusiness][bModel][ID] = 0;
 				Businesses[iBusiness][bParkPosX][ID] = 0;
@@ -1509,7 +1509,16 @@ CMD:shopbusiness(playerid, params[])
 			DestroyDynamicGasPump(businessid, i);
 		}
 		for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++) {
-			DestroyVehicle(Businesses[businessid][bVehID][i]);
+			if(IsValidVehicle(Businesses[businessid][bVehID][i])) DestroyVehicle(Businesses[businessid][bVehID][i]);
+			if(IsValidDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i])) DestroyDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i]), Businesses[businessid][bVehicleLabel][i] = Text3D:-1;
+			Businesses[businessid][bModel][i] = 0;
+			Businesses[businessid][bParkPosX][i] = 0;
+			Businesses[businessid][bParkPosY][i] = 0;
+			Businesses[businessid][bParkPosZ][i] = 0;
+			Businesses[businessid][bParkAngle][i] = 0;
+			Businesses[businessid][bVehID][i] = 0;
+			Businesses[businessid][bPrice][i] = 0;
+			SaveDealershipVehicle(businessid, i);
 		}
 	}
 
@@ -2077,7 +2086,16 @@ CMD:bedit(playerid, params[])
 			DestroyDynamicGasPump(businessid, i);
 		}
 		for (new i; i < MAX_BUSINESS_DEALERSHIP_VEHICLES; i++) {
-			DestroyVehicle(Businesses[businessid][bVehID][i]);
+			if(IsValidVehicle(Businesses[businessid][bVehID][i])) DestroyVehicle(Businesses[businessid][bVehID][i]);
+			if(IsValidDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i])) DestroyDynamic3DTextLabel(Businesses[businessid][bVehicleLabel][i]), Businesses[businessid][bVehicleLabel][i] = Text3D:-1;
+			Businesses[businessid][bModel][i] = 0;
+			Businesses[businessid][bParkPosX][i] = 0;
+			Businesses[businessid][bParkPosY][i] = 0;
+			Businesses[businessid][bParkPosZ][i] = 0;
+			Businesses[businessid][bParkAngle][i] = 0;
+			Businesses[businessid][bVehID][i] = 0;
+			Businesses[businessid][bPrice][i] = 0;
+			SaveDealershipVehicle(businessid, i);
 		}
 	}
 

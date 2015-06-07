@@ -35,6 +35,9 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+forward GiftPlayer_(playerid, giveplayerid, gtype); // For use via CallRemoteFunction
+public GiftPlayer_(playerid, giveplayerid, gtype) return GiftPlayer(playerid, giveplayerid, gtype);
+
 stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal giftbox
 {
 	if(gtype == 1)

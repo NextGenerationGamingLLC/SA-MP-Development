@@ -34,7 +34,7 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+/*
 NationSel_InitNationNameText(Text:txtInit)
 {
   	TextDrawUseBox(txtInit, 0);
@@ -141,7 +141,7 @@ NationSel_HandleNationSelection(playerid)
 		TextDrawHideForPlayer(playerid,txtTierraRobada);
 		RegistrationStep[playerid] = 0;
 	    PlayerInfo[playerid][pTut] = 1;
-		gOoc[playerid] = 0; gNews[playerid] = 0; gFam[playerid] = 0;
+		gOoc[playerid] = 0; gNews[playerid] = 0;
 		TogglePlayerControllable(playerid, 1);
 		SetCamBack(playerid);
 		DeletePVar(playerid, "MedicBill");
@@ -236,7 +236,7 @@ NationSel_HandleNationSelection(playerid)
 	else if(lr < 0) {
 	   NationSel_SwitchToPrevNation(playerid);
 	}
-}
+}*/
 
 
 CMD:apply(playerid, params[])

@@ -52,7 +52,53 @@ CMD:accept(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid");
             return 1;
         }
-		if(strcmp(params, "renderaid", true) == 0)
+		if(strcmp(params, "door", true) == 0)
+		{
+			new target, fine, count;
+			target = INVALID_PLAYER_ID;
+			foreach(new i: Player)
+			{
+				if(gPlayerLogged{i} == 1 && DDSalePendingAdmin[i] == false && DDSalePendingPlayer[i] == true && DDSaleTarget[i] == playerid)
+				{
+					target = i;
+					count ++;
+					if(count > 1) break;
+				}
+			}
+			if(target == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have an active dynamic door sale offer.");
+			if(count > 1)
+			{
+				foreach(new i : Player) if(gPlayerLogged{i} == 1 && DDSaleTarget[i] == playerid) ClearDoorSaleVariables(i);
+				SendClientMessageEx(playerid, COLOR_GREY, "An error occurred, please try making your transaction again.");
+				return 1;
+			}
+			if(GetPlayerCash(playerid) < DDSalePrice[target]) 
+			{
+				format(string, sizeof(string), "You do not have enough money for this transaction ($%s).", number_format(DDSalePrice[target]));
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+				return 1;
+			}
+			fine = CalculatePercentage(DDSalePrice[target], 10, 1000000);
+			if(GetPlayerCash(target) < fine)
+			{
+				format(string, sizeof(string), "%s does not have the sufficient funds for the transfer fine ($%s).", GetPlayerNameEx(target), number_format(fine));
+				SendClientMessageEx(playerid, COLOR_GREY, string);
+				return 1;
+			}
+			stop DDSaleTimer[target];
+			DDSalePendingAdmin[target] = true;
+			DDSalePendingPlayer[target] = false;
+			format(string, sizeof(string), "You have accepted %s's dynamic door sale offer for $%s.", GetPlayerNameEx(target), number_format(DDSalePrice[target]));
+			SendClientMessageEx(playerid, COLOR_GREEN, string);
+			SendClientMessageEx(playerid, COLOR_GREEN, "Server administration will now review the request before it is processed.");
+			format(string, sizeof(string), "%s accepted your dynamic door sale offer for $%s.", GetPlayerNameEx(playerid), number_format(DDSalePrice[target]));
+			SendClientMessageEx(target, COLOR_GREEN, string);
+			SendClientMessageEx(target, COLOR_GREEN, "Server administration will now review the request before it is processed.");
+			format(string, sizeof(string), "[New Dynamic Door Sale Request]: (ID: %d) %s.", target, GetPlayerNameEx(target));
+			ABroadCast(COLOR_LIGHTRED, string, 4);
+			return 1;
+		}
+		else if(strcmp(params, "renderaid", true) == 0)
 		{
 			if(!GetPVarType(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a injured state.");
 			if(!GetPVarType(playerid, "renderaid")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you assistance!");
@@ -2797,7 +2843,13 @@ CMD:cancel(playerid, params[])
 		return 1;
 	}
 
-	if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
+	if(strcmp(choice, "door", true) == 0)
+	{
+		if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are not logged into your account.");
+		if(DDSalePendingAdmin[playerid] == false && DDSalePendingPlayer[playerid] == false) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have a pending dynamic door sale.");
+		ClearDoorSaleVariables(playerid);
+	}
+	else if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
 	else if(strcmp(choice,"sex",true) == 0) {	
 		if(GetPVarType(playerid, "SexOfferTo")) { 
 			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID; 

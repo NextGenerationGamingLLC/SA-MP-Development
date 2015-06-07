@@ -34,6 +34,54 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+stock LoadPlants() {
+	printf("[LoadPlants] Loading data from database...");
+	mysql_function_query(MainPipeline, "SELECT * FROM `plants`", true, "PlantsLoadQuery", "");
+}
+
+forward PlantsLoadQuery();
+public PlantsLoadQuery() {
+
+	new
+		iFields,
+		iRows,
+		iIndex,
+		szResult[128];
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	while((iIndex < iRows)) {
+		cache_get_field_content(iIndex, "Owner", szResult, MainPipeline); Plants[iIndex][pOwner] = strval(szResult);
+		cache_get_field_content(iIndex, "Object", szResult, MainPipeline); Plants[iIndex][pObject] = strval(szResult);
+		cache_get_field_content(iIndex, "PlantType", szResult, MainPipeline); Plants[iIndex][pPlantType] = strval(szResult);
+		cache_get_field_content(iIndex, "PositionX", szResult, MainPipeline); Plants[iIndex][pPos][0] = floatstr(szResult);
+		cache_get_field_content(iIndex, "PositionY", szResult, MainPipeline); Plants[iIndex][pPos][1] = floatstr(szResult);
+		cache_get_field_content(iIndex, "PositionZ", szResult, MainPipeline); Plants[iIndex][pPos][2] = floatstr(szResult);
+		cache_get_field_content(iIndex, "Virtual", szResult, MainPipeline); Plants[iIndex][pVirtual] = strval(szResult);
+		cache_get_field_content(iIndex, "Interior", szResult, MainPipeline); Plants[iIndex][pInterior] = strval(szResult);
+		cache_get_field_content(iIndex, "Growth", szResult, MainPipeline); Plants[iIndex][pGrowth] = strval(szResult);
+		cache_get_field_content(iIndex, "Expires", szResult, MainPipeline); Plants[iIndex][pExpires] = strval(szResult);
+		cache_get_field_content(iIndex, "DrugsSkill", szResult, MainPipeline); Plants[iIndex][pDrugsSkill] = strval(szResult);
+
+		if(Plants[iIndex][pOwner] != 0) {
+		    Plants[iIndex][pObjectSpawned] = CreateDynamicObject(Plants[iIndex][pObject], Plants[iIndex][pPos][0], Plants[iIndex][pPos][1], Plants[iIndex][pPos][2], 0.0, 0.0, 0.0, Plants[iIndex][pVirtual], Plants[iIndex][pInterior]);
+		}
+		iIndex++;
+	}
+	if(iIndex > 0) printf("[LoadPlants] Successfully loaded %d plants", iIndex);
+	else printf("[LoadPlants] Error: Failed to load any plants!");
+	return 1;
+}
+
+stock SavePlant(plant)
+{
+	new query[300];
+	format(query, sizeof(query), "UPDATE `plants` SET `Owner` = %d, `Object` = %d, `PlantType` = %d, `PositionX` = %f, `PositionY` = %f, `PositionZ` = %f, `Virtual` = %d, \
+	`Interior` = %d, `Growth` = %d, `Expires` = %d, `DrugsSkill` = %d WHERE `PlantID` = %d",Plants[plant][pOwner], Plants[plant][pObject], Plants[plant][pPlantType], Plants[plant][pPos][0], Plants[plant][pPos][1], Plants[plant][pPos][2],
+	Plants[plant][pVirtual], Plants[plant][pInterior], Plants[plant][pGrowth], Plants[plant][pExpires], Plants[plant][pDrugsSkill], plant+1);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 1;
+}
 
 stock SavePlants()
 {
@@ -1092,4 +1140,56 @@ CMD:usecrack(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any crack left!");
 	}
 	return 1;
+}
+
+PlantTimer()
+{
+	szMiscArray[0] = 0;
+	for(new i = 0; i < MAX_PLANTS; i++)
+	{
+		if(IsValidDynamicObject(Plants[i][pObjectSpawned]))
+		{
+			if(Plants[i][pExpires] > gettime())
+			{
+				switch(Plants[i][pPlantType])
+				{
+					case 1:
+					{
+						if(Plants[i][pGrowth] < 45)
+						{
+							switch(Plants[i][pDrugsSkill])
+							{
+								case 0 .. 50: Plants[i][pGrowth] += 1;
+								case 51 .. 100: Plants[i][pGrowth] += 2;
+								case 101 .. 200: Plants[i][pGrowth] += 3;
+								case 201 .. 400: Plants[i][pGrowth] += 4;
+								default: Plants[i][pGrowth] += 5;
+							}
+						}
+					}
+					case 2:
+					{
+						if(Plants[i][pGrowth] < 120) Plants[i][pGrowth] += 1;
+						if(Plants[i][pGrowth] == 120)
+						{
+							DestroyDynamicObject(Plants[i][pObjectSpawned]);
+							Plants[i][pObjectSpawned] = CreateDynamicObject(862, Plants[i][pPos][0], Plants[i][pPos][1], Plants[i][pPos][2], 0.0, 0.0, 0.0, Plants[i][pVirtual], Plants[i][pInterior]);
+							Plants[i][pGrowth] = 121;
+							Plants[i][pObject] = 862;
+							format(szMiscArray, sizeof(szMiscArray), "Opium plant (%d) is ready to be picked.", i);
+							Log("logs/plant.log", szMiscArray);
+						}
+					}
+				}
+			}
+			else if(Plants[i][pExpires] == 0) { }
+			else
+			{
+				format(szMiscArray, sizeof(szMiscArray), "Plant (%d) has expired.", i);
+				Log("logs/plant.log", szMiscArray);
+				DestroyPlant(i);
+				SavePlant(i);
+			}
+		}
+	}
 }

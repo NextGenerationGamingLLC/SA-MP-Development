@@ -512,7 +512,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 			{
 				PlayerInfo[playerid][pFitness] -= 5;
 				PlayerInfo[playerid][pHunger] -= 10;
+				if(PlayerInfo[playerid][pHunger] < 0) PlayerInfo[playerid][pHunger] = 0;
+
 				PlayerInfo[killerid][pHunger] -= 10;
+				if(PlayerInfo[killerid][pHunger] < 0) PlayerInfo[killerid][pHunger] = 0;
 				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
 				else PlayerInfo[killerid][pFitness] += 5;
 

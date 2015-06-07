@@ -207,7 +207,7 @@ SetPlayerSpawn(playerid)
 		}
 		if(PlayerInfo[playerid][pTut] == 0)
 		{
-			gOoc[playerid] = 1; gNews[playerid] = 1; gFam[playerid] = 1;
+			gOoc[playerid] = 1; gNews[playerid] = 1;
 			TogglePlayerControllable(playerid, false);
 			SetPlayerColor(playerid,TEAM_HIT_COLOR);
 			PlayerNationSelection[playerid] = -1;

@@ -68,7 +68,7 @@ CMD:tow(playerid, params[])
 						||((hKey = PlayerInfo[i][pPhousekey3]) != INVALID_HOUSE_ID) && IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[hKey][hExteriorX], HouseInfo[hKey][hExteriorY], HouseInfo[hKey][hExteriorZ])) {
 							return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle doesn't need to be towed.");
 						}
-
+						RemoveVehicleFromMeter(closestcar);
 						arr_Towing[playerid] = closestcar;
 						SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
 						return AttachTrailerToVehicle(closestcar,carid);
@@ -77,6 +77,7 @@ CMD:tow(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
 				AttachTrailerToVehicle(closestcar,carid);
 				arr_Towing[playerid] = closestcar;
+				RemoveVehicleFromMeter(closestcar);
 				return 1;
 			}
 		}
@@ -98,6 +99,7 @@ CMD:tow(playerid, params[])
 					{
 						if(GetPlayerVehicle(i, closestcar) != -1)
 						{
+							RemoveVehicleFromMeter(closestcar);
 							arr_Towing[playerid] = closestcar;
 							SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is available for impounding.");
 							return AttachTrailerToVehicle(closestcar,carid);
@@ -108,6 +110,7 @@ CMD:tow(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle has no registration, it is available for impounding.");
 				AttachTrailerToVehicle(closestcar,carid);
 				arr_Towing[playerid] = closestcar;
+				RemoveVehicleFromMeter(closestcar);
 			}
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to tow with this vehicle.");

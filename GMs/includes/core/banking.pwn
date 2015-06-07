@@ -334,7 +334,11 @@ PayDay(i) {
 					PlayerInfo[i][pTrickortreat]--;
 				}
 			}
-
+			if(month == 5 && day == 25) //Memorial Day 2015
+			{
+				if(++PlayerInfo[i][pTrickortreat] == 3)
+					SendClientMessageEx(i, -1, "You have been given 1 Double EXP Token for playing 3 hours!"), PlayerInfo[i][pEXPToken]++, PlayerInfo[i][pTrickortreat] = 0;
+			}
 			//Weekday Madness for Fall Into Fun event; re-using Trickortreat variable to check connected time
 			/*if(month == 10 && (day == 9 || day == 16))
 			{

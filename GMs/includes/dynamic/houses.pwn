@@ -78,9 +78,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 stock SaveHouse(houseid)
 {
-	new string[2048];
+	szMiscArray[0] = 0;
 	printf("Saving House ID %d", houseid);
-	format(string, sizeof(string), "UPDATE `houses` SET \
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
 		`Owned`=%d, \
 		`Level`=%d, \
 		`Description`='%s', \
@@ -115,7 +115,7 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hIntVW]
 	);
 
-	format(string, sizeof(string), "%s \
+	format(szMiscArray, sizeof(szMiscArray), "%s \
 		`Lock`=%d, \
 		`Rentable`=%d, \
 		`RentFee`=%d, \
@@ -143,7 +143,7 @@ stock SaveHouse(houseid)
 		`ClosetX`=%f, \
 		`ClosetY`=%f, \
 		`ClosetZ`=%f,",
-		string,
+		szMiscArray,
 		HouseInfo[houseid][hLock],
 		HouseInfo[houseid][hRentable],
 		HouseInfo[houseid][hRentFee],
@@ -173,7 +173,7 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hClosetZ]
 	);
 		
-	format(string, sizeof(string), "%s \
+	format(szMiscArray, sizeof(szMiscArray), "%s \
 		`SignDesc`='%s', \
 		`SignX`=%f, \
 		`SignY`=%f, \
@@ -184,9 +184,8 @@ stock SaveHouse(houseid)
 		`Expire`=%d, \
 		`Inactive`=%d, \
 		`Ignore`=%d, \
-		`Counter`=%d \
-		WHERE `id`=%d",
-		string,
+		`Counter`=%d,",
+		szMiscArray,
 		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
 		HouseInfo[houseid][hSign][0],
 		HouseInfo[houseid][hSign][1],
@@ -197,11 +196,36 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hExpire],
 		HouseInfo[houseid][hInactive],
 		HouseInfo[houseid][hIgnore],
-		HouseInfo[houseid][hCounter],
+		HouseInfo[houseid][hCounter]
+	);
+	
+	format(szMiscArray, sizeof(szMiscArray), "%s \
+		`Listed`=%d, \
+		`PendingApproval`=%d, \
+		`ListedTimeStamp`=%d, \
+		`ListingPrice`=%d, \
+		`LinkedDoor0`=%d, \
+		`LinkedDoor1`=%d, \
+		`LinkedDoor2`=%d, \
+		`LinkedDoor3`=%d, \
+		`LinkedDoor4`=%d, \
+		`ListingDescription`='%s' \
+		WHERE `id`=%d",
+		szMiscArray,
+		HouseInfo[houseid][Listed],
+		HouseInfo[houseid][PendingApproval],
+		HouseInfo[houseid][ListedTimeStamp],
+		HouseInfo[houseid][ListingPrice],
+		HouseInfo[houseid][LinkedDoor][0],
+		HouseInfo[houseid][LinkedDoor][1],
+		HouseInfo[houseid][LinkedDoor][2],
+		HouseInfo[houseid][LinkedDoor][3],
+		HouseInfo[houseid][LinkedDoor][4],
+		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadHouse(houseid)
@@ -288,6 +312,17 @@ public OnLoadHouse(index)
 		HouseInfo[index][hIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
 		HouseInfo[index][hCounter] = cache_get_field_content_int(row, "Counter", MainPipeline);
 		
+		HouseInfo[index][Listed] = cache_get_field_content_int(row, "Listed", MainPipeline); 
+		HouseInfo[index][PendingApproval] = cache_get_field_content_int(row, "PendingApproval", MainPipeline);
+		HouseInfo[index][ListedTimeStamp] = cache_get_field_content_int(row, "ListedTimeStamp", MainPipeline);
+		HouseInfo[index][ListingPrice] = cache_get_field_content_int(row, "ListingPrice", MainPipeline); 
+		cache_get_field_content(row, "ListingDescription", HouseInfo[index][ListingDescription], MainPipeline, 128);
+		for(new i = 0; i < 5; i ++)
+		{
+			format(szField, sizeof(szField), "LinkedDoor%d", i);
+			HouseInfo[index][LinkedDoor][i] = cache_get_field_content_int(row, szField, MainPipeline);
+		}
+		
 		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
@@ -369,6 +404,17 @@ public OnLoadHouses()
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
+		
+		HouseInfo[i][Listed] = cache_get_field_content_int(i, "Listed", MainPipeline); 
+		HouseInfo[i][PendingApproval] = cache_get_field_content_int(i, "PendingApproval", MainPipeline);
+		HouseInfo[i][ListedTimeStamp] = cache_get_field_content_int(i, "ListedTimeStamp", MainPipeline);
+		HouseInfo[i][ListingPrice] = cache_get_field_content_int(i, "ListingPrice", MainPipeline); 
+		cache_get_field_content(i, "ListingDescription", HouseInfo[i][ListingDescription], MainPipeline, 128);
+		for(new l = 0; l < 5; l ++)
+		{
+			format(szField, sizeof(szField), "LinkedDoor%d", l);
+			HouseInfo[i][LinkedDoor][l] = cache_get_field_content_int(i, szField, MainPipeline);
+		}
 		
 		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
 		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);

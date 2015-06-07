@@ -351,3 +351,47 @@ CMD:stopcracking(playerid, params[])
 	}
 	return 1;
 }
+
+DeliverVehicleTimer(i)
+{
+	szMiscArray[0] = 0;
+	if(GetPVarType(i, "DeliveringVehicleTime")) {
+		new Float: x,
+			Float: y,
+			Float: z,
+			int = GetPlayerInterior(i),
+			ownerid = GetPVarInt(i, "LockPickPlayer");
+		GetVehiclePos(GetPVarInt(i, "LockPickVehicle"), x, y, z);
+		if(GetPVarInt(i, "DeliveringVehicleTime") < gettime() || !IsPlayerInRangeOfPoint(i, 50.0, x, y, z) && int == 0) {
+			SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
+			if(GetPVarType(i, "LockPickVehicleSQLId")) 
+			{
+				format(szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+				DeletePVar(i, "LockPickVehicleSQLId");
+				DeletePVar(i, "LockPickPlayerSQLId");
+				DeletePVar(i, "LockPickPlayerName");
+			}
+			else {
+				new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+				--PlayerCars;
+				VehicleSpawned[ownerid]--;
+				PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
+				PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+				PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
+				PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
+				PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
+				GetVehicleHealth(PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvHealth]);
+				PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
+				g_mysql_SaveVehicle(ownerid, slot);
+			}
+			
+			DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+			
+			DisablePlayerCheckpoint(i);
+			DeletePVar(i, "DeliveringVehicleTime");
+			DeletePVar(i, "LockPickVehicle");
+			DeletePVar(i, "LockPickPlayer");
+		}
+	}
+}

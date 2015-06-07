@@ -39,7 +39,7 @@
 
 CMD:dm(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+    if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
     new string[128], giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dm [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
@@ -85,7 +85,7 @@ CMD:sdm(playerid, params[])
 
 CMD:kos(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
 		new giveplayerid, string[128];
 		if(!sscanf(params, "u", giveplayerid)) {
@@ -140,7 +140,7 @@ CMD:skos(playerid, params[])
 
 CMD:pg(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		new giveplayerid, string[128];
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
@@ -194,7 +194,7 @@ CMD:spg(playerid, params[])
 
 CMD:mg(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		new giveplayerid, string[128];
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
@@ -248,7 +248,7 @@ CMD:smg(playerid, params[])
 
 CMD:rk(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		new giveplayerid, string[128];
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
@@ -302,7 +302,7 @@ CMD:srk(playerid, params[])
 
 CMD:nonrp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		new giveplayerid, string[128];
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");

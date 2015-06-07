@@ -332,6 +332,8 @@ CMD:givegun(playerid, params[])
                 SetPlayerSpecialAction(playa, SPECIAL_ACTION_USEJETPACK);
                 SendClientMessageEx(playerid, COLOR_GRAD1, sstring);
             }
+			format(szMiscArray, sizeof(szMiscArray), "%s(%s) has given %s(%d) (%s) a %s(%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(playa), GetPlayerSQLId(playa), GetPlayerIpEx(playa), GetWeaponNameEx(gun), gun);
+			Log("logs/admingive.log", szMiscArray);
         }
     }
     else {
@@ -2239,9 +2241,8 @@ CMD:permaban(playerid, params[])
 				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
 			}
 			return 1;
-		}
+		} else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	return 1;
 }
 
@@ -5009,7 +5010,7 @@ CMD:slap(playerid, params[])
 	    new szString[128], giveplayerid, Float:posx, Float:posy, Float:posz, Float:shealth;
 	    if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /slap [player]");
 	    if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	    if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) && giveplayerid != playerid) {
+	    if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) && giveplayerid != playerid) {
 			format(szString, sizeof(szString), "AdmCmd: %s has tried to slap you!", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_YELLOW, szString);
 			SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on a the same/greater level admin than you!");

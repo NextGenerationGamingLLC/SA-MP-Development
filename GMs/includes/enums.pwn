@@ -1217,12 +1217,16 @@ enum hInfo
 	hSignObj,
 	Text3D:hSignText,
 	hLastLogin,
-	
-	//WIP
 	hExpire,
 	hInactive,
 	hIgnore,
-	hCounter
+	hCounter,
+	Listed,
+	ListingPrice,
+	LinkedDoor[5],
+	PendingApproval,
+	ListedTimeStamp,
+	ListingDescription[128]
 };
 
 enum dmpInfo
@@ -1276,8 +1280,6 @@ enum ddInfo
 	ddPass[24],
 	ddLocked,
 	ddLastLogin,
-	
-	//WIP
 	ddExpire,
 	ddInactive,
 	ddIgnore,

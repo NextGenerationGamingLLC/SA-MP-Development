@@ -74,7 +74,7 @@ public OnCrimesLoad()
 		arrCrimeData[i][c_iJFine] = cache_get_field_content_int(i, "fine", MainPipeline); 
 		arrCrimeData[i][c_iBail] = cache_get_field_content_int(i, "bail", MainPipeline); 
 	}
-	print("Crime Data Loaded.");
+	print("[LoadCrimes] Crime Data Loaded.");
 }
 
 stock SaveCrimes()
@@ -116,19 +116,17 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 			format(szMiscArray, sizeof(szMiscArray), "----Misdemeanors----\n");
 			for(new i = 0; i < MAX_CRIMES; i++)
 			{
-				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance])
-				if(arrCrimeData[i][c_iType] == 1)
+				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 1)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}%i-%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
+					format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
 				}
 			}
 			format(szMiscArray, sizeof(szMiscArray), "%s----Felonies----\n", szMiscArray);
 			for(new i = 0; i < MAX_CRIMES; i++)
 			{
-				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance])
-				if(arrCrimeData[i][c_iType] == 2)
+				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 2)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "%s{AA3333}%i-%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
+					format(szMiscArray, sizeof(szMiscArray), "%s{AA3333}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
 				}
 			}
 			SetPVarInt(iPlayerID, "suspect_TargetID", iSuspectID);
@@ -136,13 +134,7 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 		}
 		case DIALOG_EDIT_CRIMES:
 		{
-			//ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nTR", "Select", "Exit");
-			strcat(szMiscArray, "ID\tName\tTime (min)\tFine");
-			for(new i = 0; i < MAX_CRIMES; i++)
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
-			}
-			ShowPlayerDialog(iPlayerID, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
+			ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nTR", "Select", "Exit");
 		}
 	}
 	return 1;
@@ -155,93 +147,68 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		case DIALOG_SHOW_CRIMES:
 		{
-			if(response)
+			if(!response) return 1;
+			for(new i = 0; i < MAX_CRIMES; i++)
 			{
-				new id, name[32];
-				
-				if(sscanf(inputtext, "p<->is[32]", id, name)) return 1;
-				for(new i = 0; i < MAX_CRIMES; i++)
+				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 				{
-					if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
+					if(arrCrimeData[i][c_iID] == strval(inputtext))
 					{
-						if(arrCrimeData[i][c_iID] == id)
+						new iTargetID = GetPVarInt(playerid, "suspect_TargetID");
+						++PlayerInfo[iTargetID][pCrimes];
+						PlayerInfo[iTargetID][pWantedLevel] += arrCrimeData[i][c_iType];
+						if(PlayerInfo[iTargetID][pWantedLevel] > 6)
 						{
-							new iTargetID = GetPVarInt(playerid, "suspect_TargetID");
-							if(strlen(inputtext) <= 3)
-							{
-								return ShowCrimesDialog(playerid, iTargetID);
-							}
-							if(inputtext[0] == '-')
-							{
-								return ShowCrimesDialog(playerid, iTargetID);
-							}
-							++PlayerInfo[iTargetID][pCrimes];
-							PlayerInfo[iTargetID][pWantedLevel] += arrCrimeData[i][c_iType];
-							if(PlayerInfo[iTargetID][pWantedLevel] > 6)
-							{
-								PlayerInfo[iTargetID][pWantedLevel] = 6;
-							}
-							SetPlayerWantedLevel(iTargetID, PlayerInfo[iTargetID][pWantedLevel]);
-							if(PlayerInfo[iTargetID][pConnectHours] < 32)
-							{
-								PlayerInfo[iTargetID][pWantedJailTime] += arrCrimeData[i][c_iJTime]/10;
-								PlayerInfo[iTargetID][pWantedJailFine] += arrCrimeData[i][c_iJFine]/10;
-							}
-							else
-							{
-								PlayerInfo[iTargetID][pWantedJailTime] += arrCrimeData[i][c_iJTime];
-								PlayerInfo[iTargetID][pWantedJailFine] += arrCrimeData[i][c_iJFine];
-							}
-							new szCountry[10], szCrime[128];
-							if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
-							{
-								format(szCountry, sizeof(szCountry), "[SA] ");
-							}
-							else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
-							{
-								format(szCountry, sizeof(szCountry), "[TR] ");
-							}
-							strcat(szCrime, szCountry);
-							strcat(szCrime, arrCrimeData[i][c_szName]);
-							AddCrime(playerid, iTargetID, szCrime);
-
-							format(szMiscArray, sizeof(szMiscArray), "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
-							SendClientMessageEx(iTargetID, COLOR_LIGHTRED, szMiscArray);
-
-							format(szMiscArray, sizeof(szMiscArray), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
-							SendClientMessageEx(iTargetID, COLOR_YELLOW, szMiscArray);
-
-							foreach(new p: Player)
-							{
-								if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-									format(szMiscArray, sizeof(szMiscArray), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-									SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
-									SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-								}
-							}
-							PlayerInfo[iTargetID][pDefendTime] = 60;
+							PlayerInfo[iTargetID][pWantedLevel] = 6;
 						}
+						SetPlayerWantedLevel(iTargetID, PlayerInfo[iTargetID][pWantedLevel]);
+						if(PlayerInfo[iTargetID][pConnectHours] < 32)
+						{
+							PlayerInfo[iTargetID][pWantedJailTime] += arrCrimeData[i][c_iJTime]/10;
+							PlayerInfo[iTargetID][pWantedJailFine] += arrCrimeData[i][c_iJFine]/10;
+						}
+						else
+						{
+							PlayerInfo[iTargetID][pWantedJailTime] += arrCrimeData[i][c_iJTime];
+							PlayerInfo[iTargetID][pWantedJailFine] += arrCrimeData[i][c_iJFine];
+						}
+						new szCountry[10], szCrime[128];
+						if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
+						{
+							format(szCountry, sizeof(szCountry), "[SA] ");
+						}
+						else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
+						{
+							format(szCountry, sizeof(szCountry), "[TR] ");
+						}
+						strcat(szCrime, szCountry);
+						strcat(szCrime, arrCrimeData[i][c_szName]);
+						AddCrime(playerid, iTargetID, szCrime);
+
+						format(szMiscArray, sizeof(szMiscArray), "You've commited a crime ( %s ). Reporter: %s.", szCrime, GetPlayerNameEx(playerid));
+						SendClientMessageEx(iTargetID, COLOR_LIGHTRED, szMiscArray);
+
+						format(szMiscArray, sizeof(szMiscArray), "Current wanted level: %d", PlayerInfo[iTargetID][pWantedLevel]);
+						SendClientMessageEx(iTargetID, COLOR_YELLOW, szMiscArray);
+
+						foreach(new p: Player)
+						{
+							if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
+								format(szMiscArray, sizeof(szMiscArray), "HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+								format(szMiscArray, sizeof(szMiscArray), "HQ: Crime: %s, suspect: %s", szCrime, GetPlayerNameEx(iTargetID));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+							}
+						}
+						PlayerInfo[iTargetID][pDefendTime] = 60;
 					}
 				}
-			}
-			else
-			{
-				return 1;
 			}
 		}
 		case DIALOG_EDIT_CRIMES:
 		{
 			if(!response) return 1;
-			strcat(szMiscArray, "ID\tName\tTime (min)\tFine");
-			for(new i = 0; i < MAX_CRIMES; i++)
-			{
-				if(arrCrimeData[i][c_iNation] == (listitem+1))
-				{
-					format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
-				}
-			}
-			ShowPlayerDialog(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
+			ShowCrimesList(playerid);
 		}
 		case DIALOG_CRIMES_LIST:
 		{
@@ -250,11 +217,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SetPVarInt(playerid, "iEditCrime", strval(inputtext));
 			format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s", arrCrimeData[strval(inputtext)-1][c_szName]);
 			ShowPlayerDialog(playerid, DIALOG_CRIMES_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Edit Type\nEdit Name\nEdit Time\nEdit Fine", "Select", "Cancel");
-		
 		}
 		case DIALOG_CRIMES_EDIT:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
 			szMiscArray[0] = 0;
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			switch(listitem)
@@ -289,7 +255,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CRIMES_TYPE:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iType] = listitem+1;
 			szMiscArray[0] = 0;
@@ -299,7 +265,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CRIMES_NATION:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			arrCrimeData[iEditCrime][c_iNation] = listitem+1;
 			szMiscArray[0] = 0;
@@ -309,19 +275,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CRIMES_NAME:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
+			if(isnull(inputtext) || strlen(inputtext) > 32) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please enter a valid name no longer than 32 characters.");
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
-			new oldName[32];
-			format(oldName, sizeof(oldName), "%s", arrCrimeData[iEditCrime][c_szName]);
-			format(arrCrimeData[iEditCrime][c_szName], 32, "%s", inputtext);
 			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "You updated crime %s's name to %s", oldName, inputtext);
+			format(szMiscArray, sizeof(szMiscArray), "You updated crime %s's name to %s", arrCrimeData[iEditCrime][c_szName], inputtext);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			format(arrCrimeData[iEditCrime][c_szName], 32, "%s", inputtext);
 			SaveCrime(iEditCrime);
 		}
 		case DIALOG_CRIMES_TIME:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a time above 0 minutes.");
 			arrCrimeData[iEditCrime][c_iJTime] = strval(inputtext);
@@ -332,7 +297,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_CRIMES_FINE:
 		{
-			if(!response) return 1;
+			if(!response) return ShowCrimesList(playerid);
 			new iEditCrime = GetPVarInt(playerid, "iEditCrime")-1;
 			if(strval(inputtext) < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please input a fine above $0.");
 			arrCrimeData[iEditCrime][c_iJFine] = strval(inputtext);
@@ -348,8 +313,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 CMD:clist(playerid, params[]) return cmd_crimelist(playerid, params);
 CMD:crimelist(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pFactionModerator]) return SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: You are not authorized to use this command.");
-	ShowCrimesDialog(playerid, 0, DIALOG_EDIT_CRIMES);
+	if(PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: You are not authorized to use this command.");
+	ShowCrimesList(playerid);
 	return 1;
 }
 
@@ -380,4 +345,15 @@ CMD:su(playerid, params[]) {
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;
+}
+
+ShowCrimesList(playerid)
+{
+	szMiscArray[0] = 0;
+	strcat(szMiscArray, "ID\tName\tTime (min)\tFine");
+	for(new i = 0; i < MAX_CRIMES; i++)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
+	}
+	return ShowPlayerDialog(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
 }

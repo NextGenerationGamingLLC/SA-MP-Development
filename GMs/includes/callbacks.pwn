@@ -375,11 +375,11 @@ public OnPlayerUpdate(playerid)
 	}
 	playerSeconds[playerid] = gettime();
 
-	if(PlayerInfo[playerid][pNation] == -1 && TutStep[playerid] == 24 && RegistrationStep[playerid] == 3)
+/* 	if(PlayerInfo[playerid][pNation] == -1 && TutStep[playerid] == 24 && RegistrationStep[playerid] == 3)
 	{
 	    NationSel_HandleNationSelection(playerid);
 	    return 1;
-	}
+	} */
 
 	new pCurWeap = GetPlayerWeapon(playerid);
     if(pCurWeap != pCurrentWeapon{playerid})
@@ -1970,7 +1970,6 @@ public OnPlayerConnect(playerid)
 	arr_Towing[playerid] = INVALID_VEHICLE_ID;
 	gNews[playerid] = 0;
 	gHelp[playerid] = 1;
-	gFam[playerid] = 0;
 	gPlayerLogged{playerid} = 0;
 	gPlayerLogTries[playerid] = 0;
 	IsSpawned[playerid] = 0;
@@ -6495,6 +6494,22 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "StPatrickToy", modelid);
 		ShowPlayerDialog(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
+	}
+	else if(extraid == 0525) // Memorial's Day
+	{
+		if(!response) return 1;
+		new name[24] = "None";
+		for(new i; i < sizeof(HoldingObjectsAll); i++)
+		{
+			if(HoldingObjectsAll[i][holdingmodelid] == modelid)
+			{
+				format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+				break;
+			}
+		}
+		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
+		SetPVarInt(playerid, "MemorialToy", modelid);
+		ShowPlayerDialog(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
 	return 1;
 }

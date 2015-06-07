@@ -458,7 +458,7 @@ CMD:speedcam(playerid, params[])
 	if (IsPlayerInAnyVehicle(playerid))
 		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot manage speed cameras whilst inside a vehicle.");
 
-	if (IsACop(playerid) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pLeader]) || PlayerInfo[playerid][pAdmin] >= 1337)
+	if (IsAGovernment(playerid) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pLeader]) || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 			Get nearest speedcamera", "Select", "Cancel");

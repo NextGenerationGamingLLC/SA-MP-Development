@@ -2598,6 +2598,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return 1;
 			new closestCar = GetClosestCar(playerid, .fRange = 8.0);
 			if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle!");
+			ClearAnimations(playerid);
 			if(listitem == 0)
 			{
 				if(IsACop(playerid) && IsACopCar(closestCar)) SetPlayerSkin(playerid, 285); // SWAT

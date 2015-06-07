@@ -1852,6 +1852,7 @@ CMD:car(playerid, params[])
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
 			SetTimerEx("SetVehicleEngine", 1000, 0, "dd",  vehicleid, playerid);
+			RemoveVehicleFromMeter(vehicleid);
 		}
 	}
 	else if(strcmp(params, "lights", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -2235,7 +2236,7 @@ CMD:park(playerid, params[])
 		Businesses[iBusiness][bVehID][iSlot] = CreateVehicle(Businesses[iBusiness][bModel][iSlot], Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],
 		Businesses[iBusiness][bParkAngle][iSlot], 0, 0, 10);
 
-		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]);
+		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]), Businesses[iBusiness][bVehicleLabel][iSlot] = Text3D:-1;
 		szMiscArray[0] = 0;
 		format(szMiscArray, sizeof(szMiscArray), "%s For Sale | Price: $%s", GetVehicleName(Businesses[iBusiness][bVehID][iSlot]), number_format(Businesses[iBusiness][bPrice][iSlot]));
 		Businesses[iBusiness][bVehicleLabel][iSlot] = CreateDynamic3DTextLabel(szMiscArray,COLOR_LIGHTBLUE,Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],8.0,INVALID_PLAYER_ID, Businesses[iBusiness][bVehID][iSlot]);
@@ -2763,4 +2764,34 @@ CMD:eject(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "   You need to be in a Vehicle to use this!");
 	}
 	return 1;
+}
+
+RentVehicleTimer(i)
+{
+	szMiscArray[0] = 0;
+	if(GetPVarType(i, "RentedVehicle"))
+	{
+		if(GetPVarInt(i, "RentedHours") > 0)
+		{
+			SetPVarInt(i, "RentedHours", GetPVarInt(i, "RentedHours")-1);
+			if(GetPVarInt(i, "RentedHours") == 0)
+			{
+				SendClientMessageEx(i, COLOR_CYAN, "Your rented vehicle has expired.");
+				DestroyVehicle(GetPVarInt(i, "RentedVehicle"));
+
+				format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(i));
+				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+				DeletePVar(i, "RentedHours");
+				DeletePVar(i, "RentedVehicle");
+			}
+			else if(GetPVarInt(i, "RentedHours") == 120 || GetPVarInt(i, "RentedHours") == 60)
+			{
+				format(szMiscArray, sizeof(szMiscArray), "%d minutes(s) remaining on your rented vehicle.", GetPVarInt(i, "RentedHours"));
+				SendClientMessageEx(i, COLOR_CYAN, szMiscArray);
+			}
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `rentedcars` SET `hours` = '%d' WHERE `sqlid` = '%d'",GetPVarInt(i, "RentedHours"), GetPlayerSQLId(i));
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		}
+	}
 }

@@ -801,7 +801,6 @@ new gLastCar[MAX_PLAYERS];
 new gOoc[MAX_PLAYERS];
 new gNews[MAX_PLAYERS];
 new gHelp[MAX_PLAYERS];
-new gFam[MAX_PLAYERS];
 new Spectate[MAX_PLAYERS];
 new GettingSpectated[MAX_PLAYERS];
 new SpecTime[MAX_PLAYERS];
@@ -858,10 +857,10 @@ new TotalCitizens;
 new TRCitizens;
 new PlayerNationSelection[MAX_PLAYERS];
 new PlayerHasNationSelected[MAX_PLAYERS];
-new Text:txtNationSelHelper;
+/* new Text:txtNationSelHelper;
 new Text:txtNationSelMain;
 new Text:txtSanAndreas;
-new Text:txtTierraRobada;
+new Text:txtTierraRobada; */
 new ghour = 0;
 new gminute = 0;
 new gsecond = 0;
@@ -1697,6 +1696,7 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19423, 0, "Red Headphones"},
 {19424, 0, "Blue Headphones"},
 {11245, 0, "US Flag"},
+{2614, 0, "US Flag 2"},
 {2404, 0,"Surfboard1"},
 {2405, 0,"Surfboard2"},
 {2406, 0,"Surfboard3"},
@@ -2699,3 +2699,14 @@ new bool:PlayerIsDead[MAX_PLAYERS];
 new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];
 
 new bool:emailcheck = true;
+
+new AdTracking[MAX_PLAYERS];
+new HouseMarketTracking[MAX_PLAYERS];
+
+new DDSalePrice[MAX_PLAYERS];
+new DDSaleTarget[MAX_PLAYERS];
+new DDSaleTracking[MAX_PLAYERS];
+new DDSaleDoors[MAX_PLAYERS][5];
+new Timer:DDSaleTimer[MAX_PLAYERS];
+new bool:DDSalePendingAdmin[MAX_PLAYERS];
+new bool:DDSalePendingPlayer[MAX_PLAYERS];

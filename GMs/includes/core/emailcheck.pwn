@@ -11,7 +11,7 @@ InvalidEmailCheck(playerid, email[], task)
 	if(isnull(email))
 		return ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "%s/email_check.php?t=%d&e=%s", SAMP_WEB, task, email);
+	format(szMiscArray, sizeof(szMiscArray), "%s/email_check.php?t=%d&e=%s&pid=%d", SAMP_WEB, task, email, GetPlayerSQLId(playerid));
 	HTTP(playerid, HTTP_GET, szMiscArray, "", "OnInvalidEmailCheck");
 	return 1;
 }

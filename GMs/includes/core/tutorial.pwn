@@ -660,9 +660,61 @@ stock TutorialStep(playerid)
 			HideTutGUIFrame(playerid, 23);
 			DeletePVar(playerid, "pTutTime");
 			TutStep[playerid] = 24;
-			TextDrawShowForPlayer(playerid, txtNationSelHelper);
+			/* TextDrawShowForPlayer(playerid, txtNationSelHelper);
 			TextDrawShowForPlayer(playerid, txtNationSelMain);
-    		PlayerNationSelection[playerid] = -1;
+    		PlayerNationSelection[playerid] = -1; */
+			RegistrationStep[playerid] = 0;
+			PlayerInfo[playerid][pTut] = 1;
+			gOoc[playerid] = 0; gNews[playerid] = 0;
+			TogglePlayerControllable(playerid, 0);
+			SetCamBack(playerid);
+			DeletePVar(playerid, "MedicBill");
+			SetPlayerColor(playerid,TEAM_HIT_COLOR);
+			SetPlayerInterior(playerid,0);
+			SetHealth(playerid, 100);
+			for(new x;x<10000;x++)
+			{
+				new rand=random(300);
+				if(PlayerInfo[playerid][pSex] == 2)
+				{
+					if(IsValidSkin(rand) && IsFemaleSpawnSkin(rand))
+					{
+						PlayerInfo[playerid][pModel] = rand;
+						SetPlayerSkin(playerid, rand);
+						break;
+					}
+				}
+				else
+				{
+					if(IsValidSkin(rand) && !IsFemaleSkin(rand))
+					{
+						PlayerInfo[playerid][pModel] = rand;
+						SetPlayerSkin(playerid, rand);
+						break;
+					}
+				}
+			}
+			SetCameraBehindPlayer(playerid);
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pNation] = 0;
+			switch(random(2))
+			{
+				case 0:
+				{
+					SetPlayerPos(playerid, 1715.1201,-1903.1711,13.5665);
+					SetPlayerFacingAngle(playerid, 360.0);
+					InterpolateCameraPos(playerid, 1715.130615, -1905.752563, 165.564697, 1715.130615, -1905.752563, 14.295700, 8000, 1);
+					InterpolateCameraLookAt(playerid, 1712.883056, -1902.467529, 165.168472, 1715.114868, -1901.757568, 14.095783, 8000, 1);
+				}
+				case 1:
+				{
+					SetPlayerPos(playerid, -1969.0737,138.1210,27.6875);
+					SetPlayerFacingAngle(playerid, 90.0);
+					InterpolateCameraPos(playerid, -1948.954711, 138.121002, 123.546340, -1965.578247, 138.121002, 28.462400, 8000, 1);
+					InterpolateCameraLookAt(playerid, -1947.651367, 141.897277, 123.343559, -1969.573242, 138.121002, 28.262483, 8000, 1);
+				}
+			}
+			SetTimerEx("DelaySetCameraBehindPlayer", 8000, 0, "i", playerid);
 			if(emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);
 		}
 	}
@@ -693,3 +745,6 @@ CMD:next(playerid, params[])
 	TutorialStep(playerid);
 	return 1;
 }
+
+forward DelaySetCameraBehindPlayer(playerid);
+public DelaySetCameraBehindPlayer(playerid) SetCameraBehindPlayer(playerid), TogglePlayerControllable(playerid, 1);

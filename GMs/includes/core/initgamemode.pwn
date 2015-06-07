@@ -60,7 +60,7 @@ InitiateGamemode()
 	ShowPlayerMarkers(PLAYER_MARKERS_MODE_STREAMED);
 	DisableInteriorEnterExits();
 	ClearReports();
-	NationSel_InitTextDraws();
+	//NationSel_InitTextDraws();
 	CountCitizens();
 	SetNameTagDrawDistance(40.0);
 	AllowInteriorWeapons(1);
@@ -77,6 +77,7 @@ InitiateGamemode()
 	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
 	SetTimer("Anti_Rapidfire", 1000, true);
 	SetTimer("OnEnterFire", 1000, true);
+	LoadParkingMeters();
 	
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates

@@ -117,63 +117,8 @@ task SyncUp[60000]()
 
 	SyncTime();
 	SyncMinTime();
-	
-	foreach(new i: Player) 
-	{
-		if(PlayerInfo[i][pDedicatedWarn] > 0)
-		{
-			PlayerInfo[i][pDedicatedWarn]--;
-		}
-	}
 
-	for(new i = 0; i < MAX_PLANTS; i++)
-	{
-    	if(IsValidDynamicObject(Plants[i][pObjectSpawned]))
-		{
-    	    if(Plants[i][pExpires] > gettime())
-			{
-				switch(Plants[i][pPlantType])
-				{
-				    case 1:
-				    {
-				        if(Plants[i][pGrowth] < 45)
-						{
-       						switch(Plants[i][pDrugsSkill])
-							{
-								case 0 .. 50: Plants[i][pGrowth] += 1;
-								case 51 .. 100: Plants[i][pGrowth] += 2;
-								case 101 .. 200: Plants[i][pGrowth] += 3;
-								case 201 .. 400: Plants[i][pGrowth] += 4;
-								default: Plants[i][pGrowth] += 5;
-							}
-						}
-				    }
-				    case 2:
-				    {
-				        if(Plants[i][pGrowth] < 120) Plants[i][pGrowth] += 1;
-						if(Plants[i][pGrowth] == 120)
-						{
-						    DestroyDynamicObject(Plants[i][pObjectSpawned]);
-						    Plants[i][pObjectSpawned] = CreateDynamicObject(862, Plants[i][pPos][0], Plants[i][pPos][1], Plants[i][pPos][2], 0.0, 0.0, 0.0, Plants[i][pVirtual], Plants[i][pInterior]);
-							Plants[i][pGrowth] = 121;
-							Plants[i][pObject] = 862;
-							format(string, sizeof(string), "Opium plant (%d) is ready to be picked.", i);
-							Log("logs/plant.log", string);
-						}
-					}
-				}
-			}
-			else if(Plants[i][pExpires] == 0) { }
-			else
-			{
-			    format(string, sizeof(string), "Plant (%d) has expired.", i);
-				Log("logs/plant.log", string);
-			    DestroyPlant(i);
-			    SavePlant(i);
-			}
-		}
-	}
-	
+	PlantTimer();
 	/*for(new i = 0; i < MAX_GANGTAGS; i++)
 	{
 		if(GangTags[i][gt_Time] > 0)
@@ -184,70 +129,12 @@ task SyncUp[60000]()
 
 	foreach(new i: Player)
 	{
-		if(GetPVarType(i, "DeliveringVehicleTime")) {
-			new Float: x,
-				Float: y,
-				Float: z,
-				int = GetPlayerInterior(i),
-				ownerid = GetPVarInt(i, "LockPickPlayer");
-			GetVehiclePos(GetPVarInt(i, "LockPickVehicle"), x, y, z);
-			if(GetPVarInt(i, "DeliveringVehicleTime") < gettime() || !IsPlayerInRangeOfPoint(i, 50.0, x, y, z) && int == 0) {
-				SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
-				if(GetPVarType(i, "LockPickVehicleSQLId")) 
-				{
-					format(string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
-					DeletePVar(i, "LockPickVehicleSQLId");
-					DeletePVar(i, "LockPickPlayerSQLId");
-					DeletePVar(i, "LockPickPlayerName");
-				}
-				else {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-					--PlayerCars;
-					VehicleSpawned[ownerid]--;
-					PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-					PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvSpawned] = 0;
-					PlayerVehicleInfo[ownerid][slot][pvFuel] = VehicleFuel[GetPVarInt(i, "LockPickVehicle")];
-					GetVehicleHealth(PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvHealth]);
-					PlayerVehicleInfo[ownerid][slot][pvId] = INVALID_PLAYER_VEHICLE_ID;
-					g_mysql_SaveVehicle(ownerid, slot);
-				}
-				
-				DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
-				
-				DisablePlayerCheckpoint(i);
-				DeletePVar(i, "DeliveringVehicleTime");
-				DeletePVar(i, "LockPickVehicle");
-				DeletePVar(i, "LockPickPlayer");
-			}
-		}
-		if(GetPVarType(i, "RentedVehicle"))
+		if(PlayerInfo[i][pDedicatedWarn] > 0)
 		{
-			if(GetPVarInt(i, "RentedHours") > 0)
-			{
-				SetPVarInt(i, "RentedHours", GetPVarInt(i, "RentedHours")-1);
-				if(GetPVarInt(i, "RentedHours") == 0)
-				{
-					SendClientMessageEx(i, COLOR_CYAN, "Your rented vehicle has expired.");
-					DestroyVehicle(GetPVarInt(i, "RentedVehicle"));
-
-					format(string, sizeof(string), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(i));
-					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-					DeletePVar(i, "RentedHours");
-					DeletePVar(i, "RentedVehicle");
-				}
-				else if(GetPVarInt(i, "RentedHours") == 120 || GetPVarInt(i, "RentedHours") == 60)
-				{
-					format(string, sizeof(string), "%d minutes(s) remaining on your rented vehicle.", GetPVarInt(i, "RentedHours"));
-					SendClientMessageEx(i, COLOR_CYAN, string);
-				}
-				format(string, sizeof(string), "UPDATE `rentedcars` SET `hours` = '%d' WHERE `sqlid` = '%d'",GetPVarInt(i, "RentedHours"), GetPlayerSQLId(i));
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			}
+			PlayerInfo[i][pDedicatedWarn]--;
 		}
+		DeliverVehicleTimer(i);
+		RentVehicleTimer(i);
 		SetPlayerScore(i, PlayerInfo[i][pLevel]);
 		if(PlayerInfo[i][pProbationTime] > 0 && !PlayerInfo[i][pBeingSentenced])
 		{

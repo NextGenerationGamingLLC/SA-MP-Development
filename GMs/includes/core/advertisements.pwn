@@ -369,13 +369,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
-
-CMD:ad(playerid, params[])
-{
-	SendClientMessageEx(playerid, COLOR_WHITE, "The /ad command has been removed - use /ads or /advertisements.");
-	return 1;
-}
-
 CMD:ads(playerid, params[]) {
 	return cmd_advertisements(playerid, params);
 }

@@ -2092,7 +2092,7 @@ CMD:wheelclamp(playerid, params[])
 				ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SendClientMessageEx(playerid, COLOR_PURPLE, "(( You're now placing a Wheel Clamp in the vehicle's front tire, please wait. ))");
 			}
-			
+			RemoveVehicleFromMeter(vehicleid);
 		} 
 		else
 			SendClientMessageEx(playerid, COLOR_WHITE, "You are not near any car.");

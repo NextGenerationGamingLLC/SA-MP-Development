@@ -44,6 +44,7 @@
 			/*  ---------------- NATIVES ----------------- */
 native WP_Hash(buffer[], len, const str[]);
 native gpci(playerid, serial[], maxlen);
+native IsValidVehicle(vehicleid);
 #define PRESSED(%0) \
     (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 #define RELEASED(%0) \
@@ -288,6 +289,7 @@ native gpci(playerid, serial[], maxlen);
 #define 		DIALOG_SHOWSCORES 			11
 #define 		DIALOG_NAMECHANGE 			261
 #define 		DIALOG_NAMECHANGE2 			262
+#define			DIALOG_STPATRICKSSHOP		(0317)
 #define			BIGEARS						(10)
 #define			BIGEARS2					(20)
 #define			BIGEARS3					(30)
@@ -989,7 +991,20 @@ native gpci(playerid, serial[], maxlen);
 #define			DIALOG_CRIMES_TIME			(6028)
 #define			DIALOG_CRIMES_FINE			(6029)
 
-#define			DIALOG_STPATRICKSSHOP		(0317)
+#define			DIALOG_DDSALEMAIN			(6030)
+#define			DIALOG_DDSALELINK			(6031)
+#define			DIALOG_DDSALEPRICE			(6032)
+#define			DIALOG_DDSALERECIEPT		(6033)
+#define			DIALOG_DDSALEINFO			(6034)
+
+#define			DIALOG_LISTHOUSEMAIN		(6035)
+#define			DIALOG_LISTHOUSEPRICE		(6036)
+#define			DIALOG_LISTHOUSEDESCRIPTION (6037)
+#define			DIALOG_LISTHOUSEDOORS		(6038)
+#define			DIALOG_LISTHOUSELISTINGS	(6039)
+#define			DIALOG_SELECTEDLISTING		(6040)
+#define			DIALOG_LISTINGINFORMATION	(6041)
+#define			DIALOG_LISTINGOPTIONS		(6042)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

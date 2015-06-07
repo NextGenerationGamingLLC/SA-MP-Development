@@ -325,6 +325,7 @@ public SyncTime()
 		    }
 		}
 		//SaveFamilies();
+		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
 	}
 }
 
