@@ -180,6 +180,11 @@ stock SaveHouse(houseid)
 		`SignZ`=%f, \
 		`SignA`=%f, \
 		`SignExpire`=%d, \
+		`Ammo0`=%d, \
+		`Ammo1`=%d, \
+		`Ammo2`=%d, \
+		`Ammo3`=%d, \
+		`Ammo4`=%d, \
 		`LastLogin`=%d, \
 		`Expire`=%d, \
 		`Inactive`=%d, \
@@ -192,6 +197,11 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hSign][2],
 		HouseInfo[houseid][hSign][3],
 		HouseInfo[houseid][hSignExpire],
+		HouseInfo[houseid][hAmmo][0],
+		HouseInfo[houseid][hAmmo][1],
+		HouseInfo[houseid][hAmmo][2],
+		HouseInfo[houseid][hAmmo][3],
+		HouseInfo[houseid][hAmmo][4],
 		HouseInfo[houseid][hLastLogin],
 		HouseInfo[houseid][hExpire],
 		HouseInfo[houseid][hInactive],
@@ -306,6 +316,13 @@ public OnLoadHouse(index)
 		HouseInfo[index][hSign][2] = cache_get_field_content_float(row, "SignZ", MainPipeline);
 		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
 		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
+
+		HouseInfo[index][hAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
+		HouseInfo[index][hAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
+		HouseInfo[index][hAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
+		HouseInfo[index][hAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
+		HouseInfo[index][hAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
+
 		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
 		HouseInfo[index][hExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
 		HouseInfo[index][hInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);

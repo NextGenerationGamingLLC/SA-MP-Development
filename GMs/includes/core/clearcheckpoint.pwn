@@ -7,6 +7,8 @@ ClearCheckpoint(playerid) {
 	TaxiCallTime[playerid] = 0;
 	BusCallTime[playerid] = 0;
 
+
+	DeletePVar(playerid, "ShipmentCallActive");
 	DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
 	if(GetPVarType(playerid, "DeliveringVehicleTime")) {

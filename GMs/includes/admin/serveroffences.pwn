@@ -425,7 +425,7 @@ CMD:reverse(playerid, params[])
 			PlayerInfo[giveplayerid][pVW] = 0;
 			strcpy(PlayerInfo[giveplayerid][pPrisonReason], "None", 128);
 			SetPlayerToTeamColor(giveplayerid);
-			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(giveplayerid, PlayerInfo[giveplayerid][pJailedWeapons][x], 60000);
+			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(giveplayerid, PlayerInfo[giveplayerid][pJailedWeapons][x], 0);
 			for(new y = 0; y < 5; y++) PlayerInfo[giveplayerid][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[giveplayerid][pJailedWeapons][z] = 0;
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
@@ -881,7 +881,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PlayerInfo[releasedID][pVW] = 0;
 			strcpy(PlayerInfo[releasedID][pPrisonReason], "None", 128);
 			SetPlayerToTeamColor(releasedID);
-			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(releasedID, PlayerInfo[releasedID][pJailedWeapons][x], 60000);
+			for(new x = 0; x < 12; x++) GivePlayerValidWeapon(releasedID, PlayerInfo[releasedID][pJailedWeapons][x], 0);
 			for(new y = 0; y < 5; y++) PlayerInfo[releasedID][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[releasedID][pJailedWeapons][z] = 0;
 			SendClientMessageEx(releasedID, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");

@@ -102,6 +102,13 @@ CMD:taxwithdraw(playerid, params[])
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
+
+			new file[32], day, month, year;
+			getdate(year,month,day);
+
+			format(string,sizeof(string),"%s has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), number_format(amount),reason);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pLeader], month, day, year);
+			Log(file, string);
 		}
 		else
 		{
@@ -206,6 +213,13 @@ CMD:taxdeposit(playerid, params[])
 		GivePlayerCash(playerid, -amount);
 		format( string, sizeof( string ), "You have deposited $%s into the TR vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
+
+		new file[32], day, month, year;
+		getdate(year,month,day);
+
+		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
+		format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pLeader], month, day, year);
+		Log(file, string);
 	}
 	return 1;
 }

@@ -35,7 +35,11 @@ CREATE TABLE `misc` (
   `SecurityCode` varchar(32) NOT NULL DEFAULT 'none',
   `ShopClosed` int(11) NOT NULL DEFAULT '0',
   `RimMod` int(11) NOT NULL DEFAULT '0',
-  `CarVoucher` int(11) NOT NULL DEFAULT '0'
+  `CarVoucher` int(11) NOT NULL DEFAULT '0',
+  `GunPrice0` int(11) NOT NULL DEFAULT '0',
+  `GunPrice1` int(11) NOT NULL DEFAULT '0',
+  `GunPrice2` int(11) NOT NULL DEFAULT '0',
+  `GunPrice3` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

@@ -168,6 +168,31 @@ CMD:frisk(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_GRAD1, string);
 					}
 				}
+				if(arrAmmoData[giveplayerid][awp_iAmmo][0] > 0)
+				{
+					format(string, sizeof(string), "9mm rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][0]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+				if(arrAmmoData[giveplayerid][awp_iAmmo][1] > 0)
+				{
+					format(string, sizeof(string), "7.62x51 rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][1]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+				if(arrAmmoData[giveplayerid][awp_iAmmo][2] > 0)
+				{
+					format(string, sizeof(string), ".50 Cal rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][2]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+				if(arrAmmoData[giveplayerid][awp_iAmmo][3] > 0)
+				{
+					format(string, sizeof(string), "7.62x39 rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][3]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+				if(arrAmmoData[giveplayerid][awp_iAmmo][4] > 0)
+				{
+					format(string, sizeof(string), "12-gauge rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][4]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
 				SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 				format(string, sizeof(string), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

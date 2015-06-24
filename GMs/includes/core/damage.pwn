@@ -69,6 +69,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				}
 				return 1;
 			}
+			if(GetPlayerAmmo(playerid) <= 1 && arrAmmoData[playerid][awp_iAmmo][GetAmmoType(weaponid)] <= 1) return 1; 
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
@@ -106,7 +107,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			if(weaponid !=  23) {
 				RemovePlayerWeapon(playerid, 23);
-				GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+				GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
 				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				pTazer{playerid} = 0;
@@ -152,7 +153,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(pTazer{damagedid} == 1 && (!IsNotAGun(weaponid)))
 		{
 			RemovePlayerWeapon(damagedid, 23);
-			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid}, 60000);
+			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid}, 0);
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(damagedid));
 			ProxDetector(4.0, damagedid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{damagedid} = 0;
@@ -254,6 +255,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		actual_damage *= multiply;
 	}
 
+	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED))
+	{
+		actual_damage = amount;
+		actual_damage *= 1.2;
+	}
+
 	//heroin damage reduction
 	if (GetPVarInt(damagedid, "HeroinDamageResist") == 1) {
 		actual_damage *= 0.25;
@@ -345,9 +352,31 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-    /*new szString[144];
-    format(szString, sizeof(szString), "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
-    SendClientMessage(playerid, -1, szString);*/
+	new iAT = GetAmmoType(weaponid);
+	new iCA = GetPlayerAmmo(playerid);
+
+	szMiscArray[0] = 0; 
+
+	if(iAT != -1 && GetPVarInt(playerid, "IsInArena") < 0) 
+	{
+		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1) 
+		{
+			GameTextForPlayer(playerid, "No ammo!", 1000, 6);
+			format(szMiscArray, sizeof(szMiscArray), "** The weapon clicks **", GetPlayerNameEx(playerid));
+			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10.0, 3000);
+			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
+			SetPlayerArmedWeapon(playerid, 0);
+			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it. 
+		}
+		if(iCA != arrAmmoData[playerid][awp_iAmmo][iAT])
+		{
+			SyncPlayerAmmo(playerid, weaponid);
+			return 0;
+		}
+
+		arrAmmoData[playerid][awp_iAmmo][iAT]--;
+	}
+
 	if(hittype == BULLET_HIT_TYPE_PLAYER)
 	{
 		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;

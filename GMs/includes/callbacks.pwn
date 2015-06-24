@@ -2085,7 +2085,7 @@ public OnPlayerConnect(playerid)
 	InsideTut{playerid} = 0;
 
 	ShowMainMenuGUI(playerid);
-	SetPlayerJoinCamera(playerid);
+	//SetPlayerJoinCamera(playerid);
 	ClearChatbox(playerid);
 	SetPlayerVirtualWorld(playerid, 0);
 
@@ -2172,7 +2172,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
 						}
 					}
 				}
@@ -2201,7 +2201,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
 						}
 					}
 
@@ -2420,8 +2420,8 @@ public OnPlayerDisconnect(playerid, reason)
 		{
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
 		}
-		if(pTazer{playerid} == 1) GivePlayerValidWeapon(playerid,pTazerReplace{playerid},60000);
-		if(GetPVarInt(playerid, "SpeedRadar") == 1) GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"), 60000);
+		if(pTazer{playerid} == 1) GivePlayerValidWeapon(playerid,pTazerReplace{playerid},0);
+		if(GetPVarInt(playerid, "SpeedRadar") == 1) GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"), 0);
 
 		if(GetPVarInt(playerid, "MovingStretcher") != -1) {
 			KillTimer(GetPVarInt(playerid, "TickEMSMove"));
@@ -4260,27 +4260,27 @@ public OnPlayerEnterCheckpoint(playerid)
 							if(level >= 0 && level < 50)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free 9mm as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 22, 60000);
+								GivePlayerValidWeapon(playerid, 22, 10);
 							}
 							else if(level >= 50 && level <= 100)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Shotgun as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 25, 60000);
+								GivePlayerValidWeapon(playerid, 25, 10);
 							}
 							else if(level >= 101 && level <= 200)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free MP5 as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 29, 60000);
+								GivePlayerValidWeapon(playerid, 29, 30);
 							}
 							else if(level >= 201 && level <= 400)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Deagle as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 24, 60000);
+								GivePlayerValidWeapon(playerid, 24, 7);
 							}
 							else if(level >= 401)
 							{
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free AK-47 as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 30, 60000);
+								GivePlayerValidWeapon(playerid, 30, 30);
 							}
 						}
 						else
@@ -5283,7 +5283,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);
 		}*/
-
         if(PlayerInfo[playerid][pGuns][4] > 0)	SetPlayerArmedWeapon(playerid,PlayerInfo[playerid][pGuns][4]);
 		else SetPlayerArmedWeapon(playerid,0);
 
@@ -5485,7 +5484,21 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			 }
 			 else {
 			    SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: This is a Famed vehicle from the Famed garage, therefore it has unlimited fuel.");
-			 }
+			}
+		}
+		else if(IsAGangShipmentTruck(vehicleid))
+		{
+			if(!IsACriminal(playerid))
+			{
+				new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz+1.3);
+				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
+			    RemovePlayerFromVehicle(playerid);
+			    defer NOPCheck(playerid);
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a criminal organization!");
+			}
+			else SendClientMessageEx(playerid, COLOR_YELLOW, "You have taken control of the shipment, drive this truck back to your HQ to deliver its contents.");
 		}
 		else if(DynVeh[vehicleid] != -1)
 		{
@@ -5653,7 +5666,7 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	    {
 			new string[128];
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
-			format(string, sizeof(string), "* %s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s reaches for their seatbelt and unbuckles it.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
   			Seatbelt[playerid] = 0;
 	    }
@@ -5661,7 +5674,7 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	    {
 			new string[128];
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
-			format(string, sizeof(string), "* %s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "* %s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			if(GetPVarType(playerid, "HelmetOn"))
 			{
@@ -6472,7 +6485,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			PlayerToyInfo[playerid][extralist_id][ptRotX], PlayerToyInfo[playerid][extralist_id][ptRotY], PlayerToyInfo[playerid][extralist_id][ptRotZ], PlayerToyInfo[playerid][extralist_id][ptScaleX], PlayerToyInfo[playerid][extralist_id][ptScaleY], PlayerToyInfo[playerid][extralist_id][ptScaleZ]);
 
 			Seatbelt[playerid] = 2;
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and puts it on.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet and puts it on.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
             SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your helmet.");
 		}

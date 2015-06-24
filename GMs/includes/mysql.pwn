@@ -213,6 +213,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "PumpkinStock", szResult, MainPipeline); PumpkinStock = strval(szResult);
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
+
+				for(new x = 0; x < 4; x++)
+				{
+					format(szResult, sizeof(szResult), "GunPrice%d",x);
+					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
+				}
+				
 				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
 				break;
 			}
@@ -236,7 +243,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Email", PlayerInfo[extraid][pEmail], MainPipeline, 128);
 					cache_get_field_content(row,  "IP", PlayerInfo[extraid][pIP], MainPipeline, 16);
 					cache_get_field_content(row,  "SecureIP", PlayerInfo[extraid][pSecureIP], MainPipeline, 16);
-					PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
+					// open beta changed 
+					PlayerInfo[extraid][pConnectHours] = 69;
+					//PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
 					cache_get_field_content(row,  "BirthDate", PlayerInfo[extraid][pBirthDate], MainPipeline, 11);
 					PlayerInfo[extraid][pSex] 					= cache_get_field_content_int(row,  "Sex", MainPipeline); 
 					PlayerInfo[extraid][pBanned] 				= cache_get_field_content_int(row,  "Band", MainPipeline); 
@@ -561,6 +570,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
 					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
 					PlayerInfo[extraid][pEventTokens] = cache_get_field_content_int(row,  "pEventTokens", MainPipeline);
+
+
+					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
+					arrAmmoData[extraid][awp_iAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
+					arrAmmoData[extraid][awp_iAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
+					arrAmmoData[extraid][awp_iAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
+					arrAmmoData[extraid][awp_iAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
+
+					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -1226,7 +1244,7 @@ g_mysql_AccountAuthCheck(playerid)
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", AUTH_THREAD, playerid, g_arrQueryHandle{playerid});
 
 	// Reset the GUI
-	SetPlayerJoinCamera(playerid);
+	//SetPlayerJoinCamera(playerid);
 	ClearChatbox(playerid);
 	SetPlayerVirtualWorld(playerid, 0);
 
@@ -1473,6 +1491,10 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
 	format(query, sizeof(query), "%s `PassComplexCheck` = '%d'", query, PassComplexCheck);
+	format(query, sizeof(query), "%s `GunPrice0 = '%d'", query, GunPrices[0]);
+	format(query, sizeof(query), "%s `GunPrice1 = '%d'", query, GunPrices[1]);
+	format(query, sizeof(query), "%s `GunPrice2 = '%d'", query, GunPrices[2]);
+	format(query, sizeof(query), "%s `GunPrice3 = '%d'", query, GunPrices[3]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -2362,6 +2384,15 @@ stock g_mysql_SaveAccount(playerid)
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo0", arrAmmoData[playerid][awp_iAmmo][0]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo1", arrAmmoData[playerid][awp_iAmmo][1]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo2", arrAmmoData[playerid][awp_iAmmo][2]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo3", arrAmmoData[playerid][awp_iAmmo][3]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo4", arrAmmoData[playerid][awp_iAmmo][4]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
+
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
 	return 1;
@@ -5114,6 +5145,14 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "Tokens", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);
 
+			arrGroupData[iIndex][g_iCrimeType] = cache_get_field_content_int(iIndex, "CrimeType", MainPipeline);
+
+			for(i = 0; i < 5; ++i)
+			{
+				format(szResult, sizeof(szResult), "gAmmo%i", i);
+				arrGroupData[iIndex][g_iAmmo][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
+			}
+
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof(szResult), "GClothes%i", i);
 				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
@@ -5152,7 +5191,14 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			if (arrGroupData[iIndex][g_szGroupName][0] && arrGroupData[iIndex][g_fCratePos][0] != 0.0)
 			{
-				format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
+				if(arrGroupData[iIndex][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+				{
+					format(szResult, sizeof szResult, "%s Shipment Delivery Point\n{1FBDFF}/delivershipment", arrGroupData[iIndex][g_szGroupName]);
+				}
+				else
+				{
+					format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
+				}
 				arrGroupData[iIndex][g_tCrate3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iIndex][g_hDutyColour] * 256 + 0xFF, arrGroupData[iIndex][g_fCratePos][0], arrGroupData[iIndex][g_fCratePos][1], arrGroupData[iIndex][g_fCratePos][2], 10.0, .testlos = 1, .streamdistance = 20.0);
 			}
 			iIndex++;
@@ -6258,7 +6304,7 @@ public CheckTrunkContents(playerid)
 	else {
 		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 60000);
+		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 0);
 		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
 		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME], vehicleid = GetPVarInt(playerid, "LockPickVehicle");

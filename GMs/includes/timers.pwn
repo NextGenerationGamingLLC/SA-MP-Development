@@ -1207,7 +1207,7 @@ task ServerHeartbeat[1000]() {
 							if(wslot != -1) {
 								format(szMessage, sizeof(szMessage), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
 								SendClientMessageEx(i, COLOR_YELLOW, szMessage);
-								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 60000);
+								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 0);
 								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
 								g_mysql_SaveVehicle(ownerid, slot);
 								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];

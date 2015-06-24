@@ -113,6 +113,12 @@ CREATE TABLE `groups` (
   `CratesOrder` int(11) NOT NULL DEFAULT '0',
   `CrateIsland` int(4) NOT NULL DEFAULT '255',
   `IntRadio` int(11) NOT NULL DEFAULT '255',
+  `CrimeType` int(11) NOT NULL DEFAULT '0',
+  `gAmmo0` int(11) NOT NULL DEFAULT '0',
+  `gAmmo1` int(11) NOT NULL DEFAULT '0',
+  `gAmmo2` int(11) NOT NULL DEFAULT '0',
+  `gAmmo3` int(11) NOT NULL DEFAULT '0',
+  `gAmmo4` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 

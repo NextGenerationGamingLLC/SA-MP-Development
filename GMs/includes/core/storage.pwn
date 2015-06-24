@@ -2103,7 +2103,7 @@ CMD:trunktake(playerid, params[]) {
 						szMessage[128];
 
 					GetWeaponName(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], szWeapon, sizeof(szWeapon));
-					GivePlayerValidWeapon(playerid, PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], 60000);
+					GivePlayerValidWeapon(playerid, PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], 0);
 					PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] = 0;
 					g_mysql_SaveVehicle(playerid, d);
 
@@ -2342,7 +2342,7 @@ CMD:getgun(playerid, params[])
 				{
 					new weaponname[50];
 					GetWeaponName(HouseInfo[i][hWeapons][slot-1], weaponname, sizeof(weaponname));
-					GivePlayerValidWeapon(playerid, HouseInfo[i][hWeapons][slot-1], 60000);
+					GivePlayerValidWeapon(playerid, HouseInfo[i][hWeapons][slot-1], 0);
 					HouseInfo[i][hWeapons][slot-1] = 0;
 					if(strcmp(weaponname, "silenced pistol", true, strlen(weaponname)) == 0)
 					{
@@ -2657,6 +2657,79 @@ CMD:hdeposit(playerid, params[])
 	return 1;
 }
 
+CMD:hammodeposit(playerid, params[]) {
+
+	if(Homes[playerid] > 0) {
+		for(new i; i < MAX_HOUSES; i++) {
+			if(PlayerInfo[playerid][pId] == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) {
+
+				szMiscArray[0] = 0;
+				new 
+					iItemID,
+					iAmount; 
+
+				if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammodeposit [choice] [amount]");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
+				}
+				if(0 < arrAmmoData[playerid][awp_iAmmo][iItemID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to deposit more than you have!");
+				if(HouseInfo[i][hAmmo][iItemID] + iAmount > 800) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 800 rounds of each type.");
+
+				HouseInfo[i][hAmmo][iItemID] += iAmount;
+				arrAmmoData[playerid][awp_iAmmo][iItemID] -= iAmount;
+
+				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d rounds into your house's safe.", iAmount);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SaveHouse(i);
+
+				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has deposited %d (%d) rounds into their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, i);
+				Log("logs/hsafe.log", szMiscArray);
+				return 1;
+			}
+			else SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		}
+		SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	}
+	return 1;
+}
+
+CMD:hammowithdraw(playerid, params[]) {
+
+	if(Homes[playerid] > 0) {
+		for(new i; i < MAX_HOUSES; i++) {
+			if(PlayerInfo[playerid][pId] == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) {
+
+				szMiscArray[0] = 0;
+				new 
+					iItemID,
+					iAmount; 
+
+				if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
+					SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammowithdraw [choice] [amount]");
+					return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
+				}
+				if(0 < HouseInfo[i][hAmmo][iItemID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to withdraw more than you have!");
+				if(arrAmmoData[playerid][awp_iAmmo][iItemID] + iAmount > GetMaxAmmoAllowed(playerid, iItemID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot carry that much on you!");
+
+				HouseInfo[i][hAmmo][iItemID] -= iAmount;
+				arrAmmoData[playerid][awp_iAmmo][iItemID] += iAmount;
+
+				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d rounds from your house's safe.", iAmount);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				SaveHouse(i);
+
+				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has withdrawn %d (%d) rounds from their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, i);
+				Log("logs/hsafe.log", szMiscArray);
+				return 1;
+			}
+			else SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
+		}
+		SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+	}
+
+	return 1;
+}
+
 CMD:hbalance(playerid, params[])
 {
 	if(Homes[playerid] > 0)
@@ -2669,6 +2742,22 @@ CMD:hbalance(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREEN, "|___________________________________ House Safe ___________________________________|");
 				format(string, sizeof(string), "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hHeroin]));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+				format(szMiscArray, sizeof(szMiscArray), "9mm: %i / 800 rounds", 	HouseInfo[i][hAmmo][0]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+				format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / 800 rounds", HouseInfo[i][hAmmo][1]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+				format(szMiscArray, sizeof(szMiscArray), ".50 Cal: %i / 800 rounds", HouseInfo[i][hAmmo][2]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+				format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / 800 rounds", HouseInfo[i][hAmmo][3]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+				format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / 800 rounds",HouseInfo[i][hAmmo][4]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				
 				SendClientMessageEx(playerid, COLOR_GREEN, "|__________________________________________________________________________________|");
 				return 1;
 			}
@@ -3193,6 +3282,7 @@ CMD:give(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /give [player] [name] [amount]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Materials, Firework, GoldTokens, Heroin, Rawopium, Syringes, Opiumseeds");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sprunk, Pbtokens");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: ammo1 (9mm), ammo2 (7.62x51), ammo3 (.50cal), ammo4 (7.62x39), ammo5 (12-gauge)");
 		return 1;
 	}
 	/*if(sscanf(params, "us[32]dd", giveplayerid, choice, storageid, amount))
@@ -3476,6 +3566,131 @@ CMD:give(playerid, params[])
 			if (strcmp(choice, "crack", true) == 0)
 			{
 				TransferStorage(giveplayerid, -1, playerid, storageid, 3, amount, -1, -1);
+			}
+			if(strcmp(choice, "ammo1", true) == 0)
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(arrAmmoData[playerid][awp_iAmmo][0] >= amount)
+				{
+					arrAmmoData[playerid][awp_iAmmo][0] -= amount;
+					arrAmmoData[giveplayerid][awp_iAmmo][0] += amount;
+
+					format(string, sizeof(string), "You have recieved %d 9mm rounds from %s", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "You have given %s %d 9mm rounds.", GetPlayerNameEx(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(15, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d 9mm rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					Log("logs/pay.log", string);
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");
+			}
+			if(strcmp(choice, "ammo2", true) == 0)
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(arrAmmoData[playerid][awp_iAmmo][1] >= amount)
+				{
+					arrAmmoData[playerid][awp_iAmmo][1] -= amount;
+					arrAmmoData[giveplayerid][awp_iAmmo][1] += amount;
+
+					format(string, sizeof(string), "You have recieved %d 7.62x51 rounds from %s", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "You have given %s %d 7.62x51 rounds.", GetPlayerNameEx(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(15, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d 7.62x51 rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					Log("logs/pay.log", string);
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");
+			}
+			if(strcmp(choice, "ammo3", true) == 0)
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(arrAmmoData[playerid][awp_iAmmo][2] >= amount)
+				{
+					arrAmmoData[playerid][awp_iAmmo][2] -= amount;
+					arrAmmoData[giveplayerid][awp_iAmmo][2] += amount;
+
+					format(string, sizeof(string), "You have recieved %d .50 Cal rounds from %s", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "You have given %s %d .50 Cal rounds.", GetPlayerNameEx(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(15, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d .50 Cal rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					Log("logs/pay.log", string);
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");
+			}
+			if(strcmp(choice, "ammo4", true) == 0)
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(arrAmmoData[playerid][awp_iAmmo][3] >= amount)
+				{
+					arrAmmoData[playerid][awp_iAmmo][3] -= amount;
+					arrAmmoData[giveplayerid][awp_iAmmo][3] += amount;
+
+					format(string, sizeof(string), "You have recieved %d 7.62x39 rounds from %s", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "You have given %s %d 7.62x39 rounds.", GetPlayerNameEx(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(15, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d 7.62x39 rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					Log("logs/pay.log", string);
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");
+			}
+			if(strcmp(choice, "ammo5", true) == 0)
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(arrAmmoData[playerid][awp_iAmmo][4] >= amount)
+				{
+					arrAmmoData[playerid][awp_iAmmo][4] -= amount;
+					arrAmmoData[giveplayerid][awp_iAmmo][4] += amount;
+
+					format(string, sizeof(string), "You have recieved %d 12-gauge rounds from %s", amount, GetPlayerNameEx(playerid));
+					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "You have given %s %d 12-gauge rounds.", GetPlayerNameEx(giveplayerid), amount);
+					SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(15, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+					new ip[32], ipex[32];
+					GetPlayerIp(playerid, ip, sizeof(ip));
+					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d 12-gauge rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					Log("logs/pay.log", string);
+				}
+				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");
 			}
 		}
 	}

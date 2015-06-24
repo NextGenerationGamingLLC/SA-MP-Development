@@ -57,8 +57,10 @@ CMD:present(playerid, params[])
 			if(courtjail[giveplayerid] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't in the courthouse jail!");
 			if(courtjail[giveplayerid] > 0)
 			{
-				SetPlayerPos(giveplayerid, 1406.145, -1774.3, 7308.95);
-		    	SetPlayerFacingAngle(giveplayerid, 93.34);
+				SetPlayerPos(giveplayerid, 2224.3550,-1033.9563,1200.4340);
+		    	SetPlayerFacingAngle(giveplayerid, 176.9777);
+		    	SetPlayerVirtualWorld(giveplayerid, 0);
+		    	SetPlayerInterior(giveplayerid, 1);
 			}
 			courtjail[giveplayerid] = 0;
 		    SetCameraBehindPlayer(giveplayerid);

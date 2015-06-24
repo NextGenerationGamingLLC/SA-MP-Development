@@ -17,11 +17,14 @@
 								***  Director of SA:MP Development:
 									 Miguel (s0nic)
 
+								*** Assistant Director of Development:
+									 Dom 
+
 								**   Development Staff:
 									 Donuts
-									 Dom
 									 Connor
 									 Jamie
+									 AlexR
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -38,7 +41,6 @@
 
 								** 	Developers:
 									Neo
-									AlexR
 									Austin
 									ThomasJWhite
 									Beren
@@ -74,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.201"
+#define SERVER_GM_TEXT "NG:RP v3.0.202"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -88,6 +90,7 @@
 #include <YSI\y_timers>
 #include <YSI\y_utils>
 #include <mSelection>
+#include <gvar>
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
@@ -236,10 +239,12 @@
 #include "./includes/group/points.pwn"
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
+#include "./includes/gangshipment.pwn"
+#include "./includes/gangcrates.pwn"
+//#include "./includes/gangrobbery.pwn"
 //#include "./includes/group/spraytags.pwn"
 
 //job system includes
-#include "./includes/jobs/armsdealer.pwn"
 #include "./includes/jobs/bartender.pwn"
 #include "./includes/jobs/bodyguard.pwn"
 #include "./includes/jobs/boxing.pwn"
@@ -266,6 +271,8 @@
 #include "./includes/perks/tokens.pwn"
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
+
+#include "./includes/ammo.pwn"
 
 #pragma unused DynamicBusiness
 

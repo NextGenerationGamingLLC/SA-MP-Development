@@ -1154,7 +1154,7 @@ CMD:take(playerid, params[])
 		if(sscanf(params, "s[32]u", choice, giveplayerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /take [name] [player]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Potseeds, OpiumSeeds, DrugCrates.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Potseeds, OpiumSeeds, DrugCrates, Ammo.");
 			return 1;
 		}
 		if(PlayerInfo[playerid][pAdmin] < 2 && (PlayerInfo[giveplayerid][pJailTime] && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot take items from a OOC Prisoner.");
@@ -1460,6 +1460,34 @@ CMD:take(playerid, params[])
 				return 1;
 			}
 		}
+		else if(strcmp(choice,"ammo",true) == 0)
+		{
+			if(IsPlayerConnected(giveplayerid))
+			{
+				if (ProxDetectorS(8.0, playerid, giveplayerid))
+				{
+					format(string, sizeof(string), "* You have taken away %s's ammo.", GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s as taken away your ammo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+					format(string, sizeof(string), "* Officer %s has taken away %s's ammo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					
+					for(new i = 0; i < 5; i++) arrAmmoData[playerid][awp_iAmmo][i] = 0;
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
+					return 1;
+				}
+
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				return 1;
+			}
+		}
 		else
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "   Invalid item specified.");
@@ -1568,13 +1596,13 @@ CMD:tazer(playerid, params[])
 			if(PlayerInfo[playerid][pGuns][2] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][2]);
 			format(string, sizeof(string), "* %s unholsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			GivePlayerValidWeapon(playerid, 23, 60000);
+			GivePlayerValidWeapon(playerid, 23, 0);
 			pTazer{playerid} = 1;
 		}
 		else
 		{
 			RemovePlayerWeapon(playerid, 23);
-			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
 			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{playerid} = 0;

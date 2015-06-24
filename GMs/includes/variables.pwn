@@ -2710,3 +2710,5 @@ new DDSaleDoors[MAX_PLAYERS][5];
 new Timer:DDSaleTimer[MAX_PLAYERS];
 new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
+
+new GunPrices[4];

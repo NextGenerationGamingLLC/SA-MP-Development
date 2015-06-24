@@ -53,9 +53,11 @@ CMD:toganimhelper(playerid, params[])
 
 PlayAnimEx(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
 {
+	if(GetPlayerAnimationIndex(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
 	gPlayerUsingLoopingAnim[playerid] = 1;
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
 	if(!GetPVarType(playerid, "togAnimHelper")) TextDrawShowForPlayer(playerid,txtAnimHelper);
+	return 1;
 }
 
 StopLoopingAnim(playerid)

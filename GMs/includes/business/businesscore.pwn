@@ -2514,7 +2514,7 @@ CMD:addmaterials(playerid, params[])
 	return 1;
 }
 
-CMD:offergun(playerid, params[])
+/*CMD:offergun(playerid, params[])
 {
 	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_GUNSHOP)	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for a gun store!");
@@ -2559,7 +2559,7 @@ CMD:offergun(playerid, params[])
 	SetPVarInt(buyerid, "Business_WeapOffererSQLId", GetPlayerSQLId(playerid));
 	SetPVarInt(buyerid, "Business_WeapPrice", price);
 	return 1;
-}
+}*/
 
 
 CMD:offermenu(playerid, params[])

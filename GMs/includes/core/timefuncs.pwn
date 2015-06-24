@@ -50,6 +50,7 @@ public SyncTime()
 			}*/
 		}
 	    SavePlants();
+	    if(tmphour == 0) ResetVIPAmmoCount();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else
 		{

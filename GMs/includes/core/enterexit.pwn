@@ -280,6 +280,7 @@ CMD:enter(playerid, params[])
 						SendClientMessageEx(playerid, COLOR_WHITE, "Type /beginparkour to begin the bike parkour track.");
 					}
 				}
+				if (Businesses[i][bType] == BUSINESS_TYPE_GUNSHOP) SendClientMessageEx(playerid, COLOR_WHITE, "Type /buygun to see what the ammunation has to offer!");
 			}
 			else GameTextForPlayer(playerid, "~r~Closed", 5000, 1);
 			break;

@@ -300,10 +300,10 @@ CMD:near(playerid, params[])
 CMD:givegun(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 4) {
-        new sstring[128], playa, gun;
+        new sstring[128], playa, gun, ammo;
 
-        if(sscanf(params, "ud", playa, gun)) {
-            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid]");
+        if(sscanf(params, "udd", playa, gun, ammo)) {
+            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid] [ammo]");
             SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
             SendClientMessageEx(playerid, COLOR_GRAD4, "(1)Brass Knuckles (2)Golf Club (3)Nite Stick (4)Knife (5)Baseball Bat (6)Shovel (7)Pool Cue (8)Katana (9)Chainsaw");
             SendClientMessageEx(playerid, COLOR_GRAD4, "(10)Purple Dildo (11)Small White Vibrator (12)Large White Vibrator (13)Silver Vibrator (14)Flowers (15)Cane (16)Frag Grenade");
@@ -324,8 +324,9 @@ CMD:givegun(playerid, params[])
 			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
                 PlayerInfo[playa][pAGuns][GetWeaponSlot(gun)] = gun;
-                GivePlayerValidWeapon(playa, gun, 60000);
+                GivePlayerValidWeapon(playa, gun, ammo);
                 SendClientMessageEx(playerid, COLOR_GRAD1, sstring);
+				SyncPlayerAmmo(playerid, gun);
             }
             else if(playa != INVALID_PLAYER_ID && gun == 21) {
                 JetPack[playa] = 1;
@@ -5609,7 +5610,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine /setammo");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{

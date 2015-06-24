@@ -556,7 +556,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new slot = GetPVarInt(playerid, szMiscArray);
 					if(PlayerInfo[playerid][pBItems][slot] > 0) {
 						GetWeaponName(PlayerInfo[playerid][pBItems][slot], weapname, sizeof(weapname));
-						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot], 60000);
+						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot], 0);
 						
 						DeletePVar(playerid, szMiscArray);
 

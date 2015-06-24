@@ -49,8 +49,6 @@ DeliverPlayerToHospital(playerid, iHospital)
 	PlayerInfo[playerid][pInt] = 1;
 	PlayerInfo[playerid][pHospital] = 1;
 	PlayerInfo[playerid][pDuty] = 0;
-	PlayerInfo[playerid][pHasCuff] = 0;
-	PlayerInfo[playerid][pHasTazer] = 0;
 	PlayerCuffed[playerid] = 0;
 	DeletePVar(playerid, "PlayerCuffed");
 	DeletePVar(playerid, "IsFrozen");
@@ -58,7 +56,15 @@ DeliverPlayerToHospital(playerid, iHospital)
 	PlayerCuffedTime[playerid] = 0;
 	if(PlayerInfo[playerid][pFitness] >= 6) PlayerInfo[playerid][pFitness] -= 6;
 	else PlayerInfo[playerid][pFitness] = 0;
-	if(GetPVarInt(playerid, "_HospitalBeingDelivered") != 1) ResetPlayerWeaponsEx(playerid);
+	if(GetPVarInt(playerid, "_HospitalBeingDelivered") != 1)
+	{
+		ResetPlayerWeaponsEx(playerid);
+		
+		PlayerInfo[playerid][pHasCuff] = 0;
+		PlayerInfo[playerid][pHasTazer] = 0;
+
+		for(new i = 0; i < 5; i++) arrAmmoData[playerid][awp_iAmmo][i] = 0;
+	} 
 	new string[128];
 	
 	new index = GetFreeHospitalBed(iHospital);
@@ -102,6 +108,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 	{
 		arrHospitalBedData[iHospital][iCountDown][index] = 5;
 		SetPVarInt(playerid, "HealthCareActive", 1);
+		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
 	}
 	else if(PlayerInfo[playerid][pHealthCare] > 0) // if player has credit insurance
 	{

@@ -329,6 +329,17 @@ CMD:call(playerid, params[])
 			ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "Please let us know briefly about your news.", "Enter", "End Call");
 		return 1;
 	}
+	if(phonenumb == 180069420)
+	{
+		if(!GetPVarType(playerid, "ShipmentCallActive"))
+		{
+			SetPVarInt(playerid, "ShipmentCallActive", 1);
+
+			SendClientMessageEx(playerid, COLOR_PINK, "** An unknown person picks up the phone.");
+			SetTimerEx("ShipmentConvo", 2000, false, "ii", playerid, 1);
+		}
+		return 1;
+	}
 	if(phonenumb == PlayerInfo[playerid][pPnumber])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You just get a busy tone...");
@@ -562,7 +573,7 @@ CMD:hangup(playerid,params[])
 		return 1;
 	}
 	new caller = Mobile[playerid];
-	if((IsPlayerConnected(caller) && caller != INVALID_PLAYER_ID))
+	if((IsPlayerConnected(caller)/* && caller != INVALID_PLAYER_ID*/))
 	{
 		if(caller < MAX_PLAYERS)
 		{

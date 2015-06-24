@@ -1065,7 +1065,7 @@ CMD:craft(playerid, params[])
 					}
 				case 8:
 					{
-						GivePlayerValidWeapon(playerid, 43, 50);
+						GivePlayerValidWeapon(playerid, 43, 0);
 					}
 				case 9:
 					{

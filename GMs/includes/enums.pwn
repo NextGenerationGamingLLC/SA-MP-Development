@@ -82,8 +82,17 @@ enum eGroupData {
 	g_iPointCapRank,
 	g_iWithdrawRank,
 	g_iTurfTokens,
-	g_iMemberCount
+	g_iMemberCount,
+	g_iCrimeType,
+	g_iAmmo[5]
 }
+
+enum eAmmoData {
+	awp_iAmmo[5],
+	awp_iUpgrade
+}
+
+new arrAmmoData[MAX_PLAYERS][eAmmoData];
 
 enum eLockerData {
 	g_iLockerSQLId,
@@ -129,7 +138,8 @@ enum eGroupVehData {
 	Float:gv_fObjectRX[2],
 	Float:gv_fObjectRY[2],
 	Float:gv_fObjectRZ[2],
-	gv_iSiren
+	gv_iSiren,
+	gv_iAmmoLoaded
 }
 
 enum eBiz {
@@ -1097,7 +1107,8 @@ enum pInfo
 	pJailedWeapons[12],
 	pVIPMod,
 	pLastPass[65],
-	pEventTokens
+	pEventTokens,
+	pVIPGuncount
 };
 
 enum pvInfo
@@ -1217,6 +1228,7 @@ enum hInfo
 	hSignObj,
 	Text3D:hSignText,
 	hLastLogin,
+	hAmmo[5],
 	hExpire,
 	hInactive,
 	hIgnore,

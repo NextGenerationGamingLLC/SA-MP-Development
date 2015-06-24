@@ -59,7 +59,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
 						}
 					}
 				}
@@ -88,7 +88,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
 						}
 					}	
 						
@@ -162,7 +162,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
 						}
 					}
 				}
@@ -464,6 +464,8 @@ SetPlayerSpawn(playerid)
 			if(PlayerInfo[playerid][pArmor] > 0) SetArmour(playerid, PlayerInfo[playerid][pArmor]); else SetArmour(playerid, 0.0);
 			SetCameraBehindPlayer(playerid);
 			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
+			if(PlayerInfo[playerid][pInt] == 0 && PlayerInfo[playerid][pVW] == 0) LoginCamToPlayer(playerid);
+
 		}
 		new Float: x, Float: y, Float: z;
 		GetPlayerPos(playerid, x, y, z);

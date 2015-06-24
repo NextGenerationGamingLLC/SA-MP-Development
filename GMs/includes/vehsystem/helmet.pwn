@@ -73,7 +73,7 @@ CMD:helmet(playerid, params[])
 				break;
 			}
 		}
-		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet, and takes it off.", GetPlayerNameEx(playerid));
+		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their helmet and takes it off.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your helmet.");
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }

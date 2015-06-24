@@ -49,7 +49,7 @@ CMD:help(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange /rld /myammo");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 
 	switch(PlayerInfo[playerid][pJob])
@@ -125,7 +125,7 @@ CMD:help(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "*** %s ***  /spikes /revokelicense /vcheck /vmdc /vticket /tow /untow /impound /dmvrelease /gdonate /togradio /togdept", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /flares /cones /wants /docarrest /siren /destroyplant /radargun /searchcar /dvsiren /vradar", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /flares /cones /wants /docarrest /siren /destroyplant /radargun /searchcar /dvsiren /vradar /loadammo /deliverammo", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) format(string, sizeof(string), "%s /bug /listbugs /clearbugs /hfind",string);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) {
@@ -221,7 +221,7 @@ CMD:help(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 2)
 	{
-		format(string, sizeof(string), "*** VIP *** /spawnatvip (%s credits)", number_format(ShopItems[30][sItemPrice]));
+		format(string, sizeof(string), "*** VIP *** /spawnatvip (%s credits) /vipgunsleft", number_format(ShopItems[30][sItemPrice]));
 		SendClientMessageEx(playerid, COLOR_PURPLE, string);
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 4)

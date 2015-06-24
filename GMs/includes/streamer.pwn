@@ -254,7 +254,7 @@ public LoadStreamerDynamicPickups()
 
     // Pickups
 	CreateDynamicPickup(1239, 23, 301.042633, 178.700408, 1007.171875, -1); // Detective job (SF)
-	CreateDynamicPickup(1239, 23, -2089.344970, 87.800231, 35.320312, -1); // Drug Dealer job (SF)
+	//CreateDynamicPickup(1239, 23, -2089.344970, 87.800231, 35.320312, -1); // Drug Dealer job (SF)
 	CreateDynamicPickup(1239, 23, -1713.961425, 1348.545166, 7.180452, -1); // Pizza Boy job (SF)
 	//CreateDynamicPickup(1239, 23, -2240.9011, 2313.1653, 4.9918, -1); // Taxi Driver job (TR)
 	CreateDynamicPickup(1239, 23, 833.60, 3.23, 1004.17, -1); // /paymytickets point
@@ -272,16 +272,16 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, -1513.4904,2614.3591,55.8078, -1); // Arms Dealer Job (TR)
 	CreateDynamicPickup(1239, 23, -1356.7195,2065.3450,52.4677, -1); // Craftsman Job (TR)
 	CreateDynamicPickup(1239, 23, -2412.5095, 2246.2598, 4.8137, -1); // Craftsman Job (TR)
-	CreateDynamicPickup(1239, 23, -1528.0924,2688.7837,55.8359, -1); // Drug Dealer Job (TR)
+	//CreateDynamicPickup(1239, 23, -1528.0924,2688.7837,55.8359, -1); // Drug Dealer Job (TR)
 	CreateDynamicPickup(1239, 23, -821.3508,1574.9393,27.1172, -1); // Bodyguard Job (TR)
 	CreateDynamicPickup(1239, 23,-2412.5095, 2293.3923, 4.8137, -1); // Bodyguard Job (TR)
-	CreateDynamicPickup(1239, 23, -2630.7375,2349.3994,8.4892, -1); // Drug Smuggler Job (TR)
+	//CreateDynamicPickup(1239, 23, -2630.7375,2349.3994,8.4892, -1); // Drug Smuggler Job (TR)
 	CreateDynamicPickup(1239, 23, -864.3550,1536.9703,22.5870, -1); // Bartender Job (TR)
 	CreateDynamicPickup(1239, 23, 757.3734,5.7227,1000.7012, -1); // Train Pos
 	CreateDynamicPickup(1239, 23, 758.43,-78.0,1000.65, -1); // Train Pos (MALL GYM)
 	CreateDynamicPickup(1239, 23, 2903.371826, -2254.517333, 7.244657, -1); // Train Pos (New GYM)
 	CreateDynamicPickup(1239, 23, 293.6505,188.3670,1007.1719, -1); //FBI
-	CreateDynamicPickup(1239, 23, 2354.2808,-1169.2959,28.0066, -1); //Drug Smuggler
+	//CreateDynamicPickup(1239, 23, 2354.2808,-1169.2959,28.0066, -1); //Drug Smuggler
 	CreateDynamicPickup(1240, 23, 1179.4012451172,-1331.5632324219,2423.0461425781, -1);// /healme//Old Healme: 2103.4998,2824.2568,-16.1672
 	CreateDynamicPickup(1239, 23, 1169.7209472656,-1348.3218994141,2423.0461425781, -1);// /Old Insurance: 2086.4915,2826.7122,-16.1744
     CreateDynamicPickup(1210, 23, 63.973995, 1973.618774, -68.786064, -1); //Hitman Pickup
@@ -309,15 +309,15 @@ public LoadStreamerDynamicPickups()
 	CreateDynamicPickup(1239, 23, 1478.9515, -1755.7147, 3285.2859); //Detective Registration
 	CreateDynamicPickup(1239, 23, 1469.5247,-1755.7039,3285.2859); //Lawyer Registration
 	CreateDynamicPickup(1239, 23, 1215.1304,-11.8431,1000.9219); //Whore Registration
-	CreateDynamicPickup(1239, 23, 2166.3772,-1675.3829,15.0859); //DrugDealer Registration
+	//CreateDynamicPickup(1239, 23, 2166.3772,-1675.3829,15.0859); //DrugDealer Registration
 	CreateDynamicPickup(1239, 23, 2226.1716,-1718.1792,13.5165); //BodyGuard Registration (LS)
 	CreateDynamicPickup(1239, 23, -2269.256103, -158.054321, 35.320312); //BodyGuard Registration (SF)
 	CreateDynamicPickup(1239, 23, 1224.13, 267.98, 19.55); //Bodyguard (Montgomery) Registration
 	CreateDynamicPickup(1239, 23, 161.92, -25.70, 1.57); //CarMechanic (Blueberry) Registration
 	CreateDynamicPickup(1239, 23, -2032.601928, 143.866592, 28.835937); //CarMechanic (SF) Registration
 	CreateDynamicPickup(1239, 23, 1099.73,-1504.67,15.800); // BodyGuard Registration (MALL GYM)
-	CreateDynamicPickup(1239, 23, 1366.4325,-1275.2096,13.5469); //ArmsDealer Registration (LS)
-	CreateDynamicPickup(1239, 23, -2623.333984, 209.235931, 4.684767); //ArmsDealer Registration (SF)
+	//CreateDynamicPickup(1239, 23, 1366.4325,-1275.2096,13.5469); //ArmsDealer Registration (LS)
+	//CreateDynamicPickup(1239, 23, -2623.333984, 209.235931, 4.684767); //ArmsDealer Registration (SF)
 	CreateDynamicPickup(1239, 23, 2195.8335,-1973.0638,13.5589); //Craftsman Registration
 	CreateDynamicPickup(1239, 23, 502.6696,-11.6603,1000.6797); //Bartender Registration
 	CreateDynamicPickup(1239, 23, 766.0804,14.5133,1000.7004); //Boxer Registration
@@ -369,7 +369,6 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("/getgift\nTo reach inside.",COLOR_YELLOW,1726.1000, 1370.1000, 1449.9000,8.0);/// LV VIP Lounge
 	CreateDynamic3DTextLabel("/getgift\nTo reach inside.",COLOR_YELLOW,1763.5000, 1432.5000, 2015.7000,8.0);/// LV GVIP Lounge
 	CreateDynamic3DTextLabel("/getgift\nTo reach inside.",COLOR_YELLOW,772.4000, 1743.2000, 1938.8800,8.0);/// LV PVIP Lounge
-    CreateDynamic3DTextLabel("To rent a bike, get on and select an option",COLOR_YELLOW,701.7953,-519.8322,16.3348+0.6,4.0);
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, -2043.527832, -189.208435, 985.183105+0.6, 4.0); //
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 1112.7, -2055.8, 1409.7+0.6, 4.0); //
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 321.43, 303.96, 999.14+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2112, 5, -1); //
@@ -422,9 +421,9 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,1366.4325,-1275.2096,13.5469+0.5,4.0);// Gun Job
     CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,-2623.333984, 209.235931, 4.684767+0.5,4.0);// Gun Job
 	CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,-1513.4904, 2614.3591, 55.8078+0.5,4.0);// Arms Dealer (TR)
- 	CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,2166.3772,-1675.3829,15.0859+0.5,4.0);// Drug Dealer (LS)
-    CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-2089.344970, 87.800231, 35.320312+0.5,4.0);// Drug Dealer (SF)
-	CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-1528.0924,2688.7837,55.8359+0.5,4.0);// Drug Dealer (TR)
+ 	//CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,2166.3772,-1675.3829,15.0859+0.5,4.0);// Drug Dealer (LS)
+   // CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-2089.344970, 87.800231, 35.320312+0.5,4.0);// Drug Dealer (SF)
+	//CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-1528.0924,2688.7837,55.8359+0.5,4.0);// Drug Dealer (TR)
 	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,2226.1716,-1718.1792,13.5165+0.5,4.0);// Bodyguard (LS)
     CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-2269.256103, -158.054321, 35.320312+0.5,4.0);// Bodyguard (SF)
 	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-821.3508,1574.9393,27.1172+0.5,4.0);// Bodyguard (TR)
@@ -441,8 +440,8 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Whore Job \nType /join to become one",COLOR_RED,1215.1304,-11.8431,1000.9219+0.5,4.0);// Whore
     CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,766.0804,14.5133,1000.7004+0.5,4.0);// Boxer
     CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,758.98,-60.32,1000.78+0.5,4.0);// Boxer2
-    CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,2354.2808,-1169.2959,28.0066+0.5,4.0);// Drug Smuggler
-	CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,-2630.7375,2349.3994,8.4892+0.5,4.0);// Drug Smuggler (TR)
+   	//CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,2354.2808,-1169.2959,28.0066+0.5,4.0);// Drug Smuggler
+	//CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,-2630.7375,2349.3994,8.4892+0.5,4.0);// Drug Smuggler (TR)
     CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,1099.73,-1504.67,15.800+0.5,4.0);// Bodyguard (MALL GYM)
     CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,2195.8335,-1973.0638,13.5589+0.5,4.0);// Craftsman (JUNKYARD LS)
 	CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,-1356.7195,2065.3450,52.4677+0.5,4.0);// Craftsman (TR)

@@ -618,7 +618,7 @@ public LoadTextDraws()
 	TextDrawSetProportional(MainMenuTxtdraw[0], 1);
 	TextDrawSetShadow(MainMenuTxtdraw[0], 1);
 	TextDrawUseBox(MainMenuTxtdraw[0], 1);
-	TextDrawBoxColor(MainMenuTxtdraw[0], 255);
+	TextDrawBoxColor(MainMenuTxtdraw[0], 102);
 	TextDrawTextSize(MainMenuTxtdraw[0], 677.000000, 134.000000);
 	textdrawscount++;
 
@@ -632,7 +632,7 @@ public LoadTextDraws()
 	TextDrawSetProportional(MainMenuTxtdraw[1], 1);
 	TextDrawSetShadow(MainMenuTxtdraw[1], 1);
 	TextDrawUseBox(MainMenuTxtdraw[1], 1);
-	TextDrawBoxColor(MainMenuTxtdraw[1], 255);
+	TextDrawBoxColor(MainMenuTxtdraw[1], 102);
 	TextDrawTextSize(MainMenuTxtdraw[1], 770.000000, 0.000000);
 	textdrawscount++;
 

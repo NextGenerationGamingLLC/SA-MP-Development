@@ -780,6 +780,12 @@ CREATE TABLE `accounts` (
   `Developer` int(11) NOT NULL DEFAULT '0',
   `Famed` int(11) NOT NULL DEFAULT '0',
   `FamedMuted` int(11) NOT NULL DEFAULT '0',
+  `Ammo0` int(11) NOT NULL DEFAULT '0',
+  `Ammo1` int(11) NOT NULL DEFAULT '0',
+  `Ammo2` int(11) NOT NULL DEFAULT '0',
+  `Ammo3` int(11) NOT NULL DEFAULT '0',
+  `Ammo4` int(11) NOT NULL DEFAULT '0',
+  `VIPGunsCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`Username`),
   KEY `Username` (`Username`(5)) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1000178745 DEFAULT CHARSET=utf8;
