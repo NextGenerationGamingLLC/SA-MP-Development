@@ -1764,6 +1764,10 @@ CMD:bgiverank(playerid, params[])
 	else if (PlayerInfo[targetid][pBusinessRank] > PlayerInfo[playerid][pBusinessRank])	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on that rank persons!");
 	}
+	else if(rank > PlayerInfo[playerid][pBusinessRank])
+	{
+		return SendClientMessageEx(playerid, COLOR_GREY, "You can not give a rank higher than your own!");
+	}
 	else if(rank < 0 || rank > 5) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "Don't go below number 0 or above number 5!");
 	}
@@ -1776,7 +1780,7 @@ CMD:bgiverank(playerid, params[])
 		SendClientMessageEx(targetid, COLOR_LIGHTBLUE, string);
 	}
 	else {
-		SendClientMessageEx(playerid, COLOR_GREY, "That person already has rank");
+		return SendClientMessageEx(playerid, COLOR_GREY, "That person already has this rank.");
 	}
 	PlayerInfo[targetid][pBusinessRank] = rank;
 	format(string, sizeof(string), "* You have given %s rank %d.", GetPlayerNameEx(targetid), rank);

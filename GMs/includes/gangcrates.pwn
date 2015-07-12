@@ -270,13 +270,13 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 	return 1;
 }
 
-CountLockerGuns(iGroupID, iWeaponID) {
+/* CountLockerGuns(iGroupID, iWeaponID) {
 
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d'", iGroupID, iWeaponID);
 	return mysql_function_query(MainPipeline, szMiscArray, true, "OnCountLockerGuns", "ii", iGroupID, iWeaponID);
-}
+} */
 
 forward OnCountLockerGuns(iGroupID, iWeaponID);
 public OnCountLockerGuns(iGroupID, iWeaponID) {
@@ -734,7 +734,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					iAmount = strval(inputtext),
 					iItem = GetPVarInt(playerid, "TransferItem"),
 					iCrateID = GetPVarInt(playerid, "GCTransferTo");
-
+				if(iAmount <= 0) return 1;
 				TransferItemToCrate(playerid, iItem, iAmount, iCrateID);
 				DeletePVar(playerid, "TransferItem");
 				DeletePVar(playerid, "GCTransferTo");

@@ -246,6 +246,7 @@ stock TacklePlayer(playerid, tacklee)
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
 	ShowPlayerDialog(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
+	if(GetPVarType(tacklee, "FixVehicleTimer")) KillTimer(GetPVarInt(tacklee, "FixVehicleTimer")), DeletePVar(tacklee, "FixVehicleTimer");
 	return 1;
 }
 
@@ -1473,7 +1474,7 @@ CMD:take(playerid, params[])
 					format(string, sizeof(string), "* Officer %s has taken away %s's ammo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					
-					for(new i = 0; i < 5; i++) arrAmmoData[playerid][awp_iAmmo][i] = 0;
+					for(new i = 0; i < 5; i++) arrAmmoData[giveplayerid][awp_iAmmo][i] = 0;
 				}
 				else
 				{
@@ -1598,6 +1599,7 @@ CMD:tazer(playerid, params[])
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GivePlayerValidWeapon(playerid, 23, 0);
 			pTazer{playerid} = 1;
+			SetPlayerAmmo(playerid, 23, 60000);
 		}
 		else
 		{

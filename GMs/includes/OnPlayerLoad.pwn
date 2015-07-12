@@ -280,7 +280,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pFlyLic] = 0;
 		PlayerInfo[playerid][pBoatLic] = 0;
 		PlayerInfo[playerid][pFishLic] = 1;
-		PlayerInfo[playerid][pGunLic] = 1;
+		PlayerInfo[playerid][pGunLic] = 0;
 		PlayerInfo[playerid][pTaxiLicense] = 0;
 		PlayerInfo[playerid][pBugged] = INVALID_GROUP_ID;
 		PlayerInfo[playerid][pCallsAccepted] = 0;

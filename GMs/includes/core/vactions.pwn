@@ -53,7 +53,7 @@ CMD:toganimhelper(playerid, params[])
 
 PlayAnimEx(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
 {
-	if(GetPlayerAnimationIndex(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
+	if(!IsPlayerIdle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
 	gPlayerUsingLoopingAnim[playerid] = 1;
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
 	if(!GetPVarType(playerid, "togAnimHelper")) TextDrawShowForPlayer(playerid,txtAnimHelper);
@@ -73,7 +73,7 @@ PreloadAnimLib(playerid, animlib[])
 
 IsAblePedAnimation(playerid)
 {
-    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1) {
+    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer")) {
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
@@ -179,7 +179,7 @@ CMD:stopani(playerid, params[])
 	    SendClientMessageEx(playerid, COLOR_GREY, "You are already attempting to clear your animations!");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pBeingSentenced] != 0|| GetPVarType(playerid, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "Carryingfood") > 0 || GetPVarInt(playerid, "jailcuffs") == 1)
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pBeingSentenced] != 0|| GetPVarType(playerid, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "Carryingfood") > 0 || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer"))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	}
@@ -1642,4 +1642,14 @@ CMD:what(playerid, params[])
 	if(!IsAblePedAnimation(playerid)) return true;
 	PlayAnimEx(playerid,"RIOT","RIOT_ANGRY", 4.0, 0, 0, 0, 0, 0, 1);
 	return true;
+}
+
+stock IsPlayerIdle(playerid)
+{
+	switch(GetPlayerAnimationIndex(playerid))
+	{
+		case 320, 471, 1164, 1183, 1188, 1189:
+			return 1;
+	}
+	return 0;
 }

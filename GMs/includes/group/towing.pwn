@@ -162,19 +162,22 @@ CMD:dmvmenu(playerid, params[])
 	
 	for(new i; i < icountz; i++) {
 		if(PlayerVehicleInfo[playerid][i][pvPrice] < 1) PlayerVehicleInfo[playerid][i][pvPrice] = 2000000;
-		if(PlayerVehicleInfo[playerid][i][pvId] > INVALID_PLAYER_VEHICLE_ID && (400 <= PlayerVehicleInfo[playerid][i][pvModelId] <= 611)) {
-			if(PlayerVehicleInfo[playerid][i][pvTicket]) {
-				format(vstring, sizeof(vstring), "%s\n%s (ticket - $%i)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvTicket]);
+		if(400 <= PlayerVehicleInfo[playerid][i][pvModelId] <= 611)
+		{
+			if(PlayerVehicleInfo[playerid][i][pvId] > INVALID_PLAYER_VEHICLE_ID) {
+				if(PlayerVehicleInfo[playerid][i][pvTicket]) {
+					format(vstring, sizeof(vstring), "%s\n%s (ticket - $%i)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvTicket]);
+					++icount;
+				}
+				else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
+			}	
+			else if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
+				format(vstring, sizeof(vstring), "%s\n%s (impounded - $%i release)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], (PlayerVehicleInfo[playerid][i][pvPrice] / 20) + PlayerVehicleInfo[playerid][i][pvTicket] + (PlayerInfo[playerid][pLevel] * 3000));
 				++icount;
 			}
-			else format(vstring, sizeof(vstring), "%s\n%s", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400]);
-		}	
-		else if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
-			format(vstring, sizeof(vstring), "%s\n%s (impounded - $%i release)", vstring, VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], (PlayerVehicleInfo[playerid][i][pvPrice] / 20) + PlayerVehicleInfo[playerid][i][pvTicket] + (PlayerInfo[playerid][pLevel] * 3000));
-			++icount;
+			else format(vstring, sizeof(vstring), "%s\nNone", vstring);
 		}
-		else format(vstring, sizeof(vstring), "%s\nNone", vstring);
-	}	
+	}
 	if(icount) {
 		ShowPlayerDialog(playerid, MPSPAYTICKETS, DIALOG_STYLE_LIST, "Vehicles", vstring, "Release", "Cancel");
 	}

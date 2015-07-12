@@ -45,7 +45,7 @@ CMD:getlicense(playerid, params[])
 
 CMD:revokelicense(playerid, params[])
 {
-	if(IsACop(playerid) || (IsAMedic(playerid) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2))
+	if(IsACop(playerid) || (IsAMedic(playerid) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) || IsAGovernment(playerid))
 	{
 		new string[128], giveplayerid, type, reason[64], sz_FacInfo[3][64];
 		if(sscanf(params, "uds[64]", giveplayerid, type, reason))
@@ -113,6 +113,7 @@ CMD:revokelicense(playerid, params[])
 				}
 				case 4:
 				{
+					if(!IsAGovernment(playerid) && PlayerInfo[playerid][pLeader] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to revoke this license.");
 					if(PlayerInfo[giveplayerid][pGunLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no firearms license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);

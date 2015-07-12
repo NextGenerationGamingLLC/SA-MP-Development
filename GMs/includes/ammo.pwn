@@ -20,6 +20,20 @@ GetAmmoType(iWeaponID)
 	return -1;
 }
 
+GetAmmoName(ammoType)
+{
+	new ammo[9];
+	switch(ammoType)
+	{
+		case 0: ammo = "9mm";
+		case 1: ammo = "7.62x51";
+		case 2: ammo = ".50 Cal";
+		case 3: ammo = "7.62x39";
+		case 4: ammo = "12-gauge";
+		default: ammo = "";
+	}
+	return ammo;
+}
 /*GetAmmoType(iWeaponID)
 {
 	new iType = -1;
@@ -50,9 +64,11 @@ GetAmmoType(iWeaponID)
 SyncPlayerAmmo(playerid, iWeaponID)
 {
 	new iAmmoType = GetAmmoType(iWeaponID);
-	if(GetPVarInt(playerid, "IsInArena") >= 0) return 1;
+	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
 	if(iAmmoType != -1)
 	{
+		if(arrAmmoData[playerid][awp_iAmmo][iAmmoType] > GetMaxAmmoAllowed(playerid, iAmmoType) && (PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2))
+			arrAmmoData[playerid][awp_iAmmo][iAmmoType] = GetMaxAmmoAllowed(playerid, iAmmoType);
 		SetPlayerAmmo(playerid, iWeaponID, arrAmmoData[playerid][awp_iAmmo][iAmmoType]);
 		//format(szMiscArray, sizeof(szMiscArray), "[debug] SyncPlayerAmmo - Values: ID %d - (iWeaponID) %d - (Ammo Type) %d", playerid, iWeaponID, iAmmoType);
 		//SendClientMessageToAll(COLOR_WHITE, szMiscArray);
@@ -67,8 +83,8 @@ CanGetVIPWeapon(playerid)
 	{
 		case 1: return 1;
 		case 2: return 1;
-		case 3: if(PlayerInfo[playerid][pVIPGuncount] < 6) return 1;
-		case 4:  if(PlayerInfo[playerid][pVIPGuncount] < 12) return 1;
+		case 3: if(PlayerInfo[playerid][pVIPGuncount] < 4) return 1;
+		case 4:  if(PlayerInfo[playerid][pVIPGuncount] < 8) return 1;
 	}
 	return 0;
 }
@@ -78,7 +94,7 @@ ResetVIPAmmoCount()
 	{
 		PlayerInfo[i][pVIPGuncount] = 0;
 	}
-	mysql_function_query(MainPipeline, "UPDATE `accounts` SET `VIPGunCount` = '0'", false, "", "");
+	mysql_function_query(MainPipeline, "UPDATE `accounts` SET `VIPGunsCount` = '0'", false, "", "");
 	return 1;
 }
 
@@ -292,6 +308,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
+CMD:issuegl(playerid, params[]) return cmd_issuegunlicense(playerid, params);
 CMD:issuegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
@@ -307,9 +324,11 @@ CMD:issuegunlicense(playerid, params[])
 		format(szMiscArray, sizeof(szMiscArray), "%s has issued %s a gun license.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 
 		foreach(new i : Player)
-			if(arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
+			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
 				SendClientMessageEx(i, COLOR_RED, szMiscArray);
 
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%s) has issued %s(%d) (%s) a gun license.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID),  GetPlayerIpEx(iTargetID));
+		Log("logs/licenses.log", szMiscArray);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
 	return 1;
@@ -437,13 +456,15 @@ CMD:setammo(playerid, params[]) {
 
 	format(szMiscArray, sizeof(szMiscArray), "You have given %s %i ammo (type:%i)", GetPlayerNameEx(iTargetID), iAmount, iAmmoType);
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
+	
+	format(szMiscArray, sizeof(szMiscArray), "%s(%s) has given %s(%d) (%s) %i ammo (type:%i)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID), GetPlayerIpEx(iTargetID), iAmount, iAmmoType);
+	Log("logs/admingive.log", szMiscArray);
 	arrAmmoData[iTargetID][awp_iAmmo][iAmmoType] = iAmount;
 	return 1;
 }
 
 CMD:rld(playerid, params[]) {
-	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
+	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
 	
 	for(new i = 0; i < 12; i++)
 	{
@@ -460,8 +481,8 @@ CMD:vipgunsleft(playerid, params[]) {
 	if(PlayerInfo[playerid][pDonateRank] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a VIP member.");
 
 	switch(PlayerInfo[playerid][pDonateRank]) {
-		case 4: format(szMiscArray, sizeof(szMiscArray), "%s has %d VIP gun withdraws left today!", GetPlayerNameEx(playerid), 12-PlayerInfo[playerid][pVIPGuncount]);
-		default: format(szMiscArray, sizeof(szMiscArray), "%s has %d VIP gun withdraws left today!", GetPlayerNameEx(playerid), 6-PlayerInfo[playerid][pVIPGuncount]);
+		case 4: format(szMiscArray, sizeof(szMiscArray), "%s has %d VIP gun withdraws left today!", GetPlayerNameEx(playerid), 8-PlayerInfo[playerid][pVIPGuncount]);
+		default: format(szMiscArray, sizeof(szMiscArray), "%s has %d VIP gun withdraws left today!", GetPlayerNameEx(playerid), 4-PlayerInfo[playerid][pVIPGuncount]);
 	}
 	
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
@@ -480,8 +501,8 @@ CMD:editgsprices(playerid, params[]) {
 
 	if(sscanf(params, "s[32]d", choice, amount)) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
-		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, 9mm, 12gauage");
-		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | 9mm Ammo: $%s | 12-Gauage: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, 9mm, 12gauge");
+		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | 9mm Ammo: $%s | 12-Gauge: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	if(strcmp(choice, "colt45", true) == 0) {
@@ -504,16 +525,85 @@ CMD:editgsprices(playerid, params[]) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has changed the 12gauge price to $%s", GetPlayerNameEx(playerid), number_format(amount));
 		Log("logs/business.log", szMiscArray);
 	}
+	g_mysql_SaveMOTD();
 	return 1;
 }
 
 CMD:ammohelp(playerid, params[]) {
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO *** /rld /myammo /buygun");
-	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] ==  GROUP_TYPE_GOV) SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO (GOV) *** /issuegunlicense");
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] ==  GROUP_TYPE_GOV) SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO (GOV) *** /issuegunlicense");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO (LEO) *** /loadammo /deliverammo");
 	if(PlayerInfo[playerid][pDonateRank] > 2) SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO (VIP) *** /vipgunsleft");
 	if(PlayerInfo[playerid][pAdmin] > 4) SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO (ADMIN) *** /editgsprices /setammo");
 
+	return 1;
+}
+
+CMD:oissuegl(playerid, params[]) return cmd_oissuegunlicense(playerid, params);
+CMD:oissuegunlicense(playerid, params[])
+{
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
+	{
+		szMiscArray[0] = 0;
+		new TargetName[MAX_PLAYERS];
+		if(sscanf(params, "s[24]", TargetName)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /oissuegunlicense [playerid]");
+		if(IsPlayerConnected(ReturnUser(TargetName))) return cmd_issuegunlicense(playerid, params);
+
+		new PlayerName[MAX_PLAYERS];
+		mysql_escape_string(TargetName, PlayerName);
+		
+		format(szMiscArray, sizeof(szMiscArray), "Attempting to offline issue %s a gun license.", PlayerName);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
+		
+		format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
+ 		mysql_function_query(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 1, PlayerName);
+	}
+	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
+	return 1;
+}
+
+CMD:orevokegl(playerid, params[]) return cmd_orevokegunlicense(playerid, params);
+CMD:orevokegunlicense(playerid, params[])
+{
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV || PlayerInfo[playerid][pLeader] == 1)
+	{
+		szMiscArray[0] = 0;
+		new TargetName[MAX_PLAYERS];
+		if(sscanf(params, "s[24]", TargetName)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /orevokegunlicense [playerid]");
+		if(IsPlayerConnected(ReturnUser(TargetName))) return cmd_issuegunlicense(playerid, params);
+
+		new PlayerName[MAX_PLAYERS];
+		mysql_escape_string(TargetName, PlayerName);
+		
+		format(szMiscArray, sizeof(szMiscArray), "Attempting to offline revoke %s a gun license.", PlayerName);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
+		
+		format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
+ 		mysql_function_query(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 0, PlayerName);
+	}
+	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
+	return 1;
+}
+
+forward OnOfflineGunLicense(playerid, task, name[]);
+public OnOfflineGunLicense(playerid, task, name[])
+{
+	if(cache_get_row_count(MainPipeline) == 0)
+		return SendClientMessageEx(playerid, COLOR_RED, "Error - This account does not exist.");
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GunLic` = %d WHERE `Username` = '%s'", task, name);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+	format(szMiscArray, sizeof(szMiscArray), "%s has offline %s %s a gun license.", GetPlayerNameEx(playerid), task ? ("issued"):("revoked"), name);
+	foreach(new i : Player)
+		if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
+			SendClientMessageEx(i, COLOR_RED, szMiscArray);
+	new ip_address[16];
+	cache_get_field_content(0, "IP", ip_address, MainPipeline);
+	format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%s) has offline %s %s(%d) (%s) a gun license.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), task ? ("issued"):("revoked"), name, cache_get_field_content_int(0, "id"), ip_address);
+	Log("logs/licenses.log", szMiscArray);
 	return 1;
 }

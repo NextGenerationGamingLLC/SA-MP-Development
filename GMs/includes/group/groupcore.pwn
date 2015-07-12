@@ -157,7 +157,7 @@ SaveGroup(iGroupID) {
 		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType]
 	);
 
-	for(i = 0; i != 5; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = `%d`", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
+	for(i = 0; i != 5; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -914,7 +914,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						GivePlayerCash(playerid, -arrGroupData[iGroupID][g_iLockerCost][listitem]);
 					}
 				}
-				GivePlayerValidWeapon(playerid, iGunID, 0);
+				GivePlayerValidWeapon(playerid, iGunID, (iGunID == 16 || iGunID == 17 || iGunID == 41 || iGunID == 42 || iGunID == 43) ? 60000:0);
 			}
 		}
 		case G_LOCKER_UNIFORM: if(response)	{
@@ -1758,7 +1758,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else
 				{
 					SetPVarInt(playerid, "Group_EditLocker", listitem);
-					ShowPlayerDialog(playerid, DIALOG_GROUP_LOCKERACTION, DIALOG_STYLE_LIST, szTitle, "Move Locker (to your current position)\nDelete Locker", "Select", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_GROUP_LOCKERACTION, DIALOG_STYLE_LIST, szTitle, "Go to Locker\nMove Locker (to your current position)\nDelete Locker", "Select", "Cancel");
 					return 1;
 				}
 			}
@@ -1774,6 +1774,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if (listitem == 0)
 				{
+					Player_StreamPrep(playerid, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], FREEZE_TIME);
+					SetPlayerVirtualWorld(playerid, arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
+				}
+				if (listitem == 1)
+				{
 					GetPlayerPos(playerid, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2]);
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = GetPlayerVirtualWorld(playerid);
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
@@ -1781,7 +1786,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}/locker{FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 				}
-				else if (listitem == 1)
+				else if (listitem == 2)
 				{
 					arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0] = 0;
 					arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1] = 0;
@@ -2605,9 +2610,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case G_AMMO_LOCKER:
 		{
-			if(response){
-				WithdrawAmmo(playerid);
-				SetPVarInt(playerid, "AmmoTypeWithdraw", listitem);
+			if(response)
+			{
+				ShowPlayerDialog(playerid, G_AMMO_LOCKER_SELECTION, DIALOG_STYLE_LIST, "Ammo Locker", "Withdraw\nDeposit", "Select", "Cancel");
+				SetPVarInt(playerid, "AmmoTypeWD", listitem);
+			}
+		}
+		case G_AMMO_LOCKER_SELECTION:
+		{
+			if(response)
+			{
+				if(!listitem)
+				{
+					WithdrawAmmo(playerid);
+				}
+				else
+				{
+					DepositAmmo(playerid);
+				}
 			}
 		}
 		case G_AMMO_LOCKER_WITHDRAW:
@@ -2615,11 +2635,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new iGroupID = PlayerInfo[playerid][pMember];
 			if(!response)
 			{
-				DeletePVar(playerid, "AmmoTypeWithdraw");
+				DeletePVar(playerid, "AmmoTypeWD");
 			}
 			else
 			{
-				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWithdraw");
+				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
 				new iAmmoQuantity = strval(inputtext);
 				new iMaxAmmo = GetMaxAmmoAllowed(playerid, iAmmoType);
 				if(iAmmoQuantity < 1)
@@ -2630,12 +2650,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(arrGroupData[iGroupID][g_iAmmo][iAmmoType] < iAmmoQuantity)
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to withdraw more ammo than there is in the locker!");
-					return DeletePVar(playerid, "AmmoTypeWithdraw");
+					return DeletePVar(playerid, "AmmoTypeWD");
 				}
 				if(arrAmmoData[playerid][awp_iAmmo][iAmmoType] + iAmmoQuantity > iMaxAmmo)
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to withdraw more ammo than you can carry!");
-					return DeletePVar(playerid, "AmmoTypeWithdraw");
+					return DeletePVar(playerid, "AmmoTypeWD");
 				}
 				arrAmmoData[playerid][awp_iAmmo][iAmmoType] += iAmmoQuantity;
 				arrGroupData[iGroupID][g_iAmmo][iAmmoType] -= iAmmoQuantity;
@@ -2644,7 +2664,46 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
 				}
 				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
-				DeletePVar(playerid, "AmmoTypeWithdraw");
+				DeletePVar(playerid, "AmmoTypeWD");
+				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d %s ammo from the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %s ammo from the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
+				GroupLog(iGroupID, szMiscArray);
+			}
+		}
+		case G_AMMO_LOCKER_DEPOSIT:
+		{
+			new iGroupID = PlayerInfo[playerid][pMember];
+			if(!response)
+			{
+				DeletePVar(playerid, "AmmoTypeWD");
+			}
+			else
+			{
+				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
+				new iAmmoQuantity = strval(inputtext);
+				if(iAmmoQuantity < 1)
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "Negative ammo values are not allowed!");
+					return DepositAmmo(playerid);
+				} 
+				if(iAmmoQuantity > arrAmmoData[playerid][awp_iAmmo][iAmmoType])
+				{
+					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to deposit more ammo than you have!");
+					return DeletePVar(playerid, "AmmoTypeWD");
+				}
+				arrAmmoData[playerid][awp_iAmmo][iAmmoType] -= iAmmoQuantity;
+				arrGroupData[iGroupID][g_iAmmo][iAmmoType] += iAmmoQuantity;
+
+				for(new i = 0; i < 12; i++) {
+					SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
+				}
+				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
+				DeletePVar(playerid, "AmmoTypeWD");
+				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d %s ammo into the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has deposited %d %s ammo into the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
+				GroupLog(iGroupID, szMiscArray);
 			}
 		}
 		// END DYNAMIC GROUP CODE
@@ -5792,6 +5851,11 @@ ShowGroupAmmoDialog(playerid, iGroupID) {
 
 WithdrawAmmo(playerid) {
 	ShowPlayerDialog(playerid, G_AMMO_LOCKER_WITHDRAW, DIALOG_STYLE_INPUT, "Ammo Locker", "Enter the quantity you wish to withdraw.", "Withdraw", "Cancel");
+	return 1;
+}
+
+DepositAmmo(playerid) {
+	ShowPlayerDialog(playerid, G_AMMO_LOCKER_DEPOSIT, DIALOG_STYLE_INPUT, "Ammo Locker", "Enter the quantity you wish to deposit.", "Deposit", "Cancel");
 	return 1;
 }
 

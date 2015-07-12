@@ -67,6 +67,10 @@ CMD:fix(playerid, params[])
 		{
 			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		}
+		else if(GetPVarType(playerid, "FixVehicleTimer"))
+		{
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already fixing a vehicle!");
+		}
   		else
 		{
 			new closestcar = GetClosestCar(playerid);
@@ -82,22 +86,38 @@ CMD:fix(playerid, params[])
 						return 1;
 					}
 				}
-  				PlayerInfo[playerid][pMechTime] = gettime()+60;
-   				SetVehicleHealth(closestcar, 1000.0);
-				Vehicle_Armor(closestcar);
-				if(GetVehicleModel(closestcar) == 481 && GetVehicleModel(closestcar) == 509 && GetVehicleModel(closestcar) == 510)
-				{
-					SetVehicleParamsEx(closestcar, VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
-					arr_Engine{closestcar} = 1;
-				}
-    			format(string, sizeof(string), "* %s has repaired the vehicle.", GetPlayerNameEx(playerid));
+    			format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
     			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
+				TogglePlayerControllable(playerid, 0);
+				ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
   		}
     }
     else return SendClientMessageEx(playerid, COLOR_WHITE, "You are not a Mechanic!" );
     return 1;
+}
+
+forward FixVehicle(playerid, vehicleid);
+public FixVehicle(playerid, vehicleid)
+{
+	TogglePlayerControllable(playerid, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
+	ClearAnimations(playerid);
+	PlayerInfo[playerid][pMechTime] = gettime()+60;
+	SetVehicleHealth(vehicleid, 1000.0);
+	Vehicle_Armor(vehicleid);
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+	if(GetVehicleModel(vehicleid) == 481 && GetVehicleModel(vehicleid) == 509 && GetVehicleModel(vehicleid) == 510)
+	{
+		SetVehicleParamsEx(vehicleid, VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
+		arr_Engine{vehicleid} = 1;
+	}
+	format(szMiscArray, sizeof(szMiscArray), "* %s has repaired the vehicle.", GetPlayerNameEx(playerid));
+	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	DeletePVar(playerid, "FixVehicleTimer");
 }
 
 CMD:mechduty(playerid, params[])

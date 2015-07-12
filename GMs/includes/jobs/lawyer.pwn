@@ -145,7 +145,7 @@ CMD:free(playerid, params[])
 		ApprovedLawyer[playerid] = 0;
 		WantLawyer[giveplayerid] = 0;
 		CallLawyer[giveplayerid] = 0;
-		JailPrice[giveplayerid] = 0;
+		PlayerInfo[giveplayerid][pBailPrice] = 0;
 		PlayerInfo[giveplayerid][pJailTime] = 1;
 
 		if(PlayerInfo[playerid][pDoubleEXP] > 0)

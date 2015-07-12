@@ -5702,20 +5702,6 @@ CMD:nrn(playerid, params[])
 	return 1;
 }
 
-CMD:togglecleo(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 1338)
-	    return 0;
-
-	if(prisonactive == 0)
-		SendClientMessageEx(playerid, COLOR_CYAN, "Cleo prison system deactivated."), prisonactive = 1;
-	else
-	    SendClientMessageEx(playerid, COLOR_CYAN, "Cleo prison system activated."), prisonactive = 0;
-
-	return 1;
-}
-
-
 CMD:reloadlist(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337)

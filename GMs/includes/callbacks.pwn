@@ -1526,6 +1526,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				Log("logs/vouchers.log", szLog);
 				DeletePVar(playerid, "voucherdialog");
 				DeletePVar(playerid, "WhoIsThis");
+				DeletePVar(playerid, "ShopTP");
 			}
 		}
 		DeletePVar(playerid, "voucherdialog");
@@ -1925,7 +1926,6 @@ public OnPlayerConnect(playerid)
 	hInviteHouse[playerid]=INVALID_HOUSE_ID;
 	hInviteOffer[playerid]= INVALID_PLAYER_ID;
 	hInviteOfferTo[playerid]= INVALID_PLAYER_ID;
-	JailPrice[playerid]=0;
 	GotHit[playerid]=0;
 	GoChase[playerid]= INVALID_PLAYER_ID;
 	GetChased[playerid]= INVALID_PLAYER_ID;
@@ -5618,7 +5618,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	if((newstate == 2 || newstate == 3 || newstate == 7 || newstate == 9) && pTazer{playerid} == 1)
 	{
-		GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+		RemovePlayerWeapon(playerid, 23);
+		GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
 		pTazer{playerid} = 0;
 	}
 	if(newstate == PLAYER_STATE_SPAWNED)

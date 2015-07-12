@@ -1172,7 +1172,7 @@ CMD:pvipjob(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Platinum VIP+");
 	if(PlayerInfo[playerid][pVIPJob] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have already used this feature.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "You can select one job to be set to level 5 as a Platinum VIP+");
-	ShowPlayerDialog(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Job List", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor", "Select", "Close");
+	ShowPlayerDialog(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Job List", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor\nLock Picking", "Select", "Close");
 	return 1;
 }
 

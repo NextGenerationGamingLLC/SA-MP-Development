@@ -1203,15 +1203,15 @@ CMD:bail(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] > 0)
 	{
-		if(JailPrice[playerid] > 0)
+		if(PlayerInfo[playerid][pBailPrice] > 0)
 		{
-			if(GetPlayerCash(playerid) > JailPrice[playerid])
+			if(GetPlayerCash(playerid) > PlayerInfo[playerid][pBailPrice])
 			{
 				new string[128];
-				format(string, sizeof(string), "You bailed yourself out for $%d.", JailPrice[playerid]);
+				format(string, sizeof(string), "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				GivePlayerCash(playerid, -JailPrice[playerid]);
-				JailPrice[playerid] = 0;
+				GivePlayerCash(playerid, -PlayerInfo[playerid][pBailPrice]);
+				PlayerInfo[playerid][pBailPrice] = 0;
 				WantLawyer[playerid] = 0; CallLawyer[playerid] = 0;
 				PlayerInfo[playerid][pJailTime] = 1;
 			}

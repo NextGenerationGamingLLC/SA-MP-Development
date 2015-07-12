@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.202"
+#define SERVER_GM_TEXT "NG:RP v3.0.203"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -176,18 +176,6 @@
 // #tryinclude "./includes/core/phones.pwn"
 // #tryinclude "./includes/core/inactive.pwn"
 
-//vehicle system includes
-#include "./includes/vehsystem/vehiclecore.pwn"
-#include "./includes/vehsystem/drivingtest.pwn"
-#include "./includes/vehsystem/licenses.pwn"
-#include "./includes/vehsystem/speedo.pwn"
-#include "./includes/vehsystem/tow.pwn"
-#include "./includes/vehsystem/VLP.pwn"
-#include "./includes/vehsystem/helmet.pwn"
-#include "./includes/vehsystem/groupvehs.pwn"
-#include "./includes/vehsystem/playervehs.pwn"
-
-
 //dynamic core includes
 #include "./includes/dynamic/doors.pwn"
 #include "./includes/dynamic/garages.pwn"
@@ -204,6 +192,18 @@
 #include "./includes/dynamic/housemarket.pwn"
 #include "./includes/dynamic/ddsale.pwn"
 #include "./includes/dynamic/parking.pwn"
+#include "./includes/dynamic/MetalDetectors.pwn"
+
+//vehicle system includes
+#include "./includes/vehsystem/vehiclecore.pwn"
+#include "./includes/vehsystem/drivingtest.pwn"
+#include "./includes/vehsystem/licenses.pwn"
+#include "./includes/vehsystem/speedo.pwn"
+#include "./includes/vehsystem/tow.pwn"
+#include "./includes/vehsystem/VLP.pwn"
+#include "./includes/vehsystem/helmet.pwn"
+#include "./includes/vehsystem/groupvehs.pwn"
+#include "./includes/vehsystem/playervehs.pwn"
 
 //event kernels includes
 //#include "./includes/events/bday.pwn"
@@ -240,9 +240,10 @@
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
 #include "./includes/gangshipment.pwn"
-#include "./includes/gangcrates.pwn"
+//#include "./includes/gangcrates.pwn"
 //#include "./includes/gangrobbery.pwn"
 //#include "./includes/group/spraytags.pwn"
+#include "./includes/group/GovArms.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"

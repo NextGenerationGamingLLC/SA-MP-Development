@@ -529,8 +529,6 @@ new Train[3];
 
 //new IslandThreatElimTimer;
 
-new prisonactive;
-
 new IsRim[17] = { 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1096, 1097, 1098, 1025 };
 
 new canmove;
@@ -793,7 +791,6 @@ new VehiclePrice[MAX_PLAYERS];
 new HouseOffer[MAX_PLAYERS];
 new House[MAX_PLAYERS];
 new HousePrice[MAX_PLAYERS];
-new JailPrice[MAX_PLAYERS];
 new gPlayerCheckpointStatus[MAX_PLAYERS];
 new gPlayerLogged[MAX_PLAYERS char];
 new gPlayerLogTries[MAX_PLAYERS];
@@ -1385,7 +1382,11 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {2044, 0, "Rusty MP5"},
 {367, 0, "Camera"},
 {1543, 0, "Pissh Beer Bottle"},
-{1544, 0, "Revolver Beer Bottle"}
+{1544, 0, "Revolver Beer Bottle"},
+{19558, 0, "Pizza Hat"},
+{19559, 0, "Hiker Backpack"},
+{19773, 0, "Gun Holster"},
+{19878, 0, "Skateboard"}
 };
 
 new HoldingObjectsCop[13][HoldingEnumAll] = {
@@ -1730,7 +1731,11 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {2044, 0, "Rusty MP5"},
 {367, 0, "Camera"},
 {1543, 0, "Pissh Beer Bottle"},
-{1544, 0, "Revolver Beer Bottle"}
+{1544, 0, "Revolver Beer Bottle"},
+{19558, 0, "Pizza Hat"},
+{19559, 0, "Hiker Backpack"},
+{19773, 0, "Gun Holster"},
+{19878, 0, "Skateboard"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {
@@ -2706,7 +2711,7 @@ new HouseMarketTracking[MAX_PLAYERS];
 new DDSalePrice[MAX_PLAYERS];
 new DDSaleTarget[MAX_PLAYERS];
 new DDSaleTracking[MAX_PLAYERS];
-new DDSaleDoors[MAX_PLAYERS][5];
+new DDSaleDoors[MAX_PLAYERS][7];
 new Timer:DDSaleTimer[MAX_PLAYERS];
 new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];

@@ -763,7 +763,7 @@ CMD:getcrate(playerid, params[])
 	}
 }
 
-CMD:getpot(playerid, params[])
+/*CMD:getpot(playerid, params[])
 {
 	new string[128], amount;
 	if(sscanf(params, "d", amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpot [amount]");
@@ -913,7 +913,7 @@ CMD:getcrack(playerid, params[])
 		return 1;
 	}
 	return 1;
-}
+} */
 
 CMD:usepot(playerid, params[])
 {
@@ -982,14 +982,9 @@ CMD:usepot(playerid, params[])
 		{
 			GameTextForPlayer(playerid, "~w~you are ~b~stoned", 5000, 3);
 		}
-		if(healthint > 80)
-		{
-			SetHealth(playerid, 100);
-		}
-		else
-		{
-			SetHealth(playerid, health + 20.0);
-		}
+		SetHealth(playerid, health + 40.0);
+		if(health + 40.0 > 100) SetHealth(playerid, 100);
+		PlayerInfo[playerid][pHunger] -= 10;
 		SendClientMessageEx(playerid, COLOR_GREY, " You used 2 grams of pot!");
 		format(string, sizeof(string), "* %s has used some pot.", GetPlayerNameEx(playerid));
 		ProxDetector(15.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
@@ -1108,14 +1103,8 @@ CMD:usecrack(playerid, params[])
 		}
 		UsedCrack[playerid] = 1;
 		SetTimerEx("ClearDrugs", 5000, false, "d", playerid);
-		if(PlayersArmour > 90)
-		{
-			SetArmour(playerid, 100);
-		}
-		else
-		{
-			SetArmour(playerid, PlayersArmour + 10.0);
-		}
+		SetArmour(playerid, PlayersArmour + 20.0);
+		if(PlayersArmour + 20.0 > 100) SetArmour(playerid, 100);
 		if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"SMOKING","M_smkstnd_loop",2.1,0,0,0,0,0);
 		switch(GetPVarInt(playerid, "STD")) {
 			case 1:

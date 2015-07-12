@@ -1108,7 +1108,8 @@ enum pInfo
 	pVIPMod,
 	pLastPass[65],
 	pEventTokens,
-	pVIPGuncount
+	pVIPGuncount,
+	pBailPrice
 };
 
 enum pvInfo
@@ -1238,7 +1239,8 @@ enum hInfo
 	LinkedDoor[5],
 	PendingApproval,
 	ListedTimeStamp,
-	ListingDescription[128]
+	ListingDescription[128],
+	LinkedGarage[2]
 };
 
 enum dmpInfo

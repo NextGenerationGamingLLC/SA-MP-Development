@@ -127,11 +127,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
 				}
 				else if(gettime() < GetPVarInt(playerid, "adT")) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You may only place one priority advertisement every two minutes.");
 				}	
 				else if(gettime() < iAdverTimer) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
 				}
 				else
@@ -144,6 +144,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 				}
 			}
+			case 4: cmd_houselistings(playerid, "");
 		}
 		case DIALOG_ADCATEGORYPLACE: {
 			if(response) switch(listitem) {
@@ -211,13 +212,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(GetPVarInt(playerid, "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a priority advertisement pending.");
 
 				if(!(2 <= iLength <= 127)) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
 				}
 
 				iLength *= 50;
 				if(GetPlayerCash(playerid) < iLength) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
 				if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
@@ -231,7 +232,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				GivePlayerCash(playerid, -iLength);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Congratulations, you have placed your advertisement!");
 			}
-			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+			else ShowMainAdvertMenu(playerid);
 		}
 		case DIALOG_ADPLACEP: {
 			if(response) {
@@ -243,7 +244,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					"Enter your desired advertisement text! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 				if(!(2 <= strlen(inputtext) <= 79)) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long or too short.");
 				}				
 				if(GetPVarInt(playerid, "AdvertVoucher") > 0)
@@ -253,19 +254,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 2 && GetPlayerCash(playerid) < 125000) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 3 && GetPlayerCash(playerid) < 100000) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] >= 4 && GetPlayerCash(playerid) < 50000) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
 				else if(PlayerInfo[playerid][pDonateRank] <= 1 && GetPlayerCash(playerid) < 150000) {
-					ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
 				SetPVarInt(playerid, "adT", gettime()+120);
@@ -280,7 +281,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You have placed a priority advertisement, please wait until an admin approves/denies your advertisement.");
 			}
-			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+			else ShowMainAdvertMenu(playerid);
 		}
 		case DIALOG_ADSEARCH: {
 			if(response) {
@@ -314,7 +315,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
 
 			}
-			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+			else ShowMainAdvertMenu(playerid);
 		}
 		case DIALOG_ADSEARCHLIST: if(response) {
 
@@ -351,7 +352,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
 			}
-			else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+			else ShowMainAdvertMenu(playerid);
 		}
 		case DIALOG_ADVERTVOUCHER:
 		{
@@ -386,7 +387,7 @@ CMD:advertisements(playerid, params[]) {
 	else if(PlayerInfo[playerid][pJailTime] > 0) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You can't use advertisements while in jail.");
 	}
-	else ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement", "Select", "Cancel");
+	else ShowMainAdvertMenu(playerid);
 	return 1;
 }
 
@@ -528,3 +529,6 @@ CMD:freeads(playerid, params[])
 	}
 	return 1;
 }
+
+ShowMainAdvertMenu(playerid)
+	return ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement\nHouse Listings", "Select", "Cancel");

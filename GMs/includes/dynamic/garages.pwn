@@ -602,3 +602,11 @@ public OnSetGarageOwner(playerid, garageid)
 	}
 	return 1;
 }
+
+ReturnGarageLineDetails(playerid, garageid)
+{
+	new string[8];
+	string = "N/A";
+	if(garageid != 0 && GetPlayerSQLId(playerid) == GarageInfo[garageid][gar_Owner]) format(string, sizeof(string), "%d", garageid);
+	return string;
+}

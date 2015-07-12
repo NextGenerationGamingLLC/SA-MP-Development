@@ -2659,74 +2659,81 @@ CMD:hdeposit(playerid, params[])
 
 CMD:hammodeposit(playerid, params[]) {
 
-	if(Homes[playerid] > 0) {
-		for(new i; i < MAX_HOUSES; i++) {
-			if(PlayerInfo[playerid][pId] == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) {
+	if(Homes[playerid] > 0)
+	{
+		new iItemID,
+			iAmount; 
 
+		if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
+			SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammodeposit [choice] [amount]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
+		}
+		for(new houseid, i = 0; i < 3; i++)
+		{
+			if(i == 0) houseid = PlayerInfo[playerid][pPhousekey];
+			if(i == 1) houseid = PlayerInfo[playerid][pPhousekey2];
+			if(i == 2) houseid = PlayerInfo[playerid][pPhousekey3];
+			if(houseid != INVALID_HOUSE_ID && HouseInfo[houseid][hOwnerID] == GetPlayerSQLId(playerid) && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[houseid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[houseid][hIntIW])
+			{
 				szMiscArray[0] = 0;
-				new 
-					iItemID,
-					iAmount; 
+				if(!(0 < iAmount <= arrAmmoData[playerid][awp_iAmmo][iItemID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to deposit more than you have!");
+				if(HouseInfo[houseid][hAmmo][iItemID] + iAmount > 800) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 800 rounds of each type.");
 
-				if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammodeposit [choice] [amount]");
-					return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
-				}
-				if(0 < arrAmmoData[playerid][awp_iAmmo][iItemID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to deposit more than you have!");
-				if(HouseInfo[i][hAmmo][iItemID] + iAmount > 800) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 800 rounds of each type.");
-
-				HouseInfo[i][hAmmo][iItemID] += iAmount;
+				HouseInfo[houseid][hAmmo][iItemID] += iAmount;
 				arrAmmoData[playerid][awp_iAmmo][iItemID] -= iAmount;
 
 				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d rounds into your house's safe.", iAmount);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-				SaveHouse(i);
+				SaveHouse(houseid);
 
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has deposited %d (%d) rounds into their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, i);
+				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has deposited %d (%d) rounds into their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, houseid);
 				Log("logs/hsafe.log", szMiscArray);
 				return 1;
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
 	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
 	return 1;
 }
 
 CMD:hammowithdraw(playerid, params[]) {
 
-	if(Homes[playerid] > 0) {
-		for(new i; i < MAX_HOUSES; i++) {
-			if(PlayerInfo[playerid][pId] == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) {
+	if(Homes[playerid] > 0)
+	{
+		new iItemID,
+			iAmount; 
+
+		if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
+			SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammowithdraw [choice] [amount]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
+		}
+		for(new houseid, i = 0; i < 3; i++)
+		{
+			if(i == 0) houseid = PlayerInfo[playerid][pPhousekey];
+			if(i == 1) houseid = PlayerInfo[playerid][pPhousekey2];
+			if(i == 2) houseid = PlayerInfo[playerid][pPhousekey3];
+			if(houseid != INVALID_HOUSE_ID && HouseInfo[houseid][hOwnerID] == GetPlayerSQLId(playerid) && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[houseid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[houseid][hIntIW]) {
 
 				szMiscArray[0] = 0;
-				new 
-					iItemID,
-					iAmount; 
-
-				if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
-					SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammowithdraw [choice] [amount]");
-					return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
-				}
-				if(0 < HouseInfo[i][hAmmo][iItemID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to withdraw more than you have!");
+				if(!(0 < iAmount <= HouseInfo[houseid][hAmmo][iItemID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to withdraw more than you have!");
 				if(arrAmmoData[playerid][awp_iAmmo][iItemID] + iAmount > GetMaxAmmoAllowed(playerid, iItemID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot carry that much on you!");
 
-				HouseInfo[i][hAmmo][iItemID] -= iAmount;
+				HouseInfo[houseid][hAmmo][iItemID] -= iAmount;
 				arrAmmoData[playerid][awp_iAmmo][iItemID] += iAmount;
 
 				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d rounds from your house's safe.", iAmount);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-				SaveHouse(i);
+				SaveHouse(houseid);
 
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has withdrawn %d (%d) rounds from their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, i);
+				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has withdrawn %d (%d) rounds from their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iItemID, houseid);
 				Log("logs/hsafe.log", szMiscArray);
 				return 1;
 			}
-			else SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
 		}
-		SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
+		SendClientMessageEx(playerid, COLOR_GREY, "You're not in a house that you own.");
 	}
-
+	else SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
 	return 1;
 }
 
@@ -3569,7 +3576,7 @@ CMD:give(playerid, params[])
 			}
 			if(strcmp(choice, "ammo1", true) == 0)
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
 				if(arrAmmoData[playerid][awp_iAmmo][0] >= amount)
 				{
 					arrAmmoData[playerid][awp_iAmmo][0] -= amount;
@@ -3594,7 +3601,7 @@ CMD:give(playerid, params[])
 			}
 			if(strcmp(choice, "ammo2", true) == 0)
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
 				if(arrAmmoData[playerid][awp_iAmmo][1] >= amount)
 				{
 					arrAmmoData[playerid][awp_iAmmo][1] -= amount;
@@ -3619,7 +3626,7 @@ CMD:give(playerid, params[])
 			}
 			if(strcmp(choice, "ammo3", true) == 0)
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
 				if(arrAmmoData[playerid][awp_iAmmo][2] >= amount)
 				{
 					arrAmmoData[playerid][awp_iAmmo][2] -= amount;
@@ -3644,7 +3651,7 @@ CMD:give(playerid, params[])
 			}
 			if(strcmp(choice, "ammo4", true) == 0)
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
 				if(arrAmmoData[playerid][awp_iAmmo][3] >= amount)
 				{
 					arrAmmoData[playerid][awp_iAmmo][3] -= amount;
@@ -3669,7 +3676,7 @@ CMD:give(playerid, params[])
 			}
 			if(strcmp(choice, "ammo5", true) == 0)
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
+				if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_LEA) return SendClientMessageEx(playerid, COLOR_WHITE, "LEA may not hand out their ammo!");
 				if(arrAmmoData[playerid][awp_iAmmo][4] >= amount)
 				{
 					arrAmmoData[playerid][awp_iAmmo][4] -= amount;

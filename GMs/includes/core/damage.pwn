@@ -69,7 +69,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				}
 				return 1;
 			}
-			if(GetPlayerAmmo(playerid) <= 1 && arrAmmoData[playerid][awp_iAmmo][GetAmmoType(weaponid)] <= 1) return 1; 
+			new iAmmoType = GetAmmoType(weaponid);
+			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1) return 1; 
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
@@ -146,6 +147,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				SetPVarInt(damagedid, "IsFrozen", 1);
 				TazerTimeout[playerid] = 6;
 				SetTimerEx("TazerTimer",1000,false,"d",playerid);
+				if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~5", 1500,3);
 				return 1;
 			}
@@ -357,7 +359,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	szMiscArray[0] = 0; 
 
-	if(iAT != -1 && GetPVarInt(playerid, "IsInArena") < 0) 
+	if(iAT != -1 && GetPVarInt(playerid, "IsInArena") < 0 && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0)
 	{
 		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1) 
 		{
@@ -589,6 +591,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		if(GetPVarInt(killerid, "IsInArena") >= 0) PlayerInfo[killerid][pDMKills]++;
+		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");
 	}
 
 	TextDrawHideForPlayer(playerid, BFText);

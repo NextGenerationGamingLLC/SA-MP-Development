@@ -329,7 +329,7 @@ CMD:call(playerid, params[])
 			ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "Please let us know briefly about your news.", "Enter", "End Call");
 		return 1;
 	}
-	if(phonenumb == 180069420)
+	if(phonenumb == 1738)
 	{
 		if(!GetPVarType(playerid, "ShipmentCallActive"))
 		{

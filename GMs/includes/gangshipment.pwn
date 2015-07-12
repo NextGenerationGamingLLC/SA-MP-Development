@@ -5,7 +5,7 @@
 #include <YSI\y_hooks>
 
 #define MAX_SHIPMENT_POINTS		4
-#define SHIPMENT_MATS_NEEDED 	2
+new SHIPMENT_MATS_NEEDED = 60;
 
 #define SHIPMENT_TYPE_ARMS 		1
 #define SHIPMENT_TYPE_DRUGS		2
@@ -40,6 +40,8 @@ CMD:gshipmentstocks(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0; 
+	format(szMiscArray, sizeof(szMiscArray), "Stock needed: %d", SHIPMENT_MATS_NEEDED);
+	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 	for(new i = 0; i < MAX_SHIPMENT_POINTS; i++) {
 		format(szMiscArray, sizeof(szMiscArray), "%s: %i", GetStockPointName(i), arrGangShipmentData[i][gs_iStock]);
 		SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
@@ -66,10 +68,8 @@ DeliverShipment(playerid, iShipmentPoint) {
 
 	szMiscArray[0] = 0;
 
-	szMiscArray = GetStockPointName(iShipmentPoint);
-
-	GivePlayerCash(playerid, 9000);
-	SendClientMessage(playerid, COLOR_WHITE, "You have been given $9,000 for completing your assigned delivery.");
+	GivePlayerCash(playerid, 20000);
+	SendClientMessage(playerid, COLOR_WHITE, "You have been given $20,000 for completing your assigned delivery.");
 
 	DeletePVar(playerid, "DeliveringShipment");
 	DeletePVar(playerid, "ShipmentCallActive");
@@ -77,15 +77,16 @@ DeliverShipment(playerid, iShipmentPoint) {
 	ClearCheckpoint(playerid);
 
 	if(arrGangShipmentData[iShipmentPoint][gs_iStock] >= SHIPMENT_MATS_NEEDED) {
-		arrGangShipmentData[iShipmentPoint][gs_iVehicle] = CreateVehicle(482, arrShipmentTrucks[iShipmentPoint][0], arrShipmentTrucks[iShipmentPoint][1], arrShipmentTrucks[iShipmentPoint][2], 0, random(128), random(128), -1);
+		arrGangShipmentData[iShipmentPoint][gs_iVehicle] = CreateVehicle(482, arrShipmentTrucks[iShipmentPoint][0], arrShipmentTrucks[iShipmentPoint][1], arrShipmentTrucks[iShipmentPoint][2], 0, random(128), random(128), 60 * 5);
 		arrGangShipmentData[iShipmentPoint][gs_iStock] -= SHIPMENT_MATS_NEEDED;
 		foreach(new i : Player) {
-			if(arrGroupData[PlayerInfo[i][pMember]][g_iCrimeType] == iShipmentType) {
-				format(szMiscArray, sizeof(szMiscArray), "{FF0000}Alert: {FFFFFF}An unknown shipment has been delivered to %s", szMiscArray);
+			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iCrimeType] == iShipmentType) {
+				format(szMiscArray, sizeof(szMiscArray), "{FF0000}Alert: {FFFFFF}An unknown shipment has been delivered to %s", GetStockPointName(iShipmentPoint));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
 		}
 	}
+	g_mysql_SaveMOTD();
 	return 1;
 }	
 
@@ -186,7 +187,7 @@ public ShipmentConvo(playerid, iStage) {
 		}
 
 		case 2: {
-			SendClientMessageEx(playerid, COLOR_YELLOW, "(cellphone) Unknown Caller says: I need an oversees shipment taking care of homie.");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "(cellphone) Unknown Caller says: I need an overseas shipment taken care of homie.");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "(cellphone) Unknown Caller says: Can I trust you with my shit?");
 			SetTimerEx("ShipmentConvo", 5000, false, "ii", playerid, 3);
 		}
@@ -280,8 +281,10 @@ CMD:delivershipment(playerid, params[]) {
 	   		if(iVehID == arrGangShipmentData[v][gs_iVehicle]) {
 	   			new iShipmentType = ReturnShipmentType(v);
 	   			if(iShipmentType == arrGroupData[iGroupID][g_iCrimeType]) {
+					RemovePlayerFromVehicle(playerid);
 	   				GenerateShipmentStock(iGroupID, iShipmentType);
 	   				DestroyVehicle(iVehID);
+					arrGangShipmentData[v][gs_iVehicle] = INVALID_VEHICLE_ID;
 	   				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered your shipment to your group.");
 	   				break; 
 	   			}
@@ -289,4 +292,39 @@ CMD:delivershipment(playerid, params[]) {
 	   	}	
 	}
 	return 1;
+}
+
+CMD:editshipment(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 99999) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	new val;
+	if(sscanf(params, "d", val) || val <= 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /editshipment [value]");
+	format(szMiscArray, sizeof(szMiscArray), "You have edited the mats needed for gang shipments to: %d (Previously: %d)", val, SHIPMENT_MATS_NEEDED);
+	SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s has edited the mats needed for gang shipments to: %d (Previously: %d)", val, SHIPMENT_MATS_NEEDED);
+	Log("logs/admin.log", szMiscArray);
+	SHIPMENT_MATS_NEEDED = val;
+	g_mysql_SaveMOTD();
+	return 1;
+}
+
+forward LoadGangShipmentData(i);
+public LoadGangShipmentData(i)
+{
+	szMiscArray[0] = 0;
+	for(new j = 0; j != MAX_SHIPMENT_POINTS; j++)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "gs_iStock%d", j);
+		arrGangShipmentData[j][gs_iStock] = cache_get_field_content_int(i, szMiscArray, MainPipeline);
+	}
+	SHIPMENT_MATS_NEEDED = cache_get_field_content_int(i, "SHIPMENT_MATS_NEEDED", MainPipeline);
+}
+
+forward SaveGangShipmentData(size, query[]);
+public SaveGangShipmentData(size, query[])
+{
+	szMiscArray[0] = 0;
+	for(new j = 0; j != MAX_SHIPMENT_POINTS; j++)
+		format(szMiscArray, sizeof(szMiscArray), "%s`gs_iStock%d` = '%d', ", szMiscArray, j, arrGangShipmentData[j][gs_iStock]);
+	format(query, size, "%s, %s `SHIPMENT_MATS_NEEDED` = '%d',", query, szMiscArray, SHIPMENT_MATS_NEEDED);
 }

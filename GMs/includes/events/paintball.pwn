@@ -3433,7 +3433,7 @@ CMD:joinarena(playerid, params[])
 		{
 			new string[128];
 			RemovePlayerWeapon(playerid, 23);
-			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 60000);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
 			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
  			pTazer{playerid} = 0;
  		}

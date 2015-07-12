@@ -221,6 +221,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				}
 				
 				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
+				LoadGangShipmentData(i);
 				break;
 			}
 		}
@@ -243,9 +244,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "Email", PlayerInfo[extraid][pEmail], MainPipeline, 128);
 					cache_get_field_content(row,  "IP", PlayerInfo[extraid][pIP], MainPipeline, 16);
 					cache_get_field_content(row,  "SecureIP", PlayerInfo[extraid][pSecureIP], MainPipeline, 16);
-					// open beta changed 
-					PlayerInfo[extraid][pConnectHours] = 69;
-					//PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
+					PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
 					cache_get_field_content(row,  "BirthDate", PlayerInfo[extraid][pBirthDate], MainPipeline, 11);
 					PlayerInfo[extraid][pSex] 					= cache_get_field_content_int(row,  "Sex", MainPipeline); 
 					PlayerInfo[extraid][pBanned] 				= cache_get_field_content_int(row,  "Band", MainPipeline); 
@@ -570,6 +569,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
 					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
 					PlayerInfo[extraid][pEventTokens] = cache_get_field_content_int(row,  "pEventTokens", MainPipeline);
+					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
 
 
 					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
@@ -1490,13 +1490,16 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
 	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
-	format(query, sizeof(query), "%s `PassComplexCheck` = '%d'", query, PassComplexCheck);
-	format(query, sizeof(query), "%s `GunPrice0 = '%d'", query, GunPrices[0]);
-	format(query, sizeof(query), "%s `GunPrice1 = '%d'", query, GunPrices[1]);
-	format(query, sizeof(query), "%s `GunPrice2 = '%d'", query, GunPrices[2]);
-	format(query, sizeof(query), "%s `GunPrice3 = '%d'", query, GunPrices[3]);
+	format(query, sizeof(query), "%s `PassComplexCheck` = '%d',", query, PassComplexCheck);
+	format(query, sizeof(query), "%s `GunPrice0` = '%d',", query, GunPrices[0]);
+	format(query, sizeof(query), "%s `GunPrice1` = '%d',", query, GunPrices[1]);
+	format(query, sizeof(query), "%s `GunPrice2` = '%d',", query, GunPrices[2]);
+	format(query, sizeof(query), "%s `GunPrice3` = '%d'", query, GunPrices[3]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
-
+	SaveGangShipmentData(sizeof(query), query);
+	
+	new qryLength = strlen(query);
+	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
@@ -2392,6 +2395,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo4", arrAmmoData[playerid][awp_iAmmo][4]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
@@ -3643,7 +3648,7 @@ public LoadDynamicGroups()
     mysql_function_query(MainPipeline, "SELECT * FROM `groups`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOAD, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `lockers`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
+	//mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
 }
 

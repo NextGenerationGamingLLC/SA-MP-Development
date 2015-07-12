@@ -177,6 +177,9 @@ CMD:pickveh(playerid, params[])
 		return SendClientMessageEx(playerid,COLOR_GREY,"(( You can't pick lock this vehicle. ))");
 	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 		if(PlayerVehicleInfo[playerid][d][pvId] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that you own.");
+	for(new i = 1; i < sizeof(ParkingMeterInformation); i++)
+		if(ParkingMeterInformation[i][AssignedVehicle] == vehicleid) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot lock pick any vehicle that is attached to a parking meter.");
+	
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
 	GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);

@@ -146,7 +146,7 @@ public FinishMaintenance()
 	DestroyAllDynamicMapIcons();
 	DestroyAllDynamicRaceCPs();
 	DestroyAllDynamicAreas();
-
+	g_mysql_SaveMOTD();
 	SetTimer("ShutDown", 5000, false);
 	return 1;
 }

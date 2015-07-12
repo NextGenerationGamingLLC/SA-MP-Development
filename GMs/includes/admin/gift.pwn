@@ -2816,14 +2816,15 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 				if(gift == 1)
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] < 2 || PlayerInfo[giveplayerid][pWRestricted] > 0) return GiftPlayer(playerid, giveplayerid);
-					GivePlayerValidWeapon(giveplayerid, 27, 100);
+					return GiftPlayer(playerid, giveplayerid);
+					/* GivePlayerValidWeapon(giveplayerid, 27, 100);
 					GivePlayerValidWeapon(giveplayerid, 24, 100);
 					GivePlayerValidWeapon(giveplayerid, 31, 100);
 					GivePlayerValidWeapon(giveplayerid, 34, 100);
 					GivePlayerValidWeapon(giveplayerid, 29, 100);
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Congratulations - you have won a full weapon set!");
 					format(string, sizeof(string), "* %s was just gifted a full weapon set, enjoy!", GetPlayerNameEx(giveplayerid));
-					ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
+					ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW); */
 				}
 				else if(gift == 2)
 				{

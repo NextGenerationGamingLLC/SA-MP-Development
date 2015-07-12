@@ -219,7 +219,9 @@ stock SaveHouse(houseid)
 		`LinkedDoor2`=%d, \
 		`LinkedDoor3`=%d, \
 		`LinkedDoor4`=%d, \
-		`ListingDescription`='%s' \
+		`ListingDescription`='%s', \
+		`LinkedGarage0`=%d, \
+		`LinkedGarage1`=%d \
 		WHERE `id`=%d",
 		szMiscArray,
 		HouseInfo[houseid][Listed],
@@ -231,6 +233,8 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][LinkedDoor][2],
 		HouseInfo[houseid][LinkedDoor][3],
 		HouseInfo[houseid][LinkedDoor][4],
+		HouseInfo[houseid][LinkedGarage][0],
+		HouseInfo[houseid][LinkedGarage][1],
 		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
@@ -340,6 +344,9 @@ public OnLoadHouse(index)
 			HouseInfo[index][LinkedDoor][i] = cache_get_field_content_int(row, szField, MainPipeline);
 		}
 		
+		HouseInfo[index][LinkedGarage][0] = cache_get_field_content_int(row, "LinkedGarage0", MainPipeline);
+		HouseInfo[index][LinkedGarage][1] = cache_get_field_content_int(row, "LinkedGarage1", MainPipeline);
+		
 		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
@@ -432,6 +439,9 @@ public OnLoadHouses()
 			format(szField, sizeof(szField), "LinkedDoor%d", l);
 			HouseInfo[i][LinkedDoor][l] = cache_get_field_content_int(i, szField, MainPipeline);
 		}
+		
+		HouseInfo[i][LinkedGarage][0] = cache_get_field_content_int(i, "LinkedGarage0", MainPipeline);
+		HouseInfo[i][LinkedGarage][1] = cache_get_field_content_int(i, "LinkedGarage1", MainPipeline);
 		
 		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
 		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
@@ -562,6 +572,7 @@ CMD:househelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit");
     return 1;
 }
 

@@ -1027,6 +1027,7 @@ task ServerHeartbeat[1000]() {
 				}
 				SetHealth(i, 100);
 				PlayerInfo[i][pJailTime] = 0;
+				PlayerInfo[i][pIsolated] = 0;
 				strcpy(PlayerInfo[i][pPrisonReason], "None");
 				PhoneOnline[i] = 0;
 				SendClientMessageEx(i, COLOR_GRAD1,"   You have paid your debt to society.");

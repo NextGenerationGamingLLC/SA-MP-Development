@@ -2855,6 +2855,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				GivePlayerValidWeapon(playerid, 8, 60000);
 			}
+			case 8:
+			{
+				if(PlayerInfo[playerid][pDonateRank] < 3)
+				{
+					if(PlayerInfo[playerid][pTokens] > 1)
+					{
+						PlayerInfo[playerid][pTokens] -= 2;
+						format(string, sizeof(string), "VIP: You have traded 2 tokens for a 9mm, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
+						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					}
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You do not have enough tokens for this.");
+						return 1;
+					}
+				}
+				GivePlayerValidWeapon(playerid, 22, 36);
+				PlayerInfo[playerid][pVIPGuncount]++; 
+			}
 		}
 		for(new i = 0; i < 12; i++) {
 			SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
@@ -3626,8 +3645,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					switch(PlayerInfo[playerid][pDonateRank])
 					{
-						case 1, 2: ShowPlayerDialog(playerid, VIPWEPSMENU, DIALOG_STYLE_LIST, "VIP Weapons", "Desert Eagle (3)\nShotgun (2)\nMP5 (3)\nSilenced Pistol (2)\nGolf Club (1)\nBat (1)\nDildo (1)\nSword (1)", "Select", "Cancel");
-						default: ShowPlayerDialog(playerid, VIPWEPSMENU, DIALOG_STYLE_LIST, "VIP Weapons", "Desert Eagle\nShotgun\nMP5\nSilenced Pistol\nGolf Club\nBat\nDildo\nSword", "Select", "Cancel");
+						case 1, 2: ShowPlayerDialog(playerid, VIPWEPSMENU, DIALOG_STYLE_LIST, "VIP Weapons", "Desert Eagle (3)\nShotgun (2)\nMP5 (3)\nSilenced Pistol (2)\nGolf Club (1)\nBat (1)\nDildo (1)\nSword (1)\9mm (2)", "Select", "Cancel");
+						default: ShowPlayerDialog(playerid, VIPWEPSMENU, DIALOG_STYLE_LIST, "VIP Weapons", "Desert Eagle\nShotgun\nMP5\nSilenced Pistol\nGolf Club\nBat\nDildo\nSword\n9mm", "Select", "Cancel");
 					}
 				}
 				else
@@ -3838,7 +3857,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Businesses[iBusiness][bInventory]--;
 				Businesses[iBusiness][bTotalSales]++;
 				Businesses[iBusiness][bSafeBalance] += TaxSale(cost);
-				Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
+				//Businesses[iBusiness][bSafeBalance] -= floatround(cost * BIZ_PENALTY);
 				GivePlayerCash(playerid, -cost);
 				if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[iBusiness][bLevelProgress]++;
 				SaveBusiness(iBusiness);
@@ -4975,7 +4994,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						format(string, sizeof(string), "You have been given the option to post bail.  Your bail is set at $%s. (/bail)", number_format(bailprice));
 						SendClientMessageEx(suspect, COLOR_RED, string);
-						JailPrice[suspect] = bailprice;
+						PlayerInfo[suspect][pBailPrice] = bailprice;
 					}
 					format(string, sizeof(string), "* You have sent %s to the Local PD Jail.", GetPlayerNameEx(suspect));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
@@ -5232,7 +5251,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			for(new i; i < 10; i++) {
 				PlayerHoldingObject[suspect][i] = 0;
 			}
-			for(new i = 0; i < 5; i++) arrAmmoData[playerid][awp_iAmmo][i] = 0;
+			for(new i = 0; i < 5; i++) arrAmmoData[suspect][awp_iAmmo][i] = 0;
 			DeletePVar(suspect, "jailcuffs");
 			DeletePVar(playerid, "Arrest_Price");
 			DeletePVar(playerid, "Arrest_Time");
@@ -12523,7 +12542,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerInfo[playerid][pTruckSkill] = 401;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Shipment Contractor skill level has been set to 5.");
 				}
-				case 10:
+				/* case 10:
 				{
 					if(PlayerInfo[playerid][pTreasureSkill] >= 600)
 					{
@@ -12532,6 +12551,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					PlayerInfo[playerid][pTreasureSkill] = 600;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Treasure Hunter skill level has been set to 5.");
+				} */
+				case 10:
+				{
+					if(PlayerInfo[playerid][pCarLockPickSkill] >= 350)
+						return SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
+					PlayerInfo[playerid][pCarLockPickSkill] = 350;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lock Picking skill level has been set to 5.");
 				}
 			}
 			PlayerInfo[playerid][pVIPJob] = 0;

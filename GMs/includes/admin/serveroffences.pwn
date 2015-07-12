@@ -43,7 +43,7 @@ CMD:dm(playerid, params[])
     new string[128], giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dm [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-	if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+	if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 		new playerip[32];
 		ResetPlayerWeaponsEx(giveplayerid);
 		GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -65,7 +65,7 @@ CMD:sdm(playerid, params[])
 	    new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sdm [player]");
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-		if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+		if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 			new playerip[32];
 			ResetPlayerWeaponsEx(giveplayerid);
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -91,7 +91,7 @@ CMD:kos(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -118,7 +118,7 @@ CMD:skos(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -145,7 +145,7 @@ CMD:pg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -172,7 +172,7 @@ CMD:spg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -199,7 +199,7 @@ CMD:mg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -226,7 +226,7 @@ CMD:smg(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -253,7 +253,7 @@ CMD:rk(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -280,7 +280,7 @@ CMD:srk(playerid, params[])
 		if(!sscanf(params, "u", giveplayerid)) {
 			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 36) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -322,7 +322,7 @@ CMD:nonrp(playerid, params[])
 				pTazer{giveplayerid} = 0;
 			}
 
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -366,7 +366,7 @@ CMD:snonrp(playerid, params[])
 				pTazer{giveplayerid} = 0;
 			}
 			
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 8) {
+			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
 				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -471,24 +471,30 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "DM", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 8 && hours <= 36) {
-				jailtime = 15;
-				twarn = 1;
-			}
-			else if(hours > 36 && hours <= 80) {
-				jailtime = 60;
-				twarn = 1;
-			}
-			else if(hours > 80 && hours <= 140) {
+			if(hours > 2 && hours <= 24) {
 				PlayerInfo[giveplayerid][pWRestricted] = 4;
-				jailtime = 120;
-				fine = 5;
+				jailtime = 30;
+				twarn = 1;
 			}
-			else if(hours > 140) {
+			else if(hours > 24 && hours <= 72) {
 				PlayerInfo[giveplayerid][pWRestricted] = 8;
 				PlayerInfo[giveplayerid][pWarns] += 1;
+				jailtime = 60;
 				warn = 1;
-				jailtime = 300;
+				fine = 15;
+			}
+			else if(hours > 72 && hours <= 140) {
+				PlayerInfo[giveplayerid][pWRestricted] = 12;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				warn = 1;
+				jailtime = 90;
+				fine = 15;
+			}
+			else if(hours > 140) {
+				PlayerInfo[giveplayerid][pWRestricted] = 16;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				warn = 1;
+				jailtime = 120;
 				fine = 15;
 			}
 		}
@@ -497,10 +503,27 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "RK", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 36 && hours <= 80) jailtime = 30;
-			else if(hours > 80 && hours <= 140) jailtime = 60;
+			if(hours > 2 && hours <= 24) {
+				PlayerInfo[giveplayerid][pWRestricted] = 2;
+				jailtime = 30;
+				twarn = 1;
+			}
+			else if(hours > 24 && hours <= 72) {
+				PlayerInfo[giveplayerid][pWRestricted] = 4;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				jailtime = 60;
+				warn = 1;
+				fine = 10;
+			}
+			else if(hours > 72 && hours <= 140) {
+				PlayerInfo[giveplayerid][pWRestricted] = 6;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				warn = 1;
+				jailtime = 90;
+				fine = 10;
+			}
 			else if(hours > 140) {
-				PlayerInfo[giveplayerid][pWRestricted] = 5;
+				PlayerInfo[giveplayerid][pWRestricted] = 8;
 				PlayerInfo[giveplayerid][pWarns] += 1;
 				warn = 1;
 				jailtime = 120;
@@ -512,24 +535,23 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "NONRP", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 8 && hours <= 36) {
-				jailtime = 15;
+			if(hours > 2 && hours <= 24) {
 				twarn = 1;
+				jailtime = 30;
 			}
-			else if(hours > 36 && hours <= 80) {
-				PlayerInfo[giveplayerid][pWRestricted] = 2;
-				jailtime = 45;
+			else if(hours > 24 && hours <= 72) {
+				twarn = 1;
+				jailtime = 60;
+				fine = 10;
 			}
-			else if(hours > 80 && hours <= 140) {
-				PlayerInfo[giveplayerid][pWRestricted] = 2;
-				jailtime = 120;
+			else if(hours > 72 && hours <= 140) {
+				twarn = 1;
+				jailtime = 90;
+				fine = 10;
 			}
 			else if(hours > 140) {
-				PlayerInfo[giveplayerid][pWRestricted] = 8;
-				PlayerInfo[giveplayerid][pWarns] += 1;
-				warn = 1;
-				jailtime = 180;
-				fine = 20;
+				jailtime = 120;
+				fine = 10;
 			}
 		}
 	}
@@ -537,21 +559,41 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "MG", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 36 && hours <= 80) jailtime = 15;
-			else if(hours > 80 && hours <= 140) jailtime = 30;
-			else if(hours > 140) jailtime = 60;
+			if(hours > 2 && hours <= 24) {
+				jailtime = 15;
+				twarn = 1;
+			}
+			else if(hours > 24 && hours <= 72) {
+				jailtime = 30;
+				twarn = 1;
+			}
+			else if(hours > 72 && hours <= 140) {
+				jailtime = 45;
+			}
+			else if(hours > 140) {
+				jailtime = 60;
+			}
 		}
 	}
 	else if(!strcmp(reason, "Powergaming", true) && !custom) {
 		strcpy(shortreason, "PG", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 36 && hours <= 80) jailtime = 30;
-			else if(hours > 80 && hours <= 140) jailtime = 45;
+			if(hours > 2 && hours <= 24) {
+				jailtime = 15;
+				twarn = 1;
+			}
+			else if(hours > 24 && hours <= 72) {
+				jailtime = 30;
+				twarn = 1;
+				fine = 10;
+			}
+			else if(hours > 72 && hours <= 140) {
+				jailtime = 45;
+				fine = 10;
+			}
 			else if(hours > 140) {
-				PlayerInfo[giveplayerid][pWarns] += 1;
-				jailtime = 120;
-				warn = 1;
+				jailtime = 60;
 				fine = 10;
 			}
 		}
@@ -560,27 +602,34 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		strcpy(shortreason, "KOS", 5);
 		if(!time) {
 			new hours = PlayerInfo[giveplayerid][pConnectHours];
-			if(hours > 8 && hours <= 36) {
-				jailtime = 15;
+			if(hours > 2 && hours <= 24) {
+				PlayerInfo[giveplayerid][pWRestricted] = 2;
+				jailtime = 30;
 				twarn = 1;
 			}
-			else if(hours > 36 && hours <= 80) {
-				PlayerInfo[giveplayerid][pWRestricted] = 2;
-				jailtime = 45;
-			}
-			else if(hours > 80 && hours <= 140) {
-				PlayerInfo[giveplayerid][pWRestricted] = 4;
-				jailtime = 120;
-			}
-			else if(hours > 140) {
+			else if(hours > 24 && hours <= 72) {
 				PlayerInfo[giveplayerid][pWRestricted] = 4;
 				PlayerInfo[giveplayerid][pWarns] += 1;
+				jailtime = 60;
 				warn = 1;
-				jailtime = 180;
+				fine = 10;
+			}
+			else if(hours > 72 && hours <= 140) {
+				PlayerInfo[giveplayerid][pWRestricted] = 8;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				warn = 1;
+				jailtime = 90;
+				fine = 10;
+			}
+			else if(hours > 140) {
+				PlayerInfo[giveplayerid][pWRestricted] = 12;
+				PlayerInfo[giveplayerid][pWarns] += 1;
+				warn = 1;
+				jailtime = 120;
 				fine = 10;
 			}
 		}
-	} 
+	}
 	
 	PlayerInfo[giveplayerid][pJailedInfo][2] = jailtime;
 	if(!custom) {

@@ -1793,14 +1793,11 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 		else if(IsASpawnedTrain(vehicleid))
 		{
-	        if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI))
+			if(!IsATaxiDriver(playerid))
 			{
-			}
-		    else
-			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not part of a transportation department!");
-		        RemovePlayerFromVehicle(playerid);
-		        new Float:slx, Float:sly, Float:slz;
+				SendClientMessageEx(playerid,COLOR_GREY,"   You are not part of a transportation department!");
+				RemovePlayerFromVehicle(playerid);
+				new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz);
 		    }

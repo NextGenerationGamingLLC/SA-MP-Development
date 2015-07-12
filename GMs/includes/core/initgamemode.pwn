@@ -24,7 +24,7 @@ InitiateGamemode()
 	LoadRelayForLifeTeams();
 	LoadGarages();
 	LoadCrimes();
-	LoadGCrates();
+	//LoadGCrates();
 	//loadSafes(); 
 		/*---[Shop Automation]---*/
 	
@@ -80,7 +80,8 @@ InitiateGamemode()
 	SetTimer("Anti_Rapidfire", 1000, true);
 	SetTimer("OnEnterFire", 1000, true);
 	LoadParkingMeters();
-	
+	GovGuns_LoadCosts();
+	MetDet_LoadMetDets();
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates
 	
