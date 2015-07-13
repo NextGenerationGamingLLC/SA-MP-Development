@@ -309,7 +309,7 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, iAmount) {
 		szMiscArray[4021] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
 		iCount++;
 	}
-	if(iAmount > szMiscArray[4001+itemid]) return SetPVarInt(iPlayerID, "GC_WCHECK", 1), 1;
+	if(iAmount > szMiscArray[4000+itemid]) return SetPVarInt(iPlayerID, "GC_WCHECK", 1), 1;
 	return szMiscArray[4000+itemid];
 }
 
