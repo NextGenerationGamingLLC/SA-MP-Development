@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.203"
+#define SERVER_GM_TEXT "NG:RP v3.0.206"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -240,7 +240,7 @@
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
 #include "./includes/gangshipment.pwn"
-//#include "./includes/gangcrates.pwn"
+#include "./includes/gangcrates.pwn"
 //#include "./includes/gangrobbery.pwn"
 //#include "./includes/group/spraytags.pwn"
 #include "./includes/group/GovArms.pwn"

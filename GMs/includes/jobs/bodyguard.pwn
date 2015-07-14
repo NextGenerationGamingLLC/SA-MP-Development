@@ -180,7 +180,7 @@ CMD:frisk(playerid, params[])
 				}
 				if(arrAmmoData[giveplayerid][awp_iAmmo][2] > 0)
 				{
-					format(string, sizeof(string), ".50 Cal rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][2]);
+					format(string, sizeof(string), ".50 AE rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][2]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 				if(arrAmmoData[giveplayerid][awp_iAmmo][3] > 0)

@@ -344,6 +344,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(listitem == 0)
 				{
 					SetPlayerVirtualWorld(playerid, 0);
+					SetPlayerInterior(playerid, 0);
 					SetPVarInt(playerid, "PTestVeh", CreateVehicle(404, 1138.3353,1375.6553,10.4057, 91.0917, 3, 3, -1));
 					new pTestVeh = GetPVarInt(playerid, "PTestVeh");
 					PutPlayerInVehicle(playerid, pTestVeh, 0);

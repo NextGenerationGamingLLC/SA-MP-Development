@@ -412,11 +412,12 @@ CMD:reverse(playerid, params[])
 			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
 			
-			PlayerInfo[giveplayerid][pWantedLevel] = 0;
+			PhoneOnline[giveplayerid] = 0;
+			//PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(giveplayerid);
 			SetHealth(giveplayerid, 100);
-			SetPlayerWantedLevel(giveplayerid, 0);
+			//SetPlayerWantedLevel(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pJailTime] = 0;
 			SetPlayerPos(giveplayerid, 1529.6,-1691.2,13.3);
 			SetPlayerInterior(giveplayerid,0);

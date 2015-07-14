@@ -273,6 +273,7 @@ CMD:delivershipment(playerid, params[]) {
 	
 	new iVehID = GetPlayerVehicleID(playerid);
 	new iGroupID = PlayerInfo[playerid][pMember];
+	szMiscArray[0] = 0;
 	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a criminal organization.");
 	if(!IsAGangShipmentTruck(iVehID)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a shipment truck!");
 	if(IsPlayerInRangeOfPoint(playerid, 5.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2])) {
@@ -286,6 +287,8 @@ CMD:delivershipment(playerid, params[]) {
 	   				DestroyVehicle(iVehID);
 					arrGangShipmentData[v][gs_iVehicle] = INVALID_VEHICLE_ID;
 	   				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered your shipment to your group.");
+	   				format(szMiscArray, sizeof(szMiscArray), "%s has delivered a shipment.", GetPlayerNameEx(playerid));
+	   				GroupLog(iGroupID, szMiscArray);
 	   				break; 
 	   			}
 	   		}

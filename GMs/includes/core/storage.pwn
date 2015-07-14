@@ -2756,7 +2756,7 @@ CMD:hbalance(playerid, params[])
 				format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / 800 rounds", HouseInfo[i][hAmmo][1]);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
-				format(szMiscArray, sizeof(szMiscArray), ".50 Cal: %i / 800 rounds", HouseInfo[i][hAmmo][2]);
+				format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / 800 rounds", HouseInfo[i][hAmmo][2]);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 				format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / 800 rounds", HouseInfo[i][hAmmo][3]);
@@ -3632,10 +3632,10 @@ CMD:give(playerid, params[])
 					arrAmmoData[playerid][awp_iAmmo][2] -= amount;
 					arrAmmoData[giveplayerid][awp_iAmmo][2] += amount;
 
-					format(string, sizeof(string), "You have recieved %d .50 Cal rounds from %s", amount, GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have recieved %d .50 AE rounds from %s", amount, GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 
-					format(string, sizeof(string), "You have given %s %d .50 Cal rounds.", GetPlayerNameEx(giveplayerid), amount);
+					format(string, sizeof(string), "You have given %s %d .50 AE rounds.", GetPlayerNameEx(giveplayerid), amount);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
 
 					format(string, sizeof(string), "* %s has given %s a case of ammunition.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -3644,7 +3644,7 @@ CMD:give(playerid, params[])
 					new ip[32], ipex[32];
 					GetPlayerIp(playerid, ip, sizeof(ip));
 					GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
-					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d .50 Cal rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
+					format(string, sizeof(string), "%s(%d) (IP:%s) has given %s(%d) (IP:%s) %d .50 AE rounds.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ipex, amount);
 					Log("logs/pay.log", string);
 				}
 				else SendClientMessageEx(playerid, COLOR_WHITE, "You don't have that much ammo!");

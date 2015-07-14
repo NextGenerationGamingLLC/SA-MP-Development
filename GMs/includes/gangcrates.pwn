@@ -285,7 +285,7 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 		iCurrentAmount = cache_get_field_content_int(iCount, szGCItem, MainPipeline);
 		++iCount;
 	}
-	printf("Gun: %s | Current Amount: %d | Amount wanted: %d", szGCItem, iCurrentAmount, iAmount);
+	//printf("Gun: %s | Current Amount: %d | Amount wanted: %d", szGCItem, iCurrentAmount, iAmount);
 	if(iAmount > iCurrentAmount)
 	{
 		return SendClientMessage(iPlayerID, COLOR_GRAD1, "You are trying to transfer more than there is!");
@@ -297,9 +297,10 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 		iCrateID
 	);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemFromCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
+	return 1;
 }
 
-CountLockerGuns(iGroupID, iWeaponID) {
+/*CountLockerGuns(iGroupID, iWeaponID) {
 
 	szMiscArray[0] = 0;
 
@@ -315,7 +316,7 @@ public OnCountLockerGuns(iGroupID, iWeaponID) {
 	new 
 		iRows = cache_get_row_count();
 	return iRows;
-}
+}*/
 
 forward OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount);
 public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount) {
@@ -324,7 +325,7 @@ public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount) {
 
 	new iRows = cache_get_row_count();
 	if(iRows < iAmount) SetPVarInt(iPlayerID, "GC_CHECK", 1);
-	printf("Group ID: %d | Guns: %d", iGroupID, iRows);
+	//printf("Group ID: %d | Guns: %d", iGroupID, iRows);
 	return 1;
 }
 

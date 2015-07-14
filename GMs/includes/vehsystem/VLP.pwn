@@ -190,6 +190,7 @@ CMD:pickveh(playerid, params[])
 			if(v != -1) {
 				if(PlayerVehicleInfo[i][v][pvLock] == 0 || PlayerVehicleInfo[i][v][pvLocksLeft] <= 0)
 					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock vehicles that don't have a lock.");
+				if(IsABike(PlayerVehicleInfo[i][v][pvModelId])) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You can't pick lock bikes.");
 				if(PlayerVehicleInfo[i][v][pvBeingPickLocked] > 0)
 					return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: This vehicle is already being lock picked.");
 				if(PlayerVehicleInfo[i][v][pvAllowedPlayerId] == playerid)

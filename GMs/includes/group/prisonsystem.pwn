@@ -1410,11 +1410,19 @@ CMD:offerinmatefood(playerid, params[])
 	if(sscanf(params, "u", iGiveTo)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /offerinmatefood [playerid]");
 	else if(iGiveTo == playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot offer yourself food.");
 	else if(!IsPlayerConnected(iGiveTo)) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not connected");
-	else if(GetPVarInt(playerid, "OfferingMeal") == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to one person at a time.");
+	//else if(GetPVarInt(playerid, "OfferingMeal") == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to one person at a time.");
 	else if(!PlayerInfo[iGiveTo][pJailTime]) return SendClientMessageEx(playerid, COLOR_WHITE, "You may only offer food to prison inmates.");
 	else if(!GetPVarInt(playerid, "inmatefood")) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have any prison food to offer.");
 	else if(ProxDetectorS(5.0, playerid, iGiveTo))
 	{
+		if(GetPVarInt(playerid, "OfferingMeal") == 1) { // added as a bug report fix
+			new iOfferingToOld = GetPVarInt(playerid, "OfferedMealTo");
+			DeletePVar(iOfferingToOld, "OfferedMeal");
+			DeletePVar(iOfferingToOld, "OfferedMealBy");
+			DeletePVar(playerid, "OfferingMeal");
+			DeletePVar(playerid, "OfferedMealTo");
+		}
+
 		SetPVarInt(iGiveTo, "OfferedMeal", 1);
 		SetPVarInt(iGiveTo, "OfferedMealBy", playerid);
 		SetPVarInt(playerid, "OfferingMeal", 1);

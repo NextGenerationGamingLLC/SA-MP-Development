@@ -2639,6 +2639,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
+				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank] && arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
 				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
 				new iAmmoQuantity = strval(inputtext);
 				new iMaxAmmo = GetMaxAmmoAllowed(playerid, iAmmoType);
@@ -5723,7 +5724,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 				arrGroupData[iGroupID][g_iWithdrawRank] = iRank;
 				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
-				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank to %i.", iRank);
+				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank to %i.", GetPlayerNameEx(playerid), iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
 			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
@@ -5839,7 +5840,7 @@ public OnMemberCount(groupID)
 ShowGroupAmmoDialog(playerid, iGroupID) {
 	
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tAmount Left\n9mm\t%d\n7.62 x 51\t%d\n.50 Cal\t%d\n7.62 x 39\t%d\n12 Gauge\t%d", 
+	format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tAmount Left\n9mm\t%d\n7.62 x 51\t%d\n.50 AE\t%d\n7.62 x 39\t%d\n12 Gauge\t%d", 
 		arrGroupData[iGroupID][g_iAmmo][0],
 		arrGroupData[iGroupID][g_iAmmo][1],
 		arrGroupData[iGroupID][g_iAmmo][2],

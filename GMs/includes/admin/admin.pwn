@@ -3753,6 +3753,7 @@ CMD:release(playerid, params[])
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
+				PhoneOnline[giveplayerid] = 0;
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);
@@ -5878,6 +5879,7 @@ CMD:srelease(playerid, params[])
 				Log("logs/admin.log", string);
 				format(string, sizeof(string), "AdmCmd: %s has been silent released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
+				PhoneOnline[giveplayerid] = 0;
 				PlayerInfo[giveplayerid][pWantedLevel] = 0;
 				PlayerInfo[giveplayerid][pBeingSentenced] = 0;
 				SetPlayerToTeamColor(giveplayerid);

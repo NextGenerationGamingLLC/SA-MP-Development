@@ -330,11 +330,12 @@ public loginCamera(playerid)
 	return 1;
 }
 
-LoginCamToPlayer(playerid)
+/*LoginCamToPlayer(playerid)
 {
         new Float:A;
         GetPlayerFacingAngle(playerid, A);
-         
+        
+        SetPVarInt(playerid, "LoginCam", 1); 
         SetTimerEx("OnLoginCam", CAMERA_MOVE_SPEED, false, "i", playerid);
         TogglePlayerControllable(playerid, 0);
         InterpolateCameraPos(playerid, PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z] + CAMERA_ZOOM_DISTANCE, PlayerInfo[playerid][pPos_x] + 3.255828, PlayerInfo[playerid][pPos_y] - 4.534179, PlayerInfo[playerid][pPos_z] + 1.047477, CAMERA_MOVE_SPEED, CAMERA_MOVE);
@@ -348,5 +349,6 @@ public OnLoginCam(playerid)
 	StopAudioStreamForPlayer(playerid);
 	SetCameraBehindPlayer(playerid);
 	TogglePlayerControllable(playerid, 1);
+	DeletePVar(playerid, "LoginCam");
 	return 1;
-}
+}*/

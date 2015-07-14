@@ -24,7 +24,7 @@ InitiateGamemode()
 	LoadRelayForLifeTeams();
 	LoadGarages();
 	LoadCrimes();
-	//LoadGCrates();
+	LoadGCrates();
 	//loadSafes(); 
 		/*---[Shop Automation]---*/
 	

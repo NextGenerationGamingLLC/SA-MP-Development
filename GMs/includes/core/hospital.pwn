@@ -279,7 +279,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
 		PlayerTextDrawHide(playerid, HospTime[playerid]);
 		
-		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) // if they have homecare, set them at home for free
+		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
 		{
 			// set them to their house entrance location....
 			// using house spawn system from previous insurance system

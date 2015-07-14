@@ -464,7 +464,7 @@ SetPlayerSpawn(playerid)
 			if(PlayerInfo[playerid][pArmor] > 0) SetArmour(playerid, PlayerInfo[playerid][pArmor]); else SetArmour(playerid, 0.0);
 			SetCameraBehindPlayer(playerid);
 			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
-			if(PlayerInfo[playerid][pInt] == 0 && PlayerInfo[playerid][pVW] == 0) LoginCamToPlayer(playerid);
+			//if(PlayerInfo[playerid][pInt] == 0 && PlayerInfo[playerid][pVW] == 0) LoginCamToPlayer(playerid);
 
 		}
 		new Float: x, Float: y, Float: z;

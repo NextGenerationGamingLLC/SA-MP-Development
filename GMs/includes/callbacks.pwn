@@ -3047,6 +3047,7 @@ public OnPlayerDisconnect(playerid, reason)
 		pSpeed[playerid] = 0.0;
 		SetPVarInt(playerid, "PlayerOwnASurf", 0);
 	}
+	PlayerInfo[playerid][pWarrant][0] = 0;
 	DeletePVar(playerid, "pTmpEmail");
 	DeletePVar(playerid, "NullEmail");
 	DeletePVar(playerid, "ViewedPMOTD");

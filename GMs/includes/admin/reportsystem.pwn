@@ -113,11 +113,11 @@ stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
      	foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0 && !GetPVarType(i, "TogReports")) {
-				format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 				SendClientMessageEx(i, COLOR_REPORT, string);
 			}
 			else if((reportpriority == 1 || reportpriority == 2) && PlayerInfo[i][pTogReports] == 0 && GetPVarType(i, "TogReports")) {
-				format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: 0 minutes | Priority: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
+				format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: 0 mins | Pr: %i", GetPlayerNameEx(reportfrom), reportfrom, newid, report, reportpriority);
 				SendClientMessageEx(i, COLOR_REPORT, string);
 			}
 		}	
@@ -564,7 +564,7 @@ CMD:reportsold(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: %d minutes | Priority: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 					SendClientMessageEx(playerid, COLOR_REPORT, string);
 				}
 			}
@@ -575,7 +575,7 @@ CMD:reportsold(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: %d minutes | Priority: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 					SendClientMessageEx(playerid, COLOR_REPORT, string);
 				}
 			}
@@ -586,7 +586,7 @@ CMD:reportsold(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: %d minutes | Priority: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 					SendClientMessageEx(playerid, COLOR_REPORT, string);
 				}
 			}
@@ -597,7 +597,7 @@ CMD:reportsold(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: %d minutes | Priority: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 					SendClientMessageEx(playerid, COLOR_REPORT, string);
 				}
 			}
@@ -608,7 +608,7 @@ CMD:reportsold(playerid, params[])
 			{
 			    if(Reports[i][ReportLevel] == 2 || PlayerInfo[playerid][pAdmin] >= 2)
 			    {
-					format(string, sizeof(string), "%s (ID: %i) | RID: %i | Report: %s | Pending: %d minutes | Priority: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
+					format(string, sizeof(string), "%s (ID: %i) | RID: %i | %s | Pend: %d mins | Pr: %i", GetPlayerNameEx(Reports[i][ReportFrom]), Reports[i][ReportFrom], i, (Reports[i][Report]), Reports[i][TimeToExpire], Reports[i][ReportPriority]);
 					SendClientMessageEx(playerid, COLOR_REPORT, string);
 				}
 			}

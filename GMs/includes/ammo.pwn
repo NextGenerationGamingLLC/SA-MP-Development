@@ -27,7 +27,7 @@ GetAmmoName(ammoType)
 	{
 		case 0: ammo = "9mm";
 		case 1: ammo = "7.62x51";
-		case 2: ammo = ".50 Cal";
+		case 2: ammo = ".50 AE";
 		case 3: ammo = "7.62x39";
 		case 4: ammo = "12-gauge";
 		default: ammo = "";
@@ -106,24 +106,24 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
     switch(iAmmoType) {
         case 0: { // 9mm
             if(iSkinID == 285 || iSkinID == 287)
-                return 180;
+                return 360;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 60;
-                case 2: return 90;  
-                case 3: return 120;
-                default: return 120;
+                case 0, 1: return 120;
+                case 2: return 180;  
+                case 3: return 240;
+                default: return 240;
             }
         }
         case 1: { // 7.62x51
             if(iSkinID == 285 || iSkinID == 287)
-                return 300;
+                return 400;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 100;
-                case 2: return 150;  
-                case 3: return 150;
-                default: return 200;
+                case 0, 1: return 150;
+                case 2: return 200;  
+                case 3: return 200;
+                default: return 250;
             }
         }
         case 2: { // 50 cal
@@ -428,7 +428,7 @@ CMD:myammo(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][1], GetMaxAmmoAllowed(playerid, 1));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
-	format(szMiscArray, sizeof(szMiscArray), ".50 Cal: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][2], GetMaxAmmoAllowed(playerid, 2));
+	format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][2], GetMaxAmmoAllowed(playerid, 2));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][3], GetMaxAmmoAllowed(playerid, 3));
