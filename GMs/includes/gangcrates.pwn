@@ -270,47 +270,33 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 	return 1;
 }
 
-forward OnCheckGCrateItems(iPlayerID, iCrateID, itemid, iAmount);
-public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, iAmount) {
+forward OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount);
+public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 
-	szMiscArray[0] = 0;
-
-	new 
-		iRows,
-		iFields, 
-		iCount;
+	new
+		iRows, 
+		iFields,
+		iCount,
+		iCurrentAmount;
 
 	cache_get_data(iRows, iFields, MainPipeline);
-	
+
 	while(iCount < iRows) {
-		
-		szMiscArray[3999] 	= 	cache_get_field_content_int(iCount, "iCrateID", MainPipeline);
-		szMiscArray[4000] 	= 	cache_get_field_content_int(iCount, "iGroupID", MainPipeline);
-		szMiscArray[4001] 	= 	cache_get_field_content_int(iCount, "9mm", MainPipeline);
-		szMiscArray[4002] 	= 	cache_get_field_content_int(iCount, "sdpistol", MainPipeline);
-		szMiscArray[4003] 	= 	cache_get_field_content_int(iCount, "deagle", MainPipeline);
-		szMiscArray[4004] 	= 	cache_get_field_content_int(iCount, "uzi", MainPipeline);
-		szMiscArray[4005] 	= 	cache_get_field_content_int(iCount, "tec9", MainPipeline);
-		szMiscArray[4006] 	= 	cache_get_field_content_int(iCount, "mp5", MainPipeline);
-		szMiscArray[4007] 	= 	cache_get_field_content_int(iCount, "m4", MainPipeline);
-		szMiscArray[4008] 	= 	cache_get_field_content_int(iCount, "ak47", MainPipeline);
-		szMiscArray[4009] 	= 	cache_get_field_content_int(iCount, "rifle", MainPipeline);
-		szMiscArray[4010] 	= 	cache_get_field_content_int(iCount, "sniper", MainPipeline);
-		szMiscArray[4011] 	= 	cache_get_field_content_int(iCount, "shotty", MainPipeline);
-		szMiscArray[4012] 	= 	cache_get_field_content_int(iCount, "sawnoff", MainPipeline);
-		szMiscArray[4013] 	= 	cache_get_field_content_int(iCount, "spas", MainPipeline);
-		szMiscArray[4014] 	= 	cache_get_field_content_int(iCount, "ammo0", MainPipeline);
-		szMiscArray[4015] 	= 	cache_get_field_content_int(iCount, "ammo1", MainPipeline);
-		szMiscArray[4016] 	= 	cache_get_field_content_int(iCount, "ammo2", MainPipeline);
-		szMiscArray[4017] 	= 	cache_get_field_content_int(iCount, "ammo3", MainPipeline);
-		szMiscArray[4018] 	= 	cache_get_field_content_int(iCount, "ammo4", MainPipeline);
-		szMiscArray[4019] 	= 	cache_get_field_content_int(iCount, "pot", MainPipeline);
-		szMiscArray[4020] 	= 	cache_get_field_content_int(iCount, "crack", MainPipeline);
-		szMiscArray[4021] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
-		iCount++;
+		iCurrentAmount = cache_get_field_content_int(iCount, szGCItem, MainPipeline);
+		++iCount;
 	}
-	if(iAmount > szMiscArray[4000+itemid]) return SetPVarInt(iPlayerID, "GC_WCHECK", 1), 1;
-	return szMiscArray[4000+itemid];
+	printf("Gun: %s | Current Amount: %d | Amount wanted: %d", szGCItem, iCurrentAmount, iAmount);
+	if(iAmount > iCurrentAmount)
+	{
+		return SendClientMessage(iPlayerID, COLOR_GRAD1, "You are trying to transfer more than there is!");
+	}
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `%s` = '%d' - '%d' WHERE `iCrateID` = '%d'",
+		szGCItem,
+		iCurrentAmount,
+		iAmount, 
+		iCrateID
+	);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemFromCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
 }
 
 CountLockerGuns(iGroupID, iWeaponID) {
@@ -328,13 +314,6 @@ public OnCountLockerGuns(iGroupID, iWeaponID) {
 
 	new 
 		iRows = cache_get_row_count();
-		/*iFields, 
-		iCount;
-
-	cache_get_data(iRows, iFields, MainPipeline);
-
-	for(iCount = 0; iCount < iRows; iCount++) {}
-	*/
 	return iRows;
 }
 
@@ -515,43 +494,11 @@ GetClosestGCrateID(playerid)
 */
 
 TransferItemFromCrate(playerid, itemid, iAmount, iCrateID) {
-	
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iCrateID` = '%d'", iCrateID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrateItems", "iiii", playerid, iCrateID, itemid, iAmount);
-	if(GetPVarType(playerid, "GC_WCHECK")) return DeletePVar(playerid, "GC_WCHECK"), SendClientMessage(playerid, COLOR_GRAD1, "You are trying to transfer more than there is!");
-
 	new szGCItem[24];
 	szGCItem = GetGCItemSQLFldName(itemid);
+
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", szGCItem, iCrateID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnGetGCrateAmount", "iiiis", playerid, itemid, iAmount, iCrateID, szGCItem);
-	return 1;
-}
-
-forward OnGetGCrateAmount(playerid, itemid, iAmount, iCrateID, szGCItem[]);
-public OnGetGCrateAmount(playerid, itemid, iAmount, iCrateID, szGCItem[])
-{
-	new
-		iRows, 
-		iFields,
-		iCount,
-		iCurrentAmount;
-
-	
-
-	cache_get_data(iRows, iFields, MainPipeline);
-
-	while(iCount < iRows) {
-		iCurrentAmount = cache_get_field_content_int(iCount, szGCItem, MainPipeline);
-		++iCount;
-	}
-
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `%s` = '%d' - '%d' WHERE `iCrateID` = '%d'",
-		szGCItem,
-		iCurrentAmount,
-		iAmount, 
-		iCrateID
-	);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemFromCrate", "iiii", playerid, itemid, iAmount, iCrateID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrateItems", "iiisi", playerid, iCrateID, itemid, szGCItem, iAmount);
 	return 1;
 }
 
@@ -565,7 +512,7 @@ public OnTransferItemFromCrate(playerid, itemid, iAmount,  iCrateID) {
 
 
 	switch(itemid) {
-		case 0 .. 12: for(new i = 0; i < iAmount; i++) { AddGroupSafeWeapon(playerid, iGroupID, GetWepIDFromGCIdx(itemid)); }
+		case 0 .. 12: for(new i = 0; i < iAmount; i++) { AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); }
 		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] += iAmount;
 		case 18: arrGroupData[iGroupID][g_iPot] += iAmount; // Pot
 		case 19: arrGroupData[iGroupID][g_iCrack] += iAmount; // crack 	
