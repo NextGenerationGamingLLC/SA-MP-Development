@@ -49,16 +49,14 @@
 #define MAX_CRATE_GUNS 50
 #define MAX_CRATE_AMMO	2000
 #define MAX_CRATE_DRUGS 1000
-
 #define MAX_GANG_SIMUL_CRATES 2
 
 enum eGCrateData {
-	gcr_iVeh = INVALID_VEHICLE_ID,
 	gcr_iObject = INVALID_OBJECT_ID,
 	Text3D:gcr_iLabel
 }
-
 new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
+
 
 CreateGCrate(playerid, iGroupID) {
 	
@@ -213,6 +211,7 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 
 		iCount++;
 	}
+	if(PlayerInfo[iPlayerID][pMember] != szMiscArray[4000]) return SendClientMessageEx(iPlayerID, COLOR_GRAD2, "This crate does not belong to your group.");
 	if(itemid != -1) {
 
 		return szMiscArray[4000+itemid];
@@ -285,7 +284,6 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 		iCurrentAmount = cache_get_field_content_int(iCount, szGCItem, MainPipeline);
 		++iCount;
 	}
-	//printf("Gun: %s | Current Amount: %d | Amount wanted: %d", szGCItem, iCurrentAmount, iAmount);
 	if(iAmount > iCurrentAmount)
 	{
 		return SendClientMessage(iPlayerID, COLOR_GRAD1, "You are trying to transfer more than there is!");
@@ -325,7 +323,6 @@ public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount) {
 
 	new iRows = cache_get_row_count();
 	if(iRows < iAmount) SetPVarInt(iPlayerID, "GC_CHECK", 1);
-	//printf("Group ID: %d | Guns: %d", iGroupID, iRows);
 	return 1;
 }
 
@@ -452,19 +449,18 @@ SpawnGCrateAtGroup(iGroupID, iCrateID) {
 	return 1;
 }
 
-GetClosestGCrateID(playerid)
+IsPlayerNearGCrate(playerid, i)
 {
 	new 
 		Float:fTemp[3];
 
-	for(new i = 0; i < MAX_GANG_CRATES; ++i)
-	{
+	if(IsValidDynamicObject(arrGCrateData[i][gcr_iObject])) {
 		GetDynamicObjectPos(arrGCrateData[i][gcr_iObject], fTemp[0], fTemp[1], fTemp[2]);
 		if(IsPlayerInRangeOfPoint(playerid, 6.0, fTemp[0], fTemp[1], fTemp[2])) {
-			return i; 
+			return 1;
 		}
 	}
-	return -1;
+	return 0;
 }
 
 /* 
@@ -741,11 +737,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 			if(response) {
 				if(arrGroupData[iGroupID][g_iBudget] < 150000) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your group does not have sufficient funds to create a crate!");
-				if(PlayerInfo[playerid][pLeader] == iGroupID && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT)) {
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iGroupID` = %d", iGroupID);
-					mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrates", "ii", playerid, iGroupID);	
-				}
-				else SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this command!");
+				format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iGroupID` = %d", iGroupID);
+				mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrates", "ii", playerid, iGroupID);	
 			}
 			
 		}
@@ -780,6 +773,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 CMD:purchasegcrate(playerid, params[]) {
 
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	ShowPlayerDialog(playerid, PURCHASE_GANG_CRATE, DIALOG_STYLE_MSGBOX, "Purchase Gang Crate", 
 		"Are you sure you wish to purchase a gang crate?\nThis will cost your gang $150,000!\n\
 		If so, make sure you are in a place where a vehicle can access your crate!", 
@@ -788,10 +782,18 @@ CMD:purchasegcrate(playerid, params[]) {
 	return 1;
 }
 
+GCrates_Permission(playerid)
+{
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if(PlayerInfo[playerid][pLeader] == iGroupID && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT)) return 1;
+	if(PlayerInfo[playerid][pAdmin] > 1) return 1;
+	return 0;
+}
+
 CMD:preparegcrate(playerid, params[]) {
 
 	szMiscArray[0] = 0;
-
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	new 
 		iCrateID;
 
@@ -802,128 +804,144 @@ CMD:preparegcrate(playerid, params[]) {
 		Float:fTemp[3];
 
 	GetDynamicObjectPos(arrGCrateData[iCrateID][gcr_iObject], fTemp[0], fTemp[1], fTemp[2]);
-
 	if(IsPlayerInRangeOfPoint(playerid, 10.0, fTemp[0], fTemp[1], fTemp[2])) {
 
 		ShowGCrateItems(playerid, iCrateID);
 	}
+	else SendClientMessage(playerid, COLOR_GRAD1, "You are not near the crate.");
 
 	return 1;
 }
+
+
 
 CMD:gloadforklift(playerid, params[]) {
 
-	szMiscArray[0] = 0;
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	new iVehID = GetPlayerVehicleID(playerid),
-		iCrateID = GetClosestGCrateID(playerid);
+		iCrateID;
 	
-	if(iCrateID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near a gang crate.");
+	if(sscanf(params, "d", iCrateID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /gloadforklift [crateid]");
+	if(IsPlayerNearGCrate(playerid, iCrateID) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near that gang crate.");
 	if(GetVehicleModel(iVehID) != 530) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a forklift.");
+	if(CrateVehicleLoad[iVehID][vForkLoaded]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a crate on your forklift.");
+	CrateVehicleLoad[iVehID][vForkLoaded] = 1;
+	CrateVehicleLoad[iVehID][vCrateID][0] = iCrateID;
+	DestroyDynamicObject(arrGCrateData[iCrateID][gcr_iObject]);
+	arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
+	AttachDynamicObjectToVehicle(arrGCrateData[iCrateID][gcr_iObject], iVehID, 0, 0.9, 0, 0, 0, 0);
+	DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
+	format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iVehID);
+	return 1;
+}
 
-	for(new i = 0; i < MAX_GANG_CRATES; ++i) {
-		if(arrGCrateData[i][gcr_iVeh] == iVehID) {
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a crate on your forklift.");
-		}
-	}
-	// if(arrGCrateData[iCrateID][gcr_iVeh] == INVALID_VEHICLE_ID)
-	{
-		arrGCrateData[iCrateID][gcr_iVeh] = iVehID;
-		DestroyDynamicObject(arrGCrateData[iCrateID][gcr_iObject]);
-		arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
-		AttachDynamicObjectToVehicle(arrGCrateData[iCrateID][gcr_iObject], iVehID, 0, 0.9, 0, 0, 0, 0);
-		DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
-		format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-		arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iVehID);
-	}
+CMD:gunloadforklift(playerid, params[])
+{
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
+	new iVehID = GetPlayerVehicleID(playerid),
+		iCrateID,
+		Float:fTemp[3];
+	if(GetVehicleModel(iVehID) != 530) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a forklift.");
+	if(!CrateVehicleLoad[iVehID][vForkLoaded]) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have a crate on your forklift.");
+	iCrateID = CrateVehicleLoad[iVehID][vCrateID][0];
+	CrateVehicleLoad[iVehID][vForkLoaded] = 0;
+	DestroyDynamicObject(arrGCrateData[iCrateID][gcr_iObject]);
+	DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
+	GetPlayerPos(playerid, fTemp[0], fTemp[1], fTemp[2]);
+	new iVW = GetPlayerVirtualWorld(playerid),
+		iInt = GetPlayerInterior(playerid);
+	GetXYInFrontOfPlayer(playerid, fTemp[0], fTemp[1], 2.0);
+	arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964, fTemp[0], fTemp[1], fTemp[2]-0.88, 0,0,0, .worldid = iVW, .interiorid = iInt);
+	format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\nDropped by: %s\n%s", iCrateID, GetPlayerNameEx(playerid), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fTemp[0], fTemp[1], fTemp[2], 5.0);
 	return 1;
 }
 
 
+hook OnVehicleDeath(vehicleid, killerid)
+{
+	if(CrateVehicleLoad[vehicleid][vForkLoaded]) if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
+}
+
+hook OnVehicleSpawn(vehicleid)
+{
+	if(CrateVehicleLoad[vehicleid][vForkLoaded]) if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
+}
 
 CMD:gloadcrate(playerid, params[]) {
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	szMiscArray[0] = 0;
 	
 	new 
 		iVehID = GetPlayerVehicleID(playerid),
 		iLoadVehID = GetClosestCar(playerid, iVehID, 6.0),
-		iCrateID = -1;
+		iCrateID;
 		
 	if(GetVehicleModel(iVehID) != 530) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a forklift.");
+	if(sscanf(params, "d", iCrateID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /gloadcrate [crateid]");
+	if(CrateVehicleLoad[iVehID][vCrateID][0] != iCrateID) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that crate on your forklift");
 	if(iLoadVehID == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not near a vehicle.");
-	// get the crate id loaded on the forklift
-	for(new i = 0; i < MAX_GANG_CRATES; ++i) {
-		if(arrGCrateData[i][gcr_iVeh] == iVehID)
-		{
-			iCrateID = i;
-			break;
-		}
-	}
-	// check if there actually is a crate on the forklift
-	if(iCrateID == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a crate on your forklift");
-	
-	// check if there is a crate in the vehicle already
-	for(new i = 0; i < MAX_GANG_CRATES; ++i) {
-		if(arrGCrateData[i][gcr_iVeh] == iLoadVehID)
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "There is already a crate loaded in that vehicle!");
-	}
-	arrGCrateData[iCrateID][gcr_iVeh] = iLoadVehID;
+	if(CrateVehicleLoad[iLoadVehID][vForkLoaded])return SendClientMessageEx(playerid, COLOR_GRAD1, "There is a crate in that vehicle already!");
 	DestroyDynamicObject(arrGCrateData[iCrateID][gcr_iObject]);
 	DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
 	format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]][g_szGroupName]);
 	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iLoadVehID);
 	format(szMiscArray, sizeof(szMiscArray), "You have successfully stored the crate into a %s vehicle.", arrGroupData[DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]][g_szGroupName]);
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	CrateVehicleLoad[iVehID][vForkLoaded] = 0;
+	CrateVehicleLoad[iLoadVehID][vForkLoaded] = 1;
+	CrateVehicleLoad[iLoadVehID][vCrateID][0] = iCrateID;
 	SaveGCrate(iCrateID, DynVehicleInfo[DynVeh[iLoadVehID]][gv_igID]);
+	Streamer_Update(playerid);
 	return 1;
 }
 
 CMD:gunloadcrate(playerid, params[])
 {
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	szMiscArray[0] = 0;
 	new iVehID = GetPlayerVehicleID(playerid),
 		iGVehID = GetClosestCar(playerid, iVehID, 6.0);
+
 	if(GetVehicleModel(iVehID) != 530) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a forklift.");
-	if(iGVehID == INVALID_VEHICLE_ID || arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL || arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near a gang vehicle.");
-	for(new i = 0; i < MAX_GANG_CRATES; ++i) {
-		if(arrGCrateData[i][gcr_iVeh] == iVehID) {
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a crate on your forklift.");
-		}
-	}
-	for(new iCrateID; iCrateID < MAX_GANG_CRATES; iCrateID++)
+	// if(iGVehID == INVALID_VEHICLE_ID || arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL || arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near a gang vehicle.");
+	if(CrateVehicleLoad[iVehID][vForkLoaded]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have a crate on your forklift.");
+	if(CrateVehicleLoad[iGVehID][vForkLoaded])
 	{
-		if(arrGCrateData[iCrateID][gcr_iVeh] == iGVehID)
-		{
-			arrGCrateData[iCrateID][gcr_iVeh] = iVehID;
-			arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
-			AttachDynamicObjectToVehicle(arrGCrateData[iCrateID][gcr_iObject], iVehID, 0, 0.9, 0, 0, 0, 0);
-			DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
-			format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-			arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iVehID);
-			format(szMiscArray, sizeof(szMiscArray), "You have successfully taken a crate from a %s vehicle.", arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_szGroupName]);
-			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-			return 1;
-		}
+		new iCrateID = CrateVehicleLoad[iGVehID][vCrateID][0];
+		CrateVehicleLoad[iVehID][vCrateID][0] = iCrateID;
+		CrateVehicleLoad[iGVehID][vForkLoaded] = 0;
+		CrateVehicleLoad[iVehID][vForkLoaded] = 1;
+		arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
+		AttachDynamicObjectToVehicle(arrGCrateData[iCrateID][gcr_iObject], iVehID, 0, 0.9, 0, 0, 0, 0);
+		DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
+		format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\n%s", iCrateID, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+		arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, 0.0, 0.0, 0.0, 5.0, INVALID_PLAYER_ID, iVehID);
+		format(szMiscArray, sizeof(szMiscArray), "You have successfully taken a crate from the %s.", arrGroupData[DynVehicleInfo[DynVeh[iGVehID]][gv_igID]][g_szGroupName]);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle does not have any crates stored.");
+	else SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle does not have any crates stored.");
 	return 1;
 }
 
 
-CMD:gdelivercrate(playerid, params[]) {
-	szMiscArray[0] = 0;
+CMD:gdelivercrate(playerid, params[]) 
+{
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	new iGroupID = PlayerInfo[playerid][pMember],
 		iVehID = GetPlayerVehicleID(playerid);
 	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT) {
 		new Float:fTemp[3];
 		GetPlayerPos(playerid, fTemp[0], fTemp[1], fTemp[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2])) {
-			for(new iCrateID; iCrateID < MAX_GANG_CRATES; ++iCrateID) {
-				if(arrGCrateData[iCrateID][gcr_iVeh] == iVehID) {
-					DeliverGCCrate(playerid, iGroupID, iCrateID);
-					return 1;
-				}
+		if(IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]))
+		{
+			if(CrateVehicleLoad[iVehID][vForkLoaded])
+			{
+				DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
+				return 1;
 			}
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near your group's crate delivery point.");
 	}
@@ -933,24 +951,21 @@ CMD:gdelivercrate(playerid, params[]) {
 
 CMD:gdestroycrate(playerid, params[])
 {
-	szMiscArray[0] = 0;
-	new 
-		Float:fTemp[3];
 	if(IsACop(playerid))
 	{
-		for(new i = 0; i < MAX_GANG_CRATES; ++i) {
-            GetDynamicObjectPos(arrGCrateData[i][gcr_iObject], fTemp[0], fTemp[1], fTemp[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 7.0, fTemp[0], fTemp[1], fTemp[2])) {
-				DeleteGCrate(playerid, i);
-				Streamer_Update(playerid);
-				break;
-			}
+		new 
+			Float:fTemp[3],
+			iCrateID;
+		if(sscanf(params, "d", iCrateID)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /gdestroycrate [crateid]");
+        GetDynamicObjectPos(arrGCrateData[iCrateID][gcr_iObject], fTemp[0], fTemp[1], fTemp[2]);
+		if(IsPlayerInRangeOfPoint(playerid, 7.0, fTemp[0], fTemp[1], fTemp[2])) {
+			DeleteGCrate(playerid, iCrateID);
+			Streamer_Update(playerid);
 		}		
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a cop.");
 	return 1;
 }
-
 
 CMD:agcrates(playerid, params[]) {
 
@@ -959,7 +974,6 @@ CMD:agcrates(playerid, params[]) {
 		ShowGCrates(playerid);
 	return 1;
 }
-
 
 CMD:adestroygcrate(playerid, params[]) {
 	szMiscArray[0] = 0;
@@ -971,9 +985,9 @@ CMD:adestroygcrate(playerid, params[]) {
 
 CMD:gcratehelp(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES *** /purchasegcrate /preparegcrate /gloadforklift /gloadcrate /gunloadcrate /gdelivercrate");
+	SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES *** /purchasegcrate /preparegcrate /gloadforklift /gunloadforklift /gloadcrate /gunloadcrate /gdelivercrate");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES (LEO) ***  /gdestroycrate");
-	if(PlayerInfo[playerid][pAdmin] >= 2) SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES (ADMIN) *** /agcrates /agdestroycrate");
+	if(PlayerInfo[playerid][pAdmin] >= 2) SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES (ADMIN) *** /agcrates /adestroygcrate");
 
 	return 1;
 }

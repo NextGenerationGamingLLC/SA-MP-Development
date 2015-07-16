@@ -2545,6 +2545,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					return ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE_DEPOSIT, DIALOG_STYLE_LIST, "Safe Weapon Deposit", szMiscArray, "Deposit", "Cancel");
 				}
+				if(strcmp(inputtext, "Next Page", true) == 0) {
+					ShowGroupWeapons(playerid, iGroupID, GetPVarInt(playerid, "WeapPage") +1);
+				}
 				else {
 								
 					new stpos = strfind(inputtext, "(");
@@ -5860,17 +5863,17 @@ DepositAmmo(playerid) {
 	return 1;
 }
 
-ShowGroupWeapons(playerid, iGroupID) {
+ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
 	
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeapons` WHERE `Group_ID` = '%d'", iGroupID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "ii", playerid, iGroupID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "iii", playerid, iGroupID, iPage);
 	return 1;
 }
 
-forward OnShowGroupWeapons(playerid, iGroupID);
-public OnShowGroupWeapons(playerid, iGroupID) {
+forward OnShowGroupWeapons(playerid, iGroupID, iPage);
+public OnShowGroupWeapons(playerid, iGroupID, iPage) {
 	
 	szMiscArray[0] = 0;
 
@@ -5880,14 +5883,19 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 		iCount,
 		iTemp;
 
+	SetPVarInt(playerid, "WeapPage", iPage);
 
 	cache_get_data(iRows, iFields, MainPipeline);
+	if(iPage != 1) {
+		iCount = iPage * 60;
+	} 
 	while(iCount < iRows) {
 		iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)", szMiscArray, Weapon_ReturnName(iTemp), iTemp);
 		iCount++;
 	}
 	strcat(szMiscArray, "\nDeposit Weapon");
+	strcat(szMiscArray, "\nNext Page");
 	ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
 	return 1;
 }

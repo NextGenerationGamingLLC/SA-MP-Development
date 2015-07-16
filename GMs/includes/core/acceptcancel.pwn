@@ -2368,6 +2368,14 @@ CMD:accept(playerid, params[])
 								PlayerInfo[playerid][pCrowBar] += 25;
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cracktrunk in any car that you already lock picked to attempt to open the trunk.");
 							}
+							case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER, 99999);
+							case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE, 99999);
+							case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT, 99999);
+							case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE, 99999);
+							case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);	
+							case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
+							case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
+							case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
                         }
                         format(szMessage, sizeof(szMessage), "   You have given %s, a %s.", GetPlayerNameEx(playerid),weaponname);
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);

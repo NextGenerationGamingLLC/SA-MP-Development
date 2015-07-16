@@ -233,9 +233,9 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][LinkedDoor][2],
 		HouseInfo[houseid][LinkedDoor][3],
 		HouseInfo[houseid][LinkedDoor][4],
+		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		HouseInfo[houseid][LinkedGarage][0],
 		HouseInfo[houseid][LinkedGarage][1],
-		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
