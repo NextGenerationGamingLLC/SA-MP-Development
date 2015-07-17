@@ -716,7 +716,7 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -742,7 +742,7 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -1080,6 +1080,13 @@ CMD:craft(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
 		}
+		else if(strcmp(choice, "spraycan", true) == 0) {
+			if(PlayerInfo[playerid][pMats] >= 2000) {
+				price = 2000;
+				weapon = 28;
+			}
+			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
+		}
 
 		else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid Craft name!"); return 1; }
 		if (ProxDetectorS(5.0, playerid, giveplayerid))
@@ -1260,6 +1267,7 @@ CMD:craft(playerid, params[])
 				case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
 				case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
 				case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
+				case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN, 99999);
 				
 				}
 				format(string, sizeof(string), "   You have given yourself a %s.", choice);

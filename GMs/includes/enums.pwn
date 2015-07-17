@@ -80,7 +80,7 @@ enum eGroupData {
 	g_iClothes[MAX_GROUP_RANKS],
 	g_iTurfCapRank,
 	g_iPointCapRank,
-	g_iWithdrawRank,
+	g_iWithdrawRank[5],
 	g_iTurfTokens,
 	g_iMemberCount,
 	g_iCrimeType,

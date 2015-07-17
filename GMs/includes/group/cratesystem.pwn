@@ -1181,7 +1181,7 @@ CMD:togcr(playerid, params[])
 	return 1;
 }
 
-CMD:crateradio(playerid,params[]) return cmd_cr(playerid,params);
+/*CMD:crateradio(playerid,params[]) return cmd_cr(playerid,params);
 CMD:cr(playerid, params[])
 {
 	new
@@ -1220,4 +1220,4 @@ CMD:cr(playerid, params[])
 	}
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not in a group.");
 	return 1;
-}
+}*/

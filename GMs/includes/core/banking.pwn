@@ -218,75 +218,7 @@ PayDay(i) {
 					PlayerInfo[i][pFallIntoFun] = 0;
 				}
 			}*/
-			new
-				iGroupID = PlayerInfo[i][pMember],
-				iRank = PlayerInfo[i][pRank];
-			
-			if((0 <= iGroupID < MAX_GROUPS) && 0 <= iRank <= 9 && arrGroupData[iGroupID][g_iPaycheck][iRank] > 0) { // added for sanews to get their own paychecks from their vaults.
-				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
-				{
-					if(arrGroupData[iGroupID][g_iBudget] > 0) {
-						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iPaycheck][iRank];
-						GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
-						format(string,sizeof(string),"  Company pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-						SendClientMessageEx(i, COLOR_GRAD2, string);
-						
-						new str[128], file[32];
-						format(str, sizeof(str), "%s has been paid $%s in company pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
-					}
-					else SendClientMessageEx(i, COLOR_RED, "Your company is in debt; no money is available for pay.");
-				}
-				else if(arrGroupData[iGroupID][g_iAllegiance] == 1 && arrGroupData[iGroupID][g_iGroupType] != 4)
-				{
-					if(Tax > 0) {
-						Tax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
-						GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
-						format(string,sizeof(string),"  SA Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-						SendClientMessageEx(i, COLOR_GRAD2, string);
-						for(new z; z < MAX_GROUPS; z++)
-						{
-							if(arrGroupData[z][g_iAllegiance] == 1)
-							{
-								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
-								{
-									new str[128], file[32];
-									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, str);
-									break;
-								}
-							}
-						}	
-					}
-					else SendClientMessageEx(i, COLOR_RED, "The SA government is in debt; no money is available for pay.");
-				}
-				else if(arrGroupData[iGroupID][g_iAllegiance] == 2 && arrGroupData[iGroupID][g_iGroupType] != 4)
-				{
-					if(TRTax > 0) {
-						TRTax -= arrGroupData[iGroupID][g_iPaycheck][iRank];
-						GivePlayerCash(i, arrGroupData[iGroupID][g_iPaycheck][iRank]);
-						format(string,sizeof(string),"  TR Government pay: $%s", number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-						SendClientMessageEx(i, COLOR_GRAD2, string);
-						for(new z; z < MAX_GROUPS; z++)
-						{
-							if(arrGroupData[z][g_iAllegiance] == 2)
-							{
-								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
-								{
-									new str[128], file[32];
-									format(str, sizeof(str), "%s has been paid $%s in government pay.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, str);
-									break;
-								}
-							}
-						}
-					}
-					else SendClientMessageEx(i, COLOR_RED, "The TR government is in debt; no money is available for pay.");
-				}
-			}
+			PayGroupMember(i, month, day, year);
    			if (PlayerInfo[i][pBusiness] != INVALID_BUSINESS_ID) {
 				if (Businesses[PlayerInfo[i][pBusiness]][bAutoPay] && PlayerInfo[i][pBusinessRank] >= 0 && PlayerInfo[i][pBusinessRank] < 5) {
 				    if (Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] < Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]) {

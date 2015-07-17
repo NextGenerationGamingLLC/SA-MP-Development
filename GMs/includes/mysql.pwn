@@ -5144,8 +5144,15 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "PointCapRank", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iPointCapRank] = strval(szResult);
 
-			cache_get_field_content(iIndex, "WithdrawRank", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iWithdrawRank] = strval(szResult);
+			arrGroupData[iIndex][g_iWithdrawRank][0] = cache_get_field_content_int(iIndex, "WithdrawRank", MainPipeline);
+
+			arrGroupData[iIndex][g_iWithdrawRank][1] = cache_get_field_content_int(iIndex, "WithdrawRank2", MainPipeline);
+			
+			arrGroupData[iIndex][g_iWithdrawRank][2] = cache_get_field_content_int(iIndex, "WithdrawRank3", MainPipeline);
+			
+			arrGroupData[iIndex][g_iWithdrawRank][3] = cache_get_field_content_int(iIndex, "WithdrawRank4", MainPipeline);
+			
+			arrGroupData[iIndex][g_iWithdrawRank][4] = cache_get_field_content_int(iIndex, "WithdrawRank5", MainPipeline);
 
 			cache_get_field_content(iIndex, "Tokens", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);

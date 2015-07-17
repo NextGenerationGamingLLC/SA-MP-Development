@@ -647,6 +647,10 @@ native IsValidVehicle(vehicleid);
 #define 		G_AMMO_LOCKER_SELECTION				(3417)
 #define 		G_AMMO_LOCKER_WITHDRAW				(3418)
 #define 		G_AMMO_LOCKER_DEPOSIT				(3419)
+#define 		DIALOG_GROUP_PLISTPAY 				(3420)
+#define 		DIALOG_GROUP_PEDITPAY 				(3421)
+#define 		DIALOG_GROUP_GOVLISTPAY 			(3422)
+#define 		DIALOG_GROUP_GOVEDITPAY 			(3423)
 
 
 #define         DIALOG_REPORTMENU           (3490)

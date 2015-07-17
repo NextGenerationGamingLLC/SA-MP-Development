@@ -151,10 +151,10 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `Tokens` = '%i', `CrimeType` = '%i'",
+		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i'",
 		szMiscArray,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType]
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType]
 	);
 
 	for(i = 0; i != 5; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
@@ -2236,14 +2236,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			switch(listitem)
 			{
-				case 0:
+				case 0:	
 				{
 					SetPVarInt(playerid, "GSafe_Action", 1);
 					format(szMiscArray, sizeof(szMiscArray), "Please type an ammount to deposit.");
 				}
 				case 1:
 				{
-					if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank])
+					new iTemp = GetPVarInt(playerid, "GSafe_Opt");
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank][GetSafeTakePerm(iTemp)])
 					{
 						SetPVarInt(playerid, "GSafe_Action", 2);
 						format(szMiscArray, sizeof(szMiscArray), "Please type an ammount to withdraw.");
@@ -2642,7 +2643,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank] && arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
+				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][4] && arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
 				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
 				new iAmmoQuantity = strval(inputtext);
 				new iMaxAmmo = GetMaxAmmoAllowed(playerid, iAmmoType);
@@ -5714,20 +5715,35 @@ CMD:adjustwithdrawrank(playerid, params[])
 		iGroupID = PlayerInfo[playerid][pMember];
 
 	szMiscArray[0] = 0;
-
+	/*
+		Money(1)
+		Materials(2)
+		Drugs(3)
+		Weapons(4)
+		Ammo(5)
+	*/
 	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
-		new iRank;
-		if(sscanf(params, "d", iRank)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustwithdrawrank [rank]");
+		new iRank,
+			iChoice;
+		if(sscanf(params, "dd", iChoice, iRank)) {
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money(Rank:%d) Materials(Rank:%d) Drugs(Rank:%d) Weapons(Rank:%d) Ammo(Rank:%d)");
+			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustwithdrawrank [choice] [rank]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Money(0) Materials(1) Drugs(2) Weapons(3) Ammo(4)");
+		}
+		if(!(0 < iChoice <= 4)) {
+			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
+		}
 		else
 		{
 			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
-				arrGroupData[iGroupID][g_iWithdrawRank] = iRank;
+				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
 				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
-				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank to %i.", GetPlayerNameEx(playerid), iRank);
+				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
 			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
@@ -5887,7 +5903,7 @@ public OnShowGroupWeapons(playerid, iGroupID, iPage) {
 
 	cache_get_data(iRows, iFields, MainPipeline);
 	if(iPage != 1) {
-		iCount = iPage * 60;
+		iCount = iPage * 50;
 	} 
 	while(iCount < iRows) {
 		iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);
@@ -5904,7 +5920,7 @@ WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
 
 	szMiscArray[0] = 0;
 
-	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
+	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
 
 	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d' LIMIT 1", iGroupID, iWeaponID);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnWithdrawGroupWeapons", "iii", playerid, iGroupID, iWeaponID);
@@ -5963,3 +5979,20 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
 
 	return 1;
 }
+
+GetSafeTakePerm(iOpt) {
+	new iSlot;
+	switch(iOpt) {
+		case 1 .. 6: iSlot = 2;
+		case 7: iSlot = 1;
+		case 8: iSlot = 0;
+	}
+	return iSlot;
+}
+/*
+Money(1)
+Materials(2)
+Drugs(3)
+Weapons(4)
+Ammo(5)
+*/

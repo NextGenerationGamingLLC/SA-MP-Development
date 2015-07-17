@@ -117,24 +117,24 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
         }
         case 1: { // 7.62x51
             if(iSkinID == 285 || iSkinID == 287)
-                return 400;
+                return 500;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 150;
-                case 2: return 200;  
-                case 3: return 200;
-                default: return 250;
+                case 0, 1: return 200;
+                case 2: return 300;  
+                case 3: return 300;
+                default: return 400;
             }
         }
         case 2: { // 50 cal
             if(iSkinID == 285 || iSkinID == 287)
-                return 49;
+                return 70;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 21;
-                case 2: return 28;  
-                case 3: return 35;
-                default: return 42;
+                case 0, 1: return 35;
+                case 2: return 42;  
+                case 3: return 49;
+                default: return 53;
             }
         }
         case 3: { // 7.62x39
@@ -142,10 +142,10 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
                 return 210;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 60;
-                case 2: return 90;  
-                case 3: return 120;
-                default: return 150;
+                case 0, 1: return 90;
+                case 2: return 120;  
+                case 3: return 150;
+                default: return 180;
             }
         }
         case 4: { // 12 gauge
