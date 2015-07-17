@@ -63,6 +63,7 @@ GetAmmoName(ammoType)
 
 SyncPlayerAmmo(playerid, iWeaponID)
 {
+	if(iWeaponID == WEAPON_SPRAYCAN || iWeaponID == WEAPON_CAMERA) return SetPlayerAmmo(playerid, iWeaponID, 99999);
 	new iAmmoType = GetAmmoType(iWeaponID);
 	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
 	if(iAmmoType != -1)

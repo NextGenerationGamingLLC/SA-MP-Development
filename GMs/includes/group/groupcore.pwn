@@ -5728,12 +5728,14 @@ CMD:adjustwithdrawrank(playerid, params[])
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
-			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money(Rank:%d) Materials(Rank:%d) Drugs(Rank:%d) Weapons(Rank:%d) Ammo(Rank:%d)");
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d) | Weapons(Rank: %d) | Ammo(Rank: %d)",
+				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
+				arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4]);
 			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustwithdrawrank [choice] [rank]");
 			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Money(0) Materials(1) Drugs(2) Weapons(3) Ammo(4)");
 		}
-		if(!(0 < iChoice <= 4)) {
+		if(!(0 <= iChoice <= 4)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
 		}
 		else
@@ -5903,7 +5905,7 @@ public OnShowGroupWeapons(playerid, iGroupID, iPage) {
 
 	cache_get_data(iRows, iFields, MainPipeline);
 	if(iPage != 1) {
-		iCount = iPage * 50;
+		iCount = iPage * 25;
 	} 
 	while(iCount < iRows) {
 		iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);

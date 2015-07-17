@@ -150,20 +150,18 @@ GangTag_FinishTag(playerid, fontid)
 
 GangTag_Save(iPlayerID, i, text[], fontid)
 {
-	szMiscArray[0] = 0;
-
 	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]), 0, 1);
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `gangid` = '%d', `text` = '%e', `fontid` = '%d', `pdbid` = '%d', `pname` = '%s', `color` = '%d' WHERE `id` = '%d'", PlayerInfo[iPlayerID][pMember], text, fontid, GetPlayerSQLId(iPlayerID), GetPlayerNameExt(iPlayerID), arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour], i);
-	mysql_function_query(MainPipeline, szMiscArray, false, "GangTag_OnSave", "ii", iPlayerID, i);
-	format(szMiscArray, sizeof(szMiscArray), "%s has sprayed tag %d (%s)", GetPlayerNameEx(iPlayerID), i, text);
-	Log("Logs/GangTags.log", szMiscArray);
+	mysql_function_query(MainPipeline, szMiscArray, false, "GangTag_OnSave", "iis", iPlayerID, i, text);
 	DeletePVar(iPlayerID, PVAR_GANGTAGID);
 }
 
-forward GangTag_OnSave(iPlayerID, i);
-public GangTag_OnSave(iPlayerID, i)
+forward GangTag_OnSave(iPlayerID, i, text[]);
+public GangTag_OnSave(iPlayerID, i, text[])
 {
 	if(mysql_errno()) print("[Gang Tags] Something went wrong running a query.");
+	format(szMiscArray, sizeof(szMiscArray), "%s has tagged on Spray Tag Point: %d (%s)", GetPlayerNameExt(iPlayerID), i, text);
+	Log("logs/gangtags.log", szMiscArray);
 	return 1;
 }
 
@@ -351,7 +349,7 @@ CMD:gangtaghelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
 	SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags | Commands");
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pGangModerator] > 0) SendClientMessage(playerid, COLOR_LIGHTRED, "[ADM] /createtagpoint | /edittagpoint | /deletetagpoint | /rehashgangtags");
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] > 0) SendClientMessage(playerid, COLOR_LIGHTRED, "[ADM] /createtagpoint | /edittagpoint | /deletetagpoint | /rehashgangtags");
 	SendClientMessage(playerid, COLOR_GRAD1, "/tag | /cleantag");
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
 	return 1;
@@ -450,7 +448,7 @@ CMD:edittagpoint(playerid, params[])
 
 CMD:deletetagpoint(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] > 0)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pGangModerator] == 2)
 	{
 		new i;
 		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /deletetag [ID]");

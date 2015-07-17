@@ -57,8 +57,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(response) {
 
-				if(isnull(inputtext) || !IsNumeric(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
-
 				new
 					szTitle[32 + GROUP_MAX_NAME_LEN];
 
@@ -103,6 +101,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				iGroupID = GetPVarInt(playerid, "Gov_EditGroup");
 
 			if(response) {
+				if(isnull(inputtext) || !IsNumeric(inputtext) || strval(inputtext) < 0) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+				
 				arrGroupData[iGroupID][g_iBudgetPayment] = strval(inputtext);
 				format(szMiscArray, sizeof(szMiscArray), "%s has changed the budget for %s to $%d", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName], number_format(strval(inputtext)));
 				Log("logs/group.log", szMiscArray);

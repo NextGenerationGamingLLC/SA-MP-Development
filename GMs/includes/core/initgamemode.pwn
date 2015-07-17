@@ -116,6 +116,8 @@ InitiateGamemode()
     LoadDynamicGroups();
     print("[Dynamic Groups] Loading Dynamic Groups Vehicles...");
     LoadDynamicGroupVehicles();
+
+    GangTag_Load();
 	
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

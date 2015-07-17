@@ -1,0 +1,24 @@
+@echo OFF
+
+if exist "oldpawncc.exe" ( 
+	ren pawncc.exe newpawncc.exe
+	ren oldpawncc.exe pawncc.exe
+) else ( 
+	if exist "newpawncc.exe" ( 
+		ren pawncc.exe oldpawncc.exe
+		ren newpawncc.exe pawncc.exe
+	)
+)
+
+if exist "oldpawnc.dll" ( 
+	ren pawnc.dll newpawnc.dll
+	ren oldpawnc.dll pawnc.dll
+) else ( 
+	if exist "newpawnc.dll" ( 
+		ren pawnc.dll oldpawnc.dll
+		ren newpawnc.dll pawnc.dll
+	)
+)
+
+
+
