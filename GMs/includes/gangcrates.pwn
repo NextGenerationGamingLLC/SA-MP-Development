@@ -45,17 +45,10 @@
 
 #define GANG_CRATE_COST 150000
 
-#define MAX_GANG_CRATES	15
-#define MAX_CRATE_GUNS 50
+#define MAX_CRATE_GUNS 30
 #define MAX_CRATE_AMMO	2000
 #define MAX_CRATE_DRUGS 1000
 #define MAX_GANG_SIMUL_CRATES 2
-
-enum eGCrateData {
-	gcr_iObject = INVALID_OBJECT_ID,
-	Text3D:gcr_iLabel
-}
-new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
 
 
 CreateGCrate(playerid, iGroupID) {
@@ -505,11 +498,16 @@ public OnTransferItemFromCrate(playerid, itemid, iAmount,  iCrateID) {
 
 	szMiscArray[0] = 0;
 
-	new	iGroupID = PlayerInfo[playerid][pMember];
-
+	new	iGroupID = PlayerInfo[playerid][pMember],
+		iLoad = GetGVarInt("GCrateLoad", iCrateID);
 
 	switch(itemid) {
-		case 0 .. 12: for(new i = 0; i < iAmount; i++) { AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); }
+		case 0 .. 12: {
+			for(new i = 0; i < iAmount; i++) { 
+				SetGVarInt("GCrateLoad", iLoad-1, iCrateID);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); 
+			}
+		}
 		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] += iAmount;
 		case 18: arrGroupData[iGroupID][g_iPot] += iAmount; // Pot
 		case 19: arrGroupData[iGroupID][g_iCrack] += iAmount; // crack 	
@@ -524,12 +522,17 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 
 	szMiscArray[0] = 0;
 
-	new iGroupID = PlayerInfo[playerid][pMember];
+	new	iGroupID = PlayerInfo[playerid][pMember],
+		iLoad = GetGVarInt("GCrateLoad", iCrateID);
 
 	switch(itemid) {
 		case 0 .. 12: {
 			new 
 				iWeaponID = GetWepIDFromGCIdx(itemid);
+
+			if(iLoad +1 > MAX_CRATE_GUNS) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot store anymore guns in this crate.");
+
+			SetGVarInt("GCrateLoad", iLoad+1, iCrateID);
 			
 			format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d'", iGroupID, iWeaponID);
 			mysql_function_query(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiii", playerid, iGroupID, iWeaponID, iAmount);
@@ -699,8 +702,9 @@ ShowGCrateTransferMenu(playerid, itemid, transfertype, stage = 0) {
 
 				}
 				case 1: { //deposit
-					format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to deposit!", GetItemNameFromIdx(itemid));
-					ShowPlayerDialog(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
+					//format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to deposit!", GetItemNameFromIdx(itemid));
+					//ShowPlayerDialog(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
+					SendClientMessageEx(playerid, COLOR_RED, "This feature has been disabled. You can now transfer items via your locker!");
 				}
 			}
 		}
@@ -938,6 +942,7 @@ CMD:gdelivercrate(playerid, params[])
 		{
 			if(CrateVehicleLoad[iVehID][vForkLoaded])
 			{
+				CrateVehicleLoad[iVehID][vForkLoaded] = 0;
 				DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
 				return 1;
 			}

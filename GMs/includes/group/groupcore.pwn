@@ -2534,7 +2534,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_GROUP_WEAPONSAFE: {
 			
-			new iGroupID = PlayerInfo[playerid][pMember];
+			//new iGroupID = PlayerInfo[playerid][pMember];
 
 			if(response) {
 
@@ -2544,23 +2544,74 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%i)", szMiscArray, Weapon_ReturnName(PlayerInfo[playerid][pGuns][g]), PlayerInfo[playerid][pGuns][g]);
 						}
 					}
+					DeletePVar(playerid, "GRW_Count");
 					return ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE_DEPOSIT, DIALOG_STYLE_LIST, "Safe Weapon Deposit", szMiscArray, "Deposit", "Cancel");
 				}
 				if(strcmp(inputtext, "Next Page", true) == 0) {
-					ShowGroupWeapons(playerid, iGroupID, GetPVarInt(playerid, "WeapPage") +1);
+					SetPVarInt(playerid, "GRW_Count", GetPVarInt(playerid, "GRW_Count") + (listitem-2));
+					ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
+					return 1;
 				}
 				else {
-								
 					new stpos = strfind(inputtext, "(");
 					new fpos = strfind(inputtext, ")");
 					new str[4], id;
 					strmid(str, inputtext, stpos+1, fpos);
 					id = strval(str);
-					WithdrawGroupSafeWeapon(playerid, iGroupID, id);
+					DeletePVar(playerid, "GRW_Count");
+					SetPVarInt(playerid, "GLGunTake", id);
+
+					//WithdrawGroupSafeWeapon(playerid, iGroupID, id);
+
+					// add another dialog to see whether to place in crate or take
+					ShowPlayerDialog(playerid, DIALOG_WEAPONSAFE_WITHDRAW, DIALOG_STYLE_LIST, "Safe Withdraw", "Equip\nTransfer To Crate", "Select", "Cancel");
 					return 1;
 				}
 			}
-		}	
+			else DeletePVar(playerid, "GRW_Count");
+		}
+
+		case DIALOG_WEAPONSAFE_WITHDRAW: {
+			new 
+				iGroupID = PlayerInfo[playerid][pMember],
+				iWepID = GetPVarInt(playerid, "GLGunTake");
+
+			if(!response) {
+				DeletePVar(playerid, "GLGunTake");
+				return cmd_locker(playerid, "");
+			}
+
+			switch(listitem) {
+				
+				case 0: { // equip
+					DeletePVar(playerid, "GLGunTake");
+					WithdrawGroupSafeWeapon(playerid, iGroupID, iWepID);
+				}
+
+				case 1: { // transfer to crate
+					//TransferItemToCrate(playerid, itemid, iAmount, iCrateID)
+					ShowPlayerDialog(playerid, DIALOG_WEAPONSAFE_WITHDRAW_T, DIALOG_STYLE_INPUT, "Transfer To Crate", "Enter the crate ID you wish to transfer the item to", "Select", "Cancel");
+				}	
+
+			}
+
+		}
+
+		case DIALOG_WEAPONSAFE_WITHDRAW_T: {
+			new 
+				iWepID = GetPVarInt(playerid, "GLGunTake"),
+				iCrateID = strval(inputtext);
+
+			if(!response) {
+				DeletePVar(playerid, "GLGunTake");
+				return cmd_locker(playerid, "");
+			}
+
+			if(!IsValidDynamicObject(arrGCrateData[iCrateID][gcr_iObject])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid crate ID.");
+
+			if(CanTransferToCrate(iWepID)) TransferItemToCrate(playerid, ReturnSlotForCrate(iWepID), 1, iCrateID);
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "This item cannot be transfered to crates");
+		}
 
 		case DIALOG_GROUP_WEAPONSAFE_DEPOSIT: {
 			new iGroupID = PlayerInfo[playerid][pMember];
@@ -5890,30 +5941,29 @@ ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
 	return 1;
 }
 
-forward OnShowGroupWeapons(playerid, iGroupID, iPage);
-public OnShowGroupWeapons(playerid, iGroupID, iPage) {
+forward OnShowGroupWeapons(playerid, iGroupID);
+public OnShowGroupWeapons(playerid, iGroupID) {
 	
 	szMiscArray[0] = 0;
 
-	new 
+	new
 		iRows,
 		iFields,
-		iCount,
-		iTemp;
-
-	SetPVarInt(playerid, "WeapPage", iPage);
+		iCount = GetPVarInt(playerid, "GRW_Count"),
+		iTemp,
+		iTemp2;
 
 	cache_get_data(iRows, iFields, MainPipeline);
-	if(iPage != 1) {
-		iCount = iPage * 25;
-	} 
 	while(iCount < iRows) {
-		iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);
-		format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)", szMiscArray, Weapon_ReturnName(iTemp), iTemp);
-		iCount++;
-	}
-	strcat(szMiscArray, "\nDeposit Weapon");
-	strcat(szMiscArray, "\nNext Page");
+		if(iTemp2 <= 30) {
+			iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);
+       		format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)", szMiscArray, Weapon_ReturnName(iTemp), iTemp);
+        }
+        else break;
+        iCount++;
+        iTemp2++;
+    }
+	strcat(szMiscArray, "\nDeposit Weapon\nNext Page");
 	ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
 	return 1;
 }
@@ -5998,3 +6048,42 @@ Drugs(3)
 Weapons(4)
 Ammo(5)
 */
+
+CanTransferToCrate(WepID) {
+	switch(WepID) {
+		case WEAPON_COLT45: return 1;
+		case WEAPON_SILENCED: return 1;
+		case WEAPON_DEAGLE: return 1;
+		case WEAPON_UZI: return 1;
+		case WEAPON_TEC9: return 1;
+		case WEAPON_MP5: return 1;
+		case WEAPON_M4: return 1;
+		case WEAPON_AK47: return 1;
+		case WEAPON_RIFLE: return 1;
+		case WEAPON_SNIPER: return 1;
+		case WEAPON_SHOTGUN: return 1;
+		case WEAPON_SAWEDOFF: return 1;
+		case WEAPON_SHOTGSPA: return 1;
+		default: return 0;
+	}
+	return 0;
+}
+
+ReturnSlotForCrate(WepID) {
+	switch(WepID) {
+		case WEAPON_COLT45: return 0;
+		case WEAPON_SILENCED: return 1;
+		case WEAPON_DEAGLE: return 2;
+		case WEAPON_UZI: return 3;
+		case WEAPON_TEC9: return 4;
+		case WEAPON_MP5: return 5;
+		case WEAPON_M4: return 6;
+		case WEAPON_AK47: return 7;
+		case WEAPON_RIFLE: return 8;
+		case WEAPON_SNIPER: return 9;
+		case WEAPON_SHOTGUN: return 10;
+		case WEAPON_SAWEDOFF: return 11;
+		case WEAPON_SHOTGSPA: return 12;
+	}
+	return 0;
+}

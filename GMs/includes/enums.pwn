@@ -1653,3 +1653,9 @@ enum FallIntoFun
 	FIFHours,
 	FIFChances
 }
+
+enum eGCrateData {
+	gcr_iObject = INVALID_OBJECT_ID,
+	Text3D:gcr_iLabel
+}
+new arrGCrateData[MAX_GANG_CRATES][eGCrateData];

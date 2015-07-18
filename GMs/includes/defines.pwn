@@ -651,6 +651,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GROUP_PEDITPAY 				(3421)
 #define 		DIALOG_GROUP_GOVLISTPAY 			(3422)
 #define 		DIALOG_GROUP_GOVEDITPAY 			(3423)
+#define 		DIALOG_WEAPONSAFE_WITHDRAW			(3424)
+#define 		DIALOG_WEAPONSAFE_WITHDRAW_T		(3425)
 
 
 #define         DIALOG_REPORTMENU           (3490)
@@ -1271,3 +1273,5 @@ native IsValidVehicle(vehicleid);
 
 //General Timer Delays
 #define		CRATE_PRODUCTION_DELAY		5000
+
+#define 	MAX_GANG_CRATES				15

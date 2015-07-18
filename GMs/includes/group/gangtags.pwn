@@ -97,8 +97,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_GANGTAGS_INPUT:
 		{
 			if(!response) return ClearAnimations(playerid), TogglePlayerControllable(playerid, 1), 1;
-			if(strlen(inputtext) > MAX_GANGTAGS_LEN) return SendClientMessage(playerid, COLOR_GRAD1, "Your text is too long.");
+			if(strlen(inputtext) > MAX_GANGTAGS_LEN) {
+				ClearAnimations(playerid);
+				DeletePVar(playerid, PVAR_GANGTAGID);
+				return SendClientMessage(playerid, COLOR_GRAD1, "Your text is too long.");
+			}
 			szMiscArray[0] = 0;
+
+			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) (T:%d) sprayed %s", GetPlayerNameEx(playerid), playerid, GetPVarInt(playerid, PVAR_GANGTAGID), inputtext);
+			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+
+			szMiscArray[0] = 0;
+
 			SetPVarString(playerid, PVAR_GANGTAGTEXT, inputtext);
 			for(new i; i < sizeof(szFonts); ++i) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFonts[i]);
 			ShowPlayerDialog(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
@@ -456,6 +466,19 @@ CMD:deletetagpoint(playerid, params[])
 	}
 	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	return 1;
+}
+
+CMD:erasetag(playerid, params[])
+{
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2)
+    {
+        new i;
+        if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /erasetag [ID]");
+        GangTag_Save(playerid, i, "Cheeky Nandos", 0);
+        return 1;
+    }
+    else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+    return 1;
 }
 
 stock GangTag_IntColor(color)
