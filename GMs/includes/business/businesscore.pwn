@@ -812,12 +812,12 @@ CMD:beginswimming(playerid, params[])
 	SetPlayerCheckpoint(playerid, 2892.5071, -2261.9607, 1.4645, 2.0);
 	SendClientMessageEx(playerid, COLOR_WHITE, "Proceed to the first checkpoint to begin exercising.");
 	SendClientMessageEx(playerid, COLOR_WHITE, "Type /stopswimming to exit your current activity.");
-	if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
+	/*if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
 	{
 		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
 		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 		SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-	}
+	}*/
 	return 1;
 }
 
@@ -952,12 +952,12 @@ CMD:beginparkour(playerid, params[])
 	SetPVarInt(playerid, "_BikeParkourSlot", pos);
 	new pickup = CreateDynamicPickup(1318, 23, 2833.8757, -2256.8293, 95.9497, .playerid = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = 0);
 	SetPVarInt(playerid, "_BikeParkourPickup", pickup);
-	if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
+	/*if(!PlayerInfo[playerid][mCooldown][4] && !PlayerInfo[playerid][pShopNotice])
 	{
 		PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[10]);
 		PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 		SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-	}
+	}*/
 	return 1;
 }
 

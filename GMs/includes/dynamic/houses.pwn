@@ -428,6 +428,12 @@ public OnLoadHouses()
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
+
+		HouseInfo[i][hAmmo][0] = cache_get_field_content_int(i, "Ammo0", MainPipeline);
+        HouseInfo[i][hAmmo][1] = cache_get_field_content_int(i, "Ammo1", MainPipeline);
+        HouseInfo[i][hAmmo][2] = cache_get_field_content_int(i, "Ammo2", MainPipeline);
+        HouseInfo[i][hAmmo][3] = cache_get_field_content_int(i, "Ammo3", MainPipeline);
+        HouseInfo[i][hAmmo][4] = cache_get_field_content_int(i, "Ammo4", MainPipeline);
 		
 		HouseInfo[i][Listed] = cache_get_field_content_int(i, "Listed", MainPipeline); 
 		HouseInfo[i][PendingApproval] = cache_get_field_content_int(i, "PendingApproval", MainPipeline);
@@ -537,6 +543,11 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hWeapons][2] = 0;
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
+	HouseInfo[houseid][hAmmo][0] = 0; 
+	HouseInfo[houseid][hAmmo][1] = 0; 
+	HouseInfo[houseid][hAmmo][2] = 0; 
+	HouseInfo[houseid][hAmmo][3] = 0; 
+	HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
@@ -1730,6 +1741,11 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hWeapons][2] = 0;
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
+	HouseInfo[houseid][hAmmo][0] = 0; 
+	HouseInfo[houseid][hAmmo][1] = 0; 
+	HouseInfo[houseid][hAmmo][2] = 0; 
+	HouseInfo[houseid][hAmmo][3] = 0; 
+	HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;

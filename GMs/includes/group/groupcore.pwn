@@ -552,7 +552,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					if(IsACriminal(playerid))
+					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						format(szMiscArray, sizeof(szMiscArray), "%s reaches into the locker grabbing their clothes", GetPlayerNameEx(playerid));
 						new fSkin[MAX_GROUP_RANKS];
@@ -618,7 +618,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0) 
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Locker weapons have been restricted from admins, /togreports to gain access.");
-					if(IsACriminal(playerid)) {
+					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						return ShowGroupWeapons(playerid, iGroupID);
 					}
 					if(PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2) {
@@ -639,7 +639,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 2:
 				{
-					if(IsACriminal(playerid)) {
+					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						SetPVarInt(playerid, "GSafe_Opt", 2);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Pot Safe", "Deposit\nWithdraw", "Select", "Back");
 					}
@@ -647,7 +647,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 3:
 				{
-					if(IsACriminal(playerid)) {
+					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						SetPVarInt(playerid, "GSafe_Opt", 3);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Crack Safe", "Deposit\nWithdraw", "Select", "Back");
 					}
@@ -705,7 +705,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 4: // LEOs - HP + Armour
 				{
-					if(IsACriminal(playerid)) {
+					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						SetPVarInt(playerid, "GSafe_Opt", 4);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Heroin Safe", "Deposit\nWithdraw", "Select", "Back");
 					}
@@ -754,7 +754,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				case 5: { // LEOs - HP + Armour Car/Backpack Kit
-					if(IsACriminal(playerid)) {
+					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						SetPVarInt(playerid, "GSafe_Opt", 5);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Syringes Safe", "Deposit\nWithdraw", "Select", "Back");
 					}
@@ -806,7 +806,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				case 6: { //Tazer 
-					if(IsACriminal(playerid))
+					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						SetPVarInt(playerid, "GSafe_Opt", 6);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Opium Safe", "Deposit\nWithdraw", "Select", "Back");
@@ -824,7 +824,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
-					if(IsACriminal(playerid))
+					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						SetPVarInt(playerid, "GSafe_Opt", 7);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Material Safe", "Deposit\nWithdraw", "Select", "Back");
@@ -837,7 +837,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 8: 
 				{
-					if(IsACriminal(playerid))
+					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						SetPVarInt(playerid, "GSafe_Opt", 8);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
@@ -846,7 +846,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 9:
 				{
-					if(IsACriminal(playerid))
+					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						ShowGroupAmmoDialog(playerid, iGroupID);
 					}
@@ -2694,7 +2694,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][4] && arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
+				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][4] && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
 				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
 				new iAmmoQuantity = strval(inputtext);
 				new iMaxAmmo = GetMaxAmmoAllowed(playerid, iAmmoType);
@@ -2725,6 +2725,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %s ammo from the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
 				GroupLog(iGroupID, szMiscArray);
+				SaveGroup(iGroupID);
 			}
 		}
 		case G_AMMO_LOCKER_DEPOSIT:
@@ -2760,6 +2761,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "%s has deposited %d %s ammo into the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
 				GroupLog(iGroupID, szMiscArray);
+				SaveGroup(iGroupID);
 			}
 		}
 		// END DYNAMIC GROUP CODE
@@ -5308,7 +5310,7 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)
 					    {
 					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nPot (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)\nMaterials (%i)\nVault ($%s)\nAmmo",
 					    		arrGroupData[iGroupID][g_iPot],
@@ -5773,7 +5775,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 		Weapons(4)
 		Ammo(5)
 	*/
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
 		new iRank,
@@ -5872,7 +5874,7 @@ stock ShowPlayerCrimeDialog(playerid)
 
 CMD:lockerbalance(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE))
 	{
 		new weps, GroupID = PlayerInfo[playerid][pMember];
 		for(new s = 0; s != 50; s++)

@@ -221,12 +221,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowMainAdvertMenu(playerid);
 					return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough cash for this.");
 				}
-				if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
+				/*if(Homes[playerid] > 0 && AdvertType[playerid] == 1 && !PlayerInfo[playerid][pShopNotice])
 				{
 					PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[6]);
 					PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-				}
+				}*/
 				strcpy(szAdvert[playerid], inputtext, 128);
 				StripColorEmbedding(szAdvert[playerid]);
 				GivePlayerCash(playerid, -iLength);

@@ -285,15 +285,15 @@ public loginCamera(playerid)
 	{
 		case 1:
 		{
-			PlayAudioStreamForPlayer(playerid, "http://san-news.org/audio/inter_main.mp3");
-			SetPVarInt(playerid, "o_iLoginObjectID", CreateDynamicObject(10757, -1037.50903, 453.60007, 34.86839,   0.00000, 0.00000, 315.27899, -1, -1, playerid, 500.0));
-			MoveDynamicObject(GetPVarInt(playerid, "o_iLoginObjectID"), -1181.16455, 310.40958, 28.76766, 30.0);
+			PlayAudioStreamForPlayer(playerid, "http://samp.ng-gaming.net/dom/inter_main.mp3");
+			//SetPVarInt(playerid, "o_iLoginObjectID", CreateDynamicObject(10757, -1037.50903, 453.60007, 34.86839,   0.00000, 0.00000, 315.27899, -1, -1, playerid, 500.0));
+			//MoveDynamicObject(GetPVarInt(playerid, "o_iLoginObjectID"), -1181.16455, 310.40958, 28.76766, 30.0);
 			InterpolateCameraPos(playerid, -1205.5737, 287.1576, 15.0854, -1084.4949, 408.7233, 19.8364, LOGINCAM_SPEED, LOGINCAM_CUT);
 			InterpolateCameraLookAt(playerid, -1204.8885, 287.8855, 15.1403, -1083.7922, 409.4344, 19.8913, LOGINCAM_SPEED, LOGINCAM_CUT);
 		}
 		case 2:
 		{
-			DestroyDynamicObject(GetPVarInt(playerid,"o_iLoginObjectID"));
+			//DestroyDynamicObject(GetPVarInt(playerid,"o_iLoginObjectID"));
 			InterpolateCameraPos(playerid, 367.0753, -2008.7896, 7.9850, 367.0673, -2002.2097, 8.4014, LOGINCAM_SPEED, LOGINCAM_CUT);
 			InterpolateCameraLookAt(playerid, 366.2721, -2008.2030, 8.1950, 366.1893, -2001.7432, 8.5165, LOGINCAM_SPEED, LOGINCAM_CUT);			
 		}

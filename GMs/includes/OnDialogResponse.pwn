@@ -6148,7 +6148,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 1)
 			{
-				ShowPlayerDialog(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Pot\nCrack\nMaterials\nFirework", "Select", "Cancel");
+				ShowPlayerDialog(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Pot\nCrack\nMaterials\nFirework\nHeroin\nRawOpium\nSyringes\nOpiumSeeds\nSprunk\nAmmo1\nAmmo2\nAmmo3\nAmmo4\nAmmo5", "Select", "Cancel");
 			}
 		}
 		else
@@ -6199,6 +6199,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1: format(params, sizeof(params), "%d crack %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
 				case 2: format(params, sizeof(params), "%d materials %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
 				case 3: format(params, sizeof(params), "%d firework %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 4: format(params, sizeof(params), "%d heroin %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 5: format(params, sizeof(params), "%d rawopium %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 6: format(params, sizeof(params), "%d syringes %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 7: format(params, sizeof(params), "%d opiumseeds %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 8: format(params, sizeof(params), "%d sprunk %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 9: format(params, sizeof(params), "%d ammo1 %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 10: format(params, sizeof(params), "%d ammo2 %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 11: format(params, sizeof(params), "%d ammo3 %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 12: format(params, sizeof(params), "%d ammo4 %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
+				case 13: format(params, sizeof(params), "%d ammo5 %d", GetPVarInt(playerid, "pInteractID"), strval(inputtext));
 			}
 			DeletePVar(playerid, "pInteractName");
 			DeletePVar(playerid, "pInteractID");
@@ -12181,12 +12191,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(advert, sizeof(advert), "%s -- (%d)", advert, GetPlayerSQLId(reportid));
 			Log("logs/pads.log", advert);
 
-			if(Homes[reportid] > 0 && AdvertType[reportid] == 1 && !PlayerInfo[playerid][pShopNotice])
+			/*if(Homes[reportid] > 0 && AdvertType[reportid] == 1 && !PlayerInfo[playerid][pShopNotice])
 			{
 				PlayerTextDrawSetString(reportid, MicroNotice[reportid], ShopMsg[6]);
 				PlayerTextDrawShow(reportid, MicroNotice[reportid]);
 				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", reportid, _:MicroNotice[reportid]);
-			}
+			}*/
 			
 			DeletePVar(reportid, "PriorityAdText");
 			DeletePVar(playerid, "ReporterID");

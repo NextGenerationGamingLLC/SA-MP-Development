@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.210"
+#define SERVER_GM_TEXT "NG:RP v3.0.211"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -123,6 +123,7 @@
 #include "./includes/admin/spectate.pwn"
 #include "./includes/admin/teleport.pwn"
 #include "./includes/admin/watch.pwn"
+#include "./includes/admin/newbie.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"

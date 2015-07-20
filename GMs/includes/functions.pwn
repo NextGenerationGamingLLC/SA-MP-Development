@@ -468,12 +468,12 @@ public SetVehicleEngine(vehicleid, playerid)
 		if(f_vHealth < 350.0) return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - it's totalled!");
 		if(IsRefuelableVehicle(vehicleid) && !IsVIPcar(vehicleid) && !IsAdminSpawnedVehicle(vehicleid) && VehicleFuel[vehicleid] <= 0.0)
 		{
-			if(!PlayerInfo[playerid][pShopNotice])
+			/*if(!PlayerInfo[playerid][pShopNotice])
 			{
 				PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[7]);
 				PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 				SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-			}
+			}*/
 			return SendClientMessageEx(playerid, COLOR_RED, "The car won't start - there's no fuel in the tank!");
 		}
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);

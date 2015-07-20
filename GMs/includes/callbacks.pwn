@@ -1710,6 +1710,7 @@ public OnPlayerConnect(playerid)
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
+	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 1);
 
 	gPlayerUsingLoopingAnim[playerid] = 0;
 	gPlayerAnimLibsPreloaded[playerid] = 0;
@@ -3165,6 +3166,7 @@ public OnPlayerSpawn(playerid)
 	}
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
+	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 1);
 	PlayerIsDead[playerid] = false;
 
 	if(!gPlayerAnimLibsPreloaded[playerid])

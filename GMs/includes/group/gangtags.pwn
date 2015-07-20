@@ -90,6 +90,11 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 }
 */
 
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
+	if(GetPVarType(playerid, PVAR_GANGTAGTEXT)) DeletePVar(playerid, PVAR_GANGTAGTEXT);
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)

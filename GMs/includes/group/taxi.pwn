@@ -122,7 +122,7 @@ CMD:emergencybutton(playerid, params[]) {
 			foreach(new i: Player)
 			{
 				if(IsACop(i)) {
-					format(string, sizeof(string), "HQ: The taxi co. distress signal from %s has be cancelled",GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "HQ: The taxi co. distress signal from %s has been cancelled",GetPlayerNameEx(playerid));
 					SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 				}
 			}	

@@ -318,7 +318,7 @@ PayDay(i) {
 			{
 				PlayerInfo[i][pShopCounter]++;
 				PlayerInfo[i][mShopCounter]++;
-				if(PlayerInfo[i][pLevel] <= 5 && PlayerInfo[i][mShopCounter] == 3 || (PlayerInfo[i][pLevel] > 5 && PlayerInfo[i][mShopCounter] >= 4 && PlayerInfo[i][pCredits] >= 10))
+				/*if(PlayerInfo[i][pLevel] <= 5 && PlayerInfo[i][mShopCounter] == 3 || (PlayerInfo[i][pLevel] > 5 && PlayerInfo[i][mShopCounter] >= 4 && PlayerInfo[i][pCredits] >= 10))
 				{
 					PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[PlayerInfo[i][mNotice]]);
 					PlayerTextDrawShow(i, MicroNotice[i]);
@@ -337,7 +337,7 @@ PayDay(i) {
 					PlayerTextDrawSetString(i, ShopNotice[i], string);
 					PlayerTextDrawShow(i, ShopNotice[i]);
 					SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:ShopNotice[i]);
-				}
+				}*/
 			}
 			if(FIFEnabled == 1)
 			{
@@ -699,12 +699,12 @@ CMD:awithdraw(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money as a 3 percent fee.", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
-		if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
+		/*if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 		{
 			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-		}
+		}*/
 	}
 	PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-amount;
 	GivePlayerCash(playerid,amount);
@@ -746,12 +746,12 @@ CMD:adeposit(playerid, params[])
 		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 		format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 		SendClientMessageEx(playerid, COLOR_GRAD2, string);
-		if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
+		/*if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 		{
 			PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 			PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-		}
+		}*/
 	}
 	GivePlayerCash(playerid,-amount);
 	new curfunds = PlayerInfo[playerid][pAccount];
@@ -808,12 +808,12 @@ CMD:awiretransfer(playerid, params[])
 					PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]-fee;
 					format(string, sizeof(string), "-$%d money (3 percent fee).", fee);
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
-					if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
+					/*if(((fee > 1000 && PlayerInfo[playerid][pLevel] <= 7) || (fee > 10000 && PlayerInfo[playerid][pLevel] >= 8)) && !PlayerInfo[playerid][pShopNotice])
 					{
 						PlayerTextDrawSetString(playerid, MicroNotice[playerid], ShopMsg[9]);
 						PlayerTextDrawShow(playerid, MicroNotice[playerid]);
 						SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", playerid, _:MicroNotice[playerid]);
-					}
+					}*/
 				}
 				GivePlayerCashEx(playerid, TYPE_BANK, -amount);
 				GivePlayerCashEx(giveplayerid, TYPE_BANK, amount);

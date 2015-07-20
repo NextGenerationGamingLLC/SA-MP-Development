@@ -330,7 +330,7 @@ CMD:hlban(playerid, params[])
 	return 1;
 }
 
-CMD:newb(playerid, params[])
+/*CMD:newb(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -397,7 +397,7 @@ CMD:newb(playerid, params[])
 		}
 	}	
 	return 1;
-}
+}*/
 
 CMD:hl(playerid, params[])
 {

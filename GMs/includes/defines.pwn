@@ -1060,6 +1060,11 @@ native IsValidVehicle(vehicleid);
 
 #define			DIALOG_METDET_LIST			(6079)
 
+#define 		SEND_NEWBIE					(6080)
+#define 		ACCEPT_NEWBIE				(6081)
+#define 		DENY_NEWBIE					(6082)
+
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 

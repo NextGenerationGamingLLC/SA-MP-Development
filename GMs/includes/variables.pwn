@@ -1243,7 +1243,7 @@ new mItemName[MAX_MICROITEMS][] = {
 	{"Antibiotic Injection"},
 	{"Survivor Kits"}
 };
-new ShopMsg[11][] = {
+/*new ShopMsg[11][] = {
 	{"Need to get a job quick?~n~Get a Job Change to change your job instantly!~n~~b~~h~~h~/microshop"},
 	{"Do you want the level 5 perks of your job right now?~n~Purchase a Job Boost!~n~~b~~h~~h~/microshop"},
 	{"Want to make your car stand out?~n~Get a restricted car color without being a VIP member!~n~~b~~h~~h~/microshop"},
@@ -1255,7 +1255,7 @@ new ShopMsg[11][] = {
 	{"Engine won't start?~n~Get a Jump Start to get moving again!~n~~b~~h~~h~/microshop"},
 	{"Trying to move a large sum of money?~n~Don't want to be taxed? Get a Quick Bank Access pass!~n~~b~~h~~h~/microshop"},
 	{"You're not exercising to your full potential!~n~Try an energy bar!~n~~b~~h~~h~/microshop"}
-};
+};*/
 
 // Fall Into Fun
 new FIFInfo[MAX_PLAYERS][FallIntoFun],
