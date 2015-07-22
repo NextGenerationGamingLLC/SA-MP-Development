@@ -4625,7 +4625,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}
 	if(dialogid == MDC_MAIN && response)
-	{//*Find LEO\n*Civilian Information\n*Law Enforcement Agencies\n*Options
+	{
 		if(!IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, " Login Failed. You are not permitted to use the MDC!");
 		switch( listitem )
 		{
@@ -4633,11 +4633,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
 			}
-			case 1:
+			case 1: ShowPlayerDialog(playerid, MDC_SUSPECT, DIALOG_STYLE_INPUT, "MDC - Register Suspect", "Please enter (a part of) the name of the suspect to register them.", "OK", "Cancel");
+			case 2:	ShowPlayerDialog(playerid, MDC_VEHICLE, DIALOG_STYLE_INPUT, "MDC - Vehicle Registrations", "Please enter (a part of) the name of the person to check their active vehicle registrations.", "OK", "Cancel");
+			case 3:
 			{
 				ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 			}
-			case 2:
+			case 4:
 			{
 				new groups[1024], item;
 				for (new i; i < MAX_GROUPS; i++)
@@ -4650,10 +4652,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "MDC - Logged in | Agency List", groups, "OK", "Cancel");
 				}
 			}
-			case 3: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
-			case 4: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
+			case 5: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
+			case 6: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
 		}
 	}
+	if(dialogid == MDC_SUSPECT) return cmd_su(playerid, inputtext);
+	if(dialogid == MDC_VEHICLE) return cmd_vmdc(playerid, inputtext);
 	if(dialogid == MDC_FIND && response)
 	{
 		new giveplayerid;
@@ -5611,7 +5615,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_END_ID && response)
 	{
-		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 	}
 	if(dialogid == MDC_ISSUE && response)
 	{
@@ -5999,7 +6003,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 		}
 	}
 	if((dialogid == SELLVIP))
