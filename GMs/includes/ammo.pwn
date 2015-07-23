@@ -176,8 +176,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		case DIALOG_AMMUNATION_MAIN:
 		{
-			if(PlayerInfo[playerid][pGunLic] != 1)
-				return SendClientMessageEx(playerid, COLOR_GREY, "You must have a license to purchase items from a gun-shop!");
+			if(PlayerInfo[playerid][pGunLic] < gettime())
+				return SendClientMessageEx(playerid, COLOR_GREY, "You must have an active license to purchase items from a gun-shop!");
 			if(!response) 
 				return SendClientMessageEx(playerid, COLOR_YELLOW, "Thank you for shopping at Ammunation! Come again!");
 
@@ -320,9 +320,9 @@ CMD:issuegunlicense(playerid, params[])
 
 		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /issuegunlicense [playerid]");
 
-		PlayerInfo[iTargetID][pGunLic] = 1;
+		PlayerInfo[iTargetID][pGunLic] = gettime() + (86400*30);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s has issued %s a gun license.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+		format(szMiscArray, sizeof(szMiscArray), "%s has renewed %s's gun license.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 
 		foreach(new i : Player)
 			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
@@ -439,6 +439,43 @@ CMD:myammo(playerid, params[]) {
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+
+	return 1;
+}
+
+
+CMD:seeammo(playerid, params[]) {
+	
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this command!");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /seeammo [playerid]");
+	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected");
+
+	new iTargetID = strval(params);
+
+	szMiscArray[0] = 0;
+
+	SendClientMessageEx(iTargetID, COLOR_GREEN,"_______________________________________");
+	
+	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(iTargetID));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+
+	format(szMiscArray, sizeof(szMiscArray), "9mm: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][0], GetMaxAmmoAllowed(iTargetID, 0));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][1], GetMaxAmmoAllowed(iTargetID, 1));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][2], GetMaxAmmoAllowed(iTargetID, 2));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][3], GetMaxAmmoAllowed(iTargetID, 3));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][4], GetMaxAmmoAllowed(iTargetID, 4));
+	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+
+	SendClientMessageEx(iTargetID, COLOR_GREEN,"_______________________________________");
 
 	return 1;
 }

@@ -1060,12 +1060,15 @@ native IsValidVehicle(vehicleid);
 
 #define			DIALOG_METDET_LIST			(6079)
 
-#define 		MDC_SUSPECT					(6080)
-#define 		MDC_VEHICLE 				(6081)
-
 #define 		SEND_NEWBIE					(6080)
 #define 		ACCEPT_NEWBIE				(6081)
 #define 		DENY_NEWBIE					(6082)
+
+#define 		APPLY_GUN_LIC				(6083)
+#define 		MDC_SUSPECT					(6084)
+#define 		MDC_VEHICLE 				(6085)
+#define 		MDC_VLOOKUP					(6086)
+
 
 
 // Objects

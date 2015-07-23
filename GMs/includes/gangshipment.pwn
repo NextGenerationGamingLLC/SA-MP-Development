@@ -98,8 +98,8 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 			
 			switch(random(4)) {
 				case 0: {
-					for(new i = 0; i < 7; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED); // 7 sdpistol 
-					for(new i = 0; i < 10; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 10 deagles
+					for(new i = 0; i < 5; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED); // 5 sdpistol 
+					for(new i = 0; i < 20; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 20 deagles
 					for(new i = 0; i < 5; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN); // 5 pump action shotguns
 					for(new i = 0; i < 6; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47); // 6 aks
 					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4); // 3 m4s
@@ -111,7 +111,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN); // 4 pump action shotgun
 					for(new i = 0; i < 8; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI); // 8 UZI
 					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47); // 4 ak47s
-					for(new i = 0; i < 2; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER); // 2 snipe rifles
+					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER); // 4 snipe rifles
 				}
 				case 2: {
 					for(new i = 0; i < 7; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED); // 7 sd pistol
@@ -127,6 +127,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4); // 3 m4s
 					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE); // 3 rifles
 					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA); // 4 spas 12s
+					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF); // 3 sawnoffs	
 				}
 			}
 			if(arrGroupData[iGroupID][g_iAmmo][0] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][0] += 3000; else arrGroupData[iGroupID][g_iAmmo][0] += (10000 - arrGroupData[iGroupID][g_iAmmo][0]);

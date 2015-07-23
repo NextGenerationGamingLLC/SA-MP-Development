@@ -158,7 +158,7 @@ GovGuns_LoadCosts()
 GovGuns_Streamer()
 {
 	CreateDynamicObject(3430, 1464.40723, -1750.29785, 15.8659,   0.00000, 0.00000, 300.33374);
-	CreateDynamic3DTextLabel("Government Arms Center\n{DDDDDD}Use '/sellgovgun'.", COLOR_YELLOW, 1464.3186,-1747.9330,15.9453, 8.0);
+	CreateDynamic3DTextLabel("Government Arms Center\n{DDDDDD}Use '/sellgovgun'.\n/gunlicenseapply", COLOR_YELLOW, 1464.3186,-1747.9330,15.9453, 8.0);
 	CreateDynamicPickup(1274, 1, 1464.3186,-1747.9330,15.4453);
 }
 

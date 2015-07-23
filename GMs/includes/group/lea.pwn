@@ -969,6 +969,47 @@ CMD:vticket(playerid, params[])
     return 1;
 }
 
+CMD:vlookup(playerid, params[]) {
+
+	if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
+	{
+        if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vlookup [vehicle registration]");
+        new carid = strval(params);
+        new dynveh = DynVeh[carid];
+		foreach(new i: Player)
+		{
+			new v = GetPlayerVehicle(i, carid);
+
+			if(v != -1)
+			{
+				new string[78 + MAX_PLAYER_NAME];
+				format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", carid, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), number_format(PlayerVehicleInfo[i][v][pvTicket]));
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				return 1;
+			}
+		}	
+        if(dynveh != -1)
+		{
+		    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+		    {
+				new string[78 + MAX_PLAYER_NAME];
+                format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                return 1;
+			}
+			else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+			{
+				new string[78 + MAX_PLAYER_NAME];
+				format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", carid, GetVehicleName(carid), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				return 1;
+			}
+        }
+        SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
+    }
+    return 1;
+}
+
 CMD:vcheck(playerid, params[])
 {
     if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)

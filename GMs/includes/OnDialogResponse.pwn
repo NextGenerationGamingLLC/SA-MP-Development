@@ -4658,6 +4658,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_SUSPECT) return cmd_su(playerid, inputtext);
 	if(dialogid == MDC_VEHICLE) return cmd_vmdc(playerid, inputtext);
+	if(dialogid == MDC_VLOOKUP) return cmd_vlookup(playerid, inputtext);
 	if(dialogid == MDC_FIND && response)
 	{
 		new giveplayerid;

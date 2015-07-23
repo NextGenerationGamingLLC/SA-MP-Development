@@ -227,7 +227,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		case 30, 31: if(amount > 10.0) amount = 10.0;
 		case 33: if(amount > 25.0) amount = 25.0;
 		case 34: if(amount > 42.0) amount = 42.0;
-		case 37, 41, 42: if(amount > 3.0) amount = 3.0;
+		case 37, 42: if(amount > 3.0) amount = 3.0;
+		case 41: amount = 0;
 	}
 	if(GetPlayerCameraMode(playerid) == 55 && amount > 9.0) amount = 9.0;
 

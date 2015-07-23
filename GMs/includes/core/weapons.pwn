@@ -324,7 +324,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	    SetPlayerArmedWeapon(playerid, 0);
 	}
 	
-	if(GetPVarInt(playerid, "IsInArena") < 0 && !GetPVarType(playerid, "Injured")) {
+	if(GetPVarInt(playerid, "IsInArena") < 0 && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "EventToken")) {
 		if(!IsNotAGun(newweapon)) ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
 		SyncPlayerAmmo(playerid, newweapon);
 	} 

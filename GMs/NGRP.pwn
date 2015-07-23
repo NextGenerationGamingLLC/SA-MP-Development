@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.211"
+#define SERVER_GM_TEXT "NG:RP v3.0.213"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -247,6 +247,7 @@
 #include "./includes/group/GovArms.pwn"
 #include "./includes/group/grouppay.pwn"
 #include "./includes/group/gangtags.pwn"
+#include "./includes/group/GunLicense.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"

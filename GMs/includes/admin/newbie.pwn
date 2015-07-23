@@ -183,7 +183,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				AnswerNewbie(playerid, GetPVarInt(playerid, "AnsweringNewb"), inputtext);
 			}
-			else DeletePVar(playerid, "AnsweringNewb");
+			else {
+				
+				DeletePVar(GetPVarInt(playerid, "AnsweringNewb"), "NewbBeingAnswered");
+				DeletePVar(playerid, "AnsweringNewb");
+			}
 		}
 
 		case DENY_NEWBIE: {
@@ -211,7 +215,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				ClearNewbVars(id);	
 			}
-			else DeletePVar(playerid, "AnsweringNewb");
+			else {
+				
+				DeletePVar(GetPVarInt(playerid, "AnsweringNewb"), "NewbBeingAnswered");
+				DeletePVar(playerid, "AnsweringNewb");
+			}
 			
 		}
 	}

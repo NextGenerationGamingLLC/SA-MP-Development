@@ -45,7 +45,7 @@ CMD:getlicense(playerid, params[])
 
 CMD:revokelicense(playerid, params[])
 {
-	if(IsACop(playerid) || (IsAMedic(playerid) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) || IsAGovernment(playerid))
+	if(IsACop(playerid) || (IsAMedic(playerid) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) || IsAGovernment(playerid) || IsAJudge(playerid))
 	{
 		new string[128], giveplayerid, type, reason[64], sz_FacInfo[3][64];
 		if(sscanf(params, "uds[64]", giveplayerid, type, reason))
@@ -113,7 +113,7 @@ CMD:revokelicense(playerid, params[])
 				}
 				case 4:
 				{
-					if(!IsAGovernment(playerid) && PlayerInfo[playerid][pLeader] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to revoke this license.");
+					//if((!IsAGovernment(playerid) && PlayerInfo[playerid][pLeader] != 1))) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to revoke this license.");
 					if(PlayerInfo[giveplayerid][pGunLic] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "This person has no firearms license to revoke.");
 
 					GetPlayerGroupInfo(playerid, sz_FacInfo[0], sz_FacInfo[1], sz_FacInfo[2]);
@@ -303,12 +303,13 @@ CMD:droplicense(playerid, params[])
 
 CMD:licenses(playerid, params[])
 {
-	new string[128], text1[20], text2[20], text3[20], text4[20], text5[20];
+	new string[128], text1[20], text2[20], text3[20], text4[20], text5[40];
 	if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
 	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
 	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
 	if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Acquired"; } else { text3 = "Not acquired"; }
-	if(PlayerInfo[playerid][pGunLic]) {text5 = "Acquired"; } else {text5 = "Not acquired"; }
+	if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
+	else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
 	SendClientMessageEx(playerid, COLOR_WHITE, "Your licenses...");
 	format(string, sizeof(string), "** Driver's license: %s.", text1);
 	SendClientMessageEx(playerid, COLOR_GREY, string);
@@ -338,12 +339,14 @@ CMD:showlicenses(playerid, params[])
 		if (ProxDetectorS(8.0, playerid, giveplayerid))
 		{
 			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't show licenses to yourself - use /licenses for that."); return 1; }
-			new text1[20], text2[20], text3[20], text4[20], text5[20];
+			new text1[20], text2[20], text3[20], text4[20], text5[40];
 			if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
 			if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
 			if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
 			if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Acquired"; } else { text3 = "Not acquired"; }
-			if(PlayerInfo[playerid][pGunLic]) {text5 = "Acquired"; } else {text5 = "Not acquired"; }
+			if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
+			else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
+
 			switch(PlayerInfo[playerid][pNation])
 			{
 				case 0:

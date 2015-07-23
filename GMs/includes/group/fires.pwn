@@ -95,7 +95,10 @@ public OnEnterFire()
 				{
 					new Float:ftempHP;
 					GetHealth(i, ftempHP);
-					SetHealth(i, ftempHP - 5);
+					if(GetPlayerSkin(i) == 277 || GetPlayerSkin(i) == 278 || GetPlayerSkin(i) == 279) SetHealth(i, ftempHP - 5);
+					else SetHealth(i, ftempHP - 20);
+
+					
 				}
 			}
 		}
