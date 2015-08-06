@@ -58,6 +58,14 @@ public OnVehicleSpawn(vehicleid) {
 			SetVehicleVirtualWorld(iVehicleID, PlayerVehicleInfo[i][v][pvVW]);
 			LinkVehicleToInterior(iVehicleID, PlayerVehicleInfo[i][v][pvInt]);
 
+			switch(GetVehicleModel(iVehicleID)) {
+				case 519, 553, 508: {
+					iVehEnterAreaID[iVehicleID] = CreateDynamicSphere(PlayerVehicleInfo[i][v][pvPosX]+3.5, PlayerVehicleInfo[i][v][pvPosY], PlayerVehicleInfo[i][v][pvPosZ], 4, GetVehicleVirtualWorld(iVehicleID));
+					AttachDynamicAreaToVehicle(iVehEnterAreaID[iVehicleID], iVehicleID);
+					Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVehicleID], E_STREAMER_EXTRA_ID, iVehicleID);
+				}
+			}
+
 			PlayerVehicleInfo[i][v][pvId] = iVehicleID;
 
 			Vehicle_ResetData(iVehicleID);
@@ -1756,10 +1764,6 @@ public OnPlayerConnect(playerid)
 	}
 	EventLastInt[playerid] = 0; EventLastVW[playerid] = 0;
 
-	for(new i = 0; i < 6; i++) {
-		HHcheckFloats[playerid][i] = 0;
-	}
-
 	for(new i = 0; i < MAX_PLAYERVEHICLES; ++i) {
 		PlayerVehicleInfo[playerid][i][pvModelId] = 0;
 		PlayerVehicleInfo[playerid][i][pvId] = INVALID_PLAYER_VEHICLE_ID;
@@ -1810,8 +1814,6 @@ public OnPlayerConnect(playerid)
 	Backup[playerid] = 0;
     CarRadars[playerid] = 0;
 	PlayerInfo[playerid][pReg] = 0;
-	HHcheckVW[playerid] = 0;
-	HHcheckInt[playerid] = 0;
 	OrderAssignedTo[playerid] = INVALID_PLAYER_ID;
 	TruckUsed[playerid] = INVALID_VEHICLE_ID;
 	HouseOffer[playerid] = INVALID_PLAYER_ID;
@@ -3307,7 +3309,6 @@ public OnPlayerSpawn(playerid)
 		PreloadAnimLib(playerid,"FOOD");
 		gPlayerAnimLibsPreloaded[playerid] = 1;
 	}
-
  	if(sobeitCheckvar[playerid] == 0)
 	{
 	    if(PlayerInfo[playerid][pInt] == 0 && PlayerInfo[playerid][pVW] == 0)
@@ -3326,7 +3327,6 @@ public OnPlayerSpawn(playerid)
 			}
   		}
 	}
-
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{
 	    new Float:X, Float:Y, Float:Z;
@@ -3385,6 +3385,13 @@ public OnPlayerSpawn(playerid)
 	IsSpawned[playerid] = 1;
 	SpawnKick[playerid] = 0;
 	SetPlayerArmedWeapon(playerid, 0); // making sure players spawn with their fists.
+
+	if(PlayerInfo[playerid][pTut] < 2)
+	{
+		SetPlayerPos(playerid, 1715.1201,-1903.1711, 1113.5665);
+		SetPlayerFacingAngle(playerid, 360.0);
+		return 1;
+	}
 	return 1;
 }
 
@@ -3419,6 +3426,11 @@ public OnPlayerLeaveCheckpoint(playerid)
 	    }
 	    return 1;
 	}
+	if(PlayerInfo[playerid][pTut] == 0)
+	{
+		Tutorial_Start(playerid);
+		return 1;
+	} 
 	return 1;
 }
 
@@ -4579,12 +4591,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				HideTradeToysGUI(playerid);
 			}
 		}
-        if(InsideTut{playerid} > 0)
-		{
-			TutorialStep(playerid);
-			TogglePlayerControllable(playerid, false);
-			return 1;
-		}
 		if(GetPVarType(playerid, "Tackling"))	{
 		    ClearTackle(GetPVarInt(playerid, "Tackling"));
 			CopGetUp(playerid);
@@ -4595,13 +4601,13 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             if(GetPVarInt(playerid, "TackleMode") == 1) {
 		    	return 1;
 			}
-            new string[64];
+            /*new string[64];
 			new name[MAX_PLAYER_NAME+8];
 			format(name, sizeof(name), "{FF0000}%s", GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
 			SetPVarString(playerid, "pInteractName", name);
 			SetPVarInt(playerid, "pInteractID", GetPlayerTargetPlayer(playerid));
-            format(string, sizeof(string), "Pay\nGive\n");
-            /*if (PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9)
+            format(string, sizeof(string), "Pay\nGive");
+            if (PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9)
 			{
 			    format(string, sizeof(string), "%sSell Gun\n", string);
 			}
@@ -4620,8 +4626,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(PlayerInfo[playerid][pJob] == 19 || PlayerInfo[playerid][pJob2] == 19)
 			{
 			    format(string, sizeof(string), "%sSell Drink\n", string);
-			}*/
-			ShowPlayerDialog(playerid, INTERACTMAIN, DIALOG_STYLE_LIST, name, string, "Select", "Cancel");
+			}
+			ShowPlayerDialog(playerid, INTERACTMAIN, DIALOG_STYLE_LIST, name, string, "Select", "Cancel");*/
+			Player_InteractMenu(playerid, GetPlayerTargetPlayer(playerid));
         }
     }
 	// If the client clicked the fire key and is currently injured
@@ -5286,8 +5293,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);
 		}*/
-        if(PlayerInfo[playerid][pGuns][4] > 0)	SetPlayerArmedWeapon(playerid,PlayerInfo[playerid][pGuns][4]);
-		else SetPlayerArmedWeapon(playerid,0);
+        if(!IsADriveByWeapon(GetPlayerWeapon(playerid))) SetPlayerArmedWeapon(playerid,0);
+        //if(PlayerInfo[playerid][pGuns][4] > 0)	SetPlayerArmedWeapon(playerid,PlayerInfo[playerid][pGuns][4]);
+		//else SetPlayerArmedWeapon(playerid,0);
 
 	    gLastCar[playerid] = vehicleid;
 	    foreach(new i: Player)
@@ -5612,7 +5620,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    }
 		GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);
 		if((engine == VEHICLE_PARAMS_UNSET || engine == VEHICLE_PARAMS_OFF) && GetVehicleModel(newcar) != 509 && GetVehicleModel(newcar) != 481 && GetVehicleModel(newcar) != 510 && (DynVeh[newcar] != -1 && GetVehicleModel(newcar) == 592 && DynVehicleInfo[DynVeh[newcar]][gv_iType] != 1) ) {
-			SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle's engine is not running - if you wish to start it, type /car engine.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle's engine is not running - if you wish to start it, press ~k~~CONVERSATION_YES~.");
 		}
 		else if((engine == VEHICLE_PARAMS_UNSET || engine == VEHICLE_PARAMS_OFF) && (DynVeh[newcar] != -1 && GetVehicleModel(newcar) == 592 && DynVehicleInfo[DynVeh[newcar]][gv_iType] == 1))
 		{
@@ -6527,6 +6535,15 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "MemorialToy", modelid);
 		ShowPlayerDialog(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
+	}
+	if(extraid == REGISTER_SKINMODEL)
+	{
+		if(response)
+		{
+			PlayerInfo[playerid][pModel] = modelid;
+			Register_CreatePlayer(playerid, modelid);
+		}
+		Register_MainMenu(playerid);
 	}
 	return 1;
 }

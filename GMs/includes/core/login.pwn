@@ -259,7 +259,11 @@ stock ShowLoginDialogs(playerid, index)
 			- Your password must contain a combination of letters, numbers and special characters.\n\
 			- Invalid Character: %", "Change", "Exit" );
 		}
-		case 1: ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
+		case 1: 
+		{
+			// ShowPlayerDialog(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
+			Tutorial_Start(playerid);
+		}
 		case 4: ShowPlayerDialog(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Notice", pMOTD, "Dismiss", "");
 		case 5:
 		{

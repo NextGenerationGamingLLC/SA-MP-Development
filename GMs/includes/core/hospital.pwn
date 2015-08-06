@@ -37,9 +37,33 @@
 
 #include <YSI\y_hooks>
 
+new InsurancePoint[2];
 
 #define DIALOG_HOSPITAL_MENU    7000
 #define MESSAGE_INSUFFICIENT_FUNDS  "You have insufficient funds for this."
+
+hook OnGameModeInit() {
+
+	InsurancePoint[0] = CreateDynamicSphere(2383.0728,2662.0520,8001.1479, 4.0); // regular hospital interior
+	InsurancePoint[1] = CreateDynamicSphere(555.8644,1485.1359,6000.4258, 4.0); // doc hospital
+
+	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
+	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
+	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
+	CreateDynamicPickup(1240, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
+
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+
+	if(newkeys & KEY_YES && (IsPlayerInDynamicArea(playerid, InsurancePoint[0]) || IsPlayerInDynamicArea(playerid, InsurancePoint[1]))) {
+		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000\nBuy Insurance");
+		ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
+	}
+
+	return 1;
+}
 
 DeliverPlayerToHospital(playerid, iHospital)
 {
@@ -549,18 +573,6 @@ RemoveVendingMachines(playerid)
 	return 1;
 }
 
-CMD:hospitalmenu(playerid, params[])
-{
-	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) /*Main Hospitals */ || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258) /* DOC Hospital */)
-	{
-		szMiscArray[0] = 0;
-		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000");
-		ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
-	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You must be at a hospital front desk to be treated.");
-	return 1;
-}
-
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)
@@ -611,6 +623,41 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						HospHeal(playerid);
 					}
 					else SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
+				}
+				case 4: // buy insurance
+				{
+					new iHospitalVW = GetPlayerVirtualWorld(playerid),
+						file[32], 
+						month, 
+						day, 
+						year;
+						
+					getdate(year,month,day);
+					
+					if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
+					{
+						if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
+						if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
+						PlayerInfo[playerid][pInsurance] = iHospitalVW;
+						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+						GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
+						Tax += HospitalSpawnInfo[iHospitalVW][1];
+						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
+						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+						Log(file, szMiscArray);
+					}
+					else if(IsPlayerInRangeOfPoint(playerid, 2.00, 555.8644,1485.1359,6000.4258)) // doc hospital purchase point
+					{
+						PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
+						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+						GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
+						Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
+						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
+						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+						Log(file, szMiscArray);
+					}
 				}
 			}
 		}

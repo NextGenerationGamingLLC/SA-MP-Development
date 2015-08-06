@@ -478,7 +478,7 @@ public SetVehicleEngine(vehicleid, playerid)
 		}
 		SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_ON,lights,alarm,doors,bonnet,boot,objective);
 		if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && IsAPlane(vehicleid)) { SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (/announcetakeoff to turn the engine off)."); }
-		else SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (/car engine to turn the engine off).");
+		else SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine started successfully (press ~k~~CONVERSATION_YES~ to turn the engine off).");
 		arr_Engine{vehicleid} = 1;
 		if(GetChased[playerid] != INVALID_PLAYER_ID && VehicleBomb{vehicleid} == 1)
 		{

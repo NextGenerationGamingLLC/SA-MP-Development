@@ -99,7 +99,8 @@ enum eLockerData {
 	Float: g_fLockerPos[3],
 	g_iLockerVW,
 	g_iLockerShare,
-	Text3D: g_tLocker3DLabel
+	Text3D: g_tLocker3DLabel,
+	g_iLockerPickupID
 }
 
 enum eJurisdictionData {
@@ -178,6 +179,7 @@ enum eBiz {
 	Text3D: bDoorText,
 	Text3D: bSupplyText,
 	bPickup,
+	bPickup_int,
 	bAutoPay,
 	Float: bGasPrice,
 	bStrictPrice,
@@ -233,7 +235,8 @@ enum eBiz {
 	bGymBikePlayers[10],
 	bGymBikeVehicles[10],
 	
-	bMaxLevel
+	bMaxLevel,
+	b_AreaID
 }
 
 enum StoreItemCostEnum
@@ -1109,7 +1112,9 @@ enum pInfo
 	pLastPass[65],
 	pEventTokens,
 	pVIPGuncount,
-	pBailPrice
+	pBailPrice,
+	pWallpaper,
+	pPhoneColor
 };
 
 enum pvInfo
@@ -1210,6 +1215,7 @@ enum hInfo
 	hWeapons[ 5 ],
 	hGLUpgrade,
 	hPickupID,
+	hPickupID_int,
 	Text3D: hTextID,
 	hCustomExterior,
 	Float: hMailX,
@@ -1263,6 +1269,9 @@ enum ddInfo
 	ddOwner,
 	ddOwnerName[42],
 	ddPickupID,
+	ddPickupID_int,
+	ddAreaID,
+	ddAreaID_int, 
 	Text3D: ddTextID,
 	ddCustomInterior,
 	ddExteriorVW,
@@ -1632,7 +1641,9 @@ enum garInfo
 	gar_InteriorVW,
 	gar_Pass[24],
 	gar_Locked,
-	Text3D: gar_TextID
+	Text3D: gar_TextID,
+	gar_AreaID,
+	gar_AreaID_int,
 };
 
 enum eStructureFires {

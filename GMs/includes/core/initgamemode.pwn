@@ -25,6 +25,7 @@ InitiateGamemode()
 	LoadGarages();
 	LoadCrimes();
 	LoadGCrates();
+	//Job_LoadJobs();
 	//loadSafes(); 
 		/*---[Shop Automation]---*/
 	
@@ -82,6 +83,8 @@ InitiateGamemode()
 	LoadParkingMeters();
 	GovGuns_LoadCosts();
 	MetDet_LoadMetDets();
+	LoadATMPoints();
+	LoadBanks();
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates
 	

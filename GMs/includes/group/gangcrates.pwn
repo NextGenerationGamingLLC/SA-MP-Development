@@ -702,9 +702,8 @@ ShowGCrateTransferMenu(playerid, itemid, transfertype, stage = 0) {
 
 				}
 				case 1: { //deposit
-					//format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to deposit!", GetItemNameFromIdx(itemid));
-					//ShowPlayerDialog(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
-					SendClientMessageEx(playerid, COLOR_RED, "This feature has been disabled. You can now transfer items via your locker!");
+					format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to deposit!", GetItemNameFromIdx(itemid));
+					ShowPlayerDialog(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
 				}
 			}
 		}
@@ -721,6 +720,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	switch(dialogid) {
 		case DIALOG_GANG_CRATE1: {
 			if(response) {
+				if(listitem < 13) return SendClientMessageEx(playerid, COLOR_RED, "This feature has been disabled. You can now transfer weapons via your locker!");
+
 				SetPVarInt(playerid, "TransferItem", listitem);
 
 				ShowGCrateTransferMenu(playerid, listitem, 0, 0);	

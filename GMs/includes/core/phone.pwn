@@ -392,6 +392,7 @@ CMD:call(playerid, params[])
 						//SendAudioToPlayer(playerid, 60, 100);
 						CellTime[playerid] = 1;
 						SetPlayerAttachedObject(playerid, 8, 330, 6);
+						Phone_Calling(playerid, giveplayerid);
 						return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 					}
 				}
@@ -553,6 +554,7 @@ CMD:pickup(playerid, params[])
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RingTone[playerid] = 0;
 			SetPlayerAttachedObject(playerid, 8, 330, 6);
+			Phone_PickupCall(playerid, i); 
 			return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 		}
 	}	
@@ -590,6 +592,7 @@ CMD:hangup(playerid,params[])
 			Mobile[caller] = INVALID_PLAYER_ID;
 		}
 		CellTime[playerid] = 0;
+		Phone_HangupCall(playerid, Mobile[playerid]);
 		SendClientMessageEx(playerid,  COLOR_GRAD2, "   You hung up.");
 		format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

@@ -712,6 +712,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		{
 			if(IsPlayerConnected(extraid))
 			{
+				Tutorial_Start(extraid);
 				g_mysql_AccountLoginCheck(extraid);
 				TotalRegister++;
 			}
@@ -939,18 +940,18 @@ public OnQueryFinish(resultid, extraid, handleid)
 		}
 		case MAIN_REFERRAL_THREAD:
 		{
-		    new newrows, newfields, szString[128], szQuery[128];
+		    new newrows, newfields;
 		    cache_get_data(newrows, newfields, MainPipeline);
 
 		    if(newrows == 0)
 		    {
-		        format(szString, sizeof(szString), "Nobody");
-				strmid(PlayerInfo[extraid][pReferredBy], szString, 0, strlen(szString), MAX_PLAYER_NAME);
-		        ShowPlayerDialog(extraid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
+		        format(szMiscArray, sizeof(szMiscArray), "Nobody");
+				strmid(PlayerInfo[extraid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
+		        ShowPlayerDialog(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
 			}
 			else {
-			    format(szQuery, sizeof(szQuery), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
-				mysql_function_query(MainPipeline, szQuery, true, "ReferralSecurity", "i", extraid);
+			    format(szMiscArray, sizeof(szMiscArray), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
+				mysql_function_query(MainPipeline, szMiscArray, true, "ReferralSecurity", "i", extraid);
 			}
 		}
 		case REWARD_REFERRAL_THREAD:
@@ -5000,8 +5001,11 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			if(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0] != 0.0)
 			{
-				format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}/locker{FFFF00} to use\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
+				format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
+
+				arrGroupLockers[iGroup][iLocker][g_iLockerPickupID] = CreateDynamicPickup(0, 23, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW], .streamdistance = 15.0);
+				Streamer_SetIntData(STREAMER_TYPE_PICKUP, arrGroupLockers[iGroup][iLocker][g_iLockerPickupID], E_STREAMER_EXTRA_ID, iLocker);
 			}
 			iIndex++;
 
@@ -5481,7 +5485,7 @@ public CheckAccounts(playerid)
 forward ReferralSecurity(playerid);
 public ReferralSecurity(playerid)
 {
-    new newrows, newfields, newresult[16], currentIP[16], szString[128];
+    new newrows, newfields, newresult[16], currentIP[16];
 	GetPlayerIp(playerid, currentIP, sizeof(currentIP));
 	cache_get_data(newrows, newfields, MainPipeline);
 
@@ -5491,24 +5495,22 @@ public ReferralSecurity(playerid)
 
    		if(!strcmp(newresult, currentIP, true))
 	    {
-	        format(szString, sizeof(szString), "Nobody");
-			strmid(PlayerInfo[playerid][pReferredBy], szString, 0, strlen(szString), MAX_PLAYER_NAME);
-            ShowPlayerDialog(playerid, REGISTERREF, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+	        format(szMiscArray, sizeof(szMiscArray), "Nobody");
+			strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
+            ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
     	}
     	else {
-    	    format(szString, sizeof(szString), " %s(%d) (IP:%s) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
-    	    Log("logs/referral.log", szString);
+    	    format(szMiscArray, sizeof(szMiscArray), " %s(%d) (IP:%s) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
+    	    Log("logs/referral.log", szMiscArray);
 			RegistrationStep[playerid] = 3;
 			SetPlayerVirtualWorld(playerid, 0);
 			ClearChatbox(playerid);
-			ShowTutGUIBox(playerid);
-			ShowTutGUIFrame(playerid, 1);
-			TutStep[playerid] = 1;
 
-			Streamer_UpdateEx(playerid, 1607.0160,-1510.8218,207.4438);
-			SetPlayerPos(playerid, 1607.0160,-1510.8218,-10.0);
-			SetPlayerCameraPos(playerid, 1850.1813,-1765.7552,81.9271);
-			SetPlayerCameraLookAt(playerid, 1607.0160,-1510.8218,207.4438);
+			format(szMiscArray, sizeof(szMiscArray), "Nobody");
+			TogglePlayerSpectating(playerid, false);
+			SetPlayerHealth(playerid, 1000.0);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
+			SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
 		}
 	}
 	return 1;

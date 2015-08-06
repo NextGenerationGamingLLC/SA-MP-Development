@@ -15,6 +15,8 @@ to sell that gun. Make the money come out of the government vault as well. Thank
 
 new arrWeaponCosts[47]; // array to store the costs in (NOTE: 46 has the open/close value!!)
 
+new GovArmsPoint;
+
 hook OnGameModeInit()
 {
 	GovGuns_Streamer();
@@ -132,6 +134,48 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			return GovGuns_MainMenu(playerid);
 		}
+		case ARMS_MENU: {
+			if(!response) return SendClientMessageEx(playerid, COLOR_GREY, "You have left the government arms center.");
+
+			switch(listitem) {
+				case 0: {
+					
+					if(!response) return ShowArmsMenu(playerid);
+
+					new szWeaponName[32],
+						iCount, iAmmo, iWepID;
+
+					if(!IsPlayerInRangeOfPoint(playerid, 5.0, 1464.3099, -1747.5853, 15.6267)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You aren't at the government arms point at City Hall in Los Santos.");
+					if(arrWeaponCosts[46] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The government arms center is currently closed.");
+					szMiscArray = "Name\tSale Price\n";
+					for(new i; i < 12; ++i) {
+						
+						GetPlayerWeaponData(playerid, i, iWepID, iAmmo);
+						if(PlayerInfo[playerid][pGuns][i] == iWepID && GovGuns_IsSelling(iWepID)) {
+							ListItemTrackId[playerid][iCount] = iWepID;
+							szWeaponName = Weapon_ReturnName(iWepID);
+							format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\n", szMiscArray, szWeaponName, number_format(arrWeaponCosts[iWepID]));
+							iCount++;
+						}
+					}
+					if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any weapons that you can sell to the government.");
+					ShowPlayerDialog(playerid, DIALOG_GOVGUN_SELL, DIALOG_STYLE_TABLIST_HEADERS, "Government Arms | Sell Gun", szMiscArray, "Cancel", "Sell");	
+				}
+				case 1: {
+
+					if(!response) return ShowArmsMenu(playerid);
+
+					if(PlayerInfo[playerid][pGunLic] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a valid gun license");
+
+					ShowPlayerDialog(playerid, APPLY_GUN_LIC, DIALOG_STYLE_MSGBOX, 
+						"Gun License Application", 
+						"You are about to apply for a gun license\nYou will have a background check for crimes for the last 3 weeks\nThis process will cost $100,000", 
+						"Apply", 
+						"Cancel"
+					);
+				}
+			}
+		}
 	}
 	return 0;
 }
@@ -158,8 +202,8 @@ GovGuns_LoadCosts()
 GovGuns_Streamer()
 {
 	CreateDynamicObject(3430, 1464.40723, -1750.29785, 15.8659,   0.00000, 0.00000, 300.33374);
-	CreateDynamic3DTextLabel("Government Arms Center\n{DDDDDD}Use '/sellgovgun'.\n/gunlicenseapply", COLOR_YELLOW, 1464.3186,-1747.9330,15.9453, 8.0);
-	CreateDynamicPickup(1274, 1, 1464.3186,-1747.9330,15.4453);
+	CreateDynamic3DTextLabel("Government Arms Center\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to access the menu", COLOR_YELLOW, 1464.3186,-1747.9330,15.9453, 8.0);
+	GovArmsPoint = CreateDynamicSphere(1464.3186,-1747.9330,15.445, 5.00);
 }
 
 GovGuns_IsSellingEdit(i)
@@ -241,7 +285,7 @@ CMD:govarms(playerid, params[])
 	return 1;
 }
 
-CMD:sellgovgun(playerid, params[])
+/*CMD:sellgovgun(playerid, params[])
 {
 	szMiscArray[0] = 0;
 	new szWeaponName[32],
@@ -262,5 +306,25 @@ CMD:sellgovgun(playerid, params[])
 	}
 	if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any weapons that you can sell to the government.");
 	ShowPlayerDialog(playerid, DIALOG_GOVGUN_SELL, DIALOG_STYLE_TABLIST_HEADERS, "Government Arms | Sell Gun", szMiscArray, "Cancel", "Sell");
+	return 1;
+}*/
+
+ShowArmsMenu(playerid) {
+		
+	szMiscArray[0] = 0;
+
+	format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
+	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
+
+	ShowPlayerDialog(playerid, ARMS_MENU, DIALOG_STYLE_LIST, "Arms Menu", "Sell gun to gov\nFirearm License", "Select", "Cancel");
+
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+
+	if(newkeys & KEY_YES && IsPlayerInDynamicArea(playerid, GovArmsPoint)) {
+		ShowArmsMenu(playerid);
+	}
 	return 1;
 }

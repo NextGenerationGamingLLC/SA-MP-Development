@@ -257,7 +257,6 @@ public LoadStreamerDynamicPickups()
 	//CreateDynamicPickup(1239, 23, -2089.344970, 87.800231, 35.320312, -1); // Drug Dealer job (SF)
 	CreateDynamicPickup(1239, 23, -1713.961425, 1348.545166, 7.180452, -1); // Pizza Boy job (SF)
 	//CreateDynamicPickup(1239, 23, -2240.9011, 2313.1653, 4.9918, -1); // Taxi Driver job (TR)
-	CreateDynamicPickup(1239, 23, 833.60, 3.23, 1004.17, -1); // /paymytickets point
 	CreateDynamicPickup(1239, 23, -4429.944824, 905.032470, 987.078186, -1); // VIP Garage Travel
 	CreateDynamicPickup(1239, 23, 2102.71,-103.97,2.28, -1); // Matrun 3
 	CreateDynamicPickup(1239, 23, -1816.528686, -179.502624, 9.398437, -1); // Matrun 4 (pickup)
@@ -358,7 +357,6 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Club VIP Parking\nType /enter with your vehicle to enter",COLOR_YELLOW,1814.6857,-1559.2028,13.4834+0.4,15.0);
 	CreateDynamic3DTextLabel("Gym Parking Garage\nType /enter with your vehicle to enter",COLOR_YELLOW,2273.4026,-1724.3064,13.5469+0.6,25.0);
 	CreateDynamic3DTextLabel("Courthouse Parking Garage\nType /enter with your vehicle to enter",COLOR_YELLOW,1418.5190,-1663.8959,13.5395+0.6,25.0);
-    CreateDynamic3DTextLabel("To pay your tickets or\nrelease your cars, type /dmvmenu",COLOR_YELLOW,833.60, 3.23, 1004.17+0.6,4.0);//
     CreateDynamic3DTextLabel("To change your number type /vipnum",COLOR_YELLOW,2549.548095, 1404.047729, 7699.584472+0.6,4.0);//
     CreateDynamic3DTextLabel("To change your number type /vipnum",COLOR_YELLOW,1832.6000, 1375.1700, 1464.4600+0.6,4.0);//
     CreateDynamic3DTextLabel("Type /travel\nTo exit the VIP garage with your vehicle",COLOR_YELLOW,-4429.944824, 905.032470, 987.078186+0.5,13.0);// VIP garage travel
@@ -377,7 +375,6 @@ public LoadStreamerDynamic3DTextLabels()
 	
 	CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
     CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
-	CreateDynamic3DTextLabel("Type /getlicense to \nacquire a license.",COLOR_YELLOW,366.54,159.09,1008.38+0.5,8.0);// Licenses.
 	//CreateDynamic3DTextLabel("Type /registerplate to\nchange your license plate.",COLOR_YELLOW,366.54,159.09,1008.38+1,8.0);// Licenses.
     CreateDynamic3DTextLabel("/buyclothes\n To change your skin.",COLOR_YELLOW,208.8970,-100.3289,1005.2578,8.0);
     CreateDynamic3DTextLabel("/buyclothes\n To change your skin.",COLOR_YELLOW,206.5429,-41.2313,1001.8047,8.0);
@@ -403,10 +400,6 @@ public LoadStreamerDynamic3DTextLabels()
 	SANews3DText[0] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,650.2051,-6.5939,1101.2085,8.0);
 	SANews3DText[1] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,648.7708,-20.0820,1101.2126,8.0);
 	SANews3DText[2] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,664.2178,0.9587,1101.2085,8.0);
-	
-	// Buildings 3D labels
-	//CreateDynamic3DTextLabel("Press F (enter) to go inside.",COLOR_YELLOW,1568.5718,-1691.0177,5.8906+0.6,4.0); //LSPD Garage enter
-	//CreateDynamic3DTextLabel("Press F (enter) to go inside.",COLOR_YELLOW,1564.8464,-1666.1444,28.3956+0.6,4.0); //LSPD Roof enter
 
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1816.528686, -179.502624, 9.398437+0.6,5.0);
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW, -2481.1560,2290.8391,4.9844+0.6, 5.0);
@@ -470,16 +463,6 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	
 	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
-	
-	CreateDynamic3DTextLabel("Monument to Those Who Gave Their Lives for a Free Tierra Robada", COLOR_YELLOW, -2264.1331, 2259.0814, 4.9641, 20.0);
-	CreateDynamic3DTextLabel("Monument to the Battles of Bayside", COLOR_YELLOW, -2333.5400, 2262.8799, 4.8137, 20.0);
-	CreateDynamic3DTextLabel("Monument to the Revolution", COLOR_YELLOW, -2325.9256, 2338.7119, 4.8137, 20.0);
-	CreateDynamic3DTextLabel("Monument to the Civil Services and Mechanist Union of Tierra Robada", COLOR_YELLOW, -2356.6712, 2222.0739, 4.8137, 20.0);
-	
-	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance\n/hospitalmenu", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
-	CreateDynamic3DTextLabel("Insurance Point\n/buyinsurance", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
-	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
-	CreateDynamicPickup(1240, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
 	
 	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
 	{
@@ -581,8 +564,8 @@ public LoadStreamerDynamicObjects()
 
 	new FCTS = CreateDynamicObject(19482, -58.9155, -1118.4808, 7.4781, 0.0000, 0.0000, 160.3858);
 	SetDynamicObjectMaterialText(FCTS, 0, "{880000}Flint County Towing Services", 110, "Impact", 40, 1, 0xFF000000, 0, 1);
-	new TR = CreateDynamicObject(19482, -2328.9254, 2313.8192, 16.7774, 0.0000, 0.0000, 90.0);
-	SetDynamicObjectMaterialText(TR, 0, "The People's Plaza", 70, "Georgia", 24, 1, 0xFFFFFFFF, 0, 1);
+	//new TR = CreateDynamicObject(19482, -2328.9254, 2313.8192, 16.7774, 0.0000, 0.0000, 90.0);
+	//SetDynamicObjectMaterialText(TR, 0, "The People's Plaza", 70, "Georgia", 24, 1, 0xFFFFFFFF, 0, 1);
 	
     /* (ongamemodeinit) - LSPD stuff */
 	eastlobby1 = CreateDynamicObject(1536,253.14941406,110.59960938,1002.21502686,0.00000000,0.00000000,270.00000000,-1,10,-1,100.0); // East lobby door (moves north)
@@ -595,20 +578,6 @@ public LoadStreamerDynamicObjects()
 	cctv2 = CreateDynamicObject(1536,267.46875000,115.83691406,1003.61718750,0.00000000,0.00000000,179.99450684,-1,10,-1,100.0); // CCTV door (moves east)
 	chief1 = CreateDynamicObject(1536,229.59960938,119.50000000,1009.21875000,0.00000000,0.00000000,0.00000000,-1,10,-1,100.0); // innermost chief's door
 	chief2 = CreateDynamicObject(1536,232.59960938,119.53515625,1009.21875000,0.00000000,0.00000000,179.99450684,-1,10,-1,100.0); // outermost chief's door (both move west)
-	
-	// New LSPD Interior Doors & Cells
-	AkaDoor[0] = CreateDynamicObject(1495,1487.00000000,-1762.42504883,3284.23608398,0.00000000,0.00000000,270.00000000); //object(gen_doorext01) (1)
-	AkaDoor[1] = CreateDynamicObject(1495,1483.79003906,-1762.42504883,3284.23608398,0.00000000,0.00000000,270.00000000); //object(gen_doorext01) (2)
-	AkaDoor[2] = CreateDynamicObject(1495,1479.85998535,-1758.31994629,3284.23388672,0.00000000,0.00000000,0.00000000); //object(gen_doorext01) (2)
-	AkaDoor[3] = CreateDynamicObject(1495,1467.06701660,-1758.31994629,3284.23388672,0.00000000,0.00000000,0.00000000); //object(gen_doorext01) (2)
-	AkaCell[0] = CreateDynamicObject(1567,1491.21484375,-1764.90002441,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (2)
-	AkaCell[1] = CreateDynamicObject(1567,1494.41210938,-1764.90002441,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (3)
-	AkaCell[2] = CreateDynamicObject(1567,1497.61132812,-1764.90002441,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (4)
-	AkaCell[3] = CreateDynamicObject(1567,1500.81445312,-1764.90002441,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (6)
-	AkaCell[4] = CreateDynamicObject(1567,1500.81994629,-1761.51000977,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (7)
-	AkaCell[5] = CreateDynamicObject(1567,1491.22094727,-1761.50000000,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (8)
-	AkaCell[6] = CreateDynamicObject(1567,1494.41894531,-1761.51000977,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (9)
-	AkaCell[7] = CreateDynamicObject(1567,1497.61999512,-1761.51000977,3284.25048828,0.00000000,0.00000000,0.00000000); //object(gen_wardrobe) (10)
 
 	/* Noose Int Buttons End */
 	sasd1A = CreateDynamicObject(1536,2511.65332031,-1697.00976562,561.79223633,0.00000000,0.00000000,0.00000000); //R6
@@ -954,196 +923,6 @@ public RemoveBuildings(playerid)
 	RemoveBuildingForPlayer(playerid, 1411, 342.9375, 1796.2891, 18.7578, 0.25);
 	RemoveBuildingForPlayer(playerid, 16094, 191.1406, 1870.0391, 21.4766, 0.25);
 	return 1;
-}
-
-CMD:pddoor(playerid, params[])
-{
-	new string[128];
-	if(IsACop(playerid))
-	{
-		if(isnull(params))
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /pddoor [open/close]");
-			
-		if(strcmp(params, "open", true) == 0)
-		{
-			if(IsPlayerInRangeOfPoint(playerid, 2.0,1487.00000000,-1762.42504883,3284.23608398)) //Door 0
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[0],1487.00000000,-1762.42504883+1.25,3284.23608398,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1483.79003906,-1762.42504883,3284.23608398)) //Door 1
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[1],1483.79003906,-1762.42504883+1.25,3284.23608398,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1479.85998535,-1758.31994629,3284.23388672)) //Door 2
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[2],1479.85998535-1.25,-1758.31994629,3284.23388672,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1467.06701660,-1758.31994629,3284.23388672)) //Door 3
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[3],1467.06701660-1.25,-1758.31994629,3284.23388672,0.50);
-			}
-		}
-		else if(strcmp(params, "close", true) == 0)
-		{
-			if(IsPlayerInRangeOfPoint(playerid, 2.0,1487.00000000,-1762.42504883,3284.23608398)) //Door 0
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[0],1487.00000000,-1762.42504883,3284.23608398,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1483.79003906,-1762.42504883,3284.23608398)) //Door 1
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[1],1483.79003906,-1762.42504883,3284.23608398,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1479.85998535,-1758.31994629,3284.23388672)) //Door 2
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[2],1479.85998535,-1758.31994629,3284.23388672,0.50);
-
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1467.06701660,-1758.31994629,3284.23388672)) //Door 3
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the door.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaDoor[3],1467.06701660,-1758.31994629,3284.23388672,0.50);
-			}
-		}
-	}
-	else 
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
-	return true;
-}
-
-CMD:pdcell(playerid, params[])
-{
-	new string[128];
-	if(IsACop(playerid))
-	{
-		if(isnull(params))
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /pdcell [open/close]");
-		
-		if(strcmp(params, "open", true) == 0)
-		{
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.21484375,-1764.90002441,3284.25048828)) //Cell0
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[0], 1491.21484375-1.25,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41210938,-1764.90002441,3284.25048828)) //Cell1
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[1], 1494.41210938-1.25,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61132812,-1764.90002441,3284.25048828)) //Cell2
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[2], 1497.61132812-1.25,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81445312,-1764.90002441,3284.25048828)) //Cell3
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[3], 1500.81445312-1.25,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81994629,-1761.51000977,3284.25048828)) //Cell4
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[4], 1500.81994629-1.25,-1761.51000977,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.22094727,-1761.50000000,3284.25048828)) //Cell5
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[5], 1491.22094727-1.25,-1761.50000000,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41894531,-1761.51000977,3284.25048828)) //Cell6
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[6], 1494.41894531-1.25,-1761.51000977,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61999512,-1761.51000977,3284.25048828)) //Cell7
-			{
-				format(string, sizeof(string), "* %s uses their remote to open the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[7], 1497.61999512-1.25,-1761.51000977,3284.25048828,0.50);
-			}
-		}
-		else if(strcmp(params, "close", true) == 0)
-		{
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.21484375,-1764.90002441,3284.25048828)) //Cell0
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[0], 1491.21484375,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41210938,-1764.90002441,3284.25048828)) //Cell1
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[1], 1494.41210938,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61132812,-1764.90002441,3284.25048828)) //Cell2
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[2], 1497.61132812,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81445312,-1764.90002441,3284.25048828)) //Cell3
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[3], 1500.81445312,-1764.90002441,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1500.81994629,-1761.51000977,3284.25048828)) //Cell4
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[4], 1500.81994629,-1761.51000977,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1491.22094727,-1761.50000000,3284.25048828)) //Cell5
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[5], 1491.22094727,-1761.50000000,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1494.41894531,-1761.51000977,3284.25048828)) //Cell6
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[6], 1494.41894531,-1761.51000977,3284.25048828,0.50);
-			}
-			if(IsPlayerInRangeOfPoint(playerid, 2.0, 1497.61999512,-1761.51000977,3284.25048828)) //Cell7
-			{
-				format(string, sizeof(string), "* %s uses their remote to close the cells.", GetPlayerNameEx(playerid));
-				ProxDetector(2.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				MoveDynamicObject(AkaCell[7], 1497.61999512,-1761.51000977,3284.25048828,0.50);
-			}
-		}
-	}
-	else
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a cop!");
-	return true;
 }
 
 forward DoorOpen(playerid);

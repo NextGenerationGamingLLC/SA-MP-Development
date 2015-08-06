@@ -173,76 +173,6 @@ CMD:resetvw(playerid, params[])
 	return 1;
 }
 
-CMD:hhc(playerid, params[]) {
-	return cmd_hhcheck(playerid, params);
-}
-
-CMD:hhcheck(playerid, params[])
-{
-	new string[128], giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hhcheck [player]");
-
-	if(IsPlayerConnected(giveplayerid))
-	{
-		if(PlayerInfo[playerid][pAdmin] >= 3)
-		{
-		    if(HHcheckFloats[giveplayerid][0] != 0)
-		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently being checked for health hacks!");
-		        return 1;
-		    }
-			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin] && giveplayerid != playerid)
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-				return 1;
-			}
-   			if(playerTabbed[giveplayerid] != 0)
-   			{
-      			SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently alt-tabbed!");
-		        return 1;
-   			}
-			if(HHcheckUsed != 0)
-		    {
-		        SendClientMessageEx(playerid, COLOR_WHITE, "The health hack check is being used by another admin, please try again in a moment!");
-		        return 1;
-		    }
-
-   			HHcheckUsed = 1;
-
-        	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has initiated a health hack check on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-        	ABroadCast(COLOR_YELLOW, string, 2);
-
-  			format(string, sizeof(string), "Checking %s for health hacks, please wait....", GetPlayerNameEx(giveplayerid));
-		    SendClientMessageEx(playerid, COLOR_YELLOW, string);
-
-			GetHealth(giveplayerid, HHcheckFloats[giveplayerid][0]);
-			GetArmour(giveplayerid, HHcheckFloats[giveplayerid][1]);
-			GetPlayerPos(giveplayerid, HHcheckFloats[giveplayerid][2], HHcheckFloats[giveplayerid][3], HHcheckFloats[giveplayerid][4]);
-			GetPlayerFacingAngle(giveplayerid, HHcheckFloats[giveplayerid][5]);
-			HHcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
-			HHcheckInt[giveplayerid] = GetPlayerInterior(giveplayerid);
-
-			DeletePVar(giveplayerid, "IsFrozen");
-			TogglePlayerControllable(giveplayerid, 1);
-
-            SetPlayerCameraPos(giveplayerid, 785.1896,1692.6887,5.2813);
-			SetPlayerCameraLookAt(giveplayerid, 785.1896,1692.6887,0);
-            SetPlayerVirtualWorld(giveplayerid, 0);
-		    SetPlayerInterior(giveplayerid, 1);
-		    SetHealth(giveplayerid, 100);
-		    RemoveArmor(giveplayerid);
-			SetPlayerPos(giveplayerid, -1400.994873, 106.899650, 1032.273437);
-			SetPlayerFacingAngle(giveplayerid, 90.66);
-			CreateExplosion(-1400.994873, 106.899650 , 1032.273437, 8, 20);
-
-			SetTimerEx("HealthHackCheck", 1250, 0, "dd", playerid, giveplayerid);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	return 1;
-}
-
 CMD:id(playerid, params[]) {
 	if(isnull(params)) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /id [player name]");
@@ -5596,7 +5526,7 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /mole /setskin /countdown /release /forcedeath /rto(reset) /hhc /sgcheck /pg /mg /kos /nonrp");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /mole /setskin /countdown /release /forcedeath /rto(reset) /pg /mg /kos /nonrp");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s) /resetvw");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm");
 	}
@@ -5903,67 +5833,6 @@ CMD:srelease(playerid, params[])
 	}
 	return 1;
 }
-
-CMD:sgcheck(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	if(SGcheckUsed != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "The sprunk guard check is being used by another admin, please try again in a moment!");
-	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sgcheck [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	new Float:health;
-	GetHealth(giveplayerid, health);
-	if(health < 1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is currently dead.");
-	if(SGcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently being checked for using sprunk guard!");
-	if(HHcheckFloats[giveplayerid][0] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently being checked for health hacks!");
-	if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin] && giveplayerid != playerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-	if(playerTabbed[giveplayerid] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently alt-tabbed!");
-	new string[128];
-	SGcheckUsed = 1;
-	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has initiated a sprunk guard check on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-   	ABroadCast(COLOR_YELLOW, string, 2);
-  	format(string, sizeof(string), "Checking %s for sprunk guard, please wait....", GetPlayerNameEx(giveplayerid));
-    SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	GetHealth(giveplayerid, SGcheckFloats[giveplayerid][0]);
-	GetArmour(giveplayerid, SGcheckFloats[giveplayerid][1]);
-	GetPlayerPos(giveplayerid, SGcheckFloats[giveplayerid][2], SGcheckFloats[giveplayerid][3], SGcheckFloats[giveplayerid][4]);
-	GetPlayerFacingAngle(giveplayerid, SGcheckFloats[giveplayerid][5]);
-	SGcheckVW[giveplayerid] = GetPlayerVirtualWorld(giveplayerid);
-	SGcheckInt[giveplayerid] = GetPlayerInterior(giveplayerid);
-	DeletePVar(giveplayerid, "IsFrozen");
-	TogglePlayerControllable(giveplayerid, 1);
-	SGcheckPlane = AddStaticVehicle(513,993.9423,-3078.1812,803.2570,195.0611,0,0);
-	SetVehicleHealth(SGcheckPlane, 1500.0);
-	IsPlayerEntering{giveplayerid} = true;
-	PutPlayerInVehicle(giveplayerid, SGcheckPlane, 0);	
-	SetPVarInt(giveplayerid, "SprunkGuardLic", 1);
-	SetTimerEx("SprunkGuardCheck", 1000, 0, "dd", playerid, giveplayerid);
-	return 1;
-}
-/* - Disabled until I find the issue with this
-CMD:relog(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	
-	new giveplayerid, string[128];
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /relog [playerid]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified!");
-	//if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot relog yourself!");
-	//if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on a greater/same level administrator than you!");
-	if(!gPlayerLogged{playerid}) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player has not logged in.");
-	
-	OnPlayerDisconnect(giveplayerid, 4);
-	SetArmour(giveplayerid, 0);
-	ResetPlayerWeapons(giveplayerid);
-	OnPlayerConnect(giveplayerid);
-	format(string, sizeof(string), "You have relogged %s.", GetPlayerNameEx(giveplayerid));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "You have been relogged by %s.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "%s has forced %s to relog (/relog).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	Log("logs/relog.log", string);
-	return true;
-}*/
 
 CMD:undercover(playerid, params[])
 {

@@ -2480,7 +2480,7 @@ CMD:sellmycar(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on yourself.");
                 return 1;
             }
-            if(IsRestrictedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
+            if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
             {
                 SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to sell this restricted vehicle.");
                 return 1;

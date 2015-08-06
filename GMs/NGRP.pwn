@@ -14,17 +14,16 @@
 				(created by Next Generation Gaming Development Team)
 
 				Current Developers:
-								***  Director of SA:MP Development:
-									 Miguel (s0nic)
+								*** Director of SA:MP Development:
+									Dom
 
 								*** Assistant Director of Development:
-									 Dom 
+									---
 
-								**   Development Staff:
-									 Donuts
-									 Connor
-									 Jamie
-									 AlexR
+								**  Development Staff:
+									Miguel (s0nic)
+									Jingles
+									AlexR
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -40,6 +39,8 @@
 									Calgon
 
 								** 	Developers:
+									Jamie
+									Connor
 									Neo
 									Austin
 									ThomasJWhite
@@ -76,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.213"
+#define SERVER_GM_TEXT "NG:RP v3.0.215"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -135,7 +136,7 @@
 #include "./includes/core/advertisements.pwn"
 #include "./includes/core/banking.pwn"
 #include "./includes/core/chat.pwn"
-#include "./includes/core/enterexit.pwn"
+//#include "./includes/core/enterexit.pwn"
 #include "./includes/core/fireworks.pwn"
 #include "./includes/core/helpcmds.pwn"
 #include "./includes/core/hospital.pwn"
@@ -148,7 +149,7 @@
 #include "./includes/core/radio.pwn"
 #include "./includes/core/service.pwn"
 #include "./includes/core/storage.pwn"
-#include "./includes/core/tutorial.pwn"
+//#include "./includes/core/tutorial.pwn"
 #include "./includes/core/upgrades.pwn"
 #include "./includes/core/vactions.pwn"
 #include "./includes/core/weapons.pwn"
@@ -173,7 +174,7 @@
 #include "./includes/core/emailcheck.pwn"
 
 //WIP
-// #tryinclude "./includes/core/deluxegps.pwn"
+#include "./includes/core/deluxegps.pwn"
 // #tryinclude "./includes/core/phones.pwn"
 // #tryinclude "./includes/core/inactive.pwn"
 
@@ -198,7 +199,7 @@
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"
 #include "./includes/vehsystem/drivingtest.pwn"
-#include "./includes/vehsystem/licenses.pwn"
+#include "./includes/vehsystem/Server_DMV.pwn"
 #include "./includes/vehsystem/speedo.pwn"
 #include "./includes/vehsystem/tow.pwn"
 #include "./includes/vehsystem/VLP.pwn"
@@ -240,10 +241,9 @@
 #include "./includes/group/points.pwn"
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
-#include "./includes/gangshipment.pwn"
-#include "./includes/gangcrates.pwn"
-//#include "./includes/gangrobbery.pwn"
-//#include "./includes/group/spraytags.pwn"
+#include "./includes/group/gangshipment.pwn"
+#include "./includes/group/gangcrates.pwn"
+//#include "./includes/group/gangrobbery.pwn"
 #include "./includes/group/GovArms.pwn"
 #include "./includes/group/grouppay.pwn"
 #include "./includes/group/gangtags.pwn"
@@ -277,7 +277,23 @@
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
 
-#include "./includes/ammo.pwn"
+#include "./includes/core/ammo.pwn"
+
+// WIP 
+#include "./includes/core/ATMs.pwn"
+#include "./includes/core/Banks.pwn"
+#include "./includes/core/entexit.pwn"
+#include "./includes/vehsystem/vehauto.pwn"
+//#include "./includes/AccountSettings.pwn"
+
+#include "./includes/DBLog.pwn"
+#include "./includes/core/Player_Interact.pwn"
+
+// Jingles WIP
+#include "./includes/core/tutorial_new.pwn"
+#include "./includes/core/registration.pwn"
+#include "./includes/core/phone_new.pwn"
+//#include "./includes/jobs/dynjobcore.pwn"
 
 #pragma unused DynamicBusiness
 

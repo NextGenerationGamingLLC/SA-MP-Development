@@ -205,24 +205,6 @@ SetPlayerSpawn(playerid)
 			}
 			return 1;
 		}
-		if(PlayerInfo[playerid][pTut] == 0)
-		{
-			gOoc[playerid] = 1; gNews[playerid] = 1;
-			TogglePlayerControllable(playerid, false);
-			SetPlayerColor(playerid,TEAM_HIT_COLOR);
-			PlayerNationSelection[playerid] = -1;
-			PlayerHasNationSelected[playerid] = 0;
-			SetPlayerVirtualWorld(playerid, 0);
-			SetPlayerInterior(playerid, 0);
-			Streamer_UpdateEx(playerid, 2229.4968,-1722.0701,13.5625);
-			SetPlayerPos(playerid, 2229.4968,-1722.0701,-10.0);
-			SetPlayerCameraPos(playerid, 2211.1460,-1748.3909,29.3744);
-			SetPlayerCameraLookAt(playerid, 2229.4968,-1722.0701,13.5625);
-
-   			RegistrationStep[playerid] = 1;
-   			ShowPlayerDialog(playerid, REGISTERSEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
-			return 1;
-		}
 		new rand;
 		if(PlayerInfo[playerid][pBeingSentenced] > 0)
 		{
@@ -465,6 +447,7 @@ SetPlayerSpawn(playerid)
 			SetCameraBehindPlayer(playerid);
 			if(PlayerInfo[playerid][pInt] > 0) Player_StreamPrep(playerid, PlayerInfo[playerid][pPos_x],PlayerInfo[playerid][pPos_y],PlayerInfo[playerid][pPos_z], FREEZE_TIME);
 			//if(PlayerInfo[playerid][pInt] == 0 && PlayerInfo[playerid][pVW] == 0) LoginCamToPlayer(playerid);
+			return 1;
 
 		}
 		new Float: x, Float: y, Float: z;

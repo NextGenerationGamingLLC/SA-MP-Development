@@ -723,6 +723,23 @@ public OnPlayerLoad(playerid)
 	format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has logged in.", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], ip);
 	Log("logs/login.log", string);
 
+	if(PlayerInfo[playerid][pTut] < 2)
+	{
+		SetSpawnInfo(playerid, 0, PlayerInfo[playerid][pModel], 1000.0, 1000.0, 1000.0, 1.0, -1, -1, -1, -1, -1, -1);
+		switch(PlayerInfo[playerid][pTut])
+		{
+			case 0:
+			{
+				Tutorial_Start(playerid);
+				return 1;
+			}
+			case 1:
+			{
+				Register_PlaneStart(playerid);
+				return 1;
+			}
+		}
+	}
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new tdate[11], thour[9], i_timestamp[3];

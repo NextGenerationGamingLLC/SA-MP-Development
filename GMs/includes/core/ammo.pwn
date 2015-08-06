@@ -63,7 +63,7 @@ GetAmmoName(ammoType)
 
 SyncPlayerAmmo(playerid, iWeaponID)
 {
-	if(iWeaponID == WEAPON_SPRAYCAN || iWeaponID == WEAPON_CAMERA) return SetPlayerAmmo(playerid, iWeaponID, 99999);
+	if(iWeaponID == WEAPON_SPRAYCAN || iWeaponID == WEAPON_CAMERA || iWeaponID == WEAPON_FIREEXTINGUISHER) return SetPlayerAmmo(playerid, iWeaponID, 99999);
 	new iAmmoType = GetAmmoType(iWeaponID);
 	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
 	if(iAmmoType != -1)
@@ -454,28 +454,28 @@ CMD:seeammo(playerid, params[]) {
 
 	szMiscArray[0] = 0;
 
-	SendClientMessageEx(iTargetID, COLOR_GREEN,"_______________________________________");
+	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	
 	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(iTargetID));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 
 	format(szMiscArray, sizeof(szMiscArray), "9mm: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][0], GetMaxAmmoAllowed(iTargetID, 0));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][1], GetMaxAmmoAllowed(iTargetID, 1));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][2], GetMaxAmmoAllowed(iTargetID, 2));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][3], GetMaxAmmoAllowed(iTargetID, 3));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][4], GetMaxAmmoAllowed(iTargetID, 4));
-	SendClientMessageEx(iTargetID, COLOR_WHITE, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
-	SendClientMessageEx(iTargetID, COLOR_GREEN,"_______________________________________");
+	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 
 	return 1;
 }
@@ -578,7 +578,7 @@ CMD:ammohelp(playerid, params[]) {
 	return 1;
 }
 
-CMD:oissuegl(playerid, params[]) return cmd_oissuegunlicense(playerid, params);
+/*CMD:oissuegl(playerid, params[]) return cmd_oissuegunlicense(playerid, params);
 CMD:oissuegunlicense(playerid, params[])
 {
 	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
@@ -600,7 +600,7 @@ CMD:oissuegunlicense(playerid, params[])
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
 	return 1;
-}
+}*/
 
 CMD:orevokegl(playerid, params[]) return cmd_orevokegunlicense(playerid, params);
 CMD:orevokegunlicense(playerid, params[])
@@ -626,7 +626,7 @@ CMD:orevokegunlicense(playerid, params[])
 	return 1;
 }
 
-forward OnOfflineGunLicense(playerid, task, name[]);
+/*forward OnOfflineGunLicense(playerid, task, name[]);
 public OnOfflineGunLicense(playerid, task, name[])
 {
 	if(cache_get_row_count(MainPipeline) == 0)
@@ -644,4 +644,4 @@ public OnOfflineGunLicense(playerid, task, name[])
 	format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%s) has offline %s %s(%d) (%s) a gun license.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), task ? ("issued"):("revoked"), name, cache_get_field_content_int(0, "id"), ip_address);
 	Log("logs/licenses.log", szMiscArray);
 	return 1;
-}
+}*/

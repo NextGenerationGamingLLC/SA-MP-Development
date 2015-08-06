@@ -856,13 +856,13 @@ task EMSUpdate[5000]()
 {
 	foreach(new i: Player)
 	{
-		if(InsideTut{i} > 0)
+		/*if(InsideTut{i} > 0)
 		{
 			if(gettime() - GetPVarInt(i, "pTutTime") > 20)
 			{
 				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Press ~r~~k~~CONVERSATION_YES~~w~ to continue", 2000, 3);
 			}
-		}
+		}*/
 		if(GetPVarType(i, "Injured"))
 		{
 			#if defined zombiemode
@@ -2180,9 +2180,10 @@ task ServerHeartbeatTwo[1000]() {
 	{
 		if(IsPlayerInAnyVehicle(i)) {
 			if(GetPlayerState(i) == PLAYER_STATE_DRIVER) SetPlayerArmedWeapon(i, 0);
-			else if(PlayerInfo[i][pGuns][4] == 0) SetPlayerArmedWeapon(i, 0);
-			else SetPlayerArmedWeapon(i, 29);
-		}
+			//else if(PlayerInfo[i][pGuns][4] == 0) SetPlayerArmedWeapon(i, 0);
+			//else SetPlayerArmedWeapon(i, 29);
+			else if(!IsADriveByWeapon(GetPlayerWeapon(i))) SetPlayerArmedWeapon(i, 0);
+ 		}
 		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 		{
 			szMiscArray[0] = 0;
@@ -2202,7 +2203,7 @@ task ServerHeartbeatTwo[1000]() {
 			GivePlayerValidWeapon( i, 46, 9 );
 		}
 
-		for(new h = 0; h < sizeof(Points); h++)
+		/*for(new h = 0; h < sizeof(Points); h++)
 		{
 			if(IsPlayerInRangeOfPoint(i, 2.0, Points[h][Pointx], Points[h][Pointy], Points[h][Pointz]))
 			{
@@ -2223,7 +2224,7 @@ task ServerHeartbeatTwo[1000]() {
 					GameTextForPlayer(i, "~w~Type /getcrate to purchase a ~r~crate", 5000, 5);
 				}
 			}
-		}
+		}*/
 
 		if(CellTime[i] > 0 && 0 <= Mobile[i] < sizeof Mobile)
 		{

@@ -125,6 +125,17 @@ stock CreateDynamicDoor(doorid)
 			DDoorsInfo[doorid][ddPickupID] = CreateDynamicPickup(1318, 23, DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddExteriorVW]);
 	    }
 	}
+
+	DDoorsInfo[doorid][ddPickupID_int] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW]);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, DDoorsInfo[doorid][ddPickupID], E_STREAMER_EXTRA_ID, doorid);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, DDoorsInfo[doorid][ddPickupID_int], E_STREAMER_EXTRA_ID, doorid);
+
+	DDoorsInfo[doorid][ddAreaID_int] = CreateDynamicSphere(DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], 3, .worldid = DDoorsInfo[doorid][ddInteriorVW]);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID_int], E_STREAMER_EXTRA_ID, doorid);
+
+	DDoorsInfo[doorid][ddAreaID] = CreateDynamicSphere(DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], 3, .worldid = DDoorsInfo[doorid][ddExteriorVW]);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, DDoorsInfo[doorid][ddAreaID], E_STREAMER_EXTRA_ID, doorid);
+
 	return 1;
 }
 

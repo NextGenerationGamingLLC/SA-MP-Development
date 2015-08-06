@@ -1,6 +1,6 @@
 #include <YSI\y_hooks> 
 
-CMD:gunlicenseapply(playerid, params[]) {
+/*CMD:gunlicenseapply(playerid, params[]) {
 
 	szMiscArray[0] = 0; 
 
@@ -17,7 +17,7 @@ CMD:gunlicenseapply(playerid, params[]) {
 	);
 
 	return 1;
-}
+}*/
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
@@ -67,7 +67,7 @@ public OnSubmitGunLicApp(iPlayerID) {
 
 		PlayerInfo[iPlayerID][pGunLic] = gettime() + (86400*30); // 30 days.
 
-		GivePlayerMoney(iPlayerID, -100000);
+		GivePlayerCash(iPlayerID, -100000);
 		Tax+=100000;
 		format(szMiscArray, sizeof(szMiscArray), "%s has renewed their gun license for $100,000.", GetPlayerNameEx(iPlayerID));
 		Log("logs/licenses.log", szMiscArray);

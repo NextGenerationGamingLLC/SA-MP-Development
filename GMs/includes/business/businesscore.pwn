@@ -35,6 +35,18 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+
+	if(newkeys & KEY_YES && InBusiness(playerid) != INVALID_BUSINESS_ID) {
+		if(IsAt247(playerid)) return cmd_buy(playerid, "");
+		else if(IsAtRestaurant(playerid)) return cmd_buyfood(playerid, "");
+		else if(IsAtClothingStore(playerid)) return cmd_buyclothes(playerid, "");
+	}
+	return 1;
+}
+
 stock TaxSale(amount)
 {
 	new iTaxAmount = floatround(amount / 100 * BUSINESS_TAX_PERCENT);
@@ -69,6 +81,22 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 	        SetPVarInt(playerid, "PhChangeCost", 500);
 			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",randphone);
 			mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 2);
+			if(GetPVarInt(playerid, "pTut") == 5)
+			{
+				SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a phone.");
+				SetPVarInt(playerid, "pTut", GetPVarInt(playerid, "pTut") + 1);
+				Tutorial_Objectives(playerid);
+			}
+			if(PlayerInfo[playerid][pPnumber] == 0)
+			{
+				SetPVarInt(playerid, "WantedPh", randphone);
+				SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
+		        SetPVarInt(playerid, "PhChangeCost", 500);
+				format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",randphone);
+				mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 2);
+			}
+			Phone_PhoneColorMenu(playerid);
+			return 1;
 		}
   		case ITEM_PHONEBOOK:
 		{
@@ -477,6 +505,13 @@ stock RefreshBusinessPickup(i)
 			Businesses[i][bSupplyText] = CreateDynamic3DTextLabel(string, BUSINESS_NAME_COLOR, Businesses[i][bSupplyPos][0], Businesses[i][bSupplyPos][1], Businesses[i][bSupplyPos][2], 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
 		}
 	}
+	if(Businesses[i][bVW] == 0)
+	{
+		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], BUSINESS_BASE_VW + i);
+	}
+	else Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], Businesses[i][bVW]);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup], E_STREAMER_EXTRA_ID, i);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup_int], E_STREAMER_EXTRA_ID, i);
 }
 
 
@@ -1081,7 +1116,7 @@ CMD:refuel(playerid, params[])
 		if (IsAdminSpawnedVehicle(vehicleid)) return SendClientMessageEx(playerid, COLOR_RED, "This is an admin-spawned vehicle and it has already unlimited amount of fuel.");
 	    new engine,lights,alarm,doors,bonnet,boot,objective;
     	GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-	    if(engine == VEHICLE_PARAMS_ON) return SendClientMessageEx(playerid, COLOR_RED, "You need to shut off the engine before filling up (/car engine).");
+	    if(engine == VEHICLE_PARAMS_ON) return SendClientMessageEx(playerid, COLOR_RED, "You need to shut off the engine before filling up (press ~k~~CONVERSATION_YES~).");
      	if (Businesses[iBusinessID][GasPumpGallons][iPumpID] == 0.0) return SendClientMessageEx(playerid, COLOR_RED, "No gas left in the gas station tank.");
 	    if (!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle does not need fuel.");
 	    if (VehicleFuel[vehicleid] >= 100.0) return SendClientMessageEx(playerid, COLOR_RED, "This vehicle's tank is already full.");

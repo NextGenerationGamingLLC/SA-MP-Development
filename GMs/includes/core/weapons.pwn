@@ -2302,3 +2302,19 @@ ReturnBoneName(iBoneID)
 	}
 	return szBone;
 }
+
+IsADriveByWeapon(iWeaponID) {
+	switch(iWeaponID) {
+		case WEAPON_SHOTGSPA: return 1;
+		case WEAPON_SHOTGUN: return 1;
+		case WEAPON_SAWEDOFF: return 1;
+		case WEAPON_UZI: return 1;
+		case WEAPON_MP5: return 1;
+		case WEAPON_TEC9: return 1;
+		case WEAPON_AK47: return 1;
+		case WEAPON_M4: return 1;
+		case WEAPON_COLT45: return 1;
+		default: return 0;
+	}
+	return 0;
+}

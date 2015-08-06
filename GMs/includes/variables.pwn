@@ -557,15 +557,6 @@ new PlayerText: pFPSCounter[MAX_PLAYERS];
 
 new TotalLogin, TotalConnect, TotalAutoBan, TotalRegister,MaxPlayersConnected,MPDay,MPMonth,MPYear,PlayerCars,TotalUptime;
 new Float:StopaniFloats[MAX_PLAYERS][3];
-new HHcheckUsed = 0;
-new Float:HHcheckFloats[MAX_PLAYERS][6];
-new HHcheckInt[MAX_PLAYERS];
-new HHcheckVW[MAX_PLAYERS];
-new SGcheckUsed = 0;
-new Float:SGcheckFloats[MAX_PLAYERS][6];
-new SGcheckInt[MAX_PLAYERS];
-new SGcheckVW[MAX_PLAYERS];
-new SGcheckPlane = INVALID_VEHICLE_ID;
 new Float:EventFloats[MAX_PLAYERS][6]; // 0 = EventLastR 1 = EventLastX 2 = EventLastY 3 = EventLastZ 4 = EventLastH 5 = EventLastA
 new RCPIdCurrent[MAX_PLAYERS];
 new RaceTotalLaps;
@@ -592,7 +583,6 @@ new OrderAssignedTo[MAX_PLAYERS];
 new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, garagekey, chiefout, chiefin, westin, westout;
 new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
 new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
-new AkaDoor[4], AkaCell[8];
 
 /* LA ELEVATOR STUFF - ORIGINALLY SCRIPTED BY SCOTT, PORTED CODE OVER FROM KYE ON 10/12/11 */
 
@@ -852,8 +842,8 @@ new gMOTD[MAX_GROUPS][3][GROUP_MAX_MOTD_LEN];
 new Float:ShopTechPay;
 new TotalCitizens;
 new TRCitizens;
-new PlayerNationSelection[MAX_PLAYERS];
-new PlayerHasNationSelected[MAX_PLAYERS];
+//new PlayerNationSelection[MAX_PLAYERS];
+//new PlayerHasNationSelected[MAX_PLAYERS];
 /* new Text:txtNationSelHelper;
 new Text:txtNationSelMain;
 new Text:txtSanAndreas;
@@ -865,7 +855,7 @@ new shifthour;
 new EventTimerHandle;
 new cage;
 new entrancedoor;
-new BackEntrance, Purification[2];
+new Purification[2];
 new logincheck[MAX_PLAYERS];
 new AlertTime[MAX_PLAYERS];
 new PublicSQLString[4096]; // cuz the mysql plugin is stupid a/f
@@ -2717,3 +2707,5 @@ new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
 new GunPrices[4];
+
+new iVehEnterAreaID[MAX_VEHICLES];

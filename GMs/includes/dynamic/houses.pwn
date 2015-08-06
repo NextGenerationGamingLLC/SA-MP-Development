@@ -495,6 +495,10 @@ stock ReloadHousePickup(houseid)
 
 	HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, HouseInfo[houseid][hInactive] ? COLOR_LIGHTBLUE : COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
 	HouseInfo[houseid][hPickupID] = CreateDynamicPickup(HouseInfo[houseid][hInactive] ? 1272 : 1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
+
+	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], HouseInfo[houseid][hIntVW]);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID], E_STREAMER_EXTRA_ID, houseid);
+	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID_int], E_STREAMER_EXTRA_ID, houseid);
 	return 1;
 }
 

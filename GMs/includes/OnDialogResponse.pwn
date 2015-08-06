@@ -48,7 +48,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		SendClientMessage(playerid, COLOR_GREY, "Invalid Character, please try again.");
 		return 1;
 	}
-
 	if(RegistrationStep[playerid] != 0)
 	{
 		if(dialogid == REGISTERSEX)
@@ -185,20 +184,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], string, 0, strlen(string), MAX_PLAYER_NAME);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Thanks for filling in all the information, now you can proceed to the tutorial!");
+				//Tutorial_Start(playerid);
 				RegistrationStep[playerid] = 3;
 				SetPlayerVirtualWorld(playerid, 0);
 				ClearChatbox(playerid);
-				ShowTutGUIBox(playerid);
+				TutStep[playerid] = 1;
+				//ShowTutGUIBox(playerid);
 				if(fexist("NoTutorial.h"))
 				{
-					ShowTutGUIFrame(playerid, 23);
-					TutStep[playerid] = 23;
+					//ShowTutGUIFrame(playerid, 23);
+					//TutStep[playerid] = 23;
 				}
-				else
+				/*else
 				{
 					ShowTutGUIFrame(playerid, 1);
 					TutStep[playerid] = 1;
-				}
+				}*/
 				Streamer_UpdateEx(playerid, 1607.0160,-1510.8218,207.4438);
 				SetPlayerPos(playerid, 1607.0160,-1510.8218,-10.0);
 				SetPlayerCameraPos(playerid, 1850.1813,-1765.7552,81.9271);
@@ -353,6 +354,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						i = GetPVarInt(playerid, "vDel");
 
 					if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID && !PlayerVehicleInfo[playerid][i][pvImpounded] && PlayerVehicleInfo[playerid][i][pvSpawned]) {
+						
+						switch(PlayerVehicleInfo[playerid][i][pvModelId]) {
+							case 519, 553, 508: {
+								if(IsValidDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][i][pvId]])) DestroyDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][i][pvId]]);
+							}
+						}
+
 						DestroyVehicle(PlayerVehicleInfo[playerid][i][pvId]);
 						--PlayerCars;
 						VehicleSpawned[playerid]--;
@@ -2451,6 +2459,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
 				LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);
+
+				switch(GetVehicleModel(iVeh)) {
+					case 519, 553, 508: {
+						iVehEnterAreaID[iVeh] = CreateDynamicSphere(PlayerVehicleInfo[playerid][listitem][pvPosX]+2, PlayerVehicleInfo[playerid][listitem][pvPosY], PlayerVehicleInfo[playerid][listitem][pvPosZ], 4, GetVehicleVirtualWorld(iVeh));
+						AttachDynamicAreaToVehicle(iVehEnterAreaID[iVeh], iVeh);
+						Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVeh], E_STREAMER_EXTRA_ID, iVeh);
+					}
+				}
 
 				++PlayerCars;
 				VehicleSpawned[playerid]++;
@@ -6193,7 +6209,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DeletePVar(playerid, "pInteractID");
 		}
 	}
-	else if(dialogid == INTERACTGIVE2)
+	/*else if(dialogid == INTERACTGIVE2)
 	{
 		if(response)
 		{
@@ -6226,7 +6242,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DeletePVar(playerid, "pInteractID");
 			DeletePVar(playerid, "pInteractGive");
 		}
-	}
+	}*/
 	else if(dialogid == DMRCONFIRM)
 	{
 		if(response)
@@ -8383,6 +8399,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pCash] -= cost;
 				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
+			}
+			if(PlayerInfo[playerid][pTut] < 5 ) {
+				PlayerInfo[playerid][pTut] += 1;
+				Tutorial_Objectives(playerid);
+			}
+			if(GetPVarInt(playerid, "pTut") == 4)
+			{
+				//SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a car.");
+				//SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}Press Y to start the engine and 2 to toggle other options.");
+				PlayerInfo[playerid][pCarLic] = gettime() + (86400); // temp 1 day license
+				SetPVarInt(playerid, "pTut", GetPVarInt(playerid, "pTut") + 1);
+				Tutorial_Objectives(playerid);
 			}
 			Businesses[d][bInventory]--;
 			Businesses[d][bTotalSales]++;

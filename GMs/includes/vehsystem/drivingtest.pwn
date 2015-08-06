@@ -52,84 +52,55 @@
 forward checkTestVehicle(playerid);
 
 new Float:dsPoints[][3] = {
-{ 1021.3587,1375.9686,10.4787 }, 
-{ 1009.7725,1410.5199,10.4034 },
-{ 1010.3500,1485.8680,10.4052 },
-{ 1010.5669,1577.8893,10.4036 },
-{ 1009.5898,1697.4026,10.5067 },
-{ 1009.4944,1793.5509,10.4032 },
-{ 1068.6902,1811.0573,10.4038 },
-{ 1190.8784,1811.0106,12.7297 },
-{ 1254.9192,1810.6492,11.9946 }, 
-{ 1312.7216,1810.4337,10.3953 },  
-{ 1338.9166,1871.5557,10.4033 }, 
-{ 1462.6924,1870.7106,10.4035 }, 
-{ 1489.4149,1909.8195,10.4049 },
-{ 1490.1340,1959.7477,10.4048 },  
-{ 1518.4924,1970.2098,10.4050 },
-{ 1569.9048,1993.4430,10.4043 },
-{ 1608.5851,2009.9819,10.4234 },
-{ 1677.6237,2010.8085,10.4051 },
-{ 1708.7397,2039.5209,10.4099 },
-{ 1790.5760,2050.9314,10.5613 },
-{ 1891.3947,2041.3688,10.4051 },
-{ 1976.6172,2019.6747,10.4052 },
-{ 2062.7764,2020.0709,10.4055 },
-{ 2112.5938,2019.5693,10.4115 },
-{ 2124.6768,1939.6301,10.4044 },
-{ 2124.3538,1865.9308,10.4048 },
-{ 2064.5537,1743.0740,10.4093 },
-{ 2044.7959,1663.9976,10.4049 },
-{ 2044.5089,1560.0400,10.4040 },
-{ 2016.2328,1457.0096,10.4049 },
-{ 1914.2184,1455.7648,10.4050 },
-{ 1755.4486,1455.3308,11.6902 },
-{ 1732.3202,1502.4784,10.4032 },
-{ 1727.1018,1559.4255,10.4014 },
-{ 1739.1005,1627.4176,8.4988 },
-{ 1779.3802,1579.1951,6.4675 },
-{ 1785.9537,1337.2716,6.4676 },
-{ 1785.0732,1118.0811,6.4752 },
-{ 1677.4462,855.1962,7.1324 },
-{ 1543.3982,855.0053,6.5456 },
-{ 1363.7695,863.8972,6.5457 },
-{ 1236.5439,999.0943,6.5543 },
-{ 1228.5381,1144.3035,6.5456 },
-{ 1230.1389,1288.7510,6.4766 },
-{ 1229.8815,1533.6556,6.4676 },
-{ 1237.1559,1674.5157,6.4887 },
-{ 1296.2042,1800.9603,10.3773 },
-{ 1232.1875,1815.8116,13.3062 }, 
-{ 1155.5483,1816.2562,10.4021 }, 
-{ 1059.6334,1816.2264,10.4047 },
-{ 1005.1685,1786.8921,10.4037 }, 
-{ 1004.7665,1679.5763,10.5066 }, 
-{ 1004.4409,1587.5620,10.3814 }, 
-{ 1004.0306,1472.0040,10.4051 }, 
-{ 1063.9111,1371.4750,10.5395 },
-{ 1148.1923,1369.2704,10.4042 }
-
+{814.0655,-600.5410,16.0355},
+{833.1854,-571.1840,15.9651},
+{1022.4435,-462.9880,51.088},
+{1246.2643,-419.0742,2.6591},
+{1203.9030,-205.9958,35.341},
+{1241.2739,-128.5835,38.714},
+{1291.7186,-63.8947,34.8712},
+{1239.4404,81.5160,21.6559},
+{1284.7279,233.5744,19.1850},
+{1332.4935,339.0492,19.1862},
+{1371.6045,428.8912,19.4031},
+{1437.3406,413.2180,19.6622},
+{1588.4246,380.6274,19.6630},
+{1736.7307,383.8407,19.5217},
+{1907.0104,355.0904,20.0998},
+{2031.0062,296.7181,26.2177},
+{2142.3140,238.9736,14.3296},
+{2309.8875,211.8319,24.8492},
+{2346.6995,242.3602,26.1157},
+{2345.9744,271.0753,26.1144},
+{2412.0288,292.0954,32.0021}, // start of freeway 
+{2543.5151,289.1245,28.9953},
+{2629.3145,306.0881,37.4145},
+{2757.3196,136.1427,21.1755},
+{2730.9385,-166.9584,31.428},
+{2711.8035,-358.9097,27.345},
+{2873.5220,-629.9838,10.622},
+{2869.5500,-906.0394,10.655},
+{2867.3179,-1117.6736,10.65}, // end of freeway
+{2644.3804,-1149.5127,52.42},
+{2477.7380,-1151.5621,36.74},
+{2350.0359,-1151.7030,26.96},
+{2230.0522,-1129.8777,25.40},
+{1964.1853,-1024.6873,33.58},
+{1761.2177,-992.1207,36.825},
+{1540.1268,-961.6813,36.748},
+{1392.7722,-936.9249,34.143},
+{1175.0161,-938.3822,42.586},
+{1159.2705,-776.6213,57.415},
+{1207.8453,-630.1855,57.039},
+{1253.6594,-487.6354,20.647},
+{1218.5697,-416.7390,5.9991},
+{972.6600,-490.4398,46.9128},
+{845.6330,-564.2892,16.3179}
 };
 //player_get_speed
 // PVARS: pDTest (Is the player testing), pTestMarker (The marker the player is on),  pTestZone (Roads, Highways), pTestVeh (The vehicle the player is testing with)
 new pFindDrive[MAX_PLAYERS];
 new pDriveTimer[MAX_PLAYERS];
-
-CMD:drivingtest(playerid,params[]){
-	if(!IsPlayerInRangeOfPoint(playerid, 4.0, 1173.0698,1348.4688,10.9219)) 
-	{
-		SetPlayerCheckpoint(playerid, 1168.5768,1364.7848,10.8125, 2.0);
-		pFindDrive[playerid] = 1;
-		return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the driving school! Your GPS has been set to the location of the driving school.");
-	}
-	if(PlayerInfo[playerid][pCarLic] >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have your license!");
-	ShowPlayerDialog(playerid,
-	DIALOG_DSVEH_CAUTION,
-	DIALOG_STYLE_MSGBOX,
-	"DRIVING TEST",
-	"{FE2C2C}READ CAREFULLY\n{FFFFFF}You are about to take the drivers license test.\nOn main roads, the speed limit is {FE2C2C}50{FFFFFF} and on the highway/freeway the speed limit is {FE2C2C}100{FFFFFF}.\nIf you exceed the speed limit you will fail the test however you can take it again.\nIf you are out of the vehicle for more than one minute, you will fail.", "Agree", "Disagree");
-	return 1;
-}
 
 DrivingTestFinish(playerid)
 {
@@ -147,18 +118,18 @@ DrivingTestFinish(playerid)
 DrivingSchoolSpeedMeter(playerid, Float:speed)
 {
 	new pTestMarker = GetPVarInt(playerid, "pTestMarker");
-	if(pTestMarker < 24 || (pTestMarker >= 30 && pTestMarker < 36) || pTestMarker >= 46)
+	if(pTestMarker < 20 || pTestMarker >= 28)
 	{
 		if(speed > 50)
 		{
-			SetPlayerCheckpoint(playerid, 1138.3353,1375.6553,10.4057, 4.0);
+			SetPlayerCheckpoint(playerid, 814.0655,-600.5410,16.0355, 4.0);
 			SendClientMessageEx(playerid, COLOR_GREY, "You have exceeded the resdiental speed limit of 50MPH, you have failed the test.");
 			SetPVarInt(playerid, "pDTest", 2);
 		}
 	}
 	else if(speed >= 100)
 	{
-		SetPlayerCheckpoint(playerid, 1138.3353,1375.6553,10.4057, 4.0);
+		SetPlayerCheckpoint(playerid, 814.0655,-600.5410,16.0355, 4.0);
 		SendClientMessageEx(playerid, COLOR_GREY, "You have exceeded the freeway speed limit of 100MPH, you have failed the test.");
 		SetPVarInt(playerid, "pDTest", 2);
 	}
@@ -189,9 +160,9 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	else if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER)
 	{
-		if(PlayerInfo[playerid][pCarLic] == 0)
+		if(PlayerInfo[playerid][pCarLic] < gettime())
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: You don't have a driver's license! To get one, go to the Driving School in Las Venturas. (/drivingtest)");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "Warning: Your drivers license has expired. Head to the DMV to renew it.");
 		}
 	}
 	return 1;
@@ -345,7 +316,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					SetPlayerVirtualWorld(playerid, 0);
 					SetPlayerInterior(playerid, 0);
-					SetPVarInt(playerid, "PTestVeh", CreateVehicle(404, 1138.3353,1375.6553,10.4057, 91.0917, 3, 3, -1));
+					SetPVarInt(playerid, "PTestVeh", CreateVehicle(404, 814.0655,-600.5410,16.0355, 90.00, 3, 3, -1));
 					new pTestVeh = GetPVarInt(playerid, "PTestVeh");
 					PutPlayerInVehicle(playerid, pTestVeh, 0);
 					SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Please make sure you go a max of 50mph in the residential areas. You may now begin.");

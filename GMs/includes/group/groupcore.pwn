@@ -154,7 +154,8 @@ SaveGroup(iGroupID) {
 		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i'",
 		szMiscArray,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank], arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType]
+		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
+		arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType]
 	);
 
 	for(i = 0; i != 5; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
@@ -534,6 +535,31 @@ ReturnCrimeGroupType(iType)
 	}
 
 	return szReturn;
+}
+
+hook OnPlayerPickUpDynamicPickup(playerid, pickupid) {
+	
+	new i = Streamer_GetIntData(STREAMER_TYPE_PICKUP, pickupid, E_STREAMER_EXTRA_ID);
+
+	if(arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerPickupID] == pickupid) {
+		SetPVarInt(playerid, "AtLocker", 1);
+		SetTimerEx("ForgetLocker", 1000, false, "i", playerid);
+	}
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+
+	if(newkeys & KEY_YES && GetPVarType(playerid, "AtLocker")) {
+		cmd_locker(playerid, "");
+	}
+}
+
+forward ForgetLocker(playerid);
+public ForgetLocker(playerid) {
+
+	DeletePVar(playerid, "AtLocker");
+
+	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -1783,8 +1809,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = GetPlayerVirtualWorld(playerid);
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
 					new szResult[128];
-					format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}/locker{FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
+					format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
+					arrGroupLockers[iGroupID][iLocker][g_iLockerPickupID] = CreateDynamicPickup(0, 23, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW], .streamdistance = 15.0);
+					Streamer_SetIntData(STREAMER_TYPE_PICKUP, arrGroupLockers[iGroupID][iLocker][g_iLockerPickupID], E_STREAMER_EXTRA_ID, iLocker);
 				}
 				else if (listitem == 2)
 				{

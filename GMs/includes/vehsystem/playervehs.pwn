@@ -122,6 +122,13 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 	{
 	    VehicleSpawned[playerid]--;
 	    PlayerCars--;
+		
+		switch(PlayerVehicleInfo[playerid][playervehicleid][pvModelId]) {
+			case 519, 553, 508: {
+				if(IsValidDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][playervehicleid][pvId]])) DestroyDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][playervehicleid][pvId]]);
+			}
+		}
+
 		DestroyVehicle(PlayerVehicleInfo[playerid][playervehicleid][pvId]);
 		PlayerVehicleInfo[playerid][playervehicleid][pvModelId] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvPosX] = 0.0;
@@ -181,6 +188,14 @@ stock LoadPlayerVehicles(playerid, logoff = 0) {
 
 					SetVehicleVirtualWorld(carcreated, PlayerVehicleInfo[playerid][v][pvVW]);
   					LinkVehicleToInterior(carcreated, PlayerVehicleInfo[playerid][v][pvInt]);
+
+  					switch(GetVehicleModel(carcreated)) {
+						case 519, 553, 508: {
+							iVehEnterAreaID[carcreated] = CreateDynamicSphere(PlayerVehicleInfo[playerid][v][pvPosX]+2, PlayerVehicleInfo[playerid][v][pvPosY], PlayerVehicleInfo[playerid][v][pvPosZ], 4, GetVehicleVirtualWorld(carcreated));
+							AttachDynamicAreaToVehicle(iVehEnterAreaID[carcreated], carcreated);
+							Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[carcreated], E_STREAMER_EXTRA_ID, carcreated);
+						}
+					}
 
 					Vehicle_ResetData(carcreated);
 					PlayerVehicleInfo[playerid][v][pvId] = carcreated;
@@ -261,6 +276,13 @@ stock UnloadPlayerVehicles(playerid, logoff = 0, reason = 0) {
 		}
 		else {
 			if(LockStatus{PlayerVehicleInfo[playerid][v][pvId]} != 0) LockStatus{PlayerVehicleInfo[playerid][v][pvId]} = 0;
+
+			switch(PlayerVehicleInfo[playerid][v][pvModelId]) {
+				case 519, 553, 508: {
+					if(IsValidDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][v][pvId]])) DestroyDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][v][pvId]]);
+				}
+			}
+
 			DestroyVehicle(PlayerVehicleInfo[playerid][v][pvId]);
 		}
 		PlayerCars--;
@@ -296,11 +318,27 @@ stock UpdatePlayerVehicleParkPosition(playerid, playervehicleid, Float:newx, Flo
 		oldfuel = VehicleFuel[PlayerVehicleInfo[playerid][playervehicleid][pvId]];
 		UpdatePlayerVehicleMods(playerid, playervehicleid);
 		GetVehicleDamageStatus(PlayerVehicleInfo[playerid][playervehicleid][pvId], arrDamage[0], arrDamage[1], arrDamage[2], arrDamage[3]);
+		
+		switch(PlayerVehicleInfo[playerid][playervehicleid][pvModelId]) {
+			case 519, 553, 508: {
+				if(IsValidDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][playervehicleid][pvId]])) DestroyDynamicArea(iVehEnterAreaID[PlayerVehicleInfo[playerid][playervehicleid][pvId]]);
+			}
+		}
+
 		DestroyVehicle(PlayerVehicleInfo[playerid][playervehicleid][pvId]);
+
 		new carcreated = CreateVehicle(PlayerVehicleInfo[playerid][playervehicleid][pvModelId], PlayerVehicleInfo[playerid][playervehicleid][pvPosX], PlayerVehicleInfo[playerid][playervehicleid][pvPosY], PlayerVehicleInfo[playerid][playervehicleid][pvPosZ],
 		PlayerVehicleInfo[playerid][playervehicleid][pvPosAngle],PlayerVehicleInfo[playerid][playervehicleid][pvColor1], PlayerVehicleInfo[playerid][playervehicleid][pvColor2], -1);
 		SetVehicleVirtualWorld(carcreated, PlayerVehicleInfo[playerid][playervehicleid][pvVW]);
   		LinkVehicleToInterior(carcreated, PlayerVehicleInfo[playerid][playervehicleid][pvInt]);
+
+  		switch(GetVehicleModel(carcreated)) {
+			case 519, 553, 508: {
+				iVehEnterAreaID[carcreated] = CreateDynamicSphere(PlayerVehicleInfo[playerid][playervehicleid][pvPosX]+2, PlayerVehicleInfo[playerid][playervehicleid][pvPosY], PlayerVehicleInfo[playerid][playervehicleid][pvPosZ], 2.0, GetVehicleVirtualWorld(carcreated));
+				AttachDynamicAreaToVehicle(iVehEnterAreaID[carcreated], carcreated);
+				Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[carcreated], E_STREAMER_EXTRA_ID, carcreated);
+			}
+		}
 		PlayerVehicleInfo[playerid][playervehicleid][pvId] = carcreated;
 		Vehicle_ResetData(carcreated);
 		VehicleFuel[carcreated] = oldfuel;
