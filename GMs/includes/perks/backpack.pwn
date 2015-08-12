@@ -45,7 +45,7 @@ stock IsBackpackAvailable(playerid)
 	#endif
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "EMSAttempt") != 0 || HungerPlayerInfo[playerid][hgInEvent] != 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerInfo[playerid][pAccountRestricted] != 0) 
 		return 0;
-	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || WatchingTV[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped]) 
+	if(GetPVarInt(playerid, "IsInArena") || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || WatchingTV[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped]) 
 		return 0;
 	
 	return 1;
@@ -748,7 +748,7 @@ CMD:sellbackpack(playerid, params[])
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
 		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -1084,7 +1084,7 @@ CMD:bwear(playerid, params[])
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
 		if(!IsBackpackAvailable(playerid) && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -1187,7 +1187,7 @@ CMD:bstore(playerid, params[])
 	{
 		if(!PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You are are not wearing your backpack, you can wear it with /bwear.");
 		if(!IsBackpackAvailable(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");

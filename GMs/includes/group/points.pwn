@@ -377,7 +377,7 @@ CMD:capture(playerid, params[])
 	return 1;
 }
 
-CMD:points(playerid, params[])
+CMD:points2(playerid, params[])
 {
 	new string[128];
 

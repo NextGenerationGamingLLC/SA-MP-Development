@@ -256,17 +256,15 @@ public Phone_OnGetContactName(iPlayerID)
 	{
 		cache_get_field_content(idx, "Username", szResult, MainPipeline);
 		new iNumber = cache_get_field_content_int(idx, "PhoneNr", MainPipeline);
-		/* foreach(new i : Player)
-		{
-			if(iNumber != 0 && PlayerInfo[i][pPnumber] == iNumber)
-			{
-				if(IsPlayerConnected(i)) format(szResult, sizeof(szResult), "{00FF00}[O] {FFFFFF}%s", szResult);
+		if(iNumber != 0) {
+			foreach(new i : Player) {
+
+				if(PlayerInfo[i][pPnumber] == iNumber) format(szResult, sizeof(szResult), "{00FF00}[O] {FFFFFF}%s", szResult);
 				else format(szResult, sizeof(szResult), "{FF0000}[O] {FFFFFF}%s", szResult);
 			}
-		}*/
+		}
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szResult, iNumber);
 		iContactListTrackID[iPlayerID][idx] = iNumber;
-		printf("%s's list | idx: %d | Number: %d", GetPlayerNameEx(iPlayerID), idx, iNumber);
 		idx++;
 	}
 	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Delete Contact", szMiscArray, "Delete", "<<");
@@ -978,7 +976,7 @@ Phone_InitTD()
 	TextDrawTextSize(PhoneTD[19], 97.000000, -23.000000);
 	TextDrawSetSelectable(PhoneTD[19], 1);
 
-	PhoneTD[20] = TextDrawCreate(582.000000, 377.000000, "settings-app");
+	PhoneTD[20] = TextDrawCreate(582.000000, 371.000000, "settings-app");
 	TextDrawAlignment(PhoneTD[20], 2);
 	TextDrawBackgroundColor(PhoneTD[20], 255);
 	TextDrawFont(PhoneTD[20], 1);
@@ -1079,7 +1077,7 @@ Phone_InitTD()
 	TextDrawTextSize(PhoneTD[27], 15.000000, 15.000000);
 
 	/* CAMERA APPLICATION */
-	PhoneTD[28] = TextDrawCreate(506.000000, 371.000000, "phone-app");
+	PhoneTD[28] = TextDrawCreate(506.000000, 371.000000, "camera-app");
 	TextDrawAlignment(PhoneTD[28], 2);
 	TextDrawBackgroundColor(PhoneTD[28], 255);
 	TextDrawFont(PhoneTD[28], 1);

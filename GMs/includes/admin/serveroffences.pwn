@@ -686,7 +686,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 		ClearAnimations(giveplayerid);
 	}
 
-	if(GetPVarInt(giveplayerid, "IsInArena") >= 0) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
+	if(GetPVarInt(giveplayerid, "IsInArena")) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 	if(silent) format(string, 128, "AdmCmd: %s has been prisoned by an admin, reason: %s", GetPlayerNameEx(giveplayerid), reason);
 	else format(string, 128, "AdmCmd: %s has been prisoned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 	SendClientMessageToAllEx(COLOR_LIGHTRED, string);

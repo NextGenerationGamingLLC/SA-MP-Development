@@ -291,9 +291,10 @@
 
 // Jingles WIP
 #include "./includes/core/tutorial_new.pwn"
-#include "./includes/core/registration.pwn"
 #include "./includes/core/phone_new.pwn"
-//#include "./includes/jobs/dynjobcore.pwn"
+#include "./includes/jobs/dynjobcore.pwn"
+#include "./includes/drugsystem.pwn"
+#include "./includes/group/sanews.pwn"
 
 #pragma unused DynamicBusiness
 

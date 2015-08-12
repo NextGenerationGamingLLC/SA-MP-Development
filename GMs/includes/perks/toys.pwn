@@ -647,7 +647,7 @@ CMD:selltoy(playerid, params[])
 {
 	new string[1000], name[24], targetid, cost;
 	if(GetPVarInt(playerid, "ttBuyer") != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You're already trading with someone else.");
-	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
+	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
    	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while being cuffed.");
     if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");

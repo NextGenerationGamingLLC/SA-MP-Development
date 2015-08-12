@@ -230,7 +230,7 @@ CMD:guard(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;

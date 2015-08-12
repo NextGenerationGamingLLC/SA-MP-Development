@@ -49,7 +49,7 @@ public SyncTime()
 				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}*/
 		}
-	    SavePlants();
+
 	    if(tmphour == 0) ResetVIPAmmoCount();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else

@@ -35,6 +35,21 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#define 		ADMIN_JUNIOR 		2
+#define 		ADMIN_GENERAL		3
+#define 		ADMIN_SENIOR 		4
+#define 		ADMIN_HEAD			1337
+#define 		ADMIN_LEAD			1338
+#define 		ADMIN_EXECUTIVE 	99999	
+
+stock IsAdminLevel(playerid, level) {
+
+	if(PlayerInfo[playerid][pAdmin] >= level) return 1;
+
+	SendClientMessage(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 0;
+}
+
 stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false) {
 	foreach(new i: Player)
 	{
@@ -2951,7 +2966,7 @@ CMD:listguns(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			new weapons[13][2], weaponname[50];
-			if(GetPVarInt(giveplayerid, "EventToken") != 0 || GetPVarInt(giveplayerid, "IsInArena") >= 0)
+			if(GetPVarInt(giveplayerid, "EventToken") != 0 || GetPVarInt(giveplayerid, "IsInArena"))
 			{
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is at an event/paintball so the weapons may appear as non-server sided.");
 			}
@@ -4478,7 +4493,7 @@ CMD:setvw(playerid, params[])
 	if(sscanf(params, "ud", giveplayerid, vw)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setvw [player] [virtual world]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	new string[128];
-	if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
+	if(GetPVarType(giveplayerid, "IsInArena"))
 	{
 		SetPVarInt(playerid, "tempPBP", giveplayerid);
 		format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
@@ -4670,7 +4685,7 @@ CMD:sendtoid(playerid, params[])
 			{
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command on a Admin with the same/greater Administrative Level than you.");
 			}
-			if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
+			if(GetPVarInt(giveplayerid, "IsInArena"))
 			{
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);
 			    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
@@ -4730,7 +4745,7 @@ CMD:gethere(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is spectating someone.");
 				return 1;
 			}
-			if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
+			if(GetPVarInt(giveplayerid, "IsInArena"))
 			{
 			    new string[128];
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);

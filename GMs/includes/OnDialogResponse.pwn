@@ -1811,7 +1811,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(PlayerInfo[playerid][pNMuteTotal] < 4)
 					{
-						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						if(GetPVarInt(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1831,7 +1831,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(PlayerInfo[playerid][pNMuteTotal] >= 4 || PlayerInfo[playerid][pNMuteTotal] < 7)
 					{
-						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						if(GetPVarInt(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1894,7 +1894,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(PlayerInfo[playerid][pADMuteTotal] < 4)
 					{
-						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						if(GetPVarInt(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1913,7 +1913,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(PlayerInfo[playerid][pADMuteTotal] >= 4 || PlayerInfo[playerid][pADMuteTotal] < 7)
 					{
-						if(GetPVarInt(playerid, "IsInArena") >= 0)
+						if(GetPVarInt(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -11985,7 +11985,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(IsPlayerConnected(giveplayerid))
 				{
-					if(GetPVarInt(giveplayerid, "IsInArena") >= 0)
+					if(GetPVarInt(giveplayerid, "IsInArena"))
 					{
 						LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 						format(string, sizeof(string), "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));

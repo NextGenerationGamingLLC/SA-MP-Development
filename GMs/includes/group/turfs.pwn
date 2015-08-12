@@ -669,7 +669,7 @@ CMD:savetwpos(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
                     format(string,sizeof(string),"You have successfully re-created (TurfID: %d) %s.",tw,TurfWars[tw][twName]);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
-                    SetPVarInt(playerid, "EditingTurfsStage", -1);
+                    DeletePVar(playerid, "EditingTurfsStage");
 
                     DestroyTurfWarsZone(tw);
 

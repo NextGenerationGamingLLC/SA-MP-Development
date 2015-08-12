@@ -236,11 +236,6 @@ public OnObjectMoved(objectid)
 
 public OnDynamicObjectMoved(objectid)
 {
-	if(objectid == CarrierS[5])
-	{
-	    canmove = 0;
-	}
-
 	new Float:x, Float:y, Float:z;
 	for(new i; i < sizeof(Obj_FloorDoors); i ++)
 	{
@@ -383,12 +378,6 @@ public OnPlayerUpdate(playerid)
 	}
 	playerSeconds[playerid] = gettime();
 
-/* 	if(PlayerInfo[playerid][pNation] == -1 && TutStep[playerid] == 24 && RegistrationStep[playerid] == 3)
-	{
-	    NationSel_HandleNationSelection(playerid);
-	    return 1;
-	} */
-
 	new pCurWeap = GetPlayerWeapon(playerid);
     if(pCurWeap != pCurrentWeapon{playerid})
     {
@@ -410,8 +399,8 @@ public OnPlayerUpdate(playerid)
 
             pDrunkLevelLast[playerid] = drunknew;
         }
-
     }
+
     if(acstruct[playerid][checkmaptp] == 1 && PlayerInfo[playerid][pAdmin] < 2) //blah
 	{
 	    new Float:dis = GetPlayerDistanceFromPoint(playerid, acstruct[playerid][maptp][0], acstruct[playerid][maptp][1], acstruct[playerid][maptp][2]);
@@ -446,218 +435,10 @@ public OnPlayerUpdate(playerid)
 	    acstruct[playerid][checkmaptp] = 0;
 	}
 	GetPlayerPos(playerid, acstruct[playerid][LastOnFootPosition][0], acstruct[playerid][LastOnFootPosition][1], acstruct[playerid][LastOnFootPosition][2]);
-
-    if(control[playerid] == 1)
-	{
-	   	new Keys,ud,lr;
-	   	GetPlayerKeys(playerid,Keys,ud,lr);
-
-		if(ud > 0)
-		{
-			if(canmove == 1) return 1;
-	    	else canmove = 1;
-
-			new distance = controldistance[playerid];
-		    new speed = controlspeed[playerid];
-
-		    new Float:XA[17], Float:YA[17], Float:ZA[17];
-		    new Float:XB[14], Float:YB[14], Float:ZB[14];
-		    new Float:XC[3], Float:YC[3], Float:ZC[3];
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-			    GetDynamicObjectPos(Carrier[x], XA[x], YA[x], ZA[x]);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-			    GetDynamicObjectPos(CarrierS[x], XB[x], YB[x], ZB[x]);
-			}
-
-			GetDynamicObjectPos(sidelift, XC[0], YC[0], ZC[0]);
-			GetDynamicObjectPos(backhatch, XC[1], YC[1], ZC[1]);
-			GetDynamicObjectPos(backlift, XC[2], YC[2], ZC[2]);
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-   				MoveDynamicObject(Carrier[x], XA[x]-distance, YA[x], ZA[x], speed);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-				MoveDynamicObject(CarrierS[x], XB[x]-distance, YB[x], ZB[x], speed);
-			}
-
-			MoveDynamicObject(sidelift, XC[0]-distance, YC[0], ZC[0], speed);
-			MoveDynamicObject(backhatch, XC[1]-distance, YC[1], ZC[1], speed);
-			MoveDynamicObject(backlift, XC[2]-distance, YC[2], ZC[2], speed);
-		}
-	    else if(ud < 0)
-		{
-		    if(canmove == 1) return 1;
-		    else canmove = 1;
-
-			new distance = controldistance[playerid];
-		    new speed = controlspeed[playerid];
-
-		    new Float:XA[17], Float:YA[17], Float:ZA[17];
-		    new Float:XB[14], Float:YB[14], Float:ZB[14];
-	    	new Float:XC[3], Float:YC[3], Float:ZC[3];
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-			    GetDynamicObjectPos(Carrier[x], XA[x], YA[x], ZA[x]);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-			    GetDynamicObjectPos(CarrierS[x], XB[x], YB[x], ZB[x]);
-			}
-
-			GetDynamicObjectPos(sidelift, XC[0], YC[0], ZC[0]);
-			GetDynamicObjectPos(backhatch, XC[1], YC[1], ZC[1]);
-			GetDynamicObjectPos(backlift, XC[2], YC[2], ZC[2]);
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-   				MoveDynamicObject(Carrier[x], XA[x]+distance, YA[x], ZA[x], speed);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-				MoveDynamicObject(CarrierS[x], XB[x]+distance, YB[x], ZB[x], speed);
-			}
-
-			MoveDynamicObject(sidelift, XC[0]+distance, YC[0], ZC[0], speed);
-			MoveDynamicObject(backhatch, XC[1]+distance, YC[1], ZC[1], speed);
-			MoveDynamicObject(backlift, XC[2]+distance, YC[2], ZC[2], speed);
-		}
-
-		if(lr > 0)
-		{
-  			if(canmove == 1) return 1;
-		   	else canmove = 1;
-
-		    new distance = controldistance[playerid];
-		    new speed = controlspeed[playerid];
-
-	   	 	new Float:XA[17], Float:YA[17], Float:ZA[17];
-		    new Float:XB[14], Float:YB[14], Float:ZB[14];
-		    new Float:XC[3], Float:YC[3], Float:ZC[3];
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-			    GetDynamicObjectPos(Carrier[x], XA[x], YA[x], ZA[x]);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-			    GetDynamicObjectPos(CarrierS[x], XB[x], YB[x], ZB[x]);
-			}
-
-			GetDynamicObjectPos(sidelift, XC[0], YC[0], ZC[0]);
-			GetDynamicObjectPos(backhatch, XC[1], YC[1], ZC[1]);
-			GetDynamicObjectPos(backlift, XC[2], YC[2], ZC[2]);
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-   				MoveDynamicObject(Carrier[x], XA[x], YA[x]-distance, ZA[x], speed);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-				MoveDynamicObject(CarrierS[x], XB[x], YB[x]-distance, ZB[x], speed);
-			}
-
-			MoveDynamicObject(sidelift, XC[0], YC[0]-distance, ZC[0], speed);
-			MoveDynamicObject(backhatch, XC[1], YC[1]-distance, ZC[1], speed);
-			MoveDynamicObject(backlift, XC[2], YC[2]-distance, ZC[2], speed);
-		}
-  		else if(lr < 0)
-		{
-  			if(canmove == 1) return 1;
-  			else canmove = 1;
-
-			new distance = controldistance[playerid];
-		   	new speed = controlspeed[playerid];
-
-		   	new Float:XA[17], Float:YA[17], Float:ZA[17];
-		    new Float:XB[14], Float:YB[14], Float:ZB[14];
-			new Float:XC[3], Float:YC[3], Float:ZC[3];
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-			    GetDynamicObjectPos(Carrier[x], XA[x], YA[x], ZA[x]);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-			    GetDynamicObjectPos(CarrierS[x], XB[x], YB[x], ZB[x]);
-			}
-
-			GetDynamicObjectPos(sidelift, XC[0], YC[0], ZC[0]);
-			GetDynamicObjectPos(backhatch, XC[1], YC[1], ZC[1]);
-			GetDynamicObjectPos(backlift, XC[2], YC[2], ZC[2]);
-
-			for(new x;x<sizeof(Carrier);x++)
-			{
-   				MoveDynamicObject(Carrier[x], XA[x], YA[x]+distance, ZA[x], speed);
-			}
-			for(new x;x<sizeof(CarrierS);x++)
-			{
-				MoveDynamicObject(CarrierS[x], XB[x], YB[x]+distance, ZB[x], speed);
-			}
-
-			MoveDynamicObject(sidelift, XC[0], YC[0]+distance, ZC[0], speed);
-			MoveDynamicObject(backhatch, XC[1], YC[1]+distance, ZC[1], speed);
-			MoveDynamicObject(backlift, XC[2], YC[2]+distance, ZC[2], speed);
-		}
-	}
+	
 	new newkeys, dir1, dir2;
 	GetPlayerKeys(playerid, newkeys, dir1, dir2);
-	if(ActiveKey(KEY_FIRE))
-	{
-		if(GetPlayerWeapon(playerid) == WEAPON_FIREEXTINGUISHER)
-		{
-			new n;
-			for(n =0; n < MAX_STRUCTURE_FIRES; n++)
-			{
-				if(IsValidStructureFire(n))
-				{
-					if(CheckPlayerFacing(playerid, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2], 1) \
-					&& IsPlayerInRangeOfPoint(playerid, 4, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
-					{
-						new szString[128];
-
-						arrStructureFires[n][iFireStrength] -=2;
-						format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[n][iFireStrength], MAX_FIRE_HEALTH, n);
-						UpdateDynamic3DTextLabelText(arrStructureFires[n][szFireLabel], 0xFFFFFFFF, szString);
-
-						if(arrStructureFires[n][iFireStrength] <=0)
-						{
-							DeleteStructureFire(n);
-						}
-					}
-				}
-			}
-		}
-		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 407 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 601)
-		{
-			new n;
-			for(n =0; n < MAX_STRUCTURE_FIRES; n++)
-			{
-				if(IsValidStructureFire(n))
-				{
-					if(CheckPlayerFacing(playerid, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2], 3) \
-					&& IsPlayerInRangeOfPoint(playerid, 20, arrStructureFires[n][fFirePos][0], arrStructureFires[n][fFirePos][1], arrStructureFires[n][fFirePos][2]))
-					{
-						new szString[128];
-
-						arrStructureFires[n][iFireStrength] -=2;
-						format(szString, sizeof(szString), "%d/%d\nID%d", arrStructureFires[n][iFireStrength], MAX_FIRE_HEALTH, n);
-						UpdateDynamic3DTextLabelText(arrStructureFires[n][szFireLabel], 0xFFFFFFFF, szString);
-						if(arrStructureFires[n][iFireStrength] <=0)
-						{
-							DeleteStructureFire(n);
-						}
-					}
-				}
-			}
-		}
-	}
+	
 	// night vision and thermal goggle fixes added by Dom
 	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45)
 	{
@@ -1630,20 +1411,6 @@ public OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
 	return 1;
 }
 
-public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
-{
-	if(GetPVarInt(playerid, "FireStart") == 1)
-	{
-		new Float:fX, Float:fY, Float:fZ;
-		GetDynamicObjectPos(objectid, fX, fY, fZ);
-		if(fX != 0 && fY != 0 && fZ != 0)
-		{
-			CreateStructureFire(fX+x, fY+y, fZ+z, GetPlayerVirtualWorld(playerid));
-			SetPVarInt(playerid, "fCooldown", gettime()+2);
-		}
-	}
-	return 1;
-}
 
 public OnPlayerStreamIn(playerid, forplayerid)
 {
@@ -1714,6 +1481,8 @@ public OnPlayerConnect(playerid)
 		getdate(MPYear,MPMonth,MPDay);
 	}
 
+	Format_PlayerName(playerid);
+
 	RemoveVendingMachines(playerid);
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
@@ -1723,13 +1492,10 @@ public OnPlayerConnect(playerid)
 	gPlayerUsingLoopingAnim[playerid] = 0;
 	gPlayerAnimLibsPreloaded[playerid] = 0;
 
-	SetPVarInt(playerid, "IsInArena", -1);
 	SetPVarInt(playerid, "ArenaNumber", -1);
 	SetPVarInt(playerid, "ArenaEnterPass", -1);
 	SetPVarInt(playerid, "ArenaEnterTeam", -1);
 	SetPVarInt(playerid, "EditingTurfs", -1);
-	SetPVarInt(playerid, "EditingTurfsStage", -1);
-	SetPVarInt(playerid, "EditingHillStage", -1);
 	SetPVarInt(playerid, "UsingSurfAttachedObject", -1);
 	SetPVarInt(playerid, "UsingBriefAttachedObject", -1);
 	SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
@@ -2723,7 +2489,7 @@ public OnPlayerDisconnect(playerid, reason)
 				break;
 			}
 		}
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 		{
 			LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 			PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "pbOldInt");
@@ -2782,7 +2548,6 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pPos_z] = BroadcastFloats[playerid][3];
 			WatchingTV[playerid] = 0;
 			viewers--;
-			UpdateSANewsBroadcast();
 		}
 		if(gBike[playerid] >= 0 && gBikeRenting[playerid] == 1)
 		{
@@ -3160,6 +2925,7 @@ public OnVehicleDeath(vehicleid) {
 public OnPlayerSpawn(playerid)
 {
     if(IsPlayerNPC(playerid)) return 1;
+
     if(!gPlayerLogged{playerid})
     {
         SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: You are not logged in!");
@@ -3327,6 +3093,7 @@ public OnPlayerSpawn(playerid)
 			}
   		}
 	}
+	if(GetPVarType(playerid, "pTut")) return 1;
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{
 	    new Float:X, Float:Y, Float:Z;
@@ -3417,7 +3184,7 @@ public OnPlayerLeaveCheckpoint(playerid)
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have exited the checkpoint, you are no longer getting rehydrated.");
 		return 1;
 	}
-    if(GetPVarInt(playerid,"IsInArena") >= 0)
+    if(GetPVarInt(playerid,"IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 	    if(PaintBallArena[arenaid][pbGameType] == 4 || PaintBallArena[arenaid][pbGameType] == 5)
@@ -3529,7 +3296,7 @@ public OnPlayerEnterCheckpoint(playerid)
 		}
 		return 1;
 	}
-	if(GetPVarInt(playerid,"IsInArena") >= 0)
+	if(GetPVarInt(playerid,"IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 	    if(PaintBallArena[arenaid][pbGameType] == 4 || PaintBallArena[arenaid][pbGameType] == 5)
@@ -4229,11 +3996,11 @@ public OnPlayerEnterCheckpoint(playerid)
 				new Float:distancepay;
 				if(IsABoat(vehicleid))
 				{
-				    distancepay = floatmul(GetDistance(2098.6543,-104.3568,-0.4820, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ]), 1.5);
+				    distancepay = floatmul(GetDistanceBetweenPoints(2098.6543,-104.3568,-0.4820, BoatDropoffs[route][PosX], BoatDropoffs[route][PosY], BoatDropoffs[route][PosZ]), 1.5);
 				}
 				else
 				{
-				    distancepay = floatmul(GetDistance(-1572.767822, 81.137527, 3.554687, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ]), 1.5);
+				    distancepay = floatmul(GetDistanceBetweenPoints(-1572.767822, 81.137527, 3.554687, TruckerDropoffs[route][PosX], TruckerDropoffs[route][PosY], TruckerDropoffs[route][PosZ]), 1.5);
 				}
 				payment += floatround(distancepay);
 				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID) {
@@ -6218,7 +5985,7 @@ public OnPlayerText(playerid, text[])
 
 	sendername = GetPlayerNameEx(playerid);
 
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		new a = GetPVarInt(playerid, "IsInArena");
 		if(PaintBallArena[a][pbGameType] == 2 || PaintBallArena[a][pbGameType] == 3 || PaintBallArena[a][pbGameType] == 5)

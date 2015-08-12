@@ -223,7 +223,7 @@ CMD:accept(playerid, params[])
        	        SendClientMessageEx(playerid, COLOR_GREY, "The seller is not near you!");
        	        return 1;
             }
-		    if(GetPVarInt(playerid, "IsInArena") >= 0) {
+		    if(GetPVarInt(playerid, "IsInArena")) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 				return 1;
 			}
@@ -1351,7 +1351,7 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
-        	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+        	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
             if(GuardOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > GuardPrice[playerid]) {
                     if(IsPlayerConnected(GuardOffer[playerid])) {
@@ -2129,7 +2129,7 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
                             return 1;
                         }
-					    if(GetPVarInt(playerid, "IsInArena") >= 0) {
+					    if(GetPVarInt(playerid, "IsInArena")) {
 					        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in an arena!");
 					        return 1;
 					    }

@@ -47,22 +47,27 @@ LoadATMPoints() {
 	ATMPoint[35] = CreateDynamicPickup(0, 23, 1014.1396,2060.8284,1085.8531, .streamdistance = 15.0);
 	ATMPoint[36] = CreateDynamicPickup(0, 23, 1013.4720,2023.8784,1085.8531, .streamdistance = 15.0);
 
-	for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_PICKUP, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
+	for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
 
 	print("[Streamer] ATM Points Loaded");
 
 	return 1;
 }
 
-hook OnPlayerPickUpDynamicPickup(playerid, pickupid) {
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	new i = Streamer_GetIntData(STREAMER_TYPE_PICKUP, pickupid, E_STREAMER_EXTRA_ID);
-	if(pickupid == ATMPoint[i]) {
-		SetPVarInt(playerid, "AtATM", pickupid);
-		SetTimerEx("ForgetATM", 1000, false, "i", playerid);
+	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+
+	if(areaid == ATMPoint[i]) {
+		
+		SetPVarInt(playerid, "AtATM", i);
 	}
-
 	return 1;
+}
+
+hook OnPlayerLeaveDynamicCP(playerid, checkpointid) {
+
+	DeletePVar(playerid, "AtATM");
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {

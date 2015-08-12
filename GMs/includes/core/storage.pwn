@@ -1764,7 +1764,7 @@ CMD:inventory(playerid, params[])
 
 CMD:trunkput(playerid, params[])
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;
@@ -2046,7 +2046,7 @@ CMD:trunkput(playerid, params[])
 CMD:trunktake(playerid, params[]) {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while you're inside a vehicle.");
 	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-	else if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+	else if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	else if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	else if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 	else if(GetPVarInt(playerid, "GiveWeaponTimer") >= 1)
@@ -2124,7 +2124,7 @@ CMD:storegun(playerid, params[])
 {
 	if(Homes[playerid] > 0)
 	{
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 		if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		new string[128], weaponchoice[32], slot;
@@ -2981,7 +2981,7 @@ CMD:drop(playerid, params[])
 	}
 	else if(strcmp(choice,"weapons",true) == 0)
 	{
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;

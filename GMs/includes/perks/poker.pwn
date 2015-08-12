@@ -1706,7 +1706,7 @@ CMD:placetable(playerid, params[])
 {
 	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4)
 	{
-	    if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
+	    if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
 		if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
 		if(PlayerInfo[playerid][pVW] == 0 || PlayerInfo[playerid][pInt] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can only place poker tables inside interiors.");

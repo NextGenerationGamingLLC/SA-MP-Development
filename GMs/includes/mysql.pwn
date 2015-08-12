@@ -580,6 +580,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
 
+					// Jingles' Drug System:
+					for(new d; d < sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
+					for(new d; d < sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
+					
+
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
 						new szLog[128];
@@ -2398,6 +2403,9 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
+
+	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
+ 	for(new d; d < sizeof(szIngredients); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
 
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
@@ -5004,8 +5012,8 @@ public Group_QueryFinish(iType, iExtraID) {
 				format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
 
-				arrGroupLockers[iGroup][iLocker][g_iLockerPickupID] = CreateDynamicPickup(0, 23, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW], .streamdistance = 15.0);
-				Streamer_SetIntData(STREAMER_TYPE_PICKUP, arrGroupLockers[iGroup][iLocker][g_iLockerPickupID], E_STREAMER_EXTRA_ID, iLocker);
+				arrGroupLockers[iGroup][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
+				Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroup][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 			}
 			iIndex++;
 

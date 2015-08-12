@@ -46,6 +46,18 @@ Float:GetPointDistanceToPoint(Float:x1,Float:y1,Float:z1,Float:x2,Float:y2,Float
 }
 #endif
 
+Format_PlayerName(playerid) {
+	
+	new iPos;
+
+	GetPlayerName(playerid, szMiscArray, MAX_PLAYER_NAME);
+	for(new i; i < MAX_PLAYER_NAME; i++) szMiscArray[i] = tolower(szMiscArray[i]);
+	szMiscArray[0] = toupper(szMiscArray[0]);
+	while((iPos = strfind(szMiscArray, "_", false, iPos)) != -1) iPos++, szMiscArray[iPos] = toupper(szMiscArray[iPos]);
+	SetPlayerName(playerid, szMiscArray);
+	printf("[PlayerName] Formatted %s to the correct RP-format standards.", szMiscArray);
+}
+
 CheckPointCheck(iTargetID)  {
 	if(GetPVarType(iTargetID, "hFind") > 0 || GetPVarType(iTargetID, "TrackCar") > 0 || GetPVarType(iTargetID, "DV_TrackCar") > 0 || GetPVarType(iTargetID, "Packages") > 0 || TaxiAccepted[iTargetID] != INVALID_PLAYER_ID || EMSAccepted[iTargetID] != INVALID_PLAYER_ID || BusAccepted[iTargetID] != INVALID_PLAYER_ID || gPlayerCheckpointStatus[iTargetID] != CHECKPOINT_NONE || MedicAccepted[iTargetID] != INVALID_PLAYER_ID || MechanicCallTime[iTargetID] >= 1) {
 		return 1;
@@ -1247,19 +1259,6 @@ public Float: player_get_speed(playerid)
 	return floatsqroot((fVelocity[0] * fVelocity[0]) + (fVelocity[1] * fVelocity[1]) + (fVelocity[2] * fVelocity[2])) * 100;
 }
 
-forward Float: GetDistance( Float: x1, Float: y1, Float: z1, Float: x2, Float: y2, Float: z2 );
-public Float: GetDistance( Float: x1, Float: y1, Float: z1, Float: x2, Float: y2, Float: z2 )
-{
-	new Float:d;
-	d += floatpower(x1-x2, 2.0 );
-	d += floatpower(y1-y2, 2.0 );
-	d += floatpower(z1-z2, 2.0 );
-	d = floatsqroot(d);
-	IsInRangeOfPoint(5, 5, 5, 6, 6, 6, 10.0);
-	return d;
-}
-
-
 forward UpdateCarRadars();
 public UpdateCarRadars()
 {
@@ -1872,7 +1871,7 @@ stock Float: FormatFloat(Float:number) {
 
 stock OnPlayerStatsUpdate(playerid) {
 	if(gPlayerLogged{playerid}) {
-		if(!GetPVarType(playerid, "TempName") && !GetPVarInt(playerid, "EventToken") && GetPVarInt(playerid, "IsInArena") == -1) {
+		if(!GetPVarType(playerid, "TempName") && !GetPVarInt(playerid, "EventToken") && !GetPVarType(playerid, "IsInArena")) {
 		    new Float: Pos[4], Float: Health[2];
 			GetHealth(playerid, Health[0]);
 			GetArmour(playerid, Health[1]);
@@ -2098,7 +2097,7 @@ stock SetPlayerToTeamColor(playerid)
 			return 1;
 		}
 		#endif
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 	    {
 	        new arenaid = GetPVarInt(playerid, "IsInArena");
 	        if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3 || PaintBallArena[arenaid][pbGameType] == 5) switch(PlayerInfo[playerid][pPaintTeam]) {

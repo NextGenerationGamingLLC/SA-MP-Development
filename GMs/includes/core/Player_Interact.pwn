@@ -16,6 +16,8 @@
 #define 	ITEM_AMMO76239		(13)
 #define 	ITEM_AMMO12GAUGE  	(14)
 #define 	ITEM_WEAPON			(15)
+#define 	ITEM_DRUG			(16)
+#define 	ITEM_INGREDIENT		(17)
 
 #define 	INTERACT_AMOUNT			(10049)
 #define 	INTERACT_MAIN 			(10050)
@@ -29,10 +31,16 @@
 #define 	PAY_PLAYER				(10058)
 #define 	INTERACT_SELL 			(10059)
 #define 	INTERACT_SELLCONFIRM 	(10060)
+#define 	INTERACT_DRUGS			(10061)
+#define 	INTERACT_INGREDIENT		(10062)
+
+#define 	INTERACT_PRESCRIBE		(10063)
+#define 	INTERACT_PRESCRIBE1 	(10064)
+
 
 Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
-	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
+	// if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
 
 	szMiscArray[0] = 0;
 
@@ -55,24 +63,21 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 			format(szMiscArray, sizeof(szMiscArray), "Pay\nGive Item\nSell Item\nFrisk\nShow License");
 
 			if(IsACop(playerid)) { // LEO-related interaction commands
-				strcat(szMiscArray, "\nCuff\nDrag\nDetain\nTicket\nUncuff");
+				strcat(szMiscArray, "\nCuff\nDrag\nDetain\nTicket\nUncuff\nDrug Test\nConfiscate Drugs\nConfiscate Ingredients");
 			}
 
 			if(IsAMedic(playerid)) { // Medical-related commands.
-				strcat(szMiscArray, "\nLoad Patient\nTriage\nHeal\nMove Patient");
+				strcat(szMiscArray, "\nPrescribe Drug\nLoad Patient\nTriage\nHeal\nMove Patient\nDrug Test");
 			}
 			return ShowPlayerDialog(playerid, INTERACT_MAIN, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Close");
 		}
 		case 1: {
 			format(szMiscArray, sizeof(szMiscArray), "Item\tCurrent Amount\n\
-				Pot\t%d\n\
-				Crack\t%d\n\
+				Drugs\n\
+				Ingredients\n\
 				Materials\t%d\n\
 				Fireworks\t%d\n\
-				Heroin\t%d\n\
-				Raw Opium\t%d\n\
 				Syringes\t%d\n\
-				Opium Seeds\t%d\n\
 				Sprunk\t%d\n\
 				PB Tokens\t%d\n\
 				9mm Ammo\t%d\n\
@@ -81,14 +86,9 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 				7.62x39 Ammo\t%d\n\
 				12 Gauage Ammo\t%d\n\
 				Weapon",
-				PlayerInfo[playerid][pPot],
-				PlayerInfo[playerid][pCrack],
 				PlayerInfo[playerid][pMats],
 				PlayerInfo[playerid][pFirework],
-				PlayerInfo[playerid][pHeroin],
-				PlayerInfo[playerid][pRawOpium],
 				PlayerInfo[playerid][pSyringes],
-				PlayerInfo[playerid][pOpiumSeeds],
 				PlayerInfo[playerid][pSprunk],
 				PlayerInfo[playerid][pPaintTokens],
 				arrAmmoData[playerid][awp_iAmmo][0],
@@ -102,7 +102,13 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 		case 2: {
 			new itemid = GetPVarInt(playerid, "Interact_GiveItem");
 
-			format(szMiscArray, sizeof(szMiscArray), "How much %s do you want to give %s", Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
+			if(GetPVarType(playerid, "Interact_Drug")) {
+				format(szMiscArray, sizeof(szMiscArray), "How many pieces of %s do you want to give %s", szDrugs[GetPVarInt(playerid, "Interact_Drug")], GetPlayerNameEx(giveplayerid));
+			}
+			else if(GetPVarType(playerid, "Interact_Ingredient")) {
+				format(szMiscArray, sizeof(szMiscArray), "How many pieces of %s do you want to give %s", szIngredients[GetPVarInt(playerid, "Interact_Ingredient")], GetPlayerNameEx(giveplayerid));
+			}
+			else format(szMiscArray, sizeof(szMiscArray), "How much %s do you want to give %s", Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
 			return ShowPlayerDialog(playerid, INTERACT_AMOUNT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Select", "Back");
 		}
 		case 3: {
@@ -123,6 +129,16 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 				format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %s to %s for?", ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid));
 			}
+			if(GetPVarType(playerid, "Interact_SellDrugs")) {
+				new drugid = GetPVarInt(playerid, "Interact_SellDrugs");
+
+				format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %dpc of %s to %s for?", amount, szDrugs[drugid], GetPlayerNameEx(giveplayerid));
+			}
+			if(GetPVarType(playerid, "Interact_SellIngredients")) {
+				new ingredientid = GetPVarInt(playerid, "Interact_SellIngredients");
+
+				format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %dpc of %s to %s for?", amount, szIngredients[ingredientid], GetPlayerNameEx(giveplayerid));
+			}
 			else format(szMiscArray, sizeof(szMiscArray), "How much do you want to sell %d %s to %s for?", amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid));
 
 			return ShowPlayerDialog(playerid, INTERACT_SELL, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Sell", "Back");
@@ -139,8 +155,36 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(offerprice));
 			}
+			if(GetPVarType(playerid, "Interact_SelLDrugs")) {
+				new drugid = GetPVarInt(playerid, "Interact_SellDrugs");
+
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s with a quality of {FFFF00} %d qP {FFFFFF}for $%s", GetPlayerNameEx(playerid), szDrugs[drugid], PlayerInfo[playerid][p_iDrugQuality][drugid], number_format(offerprice));
+			}
+			if(GetPVarType(playerid, "Interact_SellIngredients")) {
+				new ingredientid = GetPVarInt(playerid, "Interact_SellIngredients");
+
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s for $%s", GetPlayerNameEx(playerid), szIngredients[ingredientid], number_format(offerprice));
+			}
 			else format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
 			return ShowPlayerDialog(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Buy", "Reject");
+		}
+		case 6: {
+
+			szMiscArray = "Drug\tAmount\n";
+			for(new d; d < sizeof(szDrugs); ++d) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szDrugs[d], PlayerInfo[playerid][p_iDrug][d]);
+			}
+			return ShowPlayerDialog(playerid, INTERACT_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Back");
+		}
+		case 7: {
+			
+			szMiscArray = "Ingredient\tAmount\n";
+			for(new d; d < sizeof(szIngredients); ++d) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[d], PlayerInfo[playerid][p_iIngredient][d]);
+			}
+			return ShowPlayerDialog(playerid, INTERACT_INGREDIENT, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Back");
 		}
 	}
 
@@ -160,6 +204,22 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 
 	switch(itemid) {
+
+		case ITEM_INGREDIENT: {
+
+			new ingredientid = GetPVarInt(playerid, "Interact_Ingredient");
+			if(PlayerInfo[playerid][p_iIngredient][ingredientid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+
+			if(amount + PlayerInfo[giveplayerid][p_iIngredient][ingredientid] > Player_MaxCapacity(giveplayerid, itemid)) {
+				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				return Player_InteractMenu(playerid, giveplayerid);
+			}
+
+			PlayerInfo[giveplayerid][p_iIngredient][ingredientid] += amount;
+			PlayerInfo[playerid][p_iIngredient][ingredientid] -= amount;
+
+		}
 		case ITEM_POT: {
 			
 			if(PlayerInfo[playerid][pPot] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much pot.");
@@ -367,6 +427,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 	}
 
 	if(saleprice == 0) {
+
 		format(szMiscArray, sizeof(szMiscArray), "You have given %s %d %s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
@@ -437,9 +498,14 @@ Player_MaxCapacity(playerid, itemid) {
 		case ITEM_AMMO12GAUGE: {
 			iTemp =  GetMaxAmmoAllowed(playerid, 4);
 		}
+		case ITEM_DRUG: {
+			iTemp = GetMaxDrugsAllowed(GetPVarInt(playerid, "Interact_Drug"));
+		}
+		case ITEM_INGREDIENT: {
+			iTemp = GetMaxIngredientsAllowed(GetPVarInt(playerid, "Interact_Ingredient"));
+		}
 	}
 	return iTemp;
-
 }
 
 Player_LeftCapacity(playerid, itemid) {
@@ -464,6 +530,8 @@ Player_LeftCapacity(playerid, itemid) {
 		case ITEM_AMMO50AE: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][2]);
 		case ITEM_AMMO76239: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][3]);
 		case ITEM_AMMO12GAUGE: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][4]);
+		case ITEM_DRUG: return (iCapacity - PlayerInfo[playerid][p_iDrug][GetPVarInt(playerid, "Interact_Drug")]);
+		case ITEM_INGREDIENT: return (iCapacity - PlayerInfo[playerid][p_iIngredient][GetPVarInt(playerid, "Interact_Ingredient")]);
 		default: return 0;
 	}
 
@@ -522,6 +590,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Detain") == 0) return Interact_DetainPlayer(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Ticket") == 0) return Interact_GiveTicket(playerid, giveplayerid, "");
 			else if(strcmp(inputtext, "Uncuff") == 0) return Interact_UncuffPlayer(playerid, giveplayerid);
+			else if(strcmp(inputtext, "Drug Test") == 0) return Interact_DrugTest(playerid, giveplayerid);
+			else if(strcmp(inputtext, "Confiscate Drugs") == 0) return Interact_TakeDrugs(playerid, giveplayerid);
+			else if(strcmp(inputtext, "Confiscate Ingredients") == 0) return Interact_TakeIngredients(playerid, giveplayerid);
+			else if(strcmp(inputtext, "Prescribe Drug") == 0) return Interact_Prescribe(playerid);
 			else if(strcmp(inputtext, "Load Patient") == 0) Interact_LoadPatient(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Triage") == 0) return Interact_Triage(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Heal") == 0) return Interact_Heal(playerid, giveplayerid);
@@ -533,7 +605,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
 
 			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
-
+			if(strcmp(inputtext, "Drugs") == 0) return Player_InteractMenu(playerid, giveplayerid, 6);
+			if(strcmp(inputtext, "Ingredients") == 0) return Player_InteractMenu(playerid, giveplayerid, 7);
 			if(strcmp(inputtext, "Weapon") == 0) return Player_InteractMenu(playerid, giveplayerid, 3);
 
 			SetPVarInt(playerid, "Interact_GiveItem", listitem);
@@ -552,11 +625,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				amount = strval(inputtext),
 				itemid = GetPVarInt(playerid, "Interact_GiveItem");
 
+			SetPVarInt(playerid, "Interact_SellAmt", amount);
 			if(GetPVarType(playerid, "Interact_Sell")) {
-				SetPVarInt(playerid, "Interact_SellAmt", amount);
+
 				return Player_InteractMenu(playerid, giveplayerid, 4);
 			}
-
+			if(GetPVarType(playerid, "Interact_Drug")) {
+				Interact_GivePlayerDrug(playerid, giveplayerid, GetPVarInt(playerid, "Interact_Drug"));
+				return 1;
+			}
+			if(GetPVarType(playerid, "Interact_Ingredient")) {
+				Interact_GivePlayerIngredient(playerid, giveplayerid, GetPVarInt(playerid, "Interact_Ingredient"));
+				return 1;
+			}
 			Player_GiveItem(playerid, giveplayerid, itemid, amount);
 		}
 
@@ -650,6 +731,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		    Interact_GivePlayerWeapon(playerid, giveplayerid, id);
 		}
+		case INTERACT_DRUGS: {
+			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
+
+			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
+			SetPVarInt(playerid, "Interact_GiveItem", ITEM_DRUG);
+			SetPVarInt(playerid, "Interact_Drug", listitem);
+
+			Player_InteractMenu(playerid, giveplayerid, 2);
+		}
+		case INTERACT_INGREDIENT: {
+			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
+
+			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
+			SetPVarInt(playerid, "Interact_GiveItem", ITEM_INGREDIENT);
+			SetPVarInt(playerid, "Interact_Ingredient", listitem);
+			Player_InteractMenu(playerid, giveplayerid, 2);
+		}
 		case INTERACT_SELL: {
 
 			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
@@ -662,7 +760,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetPVarInt(giveplayerid, "Interact_Buying", playerid);
 
 			Player_InteractMenu(playerid, giveplayerid, 5);
-
 
 		}
 		case INTERACT_SELLCONFIRM: {
@@ -688,6 +785,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
 				Interact_GivePlayerWeapon(buyingfrom, playerid, weaponid, price);
 			}
+			if(GetPVarType(buyingfrom, "Interact_SellDrugs")) {
+				new drugid = GetPVarInt(buyingfrom, "Interact_SellDrugs");
+				Interact_GivePlayerDrug(buyingfrom, playerid, drugid, price);
+			}
+			if(GetPVarType(buyingfrom, "Interact_SellIngredients")) {
+				new ingredientid = GetPVarInt(buyingfrom, "Interact_SellIngredients");
+				Interact_GivePlayerIngredient(buyingfrom, playerid, ingredientid, price);
+			}
 			else {
 				new itemid = GetPVarInt(buyingfrom, "Interact_GiveItem");
 				new amount = GetPVarInt(buyingfrom, "Interact_SellAmt");
@@ -701,6 +806,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(buyingfrom, "Interact_SellGun");
 			DeletePVar(buyingfrom, "Interact_GiveItem");
 			DeletePVar(buyingfrom, "Interact_SellAmt");
+		}
+		case INTERACT_PRESCRIBE: {
+			SetPVarString(playerid, "DR_PTYPE", inputtext);
+			Interact_Prescribe(playerid, 1);
+		}		
+		case INTERACT_PRESCRIBE1: {
+			if(strval(inputtext) <= 0 || !IsNumeric(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid value.");
+			SetPVarInt(playerid, "DR_PAM", strval(inputtext));
+			Interact_ProcessPrescription(playerid);
 		}
 	}
 
@@ -748,6 +862,111 @@ Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 	
 
+	return 1;
+}
+
+Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
+
+	szMiscArray[0] = 0;
+
+	new amount = GetPVarInt(playerid, "Interact_SellAmt");
+	if(amount < 0) return 1;
+
+	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
+
+	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+
+	if(PlayerInfo[playerid][p_iDrug][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+
+	if(amount + PlayerInfo[giveplayerid][p_iDrug][drugid] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
+		format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
+		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		return Player_InteractMenu(playerid, giveplayerid);
+	}
+
+	PlayerInfo[giveplayerid][p_iDrug][drugid] += amount;
+	PlayerInfo[playerid][p_iDrug][drugid] -= amount;
+	PlayerInfo[giveplayerid][p_iDrugQuality][drugid] = PlayerInfo[playerid][p_iDrugQuality][drugid];
+
+	if(saleprice > 0) {
+		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid], number_format(saleprice));
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %dpc of %s for $%s", GetPlayerNameEx(playerid), amount, szDrugs[drugid], number_format(saleprice));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szDrugs[drugid], number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		Log("logs/pay.log", szMiscArray);
+		
+		format(szMiscArray, sizeof(szMiscArray), "sold %dpc of %s for $%s.", amount, szDrugs[drugid], number_format(saleprice));
+		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
+	}
+	else {
+		format(szMiscArray, sizeof(szMiscArray), "You have given %s %dpc of %s", GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid]);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has given you %dpc of %s", GetPlayerNameEx(playerid), amount, szDrugs[drugid]);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szDrugs[drugid], GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		Log("logs/pay.log", szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "gave %dpc of %s.", amount, szDrugs[drugid]);
+		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid]);
+	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
+	return 1;
+}
+
+Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 0) {
+
+	szMiscArray[0] = 0;
+
+	new amount = GetPVarInt(playerid, "Interact_SellAmt");
+	if(amount < 0) return 1;
+
+	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
+
+	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+
+	if(PlayerInfo[playerid][p_iIngredient][ingredientid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+
+	if(amount + PlayerInfo[giveplayerid][p_iIngredient][ingredientid] > Player_MaxCapacity(giveplayerid, ITEM_INGREDIENT)) {
+		format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_INGREDIENT));
+		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		return Player_InteractMenu(playerid, giveplayerid);
+	}
+	if(saleprice > 0) {
+		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid], number_format(saleprice));
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %dpc of %s for $%s", GetPlayerNameEx(playerid), amount, szIngredients[ingredientid], number_format(saleprice));
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		Log("logs/pay.log", szMiscArray);
+		
+		format(szMiscArray, sizeof(szMiscArray), "sold %dpc of %s for $%s.", amount, szIngredients[ingredientid], number_format(saleprice));
+		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
+	}
+	else {
+		format(szMiscArray, sizeof(szMiscArray), "You have given %s %dpc of %s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid]);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has given you %dpc of %s", GetPlayerNameEx(playerid), amount, szIngredients[ingredientid]);
+		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		Log("logs/pay.log", szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "gave %dpc of %s.", amount, szIngredients[ingredientid]);
+		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid]);
+	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 	return 1;
 }
 
@@ -859,6 +1078,48 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 		DeletePVar(giveplayerid, "jailcuffs");
 	}
+	return 1;
+}
+
+Interact_DrugTest(playerid, giveplayerid) {
+
+	format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Test _______", GetPlayerNameEx(giveplayerid));
+	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+
+	for(new i; i < sizeof(szDrugs); ++i) {
+
+		if(PlayerInfo[giveplayerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Level: %d CT", szDrugs[i], PlayerInfo[giveplayerid][p_iAddictedLevel][i]);
+		else format(szMiscArray, sizeof(szMiscArray), "%s | Level: None", szDrugs[i]);
+		SendClientMessage(giveplayerid, COLOR_GRAD1, szMiscArray);
+	}
+	SendClientMessage(giveplayerid, COLOR_GREEN, "________________________________");
+
+	format(szMiscArray, sizeof(szMiscArray), "** %s has conducted a drug test on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	return 1;
+}
+
+Interact_TakeDrugs(playerid, giveplayerid) {
+
+	for(new i; i < sizeof(szDrugs); ++i) {
+
+		PlayerInfo[giveplayerid][p_iDrug][i] = 0;
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "** %s has confiscated %s's drugs.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	return 1;
+}
+
+Interact_TakeIngredients(playerid, giveplayerid) {
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
+		PlayerInfo[giveplayerid][p_iIngredient][i] = 0;
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "** %s has confiscated %s's ingredients.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
 }
 
@@ -1209,6 +1470,44 @@ Interact_MovePatient(playerid, giveplayerid) {
 	return 1;
 }
 
+Interact_Prescribe(playerid, stage = 0) {
+	switch(stage) {
+		case 0: {
+			ShowPlayerDialog(playerid, DIALOG_STYLE_LIST, INTERACT_PRESCRIBE, "Type | Drug Prescription", "\
+				Demerol\n\
+				Morphine\n\
+				Haloperidol\n\
+				Aspirin",
+				"Select", "Cancel");
+		}
+		case 1: {
+			ShowPlayerDialog(playerid, DIALOG_STYLE_INPUT, INTERACT_PRESCRIBE1, "Grams | Drug Prescription", "How many pieces would you like to prescribe?", "Prescribe", "Cancel");
+		}
+	}
+	return 1;
+}
+
+Interact_ProcessPrescription(playerid) {
+
+	new giveplayerid = GetPVarInt(playerid, "Interact_Target"),
+		iAmount = GetPVarInt(playerid, "DR_PAM");
+
+	GetPVarString(playerid, "DR_PTYPE", szMiscArray, sizeof(szMiscArray));
+	new iDrugID = Drug_GetID(szMiscArray);
+
+	if(iAmount + PlayerInfo[giveplayerid][p_iDrug][iDrugID] > Player_MaxCapacity(giveplayerid, ITEM_DRUG)) {
+		format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, ITEM_DRUG));
+		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+		return Player_InteractMenu(playerid, giveplayerid);
+	}
+
+	if(PlayerInfo[playerid][p_iDrug][iDrugID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough of that on you.");
+	format(szMiscArray, sizeof(szMiscArray), "You have prescribed %s %d pc of %s.", GetPlayerNameEx(giveplayerid), iAmount, szMiscArray);
+	SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s has prescribed you %d pc of %s.", GetPlayerNameEx(playerid), iAmount, szMiscArray);
+	SendClientMessage(giveplayerid, COLOR_GRAD2, szMiscArray);
+	return 1;
+}
 
 /* 
 	Concept is to introduce the ability to pickup items that have been dropped and have a player add it to their inventory.

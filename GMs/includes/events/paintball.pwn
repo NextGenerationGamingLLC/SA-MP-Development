@@ -135,7 +135,7 @@ stock PaintballEditArenaHillRadius(playerid)
 
 stock PaintballScoreboard(playerid, arenaid)
 {
-	if(GetPVarInt(playerid, "IsInArena") == -1) { return 1; }
+	if(!GetPVarType(playerid, "IsInArena")) { return 1; }
 	new titlestring[128];
 	new string[2048];
  	foreach(new p: Player)
@@ -1058,7 +1058,7 @@ stock LeavePaintballArena(playerid, arenaid)
 		{
 		    SetPVarInt(playerid, "ArenaNumber", -1);
 		}
-		SetPVarInt(playerid, "IsInArena", -1);
+		DeletePVar(playerid, "IsInArena");
 
 		PlayerInfo[playerid][pKills] = 0;
 	    PlayerInfo[playerid][pDeaths] = 0;
@@ -1119,7 +1119,7 @@ stock LeavePaintballArena(playerid, arenaid)
 forward TickCTF(playerid);
 public TickCTF(playerid)
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 	    if(PaintBallArena[arenaid][pbGameType] == 3)
@@ -1262,7 +1262,7 @@ public TickCTF(playerid)
 forward TickKOTH(playerid);
 public TickKOTH(playerid)
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 
@@ -3385,7 +3385,7 @@ CMD:savehillpos(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the Hill Position.");
                     SendClientMessageEx(playerid, COLOR_GRAD2, string);
 
-                    SetPVarInt(playerid, "EditingHillStage", -1);
+                    DeletePVar(playerid, "EditingHillStage");
                     PaintballEditArenaMenu(playerid);
                 }
             }
@@ -3399,7 +3399,7 @@ CMD:savehillpos(playerid, params[])
 
 CMD:switchteam(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena") == -1) {
+    if(!GetPVarType(playerid, "IsInArena")) {
         SendClientMessageEx(playerid,COLOR_WHITE,"You are not in an arena, you can not switch teams!");
         return 1;
     }
@@ -3420,7 +3420,7 @@ CMD:switchteam(playerid, params[])
 
 CMD:joinarena(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena") == -1) {
+    if(!GetPVarType(playerid, "IsInArena")) {
         if(PlayerInfo[playerid][pConnectHours] < 2) {
             SendClientMessageEx(playerid, COLOR_WHITE, "You are unable to join a Paintball Match due to your weapon restriction.");
             return 1;
@@ -3458,7 +3458,7 @@ CMD:joinarena(playerid, params[])
 
 CMD:exitarena(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena") >= 0) {
+    if(GetPVarInt(playerid, "IsInArena")) {
         if(GetPlayerState(playerid) == PLAYER_STATE_WASTED) {
             SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do that at this time.");
             return 1;
@@ -3481,7 +3481,7 @@ CMD:exitarena(playerid, params[])
 
 CMD:scores(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena") >= 0)
+    if(GetPVarInt(playerid, "IsInArena"))
 	{
         PaintballScoreboard(playerid, GetPVarInt(playerid, "IsInArena"));
     }

@@ -483,35 +483,45 @@ stock RefreshBusinessPickup(i)
   	DestroyDynamic3DTextLabel(Businesses[i][bStateText]);
   	DestroyDynamic3DTextLabel(Businesses[i][bSupplyText]);
   	DestroyDynamicPickup(Businesses[i][bPickup]);
+    
     if (!(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0)) {
-    	new string[128];
+
 		Businesses[i][bPickup] = CreateDynamicPickup(GetBusinessDefaultPickup(i), 23, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2]);
+		Businesses[i][bAreaID][0] = CreateDynamicSphere(Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2], 3.0);
+
         if (Businesses[i][bOwner] < 1) {
-			format(string,sizeof(string),"%s\n\nBusiness For Sale!\nCost: %s\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
+			format(szMiscArray,sizeof(szMiscArray),"%s\n\nBusiness For Sale!\nCost: %s\nID: %d", GetBusinessTypeName(Businesses[i][bType]), number_format(Businesses[i][bValue]), i);
 		}
 		else {
 		    if(Businesses[i][bType] != BUSINESS_TYPE_GYM) {
-				format(string,sizeof(string),"%s\n\n%s [Owner: %s]\nID: %d", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i);
+				format(szMiscArray,sizeof(szMiscArray),"%s\n\n%s [Owner: %s]\nID: %d", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i);
 			}
 			else {
-			    format(string,sizeof(string),"%s\n\n%s [Owner: %s]\nID: %d\nGym Entrance: $%s", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i, number_format(Businesses[i][bGymEntryFee]));
+			    format(szMiscArray,sizeof(szMiscArray),"%s\n\n%s [Owner: %s]\nID: %d\nGym Entrance: $%s", GetBusinessTypeName(Businesses[i][bType]), Businesses[i][bName], StripUnderscore(Businesses[i][bOwnerName]), i, number_format(Businesses[i][bGymEntryFee]));
 			}
 		}
-		Businesses[i][bDoorText] =	CreateDynamic3DTextLabel(string, BUSINESS_NAME_COLOR, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2] + 0.85, 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
+		Businesses[i][bDoorText] =	CreateDynamic3DTextLabel(szMiscArray, BUSINESS_NAME_COLOR, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2] + 0.85, 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
 		Businesses[i][bStateText] =	CreateDynamic3DTextLabel((Businesses[i][bStatus]) ? ("Open") : ("Closed"), (Businesses[i][bStatus]) ? BUSINESS_OPEN_COLOR : BUSINESS_CLOSED_COLOR, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2] + 1.05, 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
 		if(Businesses[i][bSupplyPos][0] != 0.0)
 		{
-			format(string,sizeof(string),"%s\nSupply Delivery Point", Businesses[i][bName]);
-			Businesses[i][bSupplyText] = CreateDynamic3DTextLabel(string, BUSINESS_NAME_COLOR, Businesses[i][bSupplyPos][0], Businesses[i][bSupplyPos][1], Businesses[i][bSupplyPos][2], 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
+			format(szMiscArray,sizeof(szMiscArray),"%s\nSupply Delivery Point", Businesses[i][bName]);
+			Businesses[i][bSupplyText] = CreateDynamic3DTextLabel(szMiscArray, BUSINESS_NAME_COLOR, Businesses[i][bSupplyPos][0], Businesses[i][bSupplyPos][1], Businesses[i][bSupplyPos][2], 10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, 0, 0, -1);
 		}
 	}
-	if(Businesses[i][bVW] == 0)
-	{
+	if(Businesses[i][bVW] == 0)	{
+
 		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], BUSINESS_BASE_VW + i);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, BUSINESS_BASE_VW + i);
 	}
-	else Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], Businesses[i][bVW]);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup], E_STREAMER_EXTRA_ID, i);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup_int], E_STREAMER_EXTRA_ID, i);
+	else {
+
+		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], Businesses[i][bVW]);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, Businesses[i][bVW]);
+	}
+
+	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, i);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, i);
+
 }
 
 

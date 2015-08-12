@@ -61,10 +61,9 @@ LoadBanks() {
 	SetActorVirtualWorld(Bankers[10], BANK_LASBARANCAS);
 	SetActorVirtualWorld(Bankers[11], BANK_LASBARANCAS);
 
-
 	// pickups for interaction.
-	BankPoint[0] = CreateDynamicPickup(1212, 23, 2316.2263,-7.3651,26.7422, .streamdistance = 15.0);
-	BankPoint[1] = CreateDynamicPickup(1212, 23, 2316.4480,-15.4179,26.7422, .streamdistance = 15.0);
+	BankPoint[0] = CreateDynamicSphere(2316.2263,-7.3651, 26.7422, 3.0);
+	BankPoint[1] = CreateDynamicSphere(2316.4480,-15.4179,26.7422, 3.0);
 
 	print("[Streamer] Bank System Loaded");
 
@@ -73,11 +72,15 @@ LoadBanks() {
 
 }
 
-hook OnPlayerPickUpDynamicPickup(playerid, pickupid) {
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	if(pickupid == BankPoint[0] || pickupid == BankPoint[1]) SetPVarInt(playerid, "AtBank", pickupid);
-	SetTimerEx("ForgetBank", 1000, false, "i", playerid);
+	if(areaid == BankPoint[0] || areaid == BankPoint[1]) SetPVarInt(playerid, "AtBank", areaid);
+	return 1;
+}
 
+hook OnPlayerLeaveDynamicArea(playerid, areaid) {
+	
+	DeletePVar(playerid, "AtBank");
 	return 1;
 }
 

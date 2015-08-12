@@ -503,12 +503,14 @@ new audiourlid;
 new Float:audiourlparams[4];
 
 /* SAAS */
+/*
 new backlift;
 new sidelift;
 new backhatch;
+*/
 
 new Carrier[17];
-new CarrierS[6];
+
 new CrateLoad;
 new MAXCRATES;
 new AdminWarning;
@@ -531,17 +533,18 @@ new Train[3];
 
 new IsRim[17] = { 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1096, 1097, 1098, 1025 };
 
-new canmove;
-
 new TextSpamTimes[MAX_PLAYERS];
 new TextSpamUnmute[MAX_PLAYERS];
 new CommandSpamTimes[MAX_PLAYERS];
 new CommandSpamUnmute[MAX_PLAYERS];
 
 new control[MAX_PLAYERS];
+new ControlTimer[MAX_PLAYERS];
+
+/*
 new controlspeed[MAX_PLAYERS];
 new controldistance[MAX_PLAYERS];
-new ControlTimer[MAX_PLAYERS];
+*/
 
 new Rocket[MAX_PLAYERS];
 new RocketLight[MAX_PLAYERS];
@@ -603,7 +606,6 @@ new Float:gCurrentTargetYAngle = 0.0;
 new gWheelTransAlternate = 0;
 new Float:gFerrisOrigin[3] = {389.77, -2028.47, 22.0};
 
-new Text3D:SANews3DText[3];
 new gBug[MAX_PLAYERS char];
 new gRadio[MAX_PLAYERS char];
 new NOPTrigger[MAX_PLAYERS];
@@ -719,8 +721,7 @@ new LiveOffer[MAX_PLAYERS];
 new TalkingLive[MAX_PLAYERS];
 new broadcasting = 0;
 new cameraangle = 0;
-new broadcaststudio = 0;
-new Text3D:camera;
+// new Text3D:camera;
 new viewers = 0;
 new WatchingTV[MAX_PLAYERS];
 new SelectFChar[MAX_PLAYERS];
@@ -2709,3 +2710,4 @@ new bool:DDSalePendingPlayer[MAX_PLAYERS];
 new GunPrices[4];
 
 new iVehEnterAreaID[MAX_VEHICLES];
+new szJobNames[MAX_JOBTYPES][32];

@@ -31,6 +31,43 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ 
+new const szDrugs[][] = {
+	"LSD",
+	"Cannabis",
+	"Meth",
+	"Heroin",
+	"Cocaine",
+	"Crack",
+	"Opium",
+	"Ecstacy",
+	"Speed",
+	"Alcohol",
+	"Demerol",
+	"Morphine",
+	"Haloperidol",
+	"Aspirin"
+};
+
+
+new const szIngredients[][] = {
+	"Morning Glory Seeds",
+	"Cannabis Seeds",
+	"Muriatic Acid",
+	"Lye",
+	"Ethyl Ether",
+	"Ephedrine",
+	"Distilled Water",
+	"Opium Poppy",
+	"Lime",
+	"Cocaine",
+	"Baking Soda",
+	"Cocaine Plant Extract",
+	"N-Benzynol",
+	"PMK Oil",
+	"MDMA Crystals",
+	"Cafeine"
+};
 
 enum eGroupData {
 	g_iGroupType,
@@ -84,7 +121,9 @@ enum eGroupData {
 	g_iTurfTokens,
 	g_iMemberCount,
 	g_iCrimeType,
-	g_iAmmo[5]
+	g_iAmmo[5],
+	g_iDrugs[sizeof(szDrugs)],
+	g_iIngredients[sizeof(szIngredients)]
 }
 
 enum eAmmoData {
@@ -100,7 +139,7 @@ enum eLockerData {
 	g_iLockerVW,
 	g_iLockerShare,
 	Text3D: g_tLocker3DLabel,
-	g_iLockerPickupID
+	g_iLockerAreaID
 }
 
 enum eJurisdictionData {
@@ -236,7 +275,7 @@ enum eBiz {
 	bGymBikeVehicles[10],
 	
 	bMaxLevel,
-	b_AreaID
+	bAreaID[2]
 }
 
 enum StoreItemCostEnum
@@ -1114,7 +1153,13 @@ enum pInfo
 	pVIPGuncount,
 	pBailPrice,
 	pWallpaper,
-	pPhoneColor
+	pPhoneColor,
+	p_iDrug[sizeof(szDrugs)],
+	p_iDrugQuality[sizeof(szDrugs)],
+	p_iDrugTaken[sizeof(szDrugs)],
+	p_iAddicted[sizeof(szDrugs)],
+	p_iAddictedLevel[sizeof(szDrugs)],
+	p_iIngredient[sizeof(szIngredients)]
 };
 
 enum pvInfo
@@ -1246,7 +1291,8 @@ enum hInfo
 	PendingApproval,
 	ListedTimeStamp,
 	ListingDescription[128],
-	LinkedGarage[2]
+	LinkedGarage[2],
+	hAreaID[2]
 };
 
 enum dmpInfo
@@ -1647,10 +1693,11 @@ enum garInfo
 };
 
 enum eStructureFires {
-	iFireObj,
-	Text3D:szFireLabel,
-	iFireStrength,
 	Float:fFirePos[3],
+	iFireObj,
+	iFireArea,
+	Text3D:szFireLabel,
+	iFireStrength
 }
 
 enum eHospitalBedData {
@@ -1670,3 +1717,14 @@ enum eGCrateData {
 	Text3D:gcr_iLabel
 }
 new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
+
+
+enum e_JobData {
+    job_iType,
+    job_iLevel,
+	Text3D:job_iTextID[2],
+	job_iActorID[2],
+	job_iActorModel,
+	job_iMapMarker
+}
+new arrJobData[MAX_JOBPOINTS][e_JobData];

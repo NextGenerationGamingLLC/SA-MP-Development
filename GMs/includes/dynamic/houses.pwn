@@ -495,10 +495,13 @@ stock ReloadHousePickup(houseid)
 
 	HouseInfo[houseid][hTextID] = CreateDynamic3DTextLabel(string, HouseInfo[houseid][hInactive] ? COLOR_LIGHTBLUE : COLOR_GREEN, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW], .streamdistance = 10.0);
 	HouseInfo[houseid][hPickupID] = CreateDynamicPickup(HouseInfo[houseid][hInactive] ? 1272 : 1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
-
-	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], HouseInfo[houseid][hIntVW]);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID], E_STREAMER_EXTRA_ID, houseid);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID_int], E_STREAMER_EXTRA_ID, houseid);
+	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
+	
+	HouseInfo[houseid][hAreaID][0] = CreateDynamicSphere(HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 2.0, HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
+	HouseInfo[houseid][hAreaID][1] = CreateDynamicSphere(HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 2.0, HouseInfo[houseid][hIntVW], HouseInfo[houseid][hIntIW]);
+	
+	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
 	return 1;
 }
 
@@ -1190,11 +1193,6 @@ CMD:hedit(playerid, params[])
 CMD:shophouse(playerid, params[])
 {
 	if(PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	/*if(!IsPlayerAdmin(playerid) || PlayerInfo[playerid][pAdmin] != 99999)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-		return 1;
-	}*/
 
 	new string[128], choice[32], houseid, amount, invoice[64];
 	if(sscanf(params, "s[32]dDs[64]", choice, houseid, amount, invoice))

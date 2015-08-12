@@ -49,6 +49,10 @@ native IsValidVehicle(vehicleid);
     (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 #define RELEASED(%0) \
     (((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
+
+#define HOLDING(%0) \
+	((newkeys & (%0)) == (%0))
+	
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
@@ -167,7 +171,7 @@ native IsValidVehicle(vehicleid);
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
     strcat((%0[0] = '\0', %0), %1, %2)*/
-    
+
 			/*  ---------------- DYNAMIC GROUP ----------------- */
 // First-dimension array sizes - CRITICAL.
 #define 		MAX_GROUPS 					40
@@ -232,6 +236,12 @@ native IsValidVehicle(vehicleid);
 //Query thread IDs for Dynamic Vehicles
 #define         GV_QUERY_LOAD               1
 #define         GV_QUERY_SAVE               2
+
+			/*  ---------------- JOBS ----------------- */
+
+#define 	MAX_JOBNAME_LEN			24
+#define 	MAX_JOBTYPES			40
+#define 	MAX_JOBPOINTS 			100
 
 			/*  ---------------- BUSINESSES ----------------- */
                      /* ===[Ignore the tab space]=== */
@@ -1096,8 +1106,13 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_TUTORIAL_CAR				(6110) 
 #define 		ARMS_MENU						(6111)   			
 
+#define         G_LOCKER_DRUGS				    (6112)
+#define         G_LOCKER_INGREDIENTS	       	(6113)
 
-
+#define 		DIALOG_JOBS_ACCEPTJOB			(6114)
+#define 		DIALOG_JOBS_EDIT 				(6115)
+#define 		DIALOG_JOBS_EDITACTOR			(6116)
+#define 		DIALOG_JOBS_NEAREST				(6117)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474

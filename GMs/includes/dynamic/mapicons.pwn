@@ -193,7 +193,7 @@ CMD:dmpnear(playerid, params[])
 				if(DMPInfo[i][dmpMarkerType] != 0)
 				{
 				    new string[128];
-			    	format(string, sizeof(string), "MapIcon ID %d | %f from you", i, GetDistance(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
+			    	format(string, sizeof(string), "MapIcon ID %d | %f from you", i, GetDistanceBetweenPoints(DMPInfo[i][dmpPosX], DMPInfo[i][dmpPosY], DMPInfo[i][dmpPosZ], X, Y, Z));
 			    	SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
 			}

@@ -16,7 +16,6 @@ InitiateGamemode()
 	LoadBusinesses();
 	LoadAuctions();
 	LoadTxtLabels();
-	LoadPlants();
 	LoadSpeedCameras();
 	LoadPayNSprays();
 	LoadArrestPoints();
@@ -79,7 +78,6 @@ InitiateGamemode()
 	SetTimer("MailDeliveryTimer", 60000, 1);
 	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
 	SetTimer("Anti_Rapidfire", 1000, true);
-	SetTimer("OnEnterFire", 1000, true);
 	LoadParkingMeters();
 	GovGuns_LoadCosts();
 	MetDet_LoadMetDets();
@@ -103,7 +101,6 @@ InitiateGamemode()
     LoadStreamerDynamicPickups();
     print("[Streamer] Loading 3D Text Labels...");
     LoadStreamerDynamic3DTextLabels();
-    UpdateSANewsBroadcast();
     print("[Streamer] Loading Dynamic Buttons...");
     LoadStreamerDynamicButtons();
     print("[Streamer] Loading Dynamic Objects...");
@@ -120,7 +117,9 @@ InitiateGamemode()
     print("[Dynamic Groups] Loading Dynamic Groups Vehicles...");
     LoadDynamicGroupVehicles();
 
+    Job_LoadJobs();
     GangTag_Load();
+    DS_LoadDrugSystem();
 	
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

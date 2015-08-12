@@ -446,7 +446,7 @@ CMD:rccam(playerid, params[])
 		new string[128];
 		if(GetPVarInt(playerid, "rccam") == 0)
 		{
-			if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
@@ -497,7 +497,7 @@ CMD:rccam(playerid, params[])
 CMD:firstaid(playerid, params[])
 {
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		return 1;
@@ -673,7 +673,7 @@ CMD:smslog(playerid, params[])
 
 CMD:craft(playerid, params[])
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if (PlayerInfo[playerid][pJob] != 18 && PlayerInfo[playerid][pJob2] != 18 && PlayerInfo[playerid][pJob3] != 18)
 	{

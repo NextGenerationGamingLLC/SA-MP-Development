@@ -168,7 +168,7 @@ CMD:pickveh(playerid, params[])
 	if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
 	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
 	
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarType(playerid, "IsInArena") || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		
 	
@@ -263,7 +263,7 @@ CMD:cracktrunk(playerid, params[])
 	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
 	if(GetPVarType(playerid, "TrunkAlreadyCracked")) return SendClientMessageEx(playerid, COLOR_WHITE, "You already cracked the trunk of this vehicle.");
 	
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "IsInArena") != -1 || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarType(playerid, "IsInArena")  || GetPVarInt( playerid, "EventToken") || IsPlayerInAnyVehicle(playerid) || HungerPlayerInfo[playerid][hgInEvent])
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		
 		

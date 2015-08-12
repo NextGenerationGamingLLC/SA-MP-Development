@@ -36,63 +36,30 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-
-	- 24/7
-		-Baking soda
-		-Safrole
-		-MethylAmine.HCl
-		-MDP2P
-		-MDMA oil
-
-	- LSD
-	- Cannabis
-	- Meth
-	- Cocaine
-	- Crack
-	- Ecstacy
-	- Alcohol
-	- Demerol
-	- Morphine
-	- Haloperidol
-	- Aspirine
-*/
-
-// Papers cannabis
-// Lighters meth/joints
-// Glass pipe meth/crack
-// Add bong for cannabis
-// more hunger / less hunger
-// SetPlayerSkillLevel
-// Heart attacks
-// weird ass drug
-// shakey screen in interior group
-// shortcut: /groupusedrug
-
-// cannabis sideeffect hunger
-
-// animation: check if /dance resets
-
 #include <YSI\y_hooks>
 
-#define 		MAX_BLACKMARKETS			MAX_GROUPS*3
+#define 		MAX_BLACKMARKETS				MAX_GROUPS
+#define 		MAX_DYNPOINTS 					50
 
-#define 		DIALOG_DRUGS_MYDRUGS		11000
-#define 		DIALOG_DRUGS_DRUGSTORE		11001
-#define 		DIALOG_DRUGS_MIX_START		11002
-#define 		DIALOG_DRUGS_MIX_MAIN		11003
-#define 		DIALOG_DRUGS_MIX_INGREDIENT	11004
-#define 		DIALOG_DRUGS_MIX_AMOUNT		11005
-#define 		DIALOG_DRUGS_ORDER_ING		11006
-#define 		DIALOG_DRUGS_ORDER_INGAM	11007
-#define 		DIALOG_DRUGS_ORDER_LIST		11008
 
+#define 		DIALOG_DRUGS_MYDRUGS			11000
+#define 		DIALOG_DRUGS_DRUGSTORE			11001
+#define 		DIALOG_DRUGS_MIX_START			11002
+#define 		DIALOG_DRUGS_MIX_MAIN			11003
+#define 		DIALOG_DRUGS_MIX_INGREDIENT		11004
+#define 		DIALOG_DRUGS_MIX_AMOUNT			11005
+#define 		DIALOG_DRUGS_ORDER_ING			11006
+#define 		DIALOG_DRUGS_ORDER_INGAM		11007
+#define 		DIALOG_DRUGS_ORDER_LIST			11008
+
+#define 		DIALOG_BLACKMARKET_CREATE 		10999
 #define 		DIALOG_BLACKMARKET_MAIN			11009
 #define 		DIALOG_BLACKMARKET_INGREDIENTS	11010
 #define 		DIALOG_BLACKMARKET_EDITPRICE	11011
 #define 		DIALOG_BLACKMARKET_EDITPRICE2	11012
 #define 		DIALOG_BLACKMARKET_EDITPAYMENT 	11013
 #define 		DIALOG_BLACKMARKET_EDITPAYMENT2 11014
+#define 		DIALOG_BLACKMARKET_TRANSFERC 	11029
 #define 		DIALOG_BLACKMARKET_TRANSFER		11015
 #define 		DIALOG_BLACKMARKET_TRANSFER2	11016
 #define 		DIALOG_BLACKMARKET_ORDER_ING 	11017
@@ -103,18 +70,24 @@
 #define 		DIALOG_BLACKMARKET_ADELPOINT	11022
 #define 		DIALOG_BLACKMARKET_ADELBM		11023
 #define 		DIALOG_DRUGPOOL					11024
+#define 		DIALOG_BLACKMARKET_ASEIZE 		11045
 
 #define 		DIALOG_SMUGGLE_PREPARE			11025
 #define 		DIALOG_SMUGGLE_PREPARE2			11026
 #define 		DIALOG_SMUGGLE_DELIVERTO		11027
 #define 		DIALOG_SMUGGLE_BMDELPOINT		11028
 
+#define 		DIALOG_POINT_NAME 				11039
+#define 		DIALOG_POINT_TYPE 				11040
+#define 		DIALOG_POINT_LIST 				11041
+
+
 #define 		PVAR_DRUGS_MIXSLOT				"DRM_S"
 #define 		PVAR_MAKINGDRUG					"DRM_D"
 #define 		PVAR_INGREDIENT_ORDERING		"DING_O"
 #define 		PVAR_BM_EDITINGID				"BM_EID"
 #define 		PVAR_BLMARKETID					"BM_MID"
-#define 		PVAR_ATDRUGPOINT				"DP_AP"
+#define 		PVAR_ATDRUGPOINT				"PO_AP"
 #define 		PVAR_SMUGGLE_DELIVERINGTO		"SM_DT"
 #define 		PVAR_DRUGS_OVERDOSE				"DR_OD"
 
@@ -125,14 +98,14 @@
 #define 		DRUGS_MAX_BONUS_ARMOUR			200.0
 
 #define 		DRUGS_ADDICTION_RATE			10 // + and - addicted points per take
-#define 		DRUGS_ADDICTED_THRESHOLD		200 // addicted level threshold
+#define 		DRUGS_ADDICTED_THRESHOLD		300 // addicted level threshold
 #define 		DRUGS_ADDICTED_LEVEL			400
 
 #define 		DRUGS_TRACKABLE_THRESHOLD		50 // Amount of drugs/ingredients orderable without LEA tracking.
 #define 		MAX_DRUGINGREDIENT_SLOTS		5
 
 #define 		DRUG_ORDER_TIME					60 * 120 // 2 hours.
-#define 		DRUGS_GROWTH_TIME				1 // 2 hours.
+#define 		DRUGS_GROWTH_TIME				60 * 120 // 2 hours.
 
 #define 		MAX_DRUGS						400
 #define 		MAX_PLAYERDRUGS					10
@@ -140,6 +113,11 @@
 
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
+
+#define 		POINT_CAPTURE_INTERVAL 			10000 // seconds
+
+#define 		BLACKMARKET_SEIZE_DAYS			1
+
 /*
 new const szDrugs[][] = {
 	"LSD",
@@ -148,6 +126,7 @@ new const szDrugs[][] = {
 	"Heroin",
 	"Cocaine",
 	"Crack",
+	"Opium",
 	"Ecstacy",
 	"Speed",
 	"Alcohol",
@@ -155,8 +134,8 @@ new const szDrugs[][] = {
 	"Morphine",
 	"Haloperidol",
 	"Aspirin",
-	"Anti-STD"
 };
+
 
 new const szIngredients[][] = {
 	"Morning Glory Seeds",
@@ -178,13 +157,16 @@ new const szIngredients[][] = {
 };
 */
 /*
+	pInfo enums:
+
 	p_iDrug[sizeof(szDrugs)],
 	p_iDrugQuality[sizeof(szDrugs)],
 	p_iDrugTaken[sizeof(szDrugs)],
 	p_iAddicted[sizeof(szDrugs)],
-	Float:p_iAddictedLevel[sizeof(szDrugs)],
+	p_iAddictedLevel[sizeof(szDrugs)],
 	p_iIngredient[sizeof(szIngredients)]
-	*/
+*/
+
 
 enum e_drMix {
 	drm_iAmount,
@@ -194,7 +176,9 @@ new dr_arrDrugMix[MAX_PLAYERS][MAX_DRUGINGREDIENT_SLOTS][e_drMix];
 
 enum eBlackMarket {
 	bm_iGroupID,
+	bm_iSeized,
 	bm_iPickupID,
+	bm_iAreaID,
 	Text3D:bm_iTextID,
 	Text3D:bm_iDelTextID,
 	bm_iIngredientAmount[sizeof(szIngredients)],
@@ -204,11 +188,28 @@ enum eBlackMarket {
 new arrBlackMarket[MAX_BLACKMARKETS][eBlackMarket];
 
 enum eDrugData {
+	dr_iDrugID,
 	dr_iDrugQuality,
 	Text3D:dr_iTextID,
-	dr_iObjectID
+	dr_iObjectID,
+	dr_iAreaID
 }
 new arrDrugData[MAX_DRUGS][eDrugData];
+
+enum eDynPoints {
+	po_iType,
+	po_szPointName[MAX_PLAYER_NAME],
+	po_iCaptureAble,
+	po_iPointTimer,
+	po_iGroupID,
+	po_iPickupID,
+	po_iZoneID,
+	po_iAreaID,
+	Text3D:po_iTextID,
+	Text3D:po_iDelTextID
+}
+new arrPoint[MAX_DYNPOINTS][eDynPoints];
+
 
 enum eSmuggleVehicle {
 	smv_iIngredientAmount[sizeof(szIngredients)]
@@ -219,12 +220,68 @@ new dr_iPlayerTimer[MAX_PLAYERS][4],
 	dr_iPlayerTimeStamp[MAX_PLAYERS],
 	Text:ODTextDraw;
 
+CMD:givealldrugs(playerid) {
+
+	for(new i; i < sizeof(szDrugs); ++i) PlayerInfo[playerid][p_iDrug][i] = 200;
+	for(new i; i < sizeof(szIngredients); ++i) PlayerInfo[playerid][p_iIngredient][i] = 200;
+	return 1;
+}
+
 DS_LoadDrugSystem()
 {
 	Drugs_ODTextDraw();
 	BM_LoadBlackMarkets();
-	DP_LoadDrugPoints();
-	Drugs_LoadPlayerDrugs();
+	PO_LoadPoints();
+	Drugs_LoadPlayerPlants();
+}
+
+DS_Drugs_GetSQLName(id)
+{
+	new sqlname[12];
+	switch(id)
+	{
+		case 0: sqlname = "lsd";
+		case 1: sqlname = "cannabis";
+		case 2: sqlname = "meth";
+		case 3: sqlname = "heroin";
+		case 4: sqlname = "cocaine";
+		case 5: sqlname = "crack";
+		case 6: sqlname = "opium";
+		case 7: sqlname = "ecstacy";
+		case 8: sqlname = "speed";
+		case 9: sqlname = "alcohol";
+		case 10: sqlname = "demerol";
+		case 11: sqlname = "morphine";
+		case 12: sqlname = "haloperidol";
+		case 13: sqlname = "aspirin";
+		default: sqlname = "";
+	}
+	return sqlname;
+}
+
+DS_Ingredients_GetSQLName(id)
+{
+	new sqlname[12];
+	switch(id)
+	{
+		case 0: sqlname = "mgseeds";
+		case 1: sqlname = "canseeds";
+		case 2: sqlname = "lye";
+		case 3: sqlname = "ethyl";
+		case 4: sqlname = "ephedrine";
+		case 5: sqlname = "diswater";
+		case 6: sqlname = "opiumpop";
+		case 7: sqlname = "lime";
+		case 8: sqlname = "cocaine";
+		case 9: sqlname = "baking";
+		case 10: sqlname = "cocextract";
+		case 11: sqlname = "nbenzynol";
+		case 12: sqlname = "pmkoil";
+		case 13: sqlname = "mdmacrys";
+		case 14: sqlname = "cafeine";
+		default: sqlname = "";
+	}
+	return sqlname;
 }
 
 task Drugs_GrowthCheck[60000]()
@@ -233,15 +290,74 @@ task Drugs_GrowthCheck[60000]()
 	return 1;
 }
 
+task Point_Process[60000 * 60 * 12]() {
+
+	BM_SeizeCheck();
+
+	SendClientMessageToAllEx(COLOR_YELLOW, "[Point] - {DDDDDD}Some points have become available for capture. Use /points to get an overview");
+
+	for(new i; i < MAX_DYNPOINTS; ++i) {
+
+		if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
+			
+			GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
+			
+			arrPoint[i][po_iCaptureAble] = 1;
+
+
+			// Weapon Factories
+			if(arrPoint[i][po_iType] == 0) {
+
+				new newwep = Random(4, 6), // amount of weapons created per hour.
+					newammo = Random(150, 200),// amount of ammo created per hour.
+					totwep,
+					totammo;
+
+				for(new j; j < 13; ++j) {
+
+					totwep += newwep;
+					
+					/*
+					arrPoint[i][po_iWeapons][j] += newwep; 
+					format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `%s` = '%d' WHERE `id` = '%d'", GetGCItemSQLFldName(j), arrPoint[i][po_iWeapons][j], i);
+					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					*/
+
+				}
+				for(new j; j < 5; ++j) {
+
+					totammo += newammo;
+
+					/*
+					arrPoint[i][po_iAmmo][j] += newammo; 
+					format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `%s` = '%d' WHERE `id` = '%d'", GetGCItemSQLFldName(j + 13), arrPoint[i][po_iAmmo][j], i);
+					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					*/
+					
+				}
+				
+				foreach(new p : Player) {
+
+					if(PlayerInfo[p][pMember] == arrPoint[i][po_iGroupID]) {
+
+						format(szMiscArray, sizeof(szMiscArray), "[Weapon Point] - {DDDDDD}%d weapons and %d rounds of ammo have been added to your locker from a weapon factory you own.", totwep, totammo);
+						SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
+					}
+				}
+			}
+		}
+	}
+}
+
 ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 {
 	new i = random(3);
-	if(i == 2)
-	{
-		for(new idx; idx < sizeof(szDrugs); ++idx)
-		{
-			if(PlayerInfo[playerid][p_iAddicted][idx] == 1)
-			{
+	if(i == 2) {
+
+		for(new idx; idx < sizeof(szDrugs); ++idx) {
+
+			if(PlayerInfo[playerid][p_iAddicted][idx] == 1)	{
+
 				Addicted_TimerProcess(playerid, idx);
 				break;
 			}
@@ -256,22 +372,137 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	dr_iPlayerTimeStamp[playerid] = gettime();
 }
 
-/*
-hook OnPlayerPickUpPickup(playerid, pickupid)
-{
-	new i = Streamer_GetIntData(STREAMER_TYPE_PICKUP, pickupid, E_STREAMER_EXTRA_ID);
-	if(arrBlackMarket[0][bm_iPickupID] == pickupid)
-	{
-		SendClientMessage(playerid, COLOR_RED, "HI");
-		SetPVarInt(playerid, PVAR_BLMARKETID, i);
-		SetTimerEx("BM_DeletePVar", 5000, false, "i", playerid);
-		format(szMiscArray, sizeof(szMiscArray), "[Black Market]: {CCCCCC}Welcome to %d's black market. Use /blackmarket to access our offers.", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-		return 1;
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
+
+	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+
+	if(arrDrugData[i][dr_iAreaID] == areaid) {
+
+		SetPVarInt(playerid, "AtDrugArea", i);
+	}
+
+	if(i > -1) {
+
+		if(areaid == arrBlackMarket[i][bm_iAreaID]) {
+
+			SetPVarInt(playerid, "BM_AID", i);
+			return 1;
+		}
+		if(areaid == arrPoint[i][po_iAreaID]) {
+
+			SetPVarInt(playerid, "PO_AID", i);
+			return 1;
+		}
 	}
 	return 1;
 }
-*/
+
+hook OnPlayerLeaveDynamicArea(playerid, areaid) {
+
+	DeletePVar(playerid, "BM_AID");
+	DeletePVar(playerid, "PO_AID");
+	DeletePVar(playerid, "AtDrugArea");
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+
+	if(newkeys & KEY_YES) {
+
+		if(GetPVarType(playerid, "BM_AID")) {
+
+			new i = GetPVarInt(playerid, "BM_AID");
+
+			if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
+
+				if(arrBlackMarket[i][bm_iSeized]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
+				SetPVarInt(playerid, PVAR_BLMARKETID, i);
+				BM_BlackMarketMain(playerid);
+				return 1;
+			}
+		}
+		if(GetPVarType(playerid, "PO_AID")) {
+
+			new i = GetPVarInt(playerid, "PO_AID");
+
+			if(arrPoint[i][po_iType] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot interact with a weapon point.");
+
+			if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a vehicle to load a smuggle.");
+
+			SetPVarInt(playerid, PVAR_ATDRUGPOINT, i);
+			Smuggle_LoadIngredients(playerid);
+			return 1;
+		}
+		if(GetPVarType(playerid, "AtDrugArea")) {
+
+			new i = GetPVarInt(playerid, "AtDrugArea");
+
+			if(IsACop(playerid)) Drugs_Remove(playerid, i);
+			else Drugs_Retrieve(playerid, i);
+		}
+	}
+	return 1;
+}
+
+hook OnPlayerEnterCheckpoint(playerid) {
+
+	switch(gPlayerCheckpointStatus[playerid]) {
+
+		case CHECKPOINT_SMUGGLE_BLACKMARKET: {
+
+			new iVehID = GetPlayerVehicleID(playerid),
+				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO);
+
+			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
+
+			format(szMiscArray, sizeof(szMiscArray), "------ %s's Black Market ------", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
+			for(new i; i < sizeof(szIngredients); ++i) {
+
+				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)	{
+
+					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+					arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
+				}
+			}
+			new iCash = GetPVarInt(playerid, "BM_PAY");
+			GivePlayerCash(playerid, iCash);
+			arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
+			format(szMiscArray, sizeof(szMiscArray), "--------------------------\nPay: $%s\n", number_format(iCash));
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
+			DisablePlayerCheckpoint(playerid);
+			DeletePVar(playerid, "BM_PAY");
+
+			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
+				GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
+			Log("logs/drugsmuggles.log", szMiscArray);
+		}
+
+		case CHECKPOINT_SMUGGLE_PLAYER:	{
+
+			new iVehID = GetPlayerVehicleID(playerid);
+
+			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
+
+			for(new i; i < sizeof(szIngredients); ++i) {
+
+				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
+				{
+					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
+				}
+			}
+
+			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
+			DisablePlayerCheckpoint(playerid);
+		}
+	}
+	return 1;
+}
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
@@ -282,7 +513,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return 1;
 			SetPVarInt(playerid, PVAR_MAKINGDRUG, listitem);
 			format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You started making: {FFFF00}%s{CCCCCC}. Use /clearmix to start over.", szDrugs[listitem]);
-			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 			Drug_ShowMix(playerid);
 		}
 		case DIALOG_DRUGS_MIX_MAIN:
@@ -320,9 +551,38 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new iSlotID = GetPVarInt(playerid, PVAR_DRUGS_MIXSLOT);
 				dr_arrDrugMix[playerid][GetPVarInt(playerid, PVAR_DRUGS_MIXSLOT)][drm_iAmount] = strval(inputtext);
 				format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d] {CCCCCC}You added %d pieces of %s to your mixture.", iSlotID, strval(inputtext), szIngredients[dr_arrDrugMix[playerid][iSlotID][drm_iIngredientID]]);
-				SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 				Drug_ShowMix(playerid);
 			}
+		}
+		case DIALOG_BLACKMARKET_CREATE: {
+
+			new iGroupID = ListItemTrackId[playerid][listitem],
+				Float:fPos[3];
+
+			for(new i; i < MAX_BLACKMARKETS; ++i) {
+
+				if(!IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
+
+					new iVW = GetPlayerVirtualWorld(playerid), 
+						iINT = GetPlayerInterior(playerid);
+					arrBlackMarket[i][bm_iGroupID] = iGroupID;
+					GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+					arrBlackMarket[i][bm_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+					Streamer_SetIntData(STREAMER_TYPE_AREA, arrBlackMarket[i][bm_iAreaID], E_STREAMER_EXTRA_ID, i);
+					arrBlackMarket[i][bm_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+					format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n{CCCCCC}ID: %d", arrGroupData[iGroupID][g_szGroupName], i);
+					arrBlackMarket[i][bm_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+					format(szMiscArray, sizeof(szMiscArray), "Delivery Point\n%s's Black Market\n{CCCCCC}ID: %d", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName], i);
+					arrBlackMarket[i][bm_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+					format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `blackmarkets` (`id`, `groupid`, `posx`, `posy`, `posz`, `vw`, `int`) VALUES ('%d', '%d', '%f', '%f', '%f', '%d', '%d')",
+						i, iGroupID, fPos[0], fPos[1], fPos[2], iVW, iINT);
+					mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnCreateBlackMarket", "ii", playerid, i);
+					return 1;
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "The maximum amount of blackmarkets has been reached.");
+			return 1;
 		}
 		case DIALOG_BLACKMARKET_MAIN:
 		{
@@ -364,6 +624,34 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DeletePVar(playerid, PVAR_BM_EDITINGID);
 			return 1;
 		}
+		case DIALOG_BLACKMARKET_TRANSFERC: {
+
+			if(!response) return 1;
+
+			new iBlackMarketID = GetPVarInt(playerid, PVAR_BLMARKETID);
+
+			SetPVarInt(playerid, "DS_BMTC", listitem);
+
+			szMiscArray = "Ingredient Name\tPieces\n";
+			
+			switch(listitem) {
+				case 0: {
+
+					for(new i; i < sizeof(szIngredients); ++i) {
+
+						format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], arrGroupData[PlayerInfo[playerid][pMember]][g_iIngredients][i]);
+					}
+				}
+				case 1: {
+
+					for(new i; i < sizeof(szIngredients); ++i) {
+
+						format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i]);
+					}
+				}
+			}
+			return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_TRANSFER, DIALOG_STYLE_TABLIST_HEADERS, "Black Market | Transfer Stock", szMiscArray, "Edit", "<<");
+		}
 		case DIALOG_BLACKMARKET_TRANSFER:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_BM_EDITINGID), DeletePVar(playerid, PVAR_BLMARKETID), 1;
@@ -388,7 +676,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_BLACKMARKET_ORDER_INGAM:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_INGREDIENT_ORDERING), 1;
-			if(isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext)) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount");
+			if(isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount");
 			Drug_OrderIngredient(playerid, GetPVarInt(playerid, PVAR_BLMARKETID), GetPVarInt(playerid, PVAR_INGREDIENT_ORDERING), strval(inputtext));
 			DeletePVar(playerid, PVAR_INGREDIENT_ORDERING);
 		}
@@ -417,14 +705,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 			new iVW = GetPlayerVirtualWorld(playerid),
 				iINT = GetPlayerInterior(playerid);
-			if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessage(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
+			if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
 			if(IsValidDynamicPickup(arrBlackMarket[iBlackMarketID][bm_iPickupID])) DestroyDynamicPickup(arrBlackMarket[iBlackMarketID][bm_iPickupID]);
 			if(IsValidDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iTextID])) DestroyDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iTextID]);
+			if(IsValidDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID])) DestroyDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID]);
+			arrBlackMarket[iBlackMarketID][bm_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
 			arrBlackMarket[iBlackMarketID][bm_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n{AAAAAA}ID: %d", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], iBlackMarketID);
+			format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n{AAAAAA}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to access the market.", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], iBlackMarketID);
 			arrBlackMarket[iBlackMarketID][bm_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
+			
+			if(arrBlackMarket[iBlackMarketID][bm_iSeized]) {
+				format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n\n{FF0000}Seized", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
+				UpdateDynamic3DTextLabelText(arrBlackMarket[iBlackMarketID][bm_iTextID], COLOR_GREEN, szMiscArray);
+			}
+
 			format(szMiscArray, sizeof(szMiscArray), "You successfully edited %s black market's position.", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
-			SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iVW, iINT, iBlackMarketID);
 			mysql_function_query(MainPipeline, szMiscArray, false, "", "");
 			return 1;
@@ -435,14 +731,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new Float:fPos[3],
 				iBlackMarketID = ListItemTrackId[playerid][listitem];
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessage(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
+			if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
 			if(IsValidDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iDelTextID])) DestroyDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iDelTextID]);
 			format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n%s's Black Market\n{AAAAAA}ID: %d", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], iBlackMarketID);
 			arrBlackMarket[iBlackMarketID][bm_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
 			format(szMiscArray, sizeof(szMiscArray), "You successfully edited %s black market's delivery point.", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
-			SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `delposx` = '%f', `delposy` = '%f', `delposz` = '%f' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iBlackMarketID);
-			mysql_function_query(MainPipeline, szMiscArray, false, "", "");
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			return 1;
 		}
 		case DIALOG_BLACKMARKET_ADELBM:
@@ -452,7 +748,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DestroyDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iTextID]);
 			DestroyDynamic3DTextLabel(arrBlackMarket[iBlackMarketID][bm_iDelTextID]);
 			format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `blackmarkets` WHERE `id` = '%d'", iBlackMarketID);
-			mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "i", playerid, iBlackMarketID);
+			mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, iBlackMarketID);
+		}
+		case DIALOG_BLACKMARKET_ASEIZE: {
+			
+			new iBlackMarketID = ListItemTrackId[playerid][listitem];
+			arrBlackMarket[iBlackMarketID][bm_iSeized] = 0;
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Successfully unseized the black market.");
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `seized` = '0' WHERE `id` = '%d'", iBlackMarketID);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
 		}
 		case DIALOG_BLACKMARKET_INGREDIENTS:
 		{
@@ -483,7 +788,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(iTotalAmount > (PlayerInfo[playerid][pSmugSkill] + 1) * SMUGGLE_PER_LEVEL)
 				{
 					format(szMiscArray, sizeof(szMiscArray), "You cannot smuggle more than %d pieces.", (PlayerInfo[playerid][pSmugSkill] + 1) * SMUGGLE_PER_LEVEL);
-					SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
+					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 					Smuggle_LoadIngredients(playerid);
 					return 1;
 				}
@@ -495,7 +800,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_SMUGGLE_PREPARE2:
 		{
-			if(!response || isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext)) return DeletePVar(playerid, PVAR_INGREDIENT_ORDERING), Smuggle_LoadIngredients(playerid), SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+			if(!response || isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext)) return DeletePVar(playerid, PVAR_INGREDIENT_ORDERING), Smuggle_LoadIngredients(playerid), SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
 			arrSmuggleVehicle[GetPlayerVehicleID(playerid)][smv_iIngredientAmount][GetPVarInt(playerid, PVAR_INGREDIENT_ORDERING)] = strval(inputtext);
 			DeletePVar(playerid, PVAR_INGREDIENT_ORDERING);
 			Smuggle_LoadIngredients(playerid);
@@ -513,68 +818,202 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_SMUGGLE_BMDELPOINT:
 		{
-			if(!response) return Smuggle_LoadIngredients(playerid);
+			if(!response) return Smuggle_LoadIngredients(playerid), DeletePVar(playerid, "BM_PAY");
 			Smuggle_StartSmuggle(playerid, ListItemTrackId[playerid][listitem]);
 			return 1;
+		}
+
+		case DIALOG_POINT_NAME: {
+
+			if(!isnull(inputtext) && !IsNumeric(inputtext)) {
+
+				SetPVarString(playerid, "PO_Name", inputtext);
+				return ShowPlayerDialog(playerid, DIALOG_POINT_TYPE, DIALOG_STYLE_LIST, "Create Point", "Weapon Point\nDrug Point", "Select", "Cancel");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid name.");
+		}
+		case DIALOG_POINT_TYPE: {
+
+			if(response) 
+			{
+				new Float:fPos[3];
+
+				for(new i; i < MAX_DYNPOINTS; ++i)	{
+
+					if(!IsValidDynamicPickup(arrPoint[i][po_iPickupID])) {
+
+						new iVW = GetPlayerVirtualWorld(playerid), 
+							iINT = GetPlayerInterior(playerid),
+							szName[MAX_PLAYER_NAME];
+
+						if(iINT != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can only create points in the exterior world.");
+
+						arrPoint[i][po_iType] = listitem;
+
+						arrPoint[i][po_iCaptureAble] = 1;
+
+						GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
+						arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+						
+						GetPVarString(playerid, "PO_Name", szName, sizeof(szName));
+
+						strins(arrPoint[i][po_szPointName], szName, 0, MAX_PLAYER_NAME);
+
+						switch(listitem) {
+							case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Weapon Point\n{CCCCCC}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", szName, i, szName);
+							case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Drug Point\n{CCCCCC}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", szName, i, szName);
+						}
+						
+						arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+
+						arrPoint[i][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+
+						Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
+
+						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `dynpoints` (`id`, `type`, `name`, `posx`, `posy`, `posz`, `vw`, `int`) VALUES ('%d', '%d', '%e', '%f', '%f', '%f', '%d', '%d')",
+							i, listitem, szName, fPos[0], fPos[1], fPos[2], iVW, iINT);
+
+						mysql_function_query(MainPipeline, szMiscArray, false, "PO_OnCreatePoint", "ii", playerid, i);
+
+						return 1;
+					}
+				}
+				SendClientMessageEx(playerid, COLOR_GRAD1, "The maximum amount of points has been reached.");
+				return 1;
+			}
+		}
+		case DIALOG_POINT_LIST: {
+
+			if(response) {
+
+				if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
+				
+				new Float:fPos[3],
+					i = listitem + 1;
+
+				Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrPoint[i][po_iPickupID], E_STREAMER_X, fPos[0]);
+				Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrPoint[i][po_iPickupID], E_STREAMER_Y, fPos[1]);
+				Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrPoint[i][po_iPickupID], E_STREAMER_Z, fPos[2]);
+
+				SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+			}
 		}
 	}
 	return 0;
 }
 
-Drug_ListDrugs(playerid)
-{
+
+GetMaxDrugsAllowed(iDrugID) {
+	switch(iDrugID) {
+
+		case 0: return 500;
+		case 1: return 500;
+		case 2: return 500;
+		case 3: return 500;
+		case 4: return 500;
+		case 5: return 500;
+		case 6: return 500;
+		case 7: return 500;
+		case 8: return 500;
+		case 9: return 500;
+		case 10: return 500;
+		case 11: return 500;
+		case 12: return 500;
+		case 13: return 500;
+		case 14: return 500;
+	}
+	return 0;
+}
+
+
+GetMaxIngredientsAllowed(iIngredientID) {
+	switch(iIngredientID) {
+
+		case 0: return 500;
+		case 1: return 500;
+		case 2: return 500;
+		case 3: return 500;
+		case 4: return 500;
+		case 5: return 500;
+		case 6: return 500;
+		case 7: return 500;
+		case 8: return 500;
+		case 9: return 500;
+		case 10: return 500;
+		case 11: return 500;
+		case 12: return 500;
+		case 13: return 500;
+		case 14: return 500;
+	}
+	return 0;
+}
+
+
+Drug_ListDrugs(playerid) {
+
 	format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s", szDrugs[0], szDrugs[1], szDrugs[2], szDrugs[3], szDrugs[4], szDrugs[5], szDrugs[6],
 		szDrugs[7], szDrugs[8], szDrugs[9], szDrugs[10]);
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 }
 
-Drug_ListIngredients(playerid)
-{
+Drug_ListIngredients(playerid) {
+
 	format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s", szIngredients[0], szIngredients[1], szIngredients[2], szIngredients[3], szIngredients[4]);
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s | %s", szIngredients[5], szIngredients[6], szIngredients[7], szIngredients[8], szIngredients[9], szIngredients[10]);
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);	
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);	
 }
 
-Drug_StartMix(playerid)
-{
+Drug_StartMix(playerid) {
+
 	szMiscArray[0] = 0;
-	for(new i; i < 8; ++i)
-	{
+
+	for(new i; i < 9; ++i) {
+
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szDrugs[i]);
 	}
+
 	return ShowPlayerDialog(playerid, DIALOG_DRUGS_MIX_START, DIALOG_STYLE_LIST, "Drugs | Which drug would you like to make?", szMiscArray, "Select", "Cancel");
 }
 
-Drug_ShowMix(playerid)
-{
+Drug_ShowMix(playerid) {
+
 	new szTitle[128];
+
 	format(szTitle, sizeof(szTitle), "Drug Mix | Preparing: %s", szDrugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
+
 	szMiscArray = "Slot\tIngredient\tPieces\n";
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i)
-	{
+
+	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) {
+
 		if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)
 			format(szMiscArray, sizeof(szMiscArray), "%sSlot %d\t%s\t%d\n", szMiscArray, i, szIngredients[dr_arrDrugMix[playerid][i][drm_iIngredientID]], dr_arrDrugMix[playerid][i][drm_iAmount]);
+		
 		else format(szMiscArray, sizeof(szMiscArray), "%sSlot %d\tNone\t0\n", szMiscArray, i);
 	}
+
 	strins(szMiscArray, "\n-\t____________\t-\n-\tExtract\t-", strlen(szMiscArray), strlen(szMiscArray)+1);
+
 	return ShowPlayerDialog(playerid, DIALOG_DRUGS_MIX_MAIN, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Cancel");
 }
 
-Drug_FinishMix(playerid, iDrugID)
-{
+Drug_FinishMix(playerid, iDrugID) {
+
 	new iDrugAmount,
 		iDrugQuality;
-	switch(iDrugID)
-	{
-		case 0: // LSD -- Morning Glory Seeds (5)
-		{
-			for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i)
-			{
-				if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)	
-				{
-					switch(dr_arrDrugMix[playerid][i][drm_iIngredientID]) 
-					{
+
+	switch(iDrugID)	{
+
+		case 0: { // LSD -- Morning Glory Seeds (5)
+
+			for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) {
+
+				if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)	{
+
+					switch(dr_arrDrugMix[playerid][i][drm_iIngredientID]) {
+
 						case 0: // Morning Glory Seeds
 						{
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 2 == 0) iDrugQuality = 25;
@@ -766,7 +1205,44 @@ Drug_FinishMix(playerid, iDrugID)
 				}
 			}
 		}
-		case 6: // Ecstacy
+		case 6: // Opium
+		{
+			for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i)
+			{
+				if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)	
+				{
+					switch(dr_arrDrugMix[playerid][i][drm_iIngredientID]) 
+					{
+						case 7: // Opium Poppy
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 50;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 25;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2; // 5 Morning Glory Seeds
+						}
+						case 8: // Lime
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 2 == 0) iDrugQuality = 50;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 25;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+						}
+						case 6: // Distilled water
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 1 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+						}
+						default: iDrugQuality = 0;
+					}
+				}
+			}
+		}
+		case 7: // Ecstacy
 		{
 			for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i)
 			{
@@ -802,7 +1278,7 @@ Drug_FinishMix(playerid, iDrugID)
 				}
 			}
 		}
-		case 7: // Speed
+		case 8: // Speed
 		{
 			for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i)
 			{
@@ -838,7 +1314,7 @@ Drug_FinishMix(playerid, iDrugID)
 			}
 		}
 	}
-	if(iDrugAmount == 0) return SendClientMessage(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You did not add the core ingredient.");
+	if(iDrugAmount == 0) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You did not add the core ingredient.");
 	Drug_CreateDrug(playerid, iDrugID, iDrugAmount, iDrugQuality);
 	DeletePVar(playerid, PVAR_MAKINGDRUG);
 	return 1;
@@ -848,7 +1324,7 @@ Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality)
 {
 	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0) PlayerInfo[playerid][p_iIngredient] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You made %d pc of %s with a quality of %dqP.", iAmount, szDrugs[iDrugID], iDrugQuality);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
 	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] < 100) PlayerInfo[playerid][p_iDrugQuality][iDrugID] += iDrugQuality;
 	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
@@ -856,11 +1332,11 @@ Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality)
 }
 
 
-Addicted_Process(playerid, iDrugID, iTaken)
+Drug_Process(playerid, iDrugID, iTaken)
 {
 	if(PlayerInfo[playerid][p_iAddictedLevel][iDrugID] < DRUGS_ADDICTED_THRESHOLD)
 	{
-		Drug_Effects(playerid, iDrugID, iTaken);
+		Drug_SideEffects(playerid, iDrugID, iTaken);
 		return 1;
 	}
 	if(PlayerInfo[playerid][p_iAddictedLevel][iDrugID] == DRUGS_ADDICTED_THRESHOLD && PlayerInfo[playerid][p_iAddicted][iDrugID] < 1)
@@ -868,7 +1344,7 @@ Addicted_Process(playerid, iDrugID, iTaken)
 		PlayerInfo[playerid][p_iAddicted][iDrugID] = 2;
 		PlayerInfo[playerid][p_iAddictedLevel][iDrugID] = DRUGS_ADDICTED_LEVEL;
 		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You are now addicted to %s.", szDrugs[iDrugID]);
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	}
 	Addiction_Effects(playerid, iDrugID, iTaken);
 	return 1;
@@ -877,54 +1353,67 @@ Addicted_Process(playerid, iDrugID, iTaken)
 Addicted_TimerProcess(playerid, iDrugID)
 {
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}Some effects started to kick in from %s addiction...", szDrugs[iDrugID]);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iAddicted][iDrugID] = 2;
 	PlayerInfo[playerid][p_iAddictedLevel][iDrugID] = DRUGS_ADDICTED_LEVEL;
 	Addiction_Effects(playerid, iDrugID, PlayerInfo[playerid][p_iDrugTaken][iDrugID]);
 }
 
-Drug_GetID(szDrug[])
-{
-	for(new i; i < sizeof(szDrugs); ++i)
-	{
+Drug_GetID(szDrug[]) {
+
+	for(new i; i < sizeof(szDrugs); ++i) {
+
 		if(strcmp(szDrugs[i], szDrug, true) == 0) return i;
 	}
+
 	return -1;
 }
 
-Drug_IngredientID(szIngredient[])
-{
-	for(new i; i < sizeof(szIngredients); ++i)
-	{
+Drug_IngredientID(szIngredient[]) {
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
 		if(strcmp(szIngredients[i], szIngredient, true) == 0) return i;
 	}
+
 	return -1;	
 }
 
+
+
 forward Addiction_Effects(playerid, iDrugID, iTaken);
-public Addiction_Effects(playerid, iDrugID, iTaken)
-{
-	if(PlayerInfo[playerid][p_iAddictedLevel][iDrugID] > DRUGS_ADDICTED_THRESHOLD)
-	{
+public Addiction_Effects(playerid, iDrugID, iTaken) {
+
+	if(PlayerInfo[playerid][p_iAddictedLevel][iDrugID] > DRUGS_ADDICTED_THRESHOLD) {
+
 		if(dr_iPlayerTimer[playerid][0]) KillTimer(dr_iPlayerTimer[playerid][0]);
-		dr_iPlayerTimer[playerid][0] = SetTimerEx("Addiction_Effects", 1000 * 300, false, "iii", playerid, iDrugID, iTaken);
+		dr_iPlayerTimer[playerid][0] = SetTimerEx("Addiction_Effects", 1000 * 60, false, "iii", playerid, iDrugID, iTaken); // cooldown = 60 seconds
 	}
-	else
-	{
+	else {
+
 		if(dr_iPlayerTimer[playerid][0]) KillTimer(dr_iPlayerTimer[playerid][0]);
+
 		if(dr_iPlayerTimer[playerid][1]) KillTimer(dr_iPlayerTimer[playerid][1]);
+
 		PlayerInfo[playerid][p_iAddicted][iDrugID] = 1;
 		PlayerInfo[playerid][p_iAddictedLevel][iDrugID] = 50;
 		PlayerInfo[playerid][p_iAddicted][iDrugID] = 1;
-		Drug_ResetEffects(playerid);
-		SendClientMessage(playerid, COLOR_GRAD1, "The effects of your addiction wore off.");
+
+		Drug_ResetEffects(playerid, iDrugID);
+
+		SendClientMessageEx(playerid, COLOR_GRAD1, "The effects of your addiction wore off.");
+		
 		return 1;
 	}
-	Drug_Effects(playerid, iDrugID, iTaken);
+
+	Drug_SideEffects(playerid, iDrugID, iTaken);
+
 	new Float:fHealth;
+
 	GetPlayerHealth(playerid, fHealth);
-	if(fHealth > 30.0)
-	{
+
+	if(fHealth > 30.0) {
+
 		switch(iDrugID)
 		{
 			case 0:
@@ -957,53 +1446,79 @@ public Addiction_Effects(playerid, iDrugID, iTaken)
 				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
 				return 1;
 			}
+			default: {
+				
+				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
+				return 1;
+			}
 		}
 	}
 	return 1;
 }
 
-forward Drug_Effects(playerid, iDrugID, iTaken);
-public Drug_Effects(playerid, iDrugID, iTaken)
-{
+forward Drug_SideEffects(playerid, iDrugID, iTaken);
+public Drug_SideEffects(playerid, iDrugID, iTaken) {
+
 	if(GetPVarType(playerid, PVAR_DRUGS_OVERDOSE)) return 1;
+
 	new iTotalTaken = PlayerInfo[playerid][p_iDrugTaken][iDrugID],
 		iAllTaken,
 		Float:fHealth,
 		Float:fArmour;
+
 	GetPlayerHealth(playerid, fHealth), GetPlayerArmour(playerid, fArmour);
+
 	if(dr_iPlayerTimer[playerid][1]) KillTimer(dr_iPlayerTimer[playerid][1]);
+
 	for(new i; i < sizeof(szDrugs); ++i) iAllTaken += PlayerInfo[playerid][p_iDrugTaken][i];
-	if(iAllTaken > DRUGS_OVERDOSE_THRESHOLD)
-	{
+
+	if(iAllTaken > DRUGS_OVERDOSE_THRESHOLD - 5) {
+
+		new rand = random(20);
+
+		if(rand == 13) {
+
+			Ufo_CreateUfo(playerid);
+			return 1;
+		}
+	}
+	if(iAllTaken > DRUGS_OVERDOSE_THRESHOLD) {
+
+		ClearAnimations(playerid, 1);
 		SetPVarInt(playerid, PVAR_DRUGS_OVERDOSE, 1);
 		TogglePlayerControllable(playerid, 0);
 		TextDrawShowForPlayer(playerid, ODTextDraw);
 		SetPlayerDrunkLevel(playerid, 6000);
-		PlayAnimEx(playerid, "CRACK", "crckdeth2", 4.1, 1, 0, 0, 0, 0, 1);
+		PlayAnimEx(playerid, "CRACK", "crckdeth2", 4.1, 0, 0, 0, 1, 30000, 1);
+		SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {DDDDDD}You are currently overdosed.");
 		SetTimerEx("Drug_ResetOverDose", 30000, false, "ii", playerid, iDrugID);
 		return 1;
 	}
+
 	dr_iPlayerTimer[playerid][1] = SetTimerEx("Drug_ResetEffects", 10000 * iTotalTaken, false, "ii", playerid, iDrugID);
+
 	SetTimerEx("Drug_ResetDrunkEffects", 20000, false, "ii", playerid, iDrugID);
-	switch(iDrugID)
-	{
+
+	switch(iDrugID)	{
+
 		case 0: // LSD
 		{
 			if(fHealth < (DRUGS_MAX_BONUS_HEALTH - 5 * iTaken)) SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
-			SetPlayerTime(playerid, 4, 0);
+			
 			switch(iTotalTaken)
 			{
-				case 0 .. 5: SetPlayerWeather(playerid, 108);
+				case 0 .. 5: SetPlayerWeather(playerid, 108), SetPlayerTime(playerid, 10, 0);
 				case 6 .. 10:
 				{
+					SetPlayerTime(playerid, 10, 0);
 					SetPlayerWeather(playerid, 110);
 					SetPVarInt(playerid, "DR_ACTV", 0);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 				case 11 .. 15: SetPlayerWeather(playerid, 111);
-				default: 
-				{
+				default: {
+					SetPlayerTime(playerid, 22, 0);
 					SetPlayerWeather(playerid, 109);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
@@ -1012,12 +1527,12 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 		case 1: // Cannabis
 		{
 			if(fHealth < (DRUGS_MAX_BONUS_HEALTH - 5 * iTaken)) SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
-			switch(iTotalTaken)
-			{
+			switch(iTotalTaken) {
+
 				case 0 .. 5: SetPlayerWeather(playerid, 888);
 				case 6 .. 9: SetPlayerWeather(playerid, 900), SetPlayerDrunkLevel(playerid, 2000);
-				default:
-				{
+				default: {
+
 					SetPlayerWeather(playerid, 900);
 					SetPlayerDrunkLevel(playerid, 5000);
 					Drug_SoundEffects(playerid, iDrugID);
@@ -1027,8 +1542,8 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 		case 2: // Meth
 		{
 			if(fHealth < (DRUGS_MAX_BONUS_HEALTH - 5 * iTaken)) SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
-			switch(iTotalTaken)
-			{
+			switch(iTotalTaken)	{
+
 				case 0 .. 5: SetPlayerWeather(playerid, 108);
 				case 6 .. 10: SetPlayerWeather(playerid, 110);
 				case 11 .. 15: SetPlayerWeather(playerid, 111);
@@ -1038,8 +1553,8 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 		case 3: // Heroine
 		{
 			if(fArmour < (DRUGS_MAX_BONUS_ARMOUR - 5 * iTaken)) SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
-			switch(iTotalTaken)
-			{
+			switch(iTotalTaken)	{
+
 				case 0 .. 5: SetPlayerWeather(playerid, 108);
 				case 6 .. 10:
 				{
@@ -1094,7 +1609,7 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 				default: SetPlayerWeather(playerid, 109);
 			}
 		}
-		case 6: // Ecstacy
+		case 6: // Opium
 		{
 			if(fHealth < (DRUGS_MAX_BONUS_HEALTH - 5 * iTaken)) SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
 			if(fArmour < (DRUGS_MAX_BONUS_ARMOUR - 5 * iTaken)) SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
@@ -1121,7 +1636,34 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 				}
 			}
 		}
-		case 7: // Speed
+		case 7: // Ecstacy
+		{
+			if(fHealth < (DRUGS_MAX_BONUS_HEALTH - 5 * iTaken)) SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			if(fArmour < (DRUGS_MAX_BONUS_ARMOUR - 5 * iTaken)) SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			switch(iTotalTaken)
+			{
+				case 0 .. 5: 
+				{
+					SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 10, 0);
+					SetPVarInt(playerid, "DR_ACTV", 0);
+					Drug_ExplosionEffects(playerid, iDrugID);
+				}
+				case 6 .. 10: SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 20, 0);
+				case 11 .. 15:
+				{
+					SetPlayerWeather(playerid, 700);
+					SetPlayerTime(playerid, 0, 0);
+					Drug_SoundEffects(playerid, iDrugID);
+				}
+				default: 
+				{
+					SetPlayerWeather(playerid, 700);
+					SetPlayerTime(playerid, 5, 0);
+					Drug_SoundEffects(playerid, iDrugID);
+				}
+			}
+		}
+		case 8: // Speed
 		{
 			new Float:fPos[3];
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -1145,6 +1687,36 @@ public Drug_Effects(playerid, iDrugID, iTaken)
 				default: 
 				{
 					SetPlayerWeather(playerid, 202);
+					Drug_SoundEffects(playerid, iDrugID);
+				}
+			}
+		}
+		case 9: // Alcohol
+		{
+			switch(iTotalTaken)
+			{
+				case 0 .. 5: SetPlayerDrunkLevel(playerid, 2000);
+				case 6 .. 10: SetPlayerDrunkLevel(playerid, 4000);
+				case 11 .. 15: SetPlayerDrunkLevel(playerid, 6000);
+				default: 
+				{
+					SetPlayerDrunkLevel(playerid, 8000);
+					Drug_SoundEffects(playerid, iDrugID);
+				}
+			}
+		}
+		case 10, 11, 12:
+		{
+			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			switch(iTotalTaken)
+			{
+				case 0 .. 15: return Drug_ResetEffects(playerid, iDrugID);
+				default: 
+				{
+					SetPlayerWeather(playerid, 110);
+					SetPVarInt(playerid, "DR_ACTV", 0);
+					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 			}
@@ -1182,6 +1754,7 @@ public Drug_ExplosionEffects(playerid, iDrugID)
 	return 1;	
 }
 
+
 forward Drug_SoundEffects(playerid, iDrugID);
 public Drug_SoundEffects(playerid, iDrugID)
 {
@@ -1191,6 +1764,7 @@ public Drug_SoundEffects(playerid, iDrugID)
 	{
 		new i = random(8),
 			j;
+
 		switch(i)
 		{
 			case 0: j = 4803;
@@ -1232,8 +1806,8 @@ public Drug_ResetGunPerk(playerid)
 
 Drug_OrderIngredient(playerid, iBlackMarketID, iIngredientID, iAmount) // change sqlid
 {
-	if(GetPlayerMoney(playerid) < (arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] * iAmount)) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
-	if(arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "The black market doesn't have that much in stock.");
+	if(GetPlayerMoney(playerid) < (arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] * iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
+	if(arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The black market doesn't have that much in stock.");
 	new bool:iTrackable,
 		iGroupID = arrBlackMarket[iBlackMarketID][bm_iGroupID];
 	if(iAmount > DRUGS_TRACKABLE_THRESHOLD) iTrackable = true;
@@ -1246,7 +1820,7 @@ Drug_OrderIngredient(playerid, iBlackMarketID, iIngredientID, iAmount) // change
 		}
 	}
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'",
-		BM_GetSQLName(iIngredientID), arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] - iAmount, iGroupID);
+	DS_Ingredients_GetSQLName(iIngredientID), arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] - iAmount, iGroupID);
 	mysql_function_query(MainPipeline, szMiscArray, false, "", "");
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `blackmarkets_orders` (`DBID`, `name`, `timestamp`, `groupid`, `ingredientid`, `amount`, `trackable`)\
 		VALUES ('%d', '%s', '%d', '%d', '%d', '%d', '%d')", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), gettime(), iGroupID, iIngredientID, iAmount, iTrackable);
@@ -1258,7 +1832,7 @@ forward Drug_OnOrderIngredient(playerid, iIngredientID, iAmount, iGroupID);
 public Drug_OnOrderIngredient(playerid, iIngredientID, iAmount, iGroupID)
 {
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You ordered %d pieces of %s from %s.", iAmount, szIngredients[iIngredientID], arrGroupData[iGroupID][g_szGroupName]);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	return 1;
 }
 
@@ -1279,9 +1853,9 @@ public BM_OnLoadBlackMarkets()
 	cache_get_data(iRows, iFields, MainPipeline);
 	while(iCount < iRows)
 	{
-		for(new i; i < sizeof(szIngredients); ++i) arrBlackMarket[iCount][bm_iIngredientAmount][i] = cache_get_field_content_int(iCount, BM_GetSQLName(i), MainPipeline);
+		for(new i; i < sizeof(szIngredients); ++i) arrBlackMarket[iCount][bm_iIngredientAmount][i] = cache_get_field_content_int(iCount, DS_Ingredients_GetSQLName(i), MainPipeline);
 		for(new i; i < sizeof(szIngredients); ++i) {
-			format(szMiscArray, sizeof(szMiscArray), "%s%s", BM_GetSQLName(i), "price");
+			format(szMiscArray, sizeof(szMiscArray), "%s%s", DS_Ingredients_GetSQLName(i), "price");
 			arrBlackMarket[iCount][bm_iIngredientPrice][i] = cache_get_field_content_int(iCount, szMiscArray, MainPipeline);
 		}
 		new Float:fPos[6],
@@ -1298,13 +1872,23 @@ public BM_OnLoadBlackMarkets()
 		iINT = cache_get_field_content_int(iCount, "int", MainPipeline);
 		iGroupID = cache_get_field_content_int(iCount, "groupid", MainPipeline);
 
+		arrBlackMarket[iCount][bm_iSeized] = cache_get_field_content_int(iCount, "seized", MainPipeline);
+
 		arrBlackMarket[iCount][bm_iGroupID] = iGroupID;
+		
+		arrBlackMarket[iCount][bm_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
 		arrBlackMarket[iCount][bm_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
 		format(szMiscArray, sizeof(szMiscArray), "%s\n{AAAAAA}ID: %d", arrGroupData[iGroupID][g_szGroupName], iCount);
 		arrBlackMarket[iCount][bm_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n%s's Black Market\n{AAAAAA}ID: %d", arrGroupData[iGroupID][g_szGroupName], iCount);
+		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n%s's Black Market\n{AAAAAA}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", arrGroupData[iGroupID][g_szGroupName], iCount);
 		arrBlackMarket[iCount][bm_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
-		Streamer_SetIntData(STREAMER_TYPE_PICKUP, arrBlackMarket[iCount][bm_iPickupID], E_STREAMER_EXTRA_ID, iCount);
+		Streamer_SetIntData(STREAMER_TYPE_AREA, arrBlackMarket[iCount][bm_iAreaID], E_STREAMER_EXTRA_ID, iCount);
+
+		if(arrBlackMarket[iCount][bm_iSeized]) {
+			format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n\n{FF0000}Seized", arrGroupData[iGroupID][g_szGroupName]);
+			UpdateDynamic3DTextLabelText(arrBlackMarket[iCount][bm_iTextID], COLOR_GREEN, szMiscArray);
+		}
+
 		iCount++;
 	}
 	printf("[Black Markets] Loaded %d black markets.", iCount);
@@ -1315,48 +1899,33 @@ forward BM_OnCreateBlackMarket(playerid, i);
 public BM_OnCreateBlackMarket(playerid, i)
 {
 	format(szMiscArray, sizeof(szMiscArray), "You have successfully created a blackmarket for %s with ID %d", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName], i);
-	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-	SendClientMessage(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point for the black market (/ablackmarket deliverypoint)");
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point for the black market (/ablackmarket deliverypoint)");
 	return 1;
 }
 
-BM_GetSQLName(id)
-{
-	new sqlname[12];
-	switch(id)
-	{
-		case 0: sqlname = "mgseeds";
-		case 1: sqlname = "canseeds";
-		case 2: sqlname = "lye";
-		case 3: sqlname = "ethyl";
-		case 4: sqlname = "ephedrine";
-		case 5: sqlname = "diswater";
-		case 6: sqlname = "opium";
-		case 7: sqlname = "lime";
-		case 8: sqlname = "cocaine";
-		case 9: sqlname = "baking";
-		case 10: sqlname = "cocextract";
-		case 11: sqlname = "nbenzynol";
-		case 12: sqlname = "pmkoil";
-		case 13: sqlname = "mdmacrys";
-		case 14: sqlname = "cafeine";
-		default: sqlname = "";
-	}
-	return sqlname;
+forward BM_OnDeleteBlackMarket(playerid, iBlackMarketID);
+public BM_OnDeleteBlackMarket(playerid, iBlackMarketID) {
+
+	if(mysql_errno()) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
+
+	format(szMiscArray, sizeof(szMiscArray), "You successfully destroyed black market ID %d", iBlackMarketID);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	return 1;
 }
 
 
-BM_ShowBlackMarketOrders(playerid)
-{
+BM_ShowBlackMarketOrders(playerid) {
+
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `blackmarkets_orders` WHERE `groupid` = %d", arrBlackMarket[GetPVarInt(playerid, PVAR_BLMARKETID)][bm_iGroupID]); //editsqlid
 	mysql_function_query(MainPipeline, szMiscArray, true, "BM_OnListBMOrders", "i", playerid);	
 }
 
 forward BM_OnListBMOrders(playerid);
-public BM_OnListBMOrders(playerid)
-{
+public BM_OnListBMOrders(playerid) {
+
 	new iRows = cache_get_row_count();
-	if(!iRows) return SendClientMessage(playerid, COLOR_GRAD1, "No orders matched your query.");
+	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "No orders matched your query.");
 	
 	new iFields,
 		iCount,
@@ -1364,19 +1933,25 @@ public BM_OnListBMOrders(playerid)
 		szDate[64];
 
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	new iDeliverTime = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUG_ORDER_TIME;
+
 	if(gettime() < iDeliverTime) format(szDate, sizeof(szDate), "{FFFF00}%s", date(iDeliverTime, 2));
 	else format(szDate, sizeof(szDate), "{00FF00}%s", date(iDeliverTime, 2));
+
 	szMiscArray = "Name\tOrdering\tExpected delivery\n";
-	while(iCount < iRows)
-	{
+
+	while(iCount < iRows) {
+
 		cache_get_field_content(iCount, "name", szName, MainPipeline, sizeof(szName));
+
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s (%d)\t%s\n",
 			szMiscArray,
 			StripUnderscore(szName),
 			szIngredients[cache_get_field_content_int(iCount, "ingredientid", MainPipeline)],
 			cache_get_field_content_int(iCount, "amount", MainPipeline),
 			szDate);
+
 		iCount++;
 	}
 	ShowPlayerDialog(playerid, DIALOG_DRUGS_ORDER_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Black Market | Orders", szMiscArray, "<<", "");
@@ -1385,93 +1960,88 @@ public BM_OnListBMOrders(playerid)
 
 BM_ShowBlackMarket(playerid)
 {
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `blackmarkets` WHERE `groupid` = '%d'", arrBlackMarket[GetPVarInt(playerid, PVAR_BLMARKETID)][bm_iGroupID]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "BM_OnShowBlackMarket", "i", playerid);	
+	new iBlackMarketID = GetPVarInt(playerid, PVAR_BLMARKETID),
+		szTitle[64];
+
+	szMiscArray = "Ingredient Name\tAmount\n";
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szIngredients[i], number_format(arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i]));
+	}
+
+	format(szTitle, sizeof(szTitle), "%s's Black Market | Ingredients", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_INGREDIENTS, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<<", "");
 }
 
-forward BM_OnShowBlackMarket(playerid);
-public BM_OnShowBlackMarket(playerid)
-{
-	new iRows = cache_get_row_count();
-	if(!iRows) return SendClientMessage(playerid, COLOR_GRAD1, "Your group does not have a black market.");
-	new iFields,
-		iCount;
-	cache_get_data(iRows, iFields, MainPipeline);
-	szMiscArray = "Ingredient\tPieces\n";
-	while(iCount < iRows)
-	{
-		for(new i; i < sizeof(szIngredients); ++i)
-		{
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], cache_get_field_content_int(iCount, BM_GetSQLName(i), MainPipeline));
-		}
-		iCount++;
-	}
-	new szTitle[64];
-	format(szTitle, sizeof(szTitle), "%s's Black Market | Ingredients", "Grove Street");
-	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_INGREDIENTS, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "<<");
-	return 1;
-}
+
 
 BM_EditBlackMarket(playerid, iBlackMarketID, choice)
 {
 	switch(choice)
 	{
-		case 0:
-		{
+		case 0:	{
+
 			szMiscArray = "Ingredient Name\tPrice (per piece)\n";
-			for(new i; i < sizeof(szIngredients); ++i)
-			{
+
+			for(new i; i < sizeof(szIngredients); ++i) {
+
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\n", szMiscArray, szIngredients[i], number_format(arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][i]));
 			}
 			return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_EDITPRICE, DIALOG_STYLE_TABLIST_HEADERS, "Black Market | Edit Prices", szMiscArray, "Edit", "<<");
 		}
-		case 1:
-		{
+		case 1: {
+
 			szMiscArray = "Ingredient Name\tPaying (per piece)\n";
-			for(new i; i < sizeof(szIngredients); ++i)
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szIngredients[i], number_format(arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i]));
+
+			for(new i; i < sizeof(szIngredients); ++i) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\n", szMiscArray, szIngredients[i], number_format(arrBlackMarket[iBlackMarketID][bm_iIngredientSmugglePay][i]));
 			}
 			return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_EDITPAYMENT, DIALOG_STYLE_TABLIST_HEADERS, "Black Market | Edit Smuggle Payment", szMiscArray, "Edit", "<<");
 		}
-		case 2:
-		{
-			szMiscArray = "Ingredient Name\tPieces\n";
-			for(new i; i < sizeof(szIngredients); ++i)
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i]);
-			}
-			return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_TRANSFER, DIALOG_STYLE_TABLIST_HEADERS, "Black Market | Transfer Stock", szMiscArray, "Edit", "<<");
-		}
+		case 2:	return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_TRANSFERC, DIALOG_STYLE_LIST, "Black Market - Transfer Stock", "Withdraw from Locker\nDeposit to Locker", "Select", "Cancel");
 	}
 	return 1;
 }
 
 BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 {
+	new iGroupID = PlayerInfo[playerid][pMember];
 	switch(choice)
 	{
-		case 0:
-		{
+		case 0: {
+
 			arrBlackMarket[id][bm_iIngredientPrice][iChoice] = iAmount;
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%sprice` = '%d' WHERE `groupid` = '%d'", BM_GetSQLName(iChoice), iAmount, id);
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%sprice` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), iAmount, id);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
 		}
-		case 1:
-		{
+		case 1:	{
+
 			arrBlackMarket[id][bm_iIngredientSmugglePay][iChoice] = iAmount;
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%ssmugglepay` = '%d' WHERE `groupid` = '%d'", BM_GetSQLName(iChoice), iAmount, id);
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%spay` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), iAmount, id);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
 		}
-		case 2:
-		{
-			if(arrBlackMarket[id][bm_iIngredientAmount][iChoice] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough in stock.");
-			arrBlackMarket[id][bm_iIngredientAmount][iChoice] =- iAmount;
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'", BM_GetSQLName(iChoice), arrBlackMarket[id][bm_iIngredientAmount][iChoice], id);
+		case 2:	{
+
+			switch(GetPVarInt(playerid, "DS_BMTC")) {
+				case 0: {
+					if(arrGroupData[iGroupID][g_iIngredients][iChoice] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough in the locker.");
+					arrBlackMarket[id][bm_iIngredientAmount][iChoice] += iAmount;
+					arrGroupData[iGroupID][g_iIngredients][iChoice] -= iAmount;
+				}
+				case 1: {
+					if(arrBlackMarket[id][bm_iIngredientAmount][iChoice] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough in stock.");
+					arrBlackMarket[id][bm_iIngredientAmount][iChoice] -= iAmount;
+					arrGroupData[iGroupID][g_iIngredients][iChoice] += iAmount;
+				}
+			}
+			
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrBlackMarket[id][bm_iIngredientAmount][iChoice], id);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
-			arrGroupData[PlayerInfo[playerid][pMember]][g_iIngredients][iChoice] += iAmount;
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `groupid` = '%d'", BM_GetSQLName(iChoice), arrGroupData[PlayerInfo[playerid][pMember]][g_iIngredients][iChoice], PlayerInfo[playerid][pMember]);
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrGroupData[iGroupID][g_iIngredients][iChoice], PlayerInfo[playerid][pMember]);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
+			return 1;			
 		}
 	}
 	return 1;
@@ -1480,67 +2050,109 @@ BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 forward BM_FinishEditBlackMarket(playerid, id, iChoice, iAmount, choice);
 public BM_FinishEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 {
-	if(mysql_errno()) return SendClientMessage(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	switch(choice)
-	{
-		case 0:
-		{
+	if(mysql_errno()) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
+	switch(choice) {
+
+		case 0:	{
+
 			format(szMiscArray, sizeof(szMiscArray), "[Black Market] {CCCCCC}You successfully edited the price of %s to $%s", szIngredients[iChoice], number_format(iAmount));
 			BM_EditBlackMarket(playerid, GetPVarInt(playerid, PVAR_BLMARKETID), 0);
 		}
-		case 1:
-		{
+		case 1:	{
+
 			format(szMiscArray, sizeof(szMiscArray), "[Black Market] {CCCCCC}You successfully edited the smuggle payment of %s to $%s per piece.", szIngredients[iChoice], number_format(iAmount));
 			BM_EditBlackMarket(playerid, GetPVarInt(playerid, PVAR_BLMARKETID), 1);
 		}
-		case 2:
-		{
-			format(szMiscArray, sizeof(szMiscArray), "[Black Market] {CCCCCC}You successfully transferred %d pieces of %s back to the locker.", iAmount, szIngredients[iChoice]);
+		case 2:	{
+
+			switch(GetPVarInt(playerid, "DS_BMTC"))
+			{
+				case 0: format(szMiscArray, sizeof(szMiscArray), "[Black Market] {CCCCCC}You successfully transferred %d pieces of %s to the black market's stock.", iAmount, szIngredients[iChoice]);
+				case 1: format(szMiscArray, sizeof(szMiscArray), "[Black Market] {CCCCCC}You successfully transferred %d pieces of %s to the locker.", iAmount, szIngredients[iChoice]);
+			}
 			BM_EditBlackMarket(playerid, GetPVarInt(playerid, PVAR_BLMARKETID), 2);
+			DeletePVar(playerid, "DS_BMTC");
 		}
 	}
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	return 1;
 }
 
-BM_BlackMarketMain(playerid)
-{
+BM_BlackMarketMain(playerid) {
+
 	new iBlackMarketID = GetPVarInt(playerid, PVAR_BLMARKETID);
+
 	szMiscArray = "Ingredient name\tPrice (per piece)\n";
+
 	for(new i; i < sizeof(szIngredients); ++i) {
-		format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%d\n", szMiscArray, szIngredients[i], arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][i]);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\n", szMiscArray, szIngredients[i], number_format(arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][i]));
 	}
+
 	new szTitle[64];
+
 	format(szTitle, sizeof(szTitle), "%s's Black Market | Buy Ingredients", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
 	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ORDER_ING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "");
 	return 1;
 }
 
-forward BM_DeletePVar(playerid);
-public BM_DeletePVar(playerid)
-{
-	DeletePVar(playerid, PVAR_BLMARKETID);
+BM_SeizeCheck() {
+
+	for(new i; i < MAX_BLACKMARKETS; ++i) {
+
+		if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
+
+			format(szMiscArray, sizeof(szMiscArray), "SELECT `seized` FROM `blackmarkets` WHERE `id` = '%d'", i);
+			mysql_function_query(MainPipeline, szMiscArray, true, "BM_OnSeizeCheck", "i", i);
+			break;
+		}
+	}
 	return 1;
 }
 
-CMD:givealldrugs(playerid)
-{
-	for(new i; i < sizeof(szDrugs); ++i) PlayerInfo[playerid][p_iDrug][i] = 200;
-	for(new i; i < sizeof(szIngredients); ++i) PlayerInfo[playerid][p_iIngredient][i] = 200;
+forward BM_OnSeizeCheck(i);
+public BM_OnSeizeCheck(i) {
+
+	new iRows,
+		iFields,
+		iCount;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	while(iCount < iRows) {
+
+		new iTime = cache_get_field_content_int(iCount, "seizetimestamp", MainPipeline);
+		if(gettime() > iTime) {
+
+			arrBlackMarket[i][bm_iSeized] = 0;
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `seized` = '0', `seizedtimestamp` = '%d' WHERE `id` = '%d'", i, gettime() + (BLACKMARKET_SEIZE_DAYS * 60 * 24));
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+			foreach(new p : Player) {
+
+				if(PlayerInfo[p][pMember] == arrBlackMarket[i][bm_iGroupID]) SendClientMessageEx(p, COLOR_GREEN, "[Black Market]: {DDDDD}Your black market has recovered from the seizure.");
+			}
+		}
+		iCount++;
+	}
 	return 1;
 }
 
-Drugs_LoadPlayerDrugs()
-{
-	mysql_function_query(MainPipeline, "SELECT * FROM `drugpool`", true, "Drugs_OnLoadPlayerDrugs", "");
+Drugs_LoadPlayerPlants() {
+
+	mysql_function_query(MainPipeline, "SELECT * FROM `drugpool`", true, "Drugs_OnLoadPlayerPlants", "");
 }
 
-forward Drugs_OnLoadPlayerDrugs();
-public Drugs_OnLoadPlayerDrugs()
+forward Drugs_OnLoadPlayerPlants();
+public Drugs_OnLoadPlayerPlants()
 {
 	print("[Drug System] Loading player drugs...");
+	
 	new iRows = cache_get_row_count();
+	
 	if(!iRows) return print("[Drug System] No player drugs were found in the database.");
+	
 	new iFields,
 		iCount,
 		szName[MAX_PLAYER_NAME],
@@ -1548,10 +2160,13 @@ public Drugs_OnLoadPlayerDrugs()
 		Float:fPos[3],
 		iVW,
 		iINT;
+
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	while(iCount < iRows)
 	{
 		cache_get_field_content(iCount, "name", szName, MainPipeline, sizeof(szName));
+
 		iDrugID = cache_get_field_content_int(iCount, "drugid", MainPipeline);
 		fPos[0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
 		fPos[1] = cache_get_field_content_float(iCount, "posy", MainPipeline);
@@ -1560,25 +2175,27 @@ public Drugs_OnLoadPlayerDrugs()
 		iINT = cache_get_field_content_int(iCount, "int", MainPipeline);
 
 		arrDrugData[iCount][dr_iDrugQuality] = cache_get_field_content_int(iCount, "quality", MainPipeline);
-		format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)", StripUnderscore(szName), szDrugs[iDrugID], iCount);
+		arrDrugData[iCount][dr_iDrugID] = cache_get_field_content_int(iCount, "drugid", MainPipeline);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use ~k~~CONVERSATION_YES~ to harvest it.", StripUnderscore(szName), szDrugs[iDrugID], iCount);
 		arrDrugData[iCount][dr_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2], 10.0, .worldid = iVW, .interiorid = iINT);
+
 		new iCompletedTimeStamp = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUGS_GROWTH_TIME;
+
 		if(gettime() > iCompletedTimeStamp)
 		{
-			switch(iDrugID)
-			{
-				case 1:
-				{
+			arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
+			
+			new iObjectID;
+			
+			switch(iDrugID)	{
 
-					arrDrugData[iCount][dr_iObjectID] = CreateDynamicObject(3409,
-						fPos[0],
-						fPos[1],
-						fPos[2] - 1.25,
-						0.0, 0.0, 0.0,
-						iVW,
-						iINT);
-				}
+				case 1: iObjectID = 3409;
+				case 7: iObjectID = 3409;
 			}
+
+			arrDrugData[iCount][dr_iObjectID] = CreateDynamicObject(iObjectID, fPos[0], fPos[1], fPos[2] - 1.25, 0.0, 0.0, 0.0, iVW,	iINT);
+
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpool` SET `spawned` = 1 WHERE `id` = '%d'", iCount);
 			mysql_function_query(MainPipeline, szMiscArray, false, "", "");
 		}
@@ -1588,19 +2205,36 @@ public Drugs_OnLoadPlayerDrugs()
 	return 1;
 }
 
+forward Drugs_OnDestroyPlant(playerid, i);
+public Drugs_OnDestroyPlant(playerid, i) {
+
+	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+
+	format(szMiscArray, sizeof(szMiscArray), "Administrator %s removed a plant.", GetPlayerNameExt(playerid));
+	Log("logs/plant.log", szMiscArray);
+	return 1;
+}
+
+
 Drugs_Remove(playerid, i)
 {
 	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
 	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+
 	arrDrugData[i][dr_iDrugQuality] = 0;
-	SendClientMessage(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You have removed the drug plant.");
+	SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You have removed the drug plant.");
 	ApplyAnimation(playerid, "BOMBER","BOM_Plant_In", 4.0, 0, 0, 0, 0, 0);
 	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `drugpool` WHERE `id` = '%d'", i);
-	mysql_function_query(MainPipeline, szMiscArray, false, "", "");
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
-Drugs_Retrieve(playerid, iDrugID, i)
+Drugs_Retrieve(playerid, i)
 {
+	new iDrugID = arrDrugData[i][dr_iDrugID];
+
 	switch(iDrugID)
 	{
 		case 1:
@@ -1608,8 +2242,9 @@ Drugs_Retrieve(playerid, iDrugID, i)
 			PlayerInfo[playerid][p_iDrug][iDrugID] += 20;
 			PlayerInfo[playerid][p_iDrugQuality][iDrugID] = arrDrugData[i][dr_iDrugQuality];
 			format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You have retrieved 20 pieces of cannabis from the plant with a quality of %d percent.", arrDrugData[i][dr_iDrugQuality]);
-			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 			ApplyAnimation(playerid, "BOMBER","BOM_Plant_In", 4.0, 0, 0, 0, 0, 0);
+			DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 			DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
 			DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
 			arrDrugData[i][dr_iDrugQuality] = 0;
@@ -1626,7 +2261,7 @@ public Drugs_OnCheckAmount(playerid, iDrugID)
 {
 	new iRows = cache_get_row_count();
 	if(iRows < MAX_PLAYERDRUGS) Drugs_CreateQuery(playerid, iDrugID);
-	else SendClientMessage(playerid, COLOR_GRAD1, "You cannot plant any more cannabis.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot plant any more cannabis.");
 	return 1;
 }
 
@@ -1639,7 +2274,9 @@ Drugs_CreateQuery(playerid, iDrugID)
 			new Float:fPos[3],
 				iVW = GetPlayerVirtualWorld(playerid),
 				iINT = GetPlayerInterior(playerid);
+
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
 			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `drugpool` (`id`, `drugid`, `quality`, `DBID`, `name`, `timestamp`, `posx`, `posy`, `posz`, `vw`, `int`) \
 				VALUES ('%d', '%d', '%d', '%d', '%s', '%d', '%f', '%f', '%f', '%d', '%d')",
 				i, iDrugID, (PlayerInfo[playerid][pDrugsSkill] + 1) * 40, GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), gettime(), fPos[0], fPos[1], fPos[2], iVW, iINT);
@@ -1647,21 +2284,30 @@ Drugs_CreateQuery(playerid, iDrugID)
 			return 1;
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You reached the maximum drug quotum.");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You reached the maximum drug quotum.");
 	return 1;
 }
+
+
 
 forward Drugs_OnCreateQuery(playerid, iDrugID, id, Float:X, Float:Y, Float:Z, iVW, iINT);
 public Drugs_OnCreateQuery(playerid, iDrugID, id, Float:X, Float:Y, Float:Z, iVW, iINT)
 {
-	if(mysql_errno()) SendClientMessage(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)", GetPlayerNameEx(playerid), szDrugs[iDrugID], id);
+	if(mysql_errno()) SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
+	format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use ~k~~CONVERSATION_YES~ to harvest it.", GetPlayerNameEx(playerid), szDrugs[iDrugID], id);
 	arrDrugData[id][dr_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, X, Y, Z, 10.0, .worldid = iVW, .interiorid = iINT);
+	arrDrugData[id][dr_iDrugID] = iDrugID;
+
+	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {DDDDDD}You have successfully planted the %s plant. It will take around 2 hours to grow.", szDrugs[iDrugID]);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has placed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), id);
+	Log("logs/plant.log", szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "* %s plants something.", GetPlayerNameEx(playerid));
+	ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
 	ApplyAnimation(playerid, "BOMBER","BOM_Plant_In", 4.0, 0, 0, 0, 0, 0);
-	switch(iDrugID)
-	{
-		case 1: SendClientMessage(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You planted 10 seeds. The cannabis will start to grow soon.");
-	}
 	return 1;
 }
 
@@ -1681,20 +2327,29 @@ public Drugs_OnGrowthCheck()
 			new iCompletedTimeStamp = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUGS_GROWTH_TIME;
 			if(gettime() > iCompletedTimeStamp)
 			{
+				new Float:fPos[3],
+					iVW,
+					iINT;
+
+				fPos[0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
+				fPos[1] = cache_get_field_content_float(iCount, "posy", MainPipeline);
+				fPos[2] = cache_get_field_content_float(iCount, "posz", MainPipeline);
+				iVW = cache_get_field_content_int(iCount, "vw", MainPipeline);
+				iINT = cache_get_field_content_int(iCount, "int", MainPipeline);
+				
 				arrDrugData[iCount][dr_iDrugQuality] = cache_get_field_content_int(iCount, "quality", MainPipeline);
-				switch(cache_get_field_content_int(iCount, "drugid", MainPipeline))
-				{
-					case 1:
-					{
-						arrDrugData[iCount][dr_iObjectID] = CreateDynamicObject(3409,
-							cache_get_field_content_float(iCount, "posx", MainPipeline),
-							cache_get_field_content_float(iCount, "posy", MainPipeline),
-							cache_get_field_content_float(iCount, "posz", MainPipeline) - 1.25,
-							0.0, 0.0, 0.0,
-							.worldid = cache_get_field_content_int(iCount, "vw", MainPipeline),
-							.interiorid = cache_get_field_content_int(iCount, "int", MainPipeline));
-					}
+				
+				arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
+				
+				new iObjectID;
+
+				switch(cache_get_field_content_int(iCount, "drugid", MainPipeline))	{
+
+					case 1: iObjectID = 3409;
+					case 7: iObjectID = 3409;
 				}
+				arrDrugData[iCount][dr_iObjectID] = CreateDynamicObject(iObjectID, fPos[0], fPos[1], fPos[2] - 1.25, 0.0, 0.0, 0.0, iVW, iINT);
+
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpool` SET `spawned` = 1 WHERE `id` = '%d'", iCount);
 				mysql_function_query(MainPipeline, szMiscArray, false, "", "");
 			}
@@ -1705,36 +2360,45 @@ public Drugs_OnGrowthCheck()
 }
 
 forward Drugs_OnSearchDrugs(playerid);
-public Drugs_OnSearchDrugs(playerid)
-{
+public Drugs_OnSearchDrugs(playerid) {
+
 	new iRows = cache_get_row_count();
-	if(!iRows) return SendClientMessage(playerid, COLOR_GRAD1, "You haven't planted any drugs.");
+	
+	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "You haven't planted any drugs.");
+	
 	new iFields,
 		iCount,
 		iDialogCount,
 		szDate[64];
+
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	szMiscArray = "Drug\tExpected Completion\n";
-	while(iCount < iRows)
-	{
+
+	while(iCount < iRows) {
+
 		new iDeliverTime = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUGS_GROWTH_TIME,
 			iDrugID = cache_get_field_content_int(iCount, "drugid", MainPipeline);
+
 		if(gettime() < iDeliverTime) format(szDate, sizeof(szDate), "{FFFF00}%s", date(iDeliverTime, 2));
 		else format(szDate, sizeof(szDate), "{00FF00}%s", date(iDeliverTime, 2));
+
 		ListItemTrackId[playerid][iDialogCount] = iCount;
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szDrugs[iDrugID], szDate);
+
 		++iCount;
 		iDialogCount++;
 	}
+
 	ShowPlayerDialog(playerid, DIALOG_DRUGPOOL, DIALOG_STYLE_TABLIST_HEADERS, "Your cannabis plants", szMiscArray, "Find", "");
 	return 1;
 }
 
 forward Drug_OnListPostOrders(playerid);
-public Drug_OnListPostOrders(playerid)
-{
+public Drug_OnListPostOrders(playerid) {
+
 	new iRows = cache_get_row_count();
-	if(!iRows) return SendClientMessage(playerid, COLOR_GRAD1, "No post orders matched your query.");
+	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "No post orders matched your query.");
 	
 	new iFields,
 		iCount,
@@ -1742,76 +2406,82 @@ public Drug_OnListPostOrders(playerid)
 		szDate[64];
 
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	new iDeliverTime = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUG_ORDER_TIME;
+
 	if(gettime() < iDeliverTime) format(szDate, sizeof(szDate), "{FFFF00}%s", date(iDeliverTime, 2));
 	else format(szDate, sizeof(szDate), "{00FF00}%s", date(iDeliverTime, 2));
+
 	szMiscArray = "Name\tOrdering\tExpected delivery\n";
-	while(iCount < iRows)
-	{
+
+	while(iCount < iRows) {
+
 		cache_get_field_content(iCount, "name", szName, MainPipeline, sizeof(szName));
+
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s (%d)\t%s\n",
 			szMiscArray,
 			StripUnderscore(szName),
 			szIngredients[cache_get_field_content_int(iCount, "ingredientid", MainPipeline)],
 			cache_get_field_content_int(iCount, "amount", MainPipeline),
 			szDate);
+
 		iCount++;
 	}
+
 	ShowPlayerDialog(playerid, DIALOG_DRUGS_ORDER_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Post Office | Orders", szMiscArray, "<<", "");
 	return 1;
 }
 
 forward Drug_OnGetPostOrders(playerid);
-public Drug_OnGetPostOrders(playerid)
-{
+public Drug_OnGetPostOrders(playerid) {
+
 	new iRows = cache_get_row_count();
-	if(!iRows) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have any post orders.");
+
+	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any post orders.");
 	
 	new iFields,
 		iCount,
 		szQuery[200];
 
 	format(szMiscArray, sizeof(szMiscArray), "__________ [%s's Order Delivery] __________", GetPlayerNameEx(playerid));
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	while(iCount < iRows)
 	{
 		new iDeliverTime = cache_get_field_content_int(iCount, "timestamp", MainPipeline) + DRUG_ORDER_TIME;
-		if(gettime() > iDeliverTime)
-		{
+		if(gettime() > iDeliverTime) {
+
 			new iIngredientID = cache_get_field_content_int(iCount, "ingredientid", MainPipeline),
 				iAmount = cache_get_field_content_int(iCount, "amount", MainPipeline);
+
 			PlayerInfo[playerid][p_iIngredient][iIngredientID] += iAmount;
 			format(szMiscArray, sizeof(szMiscArray), "[Order Delivery]: {CCCCCC}%d pieces of %s.", iAmount, szIngredients[iIngredientID]);
-			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
 			format(szQuery, sizeof(szQuery), "DELETE FROM `blackmarkets_orders` WHERE `DBID` = '%d' AND `timestamp` < '%d'", GetPlayerSQLId(playerid), iDeliverTime);
 			mysql_function_query(MainPipeline, szQuery, false, "", "");
 		}
 		iCount++;
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "____________________________________________");
+	SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
 	return 1;
 }
 
-
-
-CMD:weather(playerid, params[])
-{
-	new iWeatherID;
-	sscanf(params, "d", iWeatherID);
-	SetPlayerWeather(playerid, iWeatherID);
-	return 1;
-}
-
-forward Drug_ResetEffects(playerid);
-public Drug_ResetEffects(playerid)
+forward Drug_ResetEffects(playerid, iDrugID);
+public Drug_ResetEffects(playerid, iDrugID)
 {
 	new Float:fPos[3];
+
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	DeletePVar(playerid, "DR_ACTV");
 	PlayerPlaySound(playerid, 1184, fPos[0], fPos[1], fPos[2]);
-	SendClientMessage(playerid, COLOR_GRAD1, "The drug's side-effect wore off.");
+	
+	if(iDrugID < 10) SendClientMessageEx(playerid, COLOR_GRAD1, "The drug's side-effect wore off.");
+
 	new iTime[3];
+
 	gettime(iTime[0], iTime[1], iTime[2]);
 	SetPlayerTime(playerid, iTime[0], iTime[1]);
 	SetPlayerDrunkLevel(playerid, 0);
@@ -1820,456 +2490,378 @@ public Drug_ResetEffects(playerid)
 }
 
 forward Drug_ResetDrunkEffects(playerid);
-public Drug_ResetDrunkEffects(playerid)
-{
+public Drug_ResetDrunkEffects(playerid) {
+
 	SetPlayerDrunkLevel(playerid, 0);
 	return 1;
 }
 
-CMD:mydrugs(playerid, params[])
-{
+CMD:mydrugs(playerid, params[]) {
+
 	format(szMiscArray, sizeof(szMiscArray),"_______ %s's drugs _______", GetPlayerNameEx(playerid));
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-	for(new i; i < sizeof(szDrugs); ++i)
-	{
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
+	for(new i; i < sizeof(szDrugs); ++i) {
+
 		format(szMiscArray, sizeof(szMiscArray),"{CCCCCC}%s: %d pc {AAAAAA}(%dqP){CCCCCC} | %s: %d pc {AAAAAA}(%dqP)", szDrugs[i], PlayerInfo[playerid][p_iDrug][i], PlayerInfo[playerid][p_iDrugQuality][i],
 			szDrugs[i+1], PlayerInfo[playerid][p_iDrug][i+1], PlayerInfo[playerid][p_iDrugQuality][i+1]);
-		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
 		i++;
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "__________________________________");
+
+	SendClientMessageEx(playerid, COLOR_GREEN, "__________________________________");
 	return 1;
 }
 
-CMD:buydrugs(playerid, params[])
-{
-	// setlimits
+CMD:buydrugs(playerid, params[]) {
+
 	szMiscArray[0] = 0;
+
 	for(new i; i < sizeof(szIngredients); ++i) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szIngredients[i]);
+
 	ShowPlayerDialog(playerid, DIALOG_DRUGS_DRUGSTORE, DIALOG_STYLE_LIST, "Drug Store", szMiscArray, "Buy", "");
 	return 1;
 }
 
-CMD:givedrug(playerid, params[])
-{
-	new uPlayer,
-		szChoice[16],
-		iAmount;
-	if(sscanf(params, "us[16]d", uPlayer, szChoice, iAmount))
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /givedrug [player] [drug] [amount]");
-		Drug_ListDrugs(playerid);
-		return 1;
-	}
-	new iTakenID = Drug_GetID(szChoice);
-	if(iTakenID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(PlayerInfo[playerid][p_iDrug][iTakenID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough of that on you.");
-	SetPVarInt(playerid, "gdrug", iTakenID), SetPVarInt(uPlayer, "drugsel", playerid), SetPVarInt(uPlayer, "drugam", iAmount);
-	format(szMiscArray, sizeof(szMiscArray), "You have offered %s %d pc of %s.", GetPlayerNameEx(uPlayer), iAmount, szChoice);
-	SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s is offering you %d pc of %s. Use /takedrug to accept the offer.", GetPlayerNameEx(playerid), iAmount, szChoice);
-	SendClientMessage(uPlayer, COLOR_GRAD2, szMiscArray);
-	return 1;
-}
+CMD:dropdrug(playerid, params[]) {
 
-CMD:selldrug(playerid, params[])
-{
-	new uPlayer,
-		szChoice[16],
-		iAmount,
-		iPrice;
-	if(sscanf(params, "us[16]dd", uPlayer, szChoice, iAmount)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /selldrug [player] [drug] [amount] [price]");
-		Drug_ListDrugs(playerid);
-		return 1;
-	}
-	new iTakenID = Drug_GetID(szChoice);
-	if(iTakenID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(PlayerInfo[playerid][p_iDrug][iTakenID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough on you.");
-	SetPVarInt(playerid, "drugsel", uPlayer);
-	SetPVarInt(playerid, "gdrug", iTakenID);
-	SetPVarInt(uPlayer, "drugam", iAmount);
-	SetPVarInt(uPlayer, "drugpr", iPrice);
-	format(szMiscArray, sizeof(szMiscArray), "%s is offering you %d pc of %s for $%d. Use /takedrug to accept the offer.", GetPlayerNameEx(playerid), iAmount, szChoice, iPrice);
-	SendClientMessage(uPlayer, COLOR_GRAD2, szMiscArray);
-	return 1;
-}
-
-CMD:takedrug(playerid, params[])
-{
-	if(!GetPVarType(playerid, "drugsel")) return SendClientMessage(playerid, COLOR_GRAD1, "No one has offered you a drug.");
-	new iAmount = GetPVarInt(playerid, "drugpr");
-	if(GetPlayerMoney(playerid) < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
-	new iDrugID = GetPVarInt(playerid, "gdrug"),
-		iGivePlayerID = GetPVarInt(playerid, "drugsel"),
-		iPrice = GetPVarInt(playerid, "drugpr");
-	if(GetPVarType(playerid, "drugpr"))
-	{
-		GivePlayerMoney(iGivePlayerID, iPrice);
-		GivePlayerMoney(playerid, -iPrice);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You bought %d pc of %s for $%d from %s.", iAmount, szDrugs[iDrugID], iPrice, GetPlayerNameEx(iGivePlayerID));
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You sold %d pc of %s for $%d to %s.", iAmount, szDrugs[iDrugID], iPrice, GetPlayerNameEx(playerid));
-		SendClientMessage(iGivePlayerID, COLOR_GREEN, szMiscArray);
-	}
-	else
-	{
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You have taken %d pc of %s for $%d from %s.", iAmount, szDrugs[iDrugID], iPrice, GetPlayerNameEx(iGivePlayerID));
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You have given %d pc of %s for $%d to %s.", iAmount, szDrugs[iDrugID], iPrice, GetPlayerNameEx(playerid));
-		SendClientMessage(iGivePlayerID, COLOR_GREEN, szMiscArray);
-	}
-	PlayerInfo[iGivePlayerID][p_iDrug][iDrugID] -= iAmount;
-	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
-	PlayerInfo[playerid][p_iDrugQuality][iDrugID] = PlayerInfo[iGivePlayerID][p_iDrugQuality][iDrugID];
-	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] > 200) PlayerInfo[playerid][p_iDrugQuality][iDrugID] = 200;
-	DeletePVar(playerid, "drugsel");
-	DeletePVar(playerid, "drugpr");
-	DeletePVar(playerid, "drugam");
-	DeletePVar(playerid, "gdrug");
-	return 1;
-}
-
-CMD:dropdrug(playerid, params[])
-{
 	new szChoice[16],
 		iAmount;
-	if(sscanf(params, "s[16]d", szChoice, iAmount)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /dropdrug [drug] [amount]");
+
+	if(sscanf(params, "s[16]d", szChoice, iAmount)) {
+
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dropdrug [drug] [amount]");
 		Drug_ListDrugs(playerid);
 		return 1;
 	}
-	new iTakenID = Drug_GetID(szChoice);
-	if(iTakenID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(PlayerInfo[playerid][p_iDrug][iTakenID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough on you.");
-	PlayerInfo[playerid][p_iDrug][iTakenID] -= iAmount;
+
+	new iDrugID = Drug_GetID(szChoice);
+
+	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
+
+	if(PlayerInfo[playerid][p_iDrug][iDrugID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+
+	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	return 1;
 }
 
-CMD:addictchart(playerid, params[])
-{
+CMD:addictchart(playerid, params[]) {
+
 	format(szMiscArray, sizeof(szMiscArray), "_______ Drugs | %s's Addicted Chart _______", GetPlayerNameEx(playerid));
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-	for(new i; i < 8; ++i)
-	{
-		if(PlayerInfo[playerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: %dG", szDrugs[i], PlayerInfo[playerid][p_iAddictedLevel][i]);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
+	for(new i; i < 9; ++i) {
+
+		if(PlayerInfo[playerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: %dpQ", szDrugs[i], PlayerInfo[playerid][p_iAddictedLevel][i]);
 		else format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: No", szDrugs[i]);
-		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "________________________________");
+
+	SendClientMessageEx(playerid, COLOR_GREEN, "________________________________");
 	return 1;
 }
 
-CMD:usedrug(playerid, params[])
-{
-	if(GetPVarType(playerid, PVAR_DRUGS_OVERDOSE)) return SendClientMessage(playerid, COLOR_GRAD1, "You are currently overdosed.");
-	if(dr_iPlayerTimeStamp[playerid] > gettime() - 20) return SendClientMessage(playerid, COLOR_GRAD1, "You have been injured in the last two minutes");
+CMD:usedrug(playerid, params[]) {
+
+	if(GetPVarType(playerid, PVAR_DRUGS_OVERDOSE)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are currently overdosed.");
+	if(dr_iPlayerTimeStamp[playerid] > gettime() - 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last two minutes");
+	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
+   
+   	#if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	#endif
+
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
+   		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+	if(PlayerBoxing[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use drugs while you're fighting.");
+	if(UsedCrack[playerid] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 5 seconds before using more drugs.");
+	if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
+
 	new szChoice[16],
 		iAmount,
 		iAnim;
-	if(sscanf(params, "s[16]dd(1)", szChoice, iAmount, iAnim))
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /usedrug [drug] [amount] [emote]");
+
+	if(sscanf(params, "s[16]dD(1)", szChoice, iAmount, iAnim)) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /usedrug [drug] [amount] [emote]");
 		Drug_ListDrugs(playerid);
 		return 1;
 	}
-	new iTakenID = Drug_GetID(szChoice);
-	if(iTakenID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(PlayerInfo[playerid][p_iDrug][iTakenID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough on you.");
-	PlayerInfo[playerid][p_iDrug][iTakenID] -= iAmount;
+
+	new iDrugID = Drug_GetID(szChoice);
+
+	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
+
+	if(PlayerInfo[playerid][p_iDrug][iDrugID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+
+	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You used %d pieces of %s.", iAmount, szChoice);
+
 	if(iAnim) ApplyAnimation(playerid, "FOOD", "EAT_Pizza", 4.1, 1, 0, 0, 0, 4000, 0);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-	PlayerInfo[playerid][p_iDrugTaken][iTakenID] += iAmount;
-	if(PlayerInfo[playerid][p_iAddicted][iTakenID] < 2) PlayerInfo[playerid][p_iAddictedLevel][iTakenID] += DRUGS_ADDICTION_RATE * iAmount;
-	if(PlayerInfo[playerid][p_iAddicted][iTakenID] == 2) PlayerInfo[playerid][p_iAddictedLevel][iTakenID] -= DRUGS_ADDICTION_RATE * iAmount;
-	Addicted_Process(playerid, iTakenID, iAmount);
-	format(szMiscArray, sizeof(szMiscArray), "Addiction Effects: Drug: %s Addicted: %d", szDrugs[iTakenID], PlayerInfo[playerid][p_iAddictedLevel][iTakenID]);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+	PlayerInfo[playerid][p_iDrugTaken][iDrugID] += iAmount;
+
+	switch(iDrugID) {
+
+		case 0 .. 9: {
+
+			if(PlayerInfo[playerid][p_iAddicted][iDrugID] < 2) PlayerInfo[playerid][p_iAddictedLevel][iDrugID] += DRUGS_ADDICTION_RATE * iAmount;
+
+			if(PlayerInfo[playerid][p_iAddicted][iDrugID] == 2) PlayerInfo[playerid][p_iAddictedLevel][iDrugID] -= DRUGS_ADDICTION_RATE * iAmount;
+		}
+	}
+	Drug_Process(playerid, iDrugID, iAmount);
 	return 1;
 }
 
-CMD:myingredients(playerid, params[])
-{
+CMD:myingredients(playerid, params[]) {
+
 	format(szMiscArray, sizeof(szMiscArray),"_______ %s's ingredients _______", GetPlayerNameEx(playerid));
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-	for(new i; i < sizeof(szIngredients); ++i)
-	{
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
 		format(szMiscArray, sizeof(szMiscArray),"%s: %d pc | %s: %d pc", szIngredients[i], PlayerInfo[playerid][p_iIngredient][i], szIngredients[i+1], PlayerInfo[playerid][p_iIngredient][i+1]);
-		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 		i++;
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "__________________________________");
+
+	SendClientMessageEx(playerid, COLOR_GREEN, "__________________________________");
 	return 1;
 }
 
-CMD:sellingredient(playerid, params[])
-{
-	new uPlayer,
-		szChoice[16],
-		iAmount,
-		iPrice,
-		iAnim;
-	if(sscanf(params, "us[16]dD", uPlayer, szChoice, iAmount, iAnim)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /sellingredient [player] [ingredient] [amount] [price]");
-		Drug_ListIngredients(playerid);
-		return 1;
-	}
-	new iIngredientID = Drug_IngredientID(szChoice);
-	if(iIngredientID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid ingredient.");
-	if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough on you.");
-	SetPVarInt(playerid, "ingsel", uPlayer);
-	SetPVarInt(playerid, "ingr", iIngredientID);
-	SetPVarInt(uPlayer, "ingam", iAmount);
-	SetPVarInt(uPlayer, "ingpr", iPrice);
-	format(szMiscArray, sizeof(szMiscArray), "%s is offering you %d pc of %s for $%d. Use /takeingredient to accept the offer.", GetPlayerNameEx(playerid), iAmount, szChoice, iPrice);
-	SendClientMessage(uPlayer, COLOR_GRAD2, szMiscArray);
-	return 1;
-}
+CMD:dropingredient(playerid, params[]) {
 
-CMD:takeingredient(playerid, params[])
-{
-	if(!GetPVarType(playerid, "ingsel")) return SendClientMessage(playerid, COLOR_GRAD1, "No one has offered you an ingredient.");
-	new iAmount = GetPVarInt(playerid, "ingam");
-	if(GetPlayerMoney(playerid) < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
-	new iGivePlayerID = GetPVarInt(playerid, "ingsel"),
-	iPrice = GetPVarInt(playerid, "ingpr");
-	if(iPrice)
-	{
-		GivePlayerMoney(iGivePlayerID, iPrice);
-		GivePlayerMoney(playerid, -iPrice);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You bought %d pc of %s for $%d from %s.", iAmount, szIngredients[GetPVarInt(playerid, "ingr")], iPrice, GetPlayerNameEx(iGivePlayerID));
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You sold %d pc of %s for $%d to %s.", iAmount, szIngredients[GetPVarInt(playerid, "ingr")], iPrice, GetPlayerNameEx(playerid));
-		SendClientMessage(iGivePlayerID, COLOR_GREEN, szMiscArray);
-	}
-	else
-	{
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You have taken %d pc of %s for $%d from %s.", iAmount, szIngredients[GetPVarInt(playerid, "ingr")], iPrice, GetPlayerNameEx(iGivePlayerID));
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You have given %d pc of %s for $%d to %s.", iAmount, szIngredients[GetPVarInt(playerid, "ingr")], iPrice, GetPlayerNameEx(playerid));
-		SendClientMessage(iGivePlayerID, COLOR_GREEN, szMiscArray);
-	}
-	DeletePVar(playerid, "ingpr");
-	DeletePVar(playerid, "ingsel");
-	DeletePVar(playerid, "ingam");
-	DeletePVar(playerid, "ingr");
-	return 1;
-}
-
-CMD:dropingredient(playerid, params[])
-{
 	new szChoice[16],
 		iAmount;
-	if(sscanf(params, "s[16]d", szChoice, iAmount)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /dropingredient [ingredient] [amount]");
+
+	if(sscanf(params, "s[16]d", szChoice, iAmount)) {
+
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /dropingredient [ingredient] [amount]");
 		Drug_ListIngredients(playerid);
 		return 1;
 	}
+
 	new iIngredientID = Drug_IngredientID(szChoice);
-	if(iIngredientID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid ingredient.");
-	if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough on you.");
+
+	if(iIngredientID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid ingredient.");
+
+	if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+
 	PlayerInfo[playerid][p_iIngredient][iIngredientID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	return 1;
 }
 
-CMD:mymix(playerid, params[])
-{
+CMD:mymix(playerid, params[]) {
+
 	if(!GetPVarType(playerid, PVAR_MAKINGDRUG)) format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Mix _______", GetPlayerNameEx(playerid));
 	else format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Mix for %s _______", GetPlayerNameEx(playerid), szDrugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i)
-	{
+
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+	
+	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) {
+
 		if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)
 			format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d]: {CCCCCC}Ingredient: %s | Pc: %d", i, szIngredients[dr_arrDrugMix[playerid][i][drm_iIngredientID]], dr_arrDrugMix[playerid][i][drm_iAmount]);
+		
 		else format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d]: {CCCCCC}None", i);
-		SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+		
+		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "________________________________");
+	
+	SendClientMessageEx(playerid, COLOR_GREEN, "________________________________");
 	return 1;
 }
 
-CMD:mix(playerid, params[])
-{
+CMD:mix(playerid, params[]) {
+
 	if(!GetPVarType(playerid, PVAR_MAKINGDRUG)) Drug_StartMix(playerid);
 	else Drug_ShowMix(playerid);
 	return 1;
 }
 
-CMD:clearmix(playerid, params[])
-{
+CMD:clearmix(playerid, params[]) {
+
 	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
-	SendClientMessage(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cleared your mixture.");
+
+	SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cleared your mixture.");
 	DeletePVar(playerid, PVAR_MAKINGDRUG);
 	return 1;
 }
 
-/* LEO / Medic Commmands */
-CMD:takedrugs(playerid, params[])
-{
-	new uPlayer;
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /takedrugs [player]");
-	for(new i; i < sizeof(szDrugs); ++i)
-	{
-		PlayerInfo[uPlayer][p_iDrug][i] = 0;
+/* Black Markets */
+
+CMD:seize(playerid, params[]) {
+
+	if(!IsACop(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a cop");
+	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessage(playerid, COLOR_GRAD1, "You must be at least rank 5 to seize a black market.");
+	if(!GetPVarType(playerid, "BM_AID")) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a black market.");
+	new i = GetPVarInt(playerid, "BM_AID");
+	if(arrBlackMarket[i][bm_iSeized]) return SendClientMessage(playerid, COLOR_GRAD1, "This black market has already been seized.");
+	
+	new iCount[2],
+		iGangGroupID = arrBlackMarket[i][bm_iGroupID];
+
+	foreach(new p : Player) {
+		if(IsACop(p)) iCount[0]++;
+		if(PlayerInfo[p][pMember] == iGangGroupID) iCount[1]++;
 	}
-	format(szMiscArray, sizeof(szMiscArray), "You have taken %s's drugs.", GetPlayerNameEx(uPlayer));
-	SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s has taken all your drugs.", GetPlayerNameEx(playerid));
-	SendClientMessage(uPlayer, COLOR_LIGHTRED, szMiscArray);
-	return 1;
-}
+	if(iCount[0] < 10 || (iCount[0] > iCount[1] + 5)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There need to be at least 10 LEOs. Or, there are 5 ore more gang members less than LEOs.");
 
-CMD:prescribe(playerid, params[])
-{
-	// medics only: if(arrGroupData[PlayerInfo[playerid][pMember]] != MEDICCCC) return SendClientMessage(playerid, COLOR_GRAD1, "You must be a medic to prescribe drugs.");
-	new uPlayer, szChoice[16], iAmount;
-	if(sscanf(params, "us[16]d", uPlayer, szChoice, iAmount)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /prescribe [player] [drug] [amount]");
-		SendClientMessage(playerid, COLOR_GRAD1, "Choices: Demerol, Morphine, Haloperidol, Aspirine.");
-		return 1;
-	}
-	new iTakenID = Drug_GetID(szChoice);
-	if(iTakenID < 8) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(PlayerInfo[playerid][p_iDrug][iTakenID] < iAmount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have enough of that on you.");
-	SetPVarInt(playerid, "gdrug", iTakenID);
-	SetPVarInt(uPlayer, "drugsel", playerid);
-	format(szMiscArray, sizeof(szMiscArray), "You have offered %s %d pc of %s.", GetPlayerNameEx(uPlayer), iAmount, szChoice);
-	SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s is offering you %d pc of %s. Use /takedrug to accept the offer.", GetPlayerNameEx(playerid), iAmount, szChoice);
-	SendClientMessage(uPlayer, COLOR_GRAD2, szMiscArray);
-	return 1;
-}
+	new Float:fPos[3];
+	
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_X, fPos[0]);
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_Y, fPos[1]);
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_Z, fPos[2]);
 
+	new gz = GangZoneCreate(fPos[0] - 50.0, fPos[1] - 50.0, fPos[0] + 50.0, fPos[1] + 50.0);
+	SetGVarInt("BM_GZ", gz);
 
-CMD:createblackmarket(playerid, params[])
-{
-	new iGroupID,
-		Float:fPos[3];
-	if(sscanf(params, "d", iGroupID)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /createblackmarket [groupid]");
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessage(playerid, COLOR_GRAD1, "You must specify a criminal group.");
-	for(new i; i < MAX_BLACKMARKETS; ++i)
-	{
-		if(!IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]))
-		{
-			new iVW = GetPlayerVirtualWorld(playerid), 
-				iINT = GetPlayerInterior(playerid);
-			arrBlackMarket[i][bm_iGroupID] = iGroupID;
-			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			arrBlackMarket[i][bm_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n{CCCCCC}ID: %d", arrGroupData[iGroupID][g_szGroupName], i);
-			arrBlackMarket[i][bm_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "Delivery Point\n%s's Black Market\n{CCCCCC}ID: %d", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName], i);
-			arrBlackMarket[i][bm_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `blackmarkets` (`id`, `groupid`, `posx`, `posy`, `posz`, `vw`, `int`) VALUES ('%d', '%d', '%f', '%f', '%f', '%d', '%d')",
-				i, iGroupID, fPos[0], fPos[1], fPos[2], iVW, iINT);
-			mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnCreateBlackMarket", "ii", playerid, i);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_X, fPos[0]);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_Y, fPos[1]);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[i][bm_iTextID], E_STREAMER_Z, fPos[2]);
-			return 1;
+	gz = CreateDynamicRectangle(fPos[0] - 50.0, fPos[1] - 50.0, fPos[0] + 50.0, fPos[1] + 50.0);
+	SetGVarInt("BM_A", gz);
+
+	arrBlackMarket[i][bm_iSeized] = 1;
+
+	SetTimerEx("BM_Seize", 60000 * 15, false, "i", i);
+
+	foreach(new p : Player) {
+
+		if(IsACop(p)) {
+
+			GangZoneFlashForPlayer(p, gz, COLOR_GREEN);
+
+			format(szMiscArray, sizeof(szMiscArray), "[Black Market]: {DD0000}%s has started to seize %s's black market.", GetPlayerNameEx(playerid), arrGroupData[iGangGroupID][g_szGroupName]);
+			SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
+			SendClientMessage(p, COLOR_GREEN, "[Objective]: {DDDDDD}In 15 minutes, it will be seized if there are at least 6 LEOs near the black market.");
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "The maximum amount of blackmarkets has been reached.");
+	return 1;
+}
+
+forward BM_Seize( i);
+public BM_Seize(i) {
+
+	new iCount;
+	foreach(new p : Player) {
+
+		if(IsACop(p)) {
+
+			if(IsPlayerInDynamicArea(p, arrBlackMarket[i][bm_iAreaID])) iCount++;
+		}
+	}
+	if(iCount > 6) format(szMiscArray, sizeof(szMiscArray), "[Black Market]: {DDDDDD}%s's black market has been successfully seized.", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
+	else {
+		arrBlackMarket[i][bm_iSeized] = 0;
+		format(szMiscArray, sizeof(szMiscArray), "[Black Market]: Failed to seize {EE0000}%s's black market.", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
+	}
+	foreach(new p : Player) {
+
+		if(IsACop(p)) {
+			SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
+		}
+	}
+	if(iCount > 6) {
+		format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n\n{FF0000}Seized", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
+		UpdateDynamic3DTextLabelText(arrBlackMarket[i][bm_iTextID], COLOR_GREEN, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `seized` = '1' WHERE `id` = '%d'", i);
+		mysql_function_query(MainPipeline, szMiscArray, falze, "OnQueryFinish", "i", SENDDATA_THREAD);
+	}
+}
+
+CMD:createblackmarket(playerid, params[]) {
+
+	szMiscArray[0] = 0;
+
+	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+
+	new	j;
+
+	for(new i; i < MAX_GROUPS; ++i) {
+
+		if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL) {
+			
+			if(arrGroupData[i][g_szGroupName][0]) {
+
+				format(szMiscArray, sizeof szMiscArray, "%s\n(%i) {%s}%s{FFFFFF}", szMiscArray, i+1, Group_NumToDialogHex(arrGroupData[i][g_hDutyColour]), arrGroupData[i][g_szGroupName]);
+				ListItemTrackId[playerid][j++] = i;
+			}
+		}
+	}
+	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_CREATE, DIALOG_STYLE_LIST, "Create Black Market", szMiscArray, "Select", "Cancel");
 	return 1;
 }
 
 CMD:destroyblackmarket(playerid, params[])
 {
 	new i;
-	if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /destroyblackmarket [id]");
-	if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]))
-	{
+	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroyblackmarket [id]");
+	if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID])) {
+
 		DestroyDynamicPickup(arrBlackMarket[i][bm_iPickupID]);
 		DestroyDynamic3DTextLabel(arrBlackMarket[i][bm_iTextID]);
 		DestroyDynamic3DTextLabel(arrBlackMarket[i][bm_iDelTextID]);
+		DestroyDynamicArea(arrBlackMarket[i][bm_iAreaID]);
 		format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `blackmarkets` WHERE `id` = '%d'", i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, i);
 	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid ID.");
-	return 1;
-}
-
-forward BM_OnDeleteBlackMarket(playerid, iBlackMarketID);
-public BM_OnDeleteBlackMarket(playerid, iBlackMarketID)
-{
-	if(mysql_errno()) return SendClientMessage(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	format(szMiscArray, sizeof(szMiscArray), "You successfully destroyed black market ID %d", iBlackMarketID);
-	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-	return 1;
-}
-
-
-CMD:blackmarket(playerid, params[])
-{
-	new Float:fPos[3];
-	for(new i; i < MAX_BLACKMARKETS; ++i)
-	{
-		if(IsValidDynamic3DTextLabel(arrBlackMarket[i][bm_iTextID]))
-		{
-			Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrBlackMarket[i][bm_iPickupID], E_STREAMER_X, fPos[0]);
-			Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrBlackMarket[i][bm_iPickupID], E_STREAMER_Y, fPos[1]);
-			Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrBlackMarket[i][bm_iPickupID], E_STREAMER_Z, fPos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 10.0, fPos[0], fPos[1], fPos[2]))
-			{
-				SetPVarInt(playerid, PVAR_BLMARKETID, i);
-				BM_BlackMarketMain(playerid);
-				return 1;
-			}
-		}
-	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You are not near that black market.");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid ID.");
 	return 1;
 }
 
 CMD:gblackmarket(playerid, params[])
 {
-	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember]) SetPVarInt(playerid, PVAR_BLMARKETID, i);
-	if(!GetPVarType(playerid, PVAR_BLMARKETID)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not part of a gang.");
+	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) SetPVarInt(playerid, PVAR_BLMARKETID, i);
+	if(!GetPVarType(playerid, PVAR_BLMARKETID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
+	if(arrBlackMarket[GetPVarInt(playerid, PVAR_BLMARKETID)][bm_iSeized]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
 	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_MAIN, DIALOG_STYLE_LIST, "Your Black Market", "Show Orders\nShow stock\nEdit Prices\nEdit Smuggle Payment\nTransfer Stock", "Select", "");
 	return 1;
 }
 
-CMD:ablackmarket(playerid, params[])
-{
-	new szChoice[16];
-	if(sscanf(params, "s[16]", szChoice)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /ablackmarket [choice] | Available: 'goto', 'position', 'deliverypoint'");
-	new iDialogCount;
+CMD:ablackmarket(playerid, params[]) {
+
 	szMiscArray[0] = 0;
-	for(new i; i < MAX_BLACKMARKETS; ++i)
-	{
-		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]))
-		{
+
+	new szChoice[16],
+		iDialogCount;
+
+	if(sscanf(params, "s[16]", szChoice)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /ablackmarket [choice] | Available: 'goto', 'position', 'deliverypoint', 'destroy', 'seized'");
+
+	for(new i; i < MAX_BLACKMARKETS; ++i) {
+
+		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID])) {
+
 			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
 			ListItemTrackId[playerid][iDialogCount] = i;
 			iDialogCount++;
 		}
 	}
-	if(strcmp(szChoice, "goto", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ALIST, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Select", "");
-	if(strcmp(szChoice, "position", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_APOINT, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Select", "");
-	if(strcmp(szChoice, "deliverypoint", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ADELPOINT, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Select", "");
-	if(strcmp(szChoice, "destroy", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ADELBM, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Select", "");
-	SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid choice.");
+	if(strcmp(szChoice, "goto", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ALIST, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Teleport", "");
+	if(strcmp(szChoice, "position", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_APOINT, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Set", "");
+	if(strcmp(szChoice, "deliverypoint", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ADELPOINT, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Set", "");
+	if(strcmp(szChoice, "destroy", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ADELBM, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Destroy", "");
+	if(strcmp(szChoice, "seized", true) == 0) return ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_ASEIZE, DIALOG_STYLE_LIST, "Black Markets", szMiscArray, "Unseize", "");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid choice.");
 	return 1;
 }
 
-CMD:orderingredient(playerid, params[])
-{
+CMD:orderingredient(playerid, params[]) {
+
 	new iDialogCount;
+
 	szMiscArray[0] = 0;
-	for(new i; i < MAX_BLACKMARKETS; ++i)
-	{
-		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]))
-		{
+
+	for(new i; i < MAX_BLACKMARKETS; ++i) {
+
+		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID])) {
+
 			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
 			ListItemTrackId[playerid][iDialogCount] = i;
 			iDialogCount++;
@@ -2279,193 +2871,220 @@ CMD:orderingredient(playerid, params[])
 	return 1;
 }
 
-CMD:mypostorders(playerid, params[])
-{
+CMD:mypostorders(playerid, params[]) {
+
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `blackmarkets_orders` WHERE `DBID` = %d", 0); //editsqlid
 	mysql_function_query(MainPipeline, szMiscArray, true, "Drug_OnListPostOrders", "i", playerid);
 	return 1;
 }
 
-CMD:listpostorders(playerid, params[])
-{
-	if(!IsACop(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a cop.");
+CMD:listpostorders(playerid, params[]) {
+
+	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a cop.");
 	mysql_function_query(MainPipeline, "SELECT * FROM `blackmarkets_orders` WHERE `trackable` = 1", true, "Drug_OnListPostOrders", "i", playerid);
 	return 1;
 }
 
-CMD:getpostorder(playerid, params[])
-{
-	if(!IsNearHouseMailbox(playerid) && !IsAtPostOffice(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near your mailbox or a post office.");
+CMD:getpostorder(playerid, params[]) {
+
+	if(!IsNearHouseMailbox(playerid) && !IsAtPostOffice(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near your mailbox or a post office.");
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `blackmarkets_orders` WHERE `DBID` = %d", GetPlayerSQLId(playerid)); //editsqlid
 	mysql_function_query(MainPipeline, szMiscArray, true, "Drug_OnGetPostOrders", "i", playerid);
 	return 1;
 }
 
+CMD:plantseeds(playerid, params[]) {
 
-CMD:cleardrug(playerid, params[])
-{
-	if(!IsACop(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a cop.");
-	new Float:fPos[3];
-	for(new i; i < MAX_DRUGS; ++i)
-	{
-		GetDynamicObjectPos(arrDrugData[i][dr_iObjectID], fPos[0], fPos[1], fPos[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 6.0, fPos[0], fPos[1], fPos[2]))
-		{
-			Drugs_Remove(playerid, i);
-			return 1;
-		}
+	new szChoice[16],
+		iDrugID = -1,
+		iIngredientID;
+
+	if(sscanf(params, "s[16]", szChoice)) {
+
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /plantseeds [choice]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "Choices: Cannabis, Opium");
+		return 1;
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You are not near a drug plant.");
-	return 1;
-}
 
-CMD:plantseeds(playerid, params[])
-{
-	new iDrugID = 1; // Cannabis ID.
-	if(PlayerInfo[playerid][p_iIngredient][iDrugID] < 10) return SendClientMessage(playerid, COLOR_GRAD1, "You need at least 10 seeds to grow cannabis.");
-	PlayerInfo[playerid][p_iDrug][iDrugID] -= 10;
+	iDrugID = Drug_GetID(szChoice);
+
+	switch(iDrugID) {
+
+		case 1: iIngredientID = 1;
+		case 6: iIngredientID = 7;
+	}
+	
+	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
+
+	if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < 10) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need at least 10 seeds to grow a plant.");
+
+	PlayerInfo[playerid][p_iIngredient][iIngredientID] -= 10;
+
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `DBID` FROM `drugpool` WHERE `DBID` = '%d'", 0);
 	mysql_function_query(MainPipeline, szMiscArray, true, "Drugs_OnCheckAmount", "ii", playerid, iDrugID);
 	return 1;
 }
 
-CMD:myplants(playerid, params[])
-{
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `drugid`, `timestamp`, `posx`, `posy`, `posz` FROM `drugpool` WHERE `DBID` = '%d'", 0);
+CMD:myplants(playerid, params[]) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `drugid`, `timestamp`, `posx`, `posy`, `posz` FROM `drugpool` WHERE `DBID` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szMiscArray, true, "Drugs_OnSearchDrugs", "i", playerid);
 	return 1;
 }
 
-CMD:getdrug(playerid, params[])
-{
-	new szChoice[16];
-	if(sscanf(params, "s[16]", szChoice)) 
-	{
-		SendClientMessage(playerid, COLOR_GRAD1, "Usage: /getdrug [choice]");
-		Drug_ListDrugs(playerid);
-		return 1;
+CMD:destroyplant(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) {
+
+		new i;
+
+		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /destroyplant [id]");
+
+		format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `drugpool` WHERE `id` = '%d'", i);
+		mysql_function_query(MainPipeline, szMiscArray, false, "Drugs_OnDestroyPlant", "ii", playerid, i);
 	}
-	new iDrugID = Drug_GetID(szChoice);
-	if(iDrugID == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug.");
-	if(strcmp(szChoice, "cannabis", true) == 0) {
-		new Float:fPos[3];
-		for(new i; i < MAX_DRUGS; ++i)
-		{
-			GetDynamicObjectPos(arrDrugData[i][dr_iObjectID], fPos[0], fPos[1], fPos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 6.0, fPos[0], fPos[1], fPos[2]))
-			{
-				Drugs_Retrieve(playerid, iDrugID, i);
-				return 1;
+	return 1;
+}
+
+// Dynamic Points
+
+CMD:points(playerid, params[]) {
+
+	szMiscArray = "Name\tOwned or Captured By\tType\n{FF0000}Capturable\t{FFFF00}Being Captured by\t{00FF00}Neutral\n";
+
+	for(new i; i < MAX_DYNPOINTS; ++i) {
+
+		if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
+			
+			if(GetGVarType("PO_CAPT", i)) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}(%d) {FFFF00}%s\t{FFFF00}%s\t{FFFF00}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
 			}
-		}
-		SendClientMessage(playerid, COLOR_GRAD1, "You are not near a cannabis plant.");
+			else {
+				
+				switch(arrPoint[i][po_iCaptureAble]) {
+					case 0: format(szMiscArray, sizeof(szMiscArray), "%s{00FF00}(%d) {00FF00}%s\t{00FF00}%s\t{00FF00}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
+					case 1: format(szMiscArray, sizeof(szMiscArray), "%s{FF0000}(%d) {FF0000}%s\t{FF0000}%s\t{FF0000}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
+				}
+			}
+		}		
 	}
+
+	ShowPlayerDialog(playerid, DIALOG_POINT_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Points", szMiscArray, "<<", "" );
 	return 1;
 }
 
-/* Dynamic Drug Smuggler Points */
-#define MAX_DRUGPOINTS 50
-
-enum eDrugPoints {
-	dp_iGroupID,
-	dp_iPickupID,
-	Text3D:dp_iTextID,
-	Text3D:dp_iDelTextID,
-}
-new arrDrugPoint[MAX_DRUGPOINTS][eDrugPoints];
-
-CMD:createdrugpoint(playerid, params[])
+CMD:createdpoint(playerid, params[]) 
 {
-	new Float:fPos[3];
-	for(new i; i < MAX_DRUGPOINTS; ++i)
-	{
-		if(!IsValidDynamicPickup(arrDrugPoint[i][dp_iPickupID]))
-		{
-			new iVW = GetPlayerVirtualWorld(playerid), 
-				iINT = GetPlayerInterior(playerid);
-			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			arrDrugPoint[i][dp_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d", i);
-			arrDrugPoint[i][dp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `drugpoints` (`id`, `groupid`, `posx`, `posy`, `posz`, `vw`, `int`) VALUES ('%d', '%d', '%f', '%f', '%f', '%d', '%d')",
-				i, 0, fPos[0], fPos[1], fPos[2], iVW, iINT);
-			mysql_function_query(MainPipeline, szMiscArray, false, "DP_OnCreateDrugPoint", "ii", playerid, i);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_X, fPos[0]);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_Y, fPos[1]);
-			Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_Z, fPos[2]);
-			return 1;
-		}
-	}
-	SendClientMessage(playerid, COLOR_GRAD1, "The maximum amount of drug points has been reached.");
+	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+
+	ShowPlayerDialog(playerid, DIALOG_POINT_NAME, DIALOG_STYLE_INPUT, "Create Point | Specify Name", "Please enter a name for the point (max. 32 characters).", "Select", "Cancel");
 	return 1;
 }
 
-CMD:drugpoint(playerid, params[])
-{
+CMD:destroypoint(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+
+	new i;
+	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroypoint [id]");
+
+	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
+
+	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `dynpoints` WHERE `id` = '%d'", i);
+	mysql_function_query(MainPipeline, szMiscArray, false, "PO_OnDeletePoint", "i", playerid, i);
+	return 1;
+}
+
+CMD:point(playerid, params[]) {
+
 	new szChoice[16],
-		iDrugPointID;
-	if(sscanf(params, "s[16]d", szChoice, iDrugPointID)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /drugpoint [choice] [id] | Available: 'position', 'deliverpos'");
-	if(!IsValidDynamicPickup(arrDrugPoint[iDrugPointID][dp_iPickupID])) return SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
-	if(strcmp(szChoice, "position", true) == 0)
-	{
-		new Float:fPos[3],
-			iVW = GetPlayerVirtualWorld(playerid),
+		iPointID,
+		Float:fPos[3];
+
+	if(sscanf(params, "s[16]dS[32]", szChoice, iPointID, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /point [choice] [id] [value] | Available: 'position', 'deliverpos', 'name'");
+
+	if(!IsValidDynamicPickup(arrPoint[iPointID][po_iPickupID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+
+	if(strcmp(szChoice, "position", true) == 0) {
+
+		new	iVW = GetPlayerVirtualWorld(playerid),
 			iINT = GetPlayerInterior(playerid);
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-		if(IsValidDynamicPickup(arrDrugPoint[iDrugPointID][dp_iPickupID])) DestroyDynamicPickup(arrDrugPoint[iDrugPointID][dp_iPickupID]);
-		if(IsValidDynamic3DTextLabel(arrDrugPoint[iDrugPointID][dp_iTextID])) DestroyDynamic3DTextLabel(arrDrugPoint[iDrugPointID][dp_iTextID]);
-		arrDrugPoint[iDrugPointID][dp_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-		format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{AAAAAA}ID: %d", iDrugPointID);
-		arrDrugPoint[iDrugPointID][dp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);		
-		format(szMiscArray, sizeof(szMiscArray), "You successfully moved Drug Point ID %d to your position.", iDrugPointID);
-		SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpoints` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iVW, iINT, iDrugPointID);
-		mysql_function_query(MainPipeline, szMiscArray, false, "", "");
+		if(IsValidDynamicPickup(arrPoint[iPointID][po_iPickupID])) DestroyDynamicPickup(arrPoint[iPointID][po_iPickupID]);
+		if(IsValidDynamic3DTextLabel(arrPoint[iPointID][po_iTextID])) DestroyDynamic3DTextLabel(arrPoint[iPointID][po_iTextID]);
+		if(IsValidDynamicArea(arrPoint[iPointID][po_iAreaID])) DestroyDynamicArea(arrPoint[iPointID][po_iAreaID]);
+		arrPoint[iPointID][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+		arrPoint[iPointID][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+		format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{AAAAAA}ID: %d", iPointID);
+		arrPoint[iPointID][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
+		format(szMiscArray, sizeof(szMiscArray), "You successfully moved Point ID %d to your position.", iPointID);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iVW, iINT, iPointID);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
-	if(strcmp(szChoice, "deliverpos", true) == 0)
-	{
-		new Float:fPos[3];
+	if(strcmp(szChoice, "deliverpos", true) == 0) {
+
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-		if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessage(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
-		if(IsValidDynamic3DTextLabel(arrDrugPoint[iDrugPointID][dp_iDelTextID])) DestroyDynamic3DTextLabel(arrDrugPoint[iDrugPointID][dp_iDelTextID]);
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n{AAAAAA}ID: %d", iDrugPointID);
-		arrDrugPoint[iDrugPointID][dp_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);		
-		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Drug Point ID %d's delivery point to your position.", iDrugPointID);
-		SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpoints` SET `delposx` = '%f', `delposy` = '%f', `delposz` = '%f' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iDrugPointID);
-		mysql_function_query(MainPipeline, szMiscArray, false, "", "");
+		if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
+		if(IsValidDynamic3DTextLabel(arrPoint[iPointID][po_iDelTextID])) DestroyDynamic3DTextLabel(arrPoint[iPointID][po_iDelTextID]);
+		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n{AAAAAA}ID: %d", iPointID);
+		arrPoint[iPointID][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);		
+		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's delivery point to your position.", iPointID);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `delposx` = '%f', `delposy` = '%f', `delposz` = '%f' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iPointID);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		return 1;
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You specified an invalid choice.");
-	return 1;
-}
+	if(strcmp(szChoice, "name", true) == 0) {
 
-CMD:loadsmuggle(playerid, params[])
-{
-	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You must be in a vehicle to load a smuggle.");
-	new Float:fPos[3];
-	for(new i; i < MAX_DRUGPOINTS; ++i)
-	{
-		if(IsValidDynamic3DTextLabel(arrDrugPoint[i][dp_iTextID]))
-		{
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_X, fPos[0]);
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_Y, fPos[1]);
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[i][dp_iTextID], E_STREAMER_Z, fPos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 10.0, fPos[0], fPos[1], fPos[2]))
-			{
-				SetPVarInt(playerid, PVAR_ATDRUGPOINT, i);
-				Smuggle_LoadIngredients(playerid);
-				return 1;
-			}
-		}
+		strdel(arrPoint[iPointID][po_szPointName], 0, strlen(arrPoint[iPointID][po_szPointName]));
+		strins(arrPoint[iPointID][po_szPointName], szMiscArray, 0, MAX_PLAYER_NAME);
+
+		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's name to: %s.", iPointID, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+		PO_RehashPoint(iPointID);
+
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `name` = '%e' WHERE `id` = '%d'", szMiscArray, iPointID);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		return 1;
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "You are not in range of a drug point.");
+
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid choice.");
 	return 1;
 }
 
-CMD:vehdrugs(playerid, params[])
-{
-	if(!IsACop(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a cop.");
+CMD:capturepoint(playerid, params[]) {
+
+	if (!IsACriminal(playerid) || PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iPointCapRank]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to capture a point.");
+
+	if(GetPVarInt(playerid,"Injured") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, " You can not capture while injured!");
+	
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot be in a vehicle when attempting to capture a point.");
+
+	if(!GetPVarType(playerid, "PO_AID")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a point.");
+
+	new i = GetPVarInt(playerid, "PO_AID");
+
+	if(arrPoint[i][po_iCaptureAble] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point isn't capturable.");
+
+	new iGroupID = PlayerInfo[playerid][pMember];
+	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s is attempting to capture %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
+	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+
+	SetGVarInt("PO_CAPT", iGroupID, i);
+
+	if(arrPoint[i][po_iPointTimer]) KillTimer(arrPoint[i][po_iPointTimer]);
+	arrPoint[i][po_iPointTimer] = SetTimerEx("PO_PointTimer", POINT_CAPTURE_INTERVAL, false, "iii", playerid, i, iGroupID);
+	return 1;
+}
+
+
+CMD:vehdrugs(playerid, params[]) {
+
+	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a cop.");
+
 	Smuggle_VehicleLoad(playerid, GetClosestCar(playerid));
 	return 1;
 }
@@ -2473,47 +3092,58 @@ CMD:vehdrugs(playerid, params[])
 Smuggle_VehicleLoad(playerid, iVehID)
 {
 	new iTotalAmount;
+
 	szMiscArray = "Ingredient\tAmount in vehicle\n";
-	for(new i; i < sizeof(szIngredients); ++i)
-	{
-		if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
-		{
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
+		if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0) {
+
 			format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 			iTotalAmount += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
 		}
 	}
-	if(iTotalAmount == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are no drugs in this vehicle.");
+
+	if(iTotalAmount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no drugs in this vehicle.");
+
 	ShowPlayerDialog(playerid, 0, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle | Drug Packages", szMiscArray, "Select", "");
-	format(szMiscArray, sizeof(szMiscArray), "_________ %s | Drugs Stored _________", VehicleName[GetVehicleModel(iVehID)]);
-	SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "_________ %s | Drugs Stored _________", GetVehicleName(iVehID));
+	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "Total amount: %d pieces.", iTotalAmount);
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________________");
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________");
 	return 1;
 }
 
 Smuggle_LoadIngredients(playerid)
 {
 	new iVehID = GetPlayerVehicleID(playerid);
+
 	szMiscArray = "Ingredient\tAmount in vehicle\n";
-	for(new i; i < sizeof(szIngredients); ++i)
-	{
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 	}
+
 	strins(szMiscArray, "\n---------------\nStart Smuggle", strlen(szMiscArray), strlen(szMiscArray)+1);
+
 	ShowPlayerDialog(playerid, DIALOG_SMUGGLE_PREPARE, DIALOG_STYLE_TABLIST_HEADERS, "Smuggle | Prepare Package", szMiscArray, "Select", "");
 	return 1;
 }
 
-Smuggle_GetBMDelPos(playerid)
-{
+Smuggle_GetBMDelPos(playerid) {
+
 	new iDialogCount;
+
 	szMiscArray = "Black Market\tPay\n";
-	for(new i; i < MAX_BLACKMARKETS; ++i)
-	{
-		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]))
-		{
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%d\n", szMiscArray, arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName], BM_SmugglePayment(playerid, i));
+
+	for(new i; i < MAX_BLACKMARKETS; ++i) {
+
+		if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID]) && arrBlackMarket[i][bm_iSeized] == 0) {
+
+			format(szMiscArray, sizeof(szMiscArray), "%s%s\t$%s\n", szMiscArray, arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName], number_format(BM_SmugglePayment(playerid, i)));
 			ListItemTrackId[playerid][iDialogCount] = i;
 			iDialogCount++;
 		}
@@ -2522,118 +3152,124 @@ Smuggle_GetBMDelPos(playerid)
 	return 1;
 }
 
-BM_SmugglePayment(playerid, iBlackMarketID)
-{
+BM_SmugglePayment(playerid, iBlackMarketID) {
+
 	new iVehID = GetPlayerVehicleID(playerid),
 		iPrice;
-	for(new i; i < sizeof(szIngredients); ++i)
-	{
-		if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
-		{
-			iPrice += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] * arrBlackMarket[iBlackMarketID][bm_iIngredientSmugglePay][i];
+
+	for(new i; i < sizeof(szIngredients); ++i) {
+
+		if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)	{
+
+			iPrice += (arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] * arrBlackMarket[iBlackMarketID][bm_iIngredientSmugglePay][i]);
 		}
 	}
+	SetPVarInt(playerid, "BM_PAY", iPrice);
 	return iPrice;
 }
 
-Smuggle_StartSmuggle(playerid, iBlackMarketID = -1)
-{
+Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 
 	new Float:fPos[3],
 		iVehID = GetPlayerVehicleID(playerid);
-	if(iBlackMarketID > -1)
-	{
+
+	if(iBlackMarketID > -1) {
+
 		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[iBlackMarketID][bm_iDelTextID], E_STREAMER_X, fPos[0]);
 		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[iBlackMarketID][bm_iDelTextID], E_STREAMER_Y, fPos[1]);
 		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrBlackMarket[iBlackMarketID][bm_iDelTextID], E_STREAMER_Z, fPos[2]);
+
 		foreach(new i : Player) if(GetPlayerVehicleID(i) == iVehID) SetPlayerCheckpoint(i, fPos[0], fPos[1], fPos[2], 10.0);
+
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_SMUGGLE_BLACKMARKET;
+
 		SetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO, iBlackMarketID);
+
 		DeletePVar(playerid, PVAR_ATDRUGPOINT);
 	}
-	else
-	{
-		new iDrugPointID = GetPVarInt(playerid, PVAR_ATDRUGPOINT);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iDrugPointID][dp_iDelTextID], E_STREAMER_X, fPos[0]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iDrugPointID][dp_iDelTextID], E_STREAMER_Y, fPos[1]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iDrugPointID][dp_iDelTextID], E_STREAMER_Z, fPos[2]);
+	else {
+
+		new iPointID = GetPVarInt(playerid, PVAR_ATDRUGPOINT);
+
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_X, fPos[0]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Y, fPos[1]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Z, fPos[2]);
+
 		foreach(new i : Player) if(GetPlayerVehicleID(i) == iVehID) SetPlayerCheckpoint(i, fPos[0], fPos[1], fPos[2], 10.0);
+
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_SMUGGLE_PLAYER;
 	}
-	SendClientMessage(playerid, COLOR_GREEN, "[Drug Smuggle] {CCCCCC}You started your drug smuggle. Make your way to the delivery point.");
+
+	SendClientMessageEx(playerid, COLOR_GREEN, "[Drug Smuggle] {CCCCCC}You started your drug smuggle. Make your way to the delivery point.");
 	return 1;
 }
 
-hook OnPlayerEnterCheckpoint(playerid)
-{
-	switch(gPlayerCheckpointStatus[playerid])
-	{
-		case CHECKPOINT_SMUGGLE_BLACKMARKET:
-		{
-			new iVehID = GetPlayerVehicleID(playerid),
-				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO);
-			SendClientMessage(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
-			format(szMiscArray, sizeof(szMiscArray), "------ %s's Black Market ------", arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName]);
-			SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-			for(new i; i < sizeof(szIngredients); ++i)
-			{
-				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
-				{
-					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
-					SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-				}
-			}
-			SendClientMessage(playerid, COLOR_GREEN, "____________________________________________");
-		}
-		case CHECKPOINT_SMUGGLE_PLAYER:
-		{
-			new iVehID = GetPlayerVehicleID(playerid);
-			SendClientMessage(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
-			for(new i; i < sizeof(szIngredients); ++i)
-			{
-				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
-				{
-					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
-					SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-				}
-			}
-			SendClientMessage(playerid, COLOR_GREEN, "____________________________________________");
-		}
-	}
+
+forward PO_PointTimer(playerid, i, iGroupID);
+public PO_PointTimer(playerid, i, iGroupID) {
+
+	DeleteGVar("PO_CAPT", i);
+
+	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s has successfully captured %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
+	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+
+	arrPoint[i][po_iCaptureAble] = 0;
+	arrPoint[i][po_iGroupID] = iGroupID;
+
+	KillTimer(arrPoint[i][po_iPointTimer]);
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `groupid` = '%d' WHERE `id` = '%d'", iGroupID, i);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+	PO_RehashPoint(i);
 	return 1;
 }
 
-forward DP_OnCreateDrugPoint(playerid, i);
-public DP_OnCreateDrugPoint(playerid, i)
-{
-	format(szMiscArray, sizeof(szMiscArray), "You have successfully created a drug point for with ID %d", i);
-	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
-	SendClientMessage(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point! Use '/drugpoint deliverpos' to set it up.");
+forward PO_OnCreatePoint(playerid, i);
+public PO_OnCreatePoint(playerid, i) {
+
+	format(szMiscArray, sizeof(szMiscArray), "You have successfully created a point with ID %d", i);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point! Use '/point deliverpos' to set it up.");
 	return 1;
 }
 
-DP_LoadDrugPoints()
-{
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `drugpoints`");
-	mysql_function_query(MainPipeline, szMiscArray, true, "DP_OnLoadDrugPoints", "");	
+forward PO_OnDeletePoint(playerid, i);
+public PO_OnDeletePoint(playerid, i) {
+
+	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}You have successfully deleted point ID %d", i);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	
+	PO_DestroyPoint(i);
+
+	return 1;
 }
 
-forward DP_OnLoadDrugPoints();
-public DP_OnLoadDrugPoints()
+
+PO_LoadPoints()
 {
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `dynpoints`");
+	mysql_function_query(MainPipeline, szMiscArray, true, "PO_OnLoadPoints", "");	
+}
+
+forward PO_OnLoadPoints();
+public PO_OnLoadPoints() {
+
 	new iRows = cache_get_row_count();
-	if(!iRows) return print("[Drug Points] No drug points were found in the database.");
+	if(!iRows) return print("[Points] No points were found in the database.");
+
 	new iFields,
 		iCount;
+
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	while(iCount < iRows)
 	{
-		arrDrugPoint[iCount][dp_iGroupID] = cache_get_field_content_int(iCount, "groupid", MainPipeline);
 		new Float:fPos[6],
 			iVW,
-			iINT;
+			iINT,
+			iGroupID;
+
 		fPos[0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
 		fPos[1] = cache_get_field_content_float(iCount, "posy", MainPipeline);
 		fPos[2] = cache_get_field_content_float(iCount, "posz", MainPipeline);
@@ -2642,31 +3278,89 @@ public DP_OnLoadDrugPoints()
 		fPos[5] = cache_get_field_content_float(iCount, "delposz", MainPipeline);
 		iVW = cache_get_field_content_int(iCount, "vw", MainPipeline);
 		iINT = cache_get_field_content_int(iCount, "int", MainPipeline);
-		arrDrugPoint[iCount][dp_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-		format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{AAAAAA}ID: %d", iCount);
-		arrDrugPoint[iCount][dp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n{AAAAAA}ID: %d", iCount);
-		arrDrugPoint[iCount][dp_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = 0, .interiorid = 0);		
-		Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iCount][dp_iTextID], E_STREAMER_X, fPos[0]);
-		Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iCount][dp_iTextID], E_STREAMER_Y, fPos[1]);
-		Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrDrugPoint[iCount][dp_iTextID], E_STREAMER_Z, fPos[2]);
+		iGroupID = cache_get_field_content_int(iCount, "groupid", MainPipeline);
+
+		cache_get_field_content(iCount, "name", szMiscArray, MainPipeline, sizeof(szMiscArray));
+		
+		strins(arrPoint[iCount][po_szPointName], szMiscArray, 0, MAX_PLAYER_NAME);
+
+		arrPoint[iCount][po_iGroupID] = iGroupID;
+
+		arrPoint[iCount][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
+
+		switch(arrPoint[iCount][po_iType]) {
+			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iCount, arrGroupData[iGroupID][g_szGroupName]);
+			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iCount, arrGroupData[iGroupID][g_szGroupName]);
+		}
+
+		arrPoint[iCount][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
+
+		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n\nOwned by: %s", iCount, arrGroupData[iGroupID][g_szGroupName]);
+		arrPoint[iCount][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
+
+		arrPoint[iCount][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[iCount][po_iAreaID], E_STREAMER_EXTRA_ID, iCount);
+
+		arrPoint[iCount][po_iZoneID] = GangZoneCreate(fPos[0] - 40.0, fPos[0] + 40.0, fPos[1] - 40.0, fPos[2] - 40.0);
+
 		iCount++;
 	}
-	printf("[Drug Points] Loaded %d drug points.", iCount);
+	printf("[Points] Loaded %d points.", iCount);
 	return 1;
+}
+
+PO_DestroyPoint(i) {
+
+	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
+	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
+	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
+	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
+	GangZoneDestroy(arrPoint[i][po_iZoneID]);
+}
+
+PO_RehashPoint(i) {
+
+		new Float:fPos[6],	
+			iGroupID = arrPoint[i][po_iGroupID];
+
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_X, fPos[0]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Y, fPos[1]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Z, fPos[2]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[3]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[4]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[5]);
+
+		PO_DestroyPoint(i);
+
+		arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
+
+
+		switch(arrPoint[i][po_iType]) {
+			case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", arrPoint[i][po_szPointName], i, arrGroupData[iGroupID][g_szGroupName]);
+			case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", arrPoint[i][po_szPointName], i, arrGroupData[iGroupID][g_szGroupName]);
+		}
+
+		arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
+
+		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n\nOwned by: %s", i, arrGroupData[iGroupID][g_szGroupName]);
+		arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
+
+		arrPoint[i][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
+
+		arrPoint[i][po_iZoneID] = GangZoneCreate(fPos[0] - 40.0, fPos[0] + 40.0, fPos[1] - 40.0, fPos[2] - 40.0);
 }
 
 CMD:drughelp(playerid, params[])
 {
-	SendClientMessage(playerid, COLOR_GREEN, "__________ [Drug System] __________");
-	SendClientMessage(playerid, COLOR_GRAD1, "/mydrugs | /usedrug | /getdrug | /plantseeds | /myplants | /givedrug | /selldrug | /takedrug | /dropdrug");
-	SendClientMessage(playerid, COLOR_GRAD1, "/myingredients | /sellingredient | /takeingredient | /dropingredient | /orderingredient");
-	SendClientMessage(playerid, COLOR_GRAD1, "/mymix | /mix | /clearmix");
-	SendClientMessage(playerid, COLOR_GRAD1, "/myingredients | /sellingredient | /takeingredient | /dropingredient");
-	SendClientMessage(playerid, COLOR_GRAD1, "/blackmarket | /gblackmarket | /orderingredient | /mypostorders | /getpostorder");
-	SendClientMessage(playerid, COLOR_LIGHTRED, "[MEDIC/LEA] /prescribe | /takedrugs | /listpostorders | /cleardrug | /vehdrugs");
-	SendClientMessage(playerid, COLOR_YELLOW, "[Administrators] /createblackmarket | /ablackmarket | /createdrugpoint | /drugpoint");
-	SendClientMessage(playerid, COLOR_GREEN, "_______________________________________________________");
+	SendClientMessageEx(playerid, COLOR_GREEN, "__________ [Drug System] __________");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "/mydrugs | /usedrug | /dropdrug | /plantseeds | /myplants");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "/myingredients | /dropingredient | /orderingredient");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "/mymix | /mix | /clearmix");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "/blackmarket | /gblackmarket | /mypostorders | /getpostorder");
+	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[MEDIC/LEA] | /listpostorders | /vehdrugs");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Administrators] /createblackmarket | /ablackmarket | /createdpoint | /point");
+	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________");
 	return 1;
 }
 
@@ -2684,4 +3378,187 @@ Drugs_ODTextDraw()
 	TextDrawBoxColor(ODTextDraw, 167772380);
 	TextDrawTextSize(ODTextDraw, 770.000000, 51.000000);
 	TextDrawSetSelectable(ODTextDraw, 0);
+}
+
+/* Alien Easter Egg */
+
+#define 		MAX_UFOS			10
+#define 		ALIEN_ACTORMODEL 	264
+
+enum eUfo {
+	ufo_iObjectID[13],
+	ufo_iPlayerID
+}
+new arrUfo[MAX_UFOS][eUfo];
+
+hook OnGameModeInit() {
+
+	EasterEgg_Aliens();
+	return 1;
+}
+
+forward Ufo_Aliens(playerid);
+public Ufo_Aliens(playerid) {
+
+	new stage = GetPVarInt(playerid, "Aliens");
+	
+	switch(stage) {
+
+		case 0: {
+			new Float:fPos[3];
+			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+			SetPVarFloat(playerid, "PX", fPos[0]);
+			SetPVarFloat(playerid, "PY", fPos[1]);
+			SetPVarFloat(playerid, "PZ", fPos[2]);
+			SetPlayerWeather(playerid, 15);
+			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/starwars.mp3");
+			ClearChatbox(playerid);
+			SendClientMessage(playerid, COLOR_GREEN, "[Aliens]: {DDDDDD}Greetings, Earthling... You are the chosen one... Come with us, fair creature... To a better place...");
+		}
+		case 8: {
+
+			new Float:fPos[3];
+			GetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2]);
+			InterpolateCameraPos(playerid, fPos[0], fPos[1], fPos[2], fPos[0] + 40.0, fPos[1] + 40.0, fPos[2] + 25.0, 5000, CAMERA_MOVE);
+			SetPlayerDrunkLevel(playerid, 3000);
+		}
+		case 40: {
+			SetPlayerWeather(playerid, 0);
+			SetPlayerTime(playerid, 3, 0);
+
+			Player_StreamPrep(playerid, 342.4695, 162.9769, 1321.8794, FREEZE_TIME);
+			SetCameraBehindPlayer(playerid);
+			SetPlayerVirtualWorld(playerid, 100);
+			SetPlayerSpecialAction(playerid, 5);
+			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/boogie.mp3");
+			ClearChatbox(playerid);
+		}
+		case 80: {
+			SetPlayerPos(playerid, GetPVarFloat(playerid, "PX"), GetPVarFloat(playerid, "PY"), GetPVarFloat(playerid, "PZ"));
+			SetPlayerVirtualWorld(playerid, 0);
+			DeletePVar(playerid, "PX");
+			DeletePVar(playerid, "PY");
+			DeletePVar(playerid, "PZ");
+			Ufo_DestroyUfo(playerid);
+			DeletePVar(playerid, "Aliens");
+			ClearAnimations(playerid, 1);
+			StopAudioStreamForPlayer(playerid);
+			return 1;
+		}
+	}
+	if(stage < 20) SetPlayerVelocity(playerid, 0.0, 0.0, 1.1);
+	stage++;
+	SetPVarInt(playerid, "Aliens", stage);
+	if(GetPVarType(playerid, "Aliens")) SetTimerEx("Ufo_Aliens", 500, false, "i", playerid);
+	return 1;
+}
+
+EasterEgg_Aliens() {
+
+	new i = CreateActor(ALIEN_ACTORMODEL, 341.3365, 159.0100, 1324.5111, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 332.4268, 157.1670, 1324.2773, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 332.4458, 170.4236, 1323.4000, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 340.7448, 170.2712, 1322.4946, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 339.7888, 163.5347, 1322.7216, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 341.3365, 159.0100, 1324.5111, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	i = CreateActor(ALIEN_ACTORMODEL, 340.5054, 168.3707, 1322.0000, random(360));
+	ApplyActorAnimation(i, "DANCING", "dance_loop", 4.0, 1, 0, 0, 1, 0);
+	SetActorVirtualWorld(i, 100);
+	
+	CreateDynamicObject(7264, 277.46997, 94.69891, 1321.55212,   0.00000, 0.00000, 0.00000, .worldid = 100);
+	CreateDynamicObject(7264, 402.31766, 147.72301, 1321.55212,   0.00000, 0.00000, 90.00000, .worldid = 100);
+	CreateDynamicObject(7264, 369.71414, 228.60138, 1321.55212,   0.00000, 0.00000, 180.00000, .worldid = 100);
+	CreateDynamicObject(7264, 272.70834, 214.62027, 1321.55212,   0.00000, 0.00000, 270.00000, .worldid = 100);
+	CreateDynamicObject(7264, 348.56042, 202.58948, 1267.59900,   90.00000, 0.00000, 270.00000, .worldid = 100);
+	CreateDynamicObject(7264, 333.47507, 202.79184, 1265.30090,   90.00000, 0.00000, 270.00000, .worldid = 100);
+	CreateDynamicObject(7264, 328.10861, 134.25200, 1266.49133,   90.00000, 0.00000, 90.00000, .worldid = 100);
+	CreateDynamicObject(7264, 324.75668, 198.09085, 1375.49133,   270.00000, 0.00000, 270.00000, .worldid = 100);
+	CreateDynamicObject(7264, 336.23752, 198.49298, 1375.49133,   270.00000, 0.00000, 270.00000, .worldid = 100);
+	CreateDynamicObject(7264, 352.71371, 130.80672, 1375.49133,   270.00000, 0.00000, 90.00000, .worldid = 100);
+	
+	i = CreateDynamicObject(18769, 338.98148, 164.45738, 1319.34302,   0.00000, 0.00000, 0.00000);
+	for(new j; j < 3; ++j) SetDynamicObjectMaterial(i, j, 0, "none", "none", 0);
+	i = CreateDynamicObject(18769, 348.31168, 164.42392, 1329.21985,   0.00000, 90.00000, 0.00000);
+	for(new j; j < 3; ++j) SetDynamicObjectMaterial(i, j, 0, "none", "none", 0);
+	i = CreateDynamicObject(18769, 328.52719, 164.34248, 1329.21985,   0.00000, 90.00000, 0.00000);
+	for(new j; j < 3; ++j) SetDynamicObjectMaterial(i, j, 0, "none", "none", 0);
+	i = CreateDynamicObject(18769, 338.74298, 173.78041, 1329.21985,   0.00000, 90.00000, 90.00000);
+	for(new j; j < 3; ++j) SetDynamicObjectMaterial(i, j, 0, "none", "none", 0);
+	i = CreateDynamicObject(18769, 338.96732, 154.25504, 1329.21985,   0.00000, 90.00000, 90.00000);
+	for(new j; j < 3; ++j) SetDynamicObjectMaterial(i, j, 0, "none", "none", 0);
+}
+
+Ufo_CreateUfo(playerid) {
+
+	new Float:fPos[3],
+		Float:foPos[6];
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
+	fPos[2] += 70.0;
+
+	SetPlayerTime(playerid, 3, 0);
+	SetPlayerWeather(playerid, 710);
+
+	SetPVarInt(playerid, "Aliens", 0);
+	SetTimerEx("Ufo_Aliens", 500, false, "i", playerid);
+
+	for(new i; i < MAX_UFOS; ++i) {
+
+		if(!IsValidDynamicObject(arrUfo[i][ufo_iObjectID][0])) {
+			
+			arrUfo[i][ufo_iPlayerID] = playerid;
+
+			arrUfo[i][ufo_iObjectID][0] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34400,   0.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][1] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34399,   0.00000, 0.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][2] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68831,   0.00000, 180.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][3] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68829,   0.00000, 180.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][4] = CreateDynamicObject(18656, fPos[0] + -0.23865, fPos[1] + 2.01184, fPos[2] + 4.47868,   270.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][5] = CreateDynamicObject(3872, fPos[0] + 4.32544, fPos[1] + 1.36792, fPos[2] + -12.68831,   0.00000, 270.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][6] = CreateDynamicObject(3872, fPos[0] + -3.95508, fPos[1] + 0.24829, fPos[2] + -12.68831,   0.00000, 330.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][7] = CreateDynamicObject(3872, fPos[0] + 0.17798, fPos[1] + 4.61609, fPos[2] + -12.68831,   0.00000, 270.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][8] = CreateDynamicObject(3872, fPos[0] + 0.20605, fPos[1] + -5.38574, fPos[2] + -12.68831,   0.00000, 270.00000, 270.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][9] = CreateDynamicObject(9123, fPos[0] + 5.77893, fPos[1] + 2.94751, fPos[2] + -10.47681,   0.00000, 90.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][10] = CreateDynamicObject(9123, fPos[0] + -5.77881,fPos[1] +  2.94519, fPos[2] + -10.47681,   0.00000, 90.00000, 180.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][11] = CreateDynamicObject(9127, fPos[0] + 3.37561, fPos[1] + 5.38574, fPos[2] + -5.61124,   0.00000, 0.00000, 0.72686, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][12] = CreateDynamicObject(9127, fPos[0] + 3.88684, fPos[1] + 4.88086, fPos[2] + -5.61121,   0.00000, 0.00000, 45.00000, .playerid = playerid);
+
+
+			for(new j; j < 13; ++j) {
+
+				GetDynamicObjectPos(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2]);
+				GetDynamicObjectRot(arrUfo[i][ufo_iObjectID][j], foPos[3], foPos[4], foPos[5]);
+
+				MoveDynamicObject(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2] - 20.0, 1.0, foPos[3], foPos[4], foPos[5]);
+			}
+			return 1;
+		}
+	}
+	return 1;
+}
+
+Ufo_DestroyUfo(playerid) {
+
+	new i;
+	for(i = 0; i < MAX_UFOS; ++i) if(arrUfo[i][ufo_iPlayerID] == playerid) break;
+	for(new j; j < 13; ++j) DestroyDynamicObject(arrUfo[i][ufo_iObjectID][j]);
+	return 1;
+}
+
+CMD:aliens(playerid, params) {
+
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) Ufo_CreateUfo(playerid);
+	else SendClientMessage(playerid, COLOR_GRAD1, "You are not high enough for this experience.");
+	return 1;
 }

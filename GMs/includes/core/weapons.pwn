@@ -142,7 +142,7 @@ forward SetPlayerWeapons(playerid);
 public SetPlayerWeapons(playerid)
 {
 	if(HungerPlayerInfo[playerid][hgInEvent] == 1) { return 1;}
-    if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }
+    if(GetPVarInt(playerid, "IsInArena")) { return 1; }
 	ResetPlayerWeapons(playerid);
 	for(new s = 0; s < 12; s++)
 	{
@@ -156,7 +156,7 @@ public SetPlayerWeapons(playerid)
 
 stock SetPlayerWeaponsEx(playerid)
 {
-	if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }	
+	if(GetPVarInt(playerid, "IsInArena")) { return 1; }	
 	ResetPlayerWeapons(playerid);
 	for(new s = 0; s < 12; s++)
 	{
@@ -324,7 +324,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	    SetPlayerArmedWeapon(playerid, 0);
 	}
 	
-	if(GetPVarInt(playerid, "IsInArena") < 0 && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "EventToken")) {
+	if(!GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "EventToken")) {
 		if(!IsNotAGun(newweapon)) ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
 		SyncPlayerAmmo(playerid, newweapon);
 	} 
@@ -334,7 +334,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][PlayerInfo[playerid][pHolsteredWeapon]]);
 	}*/
 
- 	if(GetPVarInt(playerid, "IsInArena") >= 0)
+ 	if(GetPVarInt(playerid, "IsInArena"))
 	{
 	    new a = GetPVarInt(playerid, "IsInArena");
 	    if(PaintBallArena[a][pbGameType] == 3)
@@ -366,7 +366,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		}
 		else if( PlayerInfo[playerid][pGuns][1] != 4 && GetPlayerWeapon( playerid ) == 4)
 		{
-			if(GetPVarInt(playerid, "IsInArena") >= 0) return 1;
+			if(GetPVarInt(playerid, "IsInArena")) return 1;
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pMember] != 8)
 			{
 			    new WeaponName[32];
@@ -1184,7 +1184,7 @@ CMD:myguns(playerid, params[])
 CMD:giveweapon(playerid, params[])
 {
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;
@@ -1805,7 +1805,7 @@ CMD:dropgun(playerid, params[])
 		SendClientMessageEx (playerid, COLOR_GRAD2, "You can not drop weapons in a vehicle!");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		return 1;

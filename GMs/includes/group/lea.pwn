@@ -474,7 +474,7 @@ CMD:placekit(playerid, params[]) {
 CMD:usekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
-		if(GetPVarInt(playerid, "IsInArena") >= 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new string[128];
@@ -1097,7 +1097,7 @@ CMD:ram(playerid, params[])
 {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid))
 	{
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 			return 1;
@@ -1596,7 +1596,7 @@ CMD:tazer(playerid, params[])
 			return 1;
 		}
 
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;
@@ -1706,7 +1706,7 @@ CMD:radargun(playerid, params[])
 			return 1;
 		}
 
-		if(GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;

@@ -54,41 +54,55 @@ CMD:exit(playerid)
 }
 */
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	new vehicleid = GetPlayerVehicleID(playerid);
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & ENTRANCE_SHORTCUT && g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER)
-	{
+	if(newkeys & ENTRANCE_SHORTCUT && g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
+
 		Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 	}
-	else if(newkeys & KEY_NO && g_iEntranceID[playerid] > -1 && vehicleid != INVALID_VEHICLE_ID)
-	{
+
+	else if(newkeys & KEY_NO && g_iEntranceID[playerid] > -1 && IsPlayerInAnyVehicle(playerid)) {
+
 		Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+	}
+
+	if(!IsPlayerInAnyVehicle(playerid)) {
+
+		if(newkeys & KEY_CTRL_BACK) {
+
+			if(GetPVarType(playerid, "VEHA_ID")) {
+
+				Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
+			}
+		}
 	}
 	return 1;
 }
 
-hook OnPlayerPickUpDynamicPickup(playerid, pickupid)
-{
-	new i = GetDoorID(pickupid);
-	if(i > -1)
-	{
-		g_iEntrancePID[playerid] = pickupid;
-		g_iEntranceID[playerid] = i;
-		SetTimerEx("ENT_DelVar", 500, false, "i", playerid);
-	}
-}
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	new i = GetDoorIDFromArea(areaid);
-	if(i > -1) {
-		g_iEntranceAID[playerid] = areaid;
-		g_iEntranceID[playerid] = i;
-		SetTimerEx("ENT_DelVar", 1000, false, "i", playerid);
+	new i = GetIDFromArea(areaid);
+
+	if(iVehEnterAreaID[i] == areaid) {
+
+		SetPVarInt(playerid, "VEHA_ID", i);
+		return 1;
 	}
 
+	if(i > -1) {
+
+		g_iEntranceAID[playerid] = areaid;
+		g_iEntranceID[playerid] = i;
+	}
+	return 1;
+}
+
+hook OnPlayerLeaveDynamicArea(playerid, areaid)
+{
+	DeletePVar(playerid, "VEHA_ID");
+	ENT_DelVar(playerid);
+	return 1;
 }
 
 forward ENT_DelVar(playerid);
@@ -99,41 +113,8 @@ public ENT_DelVar(playerid)
 	g_iEntranceAID[playerid] = -1;
 }
 
-/*CreateDynamicDoor_int(doorid)
-{
-	DDoorsInfo[doorid][ddPickupID_int] = CreateDynamicPickup(1559, 23, DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ], DDoorsInfo[doorid][ddInteriorVW]);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, DDoorsInfo[doorid][ddPickupID], E_STREAMER_EXTRA_ID, doorid);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, DDoorsInfo[doorid][ddPickupID_int], E_STREAMER_EXTRA_ID, doorid);
-	return 1;
-}
+GetIDFromArea(areaid) {
 
-CreateHouse_int(houseid)
-{
-	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], HouseInfo[houseid][hIntVW]);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID], E_STREAMER_EXTRA_ID, houseid);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, HouseInfo[houseid][hPickupID_int], E_STREAMER_EXTRA_ID, houseid);
-	return 1;
-}
-
-CreateBusiness_int(i)
-{
-	if(Businesses[i][bVW] == 0)
-	{
-		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], BUSINESS_BASE_VW + i);
-	}
-	else Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], Businesses[i][bVW]);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup], E_STREAMER_EXTRA_ID, i);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, Businesses[i][bPickup_int], E_STREAMER_EXTRA_ID, i);
-	return 1;
-}*/
-
-GetDoorID(pickupid)
-{
-	new iAssignData = Streamer_GetIntData(STREAMER_TYPE_PICKUP, pickupid, E_STREAMER_EXTRA_ID);
-	return iAssignData;
-}
-
-GetDoorIDFromArea(areaid) {
 	new iAssignData = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 	return iAssignData;
 }
@@ -159,38 +140,34 @@ Enter_Door(playerid, pickupid, i, areaid = - 1)
 		{
 			Garage_Exit(playerid, i);
 		}
-		if(pickupid == DDoorsInfo[i][ddPickupID])
+		if(areaid == DDoorsInfo[i][ddAreaID])
 		{
 			DDoor_Enter(playerid, i);
 			return 1;
 		}
-		if(pickupid == DDoorsInfo[i][ddPickupID_int])
+		if(areaid == DDoorsInfo[i][ddAreaID_int])
 		{
 			DDoor_Exit(playerid, i);
 			return 1;
 		}	
-		if(pickupid == HouseInfo[i][hPickupID]) 
+		if(areaid == HouseInfo[i][hAreaID][0]) 
 		{
 			House_Enter(playerid, i);
 			return 1;
 	    }
-		if(pickupid == HouseInfo[i][hPickupID_int])
+		if(areaid == HouseInfo[i][hAreaID][1])
 		{
 			House_Exit(playerid, i);
 			return 1;
 		}
-		if(pickupid == Businesses[i][bPickup]) 
+		if(areaid == Businesses[i][bAreaID][0]) 
 		{
 			Business_Enter(playerid, i);
 			return 1;
 	    }
-		if(pickupid == Businesses[i][bPickup_int])
+		if(areaid == Businesses[i][bAreaID][1])
 		{
 			Business_Exit(playerid, i);
-			return 1;
-		}
-		if(areaid == iVehEnterAreaID[i]) {
-			Vehicle_Enter(playerid, i);
 			return 1;
 		}
 		if(pickupid == iVehExits[0] || pickupid == iVehExits[1] || pickupid == iVehExits[2]) {
@@ -270,7 +247,6 @@ Vehicle_Exit(playerid) {
 	PlayerInfo[playerid][pInt] = 0;
 	SetPlayerInterior(playerid, 0);
 	InsidePlane[playerid] = INVALID_VEHICLE_ID;
-
 	return 1;
 }
 

@@ -43,7 +43,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	{
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
-		if(GetPVarInt(playerid, "EventToken") == 0 && GetPVarInt(playerid, "IsInArena") == -1 && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
+		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
 		{
 			if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid)
 			{
@@ -360,7 +360,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	szMiscArray[0] = 0; 
 
-	if(iAT != -1 && GetPVarInt(playerid, "IsInArena") < 0 && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0)
+	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0)
 	{
 		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1) 
 		{
@@ -390,7 +390,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	}
 	if(GetPVarInt(playerid, "FireStart") == 1)
 	{
-		if(fX != 0 && fY != 0 && fZ != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
+		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
 		{
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
@@ -401,6 +401,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(IsPlayerNPC(playerid)) return 1;
+	if(GetPVarType(playerid, "pTut")) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
 	IsSpawned[playerid] = 0;
@@ -591,7 +592,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-		if(GetPVarInt(killerid, "IsInArena") >= 0) PlayerInfo[killerid][pDMKills]++;
+		if(GetPVarInt(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
 		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");
 	}
 
@@ -656,7 +657,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(GetPVarInt(playerid, "EventToken") == 0)
 	{
-		if(GetPVarInt(playerid, "IsInArena") == -1)
+		if(!GetPVarType(playerid, "IsInArena"))
 		{
 			if(HungerPlayerInfo[playerid][hgInEvent] != 1)
 			{
@@ -676,7 +677,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 
-	if(GetPVarInt(playerid, "IsInArena") >= 0)
+	if(GetPVarInt(playerid, "IsInArena"))
 	{
 		new
 			iPlayer = GetPVarInt(playerid, "IsInArena"),

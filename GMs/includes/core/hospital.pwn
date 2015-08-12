@@ -532,9 +532,9 @@ CMD:kill(playerid, params[])
     else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "IsFrozen") != 0 || PlayerCuffed[playerid] != 0 || PlayerTied[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	else
 	{
-		if(GetPVarInt(playerid, "EventToken") >= 1 || GetPVarInt(playerid, "IsInArena") >= 0)
+		if(GetPVarInt(playerid, "EventToken") >= 1 || GetPVarInt(playerid, "IsInArena"))
 		{
-		    if(GetPVarInt(playerid, "IsInArena") >= 0)
+		    if(GetPVarInt(playerid, "IsInArena"))
 		    {
 				if(PaintBallArena[GetPVarInt(playerid, "IsInArena")][pbGameType] == 3)
 				{

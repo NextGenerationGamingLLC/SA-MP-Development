@@ -32,6 +32,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+ /* Streamer Error Log fixes by Jingles
+ 	("Streamer_GetIntData: Invalid ID specified" spam)
+ */
+
+ public Streamer_OnPluginError(error[]) {
+
+ 	if(strfind(error, "Streamer_GetIntData: Invalid", true) != -1) return 0;
+ 	return 1;
+ }
+
 forward LoadStreamerStaticVehicles();
 public LoadStreamerStaticVehicles()
 {
@@ -347,7 +357,6 @@ public LoadStreamerDynamicPickups()
 forward LoadStreamerDynamic3DTextLabels();
 public LoadStreamerDynamic3DTextLabels()
 {
-	new string[128];
     //CreateDynamic3DTextLabel("{FF8000}/loadforklift\nTo load the crate onto your forklift", COLOR_YELLOW, -2114.1, -1723.5, 11984.5, 20.0, _, _, 1, 0, -1, _, 20.0);
 	CreateDynamic3DTextLabel("{FF8000}/loadforklift\nTo load the crate onto your forklift", COLOR_YELLOW, -2136.05, -1573.24, 3551.5, 20.0, _, _, -1, -1, -1, _, 20.0);
 	CreateDynamic3DTextLabel("{FF8000}LOCKDOWN\nPUSH ONLY IN CASE OF EMERGENCY", COLOR_YELLOW, -1121.70, 4290.41, 5.88, 20.0, _, _, 1, 0, 0, _, 20.0);
@@ -397,53 +406,18 @@ public LoadStreamerDynamic3DTextLabels()
 	CreateDynamic3DTextLabel("Paintball Rooms\n\nType /joinarena to choose rooms",COLOR_YELLOW,1294.5062,-1445.0599,0.4403+0.5,6.0);
 
 	// SANews Broadcast
+	/*
 	SANews3DText[0] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,650.2051,-6.5939,1101.2085,8.0);
 	SANews3DText[1] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,648.7708,-20.0820,1101.2126,8.0);
 	SANews3DText[2] = CreateDynamic3DTextLabel(string,COLOR_LIGHTBLUE,664.2178,0.9587,1101.2085,8.0);
+	*/
 
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1816.528686, -179.502624, 9.398437+0.6,5.0);
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW, -2481.1560,2290.8391,4.9844+0.6, 5.0);
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,1154.7295,-1440.2323,15.7969+0.6,18.0); // Namechange at mall
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,-2279.6545, 2311.2238, 4.9641+0.6,18.0); // Namechange (TR)
 
-	/* Job's 3D Text */
-	CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,251.99, 117.36, 1003.22+0.5,4.0);// Detective Job (LS)
-	CreateDynamic3DTextLabel("Detective Job \nType /join to become one", COLOR_RED, 1478.9515, -1755.7147, 3285.2859+0.5, 4.0);// Detective Job (LS)
-    CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,301.042633, 178.700408, 1007.171875+0.5,4.0);// Detective Job (SF)
-	CreateDynamic3DTextLabel("Detective Job \nType /join to become one",COLOR_RED,-1385.6786, 2625.6636, 55.5572+0.5,4.0);// Detective Job (TR)
-	CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,1366.4325,-1275.2096,13.5469+0.5,4.0);// Gun Job
-    CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,-2623.333984, 209.235931, 4.684767+0.5,4.0);// Gun Job
-	CreateDynamic3DTextLabel("Arms Dealer Job \nType /join to become one",COLOR_RED,-1513.4904, 2614.3591, 55.8078+0.5,4.0);// Arms Dealer (TR)
- 	//CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,2166.3772,-1675.3829,15.0859+0.5,4.0);// Drug Dealer (LS)
-   // CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-2089.344970, 87.800231, 35.320312+0.5,4.0);// Drug Dealer (SF)
-	//CreateDynamic3DTextLabel("Drug Dealer Job \nType /join to become one",COLOR_RED,-1528.0924,2688.7837,55.8359+0.5,4.0);// Drug Dealer (TR)
-	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,2226.1716,-1718.1792,13.5165+0.5,4.0);// Bodyguard (LS)
-    CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-2269.256103, -158.054321, 35.320312+0.5,4.0);// Bodyguard (SF)
-	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-821.3508,1574.9393,27.1172+0.5,4.0);// Bodyguard (TR)
-	CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,-2412.5095, 2293.3923, 4.8137+0.5,4.0);// Bodyguard (TR)
-	CreateDynamic3DTextLabel("Lawyer Job \nType /join to become one",COLOR_RED,1469.5247,-1755.7039,3285.2859+0.5,4.0);// Lawyer
-    //CreateDynamic3DTextLabel("Taxi Job \nType /join to become one",COLOR_RED,1741.6218,-1863.6486,13.5748+0.5,4.0);// Taxi Driver (LS)
-    //CreateDynamic3DTextLabel("Taxi Job \nType /join to become one",COLOR_RED,-1981.144775, 133.063293, 27.687500+0.5,4.0);// Taxi Driver (SF)
-	//CreateDynamic3DTextLabel("Taxi Job \nType /join to become one",COLOR_RED,-2240.9011, 2313.1653, 4.9918+0.5,4.0);// Taxi Driver (TR)
-    CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,1224.13, 267.98, 19.55+0.5,4.0);// Bodyguard (Montgomery)
-    CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,161.92, -25.70, 1.57+0.5,4.0);// Mechanic (Blueberry)
-    CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-2032.601928, 143.866592, 28.835937+0.5,4.0);// Mechanic (SF)
-	CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-1475.4224, 1877.3550, 32.6328+0.5,4.0);// Mechanic (TR)
-	CreateDynamic3DTextLabel("Mechanic Job \nType /join to become one",COLOR_RED,-2412.5095, 2279.8159, 4.8137+0.5,4.0);// Mechanic (TR)
-	CreateDynamic3DTextLabel("Whore Job \nType /join to become one",COLOR_RED,1215.1304,-11.8431,1000.9219+0.5,4.0);// Whore
-    CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,766.0804,14.5133,1000.7004+0.5,4.0);// Boxer
-    CreateDynamic3DTextLabel("Boxer Job \nType /join to become one",COLOR_RED,758.98,-60.32,1000.78+0.5,4.0);// Boxer2
-   	//CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,2354.2808,-1169.2959,28.0066+0.5,4.0);// Drug Smuggler
-	//CreateDynamic3DTextLabel("Drug Smuggler Job \nType /join to become one",COLOR_RED,-2630.7375,2349.3994,8.4892+0.5,4.0);// Drug Smuggler (TR)
-    CreateDynamic3DTextLabel("Bodyguard Job \nType /join to become one",COLOR_RED,1099.73,-1504.67,15.800+0.5,4.0);// Bodyguard (MALL GYM)
-    CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,2195.8335,-1973.0638,13.5589+0.5,4.0);// Craftsman (JUNKYARD LS)
-	CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,-1356.7195,2065.3450,52.4677+0.5,4.0);// Craftsman (TR)
-	CreateDynamic3DTextLabel("Craftsman Job \nType /join to become one",COLOR_RED,-2412.5095, 2246.2598, 4.8137+0.5,4.0);// Craftsman (TR)
-	CreateDynamic3DTextLabel("Bartender Job \nType /join to become one",COLOR_RED,502.6696,-11.6603,1000.6797+0.5,4.0);// Bartender (Alhambra)
-	CreateDynamic3DTextLabel("Bartender Job \nType /join to become one",COLOR_RED,-864.3550,1536.9703,22.5870+0.5,4.0);// Bartender (TR)
-    CreateDynamic3DTextLabel("Shipment Contractor Job \nType /join to become one",COLOR_RED,-1560.963867, 127.491157, 3.554687+0.5,4.0);// Trucker Job (SF)
-    CreateDynamic3DTextLabel("Shipment Contractor Job \nType /join to become one",COLOR_RED,-2412.5095, 2240.7227, 4.8137+0.5,4.0);// Trucker Job (TR)
-    CreateDynamic3DTextLabel("Pizza Boy Job \nType /join to become one",COLOR_RED,-1720.962646, 1364.456176, 7.187500+0.5,4.0);// Pizza Boy Job (SF)
+	
     CreateDynamic3DTextLabel("Tierra Robada Gant Bridge Access.",0xFFFF00AA,-2678.2702636719,2148.0134277344,55.4296875+0.6,20.0);// Border Lable
 	CreateDynamic3DTextLabel("Tierra Robada Airport",0xFFFF00AA,-1873.2819824219,2172.4621582031,6.2687501907349+0.6,20.0);// Airport Lable.
 	CreateDynamic3DTextLabel("Famed Locker \nType /famedlocker to access the locker", COLOR_YELLOW,901.4825,1429.7404,-82.3235+0.6,4.0); //Famed Locker
@@ -774,6 +748,7 @@ public LoadStreamerDynamicObjects()
 	
 	return 1;
 }
+
 
 forward RemoveBuildings(playerid);
 public RemoveBuildings(playerid)

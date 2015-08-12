@@ -118,15 +118,6 @@ task SyncUp[60000]()
 	SyncTime();
 	SyncMinTime();
 
-	PlantTimer();
-	/*for(new i = 0; i < MAX_GANGTAGS; i++)
-	{
-		if(GangTags[i][gt_Time] > 0)
-		{
-			GangTags[i][gt_Time]--;
-		}
-	}*/
-
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pDedicatedWarn] > 0)

@@ -65,7 +65,7 @@ SyncPlayerAmmo(playerid, iWeaponID)
 {
 	if(iWeaponID == WEAPON_SPRAYCAN || iWeaponID == WEAPON_CAMERA || iWeaponID == WEAPON_FIREEXTINGUISHER) return SetPlayerAmmo(playerid, iWeaponID, 99999);
 	new iAmmoType = GetAmmoType(iWeaponID);
-	if(GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
+	if(GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
 	if(iAmmoType != -1)
 	{
 		if(arrAmmoData[playerid][awp_iAmmo][iAmmoType] > GetMaxAmmoAllowed(playerid, iAmmoType) && (PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2))
@@ -502,7 +502,7 @@ CMD:setammo(playerid, params[]) {
 }
 
 CMD:rld(playerid, params[]) {
-	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") >= 0 || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
+	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
 	
 	for(new i = 0; i < 12; i++)
 	{

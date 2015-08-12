@@ -35,9 +35,10 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
 CMD:enter(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena") >= 0) {
+    if(GetPVarInt(playerid, "IsInArena")) {
         SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }
@@ -546,40 +547,6 @@ CMD:enter(playerid, params[])
 		InsidePlane[playerid] = cCar;
 		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle, or /window to look outside.");
 	}
-	
-	// added as part of the large vehicle interior project
-	else if (cCar != INVALID_VEHICLE_ID && (GetVehicleModel(cCar) == 508 || GetVehicleModel(cCar) == 570) && IsPlayerInRangeOfVehicle(playerid, cCar, 5.0) && GetPlayerVehicleID(playerid) != cCar && GetPlayerVirtualWorld(playerid) == GetVehicleVirtualWorld(cCar))
-	{
-	    if(VehicleStatus{cCar} == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not allowed to enter this vehicle as it's been damaged!");
-	    new string[47 + MAX_PLAYER_NAME];
-   		format(string, sizeof(string), "* %s enters the vehicle as a passenger.", GetPlayerNameEx(playerid));
-		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-
-		switch(GetVehicleModel(cCar)) {
-			case 508: { // Journey
-				SetPlayerPos(playerid, 2820.2109,1527.8270,-48.9141);
-				Player_StreamPrep(playerid,2820.2109,1527.8270,-48.9141, FREEZE_TIME);
-				SetPlayerFacingAngle(playerid, 270.0);
-				PlayerInfo[playerid][pInt] = 1;
-				SetPlayerInterior(playerid, 1);
-			}
-			case 570: 
-			{
-				SetPlayerPos(playerid, 736.0656,1761.3657,-38.9038);
-				Player_StreamPrep(playerid,736.0656,1761.3657,-38.9038, FREEZE_TIME);
-				SetPlayerFacingAngle(playerid, 270.0);
-				PlayerInfo[playerid][pInt] = 1;
-				SetPlayerInterior(playerid, 1);
-			}
-		}
-
-        SetCameraBehindPlayer(playerid);
-		PlayerInfo[playerid][pVW] = cCar;
-		SetPlayerVirtualWorld(playerid, cCar);
-		InsidePlane[playerid] = cCar;
-		SetPVarInt(playerid, "InsideCar", 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "Type /exit near the door to exit the vehicle.");
-	}
 	if(GetPVarType(playerid, "tpDeliverVehTimer") > 0)
 	{
 		SetPVarInt(playerid, "tpJustEntered", 1);
@@ -614,7 +581,7 @@ CMD:exit(playerid, params[])
 		DeletePVar(playerid, "_BoxingQueueTick");
 	}
 
-    if(GetPVarInt(playerid, "IsInArena") >= 0) {
+    if(GetPVarInt(playerid, "IsInArena")) {
         SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }

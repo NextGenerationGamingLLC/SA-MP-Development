@@ -23,7 +23,7 @@ stock ExecuteHackerAction( playerid, weaponid )
 	if(!gPlayerLogged{playerid}) { return 1; }
 	if(PlayerInfo[playerid][pTut] == 0) { return 1; }
 	if(playerTabbed[playerid] >= 1) { return 1; }
-	if(GetPVarInt(playerid, "IsInArena") >= 0) { return 1; }
+	if(GetPVarInt(playerid, "IsInArena")) { return 1; }
 
 	new String[ 128 ], WeaponName[ 128 ];
 	GetWeaponName( weaponid, WeaponName, sizeof( WeaponName ) );

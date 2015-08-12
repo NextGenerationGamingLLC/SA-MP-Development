@@ -15,14 +15,6 @@ Float:DistanceCameraTargetToLocation(Float:CamX, Float:CamY, Float:CamZ,  Float:
     return floatsqroot((tmpX - ObjX) * (tmpX - ObjX) + (tmpY - ObjY) * (tmpY - ObjY) + (tmpZ - ObjZ) * (tmpZ - ObjZ));
 }
 
-CheckPlayerFacing(iTargetID, Float:x, Float:y, Float:z, Float:range)
-{
-	new Float:camx,Float:camy,Float:camz,Float:fvecx,Float:fvecy,Float:fvecz;
-	GetPlayerCameraPos(iTargetID, camx, camy, camz);
-	GetPlayerCameraFrontVector(iTargetID, fvecx, fvecy, fvecz);
-	return (range >= DistanceCameraTargetToLocation(camx, camy, camz, x, y, z, fvecx, fvecy, fvecz));
-}
-
 CameraRadiusSetPos(playerid, Float:x, Float:y, Float:z, Float:degree = 0.0, Float:height = 3.0, Float:radius = 8.0)
 {
 	new Float:deltaToX = x + radius * floatsin(-degree, degrees);

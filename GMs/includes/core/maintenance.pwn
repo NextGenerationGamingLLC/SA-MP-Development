@@ -129,8 +129,6 @@ public FinishMaintenance()
 	SaveElevatorStuff();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Mail Boxes...", 1);
 	SaveMailboxes();
-	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Plants...", 1);
-	SavePlants();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Speed Cameras...", 1);
 	SaveSpeedCameras();
 	if(rflstatus > 0) {
