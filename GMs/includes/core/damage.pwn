@@ -456,14 +456,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		{
 			if((gettime() - KillTime[playerid]) <= 2)
 			{
-				new string[128];
-				format(string, sizeof(string), "WARNING: %s (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
-				ABroadCast(COLOR_YELLOW, string, 2);
-				PlayerInfo[playerid][pBanned] = 3;
-				MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Tried to spoof kills", 1, "System");
-				SystemBan(playerid, "[System] (Tried to spoof kills)");
-				format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) attempted to spoof kills and has been auto-banned.", GetPlayerNameEx( playerid ), GetPlayerSQLId(playerid), PlayerInfo[playerid][pIP] );
-				Log("logs/ban.log", string);
+				CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "Kill-spoofing", 180);
 				TotalAutoBan++;
 				Kick(playerid);
 			}

@@ -447,18 +447,8 @@ CMD:admute(playerid, params[])
 
 					if(PlayerInfo[giveplayerid][pADMuteTotal] > 6)
 					{
-						new playerip[32];
-						GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-						format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: Excessive advertisement mutes", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip,GetPlayerNameEx(playerid));
-						Log("logs/ban.log", string);
-						format(string, sizeof(string), "AdmCmd: %s was banned, reason: Excessive advertisement mutes.", GetPlayerNameEx(giveplayerid));
-						SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-						PlayerInfo[giveplayerid][pBanned] = 1;
-						new ip[32];
-						GetPlayerIp(giveplayerid,ip,sizeof(ip));
-						AddBan(playerid, giveplayerid, "Excessive advertisement mutes");
-						MySQLBan(GetPlayerSQLId(giveplayerid),ip,"Excessive advertisement mutes", 1,GetPlayerNameEx(playerid));
-						SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+						PlayerInfo[giveplayerid][pADMuteTotal] = 0; 
+						CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "Excessive Ad-mutes", 14);
 					}
 
 					if(PlayerInfo[playerid][pAdmin] == 1)

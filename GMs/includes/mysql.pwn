@@ -1540,14 +1540,14 @@ stock mysql_SaveCrates()
 	}
 }
 
-stock RemoveBan(Player, Ip[])
+/*stock RemoveBan(Player, Ip[])
 {
 	new string[128];
 	SetPVarString(Player, "UnbanIP", Ip);
 	format(string, sizeof(string), "SELECT `ip` FROM `ip_bans` WHERE `ip` = '%s'", Ip);
 	mysql_function_query(MainPipeline, string, true, "AddingBan", "ii", Player, 2);
 	return 1;
-}
+}*/
 
 stock CheckBanEx(playerid)
 {
@@ -3999,7 +3999,7 @@ public OnUnbanIP(index)
 		cache_get_data(rows, fields, MainPipeline);
 		if(rows) {
 			cache_get_field_content(0, "IP", ip, MainPipeline, 16);
-			RemoveBan(index, ip);
+			//RemoveBan(index, ip);
 
 			format(string, sizeof(string), "UPDATE `bans` SET `status` = 4, `date_unban` = NOW() WHERE `ip_address` = '%s'", ip);
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);

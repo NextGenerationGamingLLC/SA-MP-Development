@@ -2145,115 +2145,6 @@ CMD:createpvehicle(playerid, params[]) {
     return 1;
 }
 
-CMD:permaban(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 1337)
-	{
-		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason))
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /permaban [player] [reason]");
-			return 1;
-		}
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
-			{
-				format(string, sizeof(string), "AdmCmd: %s was banned, reason: Attempting to ban a higher admin.", GetPlayerNameEx(playerid));
-				ABroadCast(COLOR_LIGHTRED, string, 2);
-				PlayerInfo[playerid][pBanned] = 3;
-				SystemBan(playerid, "[System] (Attempting to ban a higer admin)");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
-			}
-			else
-			{
-				new playerip[32];
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was permanently banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
-				Log("logs/ban.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was permanently banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				PlayerInfo[giveplayerid][pPermaBanned] = 3;
-                new ip[32];
-				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-
-				AddBan(playerid, giveplayerid, reason);
-				MySQLBan(GetPlayerSQLId(giveplayerid), ip, reason, 3, GetPlayerNameEx(playerid));
-
-				format(string, sizeof(string), "UPDATE `bans` SET `status` = 3 WHERE `ip_address` = '%s'", ip);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-			}
-			return 1;
-		} else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	}
-	return 1;
-}
-
-
-CMD:banaccount(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
-		return 1;
-	}
-
-	new string[128], playername[MAX_PLAYER_NAME], reason[64];
-	if(sscanf(params, "s[24]s[64]", playername, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /banaccount [player name] [reason]");
-
-    new giveplayerid = ReturnUser(playername);
-	if(IsPlayerConnected(giveplayerid))
-	{
-		if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
-		{
-			format(string, sizeof(string), "AdmCmd: %s has been auto-banned, reason: Trying to /ban a higher admin.", GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_YELLOW,string,2);
-			PlayerInfo[playerid][pBanned] = 1;
-			SystemBan(playerid, "[System] (Attempting to ban a higher admin)");
-			Kick(giveplayerid);
-		}
-		else
-		{
-			new playerip[32];
-			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
-			Log("logs/ban.log", string);
-			SendClientMessageEx(playerid, COLOR_WHITE, "The person is online and has been banned!");
-			format(string, sizeof(string), "AdmCmd: %s was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			PlayerInfo[giveplayerid][pBanned] = 1;
-			new ip[32];
-			GetPlayerIp(giveplayerid,ip,sizeof(ip));
-			AddBan(playerid, giveplayerid, reason);
-			MySQLBan(GetPlayerSQLId(giveplayerid),ip,reason,1,GetPlayerNameEx(playerid));
-			format(string, sizeof(string), "Banned account (%s)", GetPlayerNameEx(giveplayerid));
-			SystemBan(giveplayerid, string);
-			SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-		}
-	}
-	else
-	{
-		new query[128], tmpName[24];
-
-		mysql_escape_string(playername, tmpName);
-		format(query, sizeof(query), "UPDATE `accounts` SET `Band`=1 WHERE `Username`='%s' AND `AdminLevel` < 2 AND `PermBand` < 3", tmpName);
-		mysql_function_query(MainPipeline, query, false, "OnBanPlayer", "i", playerid);
-
-		SetPVarString(playerid, "OnBanPlayer", tmpName);
-		SetPVarString(playerid, "OnBanPlayerReason", reason);
-
-		format(query,sizeof(query), "SELECT `id`, `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
-		mysql_function_query(MainPipeline, query, true, "OnBanIP", "i", playerid);
-
-		format(string,sizeof(string),"Attempting to ban %s...", tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-	}
-	return 1;
-}
-
 CMD:ip(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
@@ -2271,44 +2162,6 @@ CMD:ip(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
 		}
-	}
-
-	return 1;
-}
-
-CMD:unbanip(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBanAppealer] >= 1)
-	{
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unbanip [ip]");
-		if(IsValidIP(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "That is not a valid IP address!");
-
-		new string[128];
-		RemoveBan(playerid, params);
-		format(string, 128, "AdmCmd: %s has unbanned IP %s", GetPlayerNameEx(playerid), params);
-		ABroadCast(COLOR_LIGHTRED,string,2);
-		format(string, sizeof(string), "AdmCmd: %s has unbanned IP %s", GetPlayerNameEx(playerid), params);
-		Log("logs/ban.log", string);
-		print(string);
-	}
-
-	return 1;
-}
-
-CMD:banip(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 4)
-	{
-		new string[256], ip[32], reason[64];
-		if(sscanf(params, "s[32]s[64]", ip, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /banip [ip] [reason]");
-		if(IsValidIP(ip)) return SendClientMessageEx(playerid, COLOR_WHITE, "That is not a valid IP address!");
-		format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, g_mysql_ReturnEscaped(reason, MainPipeline), GetPlayerNameEx(playerid));
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		format(string, 128, "AdmCmd: IP %s was banned by %s, reason: %s", ip, GetPlayerNameEx(playerid), reason);
-		ABroadCast(COLOR_LIGHTRED,string,2);
-		format(string, 128, "AdmCmd: IP %s was banned by %s, reason: %s", ip, GetPlayerNameEx(playerid), reason);
-		Log("logs/ban.log", string);
-		print(string);
 	}
 
 	return 1;
@@ -2334,33 +2187,6 @@ CMD:unlockveh(playerid, params[])
 	}
 	return 1;
 }
-
-CMD:unban(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBanAppealer] >= 1)
-	{
-		new string[128], query[256], tmpName[24];
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /unban [player name]");
-
-		mysql_escape_string(params, tmpName, MainPipeline);
-		SetPVarString(playerid, "OnUnbanPlayer", tmpName);
-
-		format(query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
-		format(string, sizeof(string), "Attempting to unban %s...", tmpName);
-		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		mysql_function_query(MainPipeline, query, false, "OnUnbanPlayer", "i", playerid);
-
-		format(query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
-		mysql_function_query(MainPipeline, query, true, "OnUnbanIP", "i", playerid);
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
-	}
-	return 1;
-}
-
-
 
 CMD:ounsuspend(playerid, params[])
 {
@@ -5100,45 +4926,6 @@ CMD:kick(playerid, params[])
 	return 1;
 }
 
-CMD:sban(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 2)
-	{
-		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sban [player] [reason]");
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
-			{
-				format(string, sizeof(string), "AdmCmd: %s has been auto-banned, reason: Trying to /sban a higher admin.", GetPlayerNameEx(playerid));
-				ABroadCast(COLOR_YELLOW,string,2);
-				PlayerInfo[playerid][pBanned] = 1;
-				SystemBan(playerid, "[System] (Trying to ban a higher admin)");
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			new playerip[32];
-			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
-			Log("logs/ban.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was silent banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-			ABroadCast(COLOR_LIGHTRED,string,2);
-			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-			PlayerInfo[giveplayerid][pBanned] = 1;
-            new ip[32];
-			GetPlayerIp(giveplayerid,ip,sizeof(ip));
-			AddBan(playerid, giveplayerid, reason);
-			MySQLBan(GetPlayerSQLId(giveplayerid),ip,reason,1,GetPlayerNameEx(playerid));
-			SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-			return 1;
-
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	return 1;
-}
-
 CMD:kickres(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] < 99999)
@@ -5175,16 +4962,8 @@ CMD:warn(playerid, params[])
 			PlayerInfo[giveplayerid][pWarns] += 1;
 			if(PlayerInfo[giveplayerid][pWarns] >= 3)
 			{
-				new ip[32];
-				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
-				Log("logs/ban.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				PlayerInfo[giveplayerid][pBanned] = 1;
-				AddBan(playerid, giveplayerid, "Player received 3 warnings");
-				MySQLBan(GetPlayerSQLId(giveplayerid),ip,reason,1,GetPlayerNameEx(playerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				PlayerInfo[giveplayerid][pWarns] = 0; 
+				CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 				return 1;
 			}
 			format(string, sizeof(string), "AdmCmd: %s was warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -5219,16 +4998,8 @@ CMD:swarn(playerid, params[])
 			PlayerInfo[giveplayerid][pWarns] += 1;
 			if(PlayerInfo[giveplayerid][pWarns] >= 3)
 			{
-			    new ip[32];
-				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid),reason);
-				Log("logs/ban.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-				ABroadCast(COLOR_LIGHTRED, string, 2);
-				PlayerInfo[giveplayerid][pBanned] = 1;
-				AddBan(playerid, giveplayerid, "Player received 3 warnings");
-				MySQLBan(GetPlayerSQLId(giveplayerid),ip,reason,1,GetPlayerNameEx(playerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+			 	PlayerInfo[giveplayerid][pWarns] = 0;
+			 	CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 				return 1;
 			}
 			format(string, sizeof(string), "AdmCmd: %s was silent warned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
@@ -5306,57 +5077,6 @@ CMD:skick(playerid, params[])
 				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
 			}
 			return 1;
-
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-	return 1;
-}
-
-CMD:ban(playerid, params[])
-{
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
-	{
-		new string[128], giveplayerid, reason[64];
-		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [player] [reason]");
-		if(strcmp(GetPlayerIpEx(playerid), PlayerInfo[playerid][pSecureIP], false, 16) != 0)
-		{
-			format(string, sizeof(string), "[/BAN] %s has had their account disabled for not matching their whitelisted ip, contact a member of security.", GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_YELLOW, string, 4);
-			Log("logs/admin.log", string);
-			PlayerInfo[playerid][pDisabled] = 1;
-			Kick(playerid);
-			return 1;
-		}
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin])
-			{
-				format(string, sizeof(string), "AdmCmd: %s has been auto-banned, reason: Trying to /ban a higher admin.", GetPlayerNameEx(playerid));
-				ABroadCast(COLOR_YELLOW,string,2);
-				PlayerInfo[playerid][pBanned] = 1;
-				SystemBan(playerid, "[System] (Attempting to ban a higher admin.)");
-				Kick(playerid);
-				return 1;
-			}
-			else
-			{
-				new playerip[32];
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid), reason);
-				Log("logs/ban.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was banned by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				PlayerInfo[giveplayerid][pBanned] = 1;
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				new ip[32];
-				GetPlayerIp(giveplayerid,ip,sizeof(ip));
-    			AddBan(playerid, giveplayerid, reason);
-				MySQLBan(GetPlayerSQLId(giveplayerid),ip,reason,1,GetPlayerNameEx(playerid));
-				SystemBan(giveplayerid, GetPlayerNameEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
 
 		}
 	}

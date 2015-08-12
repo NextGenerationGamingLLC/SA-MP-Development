@@ -653,31 +653,12 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 	
 	if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) {
-		new ip[32];
-		GetPlayerIp(giveplayerid,ip,sizeof(ip));
-		format(string, 128, "AdmCmd: %s(%d) (IP: %s) was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
-		Log("logs/ban.log", string);
-		format(string, 128, "AdmCmd: %s was banned by %s (Punished while restricted), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		PlayerInfo[giveplayerid][pBanned] = 1;
-		AddBan(playerid, giveplayerid, "Punished while account restricted");
-		MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Punished while account restricted", 1, GetPlayerNameEx(playerid));
-		SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+		CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "Punished Whilst Restricted", 14);
 		return 0;
 	}
 		
 	if(PlayerInfo[giveplayerid][pWarns] >= 3) {
-		new ip[32];
-		GetPlayerIp(giveplayerid, ip, 32);
-		format(string, 128, "AdmCmd: %s(%d) (IP: %s) was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), ip, GetPlayerNameEx(playerid), reason);
-		Log("logs/ban.log", string);
-		format(string, 128, "AdmCmd: %s was banned by %s (had 3 Warnings), reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
-		ABroadCast(COLOR_LIGHTRED, string, 2);
-		StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-		PlayerInfo[giveplayerid][pBanned] = 1;
-		AddBan(playerid, giveplayerid, "Player had 3 warnings");
-		MySQLBan(GetPlayerSQLId(giveplayerid), ip, "Third Warning", 1, GetPlayerNameEx(playerid));
-		SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+		CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 		return 0;
 	}
 

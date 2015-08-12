@@ -151,13 +151,13 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
         }
         case 4: { // 12 gauge
             if(iSkinID == 285 || iSkinID == 287)
-                return 80;
+                return 120;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 20;
-                case 2: return 30;  
-                case 3: return 40;
-                default: return 50;
+                case 0, 1: return 40;
+                case 2: return 50;  
+                case 3: return 60;
+                default: return 70;
             }
         }
     }

@@ -937,7 +937,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
 						new str[128], file[32];
-						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %$d.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
+						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of $%d.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
 						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
@@ -2512,19 +2512,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					DeletePVar(playerid, "GRW_Count");
 					return ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE_DEPOSIT, DIALOG_STYLE_LIST, "Safe Weapon Deposit", szMiscArray, "Deposit", "Cancel");
 				}
-				if(strcmp(inputtext, "Next Page", true) == 0) {
+				/*if(strcmp(inputtext, "Next Page", true) == 0) {
 					SetPVarInt(playerid, "GRW_Count", GetPVarInt(playerid, "GRW_Count") + (listitem-2));
 					ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
 					return 1;
-				}
+				}*/
 				else {
+					new gid; 
+
+					if(listitem <= 18) gid = listitem + 1;
+					else if(listitem > 18) gid = listitem + 4;
+					SetPVarInt(playerid, "GLGunTake", gid);
+
+					new str[9];
 					new stpos = strfind(inputtext, "(");
 					new fpos = strfind(inputtext, ")");
-					new str[4], id;
 					strmid(str, inputtext, stpos+1, fpos);
-					id = strval(str);
-					DeletePVar(playerid, "GRW_Count");
-					SetPVarInt(playerid, "GLGunTake", id);
+					new id = strval(str);
+
+					if(id < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "There are none left.");
 
 					//WithdrawGroupSafeWeapon(playerid, iGroupID, id);
 
@@ -5908,7 +5914,7 @@ DepositAmmo(playerid) {
 	return 1;
 }
 
-ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
+/*ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
 	
 	szMiscArray[0] = 0;
 
@@ -5942,21 +5948,57 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 	strcat(szMiscArray, "\nDeposit Weapon\nNext Page");
 	ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
 	return 1;
+}*/
+
+ShowGroupWeapons(playerid, iGroupID) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeaponsNew` WHERE `Group_ID` = '%d'", iGroupID+1);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "ii", playerid, iGroupID+1);
+	return 1;
 }
 
-WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
+forward OnShowGroupWeapons(playerid, iGroupID);
+public OnShowGroupWeapons(playerid, iGroupID) {
+
+	szMiscArray[0] = 0;
+	
+	new 
+		tempWep[3],
+		iCount; 
+
+	for(new i = 1; i <= 18; i++) {
+		valstr(tempWep, i);
+		iCount = cache_get_field_content_int(0, tempWep, MainPipeline);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n[%d]%s (%d)", szMiscArray, i, Weapon_ReturnName(i), iCount);
+	}
+
+	for(new i = 22; i <= 46; i++) {
+		valstr(tempWep, i);
+		iCount = cache_get_field_content_int(0, tempWep, MainPipeline);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n[%d]%s (%d)",szMiscArray, i, Weapon_ReturnName(i), iCount);
+	}
+
+	strcat(szMiscArray, "\nDeposit Weapon");
+	ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
+	
+	return 1;
+}
+
+WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	szMiscArray[0] = 0;
 
 	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
+	
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` - %d WHERE `Group_ID` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 
-	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d' LIMIT 1", iGroupID, iWeaponID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnWithdrawGroupWeapons", "iii", playerid, iGroupID, iWeaponID);
+	//format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d' LIMIT 1", iGroupID, iWeaponID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnWithdrawGroupWeapons", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
 	return 1;
 }
 
-forward OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID);
-public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID) {
+forward OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount);
+public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 
 	szMiscArray[0]  = 0;
 
@@ -5970,23 +6012,25 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID) {
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "A %s has been transfered from the locker.", Weapon_ReturnName(iWeaponID));
+		format(szMiscArray, sizeof(szMiscArray), "A %s has been transfered from the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);
 		GroupLog(iGroupID, szMiscArray);
 	}
 
 	return 1;
 }
 
-AddGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
+AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 	
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnAddGroupSafeWeapon", "iii", playerid, iGroupID, iWeaponID);
+	
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `Group_ID` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
+	//format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnAddGroupSafeWeapon", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
 	return 1;
 }
 
-forward OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID);
-public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
+forward OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount);
+public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 	
 	szMiscArray[0] = 0;
 
@@ -6001,7 +6045,7 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID) {
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "A %s has been deposited into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
+		format(szMiscArray, sizeof(szMiscArray), "A %s has been deposited into the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);
 		GroupLog(iGroupID, szMiscArray);
 	}
 

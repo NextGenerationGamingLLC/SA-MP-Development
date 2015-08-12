@@ -618,16 +618,8 @@ CMD:nmute(playerid, params[])
 				ABroadCast(COLOR_LIGHTRED,string,2);
 				if(PlayerInfo[giveplayerid][pNMuteTotal] > 6)
 				{
-					new playerip[32];
-					GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-					format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned by %s, reason: Excessive newbie chat mutes", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip,GetPlayerNameEx(playerid));
-					Log("logs/ban.log", string);
-					format(string, sizeof(string), "AdmCmd: %s was banned, reason: Excessive newbie chat mutes.", GetPlayerNameEx(giveplayerid));
-					SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-					PlayerInfo[giveplayerid][pBanned] = 1;
-					AddBan(playerid, giveplayerid, "Excessive newbie chat mutes");
-					MySQLBan(GetPlayerSQLId(giveplayerid),GetPlayerIpEx(giveplayerid),"Excessive newbie chat mutes", 1,GetPlayerNameEx(playerid));
-					SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+					PlayerInfo[giveplayerid][pNMuteTotal] = 0;
+					CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "Excessive Newb Mutes", 10);
 				}
 
 				if(PlayerInfo[playerid][pAdmin] == 1)

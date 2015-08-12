@@ -288,6 +288,7 @@
 
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"
+#include "./includes/ban.pwn"
 
 // Jingles WIP
 #include "./includes/core/tutorial_new.pwn"

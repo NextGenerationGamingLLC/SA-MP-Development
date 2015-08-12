@@ -652,19 +652,19 @@ public OnDeliverGCCrate(playerid, iGroupID, iCrateID) {
 		++iCount;
 	}
 
-	if(szMiscArray[4001] != 0) for(new i = 0; i < szMiscArray[4001]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45);
-	if(szMiscArray[4002] != 0) for(new i = 0; i < szMiscArray[4002]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED);
-	if(szMiscArray[4003] != 0) for(new i = 0; i < szMiscArray[4003]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE);
-	if(szMiscArray[4004] != 0) for(new i = 0; i < szMiscArray[4004]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI);
-	if(szMiscArray[4005] != 0) for(new i = 0; i < szMiscArray[4005]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9);
-	if(szMiscArray[4006] != 0) for(new i = 0; i < szMiscArray[4006]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_MP5);
-	if(szMiscArray[4007] != 0) for(new i = 0; i < szMiscArray[4007]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4);
-	if(szMiscArray[4008] != 0) for(new i = 0; i < szMiscArray[4008]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47);
-	if(szMiscArray[4009] != 0) for(new i = 0; i < szMiscArray[4009]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE);
-	if(szMiscArray[4010] != 0) for(new i = 0; i < szMiscArray[4010]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER);
-	if(szMiscArray[4011] != 0) for(new i = 0; i < szMiscArray[4011]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN);
-	if(szMiscArray[4012] != 0) for(new i = 0; i < szMiscArray[4012]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF);
-	if(szMiscArray[4013] != 0) for(new i = 0; i < szMiscArray[4013]; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA);
+	if(szMiscArray[4001] != 0) /*for(new i = 0; i < szMiscArray[4001]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, szMiscArray[4001]);
+	if(szMiscArray[4002] != 0) /*for(new i = 0; i < szMiscArray[4002]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, szMiscArray[4002]);
+	if(szMiscArray[4003] != 0) /*for(new i = 0; i < szMiscArray[4003]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, szMiscArray[4003]);
+	if(szMiscArray[4004] != 0) /*for(new i = 0; i < szMiscArray[4004]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, szMiscArray[4004]);
+	if(szMiscArray[4005] != 0) /*for(new i = 0; i < szMiscArray[4005]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, szMiscArray[4005]);
+	if(szMiscArray[4006] != 0) /*for(new i = 0; i < szMiscArray[4006]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_MP5, szMiscArray[4006]);
+	if(szMiscArray[4007] != 0) /*for(new i = 0; i < szMiscArray[4007]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, szMiscArray[4007]);
+	if(szMiscArray[4008] != 0) /*for(new i = 0; i < szMiscArray[4008]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, szMiscArray[4008]);
+	if(szMiscArray[4009] != 0) /*for(new i = 0; i < szMiscArray[4009]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, szMiscArray[4009]);
+	if(szMiscArray[4010] != 0) /*for(new i = 0; i < szMiscArray[4010]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, szMiscArray[4010]);
+	if(szMiscArray[4011] != 0) /*for(new i = 0; i < szMiscArray[4011]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, szMiscArray[4011]);
+	if(szMiscArray[4012] != 0) /*for(new i = 0; i < szMiscArray[4012]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF, szMiscArray[4012]);
+	if(szMiscArray[4013] != 0) /*for(new i = 0; i < szMiscArray[4013]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, szMiscArray[4013]);
 
 	arrGroupData[iGroupID][g_iAmmo][0] += szMiscArray[4014];
 	arrGroupData[iGroupID][g_iAmmo][1] += szMiscArray[4015];

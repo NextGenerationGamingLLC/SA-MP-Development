@@ -134,15 +134,10 @@ public Anti_Rapidfire()
 			ABroadCast(COLOR_YELLOW, string, 2);
 			if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
 			{
-				format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Rapidfire Hacking. %d/%d warnings", GetPlayerNameEx(i), GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
-				ABroadCast(COLOR_LIGHTRED, string, 2);
+				if(GetPVarType(i, "Autoban")) return 1;
+				SetPVarInt(i, "Autoban", 1); 
 				DeletePVar(i, "MaxRFWarn");
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Rapidfire Hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
-				PlayerInfo[i][pBanned] = 3;
-				Log("logs/ban.log", string);
-				SystemBan(i, "[System] (Rapidfire Hacking)");
-				MySQLBan(GetPlayerSQLId(i), GetPlayerIpEx(i), "Rapidfire Hacking", 1, "System");
-				Kick(i);
+				CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Anticheat: Rapidfire Hacking", 180);
 				TotalAutoBan++;
 			}
 		}

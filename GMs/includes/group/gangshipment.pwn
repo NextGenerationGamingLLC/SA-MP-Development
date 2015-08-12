@@ -98,36 +98,35 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 			
 			switch(random(4)) {
 				case 0: {
-					for(new i = 0; i < 5; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED); // 5 sdpistol 
-					for(new i = 0; i < 20; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 20 deagles
-					for(new i = 0; i < 5; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN); // 5 pump action shotguns
-					for(new i = 0; i < 6; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47); // 6 aks
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4); // 3 m4s
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA); // 3 spas-12s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 5); // 5 sdpistol 
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20); // 20 deagles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 5); // 5 pump action shotguns
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 6); // 6 aks
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 3); // 3 m4s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 3); // 3 spas-12s
 				} 
 				case 1: {
-					for(new i = 0; i < 7; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45); // 7 colt 45
-					for(new i = 0; i < 8; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 8 deagles
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN); // 4 pump action shotgun
-					for(new i = 0; i < 8; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI); // 8 UZI
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47); // 4 ak47s
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER); // 4 snipe rifles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 7); // 7 colt 45
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 8); // 8 deagles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 4); // 4 pump action shotgun
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, 8); // 8 UZI
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 4); // 4 ak47s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 4); // 4 snipe rifles
 				}
 				case 2: {
-					for(new i = 0; i < 7; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED); // 7 sd pistol
-					for(new i = 0; i < 9; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 9 deagles
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN); // 4 pump action shotty
-					for(new i = 0; i < 8; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9); // 8 UZI
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47); // 4 ak47s
-					for(new i = 0; i < 1; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER); // 1 sniper rifles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 7); // 7 sd pistol
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 9); // 9 deagles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 4); // 4 pump action shotty
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, 8); // 8 UZI
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 4); // 4 ak47s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 1); // 1 sniper rifles
 				}
 				case 3: {
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_MP5); // 3 MP5s
-					for(new i = 0; i < 8; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE); // 8 deagles
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4); // 3 m4s
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE); // 3 rifles
-					for(new i = 0; i < 4; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA); // 4 spas 12s
-					for(new i = 0; i < 3; i++) AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF); // 3 sawnoffs	
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_MP5, 3); // 3 MP5s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 8); // 8 deagles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 3); // 3 m4s
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 3); // 3 rifles
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 4); // 4 spas 12s
 				}
 			}
 			if(arrGroupData[iGroupID][g_iAmmo][0] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][0] += 3000; else arrGroupData[iGroupID][g_iAmmo][0] += (10000 - arrGroupData[iGroupID][g_iAmmo][0]);

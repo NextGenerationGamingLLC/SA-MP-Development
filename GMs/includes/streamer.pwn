@@ -36,11 +36,11 @@
  	("Streamer_GetIntData: Invalid ID specified" spam)
  */
 
- public Streamer_OnPluginError(error[]) {
+/*public Streamer_OnPluginError(error[]) {
 
  	if(strfind(error, "Streamer_GetIntData: Invalid", true) != -1) return 0;
  	return 1;
- }
+}*/
 
 forward LoadStreamerStaticVehicles();
 public LoadStreamerStaticVehicles()

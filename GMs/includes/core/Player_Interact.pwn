@@ -1031,7 +1031,7 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 	SetPVarInt(giveplayerid, "PlayerCuffed", 2);
 	SetPVarInt(giveplayerid, "IsFrozen", 1);
 	//Frozen[giveplayerid] = 1;
-	PlayerCuffedTime[giveplayerid] = 300;
+	PlayerCuffedTime[giveplayerid] = 60;
 	
 	if(GetPVarType(giveplayerid, "IsTackled")) {
 	    format(szMiscArray, sizeof(szMiscArray), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1090,9 +1090,9 @@ Interact_DrugTest(playerid, giveplayerid) {
 
 		if(PlayerInfo[giveplayerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Level: %d CT", szDrugs[i], PlayerInfo[giveplayerid][p_iAddictedLevel][i]);
 		else format(szMiscArray, sizeof(szMiscArray), "%s | Level: None", szDrugs[i]);
-		SendClientMessage(giveplayerid, COLOR_GRAD1, szMiscArray);
+		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
 	}
-	SendClientMessage(giveplayerid, COLOR_GREEN, "________________________________");
+	SendClientMessage(playerid, COLOR_GREEN, "________________________________");
 
 	format(szMiscArray, sizeof(szMiscArray), "** %s has conducted a drug test on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

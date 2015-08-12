@@ -361,7 +361,7 @@ forward IdiotSound(playerid);
 public IdiotSound(playerid)
 {
     PlayAudioStreamForPlayerEx(playerid, "http://www.ng-gaming.net/users/farva/you-are-an-idiot.mp3");
-    ShowPlayerDialog(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","A 15% CLEO tax has been assessed to your account along with a 3 hour prison - future use could result in a ban","Exit","");
+    ShowPlayerDialog(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","A 15 percent CLEO tax has been assessed to your account along with a 3 hour prison - future use could result in a ban","Exit","");
 }
 
 forward SetCamBack(playerid);

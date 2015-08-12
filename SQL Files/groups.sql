@@ -1,29 +1,33 @@
 /*
-Navicat MySQL Data Transfer
+ Navicat Premium Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50528
-Source Host           : localhost:3306
-Source Database       : test
+ Source Server         : NGG
+ Source Server Type    : MySQL
+ Source Server Version : 50625
+ Source Host           : samp.ng-gaming.net
+ Source Database       : samp_beta
 
-Target Server Type    : MYSQL
-Target Server Version : 50528
-File Encoding         : 65001
+ Target Server Type    : MySQL
+ Target Server Version : 50625
+ File Encoding         : utf-8
 
-Date: 2013-06-02 17:54:15
+ Date: 08/11/2015 11:03:14 AM
 */
 
-SET FOREIGN_KEY_CHECKS=0;
+SET NAMES utf8;
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for `groups`
+--  Table structure for `groups`
 -- ----------------------------
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Type` tinyint(4) NOT NULL DEFAULT '0',
   `Name` varchar(64) NOT NULL DEFAULT '',
-  `MOTD` varchar(128) NOT NULL DEFAULT '',
+  `MOTD` varchar(128) NOT NULL DEFAULT 'None',
+  `MOTD2` varchar(128) NOT NULL DEFAULT 'None',
+  `MOTD3` varchar(128) NOT NULL DEFAULT 'None',
   `Allegiance` tinyint(4) NOT NULL DEFAULT '0',
   `Bug` tinyint(4) unsigned NOT NULL DEFAULT '255',
   `Radio` tinyint(4) unsigned NOT NULL DEFAULT '255',
@@ -34,6 +38,7 @@ CREATE TABLE `groups` (
   `Cones` tinyint(4) unsigned NOT NULL DEFAULT '255',
   `Flares` tinyint(4) unsigned NOT NULL DEFAULT '255',
   `Barrels` tinyint(4) unsigned NOT NULL DEFAULT '255',
+  `Ladders` tinyint(4) unsigned NOT NULL DEFAULT '255',
   `FreeNameChange` tinyint(3) unsigned NOT NULL DEFAULT '255',
   `CrateIslandAccess` tinyint(4) unsigned NOT NULL DEFAULT '255',
   `DutyColour` mediumint(8) unsigned NOT NULL DEFAULT '16777215',
@@ -41,7 +46,7 @@ CREATE TABLE `groups` (
   `Budget` int(11) NOT NULL DEFAULT '0',
   `BudgetPayment` int(11) NOT NULL DEFAULT '0',
   `Stock` int(11) NOT NULL DEFAULT '0',
-  `LockerCostType` int(11) NOT NULL,
+  `LockerCostType` int(11) NOT NULL DEFAULT '2',
   `CrateX` float NOT NULL DEFAULT '0',
   `CrateY` float NOT NULL DEFAULT '0',
   `CrateZ` float NOT NULL DEFAULT '0',
@@ -65,19 +70,19 @@ CREATE TABLE `groups` (
   `Rank7Pay` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Rank8Pay` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Rank9Pay` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Div0` varchar(30) NOT NULL,
-  `Div1` varchar(16) NOT NULL DEFAULT '',
-  `Div2` varchar(16) NOT NULL DEFAULT '',
-  `Div3` varchar(16) NOT NULL DEFAULT '',
-  `Div4` varchar(16) NOT NULL DEFAULT '',
-  `Div5` varchar(16) NOT NULL DEFAULT '',
-  `Div6` varchar(16) NOT NULL DEFAULT '',
-  `Div7` varchar(16) NOT NULL DEFAULT '',
-  `Div8` varchar(16) NOT NULL DEFAULT '',
-  `Div9` varchar(16) NOT NULL DEFAULT '',
-  `Div10` varchar(16) NOT NULL DEFAULT '',
-  `Gun0` tinyint(4) NOT NULL,
-  `Cost0` int(11) NOT NULL,
+  `Div0` varchar(30) NOT NULL DEFAULT 'None',
+  `Div1` varchar(16) NOT NULL DEFAULT 'None',
+  `Div2` varchar(16) NOT NULL DEFAULT 'None',
+  `Div3` varchar(16) NOT NULL DEFAULT 'None',
+  `Div4` varchar(16) NOT NULL DEFAULT 'None',
+  `Div5` varchar(16) NOT NULL DEFAULT 'None',
+  `Div6` varchar(16) NOT NULL DEFAULT 'None',
+  `Div7` varchar(16) NOT NULL DEFAULT 'None',
+  `Div8` varchar(16) NOT NULL DEFAULT 'None',
+  `Div9` varchar(16) NOT NULL DEFAULT 'None',
+  `Div10` varchar(16) NOT NULL DEFAULT 'None',
+  `Gun0` tinyint(4) NOT NULL DEFAULT '0',
+  `Cost0` int(11) NOT NULL DEFAULT '0',
   `Gun1` tinyint(4) NOT NULL DEFAULT '0',
   `Cost1` int(11) NOT NULL DEFAULT '0',
   `Gun2` tinyint(4) NOT NULL DEFAULT '0',
@@ -113,6 +118,40 @@ CREATE TABLE `groups` (
   `CratesOrder` int(11) NOT NULL DEFAULT '0',
   `CrateIsland` int(4) NOT NULL DEFAULT '255',
   `IntRadio` int(11) NOT NULL DEFAULT '255',
+  `GarageX` float(11,0) NOT NULL DEFAULT '0',
+  `GarageY` float(11,0) NOT NULL DEFAULT '0',
+  `GarageZ` float(11,0) NOT NULL DEFAULT '0',
+  `TackleAccess` int(11) NOT NULL DEFAULT '255',
+  `WheelClamps` int(11) NOT NULL DEFAULT '255',
+  `DoCAccess` int(11) NOT NULL DEFAULT '255',
+  `MedicAccess` int(11) NOT NULL DEFAULT '-1',
+  `DMVAccess` int(11) NOT NULL DEFAULT '255',
+  `OOCChat` int(11) NOT NULL DEFAULT '255',
+  `OOCColor` mediumint(8) unsigned NOT NULL DEFAULT '130303',
+  `Pot` int(11) NOT NULL DEFAULT '0',
+  `Crack` int(11) NOT NULL DEFAULT '0',
+  `Heroin` int(11) NOT NULL DEFAULT '0',
+  `Syringes` int(11) NOT NULL DEFAULT '0',
+  `Opium` int(11) NOT NULL DEFAULT '0',
+  `TurfCapRank` int(11) NOT NULL DEFAULT '255',
+  `PointCapRank` int(11) NOT NULL DEFAULT '255',
+  `WithdrawRank` int(11) NOT NULL DEFAULT '255',
+  `WithdrawRank2` int(11) NOT NULL DEFAULT '255',
+  `WithdrawRank3` int(11) NOT NULL DEFAULT '255',
+  `WithdrawRank4` int(11) NOT NULL DEFAULT '255',
+  `WithdrawRank5` int(11) NOT NULL DEFAULT '255',
+  `GClothes0` int(11) NOT NULL DEFAULT '0',
+  `GClothes1` int(11) NOT NULL DEFAULT '0',
+  `GClothes2` int(11) NOT NULL DEFAULT '0',
+  `GClothes3` int(11) NOT NULL DEFAULT '0',
+  `GClothes4` int(11) NOT NULL DEFAULT '0',
+  `GClothes5` int(11) NOT NULL DEFAULT '0',
+  `GClothes6` int(11) NOT NULL DEFAULT '0',
+  `GClothes7` int(11) NOT NULL DEFAULT '0',
+  `GClothes8` int(11) NOT NULL DEFAULT '0',
+  `GClothes9` int(11) NOT NULL DEFAULT '0',
+  `Tokens` int(11) NOT NULL DEFAULT '0',
+  `Mats` int(11) NOT NULL DEFAULT '0',
   `CrimeType` int(11) NOT NULL DEFAULT '0',
   `gAmmo0` int(11) NOT NULL DEFAULT '0',
   `gAmmo1` int(11) NOT NULL DEFAULT '0',
@@ -120,8 +159,6 @@ CREATE TABLE `groups` (
   `gAmmo3` int(11) NOT NULL DEFAULT '0',
   `gAmmo4` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
--- ----------------------------
--- Records of groups
--- ----------------------------
+SET FOREIGN_KEY_CHECKS = 1;

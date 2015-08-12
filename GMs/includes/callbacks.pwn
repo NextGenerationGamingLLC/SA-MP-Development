@@ -143,7 +143,6 @@ public OnVehicleSpawn(vehicleid) {
 
 public OnVehicleMod(playerid, vehicleid, componentid)
 {
-	new string[128];
     for(new i = 0; i < sizeof(IsRim); i++)
 	{
 		if(IsRim[i] == componentid)
@@ -162,19 +161,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 				}
 				else if(HackingMods[playerid] == 3)
 				{
-					format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_LIGHTRED, string, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
-					PlayerInfo[playerid][pBanned] = 3;
-					new playerip[32];
-					GetPlayerIp(playerid, playerip, sizeof(playerip));
-					format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip);
-					PlayerInfo[playerid][pBanned] = 3;
-					Log("logs/ban.log", string);
-					new ip[32];
-					GetPlayerIp(playerid, ip, sizeof(ip));
-					SystemBan(playerid, "[System] (Hacking Vehicle Modifications)");
-					MySQLBan(GetPlayerSQLId(playerid), playerip, "Hacking Vehicle Modifications", 1, "System");
+					CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "Hacking Vehicle Mods", 180);
 					HackingMods[playerid] = 0;
 					Kick(playerid);
 					TotalAutoBan++;
@@ -198,19 +185,7 @@ public OnVehicleMod(playerid, vehicleid, componentid)
 		}
 		else if(HackingMods[playerid] == 3)
 		{
-			format(string, sizeof(string), "AdmCmd: %s has been banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_LIGHTRED, string, 2);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, string);
-			PlayerInfo[playerid][pBanned] = 3;
-			new playerip[32];
-			GetPlayerIp(playerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Hacking Vehicle Modifications.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), playerip);
-			PlayerInfo[playerid][pBanned] = 3;
-			Log("logs/ban.log", string);
-			new ip[32];
-			GetPlayerIp(playerid, ip, sizeof(ip));
-			SystemBan(playerid, "[System] (Hacking Vehicle Modifications)");
-			MySQLBan(GetPlayerSQLId(playerid), playerip, "Hacking Vehicle Modifications", 1, "System");
+			CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "Hacking Vehicle Mods", 180);
 			HackingMods[playerid] = 0;
 			Kick(playerid);
 			TotalAutoBan++;
@@ -417,18 +392,7 @@ public OnPlayerUpdate(playerid)
 				format(srelay, sizeof(srelay), "%s  (%d) (%d)", srelay, GetPlayerState(playerid), (GetTickCount()-acstruct[playerid][maptplastclick]));
 				Log("logs/hack.log", srelay);
 
-	            format( srelay, sizeof( srelay ), "{AA3333}AdmWarning{FFFF00}: %s has been banned, reason: TP Hacking", GetPlayerNameExt(playerid));
-				ABroadCast( COLOR_YELLOW, srelay, 2 );
-				SendClientMessage(playerid, COLOR_LIGHTRED, srelay );
-				PlayerInfo[playerid][pBanned] = 3;
-				new playerip[32];
-				GetPlayerIp(playerid, playerip, sizeof(playerip));
-				format( srelay, sizeof( srelay ), "%s(%d) (IP:%s) was banned, reason: TP Hacking", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), playerip);
-				PlayerInfo[playerid][pBanned] = 3;
-				Log("logs/ban.log", srelay);
-				SystemBan(playerid, "[System] (Teleport Hacking)");
-				MySQLBan(GetPlayerSQLId(playerid),playerip,"TP Hacking", 1,"System");
-				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+	            CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "TP Hacking", 180);
 				TotalAutoBan++;
 			}
 		}
@@ -2826,6 +2790,7 @@ public OnPlayerDisconnect(playerid, reason)
 	DeletePVar(playerid, "hLvl");
 	DeletePVar(playerid, "fLvl");
 	DeletePVar(playerid, "gLvl");
+	DeletePVar(playerid, "Autoban");
 	gPlayerLogged{playerid} = 0;
 	return 1;
 }
@@ -2834,7 +2799,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 {
     if(!success)
     {
-        new pip[16], string[128];
+        new pip[16];
         foreach(new i : Player)
 		{
 			GetPlayerIp(i, pip, sizeof(pip));
@@ -2844,12 +2809,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 				SetPVarInt(i, "RconFailedLogin", logins);
 				if(GetPVarInt(i, "RconFailedLogin") >= 3)
 				{
-					format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned for excessive RCon failed logins", GetPlayerNameEx(i), GetPlayerSQLId(i), pip);
-					Log("logs/ban.log", string);
-					PlayerInfo[i][pBanned] = 1;
-					MySQLBan(GetPlayerSQLId(i),pip,"Excessive RCon Login Failures",1,"System");
-					SystemBan(i, "[System] Excessive RCon Login Failures");
-					Kick(i);
+					CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Excessive RCON Login Attempts", 365);
 				}
 			}
 		}

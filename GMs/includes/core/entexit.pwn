@@ -18,13 +18,13 @@ new iVehExits[3]; // for shamal, nevada and journey
 
 hook OnGameModeInit() {
 
-	iVehExits[0] = CreateDynamicPickup(0, 23, 3.6661,23.0627,1199.6012);
-	iVehExits[1] = CreateDynamicPickup(0, 23, 2820.5054,1528.1591,-48.9141);
-	iVehExits[2] = CreateDynamicPickup(0, 23, 315.6100,1028.6777,1948.5518);
+	iVehExits[0] = CreateDynamicSphere(3.6661,23.0627,1199.6012, 3.0);
+	iVehExits[1] = CreateDynamicSphere(820.5054,1528.1591,-48.9141, 3.0);
+	iVehExits[2] = CreateDynamicSphere(315.6100,1028.6777,1948.5518, 3.0);
 
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, iVehExits[0], E_STREAMER_EXTRA_ID, 0);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, iVehExits[1], E_STREAMER_EXTRA_ID, 1);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, iVehExits[2], E_STREAMER_EXTRA_ID, 2);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[0], E_STREAMER_EXTRA_ID, 0);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[1], E_STREAMER_EXTRA_ID, 1);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[2], E_STREAMER_EXTRA_ID, 2);
 
 	return 1;
 }
@@ -37,19 +37,18 @@ hook OnGameModeInit() {
 }*/
 
 new g_iEntranceID[MAX_PLAYERS],
-	g_iEntrancePID[MAX_PLAYERS],
 	g_iEntranceAID[MAX_PLAYERS];
 
 /* Revised:
 CMD:enter(playerid)
 {
-	Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid]);
+	Enter_Door(playerid, g_iEntranceID[playerid]);
 	return 1;
 }
 
 CMD:exit(playerid)
 {
-	Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid]);
+	Enter_Door(playerid, g_iEntranceID[playerid]);
 	return 1;
 }
 */
@@ -58,12 +57,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & ENTRANCE_SHORTCUT && g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
 
-		Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 	}
 
 	else if(newkeys & KEY_NO && g_iEntranceID[playerid] > -1 && IsPlayerInAnyVehicle(playerid)) {
 
-		Enter_Door(playerid, g_iEntrancePID[playerid], g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 	}
 
 	if(!IsPlayerInAnyVehicle(playerid)) {
@@ -82,16 +81,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
+	printf("DEBUG: %d entered area %d", playerid, areaid);
 	new i = GetIDFromArea(areaid);
 
 	if(iVehEnterAreaID[i] == areaid) {
 
+		printf("DEBUG: Area %d was detected as a vehicle area.", areaid);
 		SetPVarInt(playerid, "VEHA_ID", i);
 		return 1;
 	}
 
 	if(i > -1) {
-
+		printf("DEBUG: Area %d was detected as a door area.", areaid);
 		g_iEntranceAID[playerid] = areaid;
 		g_iEntranceID[playerid] = i;
 	}
@@ -100,28 +101,31 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid)
 {
+	printf("DEBUG: %d left area %d.", playerid, areaid);
 	DeletePVar(playerid, "VEHA_ID");
 	ENT_DelVar(playerid);
 	return 1;
 }
 
-forward ENT_DelVar(playerid);
-public ENT_DelVar(playerid)
+ENT_DelVar(playerid);
+ENT_DelVar(playerid)
 {
-	g_iEntrancePID[playerid] = -1;
 	g_iEntranceID[playerid] = -1;
 	g_iEntranceAID[playerid] = -1;
 }
 
 GetIDFromArea(areaid) {
 
+	printf("DEBUG: AreaID %d was retrieved.", areaid);
 	new iAssignData = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+	printf("DEBUG: AreaID %d was assigned extra id %d", areaid, iAssignData);
 	return iAssignData;
 }
 
-Enter_Door(playerid, pickupid, i, areaid = - 1)
+Enter_Door(playerid, i, areaid = - 1)
 {
-	if((g_iEntrancePID[playerid] == -1 || g_iEntranceAID[playerid] == -1) && g_iEntranceID[playerid] == -1) return 1;
+	printf("DEBUG: Enter_Door triggered - Player %d, ExtraID: %d, AreaID: %d", playerid, i, areaid);
+	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
 	if(!GetPVarType(playerid, "StreamPrep"))
 	{
 		if(areaid == DDoorsInfo[i][ddAreaID])
@@ -170,7 +174,7 @@ Enter_Door(playerid, pickupid, i, areaid = - 1)
 			Business_Exit(playerid, i);
 			return 1;
 		}
-		if(pickupid == iVehExits[0] || pickupid == iVehExits[1] || pickupid == iVehExits[2]) {
+		if(areaid == iVehExits[0] || areaid == iVehExits[1] || areaid == iVehExits[2]) {
 			Vehicle_Exit(playerid);
 			return 1;
 		}

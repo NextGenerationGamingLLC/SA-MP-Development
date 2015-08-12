@@ -1,26 +1,29 @@
-/*  
+/*
+ *  sscanf 2.8.2
+ *  Created by Y_Less, updated by Emmet_.
+ *
  *  Version: MPL 1.1
- *  
+ *
  *  The contents of this file are subject to the Mozilla Public License Version
  *  1.1 (the "License"); you may not use this file except in compliance with
  *  the License. You may obtain a copy of the License at
  *  [url]http://www.mozilla.org/MPL/[/url]
- *  
+ *
  *  Software distributed under the License is distributed on an "AS IS" basis,
  *  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  *  for the specific language governing rights and limitations under the
  *  License.
- *  
+ *
  *  The Original Code is the sscanf 2.0 SA:MP plugin.
- *  
+ *
  *  The Initial Developer of the Original Code is Alex "Y_Less" Cole.
  *  Portions created by the Initial Developer are Copyright (C) 2010
  *  the Initial Developer. All Rights Reserved.
- *  
+ *
  *  Contributor(s):
- *  
+ *
  *  Special Thanks to:
- *  
+ *
  *      SA:MP Team past, present and future
  */
 
@@ -41,6 +44,7 @@ native unformat(const data[], const format[], {Float,_}:...) = sscanf;
 native SSCANF_Init(players, invalid, len);
 native SSCANF_Join(playerid, const name[], npc);
 native SSCANF_Leave(playerid);
+native SSCANF_IsConnected(playerid);
 
 native SSCANF_Option(const name[], value);
 
@@ -58,14 +62,14 @@ static stock
 
 #if defined _inc_a_npc
 	forward SSCANF_PlayerCheck();
-	
+
 	/*
 	  OnNPCModeInit
 
 	  Called when the script starts if it is a NPC mode, sets up the system,
 	  then calls the "real" OnNPCModeInit (using the new ALS 2 hook method).
 	*/
-	
+
 	public OnNPCModeInit()
 	{
 		SSCANF_Init(MAX_PLAYERS, INVALID_PLAYER_ID, MAX_PLAYER_NAME);
@@ -79,7 +83,7 @@ static stock
 		#endif
 		return 1;
 	}
-	
+
 	#if defined _ALS_OnNPCModeInit
 		#undef OnNPCModeInit
 	#else
@@ -89,13 +93,13 @@ static stock
 	#if defined SSCANF_OnNPCModeInit
 		forward SSCANF_OnNPCModeInit();
 	#endif
-	
+
 	/*
 	  SSCANF_PlayerCheck
 
 	  NPC modes have no "OnPlayerConnect callback, so we need to simulate one.
 	*/
-	
+
 	#if !defined SSCANF_NO_PLAYERS
 		public SSCANF_PlayerCheck()
 		{
@@ -132,17 +136,31 @@ static stock
 	  then calls the "real" OnFilterScriptInit (using the new ALS 2 hook
 	  method).
 	*/
-	
+
 	public OnFilterScriptInit()
 	{
+	    new
+     		name[MAX_PLAYER_NAME];
+	
 		SSCANF_Init(GetMaxPlayers(), INVALID_PLAYER_ID, MAX_PLAYER_NAME);
 		SSCANF_gInit = true;
+		
+		// Check if there are any players that aren't initialized.
+		for (new i = 0; i < MAX_PLAYERS; i ++)
+		{
+		    if (IsPlayerConnected(i) && !SSCANF_IsConnected(i))
+		    {
+		        GetPlayerName(i, name, MAX_PLAYER_NAME);
+		        SSCANF_Join(i, name, IsPlayerNPC(i));
+		    }
+		}
+		
 		#if defined SSCANF_OnFilterScriptInit
 			SSCANF_OnFilterScriptInit();
 		#endif
 		return 1;
 	}
-	
+
 	#if defined _ALS_OnFilterScriptInit
 		#undef OnFilterScriptInit
 	#else
@@ -152,7 +170,7 @@ static stock
 	#if defined SSCANF_OnFilterScriptInit
 		forward SSCANF_OnFilterScriptInit();
 	#endif
-	
+
 	/*
 	  OnGameModeInit
 
@@ -160,20 +178,33 @@ static stock
 	  called in filterscripts so we don't want to reinitialise the system in
 	  that case.
 	*/
-	
+
 	public OnGameModeInit()
 	{
 		if (!SSCANF_gInit)
 		{
+		    new
+		        name[MAX_PLAYER_NAME];
+		
 			SSCANF_Init(GetMaxPlayers(), INVALID_PLAYER_ID, MAX_PLAYER_NAME);
 			SSCANF_gInit = true;
+			
+			// Check if there are any players that aren't initialized.
+			for (new i = 0; i < MAX_PLAYERS; i ++)
+			{
+			    if (IsPlayerConnected(i) && !SSCANF_IsConnected(i))
+			    {
+			        GetPlayerName(i, name, MAX_PLAYER_NAME);
+			        SSCANF_Join(i, name, IsPlayerNPC(i));
+			    }
+			}
 		}
 		#if defined SSCANF_OnGameModeInit
 			SSCANF_OnGameModeInit();
 		#endif
 		return 1;
 	}
-	
+
 	#if defined _ALS_OnGameModeInit
 		#undef OnGameModeInit
 	#else
@@ -183,7 +214,7 @@ static stock
 	#if defined SSCANF_OnGameModeInit
 		forward SSCANF_OnGameModeInit();
 	#endif
-	
+
 	/*
 	  OnPlayerConnect
 
@@ -192,7 +223,7 @@ static stock
 	  still knows that the player is really connected.  Also stores their name
 	  internally.
 	*/
-	
+
 	public OnPlayerConnect(playerid)
 	{
 		new
@@ -204,7 +235,7 @@ static stock
 		#endif
 		return 1;
 	}
-	
+
 	#if defined _ALS_OnPlayerConnect
 		#undef OnPlayerConnect
 	#else
@@ -214,13 +245,13 @@ static stock
 	#if defined SSCANF_OnPlayerConnect
 		forward SSCANF_OnPlayerConnect(playerid);
 	#endif
-	
+
 	/*
 	  OnPlayerDisconnect
 
 	  Called when a player disconnects, or when a script is ended.
 	*/
-	
+
 	public OnPlayerDisconnect(playerid, reason)
 	{
 		#if defined SSCANF_OnPlayerDisconnect
@@ -229,7 +260,7 @@ static stock
 		SSCANF_Leave(playerid);
 		return 1;
 	}
-	
+
 	#if defined _ALS_OnPlayerDisconnect
 		#undef OnPlayerDisconnect
 	#else

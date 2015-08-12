@@ -58,6 +58,7 @@ public OnPlayerLoad(playerid)
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
+	CheckBan(playerid);
 
 	if(PlayerInfo[playerid][pDisabled] == 2)
 	{
@@ -704,7 +705,6 @@ public OnPlayerLoad(playerid)
 			GroupLog(PlayerInfo[playerid][pMember], string);
 		}
 	}
-	
 	// Create the player necessary textdraws
 	CreatePlayerTextDraws(playerid);
 	printf("%s has logged in.", GetPlayerNameEx(playerid));
@@ -772,14 +772,7 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pWarns] >= 3)
 	{
-		format(string, sizeof(string), "AdmCmd: %s(%d) (IP: %s) was banned (had 3 Warnings)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
-		Log("logs/ban.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was banned (had 3 Warnings)", GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		PlayerInfo[playerid][pBanned] = 1;
-		SystemBan(playerid, "[System] (Had 3 Warnings)");
-		MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Third Warning", 1, "System");
-		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "3 Warnings", 14);
 		return 1;
 	}
 

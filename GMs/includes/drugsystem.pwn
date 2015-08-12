@@ -2008,6 +2008,7 @@ BM_EditBlackMarket(playerid, iBlackMarketID, choice)
 BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 {
 	new iGroupID = PlayerInfo[playerid][pMember];
+
 	switch(choice)
 	{
 		case 0: {
@@ -2184,7 +2185,7 @@ public Drugs_OnLoadPlayerPlants()
 
 		if(gettime() > iCompletedTimeStamp)
 		{
-			arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
+			//arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
 			
 			new iObjectID;
 			
@@ -2339,7 +2340,7 @@ public Drugs_OnGrowthCheck()
 				
 				arrDrugData[iCount][dr_iDrugQuality] = cache_get_field_content_int(iCount, "quality", MainPipeline);
 				
-				arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
+				//arrDrugData[iCount][dr_iAreaID] = CreateDynamicCuboid(fPos[0]-5.0, fPos[1]-5.0, fPos[2]-5.0, fPos[0]+5.0, fPos[1]+5.0, fPos[2]+5.0, iVW, iINT);
 				
 				new iObjectID;
 
@@ -2567,6 +2568,8 @@ CMD:addictchart(playerid, params[]) {
 CMD:usedrug(playerid, params[]) {
 
 	if(GetPVarType(playerid, PVAR_DRUGS_OVERDOSE)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are currently overdosed.");
+	if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use drugs while watching TV.");
+
 	if(dr_iPlayerTimeStamp[playerid] > gettime() - 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last two minutes");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
    
@@ -2577,7 +2580,7 @@ CMD:usedrug(playerid, params[]) {
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || PlayerInfo[playerid][pJailTime] > 0)
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 
-	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting a lockpick, please wait.");
+	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting to lockpick, please wait.");
 	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 	if(PlayerBoxing[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use drugs while you're fighting.");
 	if(UsedCrack[playerid] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 5 seconds before using more drugs.");
@@ -2616,6 +2619,7 @@ CMD:usedrug(playerid, params[]) {
 			if(PlayerInfo[playerid][p_iAddicted][iDrugID] == 2) PlayerInfo[playerid][p_iAddictedLevel][iDrugID] -= DRUGS_ADDICTION_RATE * iAmount;
 		}
 	}
+
 	Drug_Process(playerid, iDrugID, iAmount);
 	return 1;
 }
@@ -3059,7 +3063,7 @@ CMD:capturepoint(playerid, params[]) {
 
 	if (!IsACriminal(playerid) || PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iPointCapRank]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to capture a point.");
 
-	if(GetPVarInt(playerid,"Injured") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, " You can not capture while injured!");
+	if(GetPVarInt(playerid,"Injured") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not capture while injured!");
 	
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot be in a vehicle when attempting to capture a point.");
 
@@ -3419,7 +3423,7 @@ public Ufo_Aliens(playerid) {
 
 			new Float:fPos[3];
 			GetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2]);
-			InterpolateCameraPos(playerid, fPos[0], fPos[1], fPos[2], fPos[0] + 40.0, fPos[1] + 40.0, fPos[2] + 25.0, 5000, CAMERA_MOVE);
+			InterpolateCameraPos(playerid, fPos[0], fPos[1], fPos[2], fPos[0] + 40.0, fPos[1] + 70.0, fPos[2] + 45.0, 8000, CAMERA_MOVE);
 			SetPlayerDrunkLevel(playerid, 3000);
 		}
 		case 40: {
@@ -3446,7 +3450,7 @@ public Ufo_Aliens(playerid) {
 			return 1;
 		}
 	}
-	if(stage < 20) SetPlayerVelocity(playerid, 0.0, 0.0, 1.1);
+	if(stage < 40) SetPlayerVelocity(playerid, 0.0, 0.0, 1.1);
 	stage++;
 	SetPVarInt(playerid, "Aliens", stage);
 	if(GetPVarType(playerid, "Aliens")) SetTimerEx("Ufo_Aliens", 500, false, "i", playerid);

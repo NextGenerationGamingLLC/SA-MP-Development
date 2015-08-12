@@ -68,7 +68,7 @@ GetNearestParkingMeter(playerid)
 	new meterid, Float:distance[2];
 	meterid = -1;
 	distance[0] = 1000000.0;
-	for(new i = 1; i < sizeof(ParkingMeterInformation); i ++) 
+	for(new i = 0; i < sizeof(ParkingMeterInformation); i ++) 
 	{
 		if(ParkingMeterInformation[i][MeterActive] == 1 && IsPlayerInRangeOfPoint(playerid, ParkingMeterInformation[i][MeterRange], ParkingMeterInformation[i][MeterPosition][0], ParkingMeterInformation[i][MeterPosition][1], ParkingMeterInformation[i][MeterPosition][2]))
 		{

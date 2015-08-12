@@ -1532,14 +1532,9 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	Seatbelt[playerid] = 0;
 	if(InsideTut{playerid} > 0)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has been banned, reason: Warp Hacking (Tutorial).", GetPlayerNameEx(playerid));
-		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Warp Hacking (Tutorial).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
-		PlayerInfo[playerid][pBanned] = 3;
-		Log("logs/ban.log", szMiscArray);
-		SystemBan(playerid, "[System] (Warp Hacking (Tutorial)");
-		MySQLBan(GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), "Warp Hacking (Tutorial)", 1, "System");
-		Kick(playerid);
+		if(GetPVarType(playerid, "Autoban")) return 1;
+		SetPVarInt(playerid, "Autoban", 1); 
+		CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "Warp Hacking (Tutorial)", 180);
 		TotalAutoBan++;
 	}
 	if(GetPVarType(playerid, "HelmetOn"))

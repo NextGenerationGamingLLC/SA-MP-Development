@@ -1884,7 +1884,7 @@ task ServerHeartbeat[1000]() {
 					new copinrange;
 					foreach(new j: Player)
 					{
-						if(IsPlayerInRangeOfPoint(j, 30, X, Y, Z) && IsACop(j))
+						if(IsPlayerInRangeOfPoint(j, 15, X, Y, Z) && IsACop(j))
 						{
 							copinrange = 1;
 						}
@@ -1894,16 +1894,16 @@ task ServerHeartbeat[1000]() {
 					{
 						//Frozen[i] = 0;
 						DeletePVar(i, "IsFrozen");
-						GameTextForPlayer(i, "~r~You broke the Cuffs, you are free!", 2500, 3);
+						GameTextForPlayer(i, "~r~No-one is looking, run!", 2500, 3);
 						TogglePlayerControllable(i, 1);
-						PlayerCuffed[i] = 0;
-						SetHealth(i, GetPVarFloat(i, "cuffhealth"));
-						SetArmour(i, GetPVarFloat(i, "cuffarmor"));
-						DeletePVar(i, "cuffhealth");
-						DeletePVar(i, "PlayerCuffed");
-						PlayerCuffedTime[i] = 0;
-						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-						ClearAnimations(i);
+						PlayerCuffed[i] = 3;
+						//SetHealth(i, GetPVarFloat(i, "cuffhealth"));
+						//SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+						//DeletePVar(i, "cuffhealth");
+						//DeletePVar(i, "PlayerCuffed");
+						PlayerCuffedTime[i] = 180;
+						//SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						//ClearAnimations(i);
 					}
 					else
 					{
@@ -1915,6 +1915,52 @@ task ServerHeartbeat[1000]() {
 					if(playerTabbed[i] == 0)
 					{
 						PlayerCuffedTime[i] -= 1;
+					}
+				}
+			}
+			if(PlayerCuffed[i] == 3)
+			{
+				new Float:X, Float:Y, Float:Z;
+				GetPlayerPos(i, X, Y, Z);
+				new copinrange;
+				foreach(new j: Player)
+				{
+					if(IsPlayerInRangeOfPoint(j, 4, X, Y, Z) && IsACop(j))
+					{
+						copinrange = 1;
+					}
+				}
+
+				if(copinrange == 1) {
+					TogglePlayerControllable(i, 0);
+					PlayerCuffed[i] = 2;
+					GameTextForPlayer(i, "~r~They caught you again!", 2500, 3);
+				}	
+
+				if(PlayerCuffedTime[i] <= 0)
+				{
+
+					if(copinrange == 0)
+					{
+						//Frozen[i] = 0;
+						DeletePVar(i, "IsFrozen");
+						GameTextForPlayer(i, "~r~The cuffs broke!", 2500, 3);
+						TogglePlayerControllable(i, 1);
+						PlayerCuffed[i] = 0;
+						SetHealth(i, GetPVarFloat(i, "cuffhealth"));
+						SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+						DeletePVar(i, "cuffhealth");
+						DeletePVar(i, "PlayerCuffed");
+						PlayerCuffedTime[i] = 0;
+						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						ClearAnimations(i);
+					}
+				}
+				else
+				{
+					if(playerTabbed[i] == 0)
+					{
+						if(copinrange == 0) PlayerCuffedTime[i] -= 1;
 					}
 				}
 			}
@@ -2177,15 +2223,9 @@ task ServerHeartbeatTwo[1000]() {
  		}
 		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 		{
-			szMiscArray[0] = 0;
-			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has been banned, reason: Jetpack Hacking.", GetPlayerNameEx(i));
-			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s(%d) (IP:%s) was banned, reason: Jetpack Hacking.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
-			PlayerInfo[i][pBanned] = 3;
-			Log("logs/ban.log", szMiscArray);
-			SystemBan(i, "[System] (Jetpack Hacking)");
-			MySQLBan(GetPlayerSQLId(i), GetPlayerIpEx(i), "Jetpack Hacking", 1, "System");
-			Kick(i);
+			if(GetPVarType(i, "Autoban")) return 1;
+			SetPVarInt(i, "Autoban", 1); 
+			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Jetpack Hacking", 180);
 			TotalAutoBan++;
 		}
 
@@ -2297,6 +2337,7 @@ task ServerHeartbeatTwo[1000]() {
 			KillTimer(GetPVarInt(i, "rccamtimer"));
 		}
 	}
+	return 1;
 }
 
 // Timer Name: ServerMicrobeat()
