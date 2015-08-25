@@ -52,7 +52,14 @@ native IsValidVehicle(vehicleid);
 
 #define HOLDING(%0) \
 	((newkeys & (%0)) == (%0))
-	
+
+			/* ----------------- BIT OPERATORS ------------------ */
+
+#define Bit_State(%0,%1) ((%0) & (%1))
+#define Bit_On(%0,%1) ((%0) |= (%1))
+#define Bit_Off(%0,%1) ((%0) &= ~(%1))
+#define Bit_Toggle(%0,%1) ((%0) ^= (%1))
+
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
@@ -139,6 +146,8 @@ native IsValidVehicle(vehicleid);
 #define			MAX_DYNAMIC_BUSINESS_RANKS	(6)
 #define			MAX_RF_WARNS				(3)
 #define			MAX_JAIL_BOXINGS			(5)
+#define 		MAX_PAYPHONES 				(100)
+
 //#define 		SHOPAUTOMATED
 #define 		zombiemode
 #define 		event_chancegambler
@@ -883,7 +892,7 @@ native IsValidVehicle(vehicleid);
 #define         DIALOG_911PICKLOCK			(4961)
 #define         DIALOG_911PICKLOCK2			(4962)
 #define			DIALOG_911FIRE				(4963)
-#define			DIALOG_NEWSHOTLINE			(4964)
+#define			DIALOG_HOTLINE				(4964)
 
 #define         DIALOG_SELLCREDITS          (4965)
 #define         DIALOG_RIMMOD               (4970)
@@ -1113,6 +1122,12 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_JOBS_EDIT 				(6115)
 #define 		DIALOG_JOBS_EDITACTOR			(6116)
 #define 		DIALOG_JOBS_NEAREST				(6117)
+#define 		DIALOG_PAYPHONE 				(6118)
+#define 		DIALOG_PAYPHONE_ADMIN 			(6119)
+#define 		DIALOG_CALLS_MENU 				(6120)
+#define 		DIALOG_CALLS_MENU2 				(6121)
+
+
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
@@ -1330,4 +1345,22 @@ native IsValidVehicle(vehicleid);
 
 #define 	MAX_GANG_CRATES				15
 #define 	REGISTER_SKINMODEL			(4810)
-#define 	REGISTER_NEWBIECAR			(4811)
+
+
+/* PVARS */
+
+#define 			PVAR_DRUGS_MIXSLOT				"DRM_S"
+#define 			PVAR_MAKINGDRUG					"DRM_D"
+#define 			PVAR_INGREDIENT_ORDERING		"DING_O"
+#define 			PVAR_BM_EDITINGID				"BM_EID"
+#define 			PVAR_BLMARKETID					"BM_MID"
+#define 			PVAR_ATDRUGPOINT				"PO_AP"
+#define 			PVAR_SMUGGLE_DELIVERINGTO		"SM_DT"
+#define 			PVAR_DRUGS_OVERDOSE				"DR_OD"
+
+
+
+#define 			PVAR_PLAYERPOS					"ac_PP"
+#define 			PVAR_CBUGCOUNT					"ac_CBC"
+#define 			PVAR_TEMPACTOR					"ac_TA"
+#define 			PVAR_TEMPTEXT					"ac_TT"

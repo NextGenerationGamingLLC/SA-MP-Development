@@ -49,9 +49,11 @@ ShowVehicleMenu(playerid, vehicleid) {
     GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 	format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
+		Seatbelt\t%s\n\
 		Lights\t%s\n\
 		Bonnet\t%s\n\
 		Boot\t%s",
+		((Seatbelt[playerid] == 0) ? ("Off") : ("On")),
 		((lights == VEHICLE_PARAMS_OFF) ? ("Off") : ("On")),
 		((bonnet == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open")),
 		((boot == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open"))

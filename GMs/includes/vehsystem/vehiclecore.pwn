@@ -1983,7 +1983,7 @@ CMD:window(playerid, params[])
 
             SetPlayerInterior(playerid, 0);
             SetPlayerVirtualWorld(playerid, 0);
-            TogglePlayerSpectating(playerid, 1);
+            TogglePlayerSpectating(playerid, true);
             PlayerSpectateVehicle(playerid, InsidePlane[playerid]);
 
             format(string, sizeof(string), "* %s glances out the window.", GetPlayerNameEx(playerid));
@@ -2323,14 +2323,14 @@ CMD:seatbelt(playerid, params[])
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a vehicle!");
         return 1;
     }
-	new string[60 + MAX_PLAYER_NAME];
+
     if(IsPlayerInAnyVehicle(playerid) == 1 && Seatbelt[playerid] == 0)
 	{
         if(IsABike(GetPlayerVehicleID(playerid)))
             return SendClientMessageEx(playerid, COLOR_WHITE, "We have added a helmet feature, buy a helmet from any 24/7 and use /helmet(/hm).");
         else
 		{
-            format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and buckles it up.", GetPlayerNameEx(playerid));
+            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and buckles it up.", GetPlayerNameEx(playerid));
             SendClientMessageEx(playerid, COLOR_WHITE, "You have put on your seatbelt.");
 			Seatbelt[playerid] = 1;
         }
@@ -2344,13 +2344,13 @@ CMD:seatbelt(playerid, params[])
         }
         else
 		{
-            format(string, sizeof(string), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
+            format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s reaches for their seatbelt, and unbuckles it.", GetPlayerNameEx(playerid));
             SendClientMessageEx(playerid, COLOR_WHITE, "You have taken off your seatbelt.");
 			Seatbelt[playerid] = 0;
         }
     }
 	else return 1;
-    ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+    ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     return 1;
 }
 

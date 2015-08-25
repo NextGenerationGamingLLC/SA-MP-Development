@@ -49,7 +49,7 @@ CMD:joinevent(playerid, params[]) {
 	else if( GetPVarInt( playerid, "EventToken" ) == 1 ) {
 		SendClientMessageEx( playerid, COLOR_WHITE, "You are already in the event." );
 	}
-	else if(GetPVarInt(playerid, "IsInArena")) {
+	else if(GetPVarType(playerid, "IsInArena")) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 	}
 	else if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || GetPVarInt(playerid, "Injured")) {

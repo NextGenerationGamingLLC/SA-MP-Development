@@ -34,7 +34,7 @@ new g_aFemaleSkins[77] = {
     298
 };
 
-new cam_CamShakeTimer[MAX_PLAYERS];
+// new cam_CamShakeTimer[MAX_PLAYERS];
 new NewbieVehicles[6];
 
 
@@ -670,7 +670,7 @@ public Register_Plane(playerid)
 			SendClientMessage(playerid, COLOR_RED,"** ALARMS ARE RINGING **!");
 			SetPVarInt(playerid, "pTut", 3);
 			SetTimerEx("Register_Plane", 8000, false, "i", playerid);
-			cam_CamShakeTimer[playerid] = SetTimerEx("CamShaker", 100, true, "i", playerid);
+			// cam_CamShakeTimer[playerid] = SetTimerEx("CamShaker", 100, true, "i", playerid);
 		}
 		case 3: {
 			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/plane_part2.mp3");
@@ -745,7 +745,7 @@ public CamShaker(playerid) {
 
 forward ResetCameraShake(playerid);
 public ResetCameraShake(playerid) {
-	KillTimer(cam_CamShakeTimer[playerid]);
+	// KillTimer(cam_CamShakeTimer[playerid]);
 	SetPlayerDrunkLevel(playerid, 0);
 	return 1;
 }

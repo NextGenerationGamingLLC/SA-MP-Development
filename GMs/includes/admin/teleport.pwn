@@ -986,7 +986,7 @@ CMD:sendto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD2, "This person is currently in spectate mode.");
 			return 1;
 		}
-		if(GetPVarInt(giveplayerid, "IsInArena"))
+		if(GetPVarType(giveplayerid, "IsInArena"))
 		{
 		    SetPVarInt(playerid, "tempPBP", giveplayerid);
 		    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);

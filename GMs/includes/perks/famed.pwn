@@ -156,7 +156,7 @@ CMD:fc(playerid, params[]) {
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
-			else if(GetPVarInt(playerid, "Undercover") == 1 || PlayerInfo[playerid][pFamed] > 0)
+			else if(GetPVarType(playerid, "Undercover") || PlayerInfo[playerid][pFamed] > 0)
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
 			}

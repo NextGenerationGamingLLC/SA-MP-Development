@@ -1,8 +1,8 @@
 #include <YSI\y_hooks>
 
-new iVehExits[3]; // for shamal, nevada and journey
 
 /* 	Jingles:
+
 	DDoor / Houses / Businesses pickup model rework.
 	Enter/exit by pressing F/Enter or using /enter or /exit.
 
@@ -11,23 +11,13 @@ new iVehExits[3]; // for shamal, nevada and journey
 	CreateHouse_int(houseid) under stock CreateHouse(houseid);
 	CreateBusiness_int(businessid) under stock CreateBusiness(businessid);
 
-	And it'll hopefully work like a charm! :)*/
+	And it'll hopefully work like a charm! :)
+*/
 
 #define 		ENTRANCE_SHORTCUT		KEY_SECONDARY_ATTACK
 #define 		ENTRANCE_VEH_SHORTCUT	KEY_NO
 
-hook OnGameModeInit() {
 
-	iVehExits[0] = CreateDynamicSphere(3.6661,23.0627,1199.6012, 3.0);
-	iVehExits[1] = CreateDynamicSphere(820.5054,1528.1591,-48.9141, 3.0);
-	iVehExits[2] = CreateDynamicSphere(315.6100,1028.6777,1948.5518, 3.0);
-
-	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[0], E_STREAMER_EXTRA_ID, 0);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[1], E_STREAMER_EXTRA_ID, 1);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[2], E_STREAMER_EXTRA_ID, 2);
-
-	return 1;
-}
 
 /*CMD:housecount(playerid)
 {
@@ -55,19 +45,24 @@ CMD:exit(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & ENTRANCE_SHORTCUT && g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
+	if(newkeys & ENTRANCE_SHORTCUT) {
 
-		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+		if(g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
+			
+			Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+		}
+	}
+	if(newkeys & KEY_NO) {
+
+		if(g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
+
+			Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
+		}
 	}
 
-	else if(newkeys & KEY_NO && g_iEntranceID[playerid] > -1 && IsPlayerInAnyVehicle(playerid)) {
+	if(newkeys & KEY_NO) {
 
-		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
-	}
-
-	if(!IsPlayerInAnyVehicle(playerid)) {
-
-		if(newkeys & KEY_CTRL_BACK) {
+		if(!IsPlayerInAnyVehicle(playerid)) {
 
 			if(GetPVarType(playerid, "VEHA_ID")) {
 
@@ -79,29 +74,27 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 }
 
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
+public OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	printf("DEBUG: %d entered area %d", playerid, areaid);
+	// printf("DEBUG: %d entered area %d", playerid, areaid);
 	new i = GetIDFromArea(areaid);
+
+	// printf("DEBUG: Area %d was detected as a door area: ID: %d, VW: %d, Int: %d.", areaid, i, Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_WORLD_ID), Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_INTERIOR_ID));
+	g_iEntranceAID[playerid] = areaid;
+	g_iEntranceID[playerid] = i;
+
 
 	if(iVehEnterAreaID[i] == areaid) {
 
 		printf("DEBUG: Area %d was detected as a vehicle area.", areaid);
 		SetPVarInt(playerid, "VEHA_ID", i);
-		return 1;
-	}
-
-	if(i > -1) {
-		printf("DEBUG: Area %d was detected as a door area.", areaid);
-		g_iEntranceAID[playerid] = areaid;
-		g_iEntranceID[playerid] = i;
 	}
 	return 1;
 }
 
-hook OnPlayerLeaveDynamicArea(playerid, areaid)
+public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
-	printf("DEBUG: %d left area %d.", playerid, areaid);
+	// printf("DEBUG: %d left area %d.", playerid, areaid);
 	DeletePVar(playerid, "VEHA_ID");
 	ENT_DelVar(playerid);
 	return 1;
@@ -116,44 +109,38 @@ ENT_DelVar(playerid)
 
 GetIDFromArea(areaid) {
 
-	printf("DEBUG: AreaID %d was retrieved.", areaid);
+	// printf("DEBUG: AreaID %d was retrieved.", areaid);
 	new iAssignData = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-	printf("DEBUG: AreaID %d was assigned extra id %d", areaid, iAssignData);
+	// printf("DEBUG: AreaID %d was assigned extra id %d", areaid, iAssignData);
 	return iAssignData;
 }
 
 Enter_Door(playerid, i, areaid = - 1)
 {
-	printf("DEBUG: Enter_Door triggered - Player %d, ExtraID: %d, AreaID: %d", playerid, i, areaid);
+	printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
 	if(!GetPVarType(playerid, "StreamPrep"))
 	{
 		if(areaid == DDoorsInfo[i][ddAreaID])
 		{
 			DDoor_Enter(playerid, i);
+			return 1;
 		}
 		if(areaid == DDoorsInfo[i][ddAreaID_int])
 		{
 			DDoor_Exit(playerid, i);
+			return 1;
 		}
 		if(areaid == GarageInfo[i][gar_AreaID])
 		{
 			Garage_Enter(playerid, i);
+			return 1;
 		}
 		if(areaid == GarageInfo[i][gar_AreaID_int])
 		{
 			Garage_Exit(playerid, i);
-		}
-		if(areaid == DDoorsInfo[i][ddAreaID])
-		{
-			DDoor_Enter(playerid, i);
 			return 1;
 		}
-		if(areaid == DDoorsInfo[i][ddAreaID_int])
-		{
-			DDoor_Exit(playerid, i);
-			return 1;
-		}	
 		if(areaid == HouseInfo[i][hAreaID][0]) 
 		{
 			House_Enter(playerid, i);
@@ -302,11 +289,14 @@ DDoor_Enter(playerid, i)
 	if(DDoorsInfo[i][ddLocked] == 1) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "This door is currently locked.");
 	}
-	SetPlayerInterior(playerid,DDoorsInfo[i][ddInteriorInt]);
+
 	PlayerInfo[playerid][pInt] = DDoorsInfo[i][ddInteriorInt];
+	SetPlayerInterior(playerid,DDoorsInfo[i][ddInteriorInt]);
 	PlayerInfo[playerid][pVW] = DDoorsInfo[i][ddInteriorVW];
 	SetPlayerVirtualWorld(playerid, DDoorsInfo[i][ddInteriorVW]);
+	
 	if(DDoorsInfo[i][ddVehicleAble] > 0 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
+
 		SetVehiclePos(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
 		SetVehicleZAngle(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorA]);
 		SetVehicleVirtualWorld(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorVW]);

@@ -57,7 +57,7 @@ RemoveBan(iRemover, iBanned, szIPAddress[]) {
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `bannedid` = '%d' OR `IP` = '%s'", iBanned, szIPAddress);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `IP` = '%s'", szIPAddress);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `IP` = '%e'", szIPAddress);
 	}
 	
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnRemoveBan", "iis", iRemover, iBanned, szIPAddress);
@@ -80,7 +80,8 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 			format(szMiscArray, sizeof(szMiscArray), "%d ban records removed.", iRows);
 			SendClientMessageEx(iRemover, COLOR_WHITE, szMiscArray);
 			
-			//format(szMiscArray, sizeof(szMiscArray), "%s has unbanned %s."); // WIP
+			format(szMiscArray, sizeof(szMiscArray), "%s has unbanned %s.");
+			Log("logs/unbans.log", szMiscArray);
 		}
 	}
 	else SendClientMessageEx(iRemover, COLOR_YELLOW, "There was an issue removing that ban ...");
@@ -93,14 +94,18 @@ public InitiateUnban(iRemover) {
 
 	new 
 		szIPAddress[16],
-		id; 
+		id,
+		iRows,
+		iFields;
+
+	cache_get_data(iRows, iFields, MainPipeline);
 
 	if(cache_get_row_count(MainPipeline)) {
+
 		id = cache_get_field_content_int(0, "id", MainPipeline);
 		cache_get_field_content(0, "IP", szIPAddress, MainPipeline);
 		return RemoveBan(iRemover, id, szIPAddress);
 	}
-
 	return 1;
 }
 
@@ -176,11 +181,9 @@ CMD:unban(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unban [username]");
 
-	new tmpName[MAX_PLAYER_NAME];
+	if(strfind(params, "_", true, 0) != -1) SendClientMessage(playerid, COLOR_GRAD1, "Please use an underscore as spaces for non-admin accounts.");
 
-	mysql_escape_string(params, tmpName, MainPipeline);
-
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `Username` = '%s' LIMIT 1", tmpName);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", params);
 	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateUnban", "i", playerid);
 
 	return 1;
@@ -215,7 +218,7 @@ CMD:banaccount(playerid, params[]) {
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel` FROM `accounts` WHERE `Username` = '%s' LIMIT 1", szName);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", szName);
 	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateOfflineBan","isi", playerid, szReason, iLength);
 
 	return 1;

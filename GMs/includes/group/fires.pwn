@@ -35,11 +35,6 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-new BitArray:bit_fireAimingAt<MAX_PLAYERS>,
-	AtFire[MAX_PLAYERS];
-*/
-
 CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ, VW)
 {
 	if(iServerFires < MAX_STRUCTURE_FIRES)
@@ -89,12 +84,6 @@ GetAvailableFireSlot()
 }
 
 hook OnPlayerUpdate(playerid) {
-
-	/*if(Bit_Get(bit_fireAimingAt, playerid) == true) {
-
-		Fire_PutOut(playerid);
-	}
-	*/
 
 	new newkeys, dir1, dir2;
 	GetPlayerKeys(playerid, newkeys, dir1, dir2);
@@ -147,88 +136,14 @@ hook OnPlayerUpdate(playerid) {
 	}
 	return 1;
 }
-/*
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
-
-	if(oldkeys & KEY_FIRE) Bit_Set(bit_fireAimingAt, playerid, false);
-
-	if(newkeys & KEY_FIRE) {
-
-		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 407 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 601) {
-
-			new Float:fPos[3];
-			GetPlayerCameraFrontVector(playerid, fPos[0], fPos[1], fPos[2]);	
-
-			for(new i; i < MAX_STRUCTURE_FIRES; ++i) {
-
-				if(IsValidStructureFire(i))	{
-
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_X, fPos[0]);
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_Y, fPos[1]);
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_Z, fPos[2]);
-
-					if(IsPlayerAimingAt(playerid, fPos[0], fPos[1], fPos[2], 3.0)) {
-						
-						Bit_Set(bit_fireAimingAt, playerid, true);
-						AtFire[playerid] = i;
-						break;
-					}
-				}
-			}
-		}
-
-		new j = GetPlayerWeapon(playerid);
-
-		if(j == WEAPON_FIREEXTINGUISHER) {	
-
-			new Float:fPos[3];
-
-			for(new i; i < MAX_STRUCTURE_FIRES; ++i) {
-
-				if(IsValidStructureFire(i))	{
-
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_X, fPos[0]);
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_Y, fPos[1]);
-					Streamer_GetFloatData(STREAMER_TYPE_OBJECT, arrStructureFires[i][iFireObj], E_STREAMER_Z, fPos[2]);
-
-					if(IsPlayerAimingAt(playerid, fPos[0], fPos[1], fPos[2], 3.0)) {
-
-						Bit_Set(bit_fireAimingAt, playerid, true);
-						AtFire[playerid] = i;
-						break;						
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-Fire_PutOut(playerid) {
-
-	new i = AtFire[playerid];
-
-	arrStructureFires[i][iFireStrength] -=2;
-	format(szMiscArray, sizeof(szMiscArray), "%d/%d\nID%d", arrStructureFires[i][iFireStrength], MAX_FIRE_HEALTH, i);
-	UpdateDynamic3DTextLabelText(arrStructureFires[i][szFireLabel], 0xFFFFFFFF, szMiscArray);
-
-	if(arrStructureFires[i][iFireStrength] <=0) {
-
-		DeleteStructureFire(i);
-		Bit_Set(bit_fireAimingAt, playerid, false);
-	}
-	return 1;
-}
-
-*/
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 
-	if(arrStructureFires[i][iFireArea] == areaid) {
-		OnEnterFire(playerid, i);
-		return 1;
+	if(-1 < i < MAX_STRUCTURE_FIRES) {
+		
+		if(arrStructureFires[i][iFireArea] == areaid) OnEnterFire(playerid, i);
 	}
 	return 1;
 }
@@ -237,10 +152,12 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 
 	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 
-	if(arrStructureFires[i][iFireArea] == areaid) {
+	if(-1 < i < MAX_STRUCTURE_FIRES) {
 
-		DeletePVar(playerid, "pInFire");
-		return 1;
+		if(arrStructureFires[i][iFireArea] == areaid) {
+
+			DeletePVar(playerid, "pInFire");
+		}
 	}
 	return 1;
 }

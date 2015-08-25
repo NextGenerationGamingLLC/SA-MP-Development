@@ -35,6 +35,59 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	switch(dialogid) {
+
+		case DIALOG_CALLS_MENU: {
+
+			if(!response) return DeletePVar(playerid, "AC"), DeletePVar(playerid, "IC"), DeletePVar(playerid, "Calls"), 1;
+
+			if(GetPVarType(playerid, "Calls")) {
+
+				switch(listitem) {
+
+					case 0: Calls_Group(playerid); 
+					case 1: Calls_Business(playerid);
+				}
+				DeletePVar(playerid, "Calls");
+				return 1;
+			}
+
+			SetPVarInt(playerid, "CALL_CHOICE", listitem);
+			ShowPlayerDialog(playerid, DIALOG_CALLS_MENU2, DIALOG_STYLE_INPUT, "Calls | Specify ID", "Please specify the caller ID (seen in /ac)", "Select", "Cancel");
+		}
+		case DIALOG_CALLS_MENU2: {
+
+			if(response) {
+
+				switch(GetPVarInt(playerid, "CALL_CHOICE")) {
+
+					case 0: {
+
+						if(GetPVarType(playerid, "AC")) AcceptCall_Group(playerid, strval(inputtext));
+						if(GetPVarType(playerid, "IC")) IgnoreCall_Group(playerid, strval(inputtext));
+
+					}
+					case 1: {
+
+						if(GetPVarType(playerid, "AC")) AcceptCall_Business(playerid, strval(inputtext));
+						if(GetPVarType(playerid, "IC")) IgnoreCall_Business(playerid, strval(inputtext));
+
+					}
+				}
+			}
+
+			DeletePVar(playerid, "AC");
+			DeletePVar(playerid, "IC");
+			DeletePVar(playerid, "CALL_CHOICE");
+		}
+	}
+	return 1;
+}
+
 stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicleid = INVALID_VEHICLE_ID)
 {
     new bool:breakingloop = false, newid = INVALID_CALL_ID, string[128];
@@ -100,13 +153,33 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
 						}
-						if(type == 6 && (IsAReporter(i)))
-						{
-							format(string, sizeof(string), "Hotline: Caller: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, COLOR_PINK, string);
-							format(string, sizeof(string), "Hotline: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, COLOR_PINK, string);
-						}
+					}
+				}
+				if(type == 6)
+				{
+					new x = GetPVarInt(callfrom, "GRPCALL");
+					Calls[newid][c_iGroupID] = x;
+
+					if(PlayerInfo[i][pMember] == x) {
+
+						format(string, sizeof(string), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, string);
+						format(string, sizeof(string), "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, string);
+					}
+				}
+				if(type == 7)
+				{
+					new x = GetPVarInt(callfrom, "BUSICALL");
+					Calls[newid][c_iBusinessID] = x;
+
+					if(PlayerInfo[i][pBusiness] == x) {
+
+						format(string, sizeof(string), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, string);
+						format(string, sizeof(string), "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, string);
+						
 					}
 				}
 			}
@@ -148,6 +221,8 @@ stock ClearCalls()
         Calls[i][HasBeenUsed] = 0;
         Calls[i][BeingUsed] = 0;
 		Calls[i][CallVehicleId] = INVALID_VEHICLE_ID;
+		Calls[i][c_iGroupID] = INVALID_GROUP_ID;
+		Calls[i][c_iBusinessID] = INVALID_BUSINESS_ID;
 	}
 	return 1;
 }
@@ -166,113 +241,98 @@ public CallTimer(callid)
 	return 1;
 }
 
-CMD:calls(playerid, params[])
-{
+Calls_Group(playerid) {
+
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
-		new string[128];
-		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_NEWS) SendClientMessageEx(playerid, COLOR_PINK, "____________________ HOTLINE ____________________");
-		else SendClientMessageEx(playerid, COLOR_DBLUE, "____________________ 911 CALLS ____________________");
-		for(new i = 999; i >= 0; i--) // Why in hell would we run 4 unnecessary loops here?
-		{
-			if(Calls[i][BeingUsed] == 1)
-			{
-				for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
-				{
-					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0 || (!strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], gMainZones[9][SAZONE_NAME], true) && strcmp(Calls[i][MainZone], gMainZones[3][SAZONE_NAME], true) == -1))
-					{
-						if(Calls[i][Type] == 0 && IsACop(playerid))
-						{
-							format(string, sizeof(string), "[EMERGENCY] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_RED, string);
-						}
-						else if(Calls[i][Type] == 1 && IsAMedic(playerid))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-						else if(Calls[i][Type] == 2 && IsACop(playerid))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-						else if(Calls[i][Type] == 3 && (IsACop(playerid) || IsATowman(playerid)))
-						{
-							format(string, sizeof(string), "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-						else if(Calls[i][Type] == 4 && IsACop(playerid))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-						else if(Calls[i][Type] == 5 && (IsACop(playerid) || IsAMedic(playerid)))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-						else if(Calls[i][Type] == 6 && (IsAReporter(playerid)))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-					}
-				}
-			}
-		}
-		/* for(new i = 999; i >= 0; i--)
-		{
-			if(Calls[i][BeingUsed] == 1)
-			{
-				for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
-				{
-					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0)
-					{
-						if(Calls[i][Type] == 1 && IsAMedic(playerid))
-						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-					}
-				}
-			}
+		new iGroupID = PlayerInfo[playerid][pMember];
+
+		switch(arrGroupData[iGroupID][g_iGroupType]) {
+
+			case GROUP_TYPE_NEWS: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ HOTLINE ____________________");
+			default: SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "____________________ LANDLINE ____________________");
 		}
 		for(new i = 999; i >= 0; i--)
 		{
 			if(Calls[i][BeingUsed] == 1)
 			{
-				for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
-				{
-					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0)
+				if(Calls[i][Type] == 6 && Calls[i][c_iGroupID] == iGroupID)	{
+					
+					format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				}
+				else {
+
+					for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
 					{
-						if(Calls[i][Type] == 2 && IsACop(playerid))
+						if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0 || (!strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], gMainZones[9][SAZONE_NAME], true) && strcmp(Calls[i][MainZone], gMainZones[3][SAZONE_NAME], true) == -1))
 						{
-							format(string, sizeof(string), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							if(Calls[i][Type] == 0 && IsACop(playerid))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "[EMERGENCY] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+							}
+							else if(Calls[i][Type] == 1 && IsAMedic(playerid))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							}
+							else if(Calls[i][Type] == 2 && IsACop(playerid))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							}
+							else if(Calls[i][Type] == 3 && (IsACop(playerid) || IsATowman(playerid)))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							}
+							else if(Calls[i][Type] == 4 && IsACop(playerid))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							}
+							else if(Calls[i][Type] == 5 && (IsACop(playerid) || IsAMedic(playerid)))
+							{
+								format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							}
 						}
 					}
 				}
 			}
 		}
-		for(new i = 999; i >= 0; i--)
-		{
-			if(Calls[i][BeingUsed] == 1)
-			{
-				for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
-				{
-					if(strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][Area], true) == 0 || strcmp(arrGroupJurisdictions[PlayerInfo[playerid][pMember]][j][g_iAreaName], Calls[i][MainZone], true) == 0)
-					{
-						if(Calls[i][Type] == 3 && (IsACop(playerid) || IsATowman(playerid)))
-						{
-							format(string, sizeof(string), "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
-							SendClientMessageEx(playerid, COLOR_WHITE, string);
-						}
-					}
-				}
-			}
-		} */
-		SendClientMessageEx(playerid, COLOR_DBLUE, "___________________________________________________");
+		SendClientMessageEx(playerid, arrGroupData[iGroupID][g_hDutyColour] * 256 + 170, "___________________________________________________");
 	}
+}
+
+Calls_Business(playerid) {
+
+	if(PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID)
+	{
+
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "____________________ COMPANY LINE ____________________");
+		for(new i = 999; i >= 0; i--)
+		{
+			if(Calls[i][BeingUsed] == 1)
+			{
+				if(Calls[i][Type] == 7 && Calls[i][c_iBusinessID] == PlayerInfo[playerid][pBusiness])
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | Location: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				}
+			}
+		}
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "___________________________________________________");
+	}
+}
+
+CMD:calls(playerid, params[])
+{
+	
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	SetPVarInt(playerid, "Calls", 1);
+	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;
 }
 
@@ -281,12 +341,12 @@ CMD:ac(playerid, params[])
 	return cmd_acceptcall(playerid, params);
 }
 
-CMD:acceptcall(playerid, params[])
-{
+
+AcceptCall_Group(playerid, callid) {
+
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
-		new string[128], callid;
-		if(sscanf(params, "d", callid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ac [call #]");
+		new string[128];
 
 		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
 		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
@@ -391,17 +451,69 @@ CMD:acceptcall(playerid, params[])
 	return 1;
 }
 
-CMD:ic(playerid, params[])
-{
-	return cmd_ignorecall(playerid, params);
+AcceptCall_Business(playerid, callid) {
+
+	if(0 <= PlayerInfo[playerid][pBusiness] < MAX_BUSINESSES) {
+			
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't accept your own call!");
+		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot answer this call!");
+		if(!IsPlayerConnected(Calls[callid][CallFrom]))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
+			Calls[callid][BeingUsed] = 0;
+			return 1;
+		}
+
+		foreach(new i: Player)
+		{
+			if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
+				format(szMiscArray, sizeof(szMiscArray), "%s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+				SendClientMessageEx(i, COLOR_DBLUE, szMiscArray);
+			}
+			if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
+				format(szMiscArray, sizeof(szMiscArray), "(BE) %s has accepted %s's call from %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]), Calls[callid][Area]);
+				SendClientMessageEx(i, COLOR_DBLUE, szMiscArray);
+			}
+		}
+
+		new Float: fPos[3];
+		PlayCrimeReportForPlayer(playerid, Calls[callid][CallFrom], 8);
+		AddCallToken(playerid);
+		format(szMiscArray, sizeof(szMiscArray), "%s has accepted your call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(playerid));
+		SendClientMessageEx(Calls[callid][CallFrom], COLOR_WHITE, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "You have accepted %s's call. You are now in a direct call with them. (/h to hang up)", GetPlayerNameEx(Calls[callid][CallFrom]));
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		Mobile[playerid] = Calls[callid][CallFrom];
+		SetPlayerAttachedObject(playerid, 8, 330, 6);
+		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+		Mobile[Calls[callid][CallFrom]] = playerid;
+		SetPlayerAttachedObject(Calls[callid][CallFrom], 8, 330, 6);
+		SetPlayerSpecialAction(Calls[callid][CallFrom], SPECIAL_ACTION_USECELLPHONE);
+		PlayerInfo[playerid][pCallsAccepted]++;
+		GetPlayerPos(Calls[callid][CallFrom], fPos[0], fPos[1], fPos[2]);
+		SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 15.0);
+		
+		
+		Calls[callid][RespondingID] = playerid;
+		Calls[callid][BeingUsed] = 0;
+		Calls[callid][TimeToExpire] = 0;
+		strmid(Calls[callid][Area], "None", 0, 4, 4);
+		strmid(Calls[callid][MainZone], "None", 0, 4, 4);
+		strmid(Calls[callid][Description], "None", 0, 4, 4);
+		DeletePVar(Calls[callid][CallFrom], "Has911Call");
+
+	}
+	return 1;
 }
 
-CMD:ignorecall(playerid, params[])
-{
+IgnoreCall_Group(playerid, callid) {
+
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
-		new string[128], callid;
-		if(sscanf(params, "d", callid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ic [call #]");
+		new string[128];
 
 		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
 		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
@@ -441,6 +553,72 @@ CMD:ignorecall(playerid, params[])
 	return 1;
 }
 
+IgnoreCall_Business(playerid, callid) {
+
+	if(0 <= PlayerInfo[playerid][pBusiness] < MAX_BUSINESSES)
+	{
+		new string[128];
+
+		if(callid < 0 || callid > 999) return SendClientMessageEx(playerid, COLOR_GREY, "   Call number cannot be below 0 or above 999!");
+		if(Calls[callid][BeingUsed] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "   There is no pending call with that number!");
+		if(playerid == Calls[callid][CallFrom]) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't drop your own call!");
+		if(Calls[callid][Type] != 7) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot ignore this call!");
+		if(!IsPlayerConnected(Calls[callid][CallFrom]))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "   The caller has disconnected!");
+			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
+			Calls[callid][BeingUsed] = 0;
+			return 1;
+		}
+		for(new j; j < arrGroupData[PlayerInfo[playerid][pMember]][g_iJCount]; j++)
+		{
+			foreach(new i: Player)
+			{
+				if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iRadioAccess]) {
+					format(string, sizeof(string), "%s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, string);
+				}
+				if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == PlayerInfo[playerid][pMember]) {
+					format(string, sizeof(string), "(BE) %s has dropped %s's call.", GetPlayerNameEx(playerid), GetPlayerNameEx(Calls[callid][CallFrom]));
+					SendClientMessageEx(i, COLOR_DBLUE, string);
+				}
+			}	
+			DeletePVar(Calls[callid][CallFrom], "Has911Call");
+			Calls[callid][CallFrom] = INVALID_PLAYER_ID;
+			Calls[callid][BeingUsed] = 0;
+			Calls[callid][TimeToExpire] = 0;
+			strmid(Calls[callid][Area], "None", 0, 4, 4);
+			strmid(Calls[callid][MainZone], "None", 0, 4, 4);
+			strmid(Calls[callid][Description], "None", 0, 4, 4);
+			return 1;
+		}
+		return SendClientMessageEx(playerid, COLOR_GREY, "   This call is not within your jurisdiction!");
+	}
+	return 1;
+}
+
+
+CMD:acceptcall(playerid, params[])
+{	
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	SetPVarInt(playerid, "AC", 1);
+	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	return 1;
+}
+
+CMD:ic(playerid, params[])
+{
+	return cmd_ignorecall(playerid, params);
+}
+
+CMD:ignorecall(playerid, params[])
+{
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	SetPVarInt(playerid, "IC", 1);
+	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	return 1;
+}
+
 CMD:cancelcall(playerid, params[])
 {
     for(new i = 0; i < MAX_CALLS; i++)
@@ -454,10 +632,10 @@ CMD:cancelcall(playerid, params[])
 			strmid(Calls[i][MainZone], "None", 0, 4, 4);
 			strmid(Calls[i][Description], "None", 0, 4, 4);
 			DeletePVar(playerid, "Has911Call");
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your 911 call." );
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You have dropped your call." );
 		}
 	}
-	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending 911 calls.");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any pending calls.");
 	return 1;
 }
 
@@ -466,8 +644,8 @@ CMD:clearallcalls(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1) {
         new string[128];
         ClearCalls();
-        SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all pending 911 calls.");
-        format(string, sizeof(string), "AdmCmd: %s has cleared all pending 911 calls.", GetPlayerNameEx(playerid));
+        SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all pending calls.");
+        format(string, sizeof(string), "AdmCmd: %s has cleared all pending calls.", GetPlayerNameEx(playerid));
         ABroadCast(COLOR_LIGHTRED, string, 3);
     }
     else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");

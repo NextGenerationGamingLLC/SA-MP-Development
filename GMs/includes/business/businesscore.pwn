@@ -74,13 +74,6 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
   	{
   		case ITEM_CELLPHONE:
 		{
-			new randphone = 99999 + random(900000);
-			new query[128];
-			SetPVarInt(playerid, "WantedPh", randphone);
-			SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
-	        SetPVarInt(playerid, "PhChangeCost", 500);
-			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",randphone);
-			mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 2);
 			if(GetPVarInt(playerid, "pTut") == 5)
 			{
 				SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a phone.");
@@ -89,14 +82,14 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			}
 			if(PlayerInfo[playerid][pPnumber] == 0)
 			{
+				new randphone = 99999 + random(900000);
 				SetPVarInt(playerid, "WantedPh", randphone);
 				SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 		        SetPVarInt(playerid, "PhChangeCost", 500);
-				format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",randphone);
-				mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 2);
+				format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'", randphone);
+				mysql_function_query(MainPipeline, szMiscArray, true, "OnPhoneNumberCheck", "ii", playerid, 2);
 			}
 			Phone_PhoneColorMenu(playerid);
-			return 1;
 		}
   		case ITEM_PHONEBOOK:
 		{
@@ -510,17 +503,21 @@ stock RefreshBusinessPickup(i)
 	}
 	if(Businesses[i][bVW] == 0)	{
 
-		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], BUSINESS_BASE_VW + i);
-		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, BUSINESS_BASE_VW + i);
+		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], .worldid = BUSINESS_BASE_VW + i);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, .worldid = BUSINESS_BASE_VW + i);
 	}
 	else {
 
-		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], Businesses[i][bVW]);
-		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, Businesses[i][bVW]);
+		Businesses[i][bPickup_int] = CreateDynamicPickup(1559, 23, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], .worldid = Businesses[i][bVW]);
+		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 3.0, .worldid = Businesses[i][bVW]);
 	}
 
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, i);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, i);
+
+	format(szMiscArray, sizeof(szMiscArray), "[Business] Created Business: %d | Exterior Area ID: %d | Interior Area ID: %d", i, Businesses[i][bAreaID][0], Businesses[i][bAreaID][1]);
+	Log("debug/door_business.log", szMiscArray);
+
 }
 
 

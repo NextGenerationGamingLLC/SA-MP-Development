@@ -3253,139 +3253,139 @@ stock GetDynamicGiftBoxType(value)
 
 stock ShowPlayerDynamicGiftBox(playerid)
 {
-	new string[1024];
-	
-	format(string, sizeof(string), "{1B7A3C}Giftbox Settings{FFFFFF}");
+	szMiscArray[0] = 0;
+
+	szMiscArray = "{1B7A3C}Giftbox Settings{FFFFFF}";
 	if(dgVar[dgMoney][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Money", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Money", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Money", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Money", szMiscArray);
 	if(dgVar[dgRimKit][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Rimkit", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Rimkit", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Rimkit", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Rimkit", szMiscArray);
 	if(dgVar[dgFirework][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Firework", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Firework", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Firework", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Firework", szMiscArray);
 	if(dgVar[dgGVIP][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}7 Days Gold VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}7 Days Gold VIP", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}7 Days Gold VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}7 Days Gold VIP", szMiscArray);
 	if(dgVar[dgGVIPEx][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}1 Month Gold VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}1 Month Gold VIP", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}1 Month Gold VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}1 Month Gold VIP", szMiscArray);
 	if(dgVar[dgSVIP][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}7 Days Silver VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}7 Days Silver VIP", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}7 Days Silver VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}7 Days Silver VIP", szMiscArray);
 	if(dgVar[dgSVIPEx][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}1 Month Silver VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}1 Month Silver VIP", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}1 Month Silver VIP", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}1 Month Silver VIP", szMiscArray);
 	if(dgVar[dgCarSlot][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Car Slot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Car Slot", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Car Slot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Car Slot", szMiscArray);
 	if(dgVar[dgToySlot][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Toy Slot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Toy Slot", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Toy Slot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Toy Slot", szMiscArray);
 	if(dgVar[dgArmor][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Full Armor", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Full Armor", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Full Armor", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Full Armor", szMiscArray);
 	if(dgVar[dgFirstaid][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Firstaid", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Firstaid", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Firstaid", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Firstaid", szMiscArray);
 	if(dgVar[dgDDFlag][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Dynamic Door Flag", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Dynamic Door Flag", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Dynamic Door Flag", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Dynamic Door Flag", szMiscArray);
 	if(dgVar[dgGateFlag][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Dynamic Gate Flag", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Dynamic Gate Flag", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Dynamic Gate Flag", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Dynamic Gate Flag", szMiscArray);
 	if(dgVar[dgCredits][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Credits", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Credits", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Credits", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Credits", szMiscArray);
 	if(dgVar[dgPriorityAd][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Priority Ad", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Priority Ad", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Priority Ad", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Priority Ad", szMiscArray);
 	if(dgVar[dgHealthNArmor][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Health & Armor", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Health & Armor", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Health & Armor", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Health & Armor", szMiscArray);
 	if(dgVar[dgGiftReset][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Gift Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Gift Reset", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Gift Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Gift Reset", szMiscArray);
 	if(dgVar[dgMaterial][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Material", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Material", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Material", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Material", szMiscArray);
 	if(dgVar[dgWarning][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Warning", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Warning", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Warning", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Warning", szMiscArray);
 	if(dgVar[dgPot][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Pot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Pot", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Pot", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Pot", szMiscArray);
 	if(dgVar[dgCrack][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Crack", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Crack", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Crack", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Crack", szMiscArray);
 	if(dgVar[dgPaintballToken][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Paintball Token", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Paintball Token", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Paintball Token", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Paintball Token", szMiscArray);
 	if(dgVar[dgVIPToken][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}VIP Token", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}VIP Token", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}VIP Token", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}VIP Token", szMiscArray);
 	if(dgVar[dgRespectPoint][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Respect Point", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Respect Point", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Respect Point", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Respect Point", szMiscArray);
 	if(dgVar[dgCarVoucher][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Car Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Car Voucher", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Car Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Car Voucher", szMiscArray);
 	if(dgVar[dgBuddyInvite][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Buddy Invite", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Buddy Invite", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Buddy Invite", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Buddy Invite", szMiscArray);
 	if(dgVar[dgLaser][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Laser", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Laser", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Laser", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Laser", szMiscArray);
 	if(dgVar[dgCustomToy][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Custom Toy", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Custom Toy", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Custom Toy", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Custom Toy", szMiscArray);
 	if(dgVar[dgAdmuteReset][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Advertisement Mute Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Advertisement Mute Reset", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Advertisement Mute Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Advertisement Mute Reset", szMiscArray);
 	if(dgVar[dgNewbieMuteReset][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Newbie Mute Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Newbie Mute Reset", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Newbie Mute Reset", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Newbie Mute Reset", szMiscArray);
 	if(dgVar[dgRestrictedCarVoucher][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Restricted Car Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Restricted Car Voucher", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Restricted Car Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Restricted Car Voucher", szMiscArray);
 	if(dgVar[dgPlatinumVIPVoucher][0] == 1)
-		format(string, sizeof(string), "%s\n{00FF61}Platinum VIP Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Platinum VIP Voucher", szMiscArray);
 	else
-		format(string, sizeof(string), "%s\n{F2070B}Platinum VIP Voucher", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Platinum VIP Voucher", szMiscArray);
 		
-	return ShowPlayerDialog(playerid, DIALOG_GIFTBOX_VIEW, DIALOG_STYLE_LIST, "Dynamic Giftbox", string, "Select", "Close");
+	return ShowPlayerDialog(playerid, DIALOG_GIFTBOX_VIEW, DIALOG_STYLE_LIST, "Dynamic Giftbox", szMiscArray, "Select", "Close");
 }
 
 CMD:gifts(playerid, params[])
@@ -3395,16 +3395,15 @@ CMD:gifts(playerid, params[])
      	if(Gifts == 0)
      	{
            	Gifts = 1;
-           	new sString[41 + MAX_PLAYER_NAME];
-			format( sString, sizeof( sString ), "AdmCmd: %s has enabled the /gift command.", GetPlayerNameEx(playerid));
-			ABroadCast( COLOR_LIGHTRED, sString, 1337 );
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has enabled the /gift command.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_LIGHTRED, szMiscArray, 1337 );
 		}
 		else
 		{
 		    Gifts = 0;
-		    new sString[41 + MAX_PLAYER_NAME];
-	   		format( sString, sizeof( sString ), "AdmCmd: %s has disabled the /gift command.", GetPlayerNameEx(playerid));
-			ABroadCast( COLOR_LIGHTRED, sString, 1337 );
+		   
+	   		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has disabled the /gift command.", GetPlayerNameEx(playerid));
+			ABroadCast( COLOR_LIGHTRED, szMiscArray, 1337 );
 		}
 	}
 	return 1;
@@ -3412,27 +3411,23 @@ CMD:gifts(playerid, params[])
 
 CMD:vipgifts(playerid, params[])
 {
-	new string[128];
-
     if(PlayerInfo[playerid][pAdmin] >= 1338)
     {
      	if(VIPGifts == 0)
      	{
            	VIPGifts = 1;
-           	new sString[128];
-			format( sString, sizeof( sString ), "%s would like for you to come to Club VIP for free gifts and great times [20 minutes remains]", GetPlayerNameEx(playerid));
-			SendVIPMessage(COLOR_LIGHTGREEN, sString);
+			format(szMiscArray, sizeof(szMiscArray), "%s would like for you to come to Club VIP for free gifts and great times [20 minutes remains]", GetPlayerNameEx(playerid));
+			SendVIPMessage(COLOR_LIGHTGREEN, szMiscArray);
 			VIPGiftsTimeLeft = 20;
 			format(VIPGiftsName, sizeof(VIPGiftsName), "%s", GetPlayerNameEx(playerid));
 		}
 		else
 		{
 		    VIPGifts = 0;
-		    new sString[128];
-	   		format( sString, sizeof( sString ), "AdmCmd: %s has disabled the /getgift command early", GetPlayerNameEx(playerid));
-			ABroadCast( COLOR_LIGHTRED, sString, 1337 );
-			format(string, sizeof(string), "Club VIP is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
-			SendVIPMessage(COLOR_LIGHTGREEN, string);
+	   		format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has disabled the /getgift command early", GetPlayerNameEx(playerid));
+			ABroadCast( COLOR_LIGHTRED, szMiscArray, 1337 );
+			format(szMiscArray, sizeof(szMiscArray), "Club VIP is no longer giving away free gifts. Thanks for coming!", VIPGiftsName, VIPGiftsTimeLeft);
+			SendVIPMessage(COLOR_LIGHTGREEN, szMiscArray);
 			VIPGiftsTimeLeft = 0;
 		}
 	}
@@ -3450,10 +3445,9 @@ CMD:resetgift(playerid, params[])
 		{
 	   		if(PlayerInfo[giveplayerid][pGiftTime] > 0)
     		{
-				new string[128];
 	    	    PlayerInfo[giveplayerid][pGiftTime] = 0;
-	     	    format(string, sizeof(string), "%s's gift timer has been reset", GetPlayerNameEx(giveplayerid));
-	     	    SendClientMessageEx(playerid, COLOR_YELLOW, string);
+	     	    format(szMiscArray, sizeof(szMiscArray), "%s's gift timer has been reset", GetPlayerNameEx(giveplayerid));
+	     	    SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
    			}
    			else
    			{
@@ -3481,7 +3475,6 @@ CMD:giftnear(playerid, params[])
 			return 1;
 		}
 
-        new string[128];
         new count;
         foreach(new i: Player)
 		{
@@ -3494,8 +3487,8 @@ CMD:giftnear(playerid, params[])
 				}
 			}
 		}	
-        format(string, sizeof(string), "You have gifted everyone (%d) nearby.", count);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        format(szMiscArray, sizeof(szMiscArray), "You have gifted everyone (%d) nearby.", count);
+        SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
     }
     return 1;
 }
@@ -3504,9 +3497,8 @@ CMD:resetgiftall(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1338)
 	{
-		new string[128];
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has reset everyone's gift timer.", GetPlayerNameEx(playerid));
-		ABroadCast(COLOR_YELLOW, string, 2);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has reset everyone's gift timer.", GetPlayerNameEx(playerid));
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 		foreach(new i: Player)
 		{
 			PlayerInfo[i][pGiftTime] = 0;
@@ -3552,9 +3544,8 @@ CMD:giftall(playerid, params[])
     {
     	if(GiftAllowed || PlayerInfo[playerid][pAdmin] >= 99999)
      	{
-			new string[128];
-      		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just sent a gift to all players.", GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_YELLOW, string, 2);
+      		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has just sent a gift to all players.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 			GiftAllowed = 0;
 			foreach(new i: Player)
 			{
@@ -3576,9 +3567,8 @@ CMD:giftreset(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giftreset [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	if(PlayerInfo[giveplayerid][pGiftTime] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "This player is already able to receive a gift.");
-	new string[128];
-	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has reset %s's gift timer.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	ABroadCast(COLOR_YELLOW, string, 2);
+	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has reset %s's gift timer.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	PlayerInfo[giveplayerid][pGiftTime] = 0;
 	return 1;
 }
@@ -3587,7 +3577,7 @@ CMD:setcode(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
-		new code[32], string[128], bypass;
+		new code[32], bypass;
 		if (sscanf(params, "s[32]d", code, bypass))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setcode <code> <bypass 0/1>");
@@ -3608,14 +3598,14 @@ CMD:setcode(playerid, params[])
 
 		if (strcmp(code, "off") == 0)
 		{
-			format(string, sizeof(string), "You have disabled the gift code.");
+			format(szMiscArray, sizeof(szMiscArray), "You have disabled the gift code.");
 		}
 		else
 		{
-			format(string, sizeof(string), "You have set the gift code to \"%s\".", code);
+			format(szMiscArray, sizeof(szMiscArray), "You have set the gift code to \"%s\".", code);
 		}
 
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else
 	{

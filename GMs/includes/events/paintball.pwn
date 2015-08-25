@@ -47,7 +47,7 @@ IsPlayerInArea(playerid, Float:minx, Float:maxx, Float:miny, Float:maxy)
 
 stock PaintballEditMenu(playerid)
 {
-	new string[1024], status[64];
+	new status[64];
 	for(new i = 0; i < MAX_ARENAS; i++)
 	{
 	    if(PaintBallArena[i][pbLocked] == 0)
@@ -66,85 +66,89 @@ stock PaintballEditMenu(playerid)
  	    {
  	        format(status,sizeof(status),"Setup");
  	    }
-		format(string,sizeof(string),"%s%s - \t(%s)\n",string,PaintBallArena[i][pbArenaName],status);
+		format(szMiscArray,sizeof(szMiscArray),"%s%s - \t(%s)\n",szMiscArray,PaintBallArena[i][pbArenaName],status);
 	}
-	ShowPlayerDialog(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",string,"Select","Back");
+	ShowPlayerDialog(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",szMiscArray,"Select","Back");
 }
 
 stock PaintballEditArenaMenu(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
-	new string[1024];
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
+
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	format(string,sizeof(string),"Edit Arena Name - (%s)\nEdit Deathmatch Positions...\nEdit Team Positions...\nEdit Flag Positions...\nEdit Hill Position...\nHill Radius (%f)\nInterior (%d)\nVirtual World (%d)\nWar Vehicle 1\nWar Vehicle 2\nWar Vehicle 3\nWar Vehicle 4\nWar Vehicle 5\nWar Vehicle 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
-	ShowPlayerDialog(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",string,"Select","Back");
+	format(szMiscArray,sizeof(szMiscArray),"Edit Arena Name - (%s)\nEdit Deathmatch Positions...\nEdit Team Positions...\nEdit Flag Positions...\nEdit Hill Position...\nHill Radius (%f)\nInterior (%d)\nVirtual World (%d)\nWar Vehicle 1\nWar Vehicle 2\nWar Vehicle 3\nWar Vehicle 4\nWar Vehicle 5\nWar Vehicle 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
+	ShowPlayerDialog(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",szMiscArray,"Select","Back");
 	return 1;
 }
 
 stock PaintballEditArenaName(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
-	new string[128];
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
+
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
-	format(string,sizeof(string),"Enter a new Arena Name for Arena Slot %d:",arenaid);
-	ShowPlayerDialog(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",string,"Change","Back");
+	format(szMiscArray,sizeof(szMiscArray),"Enter a new Arena Name for Arena Slot %d:",arenaid);
+	ShowPlayerDialog(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",szMiscArray,"Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaDMSpawns(playerid)
 {
-    if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+    if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena DM Spawns:","Deathmatch Spawn 1\nDeathmatch Spawn 2\nDeathmatch Spawn 3\nDeathmatch Spawn 4","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaTeamSpawns(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Team Spawns:","Red Team Spawn 1\nRed Team Spawn 2\nRed Team Spawn 3\nBlue Team Spawn 1\nBlue Team Spawn 2\nBlue Team Spawn 3","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaFlagSpawns(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Flag Spawns:","Red Team Flag\nBlue Team Flag","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaInt(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Interior:","Please enter a new interior id to place on the Arena:","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaVW(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Virtual World:","Please enter a new virtual world id to place on the Arena:","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaHillRadius(playerid)
 {
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) { return 1; }
+	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
 	ShowPlayerDialog(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Hill Radius:","Please enter a new hill radius for the Arena:","Change","Back");
 	return 1;
 }
 
 stock PaintballScoreboard(playerid, arenaid)
 {
-	if(!GetPVarType(playerid, "IsInArena")) { return 1; }
+	szMiscArray[0] = 0;
+	
+	if(!GetPVarType(playerid, "IsInArena")) return 1;
+
 	new titlestring[128];
-	new string[2048];
+
  	foreach(new p: Player)
 	{
-		if(GetPVarInt(p, "IsInArena") == arenaid)
+		if(!GetPVarType(p, "IsInArena")) continue;
+		if(GetPVarType(p, "IsInArena") == arenaid)
 		{
 			if(PaintBallArena[arenaid][pbGameType] == 1)
 			{
-				format(string,sizeof(string),"%s(ID: %d) %s - (Kills: %d) (Deaths: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],PlayerInfo[p][pDeaths],GetPlayerPing(p));
+				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Kills: %d) (Deaths: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],PlayerInfo[p][pDeaths],GetPlayerPing(p));
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3)
 			{
@@ -152,17 +156,17 @@ stock PaintballScoreboard(playerid, arenaid)
 				{
 					case 1: // Red Team
 					{
-						format(string,sizeof(string),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 					case 2: // Blue Team
 					{
-						format(string,sizeof(string),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 				}
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 4)
 			{
-				format(string,sizeof(string),"%s(ID: %d) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+				format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 			}
 			if(PaintBallArena[arenaid][pbGameType] == 5)
 			{
@@ -170,11 +174,11 @@ stock PaintballScoreboard(playerid, arenaid)
 				{
 					case 1: // Red Team
 					{
-						format(string,sizeof(string),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({FF0000}Red Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 					case 2: // Blue Team
 					{
-						format(string,sizeof(string),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", string, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
+						format(szMiscArray,sizeof(szMiscArray),"%s(ID: %d) ({0000FF}Blue Team{FFFFFF}) %s - (Points: %d) (Ping: %d)\n", szMiscArray, p, GetPlayerNameEx(p),PlayerInfo[p][pKills],GetPlayerPing(p));
 					}
 				}
 			}
@@ -206,13 +210,13 @@ stock PaintballScoreboard(playerid, arenaid)
 		    format(titlestring,sizeof(titlestring),"(TKOTH) Scoreboard - Red: (%d) - Blue: (%d) - Time Left (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
 		}
 	}
-	ShowPlayerDialog(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,string,"Update","Close");
+	ShowPlayerDialog(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,szMiscArray,"Update","Close");
 	return 1;
 }
 
 stock PaintballArenaSelection(playerid)
 {
-	new string[2048], status[64], gametype[64], eperm[64], war[32], limit, count, money;
+	new status[64], gametype[64], eperm[64], war[32], limit, count, money;
  	for(new i = 0; i < MAX_ARENAS; i++) if(!isnull(PaintBallArena[i][pbArenaName]))
  	{
  	    limit = PaintBallArena[i][pbLimit];
@@ -277,26 +281,25 @@ stock PaintballArenaSelection(playerid)
 
 		if(!strcmp(PaintBallArena[i][pbPassword], "None", false))
 		{
- 	    	format(string,sizeof(string),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s\n",string,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
+ 	    	format(szMiscArray,sizeof(szMiscArray),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s\n",szMiscArray,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
 		}
 		else
 		{
-		    format(string,sizeof(string),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s (PW)\n",string,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
+		    format(szMiscArray,sizeof(szMiscArray),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s (PW)\n",szMiscArray,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
 		}
 	}
-	ShowPlayerDialog(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",string,"Select","Back");
+	ShowPlayerDialog(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",szMiscArray,"Select","Back");
 }
 
 stock PaintballTokenBuyMenu(playerid)
 {
-	new string[150];
-	format(string,sizeof(string),"{FFFFFF}How many Paintball Tokens do you wish to purchase?\n\nEach token costs a total of $%d. You currently have {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
-	ShowPlayerDialog(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",string,"Buy","Back");
+	format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}How many Paintball Tokens do you wish to purchase?\n\nEach token costs a total of $%d. You currently have {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
+	ShowPlayerDialog(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",szMiscArray,"Buy","Back");
 }
 
 stock PaintballSetupArena(playerid)
 {
-	new string[1024], gametype[32], password[64], wepname1[128], wepname2[128], wepname3[128], eperm[64], finstagib[64], fnoweapons[64], war[32];
+	new gametype[32], password[64], wepname1[128], wepname2[128], wepname3[128], eperm[64], finstagib[64], fnoweapons[64], war[32];
 	new timelimit, limit, money, Float:health, Float:armor, wep1, wep2, wep3;
 	new a = GetPVarInt(playerid, "ArenaNumber");
 
@@ -374,47 +377,45 @@ stock PaintballSetupArena(playerid)
 	{
 	    case 1:
 	    {
-	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 2:
 	    {
-	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 3:
 	    {
-	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nFlag Instagib - (%s)\nFlag No Weapons - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war,finstagib,fnoweapons);
+	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nFlag Instagib - (%s)\nFlag No Weapons - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war,finstagib,fnoweapons);
 	    }
 	    case 4:
 	    {
-	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	    case 5:
 	    {
-	        format(string,sizeof(string),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
+	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	}
-	ShowPlayerDialog(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",string,"Select","Leave");
+	ShowPlayerDialog(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",szMiscArray,"Select","Leave");
 }
 
 stock PaintballSwitchTeam(playerid)
 {
 	new arenaid = GetPVarInt(playerid, "IsInArena");
 	new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
-	new string[128];
-	format(string,sizeof(string),"{FF0000}Red Team (%d/%d)\n{0000FF}Blue Team (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
-	ShowPlayerDialog(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:",string,"Switch","Cancel");
+	format(szMiscArray, sizeof(szMiscArray),"{FF0000}Red Team (%d/%d)\n{0000FF}Blue Team (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
+	ShowPlayerDialog(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:", szMiscArray,"Switch","Cancel");
 }
 
 stock InitPaintballArenas()
 {
-    new string[64];
 	for(new i = 0; i < MAX_ARENAS; i++)
 	{
-	    format(string, sizeof(string), "Unoccupied");
-		strmid(PaintBallArena[i][pbOwner], string, 0, strlen(string), 64);
+	    format(szMiscArray, sizeof(szMiscArray), "Unoccupied");
+		strmid(PaintBallArena[i][pbOwner], szMiscArray, 0, strlen(szMiscArray), 64);
 
-		format(string, sizeof(string), "None");
-		strmid(PaintBallArena[i][pbPassword], string, 0, strlen(string), 64);
+		format(szMiscArray, sizeof(szMiscArray), "None");
+		strmid(PaintBallArena[i][pbPassword], szMiscArray, 0, strlen(szMiscArray), 64);
 
 	    PaintBallArena[i][pbGameType] = 1;
   		PaintBallArena[i][pbActive] = 0;
@@ -445,12 +446,10 @@ stock InitPaintballArenas()
 
 stock ResetPaintballArena(arenaid)
 {
-	new string[64];
-
-	format(string, sizeof(string), "Unoccupied");
-	strmid(PaintBallArena[arenaid][pbOwner], string, 0, strlen(string), 64);
-	format(string, sizeof(string), "None");
-	strmid(PaintBallArena[arenaid][pbPassword], string, 0, strlen(string), 64);
+	format(szMiscArray, sizeof(szMiscArray), "Unoccupied");
+	strmid(PaintBallArena[arenaid][pbOwner], szMiscArray, 0, strlen(szMiscArray), 64);
+	format(szMiscArray, sizeof(szMiscArray), "None");
+	strmid(PaintBallArena[arenaid][pbPassword], szMiscArray, 0, strlen(szMiscArray), 64);
 
 	if(PaintBallArena[arenaid][pbGameType] == 3) {
 	    if(PaintBallArena[arenaid][pbFlagRedActive] == 1) {
@@ -539,10 +538,13 @@ stock SortWinnerPaintballScores(arenaid)
 	new highscore = 0;
 	new score = 0;
 	new winnerid;
+
 	for(new i = 0; i < PaintBallArena[arenaid][pbLimit]; i++) {
+	   
 	    foreach(new p: Player)
 		{	
-			if(GetPVarInt(p, "IsInArena") == arenaid) {
+			if(!GetPVarType(p, "IsInArena")) continue;
+			if(GetPVarType(p, "IsInArena") == arenaid) {
 				score = PlayerInfo[p][pKills];
 				if(score > highscore) {
 					highscore = score;
@@ -558,6 +560,7 @@ stock SendPaintballArenaTextMessage(arenaid, style, message[])
 {
 	foreach(new p: Player)
 	{	
+		if(!GetPVarType(p, "IsInArena")) continue;
 		new carenaid = GetPVarInt(p, "IsInArena");
 		if(arenaid == carenaid) {
 			GameTextForPlayer(p, message, 5000, style);
@@ -569,7 +572,8 @@ stock SendPaintballArenaTextMessage(arenaid, style, message[])
 stock SendPaintballArenaMessage(arenaid, color, message[])
 {
 	foreach(new p: Player)
-	{	
+	{
+		if(!GetPVarType(p, "IsInArena")) continue;
 		new carenaid = GetPVarInt(p, "IsInArena");
 		if(arenaid == carenaid) {
 			SendClientMessageEx(p, color, message);
@@ -577,6 +581,7 @@ stock SendPaintballArenaMessage(arenaid, color, message[])
 	}	
 	return 1;
 }
+
 /*
 stock SendPaintballArenaSound(arenaid, soundid)
 {
@@ -656,7 +661,6 @@ stock ResetFlagPaintballArena(arenaid, flagid)
 
 stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 {
-	new string[128];
 	switch(flagid)
 	{
 	    case 1: // Red Flag
@@ -678,8 +682,8 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	        PaintBallArena[arenaid][pbFlagRedActive] = 0;
 	        PaintBallArena[arenaid][pbTeamBlueScores]++;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Team ~w~Scores!");
-			format(string,sizeof(string),"[Paintball Arena] %s has scored for the Blue Team!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has scored for the Blue Team!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, PaintBallArena[arenaid][pbFlagRedSpawn][0], PaintBallArena[arenaid][pbFlagRedSpawn][1], PaintBallArena[arenaid][pbFlagRedSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
 	        PaintBallArena[arenaid][pbFlagRedPos][0] = PaintBallArena[arenaid][pbFlagRedSpawn][0];
@@ -705,8 +709,8 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 	        PaintBallArena[arenaid][pbFlagBlueActive] = 0;
 	        PaintBallArena[arenaid][pbTeamRedScores]++;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Team ~w~Scores!");
-			format(string,sizeof(string),"[Paintball Arena] %s has scored for the Red Team!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has scored for the Red Team!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, PaintBallArena[arenaid][pbFlagBlueSpawn][0], PaintBallArena[arenaid][pbFlagBlueSpawn][1], PaintBallArena[arenaid][pbFlagBlueSpawn][2], 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 
 	        PaintBallArena[arenaid][pbFlagBluePos][0] = PaintBallArena[arenaid][pbFlagBlueSpawn][0];
@@ -718,7 +722,6 @@ stock ScoreFlagPaintballArena(playerid, arenaid, flagid)
 
 stock DropFlagPaintballArena(playerid, arenaid, flagid)
 {
-	new string[128];
 	new Float:X, Float:Y, Float:Z;
 	GetPlayerPos(playerid, X, Y, Z);
 	RemovePlayerAttachedObject(playerid, GetPVarInt(playerid, "AOSlotPaintballFlag"));
@@ -731,8 +734,8 @@ stock DropFlagPaintballArena(playerid, arenaid, flagid)
   			////SendPaintballArenaAudio(arenaid, 28, 100);
 	        PaintBallArena[arenaid][pbFlagRedActive] = 1;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Flag ~w~Dropped!");
-			format(string,sizeof(string),"[Paintball Arena] %s has dropped the Red Flag!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has dropped the Red Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagRedID] = CreateDynamicObject(RED_FLAG_OBJ, X, Y, Z, 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 	        PaintBallArena[arenaid][pbFlagRedTextID] = Create3DTextLabel("Red Flag", COLOR_RED, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], 0);
 	        //PaintBallArena[arenaid][pbFlagRedTextID] = CreateDynamic3DTextLabel("Red Flag", COLOR_RED, X, Y, Z, 200.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
@@ -747,8 +750,8 @@ stock DropFlagPaintballArena(playerid, arenaid, flagid)
 	        ////SendPaintballArenaAudio(arenaid, 10, 100);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = 1;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Flag ~w~Dropped!");
-			format(string,sizeof(string),"[Paintball Arena] %s has dropped the Blue Flag!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has dropped the Blue Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        PaintBallArena[arenaid][pbFlagBlueID] = CreateDynamicObject(BLUE_FLAG_OBJ, X, Y, Z, 0.0, 0.0, 0.0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior], -1);
 	        PaintBallArena[arenaid][pbFlagBlueTextID] = Create3DTextLabel("Blue Flag", COLOR_DBLUE, X, Y, Z, 200.0, PaintBallArena[arenaid][pbVirtual], 0);
 	        //PaintBallArena[arenaid][pbFlagBlueTextID] = CreateDynamic3DTextLabel("Blue Flag", COLOR_DBLUE, X, Y, Z, 200.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, PaintBallArena[arenaid][pbVirtual], PaintBallArena[arenaid][pbInterior]);
@@ -763,7 +766,6 @@ stock DropFlagPaintballArena(playerid, arenaid, flagid)
 
 stock PickupFlagPaintballArena(playerid, arenaid, flagid)
 {
-	new string[128];
 	new index = -1;
     if(GetPlayerState(playerid) == PLAYER_STATE_WASTED) { return 1; }
 	switch(flagid)
@@ -778,8 +780,8 @@ stock PickupFlagPaintballArena(playerid, arenaid, flagid)
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 30, 100);
 	        PaintBallArena[arenaid][pbFlagRedActive] = -1;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~r~Red Flag ~w~Taken!");
-			format(string,sizeof(string),"[Paintball Arena] %s has taken the Red Flag!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has taken the Red Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        //SetTimerEx("//SendAudioToPlayer", 1500, false, "iii", playerid, 42, 100);
 			index = FindFreeAttachedObjectSlot(playerid);
 			if(index == -1) { RemovePlayerAttachedObject(playerid, 4), index = 4; }
@@ -796,8 +798,8 @@ stock PickupFlagPaintballArena(playerid, arenaid, flagid)
 	        //SetTimerEx("//SendPaintballArenaAudio", 250, false, "iii", arenaid, 12, 100);
 	        PaintBallArena[arenaid][pbFlagBlueActive] = -1;
 	        SendPaintballArenaTextMessage(arenaid, 5, "~b~Blue Flag ~w~Taken!");
-			format(string,sizeof(string),"[Paintball Arena] %s has taken the Blue Flag!", GetPlayerNameEx(playerid));
-	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, string);
+			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has taken the Blue Flag!", GetPlayerNameEx(playerid));
+	        SendPaintballArenaMessage(arenaid, COLOR_YELLOW, szMiscArray);
 	        //SetTimerEx("//SendAudioToPlayer", 1500, false, "iii", playerid, 42, 100);
 			index = FindFreeAttachedObjectSlot(playerid);
 			if(index == -1) { RemovePlayerAttachedObject(playerid, 4), index = 4; }
@@ -910,7 +912,6 @@ stock SpawnPaintballArena(playerid, arenaid)
 
 stock JoinPaintballArena(playerid, arenaid, password[])
 {
-	new string[128];
 	new name[MAX_PLAYER_NAME];
 	GetPlayerName(playerid,name,sizeof(name));
 
@@ -956,8 +957,8 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 	{
 	    case 0: // No Team
 	    {
-	        format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena!", name);
-	        SendPaintballArenaMessage(arenaid,COLOR_WHITE,string);
+	        format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena!", name);
+	        SendPaintballArenaMessage(arenaid,COLOR_WHITE,szMiscArray);
 	        //SendAudioToPlayer(playerid, 27, 100);
 	    }
 	    case 1: // Red Team
@@ -967,8 +968,8 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 		        SendClientMessageEx(playerid, COLOR_WHITE, "Red team is currently full, sending you to the Blue team.");
 		        PlayerInfo[playerid][pPaintTeam] = 2;
 		    	PaintBallArena[arenaid][pbTeamBlue]++;
-		    	format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
-		       	SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,string);
+		    	format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+		       	SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
 		       	//SendAudioToPlayer(playerid, 40, 100);
 		    }
 		    else
@@ -978,16 +979,16 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 		            SendClientMessageEx(playerid, COLOR_WHITE, "Teams are currently un-even, sending you to the Blue team.");
 		        	PlayerInfo[playerid][pPaintTeam] = 2;
 		    		PaintBallArena[arenaid][pbTeamBlue]++;
-		    		format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
-		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,string);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
 		       		//SendAudioToPlayer(playerid, 40, 100);
 		        }
 		        else
 		        {
 		        	PlayerInfo[playerid][pPaintTeam] = 1;
 		    		PaintBallArena[arenaid][pbTeamRed]++;
-		    		format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
-		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,string);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+		       		SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
 		       		//SendAudioToPlayer(playerid, 41, 100);
 				}
 		    }
@@ -999,8 +1000,8 @@ stock JoinPaintballArena(playerid, arenaid, password[])
       			SendClientMessageEx(playerid, COLOR_WHITE, "Blue team is currently full, sending you to the Red team.");
 	        	PlayerInfo[playerid][pPaintTeam] = 1;
 	    		PaintBallArena[arenaid][pbTeamRed]++;
-	    		format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
-      			SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,string);
+	    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+      			SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
       			//SendAudioToPlayer(playerid, 41, 100);
 		    }
 	    	else
@@ -1010,16 +1011,16 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 		            SendClientMessageEx(playerid, COLOR_WHITE, "Teams are currently un-even, sending you to the Red team.");
 	        		PlayerInfo[playerid][pPaintTeam] = 1;
 	    			PaintBallArena[arenaid][pbTeamRed]++;
-	    			format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
-      				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,string);
+	    			format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Red Team!", name);
+      				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_RED,szMiscArray);
       				//SendAudioToPlayer(playerid, 41, 100);
 		        }
 		        else
 		        {
       				PlayerInfo[playerid][pPaintTeam] = 2;
 	    			PaintBallArena[arenaid][pbTeamBlue]++;
-		    		format(string,sizeof(string),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
-      				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,string);
+		    		format(szMiscArray,sizeof(szMiscArray),"[Paintball Arena] %s has joined the Paintball Arena on the Blue Team!", name);
+      				SendPaintballArenaMessage(arenaid,PAINTBALL_TEAM_BLUE,szMiscArray);
       				//SendAudioToPlayer(playerid, 40, 100);
 				}
 		    }
@@ -1048,15 +1049,15 @@ stock JoinPaintballArena(playerid, arenaid, password[])
 
 stock LeavePaintballArena(playerid, arenaid)
 {
+	if(!GetPVarType(playerid, "IsInArena")) return 1;
 	if(arenaid == GetPVarInt(playerid, "IsInArena"))
 	{
-	    new string[128];
 	    new name[MAX_PLAYER_NAME];
 	    GetPlayerName(playerid, name, sizeof(name));
 
 		if(arenaid == GetPVarInt(playerid, "ArenaNumber"))
 		{
-		    SetPVarInt(playerid, "ArenaNumber", -1);
+		    DeletePVar(playerid, "ArenaNumber");
 		}
 		DeletePVar(playerid, "IsInArena");
 
@@ -1091,8 +1092,8 @@ stock LeavePaintballArena(playerid, arenaid)
 		PaintBallArena[arenaid][pbPlayers]--;
 		if(PaintBallArena[arenaid][pbTimeLeft] > 30)
 		{
-			format(string,sizeof(string),"[Paintball Arena] %s has left the Paintball Arena!", name);
-			SendPaintballArenaMessage(arenaid, COLOR_WHITE, string);
+			format(szMiscArray, sizeof(szMiscArray),"[Paintball Arena] %s has left the Paintball Arena!", name);
+			SendPaintballArenaMessage(arenaid, COLOR_WHITE, szMiscArray);
 		}
 		if(PaintBallArena[arenaid][pbPlayers] == 0)
 		{
@@ -1114,12 +1115,13 @@ stock LeavePaintballArena(playerid, arenaid)
         DeletePVar(playerid, "pbTeamChoice");
 		Player_StreamPrep(playerid, GetPVarFloat(playerid, "pbOldX"), GetPVarFloat(playerid, "pbOldY"), GetPVarFloat(playerid, "pbOldZ"), FREEZE_TIME);
 	}
+	return 1;
 }
 
 forward TickCTF(playerid);
 public TickCTF(playerid)
 {
-	if(GetPVarInt(playerid, "IsInArena"))
+	if(GetPVarType(playerid, "IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 	    if(PaintBallArena[arenaid][pbGameType] == 3)
@@ -1262,7 +1264,7 @@ public TickCTF(playerid)
 forward TickKOTH(playerid);
 public TickKOTH(playerid)
 {
-	if(GetPVarInt(playerid, "IsInArena"))
+	if(GetPVarType(playerid, "IsInArena"))
 	{
 	    new arenaid = GetPVarInt(playerid, "IsInArena");
 
@@ -1363,6 +1365,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							foreach(new p: Player)
 							{
+								if(!GetPVarType(p, "IsInArena")) continue;
 								new arenaid = GetPVarInt(p, "IsInArena");
 								if(arenaid == i)
 								{
@@ -1586,12 +1589,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				if(GetPVarInt(playerid, "ArenaNumber") != -1)
+				if(GetPVarType(playerid, "ArenaNumber"))
 				{
 					SetPlayerPos(playerid, GetPVarFloat(playerid, "pbOldX"),GetPVarFloat(playerid, "pbOldY"),GetPVarFloat(playerid, "pbOldZ"));
 					SetPlayerInterior(playerid, GetPVarInt(playerid, "pbOldInt"));
 					SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "pbOldVW"));
-					SetPVarInt(playerid, "ArenaNumber", -1);
+					DeletePVar(playerid, "ArenaNumber");
 					Player_StreamPrep(playerid, GetPVarFloat(playerid, "pbOldX"),GetPVarFloat(playerid, "pbOldY"),GetPVarFloat(playerid, "pbOldZ"), FREEZE_TIME);
 				}
 				PaintballEditMenu(playerid);
@@ -2829,38 +2832,38 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
 				{
 					PaintballArenaSelection(playerid);
-					SetPVarInt(playerid, "ArenaEnterPass", -1);
-					SetPVarInt(playerid, "pbTeamChoice", 0);
+					DeletePVar(playerid, "ArenaEnterPass");
+					DeletePVar(playerid, "pbTeamChoice");
 					return 1;
 				}
 				if(isnull(inputtext))
 				{
 					PaintballArenaSelection(playerid);
-					SetPVarInt(playerid, "ArenaEnterPass", -1);
-					SetPVarInt(playerid, "pbTeamChoice", 0);
+					DeletePVar(playerid, "ArenaEnterPass");
+					DeletePVar(playerid, "pbTeamChoice");
 					return 1;
 				}
 				if(strcmp(PaintBallArena[arenaid][pbPassword], inputtext, false))
 				{
 					PaintballArenaSelection(playerid);
-					SetPVarInt(playerid, "ArenaEnterPass", -1);
-					SetPVarInt(playerid, "pbTeamChoice", 0);
+					DeletePVar(playerid, "ArenaEnterPass");
+					DeletePVar(playerid, "pbTeamChoice");
 					return 1;
 				}
 				if(JoinPaintballArena(playerid,arenaid,inputtext))
 				{
-					SetPVarInt(playerid, "ArenaEnterPass", -1);
+					DeletePVar(playerid, "ArenaEnterPass");
 				}
 				else
 				{
 					PaintballArenaSelection(playerid);
-					SetPVarInt(playerid, "pbTeamChoice", 0);
+					DeletePVar(playerid, "pbTeamChoice");
 				}
 			}
 			else
 			{
 				PaintballArenaSelection(playerid);
-				SetPVarInt(playerid, "pbTeamChoice", 0);
+				DeletePVar(playerid, "pbTeamChoice");
 			}
 		}
 		case PBSWITCHTEAM:
@@ -2941,7 +2944,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PaintBallArena[arenaid][pbPlayers] >= PaintBallArena[arenaid][pbLimit])
 				{
 					PaintballArenaSelection(playerid);
-					SetPVarInt(playerid, "ArenaEnterTeam", -1);
+					DeletePVar(playerid, "ArenaEnterTeam");
 					return 1;
 				}
 				switch(listitem)
@@ -3025,11 +3028,10 @@ CMD:unlockarenas(playerid, params[])
             ResetPaintballArena(i);
         }
     }
-    new string[128];
-    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Paintball Arenas.", GetPlayerNameEx(playerid));
-    ABroadCast(COLOR_YELLOW, string, 2);
-    format(string, sizeof(string), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked all Paintball Arenas.", GetPlayerNameEx(playerid));
+    ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+    format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
     return 1;
 }
 
@@ -3039,16 +3041,18 @@ CMD:lockarenas(playerid, params[])
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
         return 1;
     }
-    new string[128];
+
     for(new i = 0; i < MAX_ARENAS; i++) {
-        foreach(new p: Player)
-		{		
+
+        foreach(new p: Player) {
+
+			if(!GetPVarType(p, "IsInArena")) continue;
 			new arenaid = GetPVarInt(p, "IsInArena");
 			if(arenaid == i) {
 				if(PaintBallArena[arenaid][pbBidMoney] > 0) {
 					GivePlayerCash(p,PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
-					SendClientMessageEx(p, COLOR_WHITE, string);
+					format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[GetPVarInt(p, "IsInArena")][pbBidMoney]);
+					SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 				}
 				if(arenaid == GetPVarInt(p, "ArenaNumber")) {
 					switch(PaintBallArena[arenaid][pbGameType]) {
@@ -3056,40 +3060,40 @@ CMD:lockarenas(playerid, params[])
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 3;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 							}
 						}
 						case 2:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 4;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 							}
 						}
 						case 3:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 							}
 						}
 						case 4:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 5;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 							}
 						}
 						case 5:
 						{
 							if(PlayerInfo[p][pDonateRank] < 3) {
 								PlayerInfo[p][pPaintTokens] += 6;
-								format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-								SendClientMessageEx(p, COLOR_WHITE, string);
+								format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+								SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 							}
 						}
 					}
@@ -3100,10 +3104,10 @@ CMD:lockarenas(playerid, params[])
         ResetPaintballArena(i);
         PaintBallArena[i][pbLocked] = 2;
     }
-    format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked all Paintball Arenas.", GetPlayerNameEx(playerid));
-    ABroadCast(COLOR_YELLOW, string, 2);
-    format(string, sizeof(string), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
-    SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked all Paintball Arenas.", GetPlayerNameEx(playerid));
+    ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+    format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
+    SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
     return 1;
 }
 
@@ -3114,11 +3118,10 @@ CMD:savedmpos(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any spawn positions.");
             return 1;
         }
-        if(GetPVarInt(playerid, "ArenaNumber") == -1) {
+        if(!GetPVarType(playerid, "ArenaNumber")) {
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
             return 1;
         }
-        new string[128];
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
         new dmposid = GetPVarInt(playerid, "EditingDMPos");
         new Float:x, Float: y, Float: z, Float: angle;
@@ -3133,9 +3136,9 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch1][2] = z;
                 PaintBallArena[arenaid][pbDeathmatch1][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 1.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
                 PaintballEditArenaDMSpawns(playerid);
@@ -3147,9 +3150,9 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch2][2] = z;
                 PaintBallArena[arenaid][pbDeathmatch2][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 2.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
                 PaintballEditArenaDMSpawns(playerid);
@@ -3161,9 +3164,9 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch3][2] = z;
                 PaintBallArena[arenaid][pbDeathmatch3][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 3.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
                 PaintballEditArenaDMSpawns(playerid);
@@ -3175,9 +3178,9 @@ CMD:savedmpos(playerid, params[])
                 PaintBallArena[arenaid][pbDeathmatch4][2] = z;
                 PaintBallArena[arenaid][pbDeathmatch4][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited DM Spawn Position 4.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingDMPos", 0);
                 PaintballEditArenaDMSpawns(playerid);
@@ -3198,11 +3201,10 @@ CMD:saveteampos(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any spawn positions.");
             return 1;
         }
-        if(GetPVarInt(playerid, "ArenaNumber") == -1) {
+        if(!GetPVarType(playerid, "ArenaNumber")) {
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
             return 1;
         }
-        new string[128];
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
         new teamposid = GetPVarInt(playerid, "EditingTeamPos");
         new Float:x, Float: y, Float: z, Float: angle;
@@ -3217,9 +3219,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed1][2] = z;
                 PaintBallArena[arenaid][pbTeamRed1][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 1.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3231,9 +3233,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed2][2] = z;
                 PaintBallArena[arenaid][pbTeamRed2][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 2.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3245,9 +3247,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamRed3][2] = z;
                 PaintBallArena[arenaid][pbTeamRed3][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Spawn Position 3.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3259,9 +3261,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue1][2] = z;
                 PaintBallArena[arenaid][pbTeamBlue1][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 1.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3273,9 +3275,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue2][2] = z;
                 PaintBallArena[arenaid][pbTeamBlue2][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 2.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3287,9 +3289,9 @@ CMD:saveteampos(playerid, params[])
                 PaintBallArena[arenaid][pbTeamBlue3][2] = z;
                 PaintBallArena[arenaid][pbTeamBlue3][3] = angle;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f, Angle=%f",x,y,z,angle);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Spawn Position 3.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingTeamPos", 0);
                 PaintballEditArenaTeamSpawns(playerid);
@@ -3310,11 +3312,10 @@ CMD:saveflagpos(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any flag positions.");
             return 1;
         }
-        if(GetPVarInt(playerid, "ArenaNumber") == -1) {
+        if(!GetPVarType(playerid, "ArenaNumber")) {
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
             return 1;
         }
-        new string[128];
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
         new flagposid = GetPVarInt(playerid, "EditingFlagPos");
         new Float:x, Float: y, Float: z;
@@ -3327,9 +3328,9 @@ CMD:saveflagpos(playerid, params[])
                 PaintBallArena[arenaid][pbFlagRedSpawn][1] = y;
                 PaintBallArena[arenaid][pbFlagRedSpawn][2] = z;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Red Team Flag Position.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingFlagPos", 0);
                 PaintballEditArenaFlagSpawns(playerid);
@@ -3340,9 +3341,9 @@ CMD:saveflagpos(playerid, params[])
                 PaintBallArena[arenaid][pbFlagBlueSpawn][1] = y;
                 PaintBallArena[arenaid][pbFlagBlueSpawn][2] = z;
 
-                format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
+                format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
                 SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited Blue Team Flag Position.");
-                SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                 SetPVarInt(playerid, "EditingFlagPos", 0);
                 PaintballEditArenaFlagSpawns(playerid);
@@ -3359,11 +3360,10 @@ CMD:saveflagpos(playerid, params[])
 CMD:savehillpos(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337) {
-        if(GetPVarInt(playerid, "ArenaNumber") == -1) {
+        if(!GetPVarType(playerid, "ArenaNumber")) {
             SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently not editing any arenas.");
             return 1;
         }
-        new string[128];
         new arenaid = GetPVarInt(playerid, "ArenaNumber");
         new stage = GetPVarInt(playerid, "EditingHillStage");
         new Float:x, Float: y, Float: z;
@@ -3381,9 +3381,9 @@ CMD:savehillpos(playerid, params[])
                     PaintBallArena[arenaid][pbHillY] = y;
                     PaintBallArena[arenaid][pbHillZ] = z;
 
-                    format(string,sizeof(string),"X=%f, Y=%f, Z=%f",x,y,z);
+                    format(szMiscArray,sizeof(szMiscArray),"X=%f, Y=%f, Z=%f",x,y,z);
                     SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully edited the Hill Position.");
-                    SendClientMessageEx(playerid, COLOR_GRAD2, string);
+                    SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 
                     DeletePVar(playerid, "EditingHillStage");
                     PaintballEditArenaMenu(playerid);
@@ -3431,10 +3431,9 @@ CMD:joinarena(playerid, params[])
         }
         if(pTazer{playerid} != 0)
 		{
-			new string[128];
 			RemovePlayerWeapon(playerid, 23);
 			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
-			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
  			pTazer{playerid} = 0;
  		}
 		if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
@@ -3442,7 +3441,7 @@ CMD:joinarena(playerid, params[])
             ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
             return 1;
         }
-        if(IsPlayerInRangeOfPoint(playerid,10.0,1294.5062,-1445.0599,0.4403)) {
+        if(IsPlayerInRangeOfPoint(playerid, 10.0, 1294.5062, -1445.0599, 0.4403)) {
             ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
         }
         else {
@@ -3458,7 +3457,7 @@ CMD:joinarena(playerid, params[])
 
 CMD:exitarena(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena")) {
+    if(GetPVarType(playerid, "IsInArena")) {
         if(GetPlayerState(playerid) == PLAYER_STATE_WASTED) {
             SendClientMessageEx(playerid, COLOR_WHITE, "You cannot do that at this time.");
             return 1;
@@ -3481,7 +3480,7 @@ CMD:exitarena(playerid, params[])
 
 CMD:scores(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena"))
+    if(GetPVarType(playerid, "IsInArena"))
 	{
         PaintballScoreboard(playerid, GetPVarInt(playerid, "IsInArena"));
     }
@@ -3500,7 +3499,7 @@ CMD:lockarena(playerid, params[])
 		return 1;
 	}
 
-	new string[128], arenaid;
+	new arenaid;
 	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /lockarena [arenaid]");
 
 	arenaid--;
@@ -3512,62 +3511,63 @@ CMD:lockarena(playerid, params[])
 	}
 	foreach(new p: Player)
 	{
+		if(!GetPVarType(p, "IsInArena")) return 1;
 		new cid = GetPVarInt(p, "IsInArena");
 		if(cid == arenaid)
 		{
 			if(PaintBallArena[cid][pbBidMoney] > 0)
 			{
 				GivePlayerCash(p,PaintBallArena[cid][pbBidMoney]);
-				format(string,sizeof(string),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
-				SendClientMessageEx(p, COLOR_WHITE, string);
+				format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of $%d because of premature closure.",PaintBallArena[cid][pbBidMoney]);
+				SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 			}
 			if(arenaid == GetPVarInt(p, "ArenaNumber"))
 			{
 				switch(PaintBallArena[arenaid][pbGameType])
 				{
-				case 1:
+					case 1:
 					{
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 3;
-							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",3);
+							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 						}
 					}
-				case 2:
+					case 2:
 					{
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 4;
-							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",4);
+							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 						}
 					}
-				case 3:
+					case 3:
 					{
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 						}
 					}
-				case 4:
+					case 4:
 					{
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 5;
-							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",5);
+							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 						}
 					}
-				case 5:
+					case 5:
 					{
 						if(PlayerInfo[p][pDonateRank] < 3)
 						{
 							PlayerInfo[p][pPaintTokens] += 6;
-							format(string,sizeof(string),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
-							SendClientMessageEx(p, COLOR_WHITE, string);
+							format(szMiscArray,sizeof(szMiscArray),"You have been refunded a total of %d Paintball Tokens because of premature closure.",6);
+							SendClientMessageEx(p, COLOR_WHITE, szMiscArray);
 						}
 					}
 				}
@@ -3577,10 +3577,10 @@ CMD:lockarena(playerid, params[])
 	}	
 	ResetPaintballArena(arenaid);
 	PaintBallArena[arenaid][pbLocked] = 2;
-	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
-	ABroadCast(COLOR_YELLOW, string, 2);
-	format(string, sizeof(string), "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
-	SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has locked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+	format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked %s (ArenaID: %d) for some short maintenance.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+	SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
 	return 1;
 }
 
@@ -3592,7 +3592,7 @@ CMD:unlockarena(playerid, params[])
 		return 1;
 	}
 
-	new string[128], arenaid;
+	new arenaid;
 	if(sscanf(params, "d", arenaid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unlockarena [arenaid]");
 
 	arenaid--;
@@ -3605,17 +3605,17 @@ CMD:unlockarena(playerid, params[])
 	if(PaintBallArena[arenaid][pbLocked] == 2)
 	{
 		ResetPaintballArena(arenaid);
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has unlocked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
-		ABroadCast(COLOR_YELLOW, string, 2);
-		format(string, sizeof(string), "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
-		SendClientMessageToAllEx(COLOR_LIGHTBLUE, string);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has unlocked %s.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName]);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+		format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked %s (ArenaID: %d), you may join/create it now.", GetPlayerNameEx(playerid),PaintBallArena[arenaid][pbArenaName],arenaid+1);
+		SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
 	}
 	return 1;
 }
 
 CMD:givepainttokens(playerid, params[])
 {
-	new string[128], giveplayerid, amount;
+	new giveplayerid, amount;
 	if(sscanf(params, "ud", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givepainttokens [player] [amount]");
 
 	if(IsPlayerConnected(giveplayerid))
@@ -3627,12 +3627,12 @@ CMD:givepainttokens(playerid, params[])
 		}
 		PlayerInfo[giveplayerid][pPaintTokens] += amount;
 
-		format(string, sizeof(string), "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
-		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has given %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
-		ABroadCast(COLOR_YELLOW, string, 2);
+		format(szMiscArray, sizeof(szMiscArray), "You have received %d Paintball Tokens from Admin %s.", amount, GetPlayerNameEx(playerid));
+		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "You have given %s %d Paintbll Tokens.", GetPlayerNameEx(giveplayerid), amount);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has given %s, %d Paintball Tokens.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid),amount);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 
 	}
 	return 1;
@@ -3641,10 +3641,10 @@ CMD:givepainttokens(playerid, params[])
 CMD:savepbvehicle(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	if(GetPVarInt(playerid, "ArenaNumber") == -1) return SendClientMessageEx(playerid, COLOR_WHITE, "You did not select an arena yet.");
+	if(!GetPVarType(playerid, "ArenaNumber")) return SendClientMessageEx(playerid, COLOR_WHITE, "You did not select an arena yet.");
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
 	new vehslot = GetPVarInt(playerid, "PBVeh");
-	new string[128];
+
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new Float: vPosX, Float: vPosY, Float: vPosZ, Float: vPosA, vID;
@@ -3757,8 +3757,8 @@ CMD:savepbvehicle(playerid, params[])
 			}
 		}
 	}
-	format(string, sizeof(string), "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(szMiscArray, sizeof(szMiscArray), "You have adjusted War Vehicle %d for ArenaID %d.",vehslot, arenaid);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	SavePaintballArena(arenaid);
 	PaintballEditArenaMenu(playerid);
 	return 1;

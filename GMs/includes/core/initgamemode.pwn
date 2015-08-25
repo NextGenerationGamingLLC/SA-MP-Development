@@ -73,16 +73,17 @@ InitiateGamemode()
 	ResetVariables();
 	FixServerTime();
 	LoadVactionsHelper();
-	SetTimer("RotateWheel",3*1000,0);
-	SetTimer("WarmupLock", 15000, 0);
-	SetTimer("MailDeliveryTimer", 60000, 1);
+	RotateWheel();
+
 	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
-	SetTimer("Anti_Rapidfire", 1000, true);
+
 	LoadParkingMeters();
 	GovGuns_LoadCosts();
 	MetDet_LoadMetDets();
 	LoadATMPoints();
 	LoadBanks();
+	LoadPayPhones();
+	
 	//Island for crate system
     MAXCRATES = 10; // Sets Default Max Crates
 	
@@ -95,16 +96,7 @@ InitiateGamemode()
     
     // Streamer
     Streamer_TickRate(100);
-    print("[Streamer] Loading Dynamic Static Vehicles...");
-    LoadStreamerStaticVehicles();
-    print("[Streamer] Loading Dynamic Pickups...");
-    LoadStreamerDynamicPickups();
-    print("[Streamer] Loading 3D Text Labels...");
-    LoadStreamerDynamic3DTextLabels();
-    print("[Streamer] Loading Dynamic Buttons...");
-    LoadStreamerDynamicButtons();
-    print("[Streamer] Loading Dynamic Objects...");
-    LoadStreamerDynamicObjects();
+    
     BikeParkourObjectStage[0] = 0; //BikeParkourObjectStage[1] = 0;
     
     // Textdraws
@@ -120,7 +112,7 @@ InitiateGamemode()
     Job_LoadJobs();
     GangTag_Load();
     DS_LoadDrugSystem();
-	
+
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");
 	print("Copyright (C) Next Generation Gaming, LLC (2010-2014)");

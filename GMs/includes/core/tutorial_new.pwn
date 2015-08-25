@@ -40,7 +40,7 @@ new g_aFemaleSkins[77] = {
     298
 };
 
-new cam_CamShakeTimer[MAX_PLAYERS];
+// new cam_CamShakeTimer[MAX_PLAYERS];
 
 hook OnGameModeInit()
 {
@@ -200,7 +200,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0: return Register_MainMenu(playerid);
 				case 1: return ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
-				case 2: return ShowPlayerDialog(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "<<", "Select");
+				case 2: return ShowPlayerDialog(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
 				case 3:
 				{
 					szMiscArray[0] = 0;
@@ -281,7 +281,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Register_MainMenu(playerid);
 				}
 			}
-			else ShowPlayerDialog(playerid, REGISTERSEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
+			else ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
 		}
 		case DIALOG_REGISTER_MONTH:
 	    {
@@ -965,6 +965,7 @@ public Register_CreatePlayer(iPlayerID, iSkinID) {
 	iActorID = CreateActor(iSkinID, 6.8941, 15.6016, 1628.8184, 270.0);
 	SetPVarInt(iPlayerID, "_REGisterActor", iActorID);
 	SetActorVirtualWorld(iActorID, GetPlayerVirtualWorld(iPlayerID));
+	SetPlayerSkin(iPlayerID, iSkinID);
 	Register_MainMenu(iPlayerID);
 	return 1;
 }
@@ -1022,7 +1023,7 @@ public Register_Plane(playerid)
 			SendClientMessage(playerid, COLOR_RED,"** ALARMS ARE RINGING **!");
 			SetPVarInt(playerid, "pTut", 3);
 			SetTimerEx("Register_Plane", 8000, false, "i", playerid);
-			cam_CamShakeTimer[playerid] = SetTimerEx("CamShaker", 100, true, "i", playerid);
+			// cam_CamShakeTimer[playerid] = SetTimerEx("CamShaker", 100, true, "i", playerid);
 		}
 		case 3: {
 			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/plane_part2.mp3");
@@ -1097,7 +1098,7 @@ public CamShaker(playerid) {
 
 forward ResetCameraShake(playerid);
 public ResetCameraShake(playerid) {
-	KillTimer(cam_CamShakeTimer[playerid]);
+	// KillTimer(cam_CamShakeTimer[playerid]);
 	SetPlayerDrunkLevel(playerid, 0);
 	return 1;
 }

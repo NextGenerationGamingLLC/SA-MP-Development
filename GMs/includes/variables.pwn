@@ -583,9 +583,6 @@ new SpecTimer;
 new WeatherCalling;
 new gWeather;
 new OrderAssignedTo[MAX_PLAYERS];
-new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, garagekey, chiefout, chiefin, westin, westout;
-new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
-new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
 
 /* LA ELEVATOR STUFF - ORIGINALLY SCRIPTED BY SCOTT, PORTED CODE OVER FROM KYE ON 10/12/11 */
 
@@ -1045,8 +1042,7 @@ new Float:DocIsolation[25][3] = {
 {-2131.2229,-133.6181,2014.4973}
 };
 
-new DocButtons[27];
-new DocCPButton;
+
 new DocElevatorCall[3];
 new DocElevatorInside;
 new DocCellsFloor1[16];
@@ -1059,6 +1055,7 @@ new DocInnerElevator[2];
 new DocElevator;
 new DocElevatorExt[6];
 new iDocElevatorLevel;
+
 new bool:bDocElevatorMoving = false;
 new bool:bDocCellOpen[31] = false;
 new bool:bDocAreaOpen[11] = false;
@@ -2692,6 +2689,15 @@ new Text:txtAnimHelper;
 
 new bool:PlayerIsDead[MAX_PLAYERS];
 
+
+/* Buttons */
+
+
+new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, garagekey, chiefout, chiefin, westin, westout;
+new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
+new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
+new DocButtons[27];
+new DocCPButton;
 new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];
 
 new bool:emailcheck = true;
@@ -2709,5 +2715,12 @@ new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
 new GunPrices[4];
 
-new iVehEnterAreaID[MAX_VEHICLES];
 new szJobNames[MAX_JOBTYPES][32];
+
+/* Areas */
+new iVehEnterAreaID[MAX_VEHICLES];
+new iVehExits[3]; // for shamal, nevada and journey
+
+/* Iterators - More efficient looping for changing/dynamic structures */
+
+new Iterator:Vehicles<MAX_VEHICLES>;

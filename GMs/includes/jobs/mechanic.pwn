@@ -53,7 +53,7 @@ CMD:fix(playerid, params[])
      		SendClientMessageEx(playerid, COLOR_GRAD1,string);
      		return 1;
      	}
-     	else if(GetPVarInt(playerid, "IsInArena"))
+     	else if(GetPVarType(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;

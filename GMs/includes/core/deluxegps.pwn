@@ -56,10 +56,11 @@
 
 #define 	CHECKPOINT_GEN_LOCATION 	4500
 #define 	CHECKPOINT_BUSINESS 		4501
-#define 	CHECKPOINT_DOOR				4502
-#define 	CHECKPOINT_HOUSE			4503
+#define 	CHECKPOINT_JOB 				4502
+#define 	CHECKPOINT_DOOR				4503
+#define 	CHECKPOINT_HOUSE			4504
 
-#define			MAX_GPSFAV					(5)
+#define		MAX_GPSFAV					(5)
 
 /*
 enum gpsFavs
@@ -230,13 +231,14 @@ CMD:gpsfaves(playerid,params[])
 
 CMD:mygps(playerid, params[])
 {
-	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	// if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	ShowPlayerDialog(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
 		Jobs\n\
 		General Locations\n\
 		Business Address\n\
 		House Address\n\
 		Door Address\n", "Okay", "Cancel");
+	
 	return 1;
 }
 
@@ -256,6 +258,13 @@ hook OnPlayerEnterCheckpoint(playerid)
 		{
 			new id = GetPVarInt(playerid,"gpsBiz");
 			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", Businesses[id][bName]);
+			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
+			DisablePlayerCheckpoint(playerid);
+		}
+		case CHECKPOINT_JOB:
+		{
+			new id = GetPVarInt(playerid,"gpsJob");
+			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", Job_GetJobName(arrJobData[id][job_iType]));
 			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
 		}
@@ -323,8 +332,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						Clubs", "Select", "Back");
 			}
 			else {
-
-				if(!response) return 1;
 
 				new id = ListItemTrackId[playerid][listitem];
 
@@ -734,17 +741,20 @@ Map_ShowJobs(playerid, iJobType)
 {
 	for(new i; i < MAX_JOBPOINTS; ++i) {
 
-		if(Job_IsValidJob(i) && arrJobData[i][job_iType] == iJobType) {
+		if(Job_IsValidJob(arrJobData[i][job_iType]) && arrJobData[i][job_iType] == iJobType) {
 
 			new Float:fPos[3];
 			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_X, fPos[0]);
 			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Y, fPos[1]);
 			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Z, fPos[2]);
 
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_JOB;
+			SetPVarInt(playerid, "gpsJob", i);
 			SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 5.0);
-			break;
+			SendClientMessage(playerid, COLOR_YELLOW, "A checkpoint has been marked on your map.");
+			return 1;
 		}
 	}
-	SendClientMessage(playerid, COLOR_YELLOW, "A checkpoint has been marked on your map.");
+	SendClientMessage(playerid, COLOR_GRAD1, "No one is offering that job currently.");
 	return 1;
 }

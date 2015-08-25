@@ -431,6 +431,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pEXPToken]				= cache_get_field_content_int(row,  "EXPToken", MainPipeline); 
 					PlayerInfo[extraid][pRacePlayerLaps]		= cache_get_field_content_int(row,  "RacePlayerLaps", MainPipeline); 
 					PlayerInfo[extraid][pRingtone]				= cache_get_field_content_int(row,  "Ringtone", MainPipeline); 
+					PlayerInfo[extraid][pWallpaper]				= cache_get_field_content_int(row,  "Wallpaper", MainPipeline); 
 					PlayerInfo[extraid][pVIPM]					= cache_get_field_content_int(row,  "VIPM", MainPipeline); 
 					PlayerInfo[extraid][pVIPMO]					= cache_get_field_content_int(row,  "VIPMO", MainPipeline); 
 					PlayerInfo[extraid][pVIPExpire]				= cache_get_field_content_int(row,  "VIPExpire", MainPipeline);
@@ -2225,6 +2226,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "EXPToken", PlayerInfo[playerid][pEXPToken]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RacePlayerLaps", PlayerInfo[playerid][pRacePlayerLaps]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ringtone", PlayerInfo[playerid][pRingtone]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Wallpaper", PlayerInfo[playerid][pWallpaper]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Order", PlayerInfo[playerid][pOrder]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CallsAccepted", PlayerInfo[playerid][pCallsAccepted]);
@@ -3613,8 +3615,7 @@ public QueryGetCountFinish(userid, type)
 	return 1;
 }
 
-forward MailDeliveryTimer();
-public MailDeliveryTimer()
+task MailDeliveryTimer[60000 * 5]()
 {
 	mysql_function_query(MainPipeline, "UPDATE `letters` SET `Delivery_Min` = `Delivery_Min` - 1 WHERE `Delivery_Min` > 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	mysql_function_query(MainPipeline, "SELECT `Receiver_Id` FROM `letters` WHERE `Delivery_Min` = 1", true, "MailDeliveryQueryFinish", "");

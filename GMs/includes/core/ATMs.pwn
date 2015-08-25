@@ -57,12 +57,10 @@ LoadATMPoints() {
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+	if(-1 < i < sizeof(ATMPoint)) {
 
-	if(areaid == ATMPoint[i]) {
-		
-		SetPVarInt(playerid, "AtATM", i);
+		if(areaid == ATMPoint[i]) SetPVarInt(playerid, "AtATM", i);
 	}
-	return 1;
 }
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {

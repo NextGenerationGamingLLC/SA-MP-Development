@@ -541,17 +541,18 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 
-	if(arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID] == areaid) {
+	if(-1 < i < MAX_GROUP_LOCKERS) {
+		
+		if(arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID] == areaid) {
 
-		SetPVarInt(playerid, "AtLocker", areaid);
+			SetPVarInt(playerid, "AtLocker", areaid);
+		}
 	}
-	return 1;
 }
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 
 	if(GetPVarInt(playerid, "AtLocker") == areaid) DeletePVar(playerid, "AtLocker");
-	return 1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
@@ -674,11 +675,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid)) {
 
+						szMiscArray[0] = 0;
 						szMiscArray = "Drugs\tAmount\n";
 						for(new i; i < sizeof(szIngredients); ++i) {
 
 							format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szDrugs[i], number_format(arrGroupData[iGroupID][g_iDrugs][i]));
 						}
+
 						format(string, sizeof(string), "%s Drug Locker", arrGroupData[iGroupID][g_szGroupName]);
 						SetPVarInt(playerid, "GSafe_Opt", 2);
 						return ShowPlayerDialog(playerid, G_LOCKER_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, string, szMiscArray, "Select", "<<");
@@ -692,6 +695,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid)) {
 
+						szMiscArray[0] = 0;
 						szMiscArray = "Ingredients\tAmount\n";
 						for(new i; i < sizeof(szIngredients); ++i) {
 
@@ -757,7 +761,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
-						SetPVarInt(playerid, "GSafe_Opt", 4);
+						SetPVarInt(playerid, "GSafe_Opt", 1);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Material Safe", "Deposit\nWithdraw", "Select", "Back");
 					}
 					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0) {
@@ -805,9 +809,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				case 5: { // LEOs - HP + Armour Car/Backpack Kit
+
 					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
-						SetPVarInt(playerid, "GSafe_Opt", 5);
+						SetPVarInt(playerid, "GSafe_Opt", 0);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
 					}
 					if(GetPVarInt(playerid, "MedVestKit") == 1) {
@@ -858,6 +863,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 				case 6: { //Tazer 
+					if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupAmmoDialog(playerid, iGroupID);
 					if(PlayerInfo[playerid][pHasTazer] == 0)
 					{
 						new szMessage[128];
@@ -871,6 +877,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
+					if(IsACriminal(playerid)) return cmd_gblackmarket(playerid, "");
 					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) 
 					{
 						return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
@@ -881,7 +888,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
-						SetPVarInt(playerid, "GSafe_Opt", 5);
+						SetPVarInt(playerid, "GSafe_Opt", 0);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
 					}
 					else ShowGroupAmmoDialog(playerid, iGroupID);
@@ -891,6 +898,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
 						ShowGroupAmmoDialog(playerid, iGroupID);
+					}
+				}
+				case 10: 
+				{
+
+					if(IsACriminal(playerid) || IsARacer(playerid))
+					{
+						for(new i; i < MAX_GROUPS; ++i) {
+
+							if(arrBlackMarket[i][bm_iGroupID] == iGroupID) {
+
+								if(arrBlackMarket[i][bm_iSeized]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your black market is currently seized.");
+								SetPVarInt(playerid, PVAR_BLMARKETID, i);
+								BM_BlackMarketMain(playerid);
+								break;
+							}
+						}
+						SendClientMessage(playerid, COLOR_GRAD1, "Your group does not have a black market.");
+						return 1;
 					}
 				}
 			}
@@ -1824,6 +1850,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerPos(playerid, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2]);
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = GetPlayerVirtualWorld(playerid);
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
+					DestroyDynamicArea(arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID]);
 
 					format(szMiscArray, sizeof szMiscArray, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szMiscArray, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
@@ -2335,90 +2362,49 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(strval(inputtext) <= 0) return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount cannot be less than or 0.", "Input", "Cancel");
-				switch(GetPVarInt(playerid, "GSafe_Opt")) 
-				{
-					case 2: {
-						new iDrugID = GetPVarInt(playerid, "GLocker_SID");
-						switch(GetPVarInt(playerid, "GSafe_Action")) {
-							case 1: {
-								if(strval(inputtext) <= PlayerInfo[playerid][p_iDrug][iDrugID])	{
+				
+				switch(GetPVarInt(playerid, "GSafe_Opt")) {
 
-									arrGroupData[iGroupID][g_iDrugs][iDrugID] += strval(inputtext);
-									PlayerInfo[playerid][p_iDrug][iDrugID] -= strval(inputtext);
-									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), szDrugs[iDrugID]);
-									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of %s into the safe.", strval(inputtext), szDrugs[iDrugID]);
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-									DeletePVar(playerid, "GSafe_Action");
-									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Drugs_GetSQLName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-								}
-								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
-							}
-							case 2:
+					case 0:
+					{
+						new amount = strval(inputtext);
+						switch(GetPVarInt(playerid, "GSafe_Action"))
+						{
+							case 1:
 							{
-								if(strval(inputtext) <= arrGroupData[iGroupID][g_iDrugs][iDrugID])
+								if(strval(inputtext) <= GetPlayerCash(playerid))
 								{
-									arrGroupData[iGroupID][g_iDrugs][iDrugID] -= strval(inputtext);
-									PlayerInfo[playerid][p_iDrug][iDrugID] += strval(inputtext);
-									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), szDrugs[iDrugID]);
+									arrGroupData[iGroupID][g_iBudget] += strval(inputtext);
+									GivePlayerCash( playerid, -amount);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited $%i into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of %s from the safe.", strval(inputtext), szDrugs[iDrugID]);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited $%i into the safe.", strval(inputtext));
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Drugs_GetSQLName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-								}
-								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
-							}
-						}
-					}
-					case 3: {
-						new iIngredientID = GetPVarInt(playerid, "GLocker_SID");
-						switch(GetPVarInt(playerid, "GSafe_Action")) {
-							case 1: {
-								if(strval(inputtext) <= PlayerInfo[playerid][p_iIngredient][iIngredientID]) {
-
-									arrGroupData[iGroupID][g_iIngredients][iIngredientID] += strval(inputtext);
-									PlayerInfo[playerid][p_iIngredient][iIngredientID] -= strval(inputtext);
-									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), szIngredients[iIngredientID]);
-									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of %s into the safe.", strval(inputtext), szIngredients[iIngredientID]);
-									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-									DeletePVar(playerid, "GSafe_Action");
-									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+									OnPlayerStatsUpdate(playerid);
 								}
 								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
 							}
 							case 2:
 							{
-								if(strval(inputtext) <= arrGroupData[iGroupID][g_iIngredients][iIngredientID]) {
-									
-									arrGroupData[iGroupID][g_iIngredients][iIngredientID] -= strval(inputtext);
-									PlayerInfo[playerid][p_iIngredient][iIngredientID] += strval(inputtext);
-									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), szIngredients[iIngredientID]);
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iBudget])
+								{
+									new iMoney = strval(inputtext);
+									arrGroupData[iGroupID][g_iBudget] -= iMoney;
+									GivePlayerCash(playerid, amount);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(iMoney));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of %s from the safe.", strval(inputtext), szIngredients[iIngredientID]);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 								}
 								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
 							}
 						}
 					}
-					case 4:
+					case 1:
 					{
 						switch(GetPVarInt(playerid, "GSafe_Action"))
 						{
@@ -2454,40 +2440,94 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 					}
-					case 5:
-					{
-						new amount = strval(inputtext);
-						switch(GetPVarInt(playerid, "GSafe_Action"))
-						{
-							case 1:
-							{
-								if(strval(inputtext) <= GetPlayerCash(playerid))
-								{
-									arrGroupData[iGroupID][g_iBudget] += strval(inputtext);
-									GivePlayerCash( playerid, -amount);
-									format(szMiscArray, sizeof(szMiscArray), "%s has deposited $%i into the safe.", GetPlayerNameEx(playerid), strval(inputtext));
+					case 2: {
+
+						new iDrugID = GetPVarInt(playerid, "GLocker_SID");
+
+						switch(GetPVarInt(playerid, "GSafe_Action")) {
+
+							case 1: {
+
+								if(strval(inputtext) <= PlayerInfo[playerid][p_iDrug][iDrugID])	{
+
+									arrGroupData[iGroupID][g_iDrugs][iDrugID] += strval(inputtext);
+									PlayerInfo[playerid][p_iDrug][iDrugID] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), szDrugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have deposited $%i into the safe.", strval(inputtext));
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of %s into the safe.", strval(inputtext), szDrugs[iDrugID]);
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
-									OnPlayerStatsUpdate(playerid);
+
+									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Drugs_GetSQLName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
+									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+									cmd_locker(playerid, "");
+
 								}
 								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
 							}
 							case 2:
 							{
-								if(strval(inputtext) <= arrGroupData[iGroupID][g_iBudget])
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iDrugs][iDrugID])
 								{
-									new iMoney = strval(inputtext);
-									arrGroupData[iGroupID][g_iBudget] -= iMoney;
-									GivePlayerCash(playerid, amount);
-									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(iMoney));
+									arrGroupData[iGroupID][g_iDrugs][iDrugID] -= strval(inputtext);
+									PlayerInfo[playerid][p_iDrug][iDrugID] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), szDrugs[iDrugID]);
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of %s from the safe.", strval(inputtext), szDrugs[iDrugID]);
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
+
+									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Drugs_GetSQLName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
+									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+									cmd_locker(playerid, "");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
+							}
+						}
+					}
+					case 3: {
+						new iIngredientID = GetPVarInt(playerid, "GLocker_SID");
+						switch(GetPVarInt(playerid, "GSafe_Action")) {
+							case 1: {
+								if(strval(inputtext) <= PlayerInfo[playerid][p_iIngredient][iIngredientID]) {
+
+									arrGroupData[iGroupID][g_iIngredients][iIngredientID] += strval(inputtext);
+									PlayerInfo[playerid][p_iIngredient][iIngredientID] -= strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has deposited %i grams of %s into the safe.", GetPlayerNameEx(playerid), strval(inputtext), szIngredients[iIngredientID]);
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have deposited %i grams of %s into the safe.", strval(inputtext), szIngredients[iIngredientID]);
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+
+									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
+									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+									cmd_locker(playerid, "");
+								}
+								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that that you have on you.\nPlease input another amount.", "Input", "Cancel");
+							}
+							case 2:
+							{
+								if(strval(inputtext) <= arrGroupData[iGroupID][g_iIngredients][iIngredientID]) {
+									
+									arrGroupData[iGroupID][g_iIngredients][iIngredientID] -= strval(inputtext);
+									PlayerInfo[playerid][p_iIngredient][iIngredientID] += strval(inputtext);
+									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), szIngredients[iIngredientID]);
+									GroupLog(iGroupID, szMiscArray);
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %i grams of %s from the safe.", strval(inputtext), szIngredients[iIngredientID]);
+									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+									DeletePVar(playerid, "GSafe_Action");
+									DeletePVar(playerid, "GSafe_Opt");
+
+									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
+									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+									cmd_locker(playerid, "");
 								}
 								else return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_INPUT, "Gang Safe", "The amount specified exceeds that in the safe.\nPlease input another amount.", "Input", "Cancel");
 							}
@@ -2823,7 +2863,7 @@ CMD:online(playerid, params[]) {
 CMD:badge(playerid, params[]) {
     if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 	{
-		if(GetPVarInt(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
+		if(GetPVarType(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You can't use your badge now.");
 			return 1;
@@ -3951,7 +3991,7 @@ CMD:deploy(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
 	{
-		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
+		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 		new type, object[12], string[128];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
@@ -5283,7 +5323,7 @@ CMD:locker(playerid, params[]) {
 					    }
 					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)
 					    {
-					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nIngredients\nMaterials (%i)\nVault ($%s)\nAmmo",
+					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nIngredients\nMaterials (%i)\nVault ($%s)\nAmmo\nBlack Market",
 					    		arrGroupData[iGroupID][g_iMaterials],
 					    		number_format(arrGroupData[iGroupID][g_iBudget])
 					    	);
@@ -5742,6 +5782,57 @@ CMD:togbr(playerid, params[])
 	return 1;
 }
 
+
+CMD:sanrank(playerid, params[])
+{
+	
+	new 
+		iGroupID = PlayerInfo[playerid][pMember];
+
+	szMiscArray[0] = 0;
+
+	/*
+		Camera (1)
+		Show Host (2)
+		Broadcast Editor/Director(2)
+		Executive Commands	
+	*/
+
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_NEWS) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pLeader] == iGroupID)
+	{
+		new iRank,
+			iChoice;
+		if(sscanf(params, "dd", iChoice, iRank)) {
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Cameraman (Rank: %d) | Show Host (Rank: %d) | Broadcast Editor/Director (Rank: %d) | All Priviledges (Rank: %d)",
+				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
+				arrGroupData[iGroupID][g_iWithdrawRank][3]);
+
+			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sanrank [choice] [rank]");
+			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Cameraman(0) Show Host(1) Broadcast Editor/Director(2) All(3)");
+		}
+		if(!(0 <= iChoice <= 3)) {
+			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
+		}
+		else
+		{
+			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
+			{
+				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
+				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the rank permission to %i.", iRank);
+				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
+				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the rank permission for choice %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
+				GroupLog(iGroupID, szMiscArray);
+				SaveGroup(iGroupID);
+			}
+			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
+		}
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	return 1;
+}
+
 CMD:adjustwithdrawrank(playerid, params[])
 {
 	new 
@@ -5761,7 +5852,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
-			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d) | Weapons(Rank: %d) | Ammo(Rank: %d)",
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs / Ingredients (Rank: %d) | Weapons(Rank: %d) | Ammo(Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
 				arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4]);
 			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
@@ -5901,7 +5992,7 @@ ShowGroupAmmoDialog(playerid, iGroupID) {
 		arrGroupData[iGroupID][g_iAmmo][3],
 		arrGroupData[iGroupID][g_iAmmo][4]
 	);
-	ShowPlayerDialog(playerid, G_AMMO_LOCKER, DIALOG_STYLE_TABLIST_HEADERS, "Ammo Locker", szMiscArray, "Select", "Cancel");
+	return ShowPlayerDialog(playerid, G_AMMO_LOCKER, DIALOG_STYLE_TABLIST_HEADERS, "Ammo Locker", szMiscArray, "Select", "Cancel");
 }
 
 WithdrawAmmo(playerid) {
@@ -6052,12 +6143,15 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 	return 1;
 }
 
+
 GetSafeTakePerm(iOpt) {
 	new iSlot;
 	switch(iOpt) {
-		case 1 .. 6: iSlot = 2;
-		case 7: iSlot = 1;
-		case 8: iSlot = 0;
+		case 0: iSlot = 0;
+		case 1: iSlot = 1;
+		case 2 .. 3: iSlot = 2;
+		case 4: iSlot = 3;
+		case 5: iSlot = 4;
 	}
 	return iSlot;
 }

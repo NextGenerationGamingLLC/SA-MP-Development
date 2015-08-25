@@ -519,7 +519,7 @@ CMD:cancelreport(playerid, params[])
 	{
 		if(Reports[i][ReportFrom] == playerid)
 		{
-			if(GetPVarInt(Reports[i][ReportFrom], "AlertedThisPlayer"))
+			if(GetPVarType(Reports[i][ReportFrom], "AlertedThisPlayer"))
 			{
 				DeletePVar(Reports[i][ReportFrom], "AlertedThisPlayer");
 				DeletePVar(Reports[i][ReportFrom], "AlertType");
@@ -642,7 +642,7 @@ CMD:sta(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
@@ -738,14 +738,14 @@ CMD:ar(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestID");
 			ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Account Restriction", "This player has 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer") != INVALID_PLAYER_ID)
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			if(AlertTime[Reports[reportid][ReportFrom]] != 0)
 			{
 				SetPVarInt(playerid, "PendingAction", GetPVarInt(Reports[reportid][ReportFrom], "AlertType"));
 				SetPVarInt(playerid, "PendingAction2", GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"));
 				SetPVarInt(playerid, "PendingAction3", Reports[reportid][ReportFrom]);
-				SetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer", INVALID_PLAYER_ID);
+				DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			}
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1)
@@ -928,7 +928,7 @@ CMD:tr(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
@@ -973,7 +973,7 @@ CMD:dmr(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot forward a DM Alert to the Watch Dogs Team.");
 		}
@@ -1021,7 +1021,7 @@ CMD:nao(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
@@ -1067,7 +1067,7 @@ CMD:post(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
@@ -1112,7 +1112,7 @@ CMD:st(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/post this advertisement, you must accept it with /ar.");
 		}
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");
@@ -1149,7 +1149,7 @@ CMD:ts(playerid, params[])
 			return 1;
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "RequestingAdP") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot trash/ts this advertisement, you must accept it with /ar.");
-		if(GetPVarInt(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
+		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
 			DeletePVar(Reports[reportid][ReportFrom], "AlertedThisPlayer");
 			DeletePVar(Reports[reportid][ReportFrom], "AlertType");

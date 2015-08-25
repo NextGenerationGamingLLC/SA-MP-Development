@@ -194,7 +194,6 @@ GovGuns_MainMenu(playerid)
 
 GovGuns_LoadCosts()
 {
-	szMiscArray[0] = 0;
 	mysql_function_query(MainPipeline, "SELECT * FROM `govgunsales` WHERE 1", true, "GovGuns_OnLoadCosts", "");
 	return 1;
 }
@@ -250,7 +249,6 @@ public GovGuns_OnLoadCosts()
 	while(iCount < iRows) 
 	{
 		arrWeaponCosts[iCount] = cache_get_field_content_int(iCount, "wepprice", MainPipeline);
-		printf("[Gov Weapon Prices] %s | Price: $%s", Weapon_ReturnName(iCount), number_format(arrWeaponCosts[iCount]));
 		iCount++;
 	}
 	printf("[Gov Weapon Prices] Loaded %i Weapons", iCount);

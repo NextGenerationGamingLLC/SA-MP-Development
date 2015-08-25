@@ -15,6 +15,7 @@ public Maintenance()
     {
 		foreach(new p: Player)
 		{
+			if(!GetPVarType(p, "IsInArena")) continue;
 			new arenaid = GetPVarInt(p, "IsInArena");
 			if(arenaid == i)
 			{

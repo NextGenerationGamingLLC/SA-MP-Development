@@ -52,7 +52,7 @@ GetDPRankName(playerid)
 {
 	new rank[23];
 	
-	if(PlayerInfo[playerid][pAdmin] >= 4 && (PlayerInfo[playerid][pTogReports] == 1 || GetPVarInt(playerid, "Undercover") == 1))
+	if(PlayerInfo[playerid][pAdmin] >= 4 && (PlayerInfo[playerid][pTogReports] == 1 || GetPVarType(playerid, "Undercover")))
 	{
 		rank = "Dedicated Player";
 	}

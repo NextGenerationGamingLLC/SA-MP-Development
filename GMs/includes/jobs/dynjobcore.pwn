@@ -78,6 +78,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			DestroyActor(arrJobData[iJobID][job_iActorID][1]);
 			arrJobData[iJobID][job_iActorID][0] = CreateActor(iActorModel, fPos[0][0], fPos[0][1], fPos[0][2], fPos[0][3]);
 			arrJobData[iJobID][job_iActorID][1] = CreateActor(iActorModel, fPos[1][0], fPos[1][1], fPos[1][2], fPos[1][3]);
+			SetActorInvulnerable(arrJobData[iJobID][job_iActorID][0], true);
+			SetActorInvulnerable(arrJobData[iJobID][job_iActorID][1], true);
 			arrJobData[iJobID][job_iActorModel] = iActorModel;
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `jobs` SET `actormodel` = '%d' WHERE `id` = '%d'", strval(inputtext), iJobID);
 			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -93,7 +95,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				
 				new iJob = GetPVarInt(playerid, PVAR_JOB_OBTAINING);
-				if(PlayerInfo[playerid][pDonateRank] == 0 && PlayerInfo[playerid][pFamed] == 0)	{
+
+				if(PlayerInfo[playerid][pDonateRank] == 0 && PlayerInfo[playerid][pFamed] == 0 || PlayerInfo[playerid][pJob] == 0)	{
+
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 
 					if(iJob == 14) {
@@ -108,15 +112,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					if(iJob == 21) {
 
-						SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
-						PlayerInfo[playerid][pModel] = 155;
-						SetPlayerSkin(playerid, 155);
+						// SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
+	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
 					}
 					PlayerInfo[playerid][pJob] = iJob;
 					DeletePVar(playerid, PVAR_JOB_OBTAINING);
 					return 1;
 				}
-				if(PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) {
+				if((PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0) && PlayerInfo[playerid][pJob2] == 0) {
+
 	                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 	                SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a secondary job.");
 
@@ -126,13 +131,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                    SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
 	                }
 	                if(iJob == 21) {
-	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+	                	// SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
+	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
 	                }
 	                PlayerInfo[playerid][pJob2] = iJob;
 	                DeletePVar(playerid, PVAR_JOB_OBTAINING);
 	                return 1;
 	            }
-				else if(iJob > 0 && PlayerInfo[playerid][pDonateRank] >= 3) {
+	            if(PlayerInfo[playerid][pDonateRank] >= 3) {
 
 				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 	                SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a third job.");
@@ -146,10 +153,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
 	                }
-					PlayerInfo[playerid][pJob3] = GettingJob3[playerid];
+					PlayerInfo[playerid][pJob3] = iJob;
 					DeletePVar(playerid, PVAR_JOB_OBTAINING);
 					return 1;
 				}
+				return SendClientMessage(playerid, COLOR_GRAD1, "You cannot take any more jobs. Please use /quitjob to take this job.");
 	        }
 		}
 		case DIALOG_JOBS_NEAREST: {
@@ -216,7 +224,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 Job_LoadJobNames()
 {
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `jobs_types`");
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `name` FROM `jobs_types`");
 	mysql_function_query(MainPipeline, szMiscArray, true, "Job_OnLoadJobNames", "");
 }
 
@@ -228,7 +236,7 @@ public Job_OnLoadJobNames()
 	while(idx < iRows)
 	{
 		cache_get_field_content(idx, "name", szJobNames[idx], MainPipeline);
-		printf("[Jobs] Loaded: %s", szJobNames[idx]);
+		// printf("[Jobs] Loaded: %s", szJobNames[idx]);
 		idx++;
 	}
 	return 1;
@@ -238,7 +246,7 @@ Job_LoadJobs()
 {
 	Job_LoadJobNames();
 	Job_LoadJobVehicles();
-	printf("[MySQL] Loading Jobs from the database...");
+	printf("[Job System] Loading Jobs from the database...");
 	mysql_function_query(MainPipeline, "SELECT * FROM `jobs`", true, "Job_OnLoadJobs", "");
 }
 
@@ -285,9 +293,11 @@ public Job_OnLoadJobs()
 				format(szMiscArray, sizeof szMiscArray, "{FFFF00}Job Pickup Point ({FFFFFF}ID %i{FFFF00})\n\nName: {FFFFFF}%s\n{FFFF00}Type {FFFFFF}'/%s' {FFFF00}to use the pickup.", iRow, Job_GetJobName(arrJobData[iRow][job_iType]), ((arrJobData[iRow][job_iType] == 21) ? ("getpizza") : ("t")));
 				arrJobData[iRow][job_iTextID][1] = CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, fPos[0],fPos[1], fPos[2] + 1.5, 8.0);
 			}
+			SetActorInvulnerable(arrJobData[iRow][job_iActorID][0], true);
+			SetActorInvulnerable(arrJobData[iRow][job_iActorID][1], true);
 		}
 	}
-	printf("[MySQL] Loaded %d job points from the database.", iRow);
+	printf("[Job System] Loaded %d job points from the database.", iRow);
 	return 1;
 }
 
@@ -308,6 +318,7 @@ Job_Process(playerid, iJobID, choice = 0)
 			DestroyDynamic3DTextLabel(arrJobData[iJobID][job_iTextID][0]);
 			arrJobData[iJobID][job_iActorID][0] = CreateActor(arrJobData[iJobID][job_iActorModel], fPos[0], fPos[1], fPos[2], fPos[3]);
 			SetActorVirtualWorld(arrJobData[iJobID][job_iActorID][0], iVW);
+			SetActorInvulnerable(arrJobData[iJobID][job_iActorID][0], true);
 			format(szMiscArray, sizeof szMiscArray, "{FFFF00}[Job Point ({FFFFFF}ID %i{FFFF00})]\n\nName: {FFFFFF}%s\n{FFFF00}Aim at me and use {FFFFFF}~k~~CONVERSATION_YES~ {FFFF00}to obtain the job.", iJobID, Job_GetJobName(arrJobData[iJobID][job_iType]));
 			arrJobData[iJobID][job_iTextID][0] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, fPos[0], fPos[1], fPos[2] + 1.5, 8.0, .worldid = iVW);
 			format(szMiscArray, sizeof szMiscArray, "You have moved job point ID %i.", iJobID);
@@ -320,6 +331,7 @@ Job_Process(playerid, iJobID, choice = 0)
 			DestroyDynamic3DTextLabel(arrJobData[iJobID][job_iTextID][1]);
 			arrJobData[iJobID][job_iActorID][1] = CreateActor(arrJobData[iJobID][job_iActorModel], fPos[0], fPos[1], fPos[2], fPos[3]);
 			SetActorVirtualWorld(arrJobData[iJobID][job_iActorID][1], iVW);
+			SetActorInvulnerable(arrJobData[iJobID][job_iActorID][1], true);
 			format(szMiscArray, sizeof szMiscArray, "{FFFF00}Job Pickup Point ({FFFFFF}ID %i{FFFF00})\n\nName: {FFFFFF}%s\n{FFFF00}Type {FFFFFF}'/%s' {FFFF00}to use the pickup.", iJobID, Job_GetJobName(arrJobData[iJobID][job_iType]), ((arrJobData[iJobID][job_iType] == 21) ? ("getpizza") : ("t")));
 			arrJobData[iJobID][job_iTextID][1] = CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, fPos[0],fPos[1], fPos[2] + 1.5, 8.0);
 			format(szMiscArray, sizeof szMiscArray, "You have created/moved the job pickup for job ID %i.", iJobID);
@@ -387,6 +399,7 @@ public Job_OnCreateJob(iExtraID, iJobID, iActorModel, Float:X, Float:Y, Float:Z,
 {
     arrJobData[iJobID][job_iActorID][0] = CreateActor(iActorModel, X, Y, Z, Rot);
     SetActorVirtualWorld(arrJobData[iJobID][job_iActorID][0], iVW);
+    SetActorInvulnerable(arrJobData[iJobID][job_iActorID][0], true);
     arrJobData[iJobID][job_iActorModel]= iActorModel;
 
     arrJobData[iJobID][job_iMapMarker] = CreateDynamicMapIcon(X, Y, Z, 56, 0, .streamdistance = 1000.0, .style = MAPICON_GLOBAL);
@@ -416,29 +429,19 @@ public Job_OnCreateJobType(iPlayerID, i, name[])
 
 Job_GetJob(playerid, i)
 {
-	if(PlayerInfo[playerid][pJob] == 0) 
-	{
-        if(PlayerInfo[playerid][pLevel] < arrJobData[i][job_iLevel]) 
-        {
-            format(szMiscArray, sizeof szMiscArray, "You need to be level %i to get this job.", arrJobData[i][job_iLevel]);
-            return SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-        }
-        format(szMiscArray, sizeof(szMiscArray), "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}?", Job_GetJobName(arrJobData[i][job_iType]));
-		ShowPlayerDialog(playerid, DIALOG_JOBS_ACCEPTJOB, DIALOG_STYLE_MSGBOX, "Job Point", szMiscArray, "Yes", "No");
-		SetPVarInt(playerid, PVAR_JOB_OBTAINING, arrJobData[i][job_iType]);
-	}
-	else if(PlayerInfo[playerid][pJob2] == 0 && PlayerInfo[playerid][pDonateRank] > 0) 
-	{
-        if(PlayerInfo[playerid][pLevel] < arrJobData[i][job_iLevel]) 
-        {
-            format(szMiscArray, sizeof szMiscArray, "You need to be level %i to get this job.", arrJobData[i][job_iLevel]);
-            return SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-        }
-		format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (VIP Job)", Job_GetJobName(arrJobData[i][job_iType]));
-		ShowPlayerDialog(playerid, DIALOG_JOBS_ACCEPTJOB, DIALOG_STYLE_MSGBOX, "Job Point", szMiscArray, "Yes", "No");
-		SetPVarInt(playerid, PVAR_JOB2_OBTAINING, arrJobData[i][job_iType]);
-	}
-	else SendClientMessage(playerid, COLOR_GRAD1, "You already have a job, use '/quitjob' from your old job in order to obtain a new one.");
+	if(PlayerInfo[playerid][pLevel] < arrJobData[i][job_iLevel]) 
+    {
+        format(szMiscArray, sizeof szMiscArray, "You need to be level %i to get this job.", arrJobData[i][job_iLevel]);
+        return SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+    }
+
+	if(PlayerInfo[playerid][pJob] == 0) format(szMiscArray, sizeof(szMiscArray), "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}?", Job_GetJobName(arrJobData[i][job_iType]));
+	if(0 < PlayerInfo[playerid][pDonateRank] < 4) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (VIP Job)", Job_GetJobName(arrJobData[i][job_iType]));
+	if(PlayerInfo[playerid][pDonateRank] > 3) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (Platinum VIP Job)", Job_GetJobName(arrJobData[i][job_iType]));
+	if(PlayerInfo[playerid][pJob] > 0 && PlayerInfo[playerid][pDonateRank] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You already have a job, use '/quitjob' from your old job in order to obtain a new one.");
+	
+	SetPVarInt(playerid, PVAR_JOB_OBTAINING, arrJobData[i][job_iType]);
+	ShowPlayerDialog(playerid, DIALOG_JOBS_ACCEPTJOB, DIALOG_STYLE_MSGBOX, "Job Point", szMiscArray, "Yes", "No");
 	return 1;
 }
 
@@ -742,7 +745,7 @@ CMD:jobtypes(playerid)
 	szMiscArray = "Job Type ID\tName\n";
 	for(new i; i < MAX_JOBTYPES; ++i)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%s%d):\t %s\n", szMiscArray, i, szJobNames[i]);
+		if(!isnull(szJobNames[i])) format(szMiscArray, sizeof(szMiscArray), "%sID %d:\t %s\n", szMiscArray, i, szJobNames[i]);
 	}
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Job List", szMiscArray, "<<", "");
 	return 1;

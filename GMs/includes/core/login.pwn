@@ -190,7 +190,7 @@ stock ShowMainMenuGUI(playerid)
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[10]);
 
 	SetPVarInt(playerid, "LoginScreen", 1);
-	TogglePlayerSpectating(playerid, 1);
+	TogglePlayerSpectating(playerid, true);
 	SetTimerEx("loginCamera", 1000, false, "i", playerid);
 }
 
@@ -209,7 +209,7 @@ stock HideMainMenuGUI(playerid)
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[10]);
 
 	DeletePVar(playerid, "LoginScreen");
-	TogglePlayerSpectating(playerid, 0);
+	TogglePlayerSpectating(playerid, false);
 	StopAudioStreamForPlayer(playerid);
 }
 
@@ -283,6 +283,7 @@ stock ShowLoginDialogs(playerid, index)
 forward loginCamera(playerid);
 public loginCamera(playerid)
 {
+	if(InsideMainMenu{playerid} == 0) return 1;
 	new stage = GetPVarInt(playerid, "LoginScreen");
 	if(!stage) return 1;
 	switch(stage)
@@ -294,38 +295,44 @@ public loginCamera(playerid)
 			//MoveDynamicObject(GetPVarInt(playerid, "o_iLoginObjectID"), -1181.16455, 310.40958, 28.76766, 30.0);
 			InterpolateCameraPos(playerid, -1205.5737, 287.1576, 15.0854, -1084.4949, 408.7233, 19.8364, LOGINCAM_SPEED, LOGINCAM_CUT);
 			InterpolateCameraLookAt(playerid, -1204.8885, 287.8855, 15.1403, -1083.7922, 409.4344, 19.8913, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, -1204.8885, 287.8855, 15.1403);
 		}
 		case 2:
 		{
 			//DestroyDynamicObject(GetPVarInt(playerid,"o_iLoginObjectID"));
 			InterpolateCameraPos(playerid, 367.0753, -2008.7896, 7.9850, 367.0673, -2002.2097, 8.4014, LOGINCAM_SPEED, LOGINCAM_CUT);
-			InterpolateCameraLookAt(playerid, 366.2721, -2008.2030, 8.1950, 366.1893, -2001.7432, 8.5165, LOGINCAM_SPEED, LOGINCAM_CUT);			
+			InterpolateCameraLookAt(playerid, 366.2721, -2008.2030, 8.1950, 366.1893, -2001.7432, 8.5165, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, 367.0753, -2008.7896, 7.9850);
 		}
 		case 3:
 		{
 			InterpolateCameraPos(playerid, 220.7953, -1931.9850, 11.1282, 118.6140, -2010.0983, 36.6997, LOGINCAM_SPEED, LOGINCAM_CUT);
-
 			InterpolateCameraLookAt(playerid, 219.9500, -1932.5101, 11.2782, 119.2489, -2009.3315, 36.5448, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, 220.7953, -1931.9850, 11.1282);
 		}
 		case 4:
 		{
 			InterpolateCameraPos(playerid, -178.8338, -1365.6261, 34.7616, -119.1325, -1245.7603, 23.8896, LOGINCAM_SPEED, LOGINCAM_CUT);
 			InterpolateCameraLookAt(playerid, -178.4177, -1364.7233, 34.6766, -119.1364, -1244.7668, 23.7446, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, -178.8338, -1365.6261, 34.7616);
 		}
 		case 5:
 		{
 			InterpolateCameraPos(playerid, 691.6666, -1390.5863, 12.6861, 717.0291, -1391.0935, 13.1583, LOGINCAM_SPEED, LOGINCAM_CUT);
-			InterpolateCameraLookAt(playerid, 692.4824, -1390.0200, 12.9711, 717.9996, -1390.8818, 13.3234, LOGINCAM_SPEED, LOGINCAM_CUT);	
+			InterpolateCameraLookAt(playerid, 692.4824, -1390.0200, 12.9711, 717.9996, -1390.8818, 13.3234, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, 691.6666, -1390.5863, 12.6861);
 		}
 		case 6:
 		{
 			InterpolateCameraPos(playerid, 1024.1499, -333.9991, 74.7856, 1069.5502, -326.5808, 74.3607, LOGINCAM_SPEED, LOGINCAM_CUT);
-			InterpolateCameraLookAt(playerid, 1025.1135, -333.7570, 74.7156, 1070.2540, -327.2821, 74.5607, LOGINCAM_SPEED, LOGINCAM_CUT);	
+			InterpolateCameraLookAt(playerid, 1025.1135, -333.7570, 74.7156, 1070.2540, -327.2821, 74.5607, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, 1024.1499, -333.9991, 74.7856);
 		}
 		case 7:
 		{
 			InterpolateCameraPos(playerid, 234.6522, 1982.8652, 18.7558, 238.8765, 2003.7644, 22.0445, LOGINCAM_SPEED, LOGINCAM_CUT);
 			InterpolateCameraLookAt(playerid, 234.2398, 1983.7708, 18.7858, 238.4337, 2004.6549, 22.0845, LOGINCAM_SPEED, LOGINCAM_CUT);
+			SetPlayerPos(playerid, 234.6522, 1982.8652, 18.7558);
 			return 1;
 		}
 	}

@@ -42,11 +42,10 @@
 #define 		ADMIN_LEAD			1338
 #define 		ADMIN_EXECUTIVE 	99999	
 
-stock IsAdminLevel(playerid, level) {
+stock IsAdminLevel(playerid, level, warning = 1) {
 
 	if(PlayerInfo[playerid][pAdmin] >= level) return 1;
-
-	SendClientMessage(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	if(warning) SendClientMessage(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
 	return 0;
 }
 
@@ -74,66 +73,63 @@ stock ShopTechBroadCast(color,string[])
 
 stock GetAdminRankName(i)
 {
-	new string[128];
 	switch(i)
 	{
 		case 2: 
 		{
-			format(string, sizeof(string), "Junior Admin");
+			format(szMiscArray, sizeof(szMiscArray), "Junior Admin");
 		}
 		case 3: 
 		{
-			format(string, sizeof(string), "General Admin");
+			format(szMiscArray, sizeof(szMiscArray), "General Admin");
 		}
 		case 4: 
 		{
-			format(string, sizeof(string), "Senior Admin");
+			format(szMiscArray, sizeof(szMiscArray), "Senior Admin");
 		}
 		case 1337: 
 		{
-			format(string, sizeof(string), "Head Admin");
+			format(szMiscArray, sizeof(szMiscArray), "Head Admin");
 		}
 		case 1338: 
 		{
-			format(string, sizeof(string), "Lead Head Admin");
+			format(szMiscArray, sizeof(szMiscArray), "Lead Head Admin");
 		}
 		default:
 		{
-			format(string, sizeof(string), "Executive Admin");
+			format(szMiscArray, sizeof(szMiscArray), "Executive Admin");
 		}
 	}
-	return string;
+	return szMiscArray;
 }
 
 stock StaffAccountCheck(playerid, ip[])
 {
-	new string[128];
-	format(string, sizeof(string), "SELECT NULL FROM `accounts` WHERE (`IP` = '%s' OR `SecureIP` = '%s') AND `AdminLevel` > 0", ip, ip);
-	mysql_function_query(MainPipeline, string, false, "OnStaffAccountCheck", "i", playerid);
+	format(szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM `accounts` WHERE (`IP` = '%s' OR `SecureIP` = '%s') AND `AdminLevel` > 0", ip, ip);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnStaffAccountCheck", "i", playerid);
 }
 
 stock GetStaffRank(playerid)
 {
-	new string[43];
 	if(PlayerInfo[playerid][pSEC] > 0)
 	{
 		switch(PlayerInfo[playerid][pSEC])
 		{
-			case 1: format(string, sizeof(string), "{00FA9A}Regular Coordinator{FFFFFF}");
-			case 2: format(string, sizeof(string), "{00FA9A}Senior Coordinator{FFFFFF}");
-			case 3: format(string, sizeof(string), "{00FA9A}Assistant Chairman{FFFFFF}");
-			case 4: format(string, sizeof(string), "{00FA9A}Deputy Chairman{FFFFFF}");
-			case 5: format(string, sizeof(string), "{00FA9A}Chairman{FFFFFF}");
+			case 1: szMiscArray = "{00FA9A}Regular Coordinator{FFFFFF}";
+			case 2: szMiscArray = "{00FA9A}Senior Coordinator{FFFFFF}";
+			case 3: szMiscArray = "{00FA9A}Assistant Chairman{FFFFFF}";
+			case 4: szMiscArray = "{00FA9A}Deputy Chairman{FFFFFF}";
+			case 5: szMiscArray = "{00FA9A}Chairman{FFFFFF}";
 		}
 	}
 	if(PlayerInfo[playerid][pWatchdog] > 0)
 	{
 		switch(PlayerInfo[playerid][pWatchdog])
 		{
-			case 1: format(string, sizeof(string), "{2267F0}Watchdog{FFFFFF}");
-			case 2: format(string, sizeof(string), "{2267F0}Senior Watchdog{FFFFFF}");
-			case 3: format(string, sizeof(string), "{2267F0}RP Specialist{FFFFFF}");
-			case 4: format(string, sizeof(string), "{2267F0}Director of RP Improvement{FFFFFF}");
+			case 1: szMiscArray = "{2267F0}Watchdog{FFFFFF}";
+			case 2: szMiscArray = "{2267F0}Senior Watchdog{FFFFFF}";
+			case 3: szMiscArray = "{2267F0}RP Specialist{FFFFFF}";
+			case 4: szMiscArray = "{2267F0}Director of RP Improvement{FFFFFF}";
 		}
 	}
 	
@@ -141,10 +137,10 @@ stock GetStaffRank(playerid)
 	{
 		switch(PlayerInfo[playerid][pHelper])
 		{
-			case 1: format(string, sizeof(string), "{6495ED}Helper{FFFFFF}");
-			case 2: format(string, sizeof(string), "{00FFFF}Community Advisor{FFFFFF}");
-			case 3: format(string, sizeof(string), "{00FFFF}Senior Advisor{FFFFFF}");
-			case 4: format(string, sizeof(string), "{00FFFF}Chief Advisor{FFFFFF}");
+			case 1: szMiscArray = "{6495ED}Helper{FFFFFF}";
+			case 2: szMiscArray = "{00FFFF}Community Advisor{FFFFFF}";
+			case 3: szMiscArray = "{00FFFF}Senior Advisor{FFFFFF}";
+			case 4: szMiscArray = "{00FFFF}Chief Advisor{FFFFFF}";
 		}
 	}
 
@@ -152,24 +148,24 @@ stock GetStaffRank(playerid)
 	{
 		switch(PlayerInfo[playerid][pSMod])
 		{
-			case 0: format(string, sizeof(string), "{FFFF00}Server Moderator{FFFFFF}");
-			case 1: format(string, sizeof(string), "{FFFF00}Senior Server Moderator{FFFFFF}");
+			case 0: szMiscArray = "{FFFF00}Server Moderator{FFFFFF}";
+			case 1: szMiscArray = "{FFFF00}Senior Server Moderator{FFFFFF}";
 		}
 	}
 	if(PlayerInfo[playerid][pAdmin] > 1)
 	{
 		switch(PlayerInfo[playerid][pAdmin])
 		{
-			case 2: format(string, sizeof(string), "{00FF00}Junior Administrator{FFFFFF}");
-			case 3: format(string, sizeof(string), "{00FF00}General Administrator{FFFFFF}");
-			case 4: format(string, sizeof(string), "{F4A460}Senior Administrator{FFFFFF}");
-			case 1337: format(string, sizeof(string), "{FF0000}Head Administrator{FFFFFF}");
-			case 1338: format(string, sizeof(string), "{298EFF}Lead Head Administrator{FFFFFF}");
-			case 99999: format(string, sizeof(string), "{298EFF}Executive Administrator{FFFFFF}");
-			default: format(string, sizeof(string), "Undefined Administrator (%d)", PlayerInfo[playerid][pAdmin]);
+			case 2: szMiscArray = "{00FF00}Junior Administrator{FFFFFF}";
+			case 3: szMiscArray = "{00FF00}General Administrator{FFFFFF}";
+			case 4: szMiscArray = "{F4A460}Senior Administrator{FFFFFF}";
+			case 1337: szMiscArray = "{FF0000}Head Administrator{FFFFFF}";
+			case 1338: szMiscArray = "{298EFF}Lead Head Administrator{FFFFFF}";
+			case 99999: szMiscArray = "{298EFF}Executive Administrator{FFFFFF}";
+			default: format(szMiscArray, sizeof(szMiscArray), "Undefined Administrator (%d)", PlayerInfo[playerid][pAdmin]);
 		}
 	}
-	return string;
+	return szMiscArray;
 }
 
 CMD:resetvw(playerid, params[])
@@ -223,18 +219,18 @@ CMD:near(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		new radius, string[128];
+		new radius;
 		if(sscanf(params, "d", radius)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /near [radius]");
 		if(radius < 1 || radius > 100) return SendClientMessageEx(playerid, COLOR_GREY, "Radius must be higher than 0 and lower than 100!");
 
-		format(string, sizeof(string), "Players within a %d block radius", radius);
-		SendClientMessageEx(playerid, COLOR_GRAD5, string);
+		format(szMiscArray, sizeof(szMiscArray), "Players within a %d block radius", radius);
+		SendClientMessageEx(playerid, COLOR_GRAD5, szMiscArray);
         foreach(new i: Player)
 		{
 			if(i != playerid && ProxDetectorS(radius, playerid, i))
 			{
-				format(string, sizeof(string), "%s (ID: %d - Level: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel]);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %d - Level: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel]);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			}
 		}	
 	}
@@ -245,7 +241,7 @@ CMD:near(playerid, params[])
 CMD:givegun(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 4) {
-        new sstring[128], playa, gun, ammo;
+        new playa, gun, ammo;
 
         if(sscanf(params, "udd", playa, gun, ammo)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid] [ammo]");
@@ -260,7 +256,7 @@ CMD:givegun(playerid, params[])
             return 1;
         }
 
-        format(sstring, sizeof(sstring), "You have given %s gun ID %d!",GetPlayerNameEx(playa),gun);
+        format(szMiscArray, sizeof(szMiscArray), "You have given %s gun ID %d!", GetPlayerNameEx(playa), gun);
         if(gun < 1||gun > 47)
             { SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid weapon ID!"); return 1; }
         if(IsPlayerConnected(playa)) 
@@ -270,13 +266,13 @@ CMD:givegun(playerid, params[])
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
                 PlayerInfo[playa][pAGuns][GetWeaponSlot(gun)] = gun;
                 GivePlayerValidWeapon(playa, gun, ammo);
-                SendClientMessageEx(playerid, COLOR_GRAD1, sstring);
+                SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 				SyncPlayerAmmo(playerid, gun);
             }
             else if(playa != INVALID_PLAYER_ID && gun == 21) {
                 JetPack[playa] = 1;
                 SetPlayerSpecialAction(playa, SPECIAL_ACTION_USEJETPACK);
-                SendClientMessageEx(playerid, COLOR_GRAD1, sstring);
+                SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
             }
 			format(szMiscArray, sizeof(szMiscArray), "%s(%s) has given %s(%d) (%s) a %s(%d)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(playa), GetPlayerSQLId(playa), GetPlayerIpEx(playa), GetWeaponNameEx(gun), gun);
 			Log("logs/admingive.log", szMiscArray);
@@ -290,7 +286,7 @@ CMD:givegun(playerid, params[])
 
 CMD:jetpack(playerid, params[])
 {
-	new string[128], plo;
+	new plo;
 	if((PlayerInfo[playerid][pAdmin] >= 2) && sscanf(params, "u", plo)) {
         JetPack[playerid] = 1;
         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USEJETPACK);
@@ -305,10 +301,10 @@ CMD:jetpack(playerid, params[])
 				SendClientMessageEx(plo, COLOR_GRAD1, "Enjoy your new jetpack!");
 				JetPack[plo] = 1;
 				SetPlayerSpecialAction(plo, SPECIAL_ACTION_USEJETPACK);
-				format(string, sizeof(string), "AdmCmd: %s has received a jetpack from %s", GetPlayerNameEx(plo), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				format(string, sizeof(string), "[Admin] %s (IP:%s) has given %s(%d) (IP:%s) a Jetpack.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(plo), GetPlayerSQLId(plo), GetPlayerIpEx(plo));
-				Log("logs/admingive.log", string);
+				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has received a jetpack from %s", GetPlayerNameEx(plo), GetPlayerNameEx(playerid));
+				SendClientMessageToAllEx(COLOR_LIGHTRED, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "[Admin] %s (IP:%s) has given %s(%d) (IP:%s) a Jetpack.", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(plo), GetPlayerSQLId(plo), GetPlayerIpEx(plo));
+				Log("logs/admingive.log", szMiscArray);
 			}
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -319,7 +315,7 @@ CMD:jetpack(playerid, params[])
 
 CMD:sethp(playerid, params[])
 {
-	new string[128], playa, health;
+	new playa, health;
 	if(sscanf(params, "ud", playa, health)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sethp [player] [health]");
 	if(PlayerInfo[playa][pJailTime] >= 1 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessage(playerid, COLOR_WHITE, "You can't set a OOC Prisoner Health!");
 	if((PlayerInfo[playa][pAdmin] >= PlayerInfo[playerid][pAdmin]) && playa != playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on the same/greater level admin than you!");
@@ -328,8 +324,8 @@ CMD:sethp(playerid, params[])
 			if(playa != INVALID_PLAYER_ID)
 			{
 				SetHealth(playa, health);
-				format(string, sizeof(string), "You have set %s's health to %d.", GetPlayerNameEx(playa), health);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(szMiscArray, sizeof(szMiscArray), "You have set %s's health to %d.", GetPlayerNameEx(playa), health);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			}
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -340,15 +336,15 @@ CMD:sethp(playerid, params[])
 
 CMD:setmyhp(playerid, params[])
 {
-    new string[128], health;
+    new health;
     if(sscanf(params, "d", health)) {
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmyhp [health]");
         return 1;
     }
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1) {
         SetHealth(playerid, health);
-        format(string, sizeof(string), "You have set your health to %d.", health);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        format(szMiscArray, sizeof(szMiscArray), "You have set your health to %d.", health);
+        SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
     }
     else {
         SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -358,7 +354,7 @@ CMD:setmyhp(playerid, params[])
 
 CMD:setarmor(playerid, params[])
 {
-    new string[128], playa, health;
+    new playa, health;
     if(sscanf(params, "ud", playa, health))
 	{
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setarmor [player] [armor]");
@@ -371,8 +367,8 @@ CMD:setarmor(playerid, params[])
             if(playa != INVALID_PLAYER_ID)
 			{
                 SetArmour(playa, health);
-                format(string, sizeof(string), "You have set %s's armor to %d.", GetPlayerNameEx(playa), health);
-                SendClientMessageEx(playerid, COLOR_WHITE, string);
+                format(szMiscArray, sizeof(szMiscArray), "You have set %s's armor to %d.", GetPlayerNameEx(playa), health);
+                SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
             }
         }
     }
@@ -385,7 +381,7 @@ CMD:setarmor(playerid, params[])
 
 CMD:setmyarmor(playerid, params[])
 {
-    new string[128], armor;
+    new armor;
     if(sscanf(params, "d", armor))
 	{
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmyarmor [amount]");
@@ -394,8 +390,8 @@ CMD:setmyarmor(playerid, params[])
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
 	{
         SetArmour(playerid, armor);
-        format(string, sizeof(string), "You have set your armor to %d.", armor);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        format(szMiscArray, sizeof(szMiscArray), "You have set your armor to %d.", armor);
+        SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
     }
     else
 	{
@@ -459,53 +455,53 @@ CMD:admins(playerid, params[])
         foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pAdmin] <= PlayerInfo[playerid][pAdmin]) {
-				new string[128], tdate[11], thour[9], i_timestamp[3];
+				new tdate[11], thour[9], i_timestamp[3];
 				getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(thour, sizeof(thour), "%02d:00:00", hour);
 
 				if(PlayerInfo[playerid][pAdmin] >= 4)
 				{
-					if(PlayerInfo[i][pAdmin] == 2) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else if(PlayerInfo[i][pAdmin] == 3) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else if(PlayerInfo[i][pAdmin] == 4) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else if(PlayerInfo[i][pAdmin] == 1337) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else if(PlayerInfo[i][pAdmin] == 1338) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else if(PlayerInfo[i][pAdmin] == 99999) format(string, sizeof(string), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
-					else format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), PlayerInfo[i][pAdmin], GetPlayerNameEx(i));
+					if(PlayerInfo[i][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else if(PlayerInfo[i][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else if(PlayerInfo[i][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else if(PlayerInfo[i][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else if(PlayerInfo[i][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else if(PlayerInfo[i][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					else format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), PlayerInfo[i][pAdmin], GetPlayerNameEx(i));
 				}
 				else
 				{
-					if(PlayerInfo[i][pAdmin] == 2) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else if(PlayerInfo[i][pAdmin] == 3) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else if(PlayerInfo[i][pAdmin] == 4) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else if(PlayerInfo[i][pAdmin] == 1337) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else if(PlayerInfo[i][pAdmin] == 1338) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else if(PlayerInfo[i][pAdmin] == 99999) format(string, sizeof(string), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
-					else format(string, sizeof(string), "%s{BFC0C2}: %s", PlayerInfo[i][pAdmin], GetPlayerNameEx(i));
+					if(PlayerInfo[i][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else if(PlayerInfo[i][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else if(PlayerInfo[i][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else if(PlayerInfo[i][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else if(PlayerInfo[i][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else if(PlayerInfo[i][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", GetStaffRank(i), GetPlayerNameEx(i));
+					else format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s", PlayerInfo[i][pAdmin], GetPlayerNameEx(i));
 				}
 
-				if(PlayerInfo[i][pBanAppealer] == 1) strcat(string, " [BA]");
-				if(PlayerInfo[i][pBanAppealer] == 2) strcat(string, " [DOBA]");
-				if(PlayerInfo[i][pShopTech] == 1) strcat(string, " [ST]");
-				if(PlayerInfo[i][pShopTech] == 2) strcat(string, " [SST]");
-				if(PlayerInfo[i][pShopTech] == 3) strcat(string, " [DOCR]");
-				if(PlayerInfo[i][pUndercover] == 1) strcat(string, " [UC]");
-				if(PlayerInfo[i][pUndercover] == 2) strcat(string, " [DOSO]");
-				if(PlayerInfo[i][pFactionModerator] == 1) strcat(string, " [FMOD]");
-				if(PlayerInfo[i][pFactionModerator] == 2) strcat(string, " [DOFM]");
-				if(PlayerInfo[i][pGangModerator] == 1) strcat(string, " [GMOD]");
-				if(PlayerInfo[i][pGangModerator] == 2) strcat(string, " [DOGM]");
-				if(PlayerInfo[i][pTogReports]) strcat(string, " [SPEC MODE]");
-				if(PlayerInfo[i][pPR] == 1) strcat(string, " [PR]");
-				if(PlayerInfo[i][pPR] == 2) strcat(string, " [DOPR]");
-				if(PlayerInfo[i][pHR] >= 1) strcat(string, " [HR]");
-				if(PlayerInfo[i][pAP] >= 1) strcat(string, " [AP]");
-				if(PlayerInfo[i][pWatchdog] == 4) strcat(string, " [DoRPI]");
-				if(PlayerInfo[i][pSecurity] >= 1) strcat(string, " [Sec]");
-				if(PlayerInfo[i][pBM] == 1) strcat(string, " [BM]");
-				if(PlayerInfo[i][pBM] == 2) strcat(string, " [DOBM]");
-				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+				if(PlayerInfo[i][pBanAppealer] == 1) strcat(szMiscArray, " [BA]");
+				if(PlayerInfo[i][pBanAppealer] == 2) strcat(szMiscArray, " [DOBA]");
+				if(PlayerInfo[i][pShopTech] == 1) strcat(szMiscArray, " [ST]");
+				if(PlayerInfo[i][pShopTech] == 2) strcat(szMiscArray, " [SST]");
+				if(PlayerInfo[i][pShopTech] == 3) strcat(szMiscArray, " [DOCR]");
+				if(PlayerInfo[i][pUndercover] == 1) strcat(szMiscArray, " [UC]");
+				if(PlayerInfo[i][pUndercover] == 2) strcat(szMiscArray, " [DOSO]");
+				if(PlayerInfo[i][pFactionModerator] == 1) strcat(szMiscArray, " [FMOD]");
+				if(PlayerInfo[i][pFactionModerator] == 2) strcat(szMiscArray, " [DOFM]");
+				if(PlayerInfo[i][pGangModerator] == 1) strcat(szMiscArray, " [GMOD]");
+				if(PlayerInfo[i][pGangModerator] == 2) strcat(szMiscArray, " [DOGM]");
+				if(PlayerInfo[i][pTogReports]) strcat(szMiscArray, " [SPEC MODE]");
+				if(PlayerInfo[i][pPR] == 1) strcat(szMiscArray, " [PR]");
+				if(PlayerInfo[i][pPR] == 2) strcat(szMiscArray, " [DOPR]");
+				if(PlayerInfo[i][pHR] >= 1) strcat(szMiscArray, " [HR]");
+				if(PlayerInfo[i][pAP] >= 1) strcat(szMiscArray, " [AP]");
+				if(PlayerInfo[i][pWatchdog] == 4) strcat(szMiscArray, " [DoRPI]");
+				if(PlayerInfo[i][pSecurity] >= 1) strcat(szMiscArray, " [Sec]");
+				if(PlayerInfo[i][pBM] == 1) strcat(szMiscArray, " [BM]");
+				if(PlayerInfo[i][pBM] == 2) strcat(szMiscArray, " [DOBM]");
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 			}
 		}	
     }
@@ -833,7 +829,6 @@ CMD:prisoners(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
  	{
   		new Count;
-		new string[128];
 
 		SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
   		SendClientMessageEx(playerid, COLOR_WHITE, "Name | Prisoned By | Time Left | Reason");
@@ -845,13 +840,13 @@ CMD:prisoners(playerid, params[])
 				if(strlen(PlayerInfo[i][pPrisonReason]) >= 1 && strlen(PlayerInfo[i][pPrisonedBy]) >= 1)
 				{
 						Count++;
-						format(string, sizeof(string), "%s (%d) | %s | %s | %s", GetPlayerNameEx(i), i, PlayerInfo[i][pPrisonedBy], TimeConvert(PlayerInfo[i][pJailTime]), PlayerInfo[i][pPrisonReason]);
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+						format(szMiscArray, sizeof(szMiscArray), "%s (%d) | %s | %s | %s", GetPlayerNameEx(i), i, PlayerInfo[i][pPrisonedBy], TimeConvert(PlayerInfo[i][pJailTime]), PlayerInfo[i][pPrisonReason]);
+						SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 				}
 				else
 				{
-					format(string, sizeof(string), "%s (%d) | Unavailable | %s | Unavailable", GetPlayerNameEx(i), i, TimeConvert(PlayerInfo[i][pJailTime]));
-					SendClientMessageEx(playerid, COLOR_GREY, string);
+					format(szMiscArray, sizeof(szMiscArray), "%s (%d) | Unavailable | %s | Unavailable", GetPlayerNameEx(i), i, TimeConvert(PlayerInfo[i][pJailTime]));
+					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 				}
 			}
       	}
@@ -912,23 +907,20 @@ CMD:vehname(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_YELLOW, "--------------------------------------------------------------------------------------------------------------------------------");
 		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle Search:");
 
-		new
-			string[128];
-
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "No keyword specified.");
 		if(!params[2]) return SendClientMessageEx(playerid, COLOR_GREY, "Search keyword too short.");
 
 		for(new v; v < sizeof(VehicleName); v++) {
 			if(strfind(VehicleName[v], params, true) != -1) {
 
-				if(isnull(string)) format(string, sizeof(string), "%s (ID %d)", VehicleName[v], v+400);
-				else format(string, sizeof(string), "%s | %s (ID %d)", string, VehicleName[v], v+400);
+				if(isnull(szMiscArray)) format(szMiscArray, sizeof(szMiscArray), "%s (ID %d)", VehicleName[v], v+400);
+				else format(szMiscArray, sizeof(szMiscArray), "%s | %s (ID %d)", szMiscArray, VehicleName[v], v+400);
 			}
 		}
 
-		if(!string[0]) SendClientMessageEx(playerid, COLOR_GREY, "No results found.");
-		else if(string[127]) SendClientMessageEx(playerid, COLOR_GREY, "Too many results found.");
-		else SendClientMessageEx(playerid, COLOR_WHITE, string);
+		if(!szMiscArray[0]) SendClientMessageEx(playerid, COLOR_GREY, "No results found.");
+		//else if(szMiscArray[127]) SendClientMessageEx(playerid, COLOR_GREY, "Too many results found.");
+		else SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 		SendClientMessageEx(playerid, COLOR_YELLOW, "--------------------------------------------------------------------------------------------------------------------------------");
 	}
@@ -1018,9 +1010,9 @@ CMD:aobject(playerid, params[])
 	{
 		if(IsPlayerAttachedObjectSlotUsed(id, 8)) RemovePlayerAttachedObject(id, 8);
 		SetPlayerAttachedObject(id, 8, objectid, bone, offsetx, offsety, offsetz, rotx, roty, rotz, scalex, scaley, scalez);
-		new string[256];
-		format(string, sizeof(string), "%s has given %s(%d) object ID %d with /aobject", GetPlayerNameEx(playerid), GetPlayerNameEx(id), GetPlayerSQLId(id), objectid);
-		Log("logs/toys.log", string);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has given %s(%d) object ID %d with /aobject", GetPlayerNameEx(playerid), GetPlayerNameEx(id), GetPlayerSQLId(id), objectid);
+		Log("logs/toys.log", szMiscArray);
 	}
 	return 1;
 }
@@ -1046,15 +1038,15 @@ CMD:wepreset(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
-	    new string[75 + (MAX_PLAYER_NAME * 2)], giveplayerid;
+	    new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /wepreset [player]");
 		if(IsPlayerConnected(giveplayerid))
 		{
 		    if(PlayerInfo[giveplayerid][pWRestricted] > 0)
 		    {
 		        PlayerInfo[giveplayerid][pWRestricted] = 0;
-		        format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s reset %s's (ID:%d) weapon restriction timer.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), giveplayerid);
-		        ABroadCast(COLOR_YELLOW, string, 2);
+		        format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s reset %s's (ID:%d) weapon restriction timer.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), giveplayerid);
+		        ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 		    }
 		    else
 		    {
@@ -1229,10 +1221,10 @@ CMD:damagecheck(playerid, params[])
 	new pID;
 	if(sscanf(params, "u", pID)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /damagecheck [playerid]");
 	if(!IsPlayerConnected(pID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	new string[64];
+
 	SetPVarInt(playerid, "_dCheck", pID);
-	format(string, sizeof(string), "You will now see all the damage that %s takes/gives.", GetPlayerNameEx(pID));
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(szMiscArray, sizeof(szMiscArray), "You will now see all the damage that %s takes/gives.", GetPlayerNameEx(pID));
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	if(GetPVarInt(pID, "usingfirstaid") == 1) SendClientMessageEx(playerid, COLOR_ORANGE, "Note{ffffff}: Player is currently using a first aid kit.");
 	return 1;
 }
@@ -1244,16 +1236,16 @@ CMD:lastshot(playerid, params[])
 	if(sscanf(params, "u", pID)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /lastshot [playerid]");
 	if(!IsPlayerConnected(pID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	if(aLastShot[pID] == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "Player was not shot yet.");
-	new string[128];
-	format(string, sizeof(string), "%s was last shot by %s (ID: %d).",GetPlayerNameEx(pID), GetPlayerNameEx(aLastShot[pID]), aLastShot[pID]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+
+	format(szMiscArray, sizeof(szMiscArray), "%s was last shot by %s (ID: %d).",GetPlayerNameEx(pID), GetPlayerNameEx(aLastShot[pID]), aLastShot[pID]);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	return 1;
 }
 
 CMD:healnear(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4) {
-		new string[128], radius, count;
+		new radius, count;
 		if(sscanf(params, "d", radius)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /healnear [radius]");
 		if(radius < 1 || radius > 100)
 		{
@@ -1267,8 +1259,8 @@ CMD:healnear(playerid, params[])
 				count++;
 			}
 		}	
-        format(string, sizeof(string), "You have healed everyone (%d) nearby.", count);
-        SendClientMessageEx(playerid, COLOR_WHITE, string);
+        format(szMiscArray, sizeof(szMiscArray), "You have healed everyone (%d) nearby.", count);
+        SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
     }
     return 1;
 }
@@ -1696,26 +1688,28 @@ CMD:removepvehicle(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /removepvehicle [player]");
 			return 1;
 		}
-		new vstring[1024];
+		
+		szMiscArray[0] = 0;
+
 		for(new i, iModelID; i < GetPlayerVehicleSlots(giveplayerid); i++) {
 			if((iModelID = PlayerVehicleInfo[giveplayerid][i][pvModelId] - 400) >= 0) {
 				if(PlayerVehicleInfo[giveplayerid][i][pvImpounded]) {
-					format(vstring, sizeof(vstring), "%s\n%s (impounded)", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (impounded)", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(PlayerVehicleInfo[giveplayerid][i][pvDisabled]) {
-					format(vstring, sizeof(vstring), "%s\n%s (disabled)", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (disabled)", szMiscArray, VehicleName[iModelID]);
 				}
 				else if(!PlayerVehicleInfo[giveplayerid][i][pvSpawned]) {
-					format(vstring, sizeof(vstring), "%s\n%s (stored)", vstring, VehicleName[iModelID]);
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (stored)", szMiscArray, VehicleName[iModelID]);
 				}
-				else format(vstring, sizeof(vstring), "%s\n%s (spawned)", vstring, VehicleName[iModelID]);
+				else format(szMiscArray, sizeof(szMiscArray), "%s\n%s (spawned)", szMiscArray, VehicleName[iModelID]);
 			}
-			else strcat(vstring, "\nEmpty");
+			else strcat(szMiscArray, "\nEmpty");
 		}
 		new string[64];
 		SetPVarInt(playerid, "vehcheck_giveplayerid", giveplayerid);
 		format(string, sizeof(string), "%s's Vehicle List", GetPlayerNameEx(giveplayerid));
-		ShowPlayerDialog(playerid, ADMIN_VEHCHECK, DIALOG_STYLE_LIST, string, vstring, "Delete Car", "Cancel");
+		ShowPlayerDialog(playerid, ADMIN_VEHCHECK, DIALOG_STYLE_LIST, string, szMiscArray, "Delete Car", "Cancel");
 	}
 	return 1;
 }
@@ -2426,13 +2420,15 @@ CMD:countdown(playerid, params[])
         } else {
             SendClientMessageEx(playerid, COLOR_WHITE, "There is already a countdown currently started.");
         }
-    } else if(IsARacer(playerid)) {
+    }
+    else if(IsARacer(playerid)) {
         if(CountDown == 0) {
         	SetTimerEx("Countdown", 100, false, "i", playerid); //Keep this at 100milliseconds
         } else {
             SendClientMessageEx(playerid, COLOR_WHITE, "There is already a countdown currently started.");
         }
-    } else if(PlayerInfo[playerid][pAdmin] >= 3 && PlayerInfo[playerid][pTogReports] == 0) {
+    }
+    else if(PlayerInfo[playerid][pAdmin] >= 3 && PlayerInfo[playerid][pTogReports] == 0) {
         if(CountDown == 0) {
         	SetTimerEx("Countdown", 100, false, "i", playerid); //Keep this at 100milliseconds
         } else {
@@ -2792,7 +2788,7 @@ CMD:listguns(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			new weapons[13][2], weaponname[50];
-			if(GetPVarInt(giveplayerid, "EventToken") != 0 || GetPVarInt(giveplayerid, "IsInArena"))
+			if(GetPVarInt(giveplayerid, "EventToken") != 0 || GetPVarType(giveplayerid, "IsInArena"))
 			{
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is at an event/paintball so the weapons may appear as non-server sided.");
 			}
@@ -4491,7 +4487,8 @@ CMD:sendtoid(playerid, params[])
 	if(sscanf(params, "uu", giveplayerid, targetplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sendtoid [player] [target player]");
 
 	new Float:plocx,Float:plocy,Float:plocz;
-	if (IsPlayerConnected(giveplayerid) && IsPlayerConnected(targetplayerid))
+	
+	if(IsPlayerConnected(giveplayerid) && IsPlayerConnected(targetplayerid))
 	{
 		if (PlayerInfo[playerid][pAdmin] >= 2)
 		{
@@ -4511,7 +4508,7 @@ CMD:sendtoid(playerid, params[])
 			{
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command on a Admin with the same/greater Administrative Level than you.");
 			}
-			if(GetPVarInt(giveplayerid, "IsInArena"))
+			if(GetPVarType(giveplayerid, "IsInArena"))
 			{
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);
 			    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
@@ -4571,7 +4568,7 @@ CMD:gethere(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That person is spectating someone.");
 				return 1;
 			}
-			if(GetPVarInt(giveplayerid, "IsInArena"))
+			if(GetPVarType(giveplayerid, "IsInArena"))
 			{
 			    new string[128];
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);
@@ -5573,14 +5570,14 @@ CMD:undercover(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		if(GetPVarInt(playerid, "Undercover") == 0)
+		if(!GetPVarType(playerid, "Undercover"))
 		{
 			SetPVarInt(playerid, "Undercover", 1);
 			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
 		}
 		else
 		{
-			SetPVarInt(playerid, "Undercover", 0);
+			DeletePVar(playerid, "Undercover");
 			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
 		}
 	}
@@ -5610,16 +5607,16 @@ CMD:quickstats(playerid, params[])
 
 CMD:fps(playerid, params[])
 {
-	if(GetPVarInt(playerid, "FPSToggle") == 0)
+	if(!Bit_State(g_PlayerBits[playerid], g_bFPS))
 	{
 		ShowFPSCounter(playerid);
-		SetPVarInt(playerid, "FPSToggle", 1);
+		Bit_On(g_PlayerBits[playerid], g_bFPS);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have toggled on your FPS Counter.");
 	}
 	else
 	{
 		HideFPSCounter(playerid);
-		SetPVarInt(playerid, "FPSToggle", 0);
+		Bit_Off(g_PlayerBits[playerid], g_bFPS);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have toggled off your FPS Counter.");
 	}
 	return true;

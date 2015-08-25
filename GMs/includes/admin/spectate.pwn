@@ -87,7 +87,7 @@ public SpecUpdate(playerid)
 			SetPlayerVirtualWorld( playerid, GetPlayerVirtualWorld( Spectate[playerid] ) );
 		}	
 	}	
-	else if(Spectating[playerid] > 0 && GetPVarInt(playerid, "SpectatingWatch") != INVALID_PLAYER_ID)
+	else if(Spectating[playerid] > 0 && GetPVarType(playerid, "SpectatingWatch"))
 	{
 		for(new i = 0; i < 2; i++)
 		{

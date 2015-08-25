@@ -83,7 +83,7 @@ public MoveEMS(playerid)
 	ApplyAnimation(GetPVarInt(playerid, "MovingStretcher"), "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
 
 	DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
-	SetPVarInt(playerid, "MovingStretcher", -1);
+	DeletePVar(playerid, "MovingStretcher");
 }
 
 forward KillEMSQueue(playerid);

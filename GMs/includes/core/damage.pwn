@@ -585,7 +585,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-		if(GetPVarInt(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
+		if(GetPVarType(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
 		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");
 	}
 
@@ -597,16 +597,16 @@ public OnPlayerDeath(playerid, killerid, reason)
 	DeletePVar(playerid, "UsingSprunk");
 	KillTimer(GetPVarInt(playerid, "firstaid5"));
 	DeletePVar(playerid, "usingfirstaid");
-	if(GetPVarInt(playerid, "MovingStretcher") != -1)
+	if(GetPVarType(playerid, "MovingStretcher"))
 	{
 		KillTimer(GetPVarInt(playerid, "TickEMSMove"));
 		DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
-		SetPVarInt(playerid, "MovingStretcher", -1);
+		DeletePVar(playerid, "MovingStretcher");
 	}
-	if(GetPVarInt(playerid, "DraggingPlayer") != INVALID_PLAYER_ID)
+	if(GetPVarType(playerid, "DraggingPlayer"))
 	{
 		DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
-		SetPVarInt(playerid, "DraggingPlayer", INVALID_PLAYER_ID);
+		DeletePVar(playerid, "DraggingPlayer");
 	}
 	if(IsPlayerConnected(Mobile[playerid]))
 	{
@@ -670,7 +670,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 
-	if(GetPVarInt(playerid, "IsInArena"))
+	if(GetPVarType(playerid, "IsInArena"))
 	{
 		new
 			iPlayer = GetPVarInt(playerid, "IsInArena"),

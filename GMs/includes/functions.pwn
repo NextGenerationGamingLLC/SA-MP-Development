@@ -620,8 +620,7 @@ public KickNonRP(playerid)
 	}
 }
 
-forward RotateWheel();
-public RotateWheel()
+timer RotateWheel[1000 * 3]()
 {
     UpdateWheelTarget();
 
@@ -932,7 +931,6 @@ public RadarCooldown(playerid)
    return 1;
 }
 
-forward OnPlayerPickUpDynamicPickup(playerid, pickupid);
 public OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {	
 	new vehicleid = GetPlayerVehicleID(playerid);
@@ -2097,7 +2095,7 @@ stock SetPlayerToTeamColor(playerid)
 			return 1;
 		}
 		#endif
-		if(GetPVarInt(playerid, "IsInArena"))
+		if(GetPVarType(playerid, "IsInArena"))
 	    {
 	        new arenaid = GetPVarInt(playerid, "IsInArena");
 	        if(PaintBallArena[arenaid][pbGameType] == 2 || PaintBallArena[arenaid][pbGameType] == 3 || PaintBallArena[arenaid][pbGameType] == 5) switch(PlayerInfo[playerid][pPaintTeam]) {

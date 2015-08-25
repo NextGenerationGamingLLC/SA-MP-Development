@@ -121,7 +121,7 @@ CMD:stopwatch(playerid, params[])
 			SetPVarInt(playerid, "SpecOff", 1 );
 			TogglePlayerSpectating(playerid, false);
 			SetCameraBehindPlayer(playerid);
-			SetPVarInt(playerid, "SpectatingWatch", INVALID_PLAYER_ID);
+			DeletePVar(playerid, "SpectatingWatch");
 			SendClientMessageEx(playerid, -1, "WATCHDOG: You have stopped watching.");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You're not watching anybody.");
@@ -200,7 +200,7 @@ CMD:dmalert(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
+	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
 	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
 	JustReported[playerid]=25;
@@ -365,7 +365,7 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "RP Specialist %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "Director of RP Improvement %s (ID %i)", GetPlayerNameEx(i), i);
 				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, WDReportHourCount[i], WDReportCount[i]);
-				if(GetPVarInt(i, "WatchdogChat") == 0) strcat(string, " (WD Chat Toggled)");
+				if(!GetPVarType(i, "WatchdogChat")) strcat(string, " (WD Chat Toggled)");
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -377,10 +377,10 @@ CMD:watchdogs(playerid, params[])
 CMD:togwd(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "WatchdogChat") == 1)
+	if(GetPVarType(playerid, "WatchdogChat"))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
-		return SetPVarInt(playerid, "WatchdogChat", 0);
+		return DeletePVar(playerid, "WatchdogChat");
 	}
 	else
 	{
@@ -394,7 +394,7 @@ CMD:wd(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
 		if(PlayerInfo[playerid][pWatchdog] < 3) SetPVarInt(playerid, "WatchdogChat", 1);
-		if(GetPVarInt(playerid, "WatchdogChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
+		if(!GetPVarType(playerid, "WatchdogChat")) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
 		if(!isnull(params)) 
 		{
 			new szMessage[128];
@@ -412,7 +412,7 @@ CMD:wd(playerid, params[])
 
 			foreach(new i : Player)
 			{
-				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarInt(i, "WatchdogChat") == 1)
+				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarType(i, "WatchdogChat"))
 				{
 					SendClientMessageEx(i, 0x2267F0FF, szMessage);
 				}
@@ -429,7 +429,7 @@ CMD:refer(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	new reason[100];
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "SpectatingWatch") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
+	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
 	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
 	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
  	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");

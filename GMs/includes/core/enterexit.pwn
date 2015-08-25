@@ -38,7 +38,7 @@
 
 CMD:enter(playerid, params[])
 {
-    if(GetPVarInt(playerid, "IsInArena")) {
+    if(GetPVarType(playerid, "IsInArena")) {
         SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }
@@ -581,7 +581,7 @@ CMD:exit(playerid, params[])
 		DeletePVar(playerid, "_BoxingQueueTick");
 	}
 
-    if(GetPVarInt(playerid, "IsInArena")) {
+    if(GetPVarType(playerid, "IsInArena")) {
         SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
         return 1;
     }

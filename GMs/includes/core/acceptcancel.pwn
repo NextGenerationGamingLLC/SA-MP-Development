@@ -223,7 +223,7 @@ CMD:accept(playerid, params[])
        	        SendClientMessageEx(playerid, COLOR_GREY, "The seller is not near you!");
        	        return 1;
             }
-		    if(GetPVarInt(playerid, "IsInArena")) {
+		    if(GetPVarType(playerid, "IsInArena")) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 				return 1;
 			}
@@ -1351,7 +1351,7 @@ CMD:accept(playerid, params[])
             }
         }
         else if(strcmp(params, "bodyguard", true) == 0) {
-        	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+        	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
             if(GuardOffer[playerid] != INVALID_PLAYER_ID) {
                 if(GetPlayerCash(playerid) > GuardPrice[playerid]) {
                     if(IsPlayerConnected(GuardOffer[playerid])) {
@@ -1625,7 +1625,7 @@ CMD:accept(playerid, params[])
  	    }
 		else if(strcmp(params, "voucher", true) == 0)
 		{
-			if(GetPVarInt(playerid, "buyingVoucher") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "No-one has offered you any vouchers.");
+			if(!GetPVarType(playerid, "buyingVoucher")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No-one has offered you any vouchers.");
 		
 			new sellerid = GetPVarInt(playerid, "sellerVoucher"),
 				price = GetPVarInt(playerid, "priceVoucher"),
@@ -1657,7 +1657,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 2) // Silver VIP Voucher
@@ -1678,7 +1678,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 3) // Gold VIP Voucher
@@ -1699,7 +1699,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 4) // Platinum VIP Voucher
@@ -1720,7 +1720,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 5) // Restricted Car Voucher
@@ -1741,7 +1741,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 6) // Priority Advertisement Voucher
@@ -1762,7 +1762,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 7) // 7 Days Silver VIP
@@ -1783,7 +1783,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 8) // 7 Days Gold VIP
@@ -1804,7 +1804,7 @@ CMD:accept(playerid, params[])
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
 						
-						SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
+						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 				} 
@@ -2129,7 +2129,7 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
                             return 1;
                         }
-					    if(GetPVarInt(playerid, "IsInArena")) {
+					    if(GetPVarType(playerid, "IsInArena")) {
 					        SendClientMessageEx(playerid,COLOR_GREY,"   You cannot do this while being in an arena!");
 					        return 1;
 					    }

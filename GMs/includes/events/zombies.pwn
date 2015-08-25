@@ -208,7 +208,7 @@ CMD:zombieweather(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
     	SetWeather(9);
-    	SyncMinTime();
+    	foreach(new i: Player) SyncMinTime(i);
     	SendRconCommand("loadfs zombie_mapping");
     	SendClientMessageEx(playerid, COLOR_WHITE, "Zombie weather loaded.");
 	}
@@ -236,7 +236,7 @@ CMD:zombieevent(playerid, params[])
 	    {
 	        zombieevent=0;
 			SendRconCommand("unloadfs zombie_mapping");
-	        SyncMinTime();
+	        foreach(new i: Player) SyncMinTime(i);
 			SetWeather(5);
 			mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			foreach(Player, i)

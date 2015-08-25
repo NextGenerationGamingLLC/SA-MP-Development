@@ -40,7 +40,7 @@ new const szDrugs[][] = {
 	"Cocaine",
 	"Crack",
 	"Opium",
-	"Ecstacy",
+	"Ecstasy",
 	"Speed",
 	"Alcohol",
 	"Demerol",
@@ -275,7 +275,8 @@ enum eBiz {
 	bGymBikeVehicles[10],
 	
 	bMaxLevel,
-	bAreaID[2]
+	bAreaID[2],
+	bPhoneNr
 }
 
 enum StoreItemCostEnum
@@ -502,7 +503,9 @@ enum callinfo
 	BeingUsed,
 	CallExpireTimer,
 	ReplyTimerr,
-	CallVehicleId
+	CallVehicleId,
+	c_iGroupID,
+	c_iBusinessID
 }
 
 enum reportinfo
@@ -1728,3 +1731,51 @@ enum e_JobData {
 	job_iMapMarker
 }
 new arrJobData[MAX_JOBPOINTS][e_JobData];
+
+
+enum eBlackMarket {
+	bm_iGroupID,
+	bm_iSeized,
+	bm_iPickupID,
+	bm_iAreaID,
+	Text3D:bm_iTextID,
+	Text3D:bm_iDelTextID,
+	bm_iIngredientAmount[sizeof(szIngredients)],
+	bm_iIngredientPrice[sizeof(szIngredients)],
+	bm_iIngredientSmugglePay[sizeof(szIngredients)]
+}
+new arrBlackMarket[MAX_GROUPS][eBlackMarket];
+
+enum e_PayPhoneData {
+	pp_iNumber,
+	pp_iCallerID,
+	pp_iObjectID,
+	pp_iAreaID,
+	Text3D:pp_iTextID
+}
+new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
+
+
+// All player booleans variables go here to reduce memory:
+enum PlayerBit:(<<= 1) {
+
+	dr_bitUsedDrug = 1, // keep 1
+	dr_bitInDrugEffect,
+	phone_bitState,
+	phone_bitCamState,
+	phone_bitTraceState,
+	g_bFPS,
+};
+new PlayerBit:g_PlayerBits[MAX_PLAYERS];
+
+/*
+enum AntiCheat:(<<= 1) {
+
+	ac_bitValidPlayerHealth = 1, // keep 1
+	ac_bitValidPlayerPos,
+	ac_bitValidPlayerArmour,
+	ac_bitValidSpectating,
+	ac_bitDied
+};
+new AntiCheat:arrPlayerCheat[MAX_PLAYERS];
+*/

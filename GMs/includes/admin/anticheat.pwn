@@ -23,7 +23,7 @@ stock ExecuteHackerAction( playerid, weaponid )
 	if(!gPlayerLogged{playerid}) { return 1; }
 	if(PlayerInfo[playerid][pTut] == 0) { return 1; }
 	if(playerTabbed[playerid] >= 1) { return 1; }
-	if(GetPVarInt(playerid, "IsInArena")) { return 1; }
+	if(GetPVarType(playerid, "IsInArena")) { return 1; }
 
 	new String[ 128 ], WeaponName[ 128 ];
 	GetWeaponName( weaponid, WeaponName, sizeof( WeaponName ) );
@@ -117,32 +117,27 @@ public sobeitCheck(playerid)
 }
 
 //Dom
-forward Anti_Rapidfire();
-public Anti_Rapidfire()
+ptask Anti_Rapidfire[1000](i)
 {
-	new string[128];
-	foreach(new i: Player) 
+	new weaponid = GetPlayerWeapon(i);
+	if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10)/* || (weaponid == 31 && PlayerShots[i] > 20)*/)
 	{
-		new weaponid = GetPlayerWeapon(i);
-		if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10)/* || (weaponid == 31 && PlayerShots[i] > 20)*/)
-		{
-			format(string, sizeof(string), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
-			Log("logs/rapid.log", string);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
+		Log("logs/rapid.log", szMiscArray);
 
-			SetPVarInt(i, "MaxRFWarn", GetPVarInt(i, "MaxRFWarn")+1);
-			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be rapidfire hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
-			ABroadCast(COLOR_YELLOW, string, 2);
-			if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
-			{
-				if(GetPVarType(i, "Autoban")) return 1;
-				SetPVarInt(i, "Autoban", 1); 
-				DeletePVar(i, "MaxRFWarn");
-				CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Anticheat: Rapidfire Hacking", 180);
-				TotalAutoBan++;
-			}
+		SetPVarInt(i, "MaxRFWarn", GetPVarInt(i, "MaxRFWarn")+1);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) may be rapidfire hacking. %d/%d warnings", GetPlayerNameEx(i), i, GetPVarInt(i, "MaxRFWarn"), MAX_RF_WARNS);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+		if(GetPVarInt(i, "MaxRFWarn") >= MAX_RF_WARNS)
+		{
+			if(GetPVarType(i, "Autoban")) return 1;
+			SetPVarInt(i, "Autoban", 1); 
+			DeletePVar(i, "MaxRFWarn");
+			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Anticheat: Rapidfire Hacking", 180);
+			TotalAutoBan++;
 		}
-		PlayerShots[i] = 0;
 	}
+	PlayerShots[i] = 0;
 	return 1;
 }
 

@@ -297,52 +297,128 @@ CMD:call(playerid, params[])
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone whilist restrained.");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pPnumber] == 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
-		return 1;
-	}
-	if(PhoneOnline[playerid] > 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Your phone is off.");
-		return 1;
+	if(!GetPVarType(playerid, "PayPhone")) {
+
+		if(PlayerInfo[playerid][pPnumber] == 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
+			return 1;
+		}
+		if(PhoneOnline[playerid] > 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "Your phone is off.");
+			return 1;
+		}
 	}
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	if(phonenumb == 911)
-	{
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
-		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
-		else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
-		else 
-			ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
-		return 1;
-	}
-	if(phonenumb == 08001800)
-	{
-		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
-		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
-		else 
-			ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "Please let us know briefly about your news.", "Enter", "End Call");
-		return 1;
-	}
-	if(phonenumb == 1738)
-	{
-		if(!GetPVarType(playerid, "ShipmentCallActive"))
-		{
-			SetPVarInt(playerid, "ShipmentCallActive", 1);
 
-			SendClientMessageEx(playerid, COLOR_PINK, "** An unknown person picks up the phone.");
-			SetTimerEx("ShipmentConvo", 2000, false, "ii", playerid, 1);
+	switch(phonenumb) {
+
+		case 911: {
+
+			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
+			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
+			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
+			else 
+				ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
+			return 1;
+		}
+		case 18004444, 18001800, 18008080, 18001111, 18001020: {
+
+			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
+			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
+			else {
+
+				new iGroupID;
+
+				if(phonenumb == 18004444) iGroupID = 5;
+				if(phonenumb == 18001800) iGroupID = 12;
+				if(phonenumb == 18008080) iGroupID = 4;
+				if(phonenumb == 18001111) iGroupID = 6; // SATR
+				if(phonenumb == 18001020) iGroupID = 2; // SAPS
+
+				if(GetPVarType(playerid, "PayPhone")) TogglePlayerControllable(playerid, false);
+				
+				format(szMiscArray, sizeof(szMiscArray), "GROUP ID: %d", iGroupID);
+				SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
+				SetPVarInt(playerid, "GRPCALL", iGroupID);
+				format(szMiscArray, sizeof(szMiscArray), "{%s}%s's Hotline", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+				ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
+			}
+			return 1;
+		}
+		case 1738: {
+
+			if(!GetPVarType(playerid, "ShipmentCallActive"))
+			{
+				SetPVarInt(playerid, "ShipmentCallActive", 1);
+
+				SendClientMessageEx(playerid, COLOR_PINK, "** An unknown person picks up the phone.");
+				SetTimerEx("ShipmentConvo", 2000, false, "ii", playerid, 1);
+			}
+			return 1;
+		}
+	}
+
+	if(GetPVarType(playerid, "BUSICALL")) {
+
+		
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
+		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
+		else {
+
+			new i = GetPVarInt(playerid, "BUSICALL");
+			format(szMiscArray, sizeof(szMiscArray), "%s's Landline | %d", Businesses[i][bName], Businesses[i][bPhoneNr]);
+			ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
 		}
 		return 1;
 	}
+	if(GetPVarType(playerid, "PayPhone")) {
+
+		new i = GetPVarInt(playerid, "PayPhone");
+		if(arrPayPhoneData[i][pp_iNumber] == phonenumb) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot call the pay phone you're calling from.");
+	}
+	for(new i; i < MAX_PAYPHONES; ++i) {
+
+		if(IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID] && phonenumb == arrPayPhoneData[i][pp_iNumber])) {
+
+			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This pay phone is already in use.");
+			SetPVarInt(playerid, "PayPhone", i);
+			arrPayPhoneData[i][pp_iCallerID] = playerid;
+			PayPhone_UpdateTextLabel(i, 1);
+			Mobile[playerid] = 2000; // trial
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Dialing pay phone...");
+			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
+			CellTime[playerid] = 1;
+			SetPlayerAttachedObject(playerid, 8, 330, 6);
+			return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+		}
+	}
+	for(new i; i < MAX_BUSINESSES; ++i) {
+
+		if(IsValidBusinessID(i)) {
+
+			if(phonenumb == Businesses[i][bPhoneNr]) {
+
+				if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
+				if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
+				else {
+
+					SetPVarInt(playerid, "BUSICALL", i);
+					format(szMiscArray, sizeof(szMiscArray), "%s's Company Line | %d", Businesses[i][bName], Businesses[i][bPhoneNr]);
+					ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
+				}
+				return 1;
+			}
+		}
+	}
 	if(phonenumb == PlayerInfo[playerid][pPnumber])
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "  You just get a busy tone...");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "  You cannot call yourself...");
 		return 1;
 	}
 	if(Mobile[playerid] != INVALID_PLAYER_ID)
@@ -354,45 +430,46 @@ CMD:call(playerid, params[])
 	{
 		if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
 		{
-			new giveplayerid = i;
-			Mobile[playerid] = giveplayerid; //caller connecting
-			if(IsPlayerConnected(giveplayerid))
+			Mobile[playerid] = i; //caller connecting
+			if(IsPlayerConnected(i))
 			{
-				if(giveplayerid != INVALID_PLAYER_ID)
+				if(i != INVALID_PLAYER_ID)
 				{
-					if(PhoneOnline[giveplayerid] > 0)
+					if(PhoneOnline[i] > 0)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 						Mobile[playerid] = INVALID_PLAYER_ID;
 						return 1;
 					}
-					if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
+					if(Mobile[i] != INVALID_PLAYER_ID)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
 						return 1;
 					}
-					if(Spectating[giveplayerid]!=0)
+					if(Spectating[i]!=0)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
 						return 1;
 					}
-					if (Mobile[giveplayerid] == INVALID_PLAYER_ID)
+					if(Mobile[i] == INVALID_PLAYER_ID)
 					{
-						format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %s]", GetPlayerNameEx(playerid));
-						SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
-						RingTone[giveplayerid] = 10;
+						if(GetPVarType(playerid, "PayPhone")) {
+
+							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller: Pay Phone (%d)]", arrPayPhoneData[GetPVarInt(playerid, "PayPhone")][pp_iNumber]);
+							TogglePlayerControllable(playerid, false);
+						}
+						else format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %s]", GetPlayerNameEx(playerid));
+
+						SendClientMessageEx(i, COLOR_YELLOW, string);
+						RingTone[i] = 10;
 						format(string, sizeof(string), "* %s's phone begins to ring.", GetPlayerNameEx(i));
 						SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");
 						ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						new Float:rX, Float:rY, Float:rZ;
-						GetPlayerPos(giveplayerid, rX, rY, rZ);
-						//SendRingtoneToArea(playerid, 100, rX, rY, rZ);
-						//SendAudioToPlayer(playerid, 60, 100);
 						CellTime[playerid] = 1;
 						SetPlayerAttachedObject(playerid, 8, 330, 6);
-						Phone_Calling(playerid, giveplayerid);
+						Phone_Calling(playerid, i);
 						return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 					}
 				}
@@ -544,6 +621,28 @@ CMD:pickup(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
+	if(GetPVarType(playerid, "AtPayPhone")) {
+
+		new x = GetPVarInt(playerid, "AtPayPhone");
+
+		if(arrPayPhoneData[x][pp_iCallerID] != INVALID_PLAYER_ID) {
+
+			if(arrPayPhoneData[x][pp_iCallerID] == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot answer the pay phone you're dialing.");
+			foreach(new i: Player)
+			{
+				if(Mobile[i] == arrPayPhoneData[x][pp_iCallerID])
+				{
+					Mobile[playerid] = i;
+					SendClientMessageEx(i,  COLOR_GRAD2, "   Someone picked up the call.");
+					format(string, sizeof(string), "* %s answers the pay phone.", GetPlayerNameEx(playerid));
+					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					TogglePlayerControllable(playerid, false);
+					SetPlayerAttachedObject(playerid, 8, 330, 6);
+					return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+				}
+			}	
+		}
+	}
 	foreach(new i: Player)
 	{
 		if(Mobile[i] == playerid)
@@ -574,6 +673,11 @@ CMD:hangup(playerid,params[])
 		SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 		return 1;
 	}
+	if(GetPVarType(playerid, "Has911Call")) {
+
+		if(GetPVarType(playerid, "PayPhone")) TogglePlayerControllable(playerid, true);
+		cmd_cancelcall(playerid, "");
+	}
 	new caller = Mobile[playerid];
 	if((IsPlayerConnected(caller)/* && caller != INVALID_PLAYER_ID*/))
 	{
@@ -585,12 +689,37 @@ CMD:hangup(playerid,params[])
 				DeletePVar(caller, "_UsingJailPhone");
 				bJailPhoneUse[GetClosestPrisonPhone(caller)] = false;
 			}
-			SendClientMessageEx(caller,  COLOR_GRAD2, "   They hung up.");
-			format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(caller));
-			ProxDetector(30.0, caller, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			if(!GetPVarType(playerid, "PayPhone")) {
+
+				SendClientMessageEx(caller,  COLOR_GRAD2, "   They hung up.");
+				format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(caller));
+				ProxDetector(30.0, caller, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			}
 			CellTime[caller] = 0;
 			Mobile[caller] = INVALID_PLAYER_ID;
 		}
+
+		if(GetPVarType(playerid, "PayPhone")) {
+
+			new x = GetPVarInt(playerid, "PayPhone");
+			DeletePVar(playerid, "PayPhone");
+			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
+			TogglePlayerControllable(playerid, true);
+			PayPhone_UpdateTextLabel(x, 0);
+		}
+		if(GetPVarType(caller, "PayPhone")) {
+
+			new x = GetPVarInt(caller, "PayPhone");
+			DeletePVar(caller, "PayPhone");
+			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
+			TogglePlayerControllable(caller, true);
+			PayPhone_UpdateTextLabel(x, 0);
+		}
+		
+		DeletePVar(playerid, "GRPCALL");
+		DeletePVar(caller, "GRPCALL");
+		DeletePVar(playerid, "BUSICALL");
+		DeletePVar(caller, "BUSICALL");
 		CellTime[playerid] = 0;
 		Phone_HangupCall(playerid, Mobile[playerid]);
 		SendClientMessageEx(playerid,  COLOR_GRAD2, "   You hung up.");
@@ -604,6 +733,29 @@ CMD:hangup(playerid,params[])
 		SetPlayerSpecialAction(caller, SPECIAL_ACTION_STOPUSECELLPHONE);
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		return 1;
+	}
+	else {
+
+		if(GetPVarType(playerid, "PayPhone")) {
+
+			CellTime[playerid] = 0;
+			SendClientMessageEx(playerid,  COLOR_GRAD2, "   You hung up.");
+			format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			Mobile[playerid] = INVALID_PLAYER_ID;
+			CellTime[playerid] = 0;
+			RingTone[playerid] = 0;
+			RemovePlayerAttachedObject(playerid, 8);
+			RemovePlayerAttachedObject(caller, 8);
+			SetPlayerSpecialAction(caller, SPECIAL_ACTION_STOPUSECELLPHONE);
+			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
+
+			new x = GetPVarInt(playerid, "PayPhone");
+			DeletePVar(playerid, "PayPhone");
+			arrPayPhoneData[x][pp_iCallerID] = INVALID_PLAYER_ID;
+			PayPhone_UpdateTextLabel(x, 0);
+			return 1;
+		}
 	}
 	SendClientMessageEx(playerid,  COLOR_GRAD2, "   Your phone is in your pocket.");
 	return 1;

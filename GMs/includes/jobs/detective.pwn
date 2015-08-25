@@ -36,6 +36,10 @@
 */
 
 CMD:find(playerid, params[]) {
+	
+	SendClientMessage(playerid, COLOR_YELLOW, "This command has been deprecated. Use /trace [player's phone number] to trace someone.");
+	cmd_trace(playerid, "");
+	/*
 	if(PlayerInfo[playerid][pJob] != 1 && PlayerInfo[playerid][pJob2] != 1 && PlayerInfo[playerid][pJob3] != 1) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a detective.");
 	}
@@ -124,5 +128,6 @@ CMD:find(playerid, params[]) {
 			return 1;
 		}
 	}
+	*/
 	return 1;
 }

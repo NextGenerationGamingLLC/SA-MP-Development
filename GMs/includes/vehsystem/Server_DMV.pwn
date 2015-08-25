@@ -53,7 +53,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(newkeys & KEY_YES && IsPlayerInDynamicArea(playerid, DMVPointArea)) {
 		ShowDMVMenu(playerid);
 	}
-
 	return 1;
 }
 

@@ -630,7 +630,7 @@ CMD:sellvoucher(playerid, params[])
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, bPos[0], bPos[1], bPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not near this player.");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
 	if(GetPVarInt(buyer, "Injured") != 0 || PlayerCuffed[buyer] != 0 || PlayerInfo[buyer][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't offer a Prisoner or a Injured player a voucher.");
-	if(GetPVarInt(buyer, "buyingVoucher") != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already buying another voucher, please try again later.");
+	if(GetPVarType(buyer, "buyingVoucher")) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is already buying another voucher, please try again later.");
 	
 	new string[128];
 	if(strcmp(choice, "carvoucher", true) == 0) 
@@ -759,7 +759,7 @@ CMD:sellvoucher(playerid, params[])
 
 CMD:denyvoucher(playerid, params[])
 {
-	if(GetPVarInt(playerid, "buyingVoucher") != INVALID_PLAYER_ID)
+	if(GetPVarType(playerid, "buyingVoucher"))
 	{
 		new string[128];
 		format(string, sizeof(string), "* %s has declined your voucher offer.", GetPlayerNameEx(playerid));
@@ -768,8 +768,8 @@ CMD:denyvoucher(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 		DeletePVar(playerid, "priceVoucher");
 		DeletePVar(playerid, "amountVoucher");
-		SetPVarInt(playerid, "buyingVoucher", INVALID_PLAYER_ID);
-		SetPVarInt(playerid, "sellerVoucher", INVALID_PLAYER_ID);
+		DeletePVar(playerid, "buyingVoucher");
+		DeletePVar(playerid, "sellerVoucher");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "No-one has offered you any vouchers.");
 	return 1;

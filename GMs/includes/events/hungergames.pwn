@@ -330,7 +330,7 @@ CMD:joinhunger(playerid, params[])
 {
 	if(hgActive == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The Hunger Games event has not been announced!");
 	if(hgActive == 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "The Hunger Games event has already been started!");
-	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
    	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while being cuffed.");
     if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");

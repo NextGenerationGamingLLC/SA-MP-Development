@@ -106,11 +106,12 @@ DynVeh_Save(iDvSlotID) {
 	if((iDvSlotID > MAX_DYNAMIC_VEHICLES)) // Array bounds check. Use it.
 		return 0;
 
+	szMiscArray[0] = 0;
+
 	new
-		szQuery[2248],
 		i = 0;
 
-	format(szQuery, sizeof szQuery,
+	format(szMiscArray, sizeof szMiscArray,
 		"UPDATE `groupvehs` SET `SpawnedID`= '%d',`gID`= '%d',`gDivID`= '%d', `rID`='%d', `vModel`= '%d', \
 		`vPlate` = '%s',`vMaxHealth`= '%.2f',`vType`= '%d',`vLoadMax`= '%d',`vCol1`= '%d',`vCol2`= '%d', \
 		`vX`= '%.2f',`vY`= '%.2f',`vZ`= '%.2f',`vRotZ`= '%.2f', `vUpkeep` = '%d', `vVW` = '%d', `vDisabled` = '%d', \
@@ -121,27 +122,27 @@ DynVeh_Save(iDvSlotID) {
 		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 
 	for(i = 0; i != MAX_DV_OBJECTS; ++i) {
-		format(szQuery, sizeof szQuery, "%s, `vAttachedObjectModel%i` = '%d'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectX%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectX][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectY%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectY][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectZ%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectZ][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRX%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRX][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRY%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRY][i]);
-		format(szQuery, sizeof szQuery, "%s, `vObjectRZ%i` = '%.2f'", szQuery, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vAttachedObjectModel%i` = '%d'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectX%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectX][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectY%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectY][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectZ][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRX%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRX][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRY%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRY][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
 	}
 
-	for(i = 0; i != MAX_DV_MODS; ++i) format(szQuery, sizeof szQuery, "%s, `vMod%d` = %i", szQuery, i, DynVehicleInfo[iDvSlotID][gv_iMod][i]);
+	for(i = 0; i != MAX_DV_MODS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `vMod%d` = %i", szMiscArray, i, DynVehicleInfo[iDvSlotID][gv_iMod][i]);
 
-	format(szQuery, sizeof szQuery, "%s WHERE `id` = %i", szQuery, iDvSlotID);
-	return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iDvSlotID);
+	return mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 }
 
 stock DynVeh_Spawn(iDvSlotID, free = 0)
 {
 	if(!(0 <= iDvSlotID < MAX_DYNAMIC_VEHICLES)) return 1;
-	new string[128];
-	format(string, sizeof(string), "Attempting to spawn DV Slot ID %d", iDvSlotID);
-	Log("logs/dvspawn.log", string);
+
+	format(szMiscArray, sizeof(szMiscArray), "Attempting to spawn DV Slot ID %d", iDvSlotID);
+	Log("logs/dvspawn.log", szMiscArray);
 	new tmpdv = INVALID_VEHICLE_ID;
 	if(DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != INVALID_VEHICLE_ID)
 	{
@@ -150,8 +151,8 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 	}
 	if(DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != INVALID_VEHICLE_ID) {
 		if(tmpdv == iDvSlotID) {
-			format(string, sizeof(string), "Destroying Vehicle ID %d for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
-			Log("logs/dvspawn.log", string);
+			format(szMiscArray, sizeof(szMiscArray), "Destroying Vehicle ID %d for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
+			Log("logs/dvspawn.log", szMiscArray);
 			DestroyVehicle(DynVehicleInfo[iDvSlotID][gv_iSpawnedID]);
 			DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = INVALID_VEHICLE_ID;
 			for(new i = 0; i != MAX_DV_OBJECTS; i++)
@@ -164,8 +165,8 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 		}
 	}
 	if(!(400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612)) {
-		format(string, sizeof(string), "Invalid Vehicle Model ID for DV Slot %d", iDvSlotID);
-		Log("logs/dvspawn.log", string);
+		format(szMiscArray, sizeof(szMiscArray), "Invalid Vehicle Model ID for DV Slot %d", iDvSlotID);
+		Log("logs/dvspawn.log", szMiscArray);
 		return 1;
 	}
 	if(DynVehicleInfo[iDvSlotID][gv_iDisabled]) return 1;
@@ -178,12 +179,12 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 				if(arrGroupData[iGroupID][g_iBudget] >= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2))
 				{
 					arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2);
-					new str[128], file[32];
-					format(str, sizeof(str), "Vehicle Slot ID %d RTB fee cost $%d to %s's budget fund.", iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2), arrGroupData[iGroupID][g_szGroupName]);
+					new file[32];
+					format(szMiscArray, sizeof(szMiscArray), "Vehicle Slot ID %d RTB fee cost $%d to %s's budget fund.", iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2), arrGroupData[iGroupID][g_szGroupName]);
 					new month, day, year;
 					getdate(year,month,day);
 					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-					Log(file, str);
+					Log(file, szMiscArray);
 				}
 				else
 				{
@@ -195,8 +196,8 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 	}
 	DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = CreateVehicle(DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_fRotZ], DynVehicleInfo[iDvSlotID][gv_iCol1], DynVehicleInfo[iDvSlotID][gv_iCol2], VEHICLE_RESPAWN, DynVehicleInfo[iDvSlotID][gv_iSiren]);
 	DynVeh_Save(iDvSlotID);
-	format(string, sizeof(string), "Vehicle ID %d spawned for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
-	Log("logs/dvspawn.log", string);
+	format(szMiscArray, sizeof(szMiscArray), "Vehicle ID %d spawned for DV Slot %d",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID);
+	Log("logs/dvspawn.log", szMiscArray);
 	SetVehicleHealth(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
 	SetVehicleVirtualWorld(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iVW]);
 	LinkVehicleToInterior(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iInt]);

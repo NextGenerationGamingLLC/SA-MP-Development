@@ -2241,9 +2241,8 @@ stock HideHungerGamesTextdraw(playerid)
 
 stock ShowFPSCounter(playerid)
 {
-	new string[64];
-	format(string, sizeof(string), "%d", pFPS[playerid]);
-	pFPSCounter[playerid] = CreatePlayerTextDraw(playerid,617.000000, 2.000000, string);
+	format(szMiscArray, sizeof(szMiscArray), "%d", pFPS[playerid]);
+	pFPSCounter[playerid] = CreatePlayerTextDraw(playerid,617.000000, 2.000000, szMiscArray);
 	PlayerTextDrawBackgroundColor(playerid,pFPSCounter[playerid], 255);
 	PlayerTextDrawFont(playerid,pFPSCounter[playerid], 3);
 	PlayerTextDrawLetterSize(playerid,pFPSCounter[playerid], 0.370000, 1.200000);

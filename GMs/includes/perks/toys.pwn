@@ -61,10 +61,10 @@ stock CompleteToyTrade(playerid)
 		format(string, sizeof(string), "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
 		SendClientMessageEx(sellerid, COLOR_GREY, string);
 		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any free toy slots.");
-		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
-		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
-		SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
-					
+		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
+		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
+		DeletePVar(playerid, "ttSeller");	
+
 		HideTradeToysGUI(playerid);
 		return 1;
 	}	
@@ -74,9 +74,9 @@ stock CompleteToyTrade(playerid)
 		format(string, sizeof(string), "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
 		SendClientMessageEx(sellerid, COLOR_GREY, string);
 		SendClientMessageEx(playerid, COLOR_GREY, "You do not have enough money on you.");
-		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
-		SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
-		SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
+		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
+		DeletePVar(playerid, "ttSeller");
 				
 		HideTradeToysGUI(playerid);
 		return 1;
@@ -157,10 +157,10 @@ stock CompleteToyTrade(playerid)
 	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
 	Log("logs/toys.log", string);
 			
-	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttSeller", INVALID_PLAYER_ID);
-	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
-	SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
-	SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttSeller");
+	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
+	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
+	DeletePVar(playerid, "ttSeller");
 			
 	HideTradeToysGUI(playerid);
 	return 1;
@@ -645,9 +645,9 @@ CMD:dat(playerid, params[])
 
 CMD:selltoy(playerid, params[])
 {
-	new string[1000], name[24], targetid, cost;
-	if(GetPVarInt(playerid, "ttBuyer") != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You're already trading with someone else.");
-	if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
+	new name[24], targetid, cost;
+	if(GetPVarType(playerid, "ttBuyer")) return SendClientMessageEx(playerid, COLOR_GREY, "You're already trading with someone else.");
+	if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot do this while being in an arena!");
    	if(GetPVarInt( playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while you're in an event.");
 	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this while being cuffed.");
     if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
@@ -659,6 +659,7 @@ CMD:selltoy(playerid, params[])
 	if(!ProxDetectorS(5.0, playerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not near you.");
 	if(InsideTradeToys[targetid] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This person is currently trading at the moment, please try again later.");
 	if(cost < 1 || cost > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot sell a toy for less than $1.");
+	
 	SetPVarInt(targetid, "ttSeller", playerid);
 	SetPVarInt(playerid, "ttBuyer", targetid);
 	SetPVarInt(playerid, "ttCost", cost);
@@ -678,8 +679,8 @@ CMD:selltoy(playerid, params[])
 		{
 			format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 		}
-		format(string, sizeof(string), "%s(%d) %s\n", string, x+1, name);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\n", szMiscArray, x+1, name);
 	}	
-	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", string, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
+	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", szMiscArray, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
 	return 1;
 }	

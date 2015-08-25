@@ -217,6 +217,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pSex] = 0;
 		strcpy(PlayerInfo[playerid][pBirthDate], "0000-00-00", 64);
 		PlayerInfo[playerid][pRingtone] = 0;
+		PlayerInfo[playerid][pWallpaper] = 0;
 		PlayerInfo[playerid][pVIPM] = 0;
 		PlayerInfo[playerid][pVIPMO] = 0;
 		PlayerInfo[playerid][pVIPExpire] = 0;

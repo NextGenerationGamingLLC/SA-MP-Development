@@ -49,9 +49,11 @@ ShowVehicleMenu(playerid, vehicleid) {
     GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 	format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
+		Seatbelt\t%s\n\
 		Lights\t%s\n\
 		Bonnet\t%s\n\
 		Boot\t%s",
+		((Seatbelt[playerid] == 0) ? ("Off") : ("On")),
 		((lights == VEHICLE_PARAMS_OFF) ? ("Off") : ("On")),
 		((bonnet == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open")),
 		((boot == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open"))
@@ -59,7 +61,6 @@ ShowVehicleMenu(playerid, vehicleid) {
 
 	ShowPlayerDialog(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle Options", szMiscArray, "Select", "Cancel");
 }
-
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
@@ -72,9 +73,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new vehicleid = GetPlayerVehicleID(playerid);
 
 			switch(listitem) {
-				case 0: SetVehicleLights(vehicleid, playerid);// lights
-				case 1: SetVehicleHood(vehicleid, playerid);// bonnet
-				case 2: SetVehicleTrunk(vehicleid, playerid);// boot
+				case 0: cmd_sb(playerid, "");
+				case 1: SetVehicleLights(vehicleid, playerid);// lights
+				case 2: SetVehicleHood(vehicleid, playerid);// bonnet
+				case 3: SetVehicleTrunk(vehicleid, playerid);// boot
 			}	
 		}
 	}

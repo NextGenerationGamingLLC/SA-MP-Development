@@ -128,10 +128,10 @@ public DragPlayer(dragger, dragee)
 	if(!IsPlayerConnected(dragger)) SendClientMessageEx(dragee, COLOR_GRAD2, "The player that was dragging you has disconnected.");
 	if(!IsPlayerConnected(dragee))
 	{
-		SetPVarInt(dragger, "DraggingPlayer", INVALID_PLAYER_ID);
+		DeletePVar(dragger, "DraggingPlayer");
 		SendClientMessageEx(dragger, COLOR_GRAD2, "The player you were dragging has disconnected.");
 	}
-	if(GetPVarType(dragger, "DraggingPlayer") && GetPVarInt(dragger, "DraggingPlayer") != INVALID_PLAYER_ID)
+	if(GetPVarType(dragger, "DraggingPlayer") && GetPVarType(dragger, "DraggingPlayer"))
 	{
 		new Float:dX, Float:dY, Float:dZ;
 		GetPlayerPos(dragger, dX, dY, dZ);
@@ -474,7 +474,7 @@ CMD:placekit(playerid, params[]) {
 CMD:usekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
-		if(GetPVarInt(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		new string[128];
@@ -653,7 +653,7 @@ CMD:mdc(playerid, params[])
 {
     if(IsMDCPermitted(playerid))
 	{
-        if(IsPlayerInAnyVehicle(playerid))
+        if(IsPlayerInAnyVehicle(playerid) || Bit_State(g_PlayerBits[playerid], phone_bitState))
 		{
             ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
             ConnectedToPC[playerid] = 1337;
@@ -1097,7 +1097,7 @@ CMD:ram(playerid, params[])
 {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid))
 	{
-		if(GetPVarInt(playerid, "IsInArena"))
+		if(GetPVarType(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 			return 1;
@@ -1596,7 +1596,7 @@ CMD:tazer(playerid, params[])
 			return 1;
 		}
 
-		if(GetPVarInt(playerid, "IsInArena"))
+		if(GetPVarType(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;
@@ -1706,7 +1706,7 @@ CMD:radargun(playerid, params[])
 			return 1;
 		}
 
-		if(GetPVarInt(playerid, "IsInArena"))
+		if(GetPVarType(playerid, "IsInArena"))
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now, you are in an arena!");
 			return 1;

@@ -16,12 +16,12 @@ new arrMetalDetector[MAX_METALDETECTORS][eMetDetData];
 
 hook OnPlayerEnterDynamicArea(playerid, areaid)
 {
-	new i = GetMetalDetectorID(areaid);
+	new i = MetDet_GetIDFromArea(areaid);
 
-	if(i > -1) {
+	if(-1 < i < MAX_METALDETECTORS) {
+		
+		if(areaid == arrMetalDetector[i][metdet_iAreaID]) {
 
-		if(GetPlayerVirtualWorld(playerid) == Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[i][metdet_iObjectID], E_STREAMER_WORLD_ID))
-		{
 			new wepid, iammo;
 			for (new idx = 0; idx <= 12; ++idx)
 			{
@@ -33,6 +33,7 @@ hook OnPlayerEnterDynamicArea(playerid, areaid)
 			}
 		}
 	}
+	return 1;
 }
 
 hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
@@ -76,12 +77,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				new Float:fPos[3],
-					iAssignData[3];
+					iAssignData[2];
 				GetDynamicObjectPos(arrMetalDetector[listitem][metdet_iObjectID], fPos[0], fPos[1], fPos[2]);
-				Streamer_GetArrayData(STREAMER_TYPE_AREA, arrMetalDetector[listitem][metdet_iAreaID], E_STREAMER_EXTRA_ID, iAssignData);
+				iAssignData[0] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[listitem][metdet_iObjectID], E_STREAMER_WORLD_ID);
+				iAssignData[1] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[listitem][metdet_iObjectID], E_STREAMER_INTERIOR_ID);
 				SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-				SetPlayerVirtualWorld(playerid, iAssignData[1]);
-				SetPlayerInterior(playerid, iAssignData[2]);
+				SetPlayerVirtualWorld(playerid, iAssignData[0]);
+				SetPlayerInterior(playerid, iAssignData[1]);
 			}
 		}
 	}
@@ -129,7 +131,7 @@ public MetDet_OnDeleteMetDet(playerid, i)
 	if(mysql_errno(MainPipeline) == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your query could not be processed.");
 	DestroyDynamicObject(arrMetalDetector[i][metdet_iObjectID]);
 	DestroyDynamic3DTextLabel(arrMetalDetector[i][metdet_iTextID]);
-	DestroyDynamicPickup(arrMetalDetector[i][metdet_iAreaID]);
+	DestroyDynamicArea(arrMetalDetector[i][metdet_iAreaID]);
 	return 1;
 }
 
@@ -170,11 +172,12 @@ public MetDet_OnLoadMetDets()
 	iRows = cache_get_row_count();
 
 	if(!iRows) return print("[Metal Detectors] There are no metaldetectors in the database.");
-	for(iCount = 0; iCount < iRows; ++iCount)
+	while(iCount < iRows)
 	{
 		MetDet_Process(iCount, cache_get_field_content_float(iCount, "posx", MainPipeline), cache_get_field_content_float(iCount, "posy", MainPipeline), cache_get_field_content_float(iCount, "posz", MainPipeline),
 				cache_get_field_content_float(iCount, "rotx", MainPipeline), cache_get_field_content_float(iCount, "roty", MainPipeline), cache_get_field_content_float(iCount, "rotz", MainPipeline),
 				cache_get_field_content_int(iCount, "vw", MainPipeline), cache_get_field_content_int(iCount, "int", MainPipeline));
+		iCount++;
 	}
 	printf("[Metal Detectors] Successfully loaded %d metal detectors", iCount);
 	return 1;
@@ -183,13 +186,13 @@ public MetDet_OnLoadMetDets()
 MetDet_Process(id, Float:X = 0.0, Float:Y = 0.0, Float:Z = 0.0, Float:RX = 0.0, Float:RY = 0.0, Float:RZ = 0.0, iVW = 0, iINT = 0)
 {
 	if(IsValidDynamicObject(arrMetalDetector[id][metdet_iObjectID])) DestroyDynamicObject(arrMetalDetector[id][metdet_iObjectID]);
-	arrMetalDetector[id][metdet_iObjectID] = CreateDynamicObject(1892, X-0.6, Y, Z-1.0, RX, RY, RZ, .worldid = iVW, .interiorid = iINT);
+	arrMetalDetector[id][metdet_iObjectID] = CreateDynamicObject(1892, X-0.6, Y, Z, RX, RY, RZ, .worldid = iVW, .interiorid = iINT);
 	if(IsValidDynamic3DTextLabel(arrMetalDetector[id][metdet_iTextID])) DestroyDynamic3DTextLabel(arrMetalDetector[id][metdet_iTextID]);
 	format(szMiscArray, sizeof(szMiscArray), "Metal Detector (ID: %d)\n\n{FFFF00}Normal", id);
 	arrMetalDetector[id][metdet_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_WHITE, X, Y, Z+1.0, 10.0);
-	if(IsValidDynamicPickup(arrMetalDetector[id][metdet_iAreaID])) DestroyDynamicPickup(arrMetalDetector[id][metdet_iAreaID]);
-	arrMetalDetector[id][metdet_iAreaID] = CreateDynamicPickup(METAL_DETECTOR_OBJECTID, 1, X, Y, Z, .worldid = iVW, .interiorid = iINT);
-	
+	if(IsValidDynamicArea(arrMetalDetector[id][metdet_iAreaID])) DestroyDynamicArea(arrMetalDetector[id][metdet_iAreaID]);
+	arrMetalDetector[id][metdet_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, .worldid = iVW, .interiorid = iINT);
+
  	Streamer_SetIntData(STREAMER_TYPE_AREA, arrMetalDetector[id][metdet_iAreaID], E_STREAMER_EXTRA_ID, id);
 }
 
@@ -208,7 +211,7 @@ public MetDet_Restore(i)
 	UpdateDynamic3DTextLabelText(arrMetalDetector[i][metdet_iTextID], COLOR_WHITE, szMiscArray);
 }
 
-GetMetalDetectorID(areaid)
+MetDet_GetIDFromArea(areaid)
 {
 	new iAssignData;
 	iAssignData = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);

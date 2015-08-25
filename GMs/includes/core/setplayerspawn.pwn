@@ -177,7 +177,7 @@ SetPlayerSpawn(playerid)
 			}
 			return true;
 		}
-		if(GetPVarInt(playerid, "IsInArena"))
+		if(GetPVarType(playerid, "IsInArena"))
 		{
 			SpawnPaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 			return 1;

@@ -23,8 +23,7 @@
 								**  Development Staff:
 									Miguel (s0nic)
 									Jingles
-									AlexR
-
+									
 				Past Developers:
 								*** Director of SA:MP Development:
 									Akatony
@@ -39,6 +38,7 @@
 									Calgon
 
 								** 	Developers:
+									AlexR
 									Jamie
 									Connor
 									Neo
@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.215"
+#define SERVER_GM_TEXT "NG:RP v3.0.216"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -92,12 +92,15 @@
 #include <YSI\y_utils>
 #include <mSelection>
 #include <gvar>
+ 
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
+
 #include "./includes/defines.pwn"
 #include "./includes/enums.pwn"
 #include "./includes/variables.pwn"
+#include "./includes/wrappers.pwn"
 #include "./includes/timers.pwn"
 #include "./includes/functions.pwn"
 #include "./includes/mysql.pwn"
@@ -107,6 +110,14 @@
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
 
+//streamer includes
+#include "./includes/streamer/removebuildings.pwn"
+#include "./includes/streamer/areas.pwn"
+#include "./includes/streamer/buttons.pwn"
+#include "./includes/streamer/objects.pwn"
+#include "./includes/streamer/pickups.pwn"
+#include "./includes/streamer/textlabels.pwn"
+#include "./includes/streamer/vehicles.pwn"
 
 //admin includes
 #include "./includes/admin/admin.pwn"
@@ -175,7 +186,7 @@
 
 //WIP
 #include "./includes/core/deluxegps.pwn"
-// #tryinclude "./includes/core/phones.pwn"
+
 // #tryinclude "./includes/core/inactive.pwn"
 
 //dynamic core includes
@@ -293,13 +304,18 @@
 // Jingles WIP
 #include "./includes/core/tutorial_new.pwn"
 #include "./includes/core/phone_new.pwn"
+#include "./includes/core/payphones.pwn"
 #include "./includes/jobs/dynjobcore.pwn"
 #include "./includes/drugsystem.pwn"
 #include "./includes/group/sanews.pwn"
 
+
+//anti-cheat includes
+//#include "./includes/anticheat/AntiCheat_Core.pwn"
+
 #pragma unused DynamicBusiness
 
-main() {}
+main(){}
 
 public OnGameModeInit()
 {

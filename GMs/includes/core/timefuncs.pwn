@@ -25,311 +25,6 @@ stock ConvertToTwelveHour(tHour)
 	return string;
 }
 
-forward SyncTime();
-public SyncTime()
-{
-	new string[128], tmphour, tmpminute, tmpsecond;
-	gettime(tmphour, tmpminute, tmpsecond);
-	FixHour(tmphour);
-	tmphour = shifthour;
-
-	if ((tmphour > ghour) || (tmphour == 0 && ghour == 23))
-	{
-		if(tmphour == 0 && ghour == 23)
-		{
-			CallLocalFunction("InactiveResourceCheck", "");
-			/*new month, day, year;
-			getdate(year,month,day);
-			if(month == 4 && (day == 25 || day == 26)) // NGG B-Day 2015
-			{
-				foreach(Player, i)
-				{
-					PlayerInfo[i][pReceivedPrize] = 0;
-				}
-				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			}*/
-		}
-
-	    if(tmphour == 0) ResetVIPAmmoCount();
-	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
-		else
-		{
-		    if(SpecLotto) {
-		        format(string, sizeof(string), "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
-				SendClientMessageToAllEx(COLOR_WHITE, string);
-		        format(string, sizeof(string), "Special Prize: %s", LottoPrize);
-				SendClientMessageToAllEx(COLOR_WHITE, string);
-		    }
-		    else {
-		    	format(string, sizeof(string), "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
-				SendClientMessageToAllEx(COLOR_WHITE, string);
-			}
-		}
-		for(new iGroupID; iGroupID < MAX_GROUPS; iGroupID++)
-		{
-			MemberCount(iGroupID);
-			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
-			{
-				new str[128], file[32];
-				format(str, sizeof(str), "The tax vault is at $%s", number_format(Tax));
-				new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, str);
-			}
-			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 2)
-			{
-				new str[128], file[32];
-				format(str, sizeof(str), "The tax vault is at $%s", number_format(TRTax));
-				new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, str);
-			}
-			else
-			{
-				new str[128], file[32];
-				format(str, sizeof(str), "The faction vault is at $%s", number_format(arrGroupData[iGroupID][g_iBudget]));
-				new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, str);
-			}
-			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
-			{
-				if(arrGroupData[iGroupID][g_iBudgetPayment] > 0)
-				{
-					if(Tax > arrGroupData[iGroupID][g_iBudgetPayment] && arrGroupData[iGroupID][g_iAllegiance] == 1)
-					{
-						Tax -= arrGroupData[iGroupID][g_iBudgetPayment];
-						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
-						new str[128], file[32];
-						format(str, sizeof(str), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
-						Misc_Save();
-						SaveGroup(iGroupID);
-						for(new z; z < MAX_GROUPS; z++)
-						{
-							if(arrGroupData[z][g_iAllegiance] == 1)
-							{
-								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
-								{
-									format(str, sizeof(str), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, str);
-									break;
-								}
-							}
-						}
-					}
-					else if(TRTax > arrGroupData[iGroupID][g_iBudgetPayment] && arrGroupData[iGroupID][g_iAllegiance] == 2)
-					{
-						TRTax -= arrGroupData[iGroupID][g_iBudgetPayment];
-						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
-						new str[128], file[32];
-						format(str, sizeof(str), "TR Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
-						Misc_Save();
-						SaveGroup(iGroupID);
-						for(new z; z < MAX_GROUPS; z++)
-						{
-							if(arrGroupData[z][g_iAllegiance] == 2)
-							{
-								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
-								{
-									format(str, sizeof(str), "TR Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, str);
-									break;
-								}
-							}
-						}
-					}
-					else
-					{
-						format(string, sizeof(string), "Warning: The Government Vault has insufficient funds to fund %s.", arrGroupData[iGroupID][g_szGroupName]);
-						SendGroupMessage(5, COLOR_RED, string);
-					}
-				}
-				for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
-				{
-					if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[iDvSlotID][gv_igID] == iGroupID)
-					{
-						if(DynVehicleInfo[iDvSlotID][gv_iModel] != 0 && (400 < DynVehicleInfo[iDvSlotID][gv_iModel] < 612))
-						{
-							if(arrGroupData[iGroupID][g_iBudget] >= DynVehicleInfo[iDvSlotID][gv_iUpkeep])
-							{
-								arrGroupData[iGroupID][g_iBudget] -= DynVehicleInfo[iDvSlotID][gv_iUpkeep];
-								new str[128], file[32];
-								format(str, sizeof(str), "Vehicle ID %d (Slot ID %d) Maintainence fee cost $%s to %s's budget fund.",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID, number_format(DynVehicleInfo[iDvSlotID][gv_iUpkeep]), arrGroupData[iGroupID][g_szGroupName]);
-								new month, day, year;
-								getdate(year,month,day);
-								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-								Log(file, str);
-							}
-							else
-							{
-								DynVehicleInfo[iDvSlotID][gv_iDisabled] = 1;
-								DynVeh_Save(iDvSlotID);
-								DynVeh_Spawn(iDvSlotID);
-							}
-						}
-					}
-				}
-				SaveGroup(iGroupID);
-			}
-		}
-
-		WeatherCalling += random(5) + 1;
-		#if defined zombiemode
-  		if(WeatherCalling > 20)
-		{
-  			WeatherCalling = 0;
-	    	gWeather = random(19) + 1;
-		    if(gWeather == 1) gWeather=10;
-		    if(zombieevent == 0) SetWeather(gWeather);
-		}
-		#else
-		if(WeatherCalling > 20)
-		{
- 			WeatherCalling = 0;
-   			gWeather = random(19) + 1;
-		    if(gWeather == 1) gWeather=10;
-		    SetWeather(gWeather);
-		}
-		#endif
-
-		ghour = tmphour;
-		TotalUptime += 1;
-		GiftAllowed = 1;
-		
-		new bmonth, bday, byear;
-		new year, month, day;
-		getdate(year, month, day);		
-
-		new ttTime = CalculateWorldGameTime(hour, minuite);
-
-		//foreach(new i: Player)
-		format(string, sizeof(string), "The time is now %s. ((ST: %s))", ConvertToTwelveHour(ttTime), ConvertToTwelveHour(tmphour));
-		SendClientMessageToAllEx(COLOR_WHITE, string);
-		new query[300];
-		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
-		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", INVALID_PLAYER_ID, string);
-		foreach(new i: Player) 
-		{
-			if(PlayerInfo[i][pAdmin] >= 2)
-			{
-				if(tmphour == 0) ReportCount[i] = 0;
-				ReportHourCount[i] = 0;
-			}
-			if(PlayerInfo[i][pWatchdog])
-			{
-				if(tmphour == 0) WDReportCount[i] = 0;
-				WDReportHourCount[i] = 0;
-			}
-			if(PlayerInfo[i][pLevel] <= 5) SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need to travel somewhere and don't have wheels? Use '/service taxi' to call a cab!");
-			if(PlayerInfo[i][pDonateRank] >= 3)
-			{
-				sscanf(PlayerInfo[i][pBirthDate], "p<->iii", byear, bmonth, bday);
-				if(month == bmonth && day == bday)
-				{
-					if(PlayerInfo[i][pLastBirthday] >= gettime()-86400 || gettime() >= PlayerInfo[i][pLastBirthday]+28512000)
-					{
-						SetPVarInt(i, "pBirthday", 1);
-						PlayerInfo[i][pLastBirthday] = gettime();
-						format(query, sizeof(query), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[i][pLastBirthday], GetPlayerNameExt(i));
-						mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
-					}
-				}
-				else
-				{
-					DeletePVar(i, "pBirthday");
-				}
-				if(GetPVarInt(i, "pBirthday") == 1)
-				{
-					if(PlayerInfo[i][pReceivedBGift] != 1)
-					{
-						PlayerInfo[i][pReceivedBGift] = 1;
-						GiftPlayer(MAX_PLAYERS, i);
-						format(string, sizeof(string), "Happy Birthday %s! You have received a free gift!", GetPlayerNameEx(i));
-						SendClientMessageEx(i, COLOR_YELLOW, string);
-						format(string, sizeof(string), "%s(%d) has received a free gift for his birthday (%s) (Payday).", GetPlayerNameEx(i), GetPlayerSQLId(i), PlayerInfo[i][pBirthDate]);
-						Log("logs/birthday.log", string);
-						SendClientMessageEx(i, COLOR_YELLOW, "Gold VIP: You will get x2 paycheck as a birthday gift today.");
-						OnPlayerStatsUpdate(i);
-					}
-				}
-			}
-		}	
-		new iTempHour = CalculateWorldGameTime(hour, minuite);
-		SetWorldTime(iTempHour);
-
-		if(tmphour == 0) CountCitizens();
-
-		for (new x = 0; x < MAX_POINTS; x++)
-		{
-			Points[x][Announced] = 0;
-			if (Points[x][Vulnerable] > 0)
-			{
-				Points[x][Vulnerable]--;
-				UpdatePoints();
-			}
-			if (Points[x][Vulnerable] == 0 && Points[x][Type] >= 0 && Points[x][Announced] == 0 && Points[x][ClaimerId] == INVALID_PLAYER_ID)
-			{
-				format(string, sizeof(string), "%s has become available for capture.", Points[x][Name]);
-				SendClientMessageToAllEx(COLOR_YELLOW, string);
-				//SetPlayerCheckpoint(i, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz], 3);
-				ReadyToCapture(x);
-				Points[x][Announced] = 1;
-			}
-		}
-		Misc_Save();
-
-		for(new i = 0; i < MAX_TURFS; i++)
-		{
-			if(TurfWars[i][twVulnerable] > 0)
-			{
-			    TurfWars[i][twVulnerable]--;
-			    if(TurfWars[i][twVulnerable] == 0)
-			    {
-			    	if(TurfWars[i][twOwnerId] != -1)
-			    	{
-			        	format(string,sizeof(string),"%s that you currently own is vulnerable for capture!",TurfWars[i][twName]);
-			        	foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_YELLOW, string);
-			    	}
-				}
-			}
-		}
-
-		for(new i = 1; i < MAX_GROUPS; i++)
-		{
-		    if(arrGroupData[i][g_iTurfTokens] < 24 && arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
-		    {
-		        arrGroupData[i][g_iTurfTokens]++;
-		        switch(arrGroupData[i][g_iTurfTokens])
-		        {
-					case 12:
-					{
-		        		foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 1 Turf Token, you may now /claim to use it.");
-					}
-					case 24:
-					{
-					    foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 2 Turf Tokens, you may now /claim to use them.");
-					}
-		        }
-		    }
-		}
-		//SaveFamilies();
-		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
-	}
-}
-
 forward FixServerTime();
 public FixServerTime()
 {
@@ -559,28 +254,25 @@ public SyncPlayerTime(playerid)
 	return 1;
 }
 
-forward SyncMinTime();
-public SyncMinTime()
+forward SyncMinTime(i);
+public SyncMinTime(i)
 {
-	foreach(Player, i)
+	if(GetPlayerVirtualWorld(i) == 133769)
 	{
- 		if(GetPlayerVirtualWorld(i) == 133769)
+		SetPlayerWeather(i, 45);
+		SetPlayerTime(i, 0, 0);
+	}
+	else
+	{
+		if(zombieevent == 0) 
 		{
-  			SetPlayerWeather(i, 45);
-			SetPlayerTime(i, 0, 0);
-		}
-		else
-		{
-  			if(zombieevent == 0) 
-  			{
-  				new
-					iTempHour = CalculateWorldGameTime(hour, minuite),
-					iTempMinute = CalculateGameMinute(minuite, second);
+			new
+			iTempHour = CalculateWorldGameTime(hour, minuite),
+			iTempMinute = CalculateGameMinute(minuite, second);
 
-  				SetPlayerTime(i, iTempHour, iTempMinute);
-  			}
-	    	else SetPlayerTime(i, 0, 0);
+			SetPlayerTime(i, iTempHour, iTempMinute);
 		}
+    	else SetPlayerTime(i, 0, 0);
 	}
 	return 1;
 }
@@ -596,24 +288,21 @@ public SyncPlayerTime(playerid)
 	return 1;
 }
 
-forward SyncMinTime();
-public SyncMinTime()
+forward SyncMinTime(i);
+public SyncMinTime(i)
 {
 	new
 		iTempHour = CalculateWorldGameTime(hour, minuite),
 		iTempMinute = CalculateGameMinute(minuite, second);
 
-	foreach(new i: Player)
+	if(GetPlayerVirtualWorld(i) == 133769)
 	{
-		if(GetPlayerVirtualWorld(i) == 133769)
-		{
-			SetPlayerWeather(i, 45);
-			SetPlayerTime(i, 0, 0);
-		}
-		else
-		{
-			SetPlayerTime(i, iTempHour, iTempMinute);
-		}
+		SetPlayerWeather(i, 45);
+		SetPlayerTime(i, 0, 0);
+	}
+	else
+	{
+		SetPlayerTime(i, iTempHour, iTempMinute);
 	}	
 	return 1;
 }

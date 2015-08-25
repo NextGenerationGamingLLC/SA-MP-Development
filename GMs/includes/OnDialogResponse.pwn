@@ -1478,16 +1478,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new buyerid = GetPVarInt(playerid, "ttBuyer"),
 				cost = GetPVarInt(playerid, "ttCost");
 			if(PlayerToyInfo[playerid][listitem][ptModelID] == 0) {
-				SetPVarInt(buyerid, "ttSeller", INVALID_PLAYER_ID);
-				SetPVarInt(playerid, "ttCost", 0);
-				SetPVarInt(playerid, "ttBuyer", INVALID_PLAYER_ID);
+				DeletePVar(buyerid, "ttSeller");
+				DeletePVar(playerid, "ttCost");
+				DeletePVar(playerid, "ttBuyer");
 				ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Sell your toy", "Woops! You don't have anything to sell from that slot.", "Okay", "");
 			}
 			if(PlayerToyInfo[playerid][listitem][ptTradable] == 0) {
 				SendClientMessageEx(playerid, COLOR_GREY, "This toy isn't tradable.");
-				SetPVarInt(buyerid, "ttSeller", INVALID_PLAYER_ID);
-				SetPVarInt(playerid, "ttCost", 0);
-				return SetPVarInt(playerid, "ttBuyer", INVALID_PLAYER_ID);
+				DeletePVar(buyerid, "ttSeller");
+				DeletePVar(playerid, "ttCost");
+				return DeletePVar(playerid, "ttBuyer");
 			}
 			if(!IsPlayerAttachedObjectSlotUsed(playerid, listitem))
 			{
@@ -1513,9 +1513,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else {
 				SendClientMessageEx(playerid, COLOR_GREY, "You currently have this toy attached, please deattach it and try again.");
-				SetPVarInt(buyerid, "ttSeller", INVALID_PLAYER_ID);
-				SetPVarInt(playerid, "ttCost", 0);
-				SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+				DeletePVar(buyerid, "ttSeller");
+				DeletePVar(playerid, "ttCost");
+				DeletePVar(playerid, "ttSeller");
 			}
 		}
 		else
@@ -1536,9 +1536,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(szstring, sizeof(szstring), "%s has declined the toy offer.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GREY, szstring);
 			SendClientMessageEx(playerid, COLOR_GREY, "You have declined the toy offer.");
-			SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttBuyer", INVALID_PLAYER_ID);
-			SetPVarInt(GetPVarInt(playerid, "ttSeller"), "ttCost", 0);
-			SetPVarInt(playerid, "ttSeller", INVALID_PLAYER_ID);
+			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
+			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
+			DeletePVar(playerid, "ttSeller");
 					
 			HideTradeToysGUI(playerid);
 		}
@@ -1811,7 +1811,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(PlayerInfo[playerid][pNMuteTotal] < 4)
 					{
-						if(GetPVarInt(playerid, "IsInArena"))
+						if(GetPVarType(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1831,7 +1831,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(PlayerInfo[playerid][pNMuteTotal] >= 4 || PlayerInfo[playerid][pNMuteTotal] < 7)
 					{
-						if(GetPVarInt(playerid, "IsInArena"))
+						if(GetPVarType(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1894,7 +1894,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(PlayerInfo[playerid][pADMuteTotal] < 4)
 					{
-						if(GetPVarInt(playerid, "IsInArena"))
+						if(GetPVarType(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -1913,7 +1913,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(PlayerInfo[playerid][pADMuteTotal] >= 4 || PlayerInfo[playerid][pADMuteTotal] < 7)
 					{
-						if(GetPVarInt(playerid, "IsInArena"))
+						if(GetPVarType(playerid, "IsInArena"))
 						{
 							LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 						}
@@ -6681,19 +6681,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
-	else if(dialogid == DIALOG_NEWSHOTLINE)
+	else if(dialogid == DIALOG_HOTLINE)
 	{
 		if(response)
 		{
 			new zone[MAX_ZONE_NAME], mainzone[MAX_ZONE_NAME];
-			if(strlen(inputtext) < 4) return ShowPlayerDialog(playerid, DIALOG_NEWSHOTLINE, DIALOG_STYLE_INPUT, "Interglobal News Hotline", "I'm sorry, may I have a bit more information.", "Enter", "End Call");
+
+			if(strlen(inputtext) < 4) { 
+				
+				if(GetPVarType(playerid, "BUSICALL")) {
+					
+					new i = GetPVarInt(playerid, "BUSICALL");
+					format(szMiscArray, sizeof(szMiscArray), "%s's Landline | %d", Businesses[i][bName], Businesses[i][bPhoneNr]);
+				}
+				else {
+
+					new i = GetPVarInt(playerid, "GRPCALL");
+					format(szMiscArray, sizeof(szMiscArray), "{%s}%s's Hotline", Group_NumToDialogHex(arrGroupData[i][g_hDutyColour]), arrGroupData[i][g_szGroupName]);
+				}
+				return ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "I'm sorry, may I have a bit more information.", "Enter", "End Call");
+			}
 			else
 			{
 				GetPlayer2DZone(playerid, zone, MAX_ZONE_NAME);
 				GetPlayerMainZone(playerid, mainzone, MAX_ZONE_NAME);
-				SendCallToQueue(playerid, inputtext, zone, mainzone, 6);
+				if(GetPVarType(playerid, "GRPCALL")) SendCallToQueue(playerid, inputtext, zone, mainzone, 6);
+				if(GetPVarType(playerid, "BUSICALL")) SendCallToQueue(playerid, inputtext, zone, mainzone, 7);
 				SetPVarInt(playerid, "Has911Call", 1);
-				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Autoanswer: Thank you for calling the news hotline.");
+				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Autoanswer: Thank you for calling our land line.");
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "We will be with you shortly.");
 			}
 		}
@@ -11985,7 +12000,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(IsPlayerConnected(giveplayerid))
 				{
-					if(GetPVarInt(giveplayerid, "IsInArena"))
+					if(GetPVarType(giveplayerid, "IsInArena"))
 					{
 						LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));
 						format(string, sizeof(string), "You have forced %s out of paintball. You may now teleport this player.", GetPlayerNameEx(giveplayerid));
