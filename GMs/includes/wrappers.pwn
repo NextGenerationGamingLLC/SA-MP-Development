@@ -38,16 +38,19 @@ Internal_SetPlayerPos(playerid, Float:X, Float:Y, Float:Z) {
 
 	return SetPlayerPos(playerid, X, Y, Z);
 }
-
+/*
 Internal_TogglePlayerSpectating(playerid, toggle) {
 
+	
 	switch(toggle) {
 
 		case 0: Character_Actor(playerid, 1);
 		case 1: Character_Actor(playerid, 0);
 	}
+
 	return TogglePlayerSpectating(playerid, toggle);
 }
+*/
 
 Internal_SetPlayerHealth(playerid, Float:health) {
 
@@ -94,6 +97,6 @@ Internal_DestroyVehicle(vehicleid) {
 #define CreateVehicle(%0) Internal_CreateVehicle(%0)
 #define DestroyVehicle(%0) Internal_DestroyVehicle(%0)
 #define SetPlayerPos(%0) Internal_SetPlayerPos(%0)
-#define TogglePlayerSpectating(%0) Internal_TogglePlayerSpectating(%0)
+// #define TogglePlayerSpectating(%0) Internal_TogglePlayerSpectating(%0)
 #define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
 #define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)

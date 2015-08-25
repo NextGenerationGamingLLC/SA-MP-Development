@@ -743,6 +743,7 @@ public TVNews(color, string[], channel)
 forward SAN_Viewers(playerid);
 public SAN_Viewers(playerid)
 {
+	szMiscArray[0] = 0;
 	foreach(Player, i)
 	{
 		if(GetPVarType(i, "WatchingTV"))

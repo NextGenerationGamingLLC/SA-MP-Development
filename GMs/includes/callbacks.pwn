@@ -5949,7 +5949,7 @@ public OnPlayerText(playerid, text[])
 		case 31: accent = "(Norwegian accent) ";
 	}
 
-	if(WatchingTV[playerid] != 1) {
+	if(!GetPVarType(playerid, "WatchingTV")) {
 
 		new Float: f_playerPos[3];
 		GetPlayerPos(playerid, f_playerPos[0], f_playerPos[1], f_playerPos[2]);
