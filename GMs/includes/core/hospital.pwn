@@ -45,12 +45,12 @@ new InsurancePoint[2];
 hook OnGameModeInit() {
 
 	InsurancePoint[0] = CreateDynamicSphere(2383.0728,2662.0520,8001.1479, 4.0); // regular hospital interior
-	InsurancePoint[1] = CreateDynamicSphere(555.8644,1485.1359,6000.4258, 4.0); // doc hospital
+	InsurancePoint[1] = CreateDynamicSphere(564.54, 1437.02, 6000.47, 4.0); // doc hospital
 
 	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 2383.0728,2662.0520,8001.1479, 10); // Main Hospital Interior
-	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 555.8644,1485.1359,6000.4258, 10); // Doc Hospital Interior
+	CreateDynamic3DTextLabel("Insurance Point\nPress ~k~~CONVERSATION_YES~", COLOR_YELLOW, 564.54, 1437.02, 6000.47, 10); // Doc Hospital Interior
 	CreateDynamicPickup(1240, 23, 2383.0728,2662.0520,8001.1479, -1); // Main hospital interior pickup
-	CreateDynamicPickup(1240, 23, 555.8644,1485.1359,6000.4258, -1); // Doc hospital interior pickup
+	CreateDynamicPickup(1240, 23, 564.54, 1437.02, 6000.47, -1); // Doc hospital interior pickup
 
 	return 1;
 }
@@ -421,19 +421,6 @@ ReturnDeliveryPoint(iDPID)
 	return iPoint;
 }
 
-CMD:insurehelp(playerid, params[])
-{
-    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessageEx(playerid, COLOR_WHITE,"*** INSURANCE HELP *** - type a command for more infomation.");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** INSURANCE *** /buyinsurance");
-    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** ALL SAINTS: $1,500 + Transfer (One Time) Fee of $2,500");
-    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** COUNTY: $1,500 + Transfer (One Time) Fee of $2,500");
-    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** RED COUNTY: $500 + Transfer (One Time) Fee of $2,500");
-    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** SAN FIERRO: $500 + Transfer (One Time) Fee of $2,500");
-    SendClientMessageEx(playerid, COLOR_LIGHTRED,"*** INSURANCE *** FORT CARSON: $250");
-    return 1;
-}
-
 CMD:setinsurance(playerid, params[])
 {
 	if (PlayerInfo[playerid][pAdmin] >= 4)
@@ -466,7 +453,7 @@ CMD:setinsurance(playerid, params[])
 
 HospHeal(playerid)
 {
-	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) || IsPlayerInRangeOfPoint(playerid, 6.0, 555.8644,1485.1359,6000.4258))//2103.3252,2824.2102,-16.1672
+	if(IsPlayerInRangeOfPoint(playerid, 6.0, 2383.0728,2662.0520,8001.1479) || IsPlayerInRangeOfPoint(playerid, 6.0, 564.54, 1437.02, 6000.47))//2103.3252,2824.2102,-16.1672
 	{
 		if(GetPVarType(playerid, "STD"))
 		{

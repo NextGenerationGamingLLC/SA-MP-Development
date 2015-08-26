@@ -122,9 +122,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 3: {
 		 	
 				 	if(PlayerInfo[playerid][pCheckCash] > 0) {
-				    	GivePlayerCash(playerid,PlayerInfo[playerid][pCheckCash]);
+				    	//GivePlayerCash(playerid,PlayerInfo[playerid][pCheckCash]);
+				    	GivePlayerCashEx(playerid, TYPE_BANK, PlayerInfo[playerid][pCheckCash]);
 				     	PlayerInfo[playerid][pCheckCash] = 0;
-				      	SendClientMessageEx(playerid, COLOR_YELLOW, "  You have successfully cashed-in all your checks.");
+				      	SendClientMessageEx(playerid, COLOR_YELLOW, "  You have successfully cashed-in all your checks to your bank.");
 				       	return ShowBankMenu(playerid);
 					}		
 					else {

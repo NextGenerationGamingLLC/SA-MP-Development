@@ -63,7 +63,7 @@ native IsValidVehicle(vehicleid);
 			/*  ---------------- SERVER DEFINES ----------------- */
 #define 		MAX_PING 					1200
 #define			INVALID_SAMP_ID				65535
-#define			SAMP_WEB					"samp.ng-gaming.net"
+#define			SAMP_WEB					"sampweb.ng-gaming.net"
 #define			CP_WEB						"cp.ng-gaming.net"
 			/*  ---------------- TIMERS ----------------- */
 #define			TYPE_TPMATRUNTIMER 			1
@@ -977,7 +977,6 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_DOC_CP_C1F1			(5552)
 #define			DIALOG_DOC_CP_C1F2			(5553)
 #define			DIALOG_DOC_CP_AREA			(5554)
-#define			DIALOG_DOC_CP_ISOLATION		(5555)
 #define			DIALOG_DOC_INMATES			(5560)
 #define			DIALOG_LOAD_DETAINEES		(5565)
 
@@ -1318,7 +1317,7 @@ native IsValidVehicle(vehicleid);
 // hospital misc definitions
 #define		MAX_HOSPITALS				(17)
 #define		MAX_HOSPITALBEDS			(10)
-#define		MAX_DOCHOSPITALBEDS			(4)
+#define		MAX_DOCHOSPITALBEDS			(3)
 #define		MAX_DELIVERY_POINTS			(18)
 
 // hospital location definitions

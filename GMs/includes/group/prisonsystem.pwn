@@ -180,17 +180,24 @@ ShowDocPrisonControls(playerid, icontrolid)
 		case 4:
 		{
 			// area controls
-			format(szMiscArray, sizeof(szMiscArray), "Café%s)\n\
-			Cell-block (%s)\n\
-			Cell-block Corridor (%s)\n\
-			Café Kitchen (%s)\n\
-			Courtyard Access (%s)\n\
-			Cell-block Hallway (%s)\n\
+			format(szMiscArray, sizeof(szMiscArray), "Cell-block 1(%s)\n\
+			Cell-block 2 (%s)\n\
 			Showers (%s)\n\
-			Inside Gym (%s)\n\
-			Telephone Room (%s)\n\
-			Courtyard Door 1 (%s)\n\
-			Courtyard Door 2 (%s)", 
+			Cafe 1 (%s)\n\
+			Cafe 2 (%s)\n\
+			Laundry Room (%s)\n\
+			Isolation Block (%s)\n\
+			Control Room (%s)\n\
+			Processing 1 (%s)\n\
+			Processing 2 (%s)\n\
+			Processing 3 (%s)\n\
+			Classroom (%s)\n\
+			Janitor's Closet (%s)\n\
+			Medical Ward (%s)\n\
+			Hallway(%s)\n\
+			Lobby 1 (%s)\n\
+			Lobby 2 (%s)\n\
+			Visitation (%s)", 
 			((bDocAreaOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
@@ -201,67 +208,17 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocAreaOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
+			((bDocAreaOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
+			((bDocAreaOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
 			ShowPlayerDialog(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
-		}
-		case 5: 
-		{
-			// isolation controls
-			format(szMiscArray, sizeof(szMiscArray), "Isolation Cell 1 (%s)\n\
-			Isolation Cell 2 (%s)\n\
-			Isolation Cell 3 (%s)\n\
-			Isolation Cell 4 (%s)\n\
-			Isolation Cell 5 (%s)\n\
-			Isolation Cell 6 (%s)\n\
-			Isolation Cell 7 (%s)\n\
-			Isolation Cell 8 (%s)\n\
-			Isolation Cell 9 (%s)\n\
-			Isolation Cell 10 (%s)\n\
-			Isolation Cell 11 (%s)\n\
-			Isolation Cell 12 (%s)\n\
-			Isolation Cell 13 (%s)", 
-			((bDocIsolationOpen[0] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[1] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[2] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[3] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[4] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[5] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[6] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[7] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[8] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[9] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[10] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[11] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[12] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[13] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
-			);
-			format(szMiscArray, sizeof(szMiscArray), "%s\nIsolation Cell 14 (%s)\n\
-			Isolation Cell 15 (%s)\n\
-			Isolation Cell 16 (%s)\n\
-			Isolation Cell 17 (%s)\n\
-			Isolation Cell 18 (%s)\n\
-			Isolation Cell 19 (%s)\n\
-			Isolation Cell 20 (%s)\n\
-			Isolation Cell 21 (%s)\n\
-			Isolation Cell 22 (%s)\n\
-			Isolation Cell 23 (%s)\n\
-			Isolation Cell 24 (%s)\n\
-			Isolation Cell 25 (%s)",
-			szMiscArray,
-			((bDocIsolationOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[16] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[19] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[20] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[21] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[22] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[23] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
-			((bDocIsolationOpen[24] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
-			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_ISOLATION, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 	}
 	return 1;
@@ -279,13 +236,9 @@ DocLockdown(playerid)
 		{
 			OpenDocCells(i, 0);
 		}
-		for(new i = 0; i < 13; i++)
+		for(new i = 0; i < 19; i++)
 		{
 			OpenDocAreaDoors(i, 0);
-		}
-		for(new i = 0; i < 25; i++)
-		{
-			OpenDocIsolationCells(i, 0);
 		}
 		format( szWarning, sizeof(szWarning), "ALERT: The Easter Basin Correctional Facility is now on Lockdown for an emergency (( %s ))", GetPlayerNameEx(playerid));
 		SendGroupMessage(1, COLOR_RED, szWarning);
@@ -326,298 +279,86 @@ IsPlayerInRangeOfJailPhone(playerid)
 	return 0;
 }
 
-forward OpenDocIsolationCells(cellid, open);
-public OpenDocIsolationCells(cellid, open)
-{	
-	switch(cellid)
-	{
-		case 0:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[0], -2139.23169, -150.71797, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[0], -2139.23169 + 1.3, -150.71797, 2010.47229, 0.9);
-		}
-		case 1:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[1], -2135.38452, -150.72092, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[1], -2135.38452 + 1.3, -150.72092, 2010.47229, 0.9);
-		}
-		case 2:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[2], -2131.57104, -150.67859, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[2], -2131.57104 + 1.3, -150.67859, 2010.47229, 0.9);
-		}
-		case 3:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[3], -2143.49438, -150.77216, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[3], -2143.49438 + 1.3, -150.77216, 2010.47229, 0.9);
-		}
-		case 4:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[4], -2147.36108, -150.60271, 2010.47229,   0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[4], -2147.36108 + 1.3, -150.60271, 2010.47229,   0.9);
-		}
-		case 5:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[5], -2147.28296, -150.68958, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[5], -2147.28296 + 1.3, -150.68958, 2014.5593, 0.9);
-		}
-		case 6:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[6], -2151.34473, -150.66469, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[6], -2151.34473 + 1.3, -150.66469, 2014.5593, 0.9);
-		}
-		case 7:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[7], -2154.62915, -150.68343, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[7], -2154.62915 + 1.3, -150.68343, 2014.55931, 0.9);
-		}
-		case 8:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[8], -2143.52930, -150.66467, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[8], -2143.52930 + 1.3, -150.66467, 2014.5593, 0.9);
-		}
-		case 9:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[9], -2139.22485, -150.67685, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[9], -2139.22485 + 1.3, -150.67685, 2014.5593, 0.9);
-		}
-		case 10:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[10], -2135.43311, -150.65767, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[10], -2135.43311 + 1.3, -150.65767, 2014.5593, 0.9);
-		}
-		case 11:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[11], -2131.43262, -150.6903, 2014.5593, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[11], -2131.43262 + 1.3, -150.6903, 2014.5593, 0.9);
-		}
-		case 12:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[12], -2147.46753, -137.1050, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[12], -2147.46753 + 1.3, -137.1050, 2010.47229, 0.9);
-		}
-		case 13:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[13], -2151.54419, -137.20715, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[13], -2151.54419 + 1.3, -137.20715, 2010.47229, 0.9);
-		}
-		case 14:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[14], -2143.61450, -137.09286, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[14], -2143.61450 + 1.3, -137.09286, 2010.47229, 0.9);
-		}
-		case 15:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[15], -2139.13940, -137.20073, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[15], -2139.13940 + 1.3, -137.20073, 2010.47229, 0.9);
-		}
-		case 16:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[16], -2135.33667, -137.10387, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[16], -2135.33667 + 1.3, -137.10387, 2010.47229, 0.9);
-		}
-		case 17:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[17], -2131.41870, -137.20285, 2010.47229, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[17], -2131.41870 + 1.3, -137.20285, 2010.47229, 0.9);
-		}
-		case 18:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[18], -2154.72876, -137.2157, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[18], -2154.72876 + 1.3, -137.2157, 2014.6953, 0.9);
-		}
-		case 19:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[19], -2151.53076, -137.23778, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[19], -2151.53076 + 1.3, -137.23778, 2014.6953, 0.9);
-		}
-		case 20:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[20], -2147.42139, -137.08806, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[20], -2147.42139 + 1.3, -137.08806, 2014.6953, 0.9);
-		}
-		case 21:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[21], -2143.48828, -137.1256, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[21], -2143.48828 + 1.3, -137.1256, 2014.6953, 0.9);
-		}
-		case 22:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[22], -2139.47119, -137.28308, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[22], -2139.47119 + 1.3, -137.28308, 2014.6953, 0.9);
-		}
-		case 23:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[23], -2135.35815, -137.12624, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[23], -2135.35815 + 1.3, -137.12624, 2014.6953, 0.9);
-		}
-		case 24:
-		{
-			if(open == 0) MoveDynamicObject(DocIsolationDoors[24], -2131.47437, -137.20755, 2014.6953, 0.9);
-			if(open == 1) MoveDynamicObject(DocIsolationDoors[24], -2131.47437 + 1.3, -137.20755, 2014.6953, 0.9);
-		}
-	}
-	if(open == 0) bDocIsolationOpen[cellid] = false;
-	else if(open == 1) bDocIsolationOpen[cellid] = true;
-}
-
-forward OpenDocAdmDoor(door, open);
-public OpenDocAdmDoor(door, open)
-{	
-	switch(door)
-	{
-		case 0:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[0], 597.56000, 1494.96692, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[0], 597.56000 - 1.34, 1494.96692, 5999.42773, 0.9);
-		}
-		case 1:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[1], 587.84039, 1495.08362, 5999.40771, 0.9);//
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[1], 587.84039 - 1.34, 1495.08362, 5999.40771, 0.9);//
-		}
-		case 2:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[2], 590.28851, 1484.60571, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[2], 590.28851, 1484.60571 + 1.34, 5999.42773, 0.9);
-		}
-		case 3:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[3], 590.30060, 1481.43665, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[3], 590.30060, 1481.43665 + 1.34, 5999.42773, 0.9);
-		}
-		case 4:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[4], 579.84003, 1495.06958, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[4], 579.84003 - 1.34, 1495.06958, 5999.42773, 0.9);
-		}
-		case 5:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[5], 585.3600, 1478.2000, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[5], 585.3600, 1478.2000 + 1.34, 5999.42773, 0.9);
-		}
-		case 6:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[6], 588.07373, 1475.81750, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[6], 588.07373 - 1.34, 1475.81750, 5999.42773, 0.9);
-		}
-		case 7:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[7], 565.61963, 1475.81018, 5999.42773, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[7], 565.61963 - 1.34, 1475.81018, 5999.42773, 0.9);
-		}
-		case 8:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[8], 562.43921, 1473.47998, 5999.42676, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[8], 562.43921, 1473.47998 - 1.34, 5999.42676, 0.9);
-		}
-		case 9:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[9], 587.85999, 1487.88196, 5999.40771, 0.9);//
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[9], 587.85999 - 1.34, 1487.88196, 5999.40771, 0.9);//
-		}
-		case 10:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor1[10], 579.83752, 1492.54773, 5999.40771, 0.9);//
-			if(open == 1) MoveDynamicObject(DocAdmFloor1[10], 579.83752 - 1.34, 1492.54773, 5999.40771, 0.9);//
-		}
-		case 11:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[0], 585.09998, 1475.88965, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[0], 585.09998 - 1.34, 1475.88965, 6006.48047, 0.9);
-		}
-		case 12:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[1], 578.65002, 1471.09973, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[1], 578.65002 - 1.34, 1471.09973, 6006.48047, 0.9);
-		}
-		case 13:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[2], 587.15039, 1495.40857, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[2], 587.15039 - 1.34, 1495.40857, 6006.48047, 0.9);
-		}
-		case 14:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[3], 590.52771, 1495.39905, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[3], 590.52771 - 1.34, 1495.39905, 6006.48047, 0.9);
-		} 
-		case 15:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[4], 588.08301, 1475.89587, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[4], 588.08301 - 1.34, 1475.89587, 6006.48047, 0.9);
-		}
-		case 16:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[5], 597.62762, 1492.52954, 6006.48047, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[5], 597.62762 - 1.34, 1492.52954, 6006.48047, 0.9);
-		}
-		case 17:
-		{
-			if(open == 0) MoveDynamicObject(DocAdmFloor2[6], 591.09857, 1486.54163, 6013.39307, 0.9);
-			if(open == 1) MoveDynamicObject(DocAdmFloor2[6], 591.09857 + 1.34, 1486.54163, 6013.39307, 0.9);
-		}
-	}
-}
-
 forward OpenDocAreaDoors(doorid, open);
 public OpenDocAreaDoors(doorid, open)
 {
 	switch(doorid)
 	{
-		case 0:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[0], 553.22644, 1475.87146, 5995.95947, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[0], 553.22644 - 1.34, 1475.87146, 5995.95947, 0.9);
+		case 0: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[0], 568.36981, 1453.9955, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[0], 568.36981, 1455.3355, 5999.47168, 0.9);
 		}
-		case 1:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[1], 553.96301, 1466.10803, 5999.47119, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[1], 553.96301 - 1.34, 1466.10803, 5999.47119, 0.9);
+		case 1: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[1], 572.8498, 1453.9955, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[1], 572.8498, 1455.3155, 5999.47168, 0.9);
 		}
-		case 2:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[2], 568.22601, 1455.32703, 5999.47119, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[2], 568.22601, 1455.32703 - 1.34, 5999.47119, 0.9);
+		case 2: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[2], 585.77289, 1448.87915, 5999.45947, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[2], 585.7729, 1447.5592, 5999.4595, 0.9);
 		}
-		case 3:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[3], 547.46350, 1498.26025, 5995.95947, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[3], 547.46350 - 1.34, 1498.26025, 5995.95947, 0.9);
+		case 3: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[3], 553.98120, 1466.11426, 5999.44971, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[3], 552.6612, 1466.1143, 5999.4497, 0.9);
 		}
-		case 4:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794, 5995.95947, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[4], 549.62292, 1473.38794 - 1.34, 5995.95947, 0.9);
+		case 4: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[4], 553.98169, 1474.47205, 5999.48877, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[4], 552.6617, 1474.4720, 5999.4888, 0.9);
 		}
-		/*case 5:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 551.03003, 1471.72058, 5995.95947, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 551.03003 - 1.34, 1471.72058, 5995.95947, 0.9);
+		case 5: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 583.51978, 1455.05212, 5999.47266, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 582.1798, 1455.0521, 5999.4727, 0.9);
 		}
-		case 6:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 551.03961, 1462.23999, 5995.95947, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 551.03961 - 1.34, 1462.23999, 5995.95947, 0.9);
-		}*/
-		case 5:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[5], 573.79968, 1454.22156, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[5], 573.79968 + 1.34, 1454.22156, 5999.47168, 0.9);
+		case 6: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 531.66589, 1428.00647, 10999.45703, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 530.3259, 1428.0065, 10999.4570, 0.9);
 		}
-		case 6:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[6], 576.60413, 1449.64075, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[6], 576.60413, 1449.64075 + 1.34, 5999.47168, 0.9);
+		case 7: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[7], 566.54053, 1462.30774, 6003.41699, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[7], 565.2205, 1462.30774, 6003.41699, 0.9);
 		}
-		case 7:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[7], 566.11102, 1429.46960, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[7], 566.11102 + 1.34, 1429.46960, 5999.47168, 0.9);
+		case 8: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[8], 572.98657, 1447.5975, 5999.4727, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[8], 572.98657, 1449.12683, 5999.4727, 0.9);		
 		}
-		case 8:
-		{
-			if(open == 0) MoveDynamicObject(DocCellRoomDoors[8], 553.28021, 1429.46667, 5999.47168, 0.9);
-			if(open == 1) MoveDynamicObject(DocCellRoomDoors[8], 553.28021 + 1.34, 1429.46667, 5999.47168, 0.9);
+		case 9: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[9], 597.01477, 1452.43774, 5999.44873 , 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[9], 597.0148, 1451.0177, 5999.4487, 0.9);
+		}
+		case 10: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[10], 599.12000, 1451.45422, 5999.47754, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[10],  597.7200, 1451.4742, 5999.4775, 0.9);
+		}
+		case 11: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[11],  589.21820, 1448.87537, 5999.46826, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[11],  589.2182, 1447.4754, 5999.4683, 0.9);
+		}
+		case 12: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[12],  579.57898, 1463.63379, 5999.46143, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[12],  579.5790, 1462.3338, 5999.4614, 0.9);
+		}
+		case 13: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[13], 572.99377, 1468.63940, 5999.43994, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[13],  572.9938, 1467.3394, 5999.4399, 0.9);
+		}
+		case 14: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[14],  572.98419, 1434.65295, 5999.52295, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[14],  572.9842, 1433.2330, 5999.5229, 0.9);
+		}
+		case 15: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[15],  575.50751, 1461.82019, 5999.47168, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[15],  574.1475, 1461.82019, 5999.47168, 0.9);
+		}
+		case 16: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[16],  526.92139, 1414.63281, 10999.45703, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[16],  526.92139, 1415.9528, 10999.45703, 0.9);
+		}
+		case 17: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[17],  529.96143, 1414.63281, 10999.45703, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[17],  529.96143, 1415.9528, 10999.45703, 0.9);
+		}
+		case 18: {
+			if(open == 0) MoveDynamicObject(DocCellRoomDoors[18],  542.2069, 1417.86682, 10999.45703, 0.9);
+			if(open == 1) MoveDynamicObject(DocCellRoomDoors[18],  542.2069, 1416.5468, 10999.45703, 0.9);
 		}
 	}
 	if(open == 0) bDocAreaOpen[doorid] = false;
@@ -788,153 +529,6 @@ OpenDocCells(cellid, open)
 	else if(open == 1) bDocCellOpen[cellid] = true;
 }
 
-forward MoveDocElevator(level);
-public MoveDocElevator(level)
-{
-	switch(level)
-	{
-		case 0:
-		{
-			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6001.3125, 0.5);
-			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6001.2954, 0.5);
-			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6001.2954, 0.5);
-			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6001.04785, 0.5);
-			iDocElevatorLevel = 0;
-			bDocElevatorMoving = true;
-		}
-		case 1:
-		{
-			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6008.3350, 0.5);
-			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6008.3179, 0.5);
-			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6008.3179, 0.5);
-			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6008.1504, 0.5);
-			iDocElevatorLevel = 1;
-			bDocElevatorMoving = true;
-		}
-		case 2:
-		{
-			MoveDynamicObject(DocElevator, 577.03979, 1490.21484, 6015.3423, 0.5);
-			MoveDynamicObject(DocInnerElevator[1], 577.0448, 1492.2283, 6015.3105, 0.5);
-			MoveDynamicObject(DocInnerElevator[0], 577.0448, 1488.2407, 6015.3105, 0.5);
-			MoveButton(DocElevatorInside, 578.91467, 1492.18884, 6015.1641, 0.5);
-			iDocElevatorLevel = 2;
-			bDocElevatorMoving = true;
-		}
-	}
-	return 1;
-}
-
-forward OpenElevatorDoors(level, open);
-public OpenElevatorDoors(level, open)
-{
-	switch(level)
-	{
-		case 0:
-		{
-			if(open == 0)
-			{
-				MoveDynamicObject(DocElevatorExt[0], 577.10480, 1488.24072, 6001.21533, 0.9);
-				MoveDynamicObject(DocElevatorExt[1], 577.10480, 1492.22827, 6001.21533, 0.9);
-			}
-			if(open == 1)
-			{
-				MoveDynamicObject(DocElevatorExt[0], 577.10480, 1488.24072 - 1.74, 6001.21533, 0.9);
-				MoveDynamicObject(DocElevatorExt[1], 577.10480, 1492.22827 + 1.74, 6001.21533, 0.9);
-			}
-		}
-		case 1:
-		{
-			if(open == 0)
-			{
-				MoveDynamicObject(DocElevatorExt[2], 577.10480, 1488.24072, 6008.37744, 0.9);
-				MoveDynamicObject(DocElevatorExt[3], 577.10480, 1492.22827, 6008.37744, 0.9);
-			}
-			if(open == 1)
-			{
-				MoveDynamicObject(DocElevatorExt[2], 577.10480, 1488.24072 - 1.74, 6008.37744, 0.9);
-				MoveDynamicObject(DocElevatorExt[3], 577.10480, 1492.22827 + 1.74, 6008.37744, 0.9);
-			}
-		}
-		case 2:
-		{
-			if(open == 0)
-			{
-				MoveDynamicObject(DocElevatorExt[4], 577.10480, 1488.24072, 6015.39063, 0.9);
-				MoveDynamicObject(DocElevatorExt[5], 577.10480, 1492.22827, 6015.39063, 0.9);
-			}
-			if(open == 1)
-			{
-				MoveDynamicObject(DocElevatorExt[4], 577.10480, 1488.24072 - 1.74, 6015.39063, 0.9);
-				MoveDynamicObject(DocElevatorExt[5], 577.10480, 1492.22827 + 1.74, 6015.39063, 0.9);
-			}
-		}
-	}
-	return 1;
-}
-
-forward OpenInnerDoors(open);
-public OpenInnerDoors(open)
-{
-	switch(open)
-	{
-		case 0:
-		{
-			if(iDocElevatorLevel == 0)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6001.29541, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6001.29541, 0.9);
-			}
-			if(iDocElevatorLevel == 1)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6008.37744 + 0.08008, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6008.37744 + 0.08008, 0.9);
-			}
-			if(iDocElevatorLevel == 2)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072, 6015.39063 + 0.08008, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827, 6015.39063 + 0.08008, 0.9);
-			}
-		}
-		case 1:
-		{
-			if(iDocElevatorLevel == 0)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6001.29541, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6001.29541, 0.9);
-			}
-			if(iDocElevatorLevel == 1)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6008.37744 + 0.08008, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6008.37744 + 0.08008, 0.9);
-			}
-			if(iDocElevatorLevel == 2)
-			{
-				MoveDynamicObject(DocInnerElevator[0], 577.04480, 1488.24072 - 1.80, 6015.39063 + 0.08008, 0.9);
-				MoveDynamicObject(DocInnerElevator[1], 577.04480, 1492.22827 + 1.80, 6015.39063 + 0.08008, 0.9);
-			}
-		}
-	}
-	return 1;
-}
-
-CallDocElevator(playerid, level)
-{
-	if(bDocElevatorMoving == true) return SendClientMessageEx(playerid, COLOR_RED, "The elevator is currently moving so you are unable to call it.");
-	else if(level == iDocElevatorLevel)
-	{
-		OpenInnerDoors(1);
-		OpenElevatorDoors(level, 1);
-	}
-	else 
-	{
-		OpenInnerDoors(0);
-		OpenElevatorDoors(iDocElevatorLevel, 0);
-		SetTimerEx("MoveDocElevator", 5000, false, "i", level); 
-	}
-	
-	return 1;
-}
-
 /*GetClosestJailBoxingRing(iTargetID)
 {
 	new iClosest;
@@ -1035,18 +629,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	szMiscArray[0] = 0;
 	switch(dialogid)
 	{
-		case DIALOG_DOC_ELEVATOR:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					case 0: CallDocElevator(playerid, 0);
-					case 1: CallDocElevator(playerid, 1);
-					case 2: CallDocElevator(playerid, 2);
-				}
-			}
-		}
 		case DIALOG_DOC_CP:
 		{
 			if(response)
@@ -1136,16 +718,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					else OpenDocAreaDoors(listitem, 0);
 				}
 				ShowDocPrisonControls(playerid, 4);
-			}
-			else ShowDocPrisonControls(playerid, 0);
-		}
-		case DIALOG_DOC_CP_ISOLATION:
-		{
-			if(response)
-			{
-				if(bDocIsolationOpen[listitem] == false) OpenDocIsolationCells(listitem, 1);
-				else OpenDocIsolationCells(listitem, 0);
-				ShowDocPrisonControls(playerid, 5);
 			}
 			else ShowDocPrisonControls(playerid, 0);
 		}
@@ -1363,7 +935,7 @@ CMD:deliverinmates(playerid, params[])
 
 CMD:getinmatefood(playerid, params[])
 {
-	if(IsPlayerInRangeOfPoint(playerid, 8, 554.3956,1497.6799,5996.9590))
+	if(IsPlayerInRangeOfPoint(playerid, 8, 555.8644,1485.1359,6000.4258))
 	{
 		new string[64];
 		if(GetPVarInt(playerid, "inmatefood") < 5)
@@ -1478,7 +1050,7 @@ CMD:acceptjailfood(playerid, params[])
 
 CMD:getfood(playerid, params[])
 {
-	if(IsPlayerInRangeOfPoint(playerid, 8, 554.3956,1497.6799,5996.9590))
+	if(IsPlayerInRangeOfPoint(playerid, 8, 555.8644,1485.1359,6000.4258))
 	{
 		new string[94];
 		if(GetPVarInt(playerid, "carryingfood") < 1)
@@ -1716,7 +1288,7 @@ CMD:docjudgesubpoena(playerid, params[])
 	
 	if(sscanf(params, "us[128]", iTargetID, szCaseName)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgesubpoena [playerid] [case reason]");
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
-	if(!IsPlayerInRangeOfPoint(playerid, 20, 594.7211,1481.1313,6007.4780)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
 	else if(IsAJudge(playerid))
 	{
 		format(szString, sizeof(szString), "You have subpoenaed %s. Case: %s", GetPlayerNameEx(iTargetID), szCaseName);
@@ -1740,7 +1312,7 @@ CMD:docjudgecharge(playerid, params[])
 		szMessage[128];
 		
 	if(sscanf(params, "udds[128]", iTargetID, iTime, iFine, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgecharge [playerid] [time] [fine] [reason]");
-	if(!IsPlayerInRangeOfPoint(playerid, 20, 594.7211,1481.1313,6007.4780)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
 	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
 	if(ProxDetectorS(14.0, playerid, iTargetID))
@@ -1781,7 +1353,7 @@ CMD:docjudgesentence(playerid, params[])
 		string[256];
 	
 	if(sscanf(params, "u", iSuspect)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docjudgesentence [suspect]");
-	if(!IsPlayerInRangeOfPoint(playerid, 20, 594.7211,1481.1313,6007.4780)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
+	if(!IsPlayerInRangeOfPoint(playerid, 15, 525.86, 1427.05, 11001.28)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be at the DOC courthouse to use this");
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: That player is not connected");
 	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a judge to use this command");
 	if(ProxDetectorS(14.0, playerid, iSuspect))
@@ -1956,25 +1528,5 @@ CMD:jailcuff(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not a law enforcement officer.");
 	}
-	return 1;
-}
-
-CMD:isolationdoors(playerid, params[])
-{
-	new iCellRef;
-
-	if(!IsADocGuard(playerid))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DoC Guard to use this command. ");
-	if(!IsPlayerInRangeOfPoint(playerid, 300, -2137.26880, -173.30179, 2015.0880))
-		return SendClientMessageEx(playerid, COLOR_GREY, "You must in the isolation rooms to use this command. ");
-	if(sscanf(params, "d", iCellRef))
-		return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /isolationdoors [cellid]");
-	if(0 <= iCellRef <= 24)
-	{
-		if(bDocIsolationOpen[iCellRef] == false) OpenDocIsolationCells(iCellRef, 1);
-		else if(bDocIsolationOpen[iCellRef] == true) OpenDocIsolationCells(iCellRef, 0);
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "Please specify a valid isolation cell id (0 - 24)");
-
 	return 1;
 }

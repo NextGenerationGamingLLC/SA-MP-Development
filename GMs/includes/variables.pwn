@@ -1014,52 +1014,21 @@ new Float:DocPrison[31][3] = {
 {567.4249,1443.5105,6004.3784}
 };
 
-new Float:DocIsolation[25][3] = {
-{-2147.5784,-154.2074,2010.2029},
-{-2143.3828,-154.7304,2010.2029},
-{-2138.9233,-154.2347,2010.2029},
-{-2135.3286,-154.1938,2010.2029},
-{-2131.3203,-154.3924,2010.2029},
-{-2131.1770,-134.7128,2010.2029},
-{-2135.5234,-134.6273,2010.2029},
-{-2139.4905,-134.6280,2010.2029},
-{-2143.8135,-134.4460,2010.2029},
-{-2147.4583,-134.6629,2010.2029},
-{-2151.3811,-134.5710,2010.2029},
-{-2154.8367,-153.8878,2014.2972},
-{-2150.9338,-153.9361,2014.2972},
-{-2147.5813,-154.1967,2014.2972},
-{-2142.9363,-154.0002,2014.2972},
-{-2139.0645,-153.9240,2014.2972},
-{-2135.0979,-154.0444,2014.2972},
-{-2131.2671,-154.0004,2014.2972},
-{-2154.3862,-134.5270,2014.4973},
-{-2151.4470,-134.4226,2014.4973},
-{-2147.3240,-134.3722,2014.4973},
-{-2143.4766,-134.5723,2014.4973},
-{-2139.1560,-134.3658,2014.4973},
-{-2135.1399,-134.0426,2014.4973},
-{-2131.2229,-133.6181,2014.4973}
+new Float:DocIsolation[6][3] = {
+{496.9142,1445.5503,11000.4756},
+{497.0593,1448.7583,11000.4756},
+{496.8056,1451.7898,11000.4756},
+{496.6227,1455.1790,11000.4756},
+{496.6559,1458.2590,11000.4756},
+{496.8119,1461.6667,11000.4756}
 };
 
-
-new DocElevatorCall[3];
-new DocElevatorInside;
 new DocCellsFloor1[16];
 new DocCellsFloor2[15];
-new DocCellRoomDoors[11];
-new DocAdmFloor1[12];
-new DocAdmFloor2[7];
-new DocIsolationDoors[25];
-new DocInnerElevator[2];
-new DocElevator;
-new DocElevatorExt[6];
-new iDocElevatorLevel;
+new DocCellRoomDoors[19];
 
-new bool:bDocElevatorMoving = false;
 new bool:bDocCellOpen[31] = false;
-new bool:bDocAreaOpen[11] = false;
-new bool:bDocIsolationOpen[25] = false;
+new bool:bDocAreaOpen[19] = false;
 new bool:bDocCellsFloorOpen[2] = false;
 new bool:bDocLockdown = false;
 new arrJailBoxingData[MAX_JAIL_BOXINGS][eJailBoxing];
@@ -2609,10 +2578,9 @@ new Float:HospitalSpawns[MAX_HOSPITALBEDS][3] = {
 };
 
 new Float:DocHospitalSpawns[MAX_DOCHOSPITALBEDS][4] = {
-{563.3083,1476.5830,6001.2500,90.0000}, 
-{550.3926,1476.4360,6001.2500,270.0000}, 
-{550.2947,1494.3883,6001.2500,270.0000}, 
-{563.5749,1494.5002,6001.2500,90.0000}
+{566.27, 1431.32, 6001.25,0.0}, 
+{568.71, 1431.32, 6001.2500,0.0}, 
+{571.16, 1431.32,6001.2500,0.0}
 };
 
 // format [PosX] [PosY] [PosZ]
@@ -2629,11 +2597,11 @@ new Float:HospitalDeliveryPoints[MAX_DELIVERY_POINTS][3] = {
 	{-2656.0339,615.2567,66.0938},
 	{-1528.814331, 2540.706054, 55.835937},
 	{-2482.4338,2231.1106,4.8463},
-	{225.3467,1981.8497,17.6406},
+	{195.56, 2120.69, 18.03},
 	{1579.58, 1768.88, 10.82},
 	{-2196.9641,-2303.8191,30.6250}, 
 	{-2043.2212,-198.8035,15.0703},
-	{213.1064,1979.2247,23.9187},
+	{206.80, 2115.06, 24.09},
 	{-1506.1542,442.8032,42.3125}
 };
 
@@ -2696,8 +2664,8 @@ new bool:PlayerIsDead[MAX_PLAYERS];
 new eastin, eastout, lockerin, lockerout, cctvin, cctvout, roofkey, elevator, garagekey, chiefout, chiefin, westin, westout;
 new eastlobby1, eastlobby2, westlobby1, westlobby2, cctv1, cctv2, locker1, locker2, chief1, chief2, sasdbtn1, sasdbtn2, sasdbtn3, sasdbtn4, sasdbtn5, sasd1A, sasd2A, sasd3A, sasd4A, sasd5A, sasd1B, sasd2B, sasd3B, sasd4B, sasd5B;
 new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPrivate[2], FBIPrivateBTN[2];
-new DocButtons[27];
-new DocCPButton;
+new DocButton[19];
+new DocCPButton[2];
 new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];
 
 new bool:emailcheck = true;

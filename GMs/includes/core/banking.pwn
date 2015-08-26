@@ -181,7 +181,8 @@ PayDay(i) {
 			format(string, sizeof(string), "  New balance: $%s  |  Rent paid: $%s", number_format(PlayerInfo[i][pAccount]), number_format((0 <= PlayerInfo[i][pRenting] < sizeof HouseInfo) ? (HouseInfo[PlayerInfo[i][pRenting]][hRentFee]) : (0)));
 			SendClientMessageEx(i, COLOR_GRAD5, string);
 
-			GivePlayerCash(i, PlayerInfo[i][pPayCheck]);
+			//GivePlayerCash(i, PlayerInfo[i][pPayCheck]);
+			GivePlayerCashEx(i, TYPE_BANK, PlayerInfo[i][pPayCheck]);
 			
 			/*if(month == 12 && day == 5)
 			{

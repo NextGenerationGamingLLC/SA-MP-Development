@@ -271,12 +271,6 @@ public OnDynamicObjectMoved(objectid)
 			}
 		}
 	}
-	if(objectid == DocElevator)
-	{
-		OpenInnerDoors(1);
-		OpenElevatorDoors(iDocElevatorLevel, 1);
-		bDocElevatorMoving = false;
-	}
 }
 
 /*
@@ -679,309 +673,20 @@ public OnPlayerPressButton(playerid, buttonid)
 	    MoveDynamicObject(eastlobby2,253.18457031,106.59960938,1002.21502686,4);
 		SetTimer("CloseEastLobby", 2500, 0);
 	}
-	if (buttonid == DocButtons[0])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// lobby
-			OpenDocAdmDoor(0, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 0, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[1])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// lobby to hallway
-			OpenDocAdmDoor(2, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 2, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[2])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// rear room
-			OpenDocAdmDoor(3, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 3, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[3])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// elevator --> hallway
-			OpenDocAdmDoor(5, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 5, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[4])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// security checkpoint 1
-			OpenDocAdmDoor(1, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 1, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[5])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// security checkpoint 2
-			OpenDocAdmDoor(9, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 9, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[6])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// garage elevator
-			OpenDocAdmDoor(6, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 6, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[7])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// hospital
-			OpenDocAdmDoor(7, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 7, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[8])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// prison area access
-			OpenDocAdmDoor(8, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 8, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[9])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// yard access
-			OpenDocAreaDoors(4, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 4, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[10])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// messhall access
-			OpenDocAreaDoors(0, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 0, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[11])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// kitchen access
-			OpenDocAreaDoors(3, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 3, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[12])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// prisoner visitor security
-			OpenDocAdmDoor(10, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 10, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[13])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// prisoner visitor room
-			OpenDocAdmDoor(4, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 4, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[14])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// control room access
-			OpenDocAdmDoor(12, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 12, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[15])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// control room hallway
-			OpenDocAdmDoor(11, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 11, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[16])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// court rear room
-			OpenDocAdmDoor(15, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 15, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[17])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// court access
-			OpenDocAdmDoor(16, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 16, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[18])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// interogation room right
-			OpenDocAdmDoor(14, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 14, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[19])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// interogation room left
-			OpenDocAdmDoor(13, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 13, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[20])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// warden's office
-			OpenDocAdmDoor(17, 1);
-			SetTimerEx("OpenDocAdmDoor", 3000, false, "ii", 17, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[21])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// gym access
-			OpenDocAreaDoors(2, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 2, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[22])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// prison access
-			OpenDocAreaDoors(1, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 1, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[23])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// prison hallway
-			OpenDocAreaDoors(5, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 5, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[24])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// showers
-			OpenDocAreaDoors(6, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 6, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[25])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// gym
-			OpenDocAreaDoors(7, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 7, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocButtons[26])
-	{
-		if(IsADocGuard(playerid))
-		{
-			// phone room
-			OpenDocAreaDoors(8, 1);
-			SetTimerEx("OpenDocAreaDoors", 3000, false, "ii", 8, 0);
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
-	}
-	if(buttonid == DocElevatorCall[0])
-	{
-		CallDocElevator(playerid, 0);
-	}
-	if(buttonid == DocElevatorCall[1])
-	{
-		CallDocElevator(playerid, 1);
-	}
-	if(buttonid == DocElevatorCall[2])
-	{
-		CallDocElevator(playerid, 2);
-	}
-	if(buttonid == DocElevatorInside)
-	{
-		new string[128];
+	for(new i = 0; i < sizeof(DocButton); i++) {
+		if (buttonid == DocButton[i]) {
+			if(IsADocGuard(playerid)) {
+				OpenDocAreaDoors(i, 1);
+				SetTimerEx("OpenDocAreaDoors", 5000, false, "ii", i, 0);
 
-		if(bDocElevatorMoving == true) return SendClientMessageEx(playerid, COLOR_RED, "The elevator is currently moving so you are unable to use this.");
-		else if(IsACop(playerid) || IsAHitman(playerid))
-		{
-			if(iDocElevatorLevel == 0) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby{00FF00}(Current)\n{FFFFFF}Floor 2 - Court Rooms\nFloor 3 - Administration");
-			if(iDocElevatorLevel == 1) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms{00FF00}(Current)\n{FFFFFF}Floor 3 - Administration");
-			if(iDocElevatorLevel == 2) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms\nFloor 3 - Administration{00FF00}(Current)");
+			}
+			else {
+				SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
+				break;
+			}
 		}
-		else
-		{
-			if(iDocElevatorLevel == 0) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby{00FF00}(Current)\n{FFFFFF}Floor 2 - Court Rooms");
-			if(iDocElevatorLevel == 1) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms{00FF00}(Current)");
-			if(iDocElevatorLevel == 2) format(string, sizeof(string), "{FFFFFF}Floor 1 - Lobby\nFloor 2 - Court Rooms\nFloor 3 - Administration{00FF00}(Current)");
-		}
-
-		ShowPlayerDialog(playerid, DIALOG_DOC_ELEVATOR, DIALOG_STYLE_LIST, "Choose a floor", string, "Select", "Cancel");
 	}
-	if(buttonid == DocCPButton)
+	if(buttonid == DocCPButton[0] || buttonid == DocCPButton[1])
 	{
 		if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Access denied");
 		ShowDocPrisonControls(playerid, 0);
@@ -4601,62 +4306,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			DeletePVar(playerid, "DraggingPlayer");
             SendClientMessage(playerid, COLOR_GRAD2, string);
 		}
-		/*if(GetPVarInt(playerid, "CreateGT") == 1)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action.");
-			new gangtag = GetFreeGangTag();
-			if(gangtag == -1)
-			{
-				DeletePVar(playerid, "CreateGT");
-				SendClientMessageEx(playerid, COLOR_GREY, "There is no free gang tag to use!");
-				return 1;
-			}
-			new Float:pPosX, Float:pPosY, Float:pPosZ, string[128];
-			GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
-			GangTags[gangtag][gt_PosX] = pPosX;
-			GangTags[gangtag][gt_PosY] = pPosY;
-			GangTags[gangtag][gt_PosZ] = pPosZ;
-			GangTags[gangtag][gt_Used] = 1;
-			GangTags[gangtag][gt_VW] = GetPlayerVirtualWorld(playerid);
-			GangTags[gangtag][gt_Int] = GetPlayerInterior(playerid);
-			DeletePVar(playerid, "CreateGT");
-			CreateGangTag(gangtag);
-			format(string, sizeof(string), "Gangtag %d has been created, use /gtedit to edit and optimize the position!", gangtag);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has created gangtag %d.", GetPlayerNameEx(playerid), gangtag);
-			Log("Logs/GangTags.log", string);
-			SaveGangTag(gangtag);
-		}
-		if(GetPVarInt(playerid, "gt_Edit") == 1)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action.");
-			new gangtag = GetPVarInt(playerid, "gt_ID");
-			new Float:pPosX, Float:pPosY, Float:pPosZ, string[128];
-			GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
-			GangTags[gangtag][gt_PosX] = pPosX;
-			GangTags[gangtag][gt_PosY] = pPosY;
-			GangTags[gangtag][gt_PosZ] = pPosZ;
-			GangTags[gangtag][gt_VW] = GetPlayerVirtualWorld(playerid);
-			GangTags[gangtag][gt_Int] = GetPlayerInterior(playerid);
-			DeletePVar(playerid, "gt_ID");
-			DeletePVar(playerid, "gt_Edit");
-			CreateGangTag(gangtag);
-			format(string, sizeof(string), "You have changed the position of gangtag %d!", gangtag);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has changed the position of gangtag %d.", GetPlayerNameEx(playerid), gangtag);
-			Log("Logs/GangTags.log", string);
-			SaveGangTag(gangtag);
-		}
-		if(GetPVarType(playerid, "gt_Spraying"))
-		{
-			new tagid = GetPVarInt(playerid, "gt_Spray");
-			GangTags[tagid][gt_TimeLeft] = 0;
-			KillTimer(GangTags[tagid][gt_Timer]);
-			DeletePVar(playerid, "gt_Spraying");
-			DeletePVar(playerid, "gt_Spray");
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped spraying the wall.");
-			ClearAnimations(playerid);
-		}*/
 	}
 	else if((newkeys & KEY_SPRINT) && GetPlayerState(playerid) == 2)// Pressing the gas, detonates the bomb.
 	{
@@ -4693,10 +4342,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
     }
-	/*else if(newkeys & KEY_SUBMISSION && (GetPlayerState(playerid) == PLAYER_STATE_ONFOOT))
-	{
-		ShowPlayerHolsterDialog(playerid);
-	}*/
 	return 1;
 }
 

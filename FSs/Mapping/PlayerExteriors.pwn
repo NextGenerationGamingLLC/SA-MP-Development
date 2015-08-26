@@ -5545,6 +5545,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1215, 2047.06042, -1702.75854, 13.11460,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(2114, 2059.06958, -1698.16150, 12.68490,   0.00000, 0.00000, 0.00000);
 	
+	/*
 	//Kwart Cross
 	CreateDynamicObject(6973,2240.1999500,578.4697300,10.4000000,0.0000000,0.0000000,90.0000000); //object(shamheliprt1) (1)
 	CreateDynamicObject(1682,2257.1999500,583.7000100,18.4000000,0.0000000,0.0000000,140.0000000); //object(ap_radar1_01) (1)
@@ -5825,7 +5826,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3698,2201.4060000,577.7340100,12.5500000,0.0000000,0.0000000,90.0000000); //object(barrio3b_lae) (1)
 	CreateDynamicObject(1368,2183.8999000,581.0000000,10.5000000,0.0000000,0.0000000,179.9950000); //object(cj_blocker_bench) (3)
 	CreateDynamicObject(1368,2178.7000000,581.0000000,10.5000000,0.0000000,0.0000000,179.9950000); //object(cj_blocker_bench) (3)
-	
+	*/
 	//Lewis' House Exterior
 	CreateDynamicObject(3851, 1294.80981, -826.15692, 83.99158,   0.00000, 0.00000, 0.18000);
 	CreateDynamicObject(3851, 1289.21301, -831.80042, 83.99160,   0.00000, 0.00000, -89.94010);
@@ -6700,7 +6701,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1255, 1816.08997, -1321.54211, 65.33720,   0.00000, 0.00000, 270.00000);
 	CreateDynamicObject(16151, 1828.31873, -1319.88855, 65.16360,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(15036, 1816.17029, -1307.38562, 65.94792,   0.00000, 0.00000, 180.00000);
-	
+	/*
 	//Kwarts HQ
 	CreateDynamicObject(935, 2655.40430, -2139.24072, 1.48380,   0.00000, 90.00000, 153.00000);
 	CreateDynamicObject(935, 2704.27759, -2178.61377, 1.48380,   0.00000, 90.00000, -55.00000);
@@ -7123,6 +7124,7 @@ public OnFilterScriptInit()
 	kwart = CreateDynamicObject(19356, 2581.74219, -2104.61182, 12.74100,   0.00000, 0.00000, 90.00000);
 	SetDynamicObjectMaterialText(kwart, 0, "VANGUARD \nHEADQUARTERS", OBJECT_MATERIAL_SIZE_256x128,
 	"Verdana", 28, 1, 0xFFFFFFFF, 0x0C090A, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	*/
 	
 	//Jareds Elevator Floor
 	CreateDynamicObject(19384,1778.7506100,-1297.7143600,121.0195000,0.0000000,0.0000000,0.0000000); //

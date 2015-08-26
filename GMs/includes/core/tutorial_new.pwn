@@ -779,7 +779,7 @@ Register_Questions(playerid)
 Register_Character(playerid)
 {
 	IsSpawned[playerid] = 1;
-	PlayAudioStreamForPlayer(playerid, "http://samp.ng-gaming.net/dom/fanfare.mp3", 0.0, 0.0, 0.0, 10.0, 0);
+	PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/fanfare.mp3", 0.0, 0.0, 0.0, 10.0, 0);
 	ClearChatbox(playerid);
 	SetPlayerPos(playerid, 10.2872, 15.2056, 1620.9647);
 	TogglePlayerControllable(playerid, false);
@@ -1125,7 +1125,7 @@ public Tutorial_Objectives(playerid) {
 	{
 		case 4:
 		{
-			PlayAudioStreamForPlayer(playerid, "http://samp.ng-gaming.net/dom/inception.mp3", 0.0, 0.0, 0.0, 10.0, 0);
+			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/inception.mp3", 0.0, 0.0, 0.0, 10.0, 0);
 			ClearChatbox(playerid);
 			SendClientMessage(playerid, COLOR_YELLOW, "___________ - {FFFFFF}Objective {FFFF00}- ___________");
 			SendClientMessage(playerid, COLOR_GRAD1, "Objective 1: Buy a car.");

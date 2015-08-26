@@ -25,7 +25,15 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 	if(!mysql_errno(MainPipeline)) {
 
 		
-		if(iPlayerID != INVALID_PLAYER_ID && IsPlayerConnected(iPlayerID)) {
+		if (iPlayerID == INVALID_PLAYER_ID) {
+			szMiscArray[0] = 0; 
+			GetPVarString(iBanCreator, "BanningName", szMiscArray, MAX_PLAYER_NAME);
+			DeletePVar(iBanCreator, "BanningName");
+			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was offline banned by %s", szMiscArray, GetPlayerNameEx(iBanCreator));
+			return ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		}
+
+		else if(iPlayerID != INVALID_PLAYER_ID && IsPlayerConnected(iPlayerID)) {
 
 			if(iBanCreator == INVALID_PLAYER_ID) {
 				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was auto-banned (%s)", GetPlayerNameEx(iPlayerID), szReason);
@@ -77,11 +85,23 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 		if(!iRows) return SendClientMessageEx(iRemover, COLOR_YELLOW, "No bans matching that criteria were found");
 		else {
 
+			if(!isnull(szIPAddress)) {
+				format(szMiscArray, sizeof(szMiscArray), "%s unbanned IP %s", GetPlayerNameEx(iRemover), szIPAddress);
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				Log("logs/unbans.log", szMiscArray);
+			}
+
+			if(iBanned != INVALID_PLAYER_ID) {
+				szMiscArray[0] = 0; 
+				GetPVarString(iRemover, "UnbanName", szMiscArray, MAX_PLAYER_NAME);
+				DeletePVar(iRemover, "UnbanName");
+				format(szMiscArray, sizeof(szMiscArray), "%s unbanned %s.", GetPlayerNameEx(iRemover), szMiscArray);
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				Log("logs/unbans.log", szMiscArray);
+			}
+
 			format(szMiscArray, sizeof(szMiscArray), "%d ban records removed.", iRows);
 			SendClientMessageEx(iRemover, COLOR_WHITE, szMiscArray);
-			
-			format(szMiscArray, sizeof(szMiscArray), "%s has unbanned %s.");
-			Log("logs/unbans.log", szMiscArray);
 		}
 	}
 	else SendClientMessageEx(iRemover, COLOR_YELLOW, "There was an issue removing that ban ...");
@@ -181,9 +201,10 @@ CMD:unban(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unban [username]");
 
-	if(strfind(params, "_", true, 0) != -1) SendClientMessage(playerid, COLOR_GRAD1, "Please use an underscore as spaces for non-admin accounts.");
+	//if(strfind(params, "_", true, 0) != -1) SendClientMessage(playerid, COLOR_GRAD1, "Please use an underscore as spaces for non-admin accounts.");
+	SetPVarString(playerid, "UnbanName", params);
 
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", params);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`IP` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", params);
 	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateUnban", "i", playerid);
 
 	return 1;
@@ -196,12 +217,42 @@ CMD:ban(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(sscanf(params, "us[64]d", iTargetID, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [reason] [length in days]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, PlayerInfo[iTargetID][pIP], szReason, iLength);
+
+	return 1;
+}
+
+CMD:hackban(playerid, params[]) {
+
+	new
+		iTargetID = strval(params);
+
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hackban [playerid]");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+
+	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, PlayerInfo[iTargetID][pIP], "Hacking", 180);
+
+	return 1;
+}
+
+CMD:saban(playerid, params[]) {
+
+	new
+		iTargetID = strval(params);
+
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /saban [playerid]");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+
+	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, PlayerInfo[iTargetID][pIP], "Server Advertising", 180);
 
 	return 1;
 }
@@ -218,7 +269,9 @@ CMD:banaccount(playerid, params[]) {
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
 
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", szName);
+	SetPVarString(playerid, "BanningName", szName);
+
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", szName);
 	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateOfflineBan","isi", playerid, szReason, iLength);
 
 	return 1;

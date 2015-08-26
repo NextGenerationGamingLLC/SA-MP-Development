@@ -179,7 +179,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot send no question!");
-				//if(strlen(inputtext) > 128) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+				if(strlen(inputtext) > 128) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
 
 				AnswerNewbie(playerid, GetPVarInt(playerid, "AnsweringNewb"), inputtext);
 			}

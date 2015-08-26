@@ -32,40 +32,29 @@ hook OnGameModeInit() {
 	FBIPrivateBTN[1] = CreateButton(300.49453735,-1495.33837891,-27.28091812,180.49487305); //Private Office Button
 	
 	//new doc buttons
-	DocButtons[0] = CreateButton(597.35022, 1495.02881, 6001.10938, 180.00);
-	DocButtons[1] = CreateButton(590.35669, 1484.88452, 6001.10938, 90.00);
-	DocButtons[2] = CreateButton(590.35199, 1481.74048, 6001.10938, 90.00);
-	DocButtons[3] = CreateButton(585.33081, 1478.44385, 6001.10938, 270.00);
-	DocButtons[4] = CreateButton(589.62848, 1495.06372, 6001.10938, 0.00);
-	DocButtons[5] = CreateButton(589.81085, 1487.91870, 6001.10938, 0.00);
-	DocButtons[6] = CreateButton(589.85394, 1475.79370, 6001.10938, 0.00);
-	DocButtons[7] = CreateButton(567.36774, 1475.78076, 6001.10938, 0.00);
-	DocButtons[8] = CreateButton(562.53558, 1475.25171, 6001.10938, 90.00);
-	DocButtons[9] = CreateButton(549.62268, 1475.17310, 5997.64258, 90.00);
-	DocButtons[10] = CreateButton(555.01172, 1475.77649, 5997.64258, 0.00);
-	DocButtons[11] = CreateButton(547.00482, 1498.27478, 5997.64258, 0.00);
-	DocButtons[12] = CreateButton(581.68353, 1492.52795, 6001.10938, 0.00);
-	DocButtons[13] = CreateButton(581.66846, 1495.06531, 6001.10938, 0.00);
-	DocButtons[14] = CreateButton(578.28308, 1471.08630, 6008.33350, 0.00);
-	DocButtons[15] = CreateButton(584.73883, 1475.85547, 6008.33350, 0.00);
-	DocButtons[16] = CreateButton(587.71490, 1475.85547, 6008.33350, 0.00);
-	DocButtons[17] = CreateButton(597.27667, 1492.54871, 6008.33350, 180.00);
-	DocButtons[18] = CreateButton(592.48859, 1495.47900, 6008.33350, 180.00);
-	DocButtons[19] = CreateButton(589.09015, 1495.47241, 6008.33350, 180.00);
-	DocButtons[20] = CreateButton(591.32568, 1486.47046, 6015.14746, 0.00);
-	DocButtons[21] = CreateButton(568.17041, 1455.06677, 6001.10938, 270.00);
-	DocButtons[22] = CreateButton(555.69672, 1466.10669, 6001.14990, 0.00);
-	DocButtons[23] = CreateButton(574.04047, 1454.24988, 6001.05078, 180.00);
-	DocButtons[24] = CreateButton(576.57416, 1449.88806, 6001.05078, 270.00);
-	DocButtons[25] = CreateButton(566.48718, 1429.47644, 6001.05078, 180.00);
-	DocButtons[26] = CreateButton(553.63123, 1429.40625, 6001.05078, 0.00);
 	
-	DocCPButton = CreateButton(568.29041, 1461.34607, 6008.45410, 90.00000);
-	
-	DocElevatorCall[0] = CreateButton(579.07770, 1488.00403, 6001.09277, 90.00000);
-	DocElevatorCall[1] = CreateButton(579.07770, 1488.00403, 6008.11475, 90.00000);
-	DocElevatorCall[2] = CreateButton(579.07770, 1488.00403, 6015.20801, 90.00000);
-	DocElevatorInside = CreateButton(578.91467, 1492.18884, 6001.04785, 270.00000);
+	DocCPButton[0] = CreateButton(562.11182, 1466.07971, 6004.94434, 0.00000);
+	DocCPButton[1] = CreateButton(568.39807, 1448.59290, 6001.06250, 90.00000);
+
+	DocButton[0] = CreateButton(568.43280, 1454.26233, 6000.82764, 90.00000); // cell block 1
+	DocButton[1] = CreateButton(572.89282, 1454.26233, 6000.82764, 90.00000); // cell block 2
+	DocButton[2] = CreateButton(585.79999, 1450.63147, 6000.82764, 90.00000); // showers
+	DocButton[3] = CreateButton(555.69019, 1466.07507, 6000.82764, 0.00000); // cafe 
+	DocButton[4] = CreateButton(555.69019, 1474.57507, 6000.82764, 180.00000); // cafe 
+	DocButton[5] = CreateButton(585.50427, 1455.00159, 6000.82764, 0.00000); // laundry
+	DocButton[6] = CreateButton(533.41315, 1427.92419, 11000.79883, 0.00000); // isolation
+	DocButton[7] = CreateButton(566.26862, 1462.26050, 6004.94434, 0.00000); // control room
+	DocButton[8] = CreateButton(573.03278, 1449.44226, 6000.82764, 90.00000); //small control room
+	DocButton[9] = CreateButton(596.94958, 1452.18896, 6000.82764, 270.00000); // processing 1
+	DocButton[10] = CreateButton(598.88861, 1451.52319, 6000.82764, 180.00000); // processing 2
+	DocButton[11] = CreateButton(589.25580, 1450.58044, 6000.82764, 90.00000); // processing 3
+	DocButton[12] = CreateButton(579.50372, 1463.32056, 6000.82764, 270.00000); // classroom
+	DocButton[13] = CreateButton(572.92511, 1470.46106, 6000.82764, 270.00000); // janitors
+	DocButton[14] = CreateButton(572.91278, 1436.46228, 6000.82764, 270.00000); // med ward
+	DocButton[15] = CreateButton(577.34839, 1461.79333, 6000.82764, 0.00000); // hallway
+	DocButton[16] = CreateButton(526.89038, 1414.83362, 11000.79883, 270.00000); // lobby1
+	DocButton[17] = CreateButton(529.95319, 1414.83459, 11000.79883, 270.00000); // lobby 2
+	DocButton[18] = CreateButton(542.25250, 1419.69385, 11000.79883, 90.00000); //visitation
 	
 	//SFPD
 	SFPDHighCMDButton[0] = CreateButton(-1576.30066, 702.27972, 20.18620, 0); // Chief
