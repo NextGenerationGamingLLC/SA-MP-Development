@@ -1857,7 +1857,7 @@ CMD:uncuff(playerid, params[])
 					return 1;
 				} */
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't uncuff yourself."); return 1; }
-				if(PlayerCuffed[giveplayerid]>1)
+				if(PlayerCuffed[giveplayerid] > 1)
 				{
 					DeletePVar(giveplayerid, "IsFrozen");
 					format(string, sizeof(string), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));

@@ -114,9 +114,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fPos[3] += 1.25;
 		    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-		    SetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2] + 1);
+		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
 		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
-		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
+		    SetPlayerFacingAngle(playerid, fPos[3]);
 		}
 	}
 	if(newkeys & KEY_ANALOG_LEFT)
@@ -134,9 +134,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fPos[3] -= 1.25;
 		    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-		    SetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2] + 1);
+		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
 		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
-		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
+		    SetPlayerFacingAngle(playerid, fPos[3]);
 		}
 	}
 	return 1;
@@ -588,23 +588,22 @@ Phone_InitRadioTowers() {
 	}
 }
 
-CMD:trace(playerid, params[])
-{
+CMD:trace(playerid, params[]) {
+
+	if(Bit_State(g_PlayerBits[playerid], phone_bitTraceState)) {
+
+		DisablePlayerCheckpoint(playerid);
+		GangZoneDestroy(GetPVarInt(playerid, "PTR_GZ"));
+		DeletePVar(playerid, "PTR_GZ");
+		Bit_Off(g_PlayerBits[playerid], phone_bitTraceState);
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Quit GPS traceroute process. All geographical data has been deleted.");
+	}
 
 	if(PlayerInfo[playerid][pJob] != 1 && PlayerInfo[playerid][pJob2] != 1 && PlayerInfo[playerid][pJob3] != 1) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a detective.");
 	}
 	if(gettime() < UsedFind[playerid]) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You've already searched for someone - wait a little.");
-	}
-
-	if(Bit_State(g_PlayerBits[playerid], phone_bitTraceState))
-	{	
-		DisablePlayerCheckpoint(playerid);
-		GangZoneDestroy(GetPVarInt(playerid, "PTR_GZ"));
-		DeletePVar(playerid, "PTR_GZ");
-		Bit_Off(g_PlayerBits[playerid], phone_bitTraceState);
-		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Quit GPS traceroute process. All geographical data has been deleted.");
 	}
 	
 	new iNumber;
@@ -1132,33 +1131,25 @@ CMD:selfie(playerid, params[]) {
 	    GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	    GetPlayerFacingAngle(playerid, fPos[3]);
 
-	    if(fPos[3] >= 360) fPos[3] = 0;
 	    fPos[3] += 1.25;
 	    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 	    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-	    SetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2] + 1);
+	    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
 	    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
 	    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 
-	    ApplyAnimation(playerid, "PED", "gang_gunstand", 4.1, 1, 1, 1, 1, 1, 1);
+	    TogglePlayerControllable(playerid, false);
+	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, 1, 1, 1, 1, 1, 1);
+	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Select the camera app or use /selfie to go back. Use {FFFF00}/headmove {DDDDDD}to disable your head movement (look straight).");
+	    Bit_On(g_PlayerBits[playerid], phone_bitCamState);
+	  
 
-		/*
-		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-		GetPlayerFacingAngle(playerid, fPos[3]);
-		TogglePlayerControllable(playerid, 0);
-		SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 0.70);
-		GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], 1.4);
-		SetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2] + 0.70);
-		SendClientMessage(playerid, COLOR_GRAD1, "Select the camera app or use /selfie to go back.");
-		Bit_On(g_PlayerBits[playerid], phone_bitCamState);
-		PlayAnimEx(playerid, "SHOP", "ROB_Loop_Threat", 4.0, 1, 0, 0, 0, 0, 1);
-		*/
 	}
 	else
 	{
 		Bit_Off(g_PlayerBits[playerid], phone_bitCamState);
 		ClearAnimations(playerid, 1);
-		TogglePlayerControllable(playerid, 1);
+		TogglePlayerControllable(playerid, true);
 		SetCameraBehindPlayer(playerid);
 	}
 	return 1;

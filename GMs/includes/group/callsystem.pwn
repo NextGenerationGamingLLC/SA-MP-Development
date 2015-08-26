@@ -90,17 +90,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicleid = INVALID_VEHICLE_ID)
 {
-    new bool:breakingloop = false, newid = INVALID_CALL_ID, string[128];
+    new newid = INVALID_CALL_ID;
 
 	for(new i; i < MAX_CALLS; i++)
 	{
-		if(!breakingloop)
+		if(Calls[i][HasBeenUsed] == 0)
 		{
-			if(Calls[i][HasBeenUsed] == 0)
-			{
-				breakingloop = true;
-				newid = i;
-			}
+			newid = i;
+			break;
 		}
     }
     if(newid != INVALID_CALL_ID)
@@ -116,42 +113,42 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if((type == 0 || type == 4) && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 						}
 						if(type == 1 && IsAMedic(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 						}
 						if(type == 2 && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 						}
 						if(type == 3 && (IsACop(i) || IsATowman(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 						}
 						if(type == 5 && (IsACop(i) || IsAMedic(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							format(string, sizeof(string), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-							format(string, sizeof(string), "HQ: Location: %s, Description: %s", area, description);
-							SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
+							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 						}
 					}
 				}
@@ -162,10 +159,10 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pMember] == x) {
 
-						format(string, sizeof(string), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
-						SendClientMessageEx(i, COLOR_PINK, string);
-						format(string, sizeof(string), "Landline: Location: %s, Description: %s", area, description);
-						SendClientMessageEx(i, COLOR_PINK, string);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
 					}
 				}
 				if(type == 7)
@@ -175,10 +172,10 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pBusiness] == x) {
 
-						format(string, sizeof(string), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
-						SendClientMessageEx(i, COLOR_PINK, string);
-						format(string, sizeof(string), "Landline: Location: %s, Description: %s", area, description);
-						SendClientMessageEx(i, COLOR_PINK, string);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Location: %s, Description: %s", area, description);
+						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
 						
 					}
 				}
@@ -330,7 +327,7 @@ Calls_Business(playerid) {
 CMD:calls(playerid, params[])
 {
 	
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "Calls", 1);
 	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;

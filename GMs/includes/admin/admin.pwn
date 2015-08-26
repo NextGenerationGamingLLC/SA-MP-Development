@@ -5098,8 +5098,8 @@ CMD:freeze(playerid, params[])
 
 			TogglePlayerControllable(giveplayerid, 0);
 			SetPVarInt(giveplayerid, "IsFrozen", 1);
-			format(string, sizeof(string), "AdmCmd: %s was frozen by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
-			ABroadCast(COLOR_LIGHTRED,string,2);
+			format(string, sizeof(string), "AdmCmd: %s was frozen by %s",GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_LIGHTRED,string, 2);
 		}
 	}
 	else

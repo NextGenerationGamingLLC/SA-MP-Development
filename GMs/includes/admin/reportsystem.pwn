@@ -47,17 +47,14 @@ public ReplyTimer(reportid)
 
 stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
 {
-    new bool:breakingloop = false, newid = INVALID_REPORT_ID, string[128];
+    new newid = INVALID_REPORT_ID, string[128];
 
-	for(new i=0;i<MAX_REPORTS;i++)
+	for(new i; i < MAX_REPORTS; ++i)
 	{
-		if(!breakingloop)
+		if(Reports[i][HasBeenUsed] == 0)
 		{
-			if(Reports[i][HasBeenUsed] == 0)
-			{
-				breakingloop = true;
-				newid = i;
-			}
+			newid = i;
+			break;
 		}
     }
     if(newid != INVALID_REPORT_ID)

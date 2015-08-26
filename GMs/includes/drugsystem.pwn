@@ -677,6 +677,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 				if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a vehicle to load a smuggle.");
 
+				SetPVarInt(playerid, "DrugPoint", i);
 				SetPVarInt(playerid, PVAR_ATDRUGPOINT, i);
 				Smuggle_LoadIngredients(playerid);
 			}
@@ -701,7 +702,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 			new iVehID = GetPlayerVehicleID(playerid),
 				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO),
-				iPointID = GetPVarInt(playerid, PVAR_ATDRUGPOINT);
+				iPointID = GetPVarInt(playerid, "DrugPoint");
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
 
@@ -715,12 +716,14 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
+					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (100 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
 			new iCash = GetPVarInt(playerid, "BM_PAY");
 			GivePlayerCash(playerid, iCash);
 			
-			if(arrBlackMarket[iBlackMarketID][bm_iGroupID] != arrPoint[iPointID][po_iGroupID])
+			if(arrBlackMarket[iBlackMarketID][bm_iGroupID] == arrPoint[iPointID][po_iGroupID])
 				arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
 			
 			SendClientMessage(playerid, COLOR_GRAD1, "--------------------------");
@@ -730,10 +733,12 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			DisablePlayerCheckpoint(playerid);
 			DeletePVar(playerid, "BM_PAY");
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
+			DeletePVar(playerid, "DrugPoint");
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 
+			GivePlayerCash(playerid, iCash);
 			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
-				GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
+			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
 			Log("logs/drugsmuggles.log", szMiscArray);
 		}
 
@@ -741,11 +746,12 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 			new iVehID = GetPlayerVehicleID(playerid),
 				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO),
-				iPointID = GetPVarInt(playerid, PVAR_ATDRUGPOINT);
+				iPointID = GetPVarInt(playerid, "DrugPoint");
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
 			format(szMiscArray, sizeof(szMiscArray), "po. %d", iPointID);
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
 			for(new i; i < sizeof(szIngredients); ++i) {
 
 				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
@@ -754,12 +760,14 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
 					arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iIngredients] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
+					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (100 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
 			DisablePlayerCheckpoint(playerid);
-
+			DeletePVar(playerid, "DrugPoint");
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 		}
@@ -1028,7 +1036,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_SMUGGLE_PREPARE:
 		{
-			if(!response) return DeletePVar(playerid, PVAR_ATDRUGPOINT), 1;
+			if(!response) return DeletePVar(playerid, "DrugPoint"), DeletePVar(playerid, PVAR_ATDRUGPOINT), 1;
 			if(listitem == 0) return Smuggle_LoadIngredients(playerid), 1;
 			if(listitem == sizeof(szIngredients)) return Smuggle_LoadIngredients(playerid), 1;
 			if(strcmp(inputtext, "Start Smuggle", true) == 0)
@@ -1036,6 +1044,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new iTotalAmount,
 					iCapacity = Smuggle_GetSmuggleCapacity(playerid),
 					iVehID = GetPlayerVehicleID(playerid);
+
 				for(new i; i < sizeof(szIngredients); ++i) iTotalAmount += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
 					
 				if(iTotalAmount > iCapacity)
@@ -1047,8 +1056,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else return ShowPlayerDialog(playerid, DIALOG_SMUGGLE_DELIVERTO, DIALOG_STYLE_LIST, "Smuggle | Deliver to Black Market or own storage?", "Black Market\nOwn Storage", "Select", "Cancel");
 			}
-			SetPVarInt(playerid, PVAR_INGREDIENT_ORDERING, listitem + 1);
-			format(szMiscArray, sizeof(szMiscArray), "Specify the amount you would like to add to package:\n\n {FFFF00}%s.", szIngredients[listitem]);
+			SetPVarInt(playerid, PVAR_INGREDIENT_ORDERING, listitem - 1);
+			format(szMiscArray, sizeof(szMiscArray), "Specify the amount you would like to add to package:\n\n {FFFF00}%s.", szIngredients[listitem - 1]);
 			ShowPlayerDialog(playerid, DIALOG_SMUGGLE_PREPARE2, DIALOG_STYLE_INPUT, "Drug Smuggle | Add to Package", szMiscArray, "Set", "<<");
 		}
 		case DIALOG_SMUGGLE_PREPARE2:

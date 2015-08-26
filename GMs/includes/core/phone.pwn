@@ -621,18 +621,20 @@ CMD:pickup(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
-	if(GetPVarType(playerid, "AtPayPhone")) {
+	if(GetPVarType(playerid, "PayPhone")) {
 
-		new x = GetPVarInt(playerid, "AtPayPhone");
+		new x = GetPVarInt(playerid, "PayPhone");
 
 		if(arrPayPhoneData[x][pp_iCallerID] != INVALID_PLAYER_ID) {
 
 			if(arrPayPhoneData[x][pp_iCallerID] == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot answer the pay phone you're dialing.");
-			foreach(new i: Player)
-			{
-				if(Mobile[i] == arrPayPhoneData[x][pp_iCallerID])
+			
+			foreach(new i: Player) 	{
+
+				if(i == arrPayPhoneData[x][pp_iCallerID])
 				{
 					Mobile[playerid] = i;
+					Mobile[i] = playerid;
 					SendClientMessageEx(i,  COLOR_GRAD2, "   Someone picked up the call.");
 					format(string, sizeof(string), "* %s answers the pay phone.", GetPlayerNameEx(playerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

@@ -2940,6 +2940,7 @@ CMD:dvsiren(playerid, params[])
 			}
 		    Streamer_Update(playerid);
 		}
+		SendClientMessage(playerid, COLOR_GRAD1, "Invalid vehicle specified.");
 	}
 	return 1;
 }

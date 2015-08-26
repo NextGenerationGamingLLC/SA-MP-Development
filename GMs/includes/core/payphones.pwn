@@ -63,7 +63,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
 			new i = GetPVarInt(playerid, "AtPayPhone");
-			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) return SetPVarInt(playerid, "PayPhone", i), cmd_pickup(playerid, "");
+			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
+				
+				SetPVarInt(playerid, "PayPhone", i); 
+				cmd_pickup(playerid, "");
+				return 1;
+			}
 			PayPhone_Menu(playerid, i);
 		}
 	}
@@ -112,7 +117,7 @@ GetPhoneZone(id, zone[], len) {
 				&& y <= gMainZones[i][SAZONE_AREA][4]
 				&& z >= gMainZones[i][SAZONE_AREA][2]
 				&& z <= gMainZones[i][SAZONE_AREA][5]) {
-			return format(zone, len, gMainZones[i][SAZONE_NAME], 0);
+			format(zone, len, gMainZones[i][SAZONE_NAME], 0);
 		}
 	}
 	
