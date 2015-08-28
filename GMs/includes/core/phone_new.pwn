@@ -116,7 +116,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
 		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
 		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
-		    SetPlayerFacingAngle(playerid, fPos[3]);
+		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 		}
 	}
 	if(newkeys & KEY_ANALOG_LEFT)
@@ -136,7 +136,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
 		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
 		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
-		    SetPlayerFacingAngle(playerid, fPos[3]);
+		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 		}
 	}
 	return 1;

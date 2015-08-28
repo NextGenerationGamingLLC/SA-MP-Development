@@ -49,12 +49,10 @@ public OnPlayerLoad(playerid)
 	GetPlayerIp(playerid, PlayerInfo[playerid][pIP], 16);
 	if( PlayerInfo[playerid][pPermaBanned] == 3 || PlayerInfo[playerid][pBanned] >= 1 )
 	{
-		format(string, sizeof(string), "WARNING: %s (IP:%s) tried to login whilst banned and has been auto-banned.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
+		format(string, sizeof(string), "WARNING: %s (IP:%s) tried to login whilst banned by the old system.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );
 		ABroadCast(COLOR_YELLOW, string, 2);
 		SendClientMessage(playerid, COLOR_RED, "Your account is banned! You can appeal this at http://www.ng-gaming.net/forums");
-		SystemBan(playerid, "[System] (Tried to login while banned)");
-		format(string, sizeof(string), "WARNING: %s(%d) (IP:%s) tried to login whilst banned and has been auto-banned.", GetPlayerNameEx( playerid ), GetPVarInt(playerid, "pSQLID"), PlayerInfo[playerid][pIP] );
-		Log("logs/ban.log", string);
+		SendClientMessage(playerid, COLOR_RED, "Your ban date will be set and when it's time it will automatically been banned. ");
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
@@ -186,7 +184,7 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pServiceTime] = 0;
 		PlayerInfo[playerid][pFirework] = 0;
 		PlayerInfo[playerid][pBoombox] = 0;
-		PlayerInfo[playerid][pCash] = 10000;
+		PlayerInfo[playerid][pCash] = 50000;
 		PlayerInfo[playerid][pHunger] = 100;
 		PlayerInfo[playerid][pLevel] = 1;
 		PlayerInfo[playerid][pAdmin] = 0;

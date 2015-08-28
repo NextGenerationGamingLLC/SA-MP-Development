@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.216"
+#define SERVER_GM_TEXT "NG:RP v3.0.221"
 
 #include <a_samp>
 #undef  MAX_PLAYERS

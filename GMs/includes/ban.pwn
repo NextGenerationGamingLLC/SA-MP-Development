@@ -264,7 +264,7 @@ CMD:banaccount(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(sscanf(params, "s[20]s[64]d", szName, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [reason] [length in days]");
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
@@ -274,5 +274,30 @@ CMD:banaccount(playerid, params[]) {
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", szName);
 	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateOfflineBan","isi", playerid, szReason, iLength);
 
+	return 1;
+}
+
+CMD:oldunban(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pBanAppealer] >= 1)
+	{
+		new string[128], query[256], tmpName[24];
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oldunban [player name]");
+
+		mysql_escape_string(params, tmpName, MainPipeline);
+		SetPVarString(playerid, "OnUnbanPlayer", tmpName);
+
+		format(query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
+		format(string, sizeof(string), "Attempting to unban %s...", tmpName);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+		mysql_function_query(MainPipeline, query, false, "OnUnbanPlayer", "i", playerid);
+
+		format(query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
+		mysql_function_query(MainPipeline, query, true, "OnUnbanIP", "i", playerid);
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
+	}
 	return 1;
 }

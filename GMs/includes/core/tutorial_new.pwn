@@ -108,7 +108,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		{
 			DeletePVar(playerid, PVAR_REGISTERING);
 			PlayerInfo[playerid][pTut] = 2;
-			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/ngg_tutend.mp3");
+			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/ngg_tutend.mp3");
 			CreateExplosionForPlayer(playerid, -66.5676, -1890.1495, 1490.7732, 13, 1.0);
 			ClearChatbox(playerid);
 			SetPVarInt(playerid, "pTut", 4);
@@ -409,7 +409,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 Tutorial_Start(playerid) {
 	IsSpawned[playerid] = 1;
-	PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/hopereturns.mp3");
+	PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/hopereturns.mp3");
 	ClearChatbox(playerid);
 	for(new i; i < sizeof(TutTextDraw); ++i) TextDrawShowForPlayer(playerid, TutTextDraw[i]);
 	SetPVarInt(playerid, "TUT_CNT", TUTORIAL_STEPS_TIME);
@@ -1011,7 +1011,7 @@ public Register_Plane(playerid)
 		}
 		case 2:	{
 			StopAudioStreamForPlayer(playerid);
-			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/plane_part1.mp3", 0.0, 0.0, 0.0, 10.0, 0);
+			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/plane_part1.mp3", 0.0, 0.0, 0.0, 10.0, 0);
 			CreateExplosion(0.6985, 27.5042+10.0, 1199.5938-10.0, 2, 0.1);
 			ClearAnimations(playerid);
 			ClearChatbox(playerid);
@@ -1026,7 +1026,7 @@ public Register_Plane(playerid)
 			// cam_CamShakeTimer[playerid] = SetTimerEx("CamShaker", 100, true, "i", playerid);
 		}
 		case 3: {
-			PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/plane_part2.mp3");
+			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/plane_part2.mp3");
 		    TogglePlayerControllable(playerid, 1);
 			SetCameraBehindPlayer(playerid);
 			SetPlayerFacingAngle(playerid, 0.0);
@@ -1107,7 +1107,7 @@ forward Register_Finalize(playerid);
 public Register_Finalize(playerid) {
 	ResetCameraShake(playerid);
 	StopAudioStreamForPlayer(playerid);
-	PlayAudioStreamForPlayer(playerid, "http://jingles.ml/audio/login.mp3");
+	PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/login.mp3");
 	ClearChatbox(playerid);
 	SetPlayerVirtualWorld(playerid, 0);
 	Tutorial_Objectives(playerid);

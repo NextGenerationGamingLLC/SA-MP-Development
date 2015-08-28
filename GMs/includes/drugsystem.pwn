@@ -642,11 +642,8 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 		
 		if(areaid == arrPoint[i][po_iBigAreaID]) {
 
-			if(GetGVarType("PO_CAPT"), i) {
-
-				DeletePVar(playerid, "InPoint");
-				SetPlayerVirtualWorld(playerid, 0);
-			}
+			DeletePVar(playerid, "InPoint");
+			SetPlayerVirtualWorld(playerid, 0);
 		}
 	}
 }
@@ -745,7 +742,6 @@ hook OnPlayerEnterCheckpoint(playerid) {
 		case CHECKPOINT_SMUGGLE_PLAYER:	{
 
 			new iVehID = GetPlayerVehicleID(playerid),
-				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO),
 				iPointID = GetPVarInt(playerid, "DrugPoint");
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
@@ -759,7 +755,6 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-					arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iIngredients] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
 					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (100 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
@@ -790,8 +785,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_DRUGS_MIX_MAIN:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_DRUGS_MIXSLOT), 1;
-			if(listitem == MAX_DRUGINGREDIENT_SLOTS+1) return 1;
-			if(listitem == MAX_DRUGINGREDIENT_SLOTS+2) return Drug_FinishMix(playerid, GetPVarInt(playerid, PVAR_MAKINGDRUG)), 1;
+			if(listitem == MAX_DRUGINGREDIENT_SLOTS) return 1;
+			if(listitem == MAX_DRUGINGREDIENT_SLOTS+1) return Drug_FinishMix(playerid, GetPVarInt(playerid, PVAR_MAKINGDRUG)), 1;
 			SetPVarInt(playerid, PVAR_DRUGS_MIXSLOT, listitem);
 			szMiscArray[0] = 0;
 			for(new i; i < sizeof(szIngredients); ++i)
@@ -1255,7 +1250,7 @@ Drug_ShowMix(playerid) {
 
 	szMiscArray = "Slot\tIngredient\tPieces\n";
 
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) {
+	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) {
 
 		if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)
 			format(szMiscArray, sizeof(szMiscArray), "%sSlot %d\t%s\t%d\n", szMiscArray, i, szIngredients[dr_arrDrugMix[playerid][i][drm_iIngredientID]], dr_arrDrugMix[playerid][i][drm_iAmount]);
@@ -1291,6 +1286,30 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] / 5; // 5 Morning Glory Seeds
+						}
+						case 2: // Muriatic Acid
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 20;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 30;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] / 2; // 10 Muriatic Acid
+						}
+						case 6: // Distilled water
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 1 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+						}
+						case 13: // PMK Oil
+						{
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 20;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount]; // 10 crack
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1596,7 +1615,7 @@ Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality)
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
 	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] < 100) PlayerInfo[playerid][p_iDrugQuality][iDrugID] += iDrugQuality;
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
+	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
 	return 1;	
 }
 
@@ -2814,7 +2833,7 @@ CMD:mymix(playerid, params[]) {
 
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) {
+	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) {
 
 		if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0)
 			format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d]: {CCCCCC}Ingredient: %s | Pc: %d", i, szIngredients[dr_arrDrugMix[playerid][i][drm_iIngredientID]], dr_arrDrugMix[playerid][i][drm_iAmount]);
@@ -2837,7 +2856,7 @@ CMD:mix(playerid, params[]) {
 
 CMD:clearmix(playerid, params[]) {
 
-	for(new i; i <= MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
+	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
 
 	SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cleared your mixture.");
 	DeletePVar(playerid, PVAR_MAKINGDRUG);

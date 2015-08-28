@@ -1,6 +1,5 @@
 #include <YSI\y_hooks>
 
-
 /* 	Jingles:
 
 	DDoor / Houses / Businesses pickup model rework.
@@ -17,31 +16,8 @@
 #define 		ENTRANCE_SHORTCUT		KEY_SECONDARY_ATTACK
 #define 		ENTRANCE_VEH_SHORTCUT	KEY_NO
 
-
-
-/*CMD:housecount(playerid)
-{
-	format(szMiscArray, sizeof(szMiscArray), "Houses Count: %d", Iter_Count(Houses));
-	SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
-	return 1;
-}*/
-
 new g_iEntranceID[MAX_PLAYERS],
 	g_iEntranceAID[MAX_PLAYERS];
-
-/* Revised:
-CMD:enter(playerid)
-{
-	Enter_Door(playerid, g_iEntranceID[playerid]);
-	return 1;
-}
-
-CMD:exit(playerid)
-{
-	Enter_Door(playerid, g_iEntranceID[playerid]);
-	return 1;
-}
-*/
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
@@ -60,16 +36,37 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		}
 	}
 
-	if(newkeys & KEY_NO) {
+	if(newkeys & ENTRANCE_VEH_SHORTCUT) {
 
 		if(!IsPlayerInAnyVehicle(playerid)) {
 
 			if(GetPVarType(playerid, "VEHA_ID")) {
 
 				Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
+				return 1;
+			}
+			if(InsidePlane[playerid] != INVALID_VEHICLE_ID) {
+
+				if(GetPVarType(playerid, "VEHA_ID")) {
+
+					Vehicle_Exit(playerid);
+					return 1;
+				}
 			}
 		}
 	}
+	return 1;
+}
+
+CMD:enter(playerid)
+{
+	SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use F instead.");
+	return 1;
+}
+
+CMD:exit(playerid)
+{
+	SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use F instead.");
 	return 1;
 }
 
@@ -83,11 +80,16 @@ public OnPlayerEnterDynamicArea(playerid, areaid) {
 	g_iEntranceAID[playerid] = areaid;
 	g_iEntranceID[playerid] = i;
 
-
-	if(iVehEnterAreaID[i] == areaid) {
-
-		printf("DEBUG: Area %d was detected as a vehicle area.", areaid);
-		SetPVarInt(playerid, "VEHA_ID", i);
+	if(i < sizeof(iVehExits)) {
+		if(iVehExits[i] == areaid) {
+			SetPVarInt(playerid, "VEHA_ID", i);
+		}
+	}
+	if(i < MAX_VEHICLES) {
+		if(iVehEnterAreaID[i] == areaid) {
+			// printf("DEBUG: Area %d was detected as a vehicle area.", areaid);
+			SetPVarInt(playerid, "VEHA_ID", i);
+		}
 	}
 	return 1;
 }
@@ -117,7 +119,7 @@ GetIDFromArea(areaid) {
 
 Enter_Door(playerid, i, areaid = - 1)
 {
-	printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
+	// printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
 	if(!GetPVarType(playerid, "StreamPrep"))
 	{
@@ -202,18 +204,18 @@ Vehicle_Enter(playerid, i) {
 	SetPlayerVirtualWorld(playerid, i);
 	InsidePlane[playerid] = i;
 	SetPVarInt(playerid, "InsideCar", 1);
-
 	return 1;
 }
 
 Vehicle_Exit(playerid) {
  	
- 	if(!IsAPlane(InsidePlane[playerid]) && GetPVarInt(playerid, "InsideCar") == 0) {
+ 	if(!IsAPlane(InsidePlane[playerid]) && !GetPVarType(playerid, "InsideCar")) {
 	    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
 	    GivePlayerValidWeapon(playerid, 46, 60000);
 	    SetPlayerPos(playerid, 0.000000, 0.000000, 420.000000); // lol nick
 	}
 	else {
+
 	    new Float:X, Float:Y, Float:Z;
 	    GetVehiclePos(InsidePlane[playerid], X, Y, Z);
 	    
