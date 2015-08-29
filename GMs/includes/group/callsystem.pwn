@@ -597,7 +597,7 @@ IgnoreCall_Business(playerid, callid) {
 
 CMD:acceptcall(playerid, params[])
 {	
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "AC", 1);
 	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;
@@ -610,7 +610,7 @@ CMD:ic(playerid, params[])
 
 CMD:ignorecall(playerid, params[])
 {
-	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
+	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "IC", 1);
 	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;

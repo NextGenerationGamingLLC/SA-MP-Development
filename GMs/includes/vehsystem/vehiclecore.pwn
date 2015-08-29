@@ -95,14 +95,14 @@ stock IsABike(carid) {
 
 stock IsATrain(modelid) {
 	switch(modelid) {
-		case 538, 537, 449, 590, 569, 570: return 1;
+		case 538, 537, 590, 569, 570: return 1;
 	}
 	return 0;
 }
 
 stock IsASpawnedTrain(carid) {
 	switch(GetVehicleModel(carid)) {
-		case 538, 537, 449, 590, 569, 570: return 1;
+		case 538, 537, 590, 569, 570: return 1;
 	}
 	return 0;
 }

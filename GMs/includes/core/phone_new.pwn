@@ -71,9 +71,9 @@ new Text:PhoneWP[sizeof(szPhoneWP)],
 	Text:PhoneTD[56];
 
 
-timer Phone_StopRingtone[10000](iPlayerID, iRingToneID) {
+timer Phone_StopRingtone[10000](iPlayerID) {
 
-	PlayerPlaySound(iPlayerID, iRingToneID+1, 0.0, 0.0, 0.0);
+	PlayerPlaySound(iPlayerID, 1188, 0.0, 0.0, 0.0);
 	return 1;
 }
 
@@ -775,21 +775,22 @@ public Phone_OnGetContactName(iPlayerID)
 	new iRows = cache_get_row_count(),
 		iFields,
 		idx,
-		szResult[MAX_PLAYER_NAME + 24];
+		szResult[MAX_PLAYER_NAME + 48];
 
 	cache_get_data(iRows, iFields, MainPipeline);
 	szMiscArray = "Name\tNumber\n";
 	while(idx < iRows)
 	{
-		cache_get_field_content(idx, "Username", szResult, MainPipeline);
 		new iNumber = cache_get_field_content_int(idx, "PhoneNr", MainPipeline);
 		if(iNumber != 0) {
-			foreach(new i : Player) {
 
-				if(PlayerInfo[i][pPnumber] == iNumber) format(szResult, sizeof(szResult), "{00FF00}[O] {FFFFFF}%s", szResult);
-				else format(szResult, sizeof(szResult), "{FF0000}[O] {FFFFFF}%s", szResult);
-			}
+			//foreach(new i : Player) {
+
+			//if(PlayerInfo[i][pPnumber] == iNumber) format(szResult, sizeof(szResult), "{00FF00}[O] {FFFFFF}%s", szResult);
+			//else format(szResult, sizeof(szResult), "{FF0000}[O] {FFFFFF}%s", szResult);
+			cache_get_field_content(idx, "Username", szResult, MainPipeline);
 		}
+		
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szResult, iNumber);
 		ListItemTrackId[iPlayerID][idx] = iNumber;
 		idx++;
@@ -889,7 +890,7 @@ Phone_ReceiveCall(iPlayerID, iCallerID)
 		if(IsPlayerInRangeOfPoint(i, 10.0, fPos[0], fPos[1], fPos[2])) {
 
 			PlayerPlaySound(i, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]], fPos[0], fPos[1], fPos[2]);
-			defer Phone_StopRingtone(iPlayerID, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]]);
+			defer Phone_StopRingtone(iPlayerID);
 		}
 	}
 

@@ -814,9 +814,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				new iSlotID = GetPVarInt(playerid, PVAR_DRUGS_MIXSLOT);
+				if(strval(inputtext) > 999) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot add more than 999 pieces.");
+				new iSlotID = GetPVarInt(playerid, PVAR_DRUGS_MIXSLOT),
+					iIngredientID = dr_arrDrugMix[playerid][iSlotID][drm_iIngredientID];
+				if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 				dr_arrDrugMix[playerid][GetPVarInt(playerid, PVAR_DRUGS_MIXSLOT)][drm_iAmount] = strval(inputtext);
-				format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d] {CCCCCC}You added %d pieces of %s to your mixture.", iSlotID, strval(inputtext), szIngredients[dr_arrDrugMix[playerid][iSlotID][drm_iIngredientID]]);
+				format(szMiscArray, sizeof(szMiscArray), "[Drug Slot #%d] {CCCCCC}You added %d pieces of %s to your mixture.", iSlotID, strval(inputtext), szIngredients[iIngredientID]);
 				SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 				Drug_ShowMix(playerid);
 			}

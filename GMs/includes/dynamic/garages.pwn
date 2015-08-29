@@ -175,6 +175,7 @@ CMD:garageedit(playerid, params[])
 			GarageInfo[garageid][gar_CustomExterior] = 0;
 			SendClientMessageEx(playerid, COLOR_WHITE, "Garage set to normal (not custom) exterior!");
 		}
+		CreateGarage(garageid);
 		format(string, sizeof(string), "%s has edited Garage ID: %d's CustomExterior.", GetPlayerNameEx(playerid), garageid);
 		Log("logs/garage.log", string);
 	}
@@ -214,6 +215,7 @@ CMD:garageedit(playerid, params[])
 			GarageInfo[garageid][gar_InteriorA] = 180;
 			size = "Extra Large";
 		}
+		CreateGarage(garageid);
 		format(string, sizeof(string), "Garage size set to %s", size);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has edited Garage ID: %d's size to %s", GetPlayerNameEx(playerid), garageid, size);
@@ -226,6 +228,7 @@ CMD:garageedit(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has edited Garage ID: %d's VW to %d", GetPlayerNameEx(playerid), garageid, value);
 		Log("logs/garage.log", string);
+		CreateGarage(garageid);
 	}
 	else if(strcmp(option, "delete", true) == 0)
 	{
@@ -576,11 +579,14 @@ stock CreateGarage(garageid)
 	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
 	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
 
-	GarageInfo[garageid][gar_AreaID] = CreateDynamicSphere(GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], 3, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt]);
+	DestroyDynamicArea(GarageInfo[garageid][gar_AreaID]);
+	GarageInfo[garageid][gar_AreaID] = CreateDynamicSphere(GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], 3, .worldid = GarageInfo[garageid][gar_ExteriorVW], .interiorid = GarageInfo[garageid][gar_ExteriorInt]);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID], E_STREAMER_EXTRA_ID, garageid);
 
-	GarageInfo[garageid][gar_AreaID_int] = CreateDynamicSphere(GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ], 3, GarageInfo[garageid][gar_InteriorVW]);
+	DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
+	GarageInfo[garageid][gar_AreaID_int] = CreateDynamicSphere(GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ], 3, .worldid = GarageInfo[garageid][gar_InteriorVW]);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID_int], E_STREAMER_EXTRA_ID, garageid);
+
 
 
 	format(szMiscArray, sizeof(szMiscArray), "[Garage] Created Garage: %d | Exterior Area ID: %d | Interior Area ID: %d", garageid, GarageInfo[garageid][gar_AreaID], GarageInfo[garageid][gar_AreaID_int]);

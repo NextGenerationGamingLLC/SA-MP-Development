@@ -360,14 +360,10 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		if(newweapon == WEAPON_PARACHUTE) PlayerInfo[playerid][pGuns][11] = 46;
 
 		if( PlayerInfo[playerid][pGuns][GetWeaponSlot(newweapon)] != newweapon) {
-			if(GetPVarType(playerid, "Autoban")) return 1;
-			SetPVarInt(playerid, "Autoban", 1); 
-			ExecuteHackerAction( playerid, newweapon );
-			new String[60];
-            format( String, sizeof( String ), "Weapon hacking (%s).", Weapon_ReturnName(newweapon));
-			DeletePVar(playerid, "_HACK_WARNINGS");
-			CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], String, 180);
-			TotalAutoBan++;
+			if(!GetPVarType(playerid, "WpnHack_Warnings")) SetPVarInt(playerid, "WpnHack_Warnings", 0);
+			new iWarnings = GetPVarInt(playerid, "WpnHack_Warnings");
+			if(iWarnings > 5) KickEx(playerid);
+			else SetPVarInt(playerid, "WpnHack_Warnings", iWarnings++);
 		}
 	}
 

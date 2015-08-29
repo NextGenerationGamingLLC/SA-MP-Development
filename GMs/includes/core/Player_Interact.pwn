@@ -1,23 +1,18 @@
 #include <YSI\y_hooks>
 
-#define 	ITEM_POT 			(0)
-#define 	ITEM_CRACK			(1)
+#define 	ITEM_DRUG			(0)
+#define 	ITEM_INGREDIENT		(1)
 #define 	ITEM_MATS			(2)
 #define 	ITEM_FIREWORK		(3)
-#define 	ITEM_HEROIN			(4)
-#define 	ITEM_RAWOPIUM		(5)
-#define 	ITEM_SYRINGES		(6)
-#define 	ITEM_OPIUMSEEDS		(7)
-#define 	ITEM_SPRUNKDRINK	(8)
-#define 	ITEM_PBTOKENS		(9)
-#define 	ITEM_AMMO9MM		(10)
-#define 	ITEM_AMMO76251		(11)
-#define 	ITEM_AMMO50AE		(12)
-#define 	ITEM_AMMO76239		(13)
-#define 	ITEM_AMMO12GAUGE  	(14)
-#define 	ITEM_WEAPON			(15)
-#define 	ITEM_DRUG			(16)
-#define 	ITEM_INGREDIENT		(17)
+#define 	ITEM_SYRINGES		(4)
+#define 	ITEM_SPRUNKDRINK	(5)
+#define 	ITEM_PBTOKENS		(6)
+#define 	ITEM_AMMO9MM		(7)
+#define 	ITEM_AMMO76251		(8)
+#define 	ITEM_AMMO50AE		(9)
+#define 	ITEM_AMMO76239		(10)
+#define 	ITEM_AMMO12GAUGE  	(11)
+#define 	ITEM_WEAPON			(12)
 
 #define 	INTERACT_AMOUNT			(10049)
 #define 	INTERACT_MAIN 			(10050)
@@ -57,6 +52,8 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 			DeletePVar(playerid, "Interact_SellGun");
 			DeletePVar(playerid, "Interact_GiveItem");
 			DeletePVar(playerid, "Interact_SellAmt");
+			DeletePVar(playerid, "Interact_Drug");
+			DeletePVar(playerid, "Interact_Ingredient");
 
 			SetPVarInt(playerid, "Interact_Target", giveplayerid);
 
@@ -167,9 +164,10 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s for $%s", GetPlayerNameEx(playerid), szIngredients[ingredientid], number_format(offerprice));
 			}
-			else format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, "[Interact]: Offer sent.");
-			return ShowPlayerDialog(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Buy", "Reject");
+			else format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));	
+			ShowPlayerDialog(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Buy", "Reject");
+			format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(offerprice));
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 		}
 		case 6: {
 
@@ -208,6 +206,21 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 	switch(itemid) {
 
+		case ITEM_DRUG: {
+
+			new drugid = GetPVarInt(playerid, "Interact_Drug");
+			if(PlayerInfo[playerid][p_iDrug][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
+
+			if(amount + PlayerInfo[giveplayerid][p_iDrug][drugid] > Player_MaxCapacity(giveplayerid, itemid)) {
+				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
+				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
+				return Player_InteractMenu(playerid, giveplayerid);
+			}
+
+			PlayerInfo[giveplayerid][p_iDrug][drugid] += amount;
+			PlayerInfo[playerid][p_iDrug][drugid] -= amount;
+
+		}
 		case ITEM_INGREDIENT: {
 
 			new ingredientid = GetPVarInt(playerid, "Interact_Ingredient");
@@ -222,33 +235,6 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			PlayerInfo[giveplayerid][p_iIngredient][ingredientid] += amount;
 			PlayerInfo[playerid][p_iIngredient][ingredientid] -= amount;
 
-		}
-		case ITEM_POT: {
-			
-			if(PlayerInfo[playerid][pPot] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much pot.");
-
-			if(amount + PlayerInfo[giveplayerid][pPot] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				return Player_InteractMenu(playerid, giveplayerid);
-			}
-
-			PlayerInfo[giveplayerid][pPot] += amount;
-			PlayerInfo[playerid][pPot] -= amount;
-
-		}
-		case ITEM_CRACK: {
-			
-			if(PlayerInfo[playerid][pCrack] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much crack.");
-
-			if(amount + PlayerInfo[giveplayerid][pCrack] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				return Player_InteractMenu(playerid, giveplayerid);
-			}
-
-			PlayerInfo[giveplayerid][pCrack] += amount;
-			PlayerInfo[playerid][pCrack] -= amount;
 		}
 		case ITEM_MATS: {
 
@@ -276,32 +262,6 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			PlayerInfo[giveplayerid][pFirework] += amount;
 			PlayerInfo[playerid][pFirework] -= amount;
 		}
-		case ITEM_HEROIN: {
-			
-			if(PlayerInfo[playerid][pHeroin] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much heroin.");
-
-			if(amount + PlayerInfo[giveplayerid][pHeroin] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				return Player_InteractMenu(playerid, giveplayerid);
-			}
-
-			PlayerInfo[giveplayerid][pHeroin] += amount;
-			PlayerInfo[playerid][pHeroin] -= amount;
-		}
-		case ITEM_RAWOPIUM: {
-			
-			if(PlayerInfo[playerid][pRawOpium] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much raw opium.");
-
-			if(amount + PlayerInfo[giveplayerid][pRawOpium] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				return Player_InteractMenu(playerid, giveplayerid);
-			}
-
-			PlayerInfo[giveplayerid][pRawOpium] += amount;
-			PlayerInfo[playerid][pRawOpium] -= amount;
-		}
 		case ITEM_SYRINGES: {
 			
 			if(PlayerInfo[playerid][pSyringes] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much syringes.");
@@ -314,19 +274,6 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			PlayerInfo[giveplayerid][pSyringes] += amount;
 			PlayerInfo[playerid][pSyringes] -= amount;
-		}
-		case ITEM_OPIUMSEEDS: {
-			
-			if(PlayerInfo[playerid][pOpiumSeeds] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many opium seeds.");
-
-			if(amount + PlayerInfo[giveplayerid][pOpiumSeeds] > Player_MaxCapacity(giveplayerid, itemid)) {
-				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				return Player_InteractMenu(playerid, giveplayerid);
-			}
-
-			PlayerInfo[giveplayerid][pOpiumSeeds] += amount;
-			PlayerInfo[playerid][pOpiumSeeds] -= amount;
 		}
 		case ITEM_SPRUNKDRINK: {
 			
@@ -476,14 +423,9 @@ Player_MaxCapacity(playerid, itemid) {
 	new iTemp = 0; 
 
 	switch(itemid) {
-		case ITEM_POT: iTemp = 60; 
-		case ITEM_CRACK: iTemp = 60; 
-		case ITEM_MATS: iTemp = 60;
+		case ITEM_MATS: iTemp = 50000;
 		case ITEM_FIREWORK: iTemp = 10;
-		case ITEM_HEROIN: iTemp = 60;
-		case ITEM_RAWOPIUM: iTemp = 60; 
 		case ITEM_SYRINGES: iTemp = 20; 
-		case ITEM_OPIUMSEEDS: iTemp = 100; 
 		case ITEM_SPRUNKDRINK: iTemp = 1; 
 		case ITEM_PBTOKENS: iTemp = 40;
 		case ITEM_AMMO9MM: {
@@ -518,14 +460,9 @@ Player_LeftCapacity(playerid, itemid) {
 
 	switch(itemid) {
 		
-		case ITEM_POT: return (iCapacity - PlayerInfo[playerid][pPot]);
-		case ITEM_CRACK: return (iCapacity - PlayerInfo[playerid][pCrack]);
 		case ITEM_MATS: return (iCapacity - PlayerInfo[playerid][pMats]);
 		case ITEM_FIREWORK: return (iCapacity - PlayerInfo[playerid][pFirework]);
-		case ITEM_HEROIN: return (iCapacity - PlayerInfo[playerid][pHeroin]);
-		case ITEM_RAWOPIUM: return (iCapacity - PlayerInfo[playerid][pRawOpium]);
 		case ITEM_SYRINGES: return (iCapacity - PlayerInfo[playerid][pSyringes]);
-		case ITEM_OPIUMSEEDS: return (iCapacity - PlayerInfo[playerid][pOpiumSeeds]);
 		case ITEM_SPRUNKDRINK: return (iCapacity - PlayerInfo[playerid][pSprunk]);
 		case ITEM_PBTOKENS: return (iCapacity - PlayerInfo[playerid][pPaintTokens]);
 		case ITEM_AMMO9MM: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][0]);
@@ -546,14 +483,9 @@ Item_Getname(itemid) {
 	new szTemp[18];
 
 	switch(itemid) {
-		case ITEM_POT: szTemp = "pot";
-		case ITEM_CRACK: szTemp = "crack";
 		case ITEM_MATS: szTemp = "materials";
 		case ITEM_FIREWORK: szTemp = "fireworks";
-		case ITEM_HEROIN: szTemp = "heroin";
-		case ITEM_RAWOPIUM: szTemp = "raw opium";
 		case ITEM_SYRINGES: szTemp = "syringes";
-		case ITEM_OPIUMSEEDS: szTemp = "opium seeds";
 		case ITEM_SPRUNKDRINK: szTemp = "sprunk";
 		case ITEM_PBTOKENS: szTemp = "paintball tokens";
 		case ITEM_AMMO9MM: szTemp = "9mm rounds";
@@ -596,7 +528,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Drug Test") == 0) return Interact_DrugTest(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Confiscate Drugs") == 0) return Interact_TakeDrugs(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Confiscate Ingredients") == 0) return Interact_TakeIngredients(playerid, giveplayerid);
-			else if(strcmp(inputtext, "Prescribe Drug") == 0) return Interact_Prescribe(playerid);
+			else if(strcmp(inputtext, "Prescribe Drug") == 0) return Interact_Prescribe(playerid, 0);
 			else if(strcmp(inputtext, "Load Patient") == 0) Interact_LoadPatient(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Triage") == 0) return Interact_Triage(playerid, giveplayerid);
 			else if(strcmp(inputtext, "Heal") == 0) return Interact_Heal(playerid, giveplayerid);
@@ -809,15 +741,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new ingredientid = GetPVarInt(buyingfrom, "Interact_Ingredient");
 					Interact_GivePlayerIngredient(buyingfrom, playerid, ingredientid, price);
 				}
+				else {
+
+					new itemid = GetPVarInt(buyingfrom, "Interact_GiveItem");
+					new amount = GetPVarInt(buyingfrom, "Interact_SellAmt");
+
+					Player_GiveItem(buyingfrom, playerid, itemid, amount, price);
+				}
 			}
-			else {
-
-				new itemid = GetPVarInt(buyingfrom, "Interact_GiveItem");
-				new amount = GetPVarInt(buyingfrom, "Interact_SellAmt");
-
-				Player_GiveItem(buyingfrom, playerid, itemid, amount, price);
-			}
-
 			DeletePVar(playerid, "Interact_Buying");
 			DeletePVar(buyingfrom, "Interact_SellPrice");
 			DeletePVar(buyingfrom, "Interact_Sell");
@@ -999,6 +930,8 @@ Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 		
 		if(!(0 < amount <= 250000)) return SendClientMessageEx(playerid, COLOR_WHITE, "Maximum amount is $250,000, minimum is $1");
 		if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+
+		if(PlayerInfo[playerid][pCash] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 		format(szMiscArray, sizeof(szMiscArray), "You have paid %s $%s", GetPlayerNameEx(giveplayerid), number_format(amount));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
@@ -1493,16 +1426,19 @@ Interact_MovePatient(playerid, giveplayerid) {
 }
 
 Interact_Prescribe(playerid, stage = 0) {
+
 	switch(stage) {
+
 		case 0: {
-			ShowPlayerDialog(playerid, DIALOG_STYLE_LIST, INTERACT_PRESCRIBE, "Type | Drug Prescription", "\
-				Demerol\n\
+
+			ShowPlayerDialog(playerid, DIALOG_STYLE_LIST, INTERACT_PRESCRIBE, "Type | Drug Prescription", "Demerol\n\
 				Morphine\n\
 				Haloperidol\n\
 				Aspirin",
 				"Select", "Cancel");
 		}
 		case 1: {
+
 			ShowPlayerDialog(playerid, DIALOG_STYLE_INPUT, INTERACT_PRESCRIBE1, "Grams | Drug Prescription", "How many pieces would you like to prescribe?", "Prescribe", "Cancel");
 		}
 	}
