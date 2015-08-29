@@ -584,7 +584,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					// Jingles' Drug System:
 					for(new d; d < sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
 					for(new d; d < sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
-					
+	
+					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);					
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -2392,6 +2394,15 @@ stock g_mysql_SaveAccount(playerid)
 		if(jailX != 11) strcat(mistring, "|");
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
+
+	for(new idrugs = 0; idrugs < sizeof(szDrugs); ++idrugs)
+	{
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][p_iDrugQuality][idrugs]);
+		if(idrugs != 11) strcat(mistring, "|");
+	}
+	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
+
+
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);

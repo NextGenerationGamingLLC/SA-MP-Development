@@ -367,13 +367,6 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			arrAmmoData[giveplayerid][awp_iAmmo][4] += amount;
 			arrAmmoData[playerid][awp_iAmmo][4] -= amount;
 		}
-		/*case ITEM_WEAPON: {
-			format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
-			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
-
-			//GivePlayerValidWeapon()
-		}*/
-
 	}
 
 	if(saleprice == 0) {
@@ -864,7 +857,7 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid]);
+	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szDrugs[drugid]);
 	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 	return 1;
 }
@@ -887,6 +880,10 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 		SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 		return Player_InteractMenu(playerid, giveplayerid);
 	}
+
+	PlayerInfo[giveplayerid][p_iIngredient][ingredientid] += amount;
+	PlayerInfo[playerid][p_iIngredient][ingredientid] -= amount;
+
 	if(saleprice > 0) {
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid], number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
@@ -914,7 +911,7 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid]);
+	format(szMiscArray, sizeof(szMiscArray), "%s gave %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szIngredients[ingredientid]);
 	SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10, 5000);
 	return 1;
 }

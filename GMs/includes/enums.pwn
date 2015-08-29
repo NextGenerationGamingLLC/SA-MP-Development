@@ -1265,6 +1265,7 @@ enum hInfo
 	hPickupID,
 	hPickupID_int,
 	Text3D: hTextID,
+	Text3D:hTextID_int,
 	hCustomExterior,
 	Float: hMailX,
 	Float: hMailY,
@@ -1754,6 +1755,23 @@ enum e_PayPhoneData {
 	Text3D:pp_iTextID
 }
 new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
+
+enum eDynPoints {
+	po_iType,
+	po_szPointName[MAX_PLAYER_NAME],
+	po_iCaptureAble,
+	po_iPointTimer,
+	po_iGroupID,
+	po_iPickupID,
+	po_iZoneID,
+	po_iAreaID,
+	po_iBigAreaID,
+	Text3D:po_iTextID,
+	Text3D:po_iDelTextID
+}
+new arrPoint[MAX_DYNPOINTS][eDynPoints];
+
+
 
 
 // All player booleans variables go here to reduce memory:

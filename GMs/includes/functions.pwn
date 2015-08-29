@@ -48,6 +48,8 @@ Float:GetPointDistanceToPoint(Float:x1,Float:y1,Float:z1,Float:x2,Float:y2,Float
 
 Format_PlayerName(playerid) {
 	
+	szMiscArray[0] = 0;
+	
 	new iPos;
 
 	GetPlayerName(playerid, szMiscArray, MAX_PLAYER_NAME);

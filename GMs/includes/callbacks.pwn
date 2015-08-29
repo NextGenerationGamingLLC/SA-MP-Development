@@ -1106,8 +1106,6 @@ public OnPlayerConnect(playerid)
 		getdate(MPYear,MPMonth,MPDay);
 	}
 
-	Format_PlayerName(playerid);
-
 	RemoveVendingMachines(playerid);
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
@@ -1448,6 +1446,8 @@ public OnPlayerConnect(playerid)
 	if(!InvalidNameCheck(playerid)) {
 		return 1;
 	}
+
+	Format_PlayerName(playerid);
 
 	CheckAdminWhitelist(playerid);
 	CheckBanEx(playerid);
@@ -3528,6 +3528,12 @@ public OnPlayerEnterCheckpoint(playerid)
 	{
 		switch (gPlayerCheckpointStatus[playerid])
 		{
+			case CHECKPOINT_NOTHING: {
+
+				DisablePlayerCheckpoint(playerid);
+				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+				return 1;
+			}
 			case CHECKPOINT_HOME:
 			{
 				PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);

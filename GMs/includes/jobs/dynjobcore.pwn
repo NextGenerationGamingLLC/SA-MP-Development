@@ -542,6 +542,7 @@ CMD:editjob(playerid, params[])
 	{
 		new i;
 		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /editjob [id]");
+		if(!IsValidDynamic3DTextLabel(arrJobData[i][job_iTextID][0])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid job point.");
 		format(szMiscArray, sizeof(szMiscArray), "Edit Job ID %d", i);
 		SetPVarInt(playerid, PVAR_EDITINGJOBID, i);
 		ShowPlayerDialog(playerid, DIALOG_JOBS_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Edit Position\nEdit Deliver Position\nEdit Actor Skin", "Select", "Cancel");

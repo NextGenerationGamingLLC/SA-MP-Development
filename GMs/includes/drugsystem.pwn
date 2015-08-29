@@ -41,8 +41,6 @@
 #include <YSI\y_hooks>
 
 #define 		MAX_BLACKMARKETS				MAX_GROUPS
-#define 		MAX_DYNPOINTS 					50
-
 
 #define 		DIALOG_DRUGS_MYDRUGS			11000
 #define 		DIALOG_DRUGS_DRUGSTORE			11001
@@ -96,17 +94,17 @@
 #define 		DRUGS_TRACKABLE_THRESHOLD		50 // Amount of drugs/ingredients orderable without LEA tracking.
 #define 		MAX_DRUGINGREDIENT_SLOTS		5
 
-#define 		DRUG_ORDER_TIME					60 * 1 // 2 hours.
-#define 		DRUGS_GROWTH_TIME				60 * 1 // 2 hours.
+#define 		DRUG_ORDER_TIME					60 * 120 // 2 hours.
+#define 		DRUGS_GROWTH_TIME				60 * 120 // 2 hours.
 
 #define 		MAX_DRUGS						400
 #define 		MAX_PLAYERDRUGS					10
-#define 		SMUGGLE_PER_LEVEL 				50
+#define 		SMUGGLE_PER_LEVEL 				40
 
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
 
-#define 		POINT_CAPTURE_INTERVAL 			60000 * 10 // 10 minutes
+#define 		POINT_CAPTURE_INTERVAL 			60000 * 2 // 10 minutes
 
 #define 		BLACKMARKET_SEIZE_DAYS			1
 
@@ -174,22 +172,6 @@ enum eDrugData {
 	dr_iAreaID
 }
 new arrDrugData[MAX_DRUGS][eDrugData];
-
-enum eDynPoints {
-	po_iType,
-	po_szPointName[MAX_PLAYER_NAME],
-	po_iCaptureAble,
-	po_iPointTimer,
-	po_iGroupID,
-	po_iPickupID,
-	po_iZoneID,
-	po_iAreaID,
-	po_iBigAreaID,
-	Text3D:po_iTextID,
-	Text3D:po_iDelTextID
-}
-new arrPoint[MAX_DYNPOINTS][eDynPoints];
-
 
 enum eSmuggleVehicle {
 	smv_iIngredientAmount[sizeof(szIngredients)]
@@ -335,6 +317,16 @@ ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 
 timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 
+	if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You were injured while trying to capture the point.");
+	if(GetGVarType("PO_CAPT", i)) {
+
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) {
+
+			DeletePVar(playerid, "PO_CAPTUR");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "The point was taken by another gang. Therefore you failed to capture it.");
+		}
+	}
+
 	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s is attempting to capture %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
 	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 
@@ -344,26 +336,22 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 	GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
 
 	if(arrPoint[i][po_iPointTimer]) KillTimer(arrPoint[i][po_iPointTimer]);
+	TogglePlayerControllable(playerid, true);
+	SetGVarInt("PO_Time", 9, i);
 	arrPoint[i][po_iPointTimer] = SetTimerEx("PO_PointTimer", POINT_CAPTURE_INTERVAL, false, "iii", playerid, i, iGroupID);
-	SetTimerEx("PO_PlayerFreezeTimer", 2000, false, "iii", playerid, i, iGroupID);
+	SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
+	return 1;
 }
 
-forward PO_PlayerFreezeTimer(playerid, i, iGroupID);
-public PO_PlayerFreezeTimer(playerid, i, iGroupID) {
+forward PO_MinuteTimer(iGroupID, i);
+public PO_MinuteTimer(iGroupID, i) {
 
-	if(!GetGVarType("PO_CAPT", i)) return 1;
-
-	if(IsPlayerInDynamicArea(playerid, arrPoint[i][po_iAreaID])) {
-
-		SetTimerEx("PO_PlayerFreezeTimer", 2000, false, "ii", playerid, i);
-		return 1;
-	}
-
-	DeleteGVar("PO_CAPT", i);
-	GangZoneHideForAll(arrPoint[i][po_iZoneID]);
-	KillTimer(arrPoint[i][po_iPointTimer]);
-
-	foreach(new p : Player) if(PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(playerid, COLOR_YELLOW, "You failed to capture the point.");
+	if(!GetGVarInt("PO_Time", i)) return 1;
+	new iTime = GetGVarInt("PO_Time", i);
+	SetGVarInt("PO_Time", iTime - 1, i);
+	format(szMiscArray, sizeof(szMiscArray), "%d minutes left!", iTime);
+	foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_GRAD1, szMiscArray);
+	SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
 	return 1;
 }
 
@@ -433,37 +421,37 @@ timer Addiction_Effects[60000](playerid, iDrugID, iTaken) {
 		{
 			case 0:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.02));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.02));
 				return 1;
 			}
 			case 1:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.04));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.04));
 				return 1;
 			}
 			case 2:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.06));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.06));
 				return 1;
 			}
 			case 3:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.08));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.08));
 				return 1;
 			}
 			case 4:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.08));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.08));
 				return 1;
 			}
 			case 5:
 			{
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
 				return 1;
 			}
 			default: {
 				
-				SetPlayerHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
+				SetHealth(playerid, fHealth - (PlayerInfo[playerid][p_iAddictedLevel] * 0.1));
 				return 1;
 			}
 		}
@@ -601,7 +589,7 @@ hook OnPlayerDeath(playerid) {
 			GangZoneHideForAll(arrPoint[i][po_iZoneID]);
 			KillTimer(arrPoint[i][po_iPointTimer]);
 
-			foreach(new p : Player) if(PlayerInfo[playerid][pMember] == arrPoint[i][po_iGroupID]) SendClientMessageEx(playerid, COLOR_YELLOW, "The gang leader died. You failed to capture the point.");
+			foreach(new p : Player) if(PlayerInfo[p][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(p, COLOR_YELLOW, "The gang leader died. You failed to capture the point.");
 		}
 	}
 }
@@ -615,37 +603,16 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 	if(-1 < i < MAX_DYNPOINTS) {
 
 		if(areaid == arrPoint[i][po_iAreaID]) SetPVarInt(playerid, "PO_AID", i);
-		if(areaid == arrPoint[i][po_iBigAreaID]) {
-
-			if(GetGVarType("PO_CAPT", i)) {
-
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL) {
-
-					SetPVarInt(playerid, "InPoint", i);
-					SetPlayerVirtualWorld(playerid, 1000);
-				}
-			}
-		}
 	}
 	return 1;
 }
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-
 	DeletePVar(playerid, "BM_AID");
 	DeletePVar(playerid, "PO_AID");
 	DeletePVar(playerid, "AtDrugArea");
-
-	if(-1 < i < MAX_DYNPOINTS) {
-		
-		if(areaid == arrPoint[i][po_iBigAreaID]) {
-
-			DeletePVar(playerid, "InPoint");
-			SetPlayerVirtualWorld(playerid, 0);
-		}
-	}
+	DeletePVar(playerid, "InPoint");
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
@@ -656,6 +623,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			new i = GetPVarInt(playerid, "BM_AID");
 
+			if(i > MAX_BLACKMARKETS - 1) return 1;
 			if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
 
 				if(arrBlackMarket[i][bm_iSeized]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
@@ -668,6 +636,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			new i = GetPVarInt(playerid, "PO_AID");
 
+			if(i > MAX_DYNPOINTS - 1) return 1;
 			if(arrPoint[i][po_iType] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot interact with a weapon point.");
 
 			if(arrPoint[i][po_iType] == 1) {
@@ -684,6 +653,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			new i = GetPVarInt(playerid, "AtDrugArea");
 
+			if(i >= MAX_DRUGS) return 1;
 			if(IsACop(playerid)) Drugs_Remove(playerid, i);
 			else Drugs_Retrieve(playerid, i);
 		}
@@ -737,6 +707,13 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
 			Log("logs/drugsmuggles.log", szMiscArray);
+			
+			PlayerInfo[playerid][pSmugSkill] += 1;
+  			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 100) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 3 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 200) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 4 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 400) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 5 of the drug smuggling skill.");
+
 		}
 
 		case CHECKPOINT_SMUGGLE_PLAYER:	{
@@ -765,6 +742,13 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			DeletePVar(playerid, "DrugPoint");
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
+
+			PlayerInfo[playerid][pSmugSkill] += 1;
+   			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 100) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 3 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 200) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 4 of the drug smuggling skill.");
+			if(PlayerInfo[playerid][pSmugSkill] == 400) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 5 of the drug smuggling skill.");
+			
 		}
 	}
 	return 1;
@@ -805,7 +789,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response || isnull(inputtext) || !IsNumeric(inputtext))
 			{
-				SetPVarInt(playerid, PVAR_DRUGS_MIXSLOT, listitem);
 				for(new i; i < sizeof(szIngredients); ++i)
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%s", szMiscArray, szIngredients[i]);
@@ -1150,7 +1133,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(response) {
 
-				if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
 				if(listitem == 0) return 1;
 
 				new Float:fPos[3],
@@ -1160,9 +1142,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrPoint[i][po_iPickupID], E_STREAMER_Y, fPos[1]);
 				Streamer_GetFloatData(STREAMER_TYPE_PICKUP, arrPoint[i][po_iPickupID], E_STREAMER_Z, fPos[2]);
 
-				SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-				SetPlayerVirtualWorld(playerid, 0);
-				SetPlayerInterior(playerid, 0);
+				if(!IsAdminLevel(playerid, ADMIN_GENERAL, 0)) {
+
+					gPlayerCheckpointStatus[playerid] = CHECKPOINT_NOTHING;
+					SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 2.0);
+				}
+				else {
+							
+					SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+					SetPlayerVirtualWorld(playerid, 0);
+					SetPlayerInterior(playerid, 0);
+				}
 				return 1;
 			}
 		}
@@ -1297,7 +1287,6 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 30;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] / 2; // 10 Muriatic Acid
 						}
 						case 6: // Distilled water
 						{
@@ -1312,7 +1301,6 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 20;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount]; // 10 crack
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1606,6 +1594,7 @@ Drug_FinishMix(playerid, iDrugID) {
 		}
 	}
 	if(iDrugAmount == 0) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You did not add the core ingredient.");
+	if(iDrugAmount > 500) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cannot make more than 500pc of drugs in one mix.");
 	Drug_CreateDrug(playerid, iDrugID, iDrugAmount, iDrugQuality);
 	DeletePVar(playerid, PVAR_MAKINGDRUG);
 	return 1;
@@ -1617,7 +1606,8 @@ Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality)
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You made %d pc of %s with a quality of %dqP.", iAmount, szDrugs[iDrugID], iDrugQuality);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
-	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] < 100) PlayerInfo[playerid][p_iDrugQuality][iDrugID] += iDrugQuality;
+	PlayerInfo[playerid][p_iDrugQuality][iDrugID] += iDrugQuality;
+	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] > 100) PlayerInfo[playerid][p_iDrugQuality][iDrugID] = 100;
 	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
 	return 1;	
 }
@@ -1718,7 +1708,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 0: // LSD
 		{
 
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: SetPlayerWeather(playerid, 108), SetPlayerTime(playerid, 10, 0);
@@ -1739,7 +1729,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 1: // Cannabis
 		{
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			switch(iTotalTaken) {
 
 				case 0 .. 5: SetPlayerWeather(playerid, 888);
@@ -1754,7 +1744,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 2: // Meth
 		{
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			switch(iTotalTaken)	{
 
 				case 0 .. 5: SetPlayerWeather(playerid, 108);
@@ -1818,7 +1808,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 6: // Opium
 		{
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
@@ -1844,7 +1834,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 7: // Ecstasy
 		{
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
@@ -1911,7 +1901,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 10, 11, 12:
 		{
-			SetPlayerHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
@@ -1926,7 +1916,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 	}
 	GetPlayerHealth(playerid, fHealth);
-	if(fHealth > DRUGS_MAX_BONUS_HEALTH) SetPlayerHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
+	if(fHealth > DRUGS_MAX_BONUS_HEALTH) SetHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
 	if(fArmour > DRUGS_MAX_BONUS_ARMOUR) SetPlayerArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
 	Bit_On(g_PlayerBits[playerid], dr_bitInDrugEffect);
 	return 1;
@@ -2667,7 +2657,7 @@ CMD:mydrugs(playerid, params[]) {
 
 	for(new i; i < sizeof(szDrugs); ++i) {
 
-		format(szMiscArray, sizeof(szMiscArray),"{CCCCCC}%s: %d pc {AAAAAA}(%dqP){CCCCCC} | %s: %d pc {AAAAAA}(%dqP)", szDrugs[i], PlayerInfo[playerid][p_iDrug][i], PlayerInfo[playerid][p_iDrugQuality][i],
+		format(szMiscArray, sizeof(szMiscArray),"{CCCCCC}%s: %dpc {AAAAAA}(%dqP){CCCCCC} | %s: %d pc {AAAAAA}(%dqP)", szDrugs[i], PlayerInfo[playerid][p_iDrug][i], PlayerInfo[playerid][p_iDrugQuality][i],
 			szDrugs[i+1], PlayerInfo[playerid][p_iDrug][i+1], PlayerInfo[playerid][p_iDrugQuality][i+1]);
 		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 
@@ -3110,7 +3100,7 @@ CMD:points(playerid, params[]) {
 				switch(arrPoint[i][po_iGroupID]) {
 
 					case INVALID_GROUP_ID: szGroup = "None";
-					default: szGroup = arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName];
+					default: strcat(szGroup, arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName], sizeof(szGroup));
 				}
 
 				switch(arrPoint[i][po_iCaptureAble]) {
@@ -3162,14 +3152,38 @@ CMD:point(playerid, params[]) {
 
 		new	iVW = GetPlayerVirtualWorld(playerid),
 			iINT = GetPlayerInterior(playerid);
+
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
 		if(IsValidDynamicPickup(arrPoint[iPointID][po_iPickupID])) DestroyDynamicPickup(arrPoint[iPointID][po_iPickupID]);
 		if(IsValidDynamic3DTextLabel(arrPoint[iPointID][po_iTextID])) DestroyDynamic3DTextLabel(arrPoint[iPointID][po_iTextID]);
 		if(IsValidDynamicArea(arrPoint[iPointID][po_iAreaID])) DestroyDynamicArea(arrPoint[iPointID][po_iAreaID]);
+		if(IsValidDynamicArea(arrPoint[iPointID][po_iBigAreaID])) DestroyDynamicArea(arrPoint[iPointID][po_iBigAreaID]);
+
+
+		arrPoint[iPointID][po_iBigAreaID] = CreateDynamicCuboid(fPos[0] - 100.0, fPos[1] - 100.0, fPos[2], fPos[0] + 100.0, fPos[1] + 100.0, fPos[2]);
+		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[iPointID][po_iBigAreaID], E_STREAMER_EXTRA_ID, iPointID);
+
 		arrPoint[iPointID][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
 		arrPoint[iPointID][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-		format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{AAAAAA}ID: %d", iPointID);
+		
+
+		new szGroup[GROUP_MAX_NAME_LEN],
+			iGroupID = arrPoint[iPointID][po_iGroupID];
+		switch(iGroupID) {
+
+			case INVALID_GROUP_ID: szGroup = "Nobody";
+			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
+		}
+
+		switch(arrPoint[iPointID][po_iType]) {
+
+			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iPointID, szGroup);
+			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iPointID, szGroup);
+		}
 		arrPoint[iPointID][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
+
+
 		format(szMiscArray, sizeof(szMiscArray), "You successfully moved Point ID %d to your position.", iPointID);
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iVW, iINT, iPointID);
@@ -3227,8 +3241,14 @@ CMD:capturepoint(playerid, params[]) {
 	new i = GetPVarInt(playerid, "PO_AID");
 
 	if(arrPoint[i][po_iCaptureAble] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point isn't capturable.");
-	if(arrPoint[i][po_iGroupID] == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group already owns this point.");
+	// if(arrPoint[i][po_iGroupID] == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group already owns this point.");
 	if(GetPVarType(playerid, "PO_CAPTUR")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already capturing a point.");
+
+	if(GetGVarType("PO_CAPT", i)) {
+
+		new iGroupID = GetGVarInt("PO_CAPT", i);
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(playerid, COLOR_YELLOW, "Another gang leader is attempting to capture your point.");
+	}
 
 	SetPVarInt(playerid, "PO_CAPTUR", i);
 	format(szMiscArray, sizeof(szMiscArray), "[Point]: {CCCCCC}You are attempting to capture {FFFF00}%s.", arrPoint[i][po_szPointName]);
@@ -3279,7 +3299,7 @@ Smuggle_GetVehicleCapacity(iVehID) {
 
 	new Float:fPos[3];
 	GetVehicleModelInfo(GetVehicleModel(iVehID), VEHICLE_MODEL_INFO_SIZE, fPos[0], fPos[1], fPos[2]);
-	fPos[0] = (fPos[0] + fPos[1] + fPos[2]) * 10; // size to drug permutation
+	fPos[0] = (fPos[0] + fPos[1] + fPos[2]) * 6; // size to drug permutation
 	return floatround(fPos[0], floatround_round);
 }
 
@@ -3381,13 +3401,8 @@ public PO_PointTimer(playerid, i, iGroupID) {
 
 	new Float:fPos[3];
 	
-	if(PlayerInfo[playerid][pVW] != 0) { 
-
-		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may have possibly desynced himself to capture a point.", GetPlayerNameEx(playerid), playerid);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-	}
-
 	DeleteGVar("PO_CAPT", i);
+	DeleteGVar("PO_Time", i);
 	GangZoneHideForAll(arrPoint[i][po_iZoneID]);
 
 	KillTimer(arrPoint[i][po_iPointTimer]);
@@ -3396,21 +3411,25 @@ public PO_PointTimer(playerid, i, iGroupID) {
 	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Y, fPos[1]);
 	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Z, fPos[2]);
 
-	if(GetPlayerVirtualWorld(playerid) != 1000) {
+	if(GetPlayerVirtualWorld(playerid) != 0) {
 
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may have possibly desynced himself to capture a point.", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-		foreach(new p : Player) if(PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(playerid, COLOR_YELLOW, "You failed to capture the point.");
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point.");
+		DeletePVar(playerid, "PO_CAPTUR");
 		return 1;
 	}
 
-	if(!IsPlayerInRangeOfPoint(playerid, 5.0, fPos[0], fPos[1], fPos[2])) {
+	if(!IsPlayerInRangeOfPoint(playerid, 30.0, fPos[0], fPos[1], fPos[2])) {
 
-		foreach(new p : Player) if(PlayerInfo[playerid][pMember] == iGroupID) SendClientMessageEx(playerid, COLOR_YELLOW, "You failed to capture the point.");
+		SendClientMessage(playerid, COLOR_GRAD1, "You aren't near the point.");
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point.");
+		DeletePVar(playerid, "PO_CAPTUR");
 		return 1;
 	}
 
 	DeletePVar(playerid, "PO_CAPTUR");
+	DeleteGVar("PO_Time", i);
 
 	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s has successfully captured %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
 	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
@@ -3491,7 +3510,7 @@ public PO_OnLoadPoints() {
 		switch(arrPoint[iCount][po_iGroupID]) {
 
 			case INVALID_GROUP_ID: szGroup = "Nobody";
-			default: szGroup = arrGroupData[iGroupID][g_szGroupName];
+			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
 		}
 
 		switch(arrPoint[iCount][po_iType]) {
@@ -3540,14 +3559,15 @@ PO_RehashPoint(i) {
 
 		PO_DestroyPoint(i);
 
-		fPos[2] -= 0.75; // Somehow has an odd Z-offset.
+		fPos[2] -= 1; // Somehow has an odd Z-offset.
 		arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
 
 		new szGroup[GROUP_MAX_NAME_LEN];
+
 		switch(arrPoint[i][po_iGroupID]) {
 
 			case INVALID_GROUP_ID: szGroup = "Nobody";
-			default: szGroup = arrGroupData[iGroupID][g_szGroupName];
+			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
 		}
 
 		switch(arrPoint[i][po_iType]) {
@@ -3555,6 +3575,7 @@ PO_RehashPoint(i) {
 			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, szGroup);
 			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, szGroup);
 		}
+
 		arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
 
 		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n\nOwned by: %s", i, szGroup);
@@ -3579,6 +3600,15 @@ CMD:drughelp(playerid, params[])
 	if(IsACop(playerid) || IsAMedic(playerid)) SendClientMessageEx(playerid, COLOR_LIGHTRED, "[MEDIC/LEA] | /listpostorders | /vehdrugs");
 	if(IsAdminLevel(playerid, ADMIN_JUNIOR)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Administrators] /createblackmarket | /ablackmarket | /createdpoint | /point");
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________");
+	szMiscArray[0] = 0;
+
+	strcat(szMiscArray, "You can use drugs by using /usedrug [drug name] [amount]. You will first have to make a drug by mixing ingredients.\n", sizeof(szMiscArray));
+	strcat(szMiscArray, "You can obtain ingredients by doing drug smuggles.\n\nMake your way to a drug point (outside Crack Lab & Drug House) to start a smuggle.", sizeof(szMiscArray));
+	strcat(szMiscArray, "You will need to be in a vehicle to load ingredients.\n", sizeof(szMiscArray));
+	strcat(szMiscArray, "The max capacity depends on your drug smuggle skill and vehicle size.\n\n\n", sizeof(szMiscArray));
+	strcat(szMiscArray, "You can also deliver to a gang's black market. They can specify a payment if you deliver the ingredients to their black market.\n", sizeof(szMiscArray));
+	strcat(szMiscArray, "If you deliver the the delivery point, the smuggle will go to your inventory.\n", sizeof(szMiscArray));
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Drug System Help", szMiscArray, "<<", "");
 	return 1;
 }
 
@@ -3628,7 +3658,7 @@ hook OnPlayerGiveDamageActor(playerid, damaged_actorid, Float: amount, weaponid,
 
 			if(GetPVarType(playerid, "Aliens")) {
 
-				SetPlayerHealth(playerid, fHealth);
+				SetHealth(playerid, fHealth);
 				Character_Actor(playerid, 1);
 				Aliens_ResetPlayer(playerid);
 			}

@@ -1241,6 +1241,8 @@ CMD:accept(playerid, params[])
         else if(strcmp(params, "job", true) == 0) {
             if(GettingJob[playerid] > 0) {
                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
+                
+                /*
                 if(GettingJob[playerid] == 14) {
                     SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
                     if(CheckPointCheck(playerid)) {
@@ -1248,7 +1250,7 @@ CMD:accept(playerid, params[])
                         return 1;
                     }
                     SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
-                }
+                }*/
                 if(GettingJob[playerid] == 21) {
                 	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 					PlayerInfo[playerid][pModel] = 155;
@@ -1261,10 +1263,13 @@ CMD:accept(playerid, params[])
             else if(GettingJob2[playerid] > 0 && (PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pFamed] > 0)) {
                 SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
                 SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a secondary job.");
+                
+                /*
                 if(GettingJob2[playerid] == 14) {
                     SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
                     SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
                 }
+                */
                 if(GettingJob2[playerid] == 21) {
                 	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 					PlayerInfo[playerid][pModel] = 155;
@@ -1277,10 +1282,12 @@ CMD:accept(playerid, params[])
 			else if(GettingJob3[playerid] > 0 && PlayerInfo[playerid][pDonateRank] >= 3) {
 			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
                 SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a third job.");
+				/*
 				if(GettingJob3[playerid] == 14) {
                     SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
                     SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
                 }
+                */
 				if(GettingJob3[playerid] == 21) {
                 	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 					PlayerInfo[playerid][pModel] = 155;

@@ -62,7 +62,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		if(GetPVarType(playerid, "AtPayPhone")) {
 
 			if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
+
 			new i = GetPVarInt(playerid, "AtPayPhone");
+			if(i > MAX_PAYPHONES) return 1;
 			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
 				
 				SetPVarInt(playerid, "PayPhone", i); 

@@ -9,10 +9,12 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("{FF8000}LOCKDOWN\nPUSH ONLY IN CASE OF EMERGENCY", COLOR_YELLOW, -1121.70, 4290.41, 5.88, 20.0, _, _, 1, 0, 0, _, 20.0);
 
 	// General text labels
+	/*
 	CreateDynamic3DTextLabel("All Saints Plaza Parking Garage\nType /enter with your vehicle to enter",COLOR_YELLOW,1218.69,-1425.01,13.15+0.6,25.0);
 	CreateDynamic3DTextLabel("Club VIP Parking\nType /enter with your vehicle to enter",COLOR_YELLOW,1814.6857,-1559.2028,13.4834+0.4,15.0);
 	CreateDynamic3DTextLabel("Gym Parking Garage\nType /enter with your vehicle to enter",COLOR_YELLOW,2273.4026,-1724.3064,13.5469+0.6,25.0);
 	CreateDynamic3DTextLabel("Courthouse Parking Garage\nType /enter with your vehicle to enter",COLOR_YELLOW,1418.5190,-1663.8959,13.5395+0.6,25.0);
+	*/
     CreateDynamic3DTextLabel("To change your number type /vipnum",COLOR_YELLOW,2549.548095, 1404.047729, 7699.584472+0.6,4.0);//
     CreateDynamic3DTextLabel("To change your number type /vipnum",COLOR_YELLOW,1832.6000, 1375.1700, 1464.4600+0.6,4.0);//
     CreateDynamic3DTextLabel("Type /travel\nTo exit the VIP garage with your vehicle",COLOR_YELLOW,-4429.944824, 905.032470, 987.078186+0.5,13.0);// VIP garage travel

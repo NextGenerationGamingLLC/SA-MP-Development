@@ -1154,6 +1154,7 @@ native IsValidVehicle(vehicleid);
 #define CHECKPOINT_DELIVERY 126
 #define CHECKPOINT_LOADSHIPMENT 127
 #define CHECKPOINT_DELIVERSHIPMENT 128
+#define CHECKPOINT_NOTHING 129
 #define COLOR_TWWHITE 0xFFFFFFAA
 #define COLOR_TWYELLOW 0xFFFF00AA
 #define COLOR_TWPINK 0xE75480AA
@@ -1345,6 +1346,8 @@ native IsValidVehicle(vehicleid);
 #define 	MAX_GANG_CRATES				15
 #define 	REGISTER_SKINMODEL			(4810)
 
+
+#define 	MAX_DYNPOINTS 				50
 
 /* PVARS */
 

@@ -481,6 +481,8 @@ stock ReloadHousePickup(houseid)
 {
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;
+	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID_int])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID_int]), HouseInfo[houseid][hTextID_int] = Text3D:-1;
+
 	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
 	new string[128];
 	if(HouseInfo[houseid][hOwned])
@@ -497,8 +499,14 @@ stock ReloadHousePickup(houseid)
 	HouseInfo[houseid][hPickupID] = CreateDynamicPickup(HouseInfo[houseid][hInactive] ? 1272 : 1273, 23, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], .worldid = HouseInfo[houseid][hExtVW], .interiorid = HouseInfo[houseid][hExtIW]);
 	HouseInfo[houseid][hPickupID_int] = CreateDynamicPickup(1559, 23, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
 	
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]);
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]);
+
 	HouseInfo[houseid][hAreaID][0] = CreateDynamicSphere(HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 2.0, HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
 	HouseInfo[houseid][hAreaID][1] = CreateDynamicSphere(HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 2.0, HouseInfo[houseid][hIntVW], HouseInfo[houseid][hIntIW]);
+
+	format(szMiscArray, sizeof(szMiscArray), "ID %d | VW: %d", houseid, HouseInfo[houseid][hIntVW]);
+	HouseInfo[houseid][hTextID_int] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GRAD1, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 5.0, .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
 	
 	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
@@ -1074,6 +1082,7 @@ CMD:hedit(playerid, params[])
 		HouseInfo[houseid][hIntVW] = houseid+6000;
 		SendClientMessageEx( playerid, COLOR_WHITE, "You have changed the interior!" );
 		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
 		return 1;
 	}
 	else if(strcmp(choice, "custominterior", true) == 0)
@@ -1089,6 +1098,7 @@ CMD:hedit(playerid, params[])
 			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) interior!" );
 		}
 		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
 
 		format(string, sizeof(string), "%s has edited HouseID %d's Custom Interior.", GetPlayerNameEx(playerid), houseid);
 		Log("logs/hedit.log", string);
@@ -1107,6 +1117,7 @@ CMD:hedit(playerid, params[])
 			SendClientMessageEx( playerid, COLOR_WHITE, "House set to normal (not custom) exterior!" );
 		}
 		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
 
 		format(string, sizeof(string), "%s has edited HouseID %d's Custom Exterior.", GetPlayerNameEx(playerid), houseid);
 		Log("logs/hedit.log", string);

@@ -398,21 +398,18 @@ CMD:points2(playerid, params[])
 
 CMD:pointtime(playerid, params[])
 {
-	new point, string[128];
-	if(sscanf(params, "i", point)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
-	
-	if(point < 1 || point > 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid ID!");
-	
-	if(Points[point-1][TakeOverTimerStarted])
+	new i;
+	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
+		
+	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point does not exist.");
+
+	if(arrPoint[i][po_iCaptureAble])
 	{
-		if(Points[point-1][TakeOverTimer] > 0)
-		{
-			format(string, sizeof(string), "Time left until fully captured: %d minutes.", Points[point-1][TakeOverTimer]);
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
-	}	
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
+		if(!GetGVarType("PO_CAPT", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point is being captured.");
+		format(szMiscArray, sizeof(szMiscArray), "Time left until fully captured: %d minutes.", GetGVarInt("PO_Time", i));
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
 	return 1;
 }
 

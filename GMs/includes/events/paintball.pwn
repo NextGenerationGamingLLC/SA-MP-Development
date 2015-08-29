@@ -144,7 +144,7 @@ stock PaintballScoreboard(playerid, arenaid)
  	foreach(new p: Player)
 	{
 		if(!GetPVarType(p, "IsInArena")) continue;
-		if(GetPVarType(p, "IsInArena") == arenaid)
+		if(GetPVarInt(p, "IsInArena") == arenaid)
 		{
 			if(PaintBallArena[arenaid][pbGameType] == 1)
 			{
