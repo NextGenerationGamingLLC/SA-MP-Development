@@ -113,7 +113,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 			ClearChatbox(playerid);
 			SetPVarInt(playerid, "pTut", 4);
 			SetTimerEx("Register_Finalize", 8000, false, "i", playerid);
-			DisablePlayerCheckpoint(playerid);		
+			DisablePlayerCheckpoint(playerid);
 			return 1;
 		}
 		case CHECKPOINT_TUTORIAL_CAR:
@@ -235,17 +235,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return ShowPlayerDialog(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Character Creation | Accent", szMiscArray, "Select", "<<");
 				}
 				case 4: return Register_MainMenu(playerid);
-				case 5: 
+				case 5:
 				{
 					if(PlayerInfo[playerid][pSex] == 0) { SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first."); return ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<"); }
-					switch(PlayerInfo[playerid][pSex]) 
+					switch(PlayerInfo[playerid][pSex])
 					{
 	                    case 1: return ShowModelSelectionMenuEx(playerid, g_aMaleSkins, sizeof(g_aMaleSkins), "Skin Model", REGISTER_SKINMODEL, -16.0, 0.0, -55.0);
 						case 2: return ShowModelSelectionMenuEx(playerid, g_aFemaleSkins, sizeof(g_aFemaleSkins), "Skin Model", REGISTER_SKINMODEL, -16.0, 0.0, -55.0);
                		}
-               	}	
+               	}
 				case 6: return Register_MainMenu(playerid);
-				case 7: 
+				case 7:
 				{
 					if(PlayerInfo[playerid][pSex] == 0)
 					{
@@ -390,7 +390,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			  	mysql_escape_string(inputtext, szMiscArray);
                 format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szMiscArray);
                 mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%e'", inputtext);
-         		mysql_function_query(MainPipeline, szMiscArray, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});				
+         		mysql_function_query(MainPipeline, szMiscArray, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 			}
 			else
 			{
@@ -515,7 +515,7 @@ Tutorial_Stage(playerid) {
 				\t\t\tJingles\n\
 				\t\t\tAlexR\n\
 				\t\t\tAustin\n\
-				\t\t\tFarva\n\\n\
+				\t\t\tFarva\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
@@ -861,7 +861,7 @@ Register_MainMenu(iPlayerID)
 {
 	szMiscArray[0] = 0;
 	SetPVarInt(iPlayerID, PVAR_REGISTERING, 1);
-	switch(PlayerInfo[iPlayerID][pSex]) 
+	switch(PlayerInfo[iPlayerID][pSex])
 	{
 		case 1: szMiscArray = "Male";
 		case 2: szMiscArray = "Female";
@@ -948,7 +948,7 @@ GetPlayerAccent(iPlayerID) {
 }
 
 forward Register_StartCam(iPlayerID);
-public Register_StartCam(iPlayerID) { 
+public Register_StartCam(iPlayerID) {
 	InterpolateCameraPos(iPlayerID, 13.7324, 8.2450, 1631.9706, 9.3954, 14.1742, 1629.3542, 5000, CAMERA_MOVE);
 	InterpolateCameraLookAt(iPlayerID, 12.9696, 8.8893, 1631.6460, 8.4057, 14.3070, 1629.2850, 5000, CAMERA_MOVE);
 	return 1;
@@ -956,7 +956,7 @@ public Register_StartCam(iPlayerID) {
 
 forward Register_CreatePlayer(iPlayerID, iSkinID);
 public Register_CreatePlayer(iPlayerID, iSkinID) {
-	
+
 	new iActorID;
 	if(GetPVarType(iPlayerID, "_REGisterActor")) {
 
@@ -996,10 +996,10 @@ public Register_Plane(playerid)
 			SetPlayerVirtualWorld(playerid, playerid+1);
 			TogglePlayerControllable(playerid, false);
 			SetPlayerPos(playerid, 0.6985, 27.5042, 1199.5938);
-			SetPlayerInterior(playerid, 1);	
+			SetPlayerInterior(playerid, 1);
 			SetPlayerFacingAngle(playerid,354.8517);
 			SetPlayerCameraPos(playerid,2.0753,31.0642,1199.6012);
-			SetPlayerCameraLookAt(playerid,1.8925,30.6527,1199.5938);			
+			SetPlayerCameraLookAt(playerid,1.8925,30.6527,1199.5938);
 			SetTimerEx("Plane_TogglePlayerControllable", 1000, false, "i", playerid); // just in case
 			ApplyAnimation(playerid, "PED","SEAT_down", 4.0, 0, 1, 1, 1, 0, 0);
 			ClearChatbox(playerid);
@@ -1068,9 +1068,9 @@ public Tutorial_Checker(playerid)
 {
 	if(!GetPVarType(playerid, PVAR_REGISTERING)) return 1;
 	new h = GetPVarInt(playerid, "REG_CH");
-	switch(h) 
+	switch(h)
 	{
-		case 0:	
+		case 0:
 		{
 			if(!IsPlayerInRangeOfPoint(playerid, 100.0, -64.0691, -1502.6654, 1500.7435))
 			{
@@ -1078,7 +1078,7 @@ public Tutorial_Checker(playerid)
 				SetTimerEx("KickEx", 1000, 0, "i", playerid);
  			}
 		}
-		case 1:	
+		case 1:
 		{
 			if(!IsPlayerInRangeOfPoint(playerid, 100.0, 1435.9309,-1102.6654,1500.743))
 			{
@@ -1121,7 +1121,7 @@ public Tutorial_Objectives(playerid) {
 	PlayerPlaySound(playerid, 2600, 0, 0, 0);
 	ClearChatbox(playerid);
 	SendClientMessage(playerid, COLOR_YELLOW, "___________ - {FFFFFF}Objective {FFFF00}- ___________");
-	
+
 	switch(GetPVarInt(playerid, "pTut"))
 	{
 		case 4:
@@ -1192,7 +1192,7 @@ public Tutorial_Objectives(playerid) {
 			SendClientMessage(playerid, COLOR_GRAD2, "Select the nearest job and drive there to obtain the job.");
 			SendClientMessage(playerid, COLOR_YELLOW, "_______________________________");
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_TUTORIAL_JOB;
-			
+
 			new Float:fPos[6];
 
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -1222,6 +1222,6 @@ public Tutorial_Objectives(playerid) {
 			DeletePVar(playerid, "pTut");
 		}
 	}
-	SendClientMessage(playerid, COLOR_YELLOW, "__________________________________");	
-	return 1;	
+	SendClientMessage(playerid, COLOR_YELLOW, "__________________________________");
+	return 1;
 }

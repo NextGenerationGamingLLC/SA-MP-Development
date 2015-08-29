@@ -163,7 +163,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(newkeys & KEY_SPRINT) {
 
 		if(Bit_State(g_PlayerBits[playerid], phone_bitCamState)) {
-			
+
 			new step = GetPVarInt(playerid, "SELF_CAM");
 			if(step > 10) cmd_selfie(playerid, "");
 			SetPVarInt(playerid, "SELF_CAM", step--);
@@ -219,7 +219,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_PHONE_PAYPHONES: {
 
 			cmd_call(playerid, arrPayPhoneData[ListItemTrackId[playerid][listitem]][pp_iNumber]);
-			return 1;	
+			return 1;
 		}
 		case DIALOG_PHONE_CONTACTS:
 		{
@@ -333,7 +333,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new id = ListItemTrackId[playerid][listitem];
 
 			SetPVarInt(playerid, "BUSICALL", id);
-			cmd_call(playerid, "000000");	
+			cmd_call(playerid, "000000");
 			return 1;
 		}
 		case DIALOG_PHONE_CONTACTLIST:
@@ -348,7 +348,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return Phone_Contacts(playerid), 1;
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `contactid` FROM `phone_contacts` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, szMiscArray, true, "Phone_CheckContact", "is", playerid, inputtext);
-			DeletePVar(playerid, PVAR_PHONEDELCONTACT);	
+			DeletePVar(playerid, PVAR_PHONEDELCONTACT);
 		}
 		case DIALOG_PHONE_CONTACTLISTDEL:
 		{
@@ -401,7 +401,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return DeletePVar(playerid, PVAR_PLAYINGRINGTONE), 1;
 			PlayerInfo[playerid][pRingtone] = GetPVarInt(playerid, PVAR_PLAYINGRINGTONE);
 			DeletePVar(playerid, PVAR_PLAYINGRINGTONE);
-			Phone_Settings(playerid);		
+			Phone_Settings(playerid);
 		}
 		case DIALOG_PHONE_WALLPAPERS:
 		{
@@ -516,7 +516,7 @@ Phone_Businesses(playerid, btype)
 						case 1: szStatus = "{00FF00} OPEN";
 					}
 					format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Businesses[i][bName], szStatus);
-					ListItemTrackId[playerid][j++] = i;					
+					ListItemTrackId[playerid][j++] = i;
 				}
 			}
 			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
@@ -542,7 +542,7 @@ Phone_Businesses(playerid, btype)
 		{
 			for(new i; i < MAX_BUSINESSES; ++i)
 			{
-				if(Businesses[i][bType] == BUSINESS_TYPE_CLUB) 
+				if(Businesses[i][bType] == BUSINESS_TYPE_CLUB)
 				{
 					switch(Businesses[i][bStatus])
 					{
@@ -564,19 +564,19 @@ Phone_InitRadioTowers() {
 
 	strcat(arrRadioTowerData[0][rt_szName], "Flint County", 16);
 	arrRadioTowerData[0][rt_iObjectID] = CreateDynamicObject(16335, -908.49377, -984.00830, 126.67799,   0.00000, 0.00000, 200.00000);
-	
+
 	strcat(arrRadioTowerData[1][rt_szName], "Verdant Bluffs", 16);
 	arrRadioTowerData[1][rt_iObjectID] = CreateDynamicObject(16335, 1497.64832, -2018.86731, 30.01224,   0.00000, 0.00000, 61.46917);
-	
+
 	strcat(arrRadioTowerData[2][rt_szName], "Red County", 16);
 	arrRadioTowerData[2][rt_iObjectID] = CreateDynamicObject(16335, 1518.65039, 343.89783, 17.42963,   0.00000, 0.00000, 358.23730);
-	
+
 	strcat(arrRadioTowerData[3][rt_szName], "Whetstone", 16);
 	arrRadioTowerData[3][rt_iObjectID] = CreateDynamicObject(16335, -2216.93042, -2241.66577, 29.16674,   0.00000, 0.00000, 109.12535);
-	
+
 	strcat(arrRadioTowerData[4][rt_szName], "San Fierro", 16);
 	arrRadioTowerData[4][rt_iObjectID] = CreateDynamicObject(16335, -2503.39893, -702.40356, 137.81853,   0.00000, 0.00000, 333.25677);
-	
+
 	new Float:fPos[3];
 	for(new i; i < MAX_RADIOTOWERS; ++i)
 	{
@@ -605,24 +605,24 @@ CMD:trace(playerid, params[]) {
 	if(gettime() < UsedFind[playerid]) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You've already searched for someone - wait a little.");
 	}
-	
+
 	new iNumber;
-	
+
 	if(sscanf(params, "d", iNumber)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /trace [player's phone number]");
-	
+
 	if(iNumber == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid number.");
 
 	foreach(new i : Player)	{
 
 		if(PlayerInfo[i][pPnumber] == iNumber) {
 
-			if(GetPlayerInterior(i) != 0) 
+			if(GetPlayerInterior(i) != 0)
 				return SendClientMessageEx(playerid, COLOR_GREY, "That person is inside an interior.");
 
 			if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 2) && PlayerInfo[i][pTogReports] != 1)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You are unable to find this person.");
 
-			if(GetPVarInt(playerid, "_SwimmingActivity") >= 1) 
+			if(GetPVarInt(playerid, "_SwimmingActivity") >= 1)
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
 
 			if(PhoneOnline[i] == 0) {
@@ -674,16 +674,16 @@ public Phone_Trace(playerid, i)
 
 	GetPVarString(playerid, "TRC_STR", szMiscArray, sizeof(szMiscArray));
 
-	GetPlayerPos(playerid, fPos[0][0], fPos[0][1], fPos[0][2]);
+	GetPlayerPos(i, fPos[0][0], fPos[0][1], fPos[0][2]);
 
-	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Target specified: %d\nGPS Traceroute in progress...\n______________________________________\n\n", PlayerInfo[playerid][pPnumber]);
+	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Target specified: %d\nGPS Traceroute in progress...\n______________________________________\n\n", PlayerInfo[i][pPnumber]);
 
 	if(IsPlayerInDynamicArea(x, arrRadioTowerData[x][rt_iAreaID]))
 	{
 		GetDynamicObjectPos(arrRadioTowerData[x][rt_iObjectID], fPos[1][0], fPos[1][1], fPos[1][2]);
-		
+
 		new fDistance = floatround(GetDistanceBetweenPoints(fPos[0][0], fPos[0][1], fPos[0][2], fPos[1][0], fPos[1][1], fPos[1][2]), floatround_round);
-		
+
 		switch(fDistance)
 		{
 			case 2501 .. 3000: szStrength = "{FF0000}Weak";
@@ -700,7 +700,7 @@ public Phone_Trace(playerid, i)
 
 		GetPlayer3DZone(i, szZone, MAX_ZONE_NAME);
 		SetPVarInt(playerid, "PTR_GZ", iGZID);
-		
+
 		GangZoneShowForPlayer(playerid, iGZID, COLOR_RED);
 		GangZoneFlashForPlayer(playerid, iGZID, COLOR_YELLOW);
 
@@ -709,7 +709,7 @@ public Phone_Trace(playerid, i)
 
 		format(szMiscArray, sizeof(szMiscArray), "%s\n\
 			\n_____________________________________\n\n\
-			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength, PlayerInfo[playerid][pPnumber], szZone);
+			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[i][pPnumber], szZone);
 		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "-----", "");
 		SendClientMessage(playerid, COLOR_YELLOW, "Use /trace again to stop tracing the number.");
 		DeletePVar(playerid, "TRC_STP");
@@ -741,7 +741,7 @@ public Phone_Trace(playerid, i)
 	}
 	else
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%sRetrieving %d's cellular data from the %s tower \t|\t Signal: %s.{DDDDDD}\n\n", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength);
+		format(szMiscArray, sizeof(szMiscArray), "%sRetrieving %d's cellular data from the %s tower \t|\t Signal: %s.{DDDDDD}\n\n", szMiscArray, PlayerInfo[i][pPnumber], arrRadioTowerData[x][rt_szName], szStrength);
 		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "Tracing...", "");
 	}
 	SetPVarString(playerid, "TRC_STR", szMiscArray);
@@ -790,14 +790,14 @@ public Phone_OnGetContactName(iPlayerID)
 			//else format(szResult, sizeof(szResult), "{FF0000}[O] {FFFFFF}%s", szResult);
 			cache_get_field_content(idx, "Username", szResult, MainPipeline);
 		}
-		
+
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szResult, iNumber);
 		ListItemTrackId[iPlayerID][idx] = iNumber;
 		idx++;
 	}
 	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Delete Contact", szMiscArray, "Delete", "<<");
 	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTLIST, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Contact List", szMiscArray, "Call", "<<");
-	return 1;	
+	return 1;
 }
 
 forward Phone_OnAddContact(iPlayerID);
@@ -809,7 +809,7 @@ public Phone_OnAddContact(iPlayerID)
 	cache_get_data(iRows, iFields, MainPipeline);
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (`id`, `contactid`) VALUES ('%d', '%d')", GetPlayerSQLId(iPlayerID), cache_get_field_content_int(0, "id", MainPipeline));
 	mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnAddContactFinish", "i", iPlayerID);
-	return 1;	
+	return 1;
 }
 
 forward Phone_OnAddContactFinish(iPlayerID);
@@ -848,7 +848,7 @@ public Phone_CheckContact(iPlayerID, name[])
 {
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`, `PhoneNr` FROM `accounts` WHERE `Username` = '%e' AND `PhoneNr` != 0", name);
 	mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnAddContact", "i", iPlayerID);
-	return 1;	
+	return 1;
 }
 
 Phone_Calling(iPlayerID, iCallerID)
@@ -872,7 +872,7 @@ Phone_Calling(iPlayerID, iCallerID)
 Phone_ReceiveCall(iPlayerID, iCallerID)
 {
 	new Float:fPos[3];
-	
+
 	if(!Bit_State(g_PlayerBits[iPlayerID], phone_bitState))
 	{
 		Bit_On(g_PlayerBits[iPlayerID], phone_bitState);
@@ -884,7 +884,7 @@ Phone_ReceiveCall(iPlayerID, iCallerID)
 
 	GetPlayerPos(iPlayerID, fPos[0], fPos[1], fPos[2]);
 	PlayerPlaySound(iPlayerID, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]], 0.0, 0.0, 0.0);
-	
+
 	foreach(new i : Player)	{
 
 		if(IsPlayerInRangeOfPoint(i, 10.0, fPos[0], fPos[1], fPos[2])) {
@@ -919,7 +919,7 @@ Phone_HangupCall(iPlayerID, iCallerID)
 	{
 		TextDrawHideForPlayer(iPlayerID, PhoneTD[i]);
 		TextDrawHideForPlayer(iCallerID, PhoneTD[i]);
-	}	
+	}
 }
 
 Phone_Call(iPlayerID)
@@ -967,22 +967,22 @@ Phone_Music(iPlayerID)
 Phone_Map(iPlayerID)
 {
 	DisablePlayerCheckpoint(iPlayerID);
-	cmd_mygps(iPlayerID, "");	
+	cmd_mygps(iPlayerID, "");
 }
 
 Phone_SAN(iPlayerID)
 {
-	cmd_shows(iPlayerID, "");	
+	cmd_shows(iPlayerID, "");
 }
 
 Phone_Medic(iPlayerID)
 {
-	cmd_call(iPlayerID, "911");	
+	cmd_call(iPlayerID, "911");
 }
 
 Phone_MDC(iPlayerID)
 {
-	cmd_mdc(iPlayerID, "");	
+	cmd_mdc(iPlayerID, "");
 }
 
 Phone_LoadWallPapers()
@@ -1106,7 +1106,7 @@ CMD:picture(playerid, params[]) {
 		Bit_On(g_PlayerBits[playerid], phone_bitCamState);
 		new Float:fPos[3],
 			Float:fPos2[3];
-		
+
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 		GetPlayerCameraFrontVector(playerid, fPos2[0], fPos2[1], fPos2[2]);
 		SetPlayerCameraPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -1143,7 +1143,7 @@ CMD:selfie(playerid, params[]) {
 	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, 1, 1, 1, 1, 1, 1);
 	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Select the camera app or use /selfie to go back. Use {FFFF00}/headmove {DDDDDD}to disable your head movement (look straight).");
 	    Bit_On(g_PlayerBits[playerid], phone_bitCamState);
-	  
+
 
 	}
 	else

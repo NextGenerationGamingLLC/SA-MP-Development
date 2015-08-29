@@ -1,9 +1,9 @@
 CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
-	
+
 	// SPECIFY INVALID ID for iBanCreator for System Bans
 	// SPECIFY INVALID ID for iBanned when banning IP Addresses
 
-	// iBanCreator - IG Player ID of the Ban Creator 
+	// iBanCreator - IG Player ID of the Ban Creator
 	// iBanned = SQL ID of the player to be banned
 	// iPlayerID = IG player ID of the person to be banned
 	// szIPAddress = IP Address to be banned
@@ -13,7 +13,7 @@ CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `ban` (`bannedid`, `creatorid`, `IP`, `reason`, `createdate`, `liftdate`, `active`) \
 		VALUES ('%d', '%d', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
 		iBanned, PlayerInfo[iBanCreator][pId], szIPAddress, szReason, iLength);
-	
+
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnCreateBan", "iisisi", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength);
 
 	return 1;
@@ -24,9 +24,9 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 
 	if(!mysql_errno(MainPipeline)) {
 
-		
+
 		if (iPlayerID == INVALID_PLAYER_ID) {
-			szMiscArray[0] = 0; 
+			szMiscArray[0] = 0;
 			GetPVarString(iBanCreator, "BanningName", szMiscArray, MAX_PLAYER_NAME);
 			DeletePVar(iBanCreator, "BanningName");
 			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was offline banned by %s", szMiscArray, GetPlayerNameEx(iBanCreator));
@@ -51,11 +51,11 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 			format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s has banned IP %s (%s)", GetPlayerNameEx(iBanCreator), szIPAddress, szReason);
 			return ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 
-		}	
+		}
 
 	}
 	else SendClientMessageEx(iBanCreator, COLOR_YELLOW, "There was an issue creating that ban ...");
-	
+
 	return 1;
 }
 
@@ -67,7 +67,7 @@ RemoveBan(iRemover, iBanned, szIPAddress[]) {
 	else {
 		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `IP` = '%e'", szIPAddress);
 	}
-	
+
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnRemoveBan", "iis", iRemover, iBanned, szIPAddress);
 
 	return 1;
@@ -92,7 +92,7 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 			}
 
 			if(iBanned != INVALID_PLAYER_ID) {
-				szMiscArray[0] = 0; 
+				szMiscArray[0] = 0;
 				GetPVarString(iRemover, "UnbanName", szMiscArray, MAX_PLAYER_NAME);
 				DeletePVar(iRemover, "UnbanName");
 				format(szMiscArray, sizeof(szMiscArray), "%s unbanned %s.", GetPlayerNameEx(iRemover), szMiscArray);
@@ -112,7 +112,7 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 forward InitiateUnban(iRemover);
 public InitiateUnban(iRemover) {
 
-	new 
+	new
 		szIPAddress[16],
 		id,
 		iRows,
@@ -132,9 +132,9 @@ public InitiateUnban(iRemover) {
 forward InitiateOfflineBan(iBanCreator, szReason[], iLength);
 public InitiateOfflineBan(iBanCreator, szReason[], iLength) {
 
-	new 
+	new
 		szIPAddress[16],
-		id; 
+		id;
 
 	if(cache_get_row_count(MainPipeline)) {
 		id = cache_get_field_content_int(0, "id", MainPipeline);
@@ -159,7 +159,7 @@ forward OnCheckBan(iPlayerID);
 public OnCheckBan(iPlayerID) {
 
 	if(cache_get_row_count(MainPipeline) > 0) {
-		
+
 		cache_get_field_content(0, "reason", szMiscArray, MainPipeline);
 		new iDate = cache_get_field_content_int(0, "liftdate", MainPipeline);
 		/*
@@ -177,10 +177,10 @@ public OnCheckBan(iPlayerID) {
 		}
 		else {
 			SendClientMessageEx(iPlayerID, COLOR_WHITE, "Your ban has expired. You have now been unbanned.");
-			RemoveBan(INVALID_PLAYER_ID, PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]); 
+			RemoveBan(INVALID_PLAYER_ID, PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
 			return 1;
 		}
-		
+
 	}
 
 	return 1;
@@ -218,7 +218,7 @@ CMD:ban(playerid, params[]) {
 		iLength;
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "us[64]d", iTargetID, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [reason] [length in days]");
+	if(sscanf(params, "uds[64]", iTargetID, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [reason]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
 
@@ -265,7 +265,7 @@ CMD:banaccount(playerid, params[]) {
 		iLength;
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "s[20]s[64]d", szName, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [reason] [length in days]");
+	if(sscanf(params, "s[24]ds[64]", szName, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [length in days] [reason]");
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
 

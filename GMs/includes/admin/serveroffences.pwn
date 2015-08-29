@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -365,7 +365,7 @@ CMD:snonrp(playerid, params[])
 				player_remove_vip_toys(giveplayerid);
 				pTazer{giveplayerid} = 0;
 			}
-			
+
 			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 				new playerip[32];
 				ResetPlayerWeaponsEx(giveplayerid);
@@ -386,13 +386,13 @@ CMD:snonrp(playerid, params[])
 	return 1;
 }
 
-CMD:reverse(playerid, params[]) 
+CMD:reverse(playerid, params[])
 {
 	new string[128], reason[24], giveplayerid;
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		if(!sscanf(params, "us[24]", giveplayerid, reason)) {
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player.");
-			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 4) 
+			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 4)
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You have not acted against this person, therefor you can not reverse any actions for them.");
 			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this to someone not currently prisoned.");
 			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || (PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 3)) {
@@ -403,7 +403,7 @@ CMD:reverse(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_WHITE, "Please wait for an administrator to review your request.");
 				return 1;
 			}
-				
+
 			if(PlayerInfo[giveplayerid][pJailedInfo][1] > 0) GivePlayerCash(giveplayerid, PlayerInfo[giveplayerid][pJailedInfo][1]);
 			if(PlayerInfo[giveplayerid][pJailedInfo][3] == 1) PlayerInfo[giveplayerid][pWarns]--;
 			if(PlayerInfo[giveplayerid][pJailedInfo][4] > 0) PlayerInfo[giveplayerid][pWRestricted] = 0;
@@ -411,7 +411,7 @@ CMD:reverse(playerid, params[])
 			Log("logs/admin.log", string);
 			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid), reason);
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			
+
 			PhoneOnline[giveplayerid] = 0;
 			//PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			PlayerInfo[giveplayerid][pBeingSentenced] = 0;
@@ -430,14 +430,14 @@ CMD:reverse(playerid, params[])
 			for(new y = 0; y < 5; y++) PlayerInfo[giveplayerid][pJailedInfo][y] = 0;
 			for(new z = 0; z < 12; z++) PlayerInfo[giveplayerid][pJailedWeapons][z] = 0;
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "Your punishment has been reversed by the administrator who jailed you.");
-		} 
+		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reverse [playerid] [reason]");
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
-	return 1;	
+	return 1;
 }
 
-CMD:dprison(playerid, params[]) 
+CMD:dprison(playerid, params[])
 {
 	if((PlayerInfo[playerid][pAdmin] >= 2 && (PlayerInfo[playerid][pFactionModerator] > 0 || PlayerInfo[playerid][pGangModerator] > 0 ||
 	PlayerInfo[playerid][pBM] > 0)) || PlayerInfo[playerid][pAdmin] >= 1337) {
@@ -446,18 +446,18 @@ CMD:dprison(playerid, params[])
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this on admins or watchdogs!");
 			if(mintues > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Time cannot be above 120 minutes.");
 			if(prisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", .time=mintues, .custom=1) == 0) return 1;
-		}	
+		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dprison [playerid] [time]");
-	}	
+	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
 	return 1;
 }
 
-prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0) 
+prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 {
 	new string[128], shortreason[5], jailtime, twarn, warn, fine, nonrp;
 	new rand = random(sizeof(OOCPrisonSpawns));
-	
+
 	// Reset.
 	PlayerInfo[giveplayerid][pJailedInfo][0] = PlayerInfo[playerid][pId];
 	PlayerInfo[giveplayerid][pJailedInfo][1] = 0;
@@ -467,7 +467,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	for(new i = 0; i < 12; i++) PlayerInfo[giveplayerid][pJailedWeapons][i] = 0;
 
 	if(time > 0) jailtime = time;
-	
+
 	if(!strcmp(reason, "Deathmatching", true) && !custom) {
 		strcpy(shortreason, "DM", 5);
 		if(!time) {
@@ -631,7 +631,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 			}
 		}
 	}
-	
+
 	PlayerInfo[giveplayerid][pJailedInfo][2] = jailtime;
 	if(!custom) {
 		PlayerInfo[giveplayerid][pJailedInfo][4] = PlayerInfo[giveplayerid][pWRestricted];
@@ -639,7 +639,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 	for(new x = 0; x < 12; x++) PlayerInfo[giveplayerid][pJailedWeapons][x] = PlayerInfo[giveplayerid][pGuns][x];
 	ResetPlayerWeaponsEx(giveplayerid);
-	
+
 	if(fine > 0) {
 		new totalwealth = PlayerInfo[giveplayerid][pAccount] + GetPlayerCash(giveplayerid);
 		if(PlayerInfo[giveplayerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(giveplayerid)) totalwealth += HouseInfo[PlayerInfo[giveplayerid][pPhousekey]][hSafeMoney];
@@ -651,12 +651,12 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 			PlayerInfo[giveplayerid][pJailedInfo][1] = fine;
 		}
 	}
-	
+
 	if(PlayerInfo[giveplayerid][pAccountRestricted] == 1) {
 		CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "Punished Whilst Restricted", 14);
 		return 0;
 	}
-		
+
 	if(PlayerInfo[giveplayerid][pWarns] >= 3) {
 		CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 		return 0;
@@ -688,11 +688,11 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	SetPlayerSkin(giveplayerid, 50);
 	SetPlayerColor(giveplayerid, TEAM_APRISON_COLOR);
 	Player_StreamPrep(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
-	
+
 	if(silent) format(string, 128, "You have been prisoned by an an admin for %d minutes, reason: %s.", jailtime, reason);
 	else format(string, 128, "You have been prisoned by %s for %d minutes, reason: %s.", GetPlayerNameEx(playerid), jailtime, reason);
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-	
+
 	if(fine > 0) {
 		format(string, 128, "You have been fined a total of $%s for this action", number_format(fine));
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
@@ -701,7 +701,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	if(twarn) {
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTRED, "WARNING: As your hours, not level, progress, the punishments increase. Please mind the rules.");
 	}
-	
+
 	if(giveplayerid == GetPVarInt(playerid, "PendingAction2")) {
 		if(AlertTime[GetPVarInt(playerid, "PendingAction3")] != 0) {
 			if(GetPVarInt(playerid, "PendingAction") == 1) // DM
@@ -709,13 +709,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 5;
 				format(string, sizeof(string), "You have taken action on %s after processing a Deathmatching Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Deathmatching", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Deathmatching.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Deathmatching.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -724,13 +724,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 3;
 				format(string, sizeof(string), "You have taken action on %s after processing a Revenge Killing Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Revenge Killing", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Revenge Killing.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -739,13 +739,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 3;
 				format(string, sizeof(string), "You have taken action on %s after processing a Killing on Sight Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Killing on Sight", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Killing on Sight.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Revenge Killing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -754,13 +754,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 2;
 				format(string, sizeof(string), "You have taken action on %s after processing a Car Ramming Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Car Ramming", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Car Ramming.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Car Ramming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -769,13 +769,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 1;
 				format(string, sizeof(string), "You have taken action on %s after processing a OOC Contract Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "OOC Contract", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for OOC Contract.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Point for OOC Contract.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -784,13 +784,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 2;
 				format(string, sizeof(string), "You have taken action on %s after processing a Spamming Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Spamming", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Spamming.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Spamming.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -799,13 +799,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 1;
 				format(string, sizeof(string), "You have taken action on %s after processing a Gun Discharge Exploit Alert, we've automatically issued 1 point to the player.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Gun Discharge Exploit", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for Gun Discharge Exploit.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Point for Gun Discharge Exploit.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -814,13 +814,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 2;
 				format(string, sizeof(string), "You have taken action on %s after processing a Non-RP Name Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Non-RP Name", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Non-RP Name.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Non-RP Name.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -829,13 +829,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 2;
 				format(string, sizeof(string), "You have taken action on %s after processing a Logging to avoid Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Logging to avoid", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Logging to avoid.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s%d has been issued %d Non RP Points for Logging to avoid.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -844,13 +844,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 1;
 				format(string, sizeof(string), "You have taken action on %s after processing a Car Surfing Alert, we've automatically issued %d point to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Car Surfing", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Point for Car Surfing.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s(%d) has been issued %d Non RP Point for Car Surfing.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -859,13 +859,13 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 				nonrp = 2;
 				format(string, sizeof(string), "You have taken action on %s after processing a Non RP Behavior Alert, we've automatically issued %d points to the player.", GetPlayerNameEx(giveplayerid), nonrp);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
-				
+
 				AddNonRPPoint(giveplayerid, nonrp, gettime()+2592000, "Non RP Behavior", playerid, 0);
 				PlayerInfo[giveplayerid][pNonRPMeter] += nonrp;
 
 				format(string, sizeof(string), "The server has automatically issued you %d Non RP Points for Non RP Behavior.", nonrp);
 				SendClientMessageEx(giveplayerid, COLOR_CYAN, string);
-				
+
 				format(string, sizeof(string), "%s(%d) has been issued %d Non RP Points for Non RP Behavior.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), nonrp);
 				Log("logs/nonrppoints.log", string);
 			}
@@ -886,7 +886,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) 
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	new string[128];
 	if(dialogid == DIALOG_REVERSE) {
@@ -899,11 +899,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			Log("logs/admin.log", string);
 			format(string, 128, "AdmCmd: %s has been released from prison by %s, reason: Reversed (%s)", GetPlayerNameEx(releasedID), GetPlayerNameEx(playerid), GetPlayerNameEx(rPlayerID));
 			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			PlayerInfo[releasedID][pWantedLevel] = 0;
+			//PlayerInfo[releasedID][pWantedLevel] = 0;
 			PlayerInfo[releasedID][pBeingSentenced] = 0;
 			SetPlayerToTeamColor(releasedID);
 			SetHealth(releasedID, 100);
-			SetPlayerWantedLevel(releasedID, 0);
+			//SetPlayerWantedLevel(releasedID, 0);
 			PlayerInfo[releasedID][pJailTime] = 0;
 			SetPlayerPos(releasedID, 1529.6,-1691.2,13.3);
 			SetPlayerInterior(releasedID,0);

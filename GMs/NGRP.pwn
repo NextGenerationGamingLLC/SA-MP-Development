@@ -23,7 +23,7 @@
 								**  Development Staff:
 									Miguel (s0nic)
 									Jingles
-									
+
 				Past Developers:
 								*** Director of SA:MP Development:
 									Akatony
@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.221"
+#define SERVER_GM_TEXT "NG:RP v3.0.223"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -92,7 +92,7 @@
 #include <YSI\y_utils>
 #include <mSelection>
 #include <gvar>
- 
+
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
@@ -170,18 +170,18 @@
 #include "./includes/core/stats.pwn"
 #include "./includes/core/timefuncs.pwn"
 #include "./includes/core/camerafuncs.pwn"
-#include "./includes/core/clearcheckpoint.pwn" 
+#include "./includes/core/clearcheckpoint.pwn"
 #include "./includes/core/maintenance.pwn"
 #include "./includes/core/countrycheck.pwn"
 #include "./includes/core/countdown.pwn"
 #include "./includes/core/filehandle.pwn"
 #include "./includes/core/initgamemode.pwn"
 #include "./includes/core/login.pwn"
-#include "./includes/core/miscload.pwn" 
+#include "./includes/core/miscload.pwn"
 #include "./includes/core/proxdetector.pwn"
 #include "./includes/core/setplayerspawn.pwn"
 #include "./includes/core/stats.pwn"
-#include "./includes/core/streamprep.pwn" 
+#include "./includes/core/streamprep.pwn"
 #include "./includes/core/emailcheck.pwn"
 
 //WIP
@@ -290,7 +290,7 @@
 
 #include "./includes/core/ammo.pwn"
 
-// WIP 
+// WIP
 #include "./includes/core/ATMs.pwn"
 #include "./includes/core/Banks.pwn"
 #include "./includes/core/entexit.pwn"
