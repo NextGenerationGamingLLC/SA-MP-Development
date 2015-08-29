@@ -1816,14 +1816,14 @@ CMD:carhelp(playerid, params[])
 
 CMD:car(playerid, params[])
 {
-	new string[128];
-	if(isnull(params))
+	new string[128], choice[8], id;
+	if(sscanf(params, "s[8]D(0)", choice, id))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /car [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Status, Engine, Lights, Trunk, Hood, Fuel, Windows");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Status, Engine, Lights, Trunk, Hood, Fuel, Window [0-3], Windows");
 		return 1;
 	}
-	if(strcmp(params, "engine", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	if(strcmp(choice, "engine", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new engine,lights,alarm,doors,bonnet,boot,objective,vehicleid;
 		vehicleid = GetPlayerVehicleID(playerid);
@@ -1847,13 +1847,13 @@ CMD:car(playerid, params[])
 			RemoveVehicleFromMeter(vehicleid);
 		}
 	}
-	else if(strcmp(params, "lights", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	else if(strcmp(choice, "lights", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
 		SetVehicleLights(vehicleid, playerid);
 	}
-	else if(strcmp(params, "hood", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	else if(strcmp(choice, "hood", true) == 0)
 	{
 		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		{
@@ -1877,7 +1877,7 @@ CMD:car(playerid, params[])
 			}
 		}
 	}
-	else if(strcmp(params, "trunk", true) == 0)
+	else if(strcmp(choice, "trunk", true) == 0)
   	{
 		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		{
@@ -1901,43 +1901,72 @@ CMD:car(playerid, params[])
 			}
 		}
 	}
-	else if(strcmp(params, "fuel", true) == 0 && IsPlayerInAnyVehicle(playerid))
+	else if(strcmp(choice, "fuel", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		{
-			new vehicleid = GetPlayerVehicleID(playerid);
-			new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
-			GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-			if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
-			if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
-			else strcpy(enginestatus, "ON", 3);
-			if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
-			else strcpy(lightstatus, "ON", 3);
+		new vehicleid = GetPlayerVehicleID(playerid);
+		new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
+		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
+		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
+		else strcpy(enginestatus, "ON", 3);
+		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
+		else strcpy(lightstatus, "ON", 3);
 
-			if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited",enginestatus,lightstatus);
-			else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f%s",enginestatus,lightstatus, VehicleFuel[vehicleid], "%");
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
+		if(IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited",enginestatus,lightstatus);
+		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f%s",enginestatus,lightstatus, VehicleFuel[vehicleid], "%");
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
-	else if(strcmp(params, "status", true) == 0)
+	else if(strcmp(choice, "status", true) == 0 && IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		{
-			new vehicleid = GetPlayerVehicleID(playerid), slot = GetPlayerVehicle(playerid, vehicleid);
-			new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
-			GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-			if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
-			if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
-			else strcpy(enginestatus, "ON", 3);
-			if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
-			else strcpy(lightstatus, "ON", 3);
-			if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
-			else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
-			else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-		}
+		new vehicleid = GetPlayerVehicleID(playerid), slot = GetPlayerVehicle(playerid, vehicleid);
+		new engine,lights,alarm,doors,bonnet,boot,objective,enginestatus[4],lightstatus[4];
+		GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+		if(!IsRefuelableVehicle(vehicleid)) return SendClientMessageEx(playerid,COLOR_RED,"This vehicle doesn't need fuel.");
+		if(engine != VEHICLE_PARAMS_ON) strcpy(enginestatus, "OFF", 4);
+		else strcpy(enginestatus, "ON", 3);
+		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
+		else strcpy(lightstatus, "ON", 3);
+		if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+		else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
+		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
-	else if(strcmp(params, "windows", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
+	else if(strcmp(choice, "window", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
+	{
+		if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
+		new driver, passenger, backleft, backright;
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
+		if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 0) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 0))
+		{
+			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] = 0;
+			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] = 1;
+			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, passenger, backleft, backright);
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the driver-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] == 0) ? ("up") : ("down"));
+		}
+		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 1) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 1))
+		{
+			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] = 0;
+			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] = 1;
+			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, !passenger, backleft, backright);
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the passenger-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] == 0) ? ("up") : ("down"));
+		}
+		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 2) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 2))
+		{
+			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] = 0;
+			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] = 1;
+			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, !backleft, backright);
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear driver-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("up") : ("down"));
+		}
+		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 3) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 1))
+		{
+			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
+			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;
+			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, !passenger, backleft, backright);
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear passenger-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("up") : ("down"));
+		}
+		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	}
+	else if(strcmp(choice, "windows", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);

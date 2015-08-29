@@ -355,6 +355,10 @@ enum cVehicleLoad
 	vForkLoaded,
 	vForkObject,
 	vCarVestKit,
+	vCarWindow0,
+	vCarWindow1,
+	vCarWindow2,
+	vCarWindow3,
 	vCarWindows,
 	vLastDriver[MAX_PLAYER_NAME],
 }
@@ -450,6 +454,18 @@ enum Ladder
 	Float:sZ,
 	sObjectID,
 	sPickupID,
+	sDeployedBy[MAX_PLAYER_NAME],
+	sDeployedByStatus,
+	sDeployedAt[MAX_ZONE_NAME]
+}
+
+enum Sign
+{
+	Float:sX,
+	Float:sY,
+	Float:sZ,
+	sObjectID,
+	sObject,
 	sDeployedBy[MAX_PLAYER_NAME],
 	sDeployedByStatus,
 	sDeployedAt[MAX_ZONE_NAME]

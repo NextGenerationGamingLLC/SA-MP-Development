@@ -876,6 +876,7 @@ new Flares[MAX_GROUPS][MAX_FLARES][Flare];
 new Barricades[MAX_GROUPS][MAX_BARRICADES][Barricade];
 new Barrels[MAX_GROUPS][MAX_BARRELS][Barrel];
 new Ladders[MAX_GROUPS][MAX_LADDERS][Ladder];
+new Signs[MAX_GROUPS][MAX_SIGNS][Sign];
 new Auctions[MAX_AUCTIONS][Auction];
 new BusinessSales[MAX_BUSINESSSALES][BusinessSale];
 new Plants[MAX_PLANTS][Plant];

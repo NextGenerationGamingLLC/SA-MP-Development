@@ -335,6 +335,111 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 	return 1;
 }
 
+stock ToggleDVSiren(playerid, iDvSlotID, iSlot, iTogState = 0)
+{
+	switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot])
+	{
+		case 1899:
+		{
+			if(!iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19294;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19294);
+		}
+		case 18646:
+		{
+			if(iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19300;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19300);
+		}
+		case 19294:
+		{
+			if(iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 1899;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 1899);
+		}
+		case 19300:
+		{
+			if(!iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 18646;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 18646);
+		}
+		case 19419:
+		{
+			if(iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19420;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19420);
+		}
+		case 19420:
+		{
+			if(!iTogState) return 0;
+			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19419;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19419);
+		}
+	}
+	AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], GetPlayerVehicleID(playerid), DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+	Streamer_Update(playerid);
+	return 1;
+}
+
+stock ToggleSiren(vehid, iTogState)
+{
+	if(iTogState == 1)
+	{
+		if(GetGVarInt("VehSiren", vehid) != INVALID_OBJECT_ID)
+		{
+			DestroyDynamicObject(GetGVarInt("VehSiren", vehid));
+			DeleteGVar("VehSiren", vehid);
+		}
+		if(GetGVarInt("VehSiren2", vehid) != INVALID_OBJECT_ID)
+		{
+			DestroyDynamicObject(GetGVarInt("VehSiren2", vehid));
+			DeleteGVar("VehSiren2", vehid);
+		}
+	}
+	else
+	{
+		new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
+		new iTempObj2 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
+		new iTempObj3 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
+		switch(GetVehicleModel(vehid))
+		{
+			case 402:
+			{
+				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.20, 0.5, 0.4, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj, vehid);
+			}
+			case 411, 541:
+			{
+				AttachDynamicObjectToVehicle(iTempObj, vehid, 0.0, 0.2, 0.4, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj, vehid);
+			}
+			case 415:
+			{
+				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.20, 0.30, 0.3, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj, vehid);
+			}
+			case 451:
+			{
+				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.30, 0.4, 0.6, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj, vehid);
+			}
+			case 525:
+			{
+				AttachDynamicObjectToVehicle(iTempObj2, vehid, 0.55, -0.5, 1.5, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj2, vehid);
+				AttachDynamicObjectToVehicle(iTempObj3, vehid, -0.55, -0.5, 1.5, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren2", iTempObj3, vehid);
+			}
+			default:
+			{
+				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.30, 0.4, 0.4, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj, vehid);
+			}
+		}
+	}
+	return 1;
+}
+
 Group_GetMaxRank(iGroupID) {
 
 	new
@@ -2780,6 +2885,31 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
+hook OnVehicleSpawn(vehicleid)
+{
+	if(GetGVarType("VehSiren", vehicleid)) ToggleSiren(vehicleid, 1);
+}
+
+public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
+{
+	if(DynVeh[vehicleid] != -1)
+	{
+		for(new i = 0; i != MAX_DV_OBJECTS; i++)
+		{
+			ToggleDVSiren(playerid, DynVeh[vehicleid], i, newstate);
+		}
+	}
+	switch(newstate)
+	{
+		case 0: ToggleSiren(vehicleid, 1);
+		case 1:
+		{
+			if(!GetGVarType("VehSiren", vehicleid)) ToggleSiren(vehicleid, 0);
+		}
+	}
+    return 1;
+}
+
 CMD:clearbugs(playerid, params[])
 {
 	if(IsACop(playerid))
@@ -2901,46 +3031,13 @@ CMD:dvsiren(playerid, params[])
 		{
 			for(new i = 0; i != MAX_DV_OBJECTS; i++)
 			{
-				if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 19420)
+				switch(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i])
 				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 19419;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 19419);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren enabled.");
-				}
-				else if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 19419)
-				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 19420;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 19420);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
-				}
-				if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 19300)
-				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 18646;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 18646);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren enabled.");
-				}
-				else if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 18646)
-				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 19300;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 19300);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
-				}
-				if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 1899) // Hazard
-				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 19294;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 19294);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren enabled.");
-				}
-				else if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] == 19294)
-				{
-					DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i] = 1899;
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][i], E_STREAMER_MODEL_ID, 1899);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
+					case 1899, 19300, 19420: ToggleDVSiren(playerid, DynVeh[GetPlayerVehicleID(playerid)], i, 1);
+					case 18646, 19294, 19419: ToggleDVSiren(playerid, DynVeh[GetPlayerVehicleID(playerid)], i, 0);
 				}
 			}
-		    Streamer_Update(playerid);
 		}
-		SendClientMessage(playerid, COLOR_GRAD1, "Invalid vehicle specified.");
 	}
 	return 1;
 }
@@ -3938,52 +4035,11 @@ CMD:siren(playerid, params[])
 {
 	if(IsACop(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAMedic(playerid))
 	{
-	    if(GetPVarType(playerid, "Siren"))
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		{
-			/* freeslot = FindFreeAttachedObjectSlot(playerid);
-			if(freeslot == -1) { RemovePlayerAttachedObject(playerid, 8), freeslot = 8; } */
-  			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3);
-    		if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
-      		DeletePVar(playerid, "Siren");
-      		SendClientMessageEx(playerid, COLOR_WHITE, "Siren disabled.");
-			return 1;
+			if(GetGVarType("VehSiren", GetPlayerVehicleID(playerid))) ToggleSiren(GetPlayerVehicleID(playerid), 1);
+			else ToggleSiren(GetPlayerVehicleID(playerid), 0);
 		}
-	    else if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-	    {
-			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3);
-			if(IsPlayerAttachedObjectSlotUsed(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2)) RemovePlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2);
-			switch(GetVehicleModel(GetPlayerVehicleID(playerid)))
-			{
-				case 415:
-				{
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.20, 0.30, 0.3, -90, -30, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.20, 0.30, 0.3, -90, -30, 0);
-				}
-				case 402:
-				{
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.20, 0.5, 0.4, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.20, 0.5, 0.4, -90, -50, 0);
-				}
-				case 541, 411:
-				{
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, 0.0, 0.2, 0.4, -90, -30, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, 0.0, 0.2, 0.4, -90, -30, 0);
-				}
-				case 451: {
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.30, 0.4, 0.6, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.30, 0.4, 0.6, -90, -50, 0);
-				}
-				default:
-				{
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 3, 18646, 10, -0.30, 0.4, 0.4, -90, -50, 0);
-					SetPlayerAttachedObject(playerid, MAX_PLAYER_ATTACHED_OBJECTS - 2, 18646, 10, -0.30, 0.4, 0.4, -90, -50, 0);
-				}
-			}
-			SetPVarInt(playerid, "Siren", 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Siren enabled.");
-			return 1;
-	    }
-		SendClientMessage(playerid, COLOR_GRAD2, "This vehicle does not support mounted sirens.");
 	}
 	return 1;
 }
@@ -3996,8 +4052,8 @@ CMD:deploy(playerid, params[])
 		new type, object[12], string[128];
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades)]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder");
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades/signs)]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
@@ -4060,28 +4116,17 @@ CMD:deploy(playerid, params[])
 							}
 							case 8:
 							{
-								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1425, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1459, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
 								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 9:
 							{
-								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1459, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1423, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
 								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							case 10:
 							{
-								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1423, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
-							}
-							case 11:
-							{
 								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1424, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
-								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
-							}
-							case 12:
-							{
-								Barricades[iGroup][i][sObjectID] = CreateDynamicObject(8548, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.00, 0.0, 0.0, f_TempAngle);
-								SetDynamicObjectMaterial(Barricades[iGroup][i][sObjectID], 0, 967, "cj_barr_set_1", "Stop2_64", 0);
 								SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
 							}
 							default:
@@ -4263,6 +4308,109 @@ CMD:deploy(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 		}
+		else if(strcmp(object, "sign", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
+			{
+				for(new i; i < MAX_SIGNS; i++)
+				{
+					if(Signs[iGroup][i][sX] == 0 && Signs[iGroup][i][sY] == 0 && Signs[iGroup][i][sZ] == 0)
+					{
+						new Float: f_TempAngle;
+
+						GetPlayerPos(playerid, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ]);
+						GetPlayerFacingAngle(playerid, f_TempAngle);
+						switch(type)
+						{
+							case 0:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19966, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 1:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19976, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 2:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19967, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 3:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19972, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 4:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19975, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 5:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19973, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 6:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19974, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 7:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(1425, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 2, Signs[iGroup][i][sY] + 2, Signs[iGroup][i][sZ]);
+							}
+							case 8:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19960, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 9:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19961, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 10:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19951, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 11:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19952, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 12:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19953, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							case 13:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19954, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+							default:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19966, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
+						}
+						GetPlayer3DZone(playerid, Signs[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+						Signs[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+						if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Signs[iGroup][i][sDeployedByStatus] = 1;
+						else Signs[iGroup][i][sDeployedByStatus] = 0;
+						format(string,sizeof(string),"Sign ID: %d successfully created.", i);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more signs, limit is " #MAX_SIGNS# ".");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 	return 1;
@@ -4276,7 +4424,7 @@ CMD:destroy(playerid, params[])
 		if(sscanf(params, "s[12]d", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroy [object] [ID]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
@@ -4450,6 +4598,29 @@ CMD:destroy(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 		}
+		else if(strcmp(object, "sign", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
+			{
+				if(!(0 <= type < MAX_SIGNS) || (Signs[iGroup][type][sX] == 0 && Signs[iGroup][type][sY] == 0 && Signs[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid sign ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Signs[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a sign that an Administrator deployed.");
+				else
+				{
+					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
+					if(IsValidDynamicObject(Signs[iGroup][type][sObjectID])) DestroyDynamicObject(Signs[iGroup][type][sObjectID]);
+					Signs[iGroup][type][sX] = 0;
+					Signs[iGroup][type][sY] = 0;
+					Signs[iGroup][type][sZ] = 0;
+					Signs[iGroup][type][sObjectID] = -1;
+					Signs[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+					Signs[iGroup][type][sDeployedByStatus] = 0;
+					format(string,sizeof(string),"Sign ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 	return 1;
@@ -4572,6 +4743,28 @@ CMD:ladders(playerid, params[])
 			if(Ladders[iGroup][i][sX] != 0 && Ladders[iGroup][i][sY] != 0 && Ladders[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
 				format(string, sizeof(string), "HQ: Ladder ID: %d | Deployed location: %s | Deployed by: %s", i, Ladders[iGroup][i][sDeployedAt], Ladders[iGroup][i][sDeployedBy]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+	}
+	return 1;
+}
+
+CMD:signs(playerid, params[])
+{
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
+	{
+		new iGroup = PlayerInfo[playerid][pMember];
+		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed signs:");
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < MAX_BARRELS; i++)
+		{
+			if(Signs[iGroup][i][sX] != 0 && Signs[iGroup][i][sY] != 0 && Signs[iGroup][i][sZ] != 0) // Checking for next available ID.
+			{
+				format(string, sizeof(string), "HQ: Sign ID: %d | Deployed location: %s | Deployed by: %s", i, Signs[iGroup][i][sDeployedAt], Signs[iGroup][i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}

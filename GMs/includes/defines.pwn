@@ -212,6 +212,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_BARRICADES 				10
 #define 		MAX_BARRELS 				10
 #define 		MAX_LADDERS 				5
+#define 		MAX_SIGNS	 				10
 #define         MAX_AUCTIONS                10
 #define         MAX_PLANTS                  300
 #define         MAX_BUSINESSSALES           100
