@@ -57,7 +57,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				}
 				return 1;
 			}
-			if((PlayerInfo[playerid][pWRestricted] > 0 || PlayerInfo[playerid][pConnectHours] < 2) && (weaponid != 0 && weaponid != 46)) 
+			if((PlayerInfo[playerid][pWRestricted] > 0 || PlayerInfo[playerid][pConnectHours] < 2) && (weaponid != 0 && weaponid != 46))
 			{
 				if(gettime() > GetPVarInt(playerid, "WepResWarn"))
 				{
@@ -70,7 +70,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				return 1;
 			}
 			new iAmmoType = GetAmmoType(weaponid);
-			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1) return 1; 
+			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1) return 1;
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
@@ -123,6 +123,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT && PlayerCuffed[damagedid] == 0 && PlayerInfo[playerid][pHasTazer] == 1)
 			{
 				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be tazed!");
+				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot taze an advisor while they are helping someone.");
 				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
 				new newkeys, dir1, dir2;
 				GetPlayerKeys(damagedid, newkeys, dir1, dir2);
@@ -358,18 +359,18 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	new iAT = GetAmmoType(weaponid);
 	new iCA = GetPlayerAmmo(playerid);
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 
 	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0)
 	{
-		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1) 
+		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1)
 		{
 			GameTextForPlayer(playerid, "No ammo!", 1000, 6);
 			format(szMiscArray, sizeof(szMiscArray), "** The weapon clicks **", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10.0, 3000);
 			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
 			SetPlayerArmedWeapon(playerid, 0);
-			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it. 
+			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it.
 		}
 		if(iCA != arrAmmoData[playerid][awp_iAmmo][iAT])
 		{

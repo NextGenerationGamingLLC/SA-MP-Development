@@ -24,7 +24,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(newkeys & ENTRANCE_SHORTCUT) {
 
 		if(g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
-			
+
 			Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 		}
 	}
@@ -143,7 +143,7 @@ Enter_Door(playerid, i, areaid = - 1)
 			Garage_Exit(playerid, i);
 			return 1;
 		}
-		if(areaid == HouseInfo[i][hAreaID][0]) 
+		if(areaid == HouseInfo[i][hAreaID][0])
 		{
 			House_Enter(playerid, i);
 			return 1;
@@ -153,7 +153,7 @@ Enter_Door(playerid, i, areaid = - 1)
 			House_Exit(playerid, i);
 			return 1;
 		}
-		if(areaid == Businesses[i][bAreaID][0]) 
+		if(areaid == Businesses[i][bAreaID][0])
 		{
 			Business_Enter(playerid, i);
 			return 1;
@@ -167,7 +167,7 @@ Enter_Door(playerid, i, areaid = - 1)
 			Vehicle_Exit(playerid);
 			return 1;
 		}
-		
+
 	}
 	return 1;
 }
@@ -208,7 +208,7 @@ Vehicle_Enter(playerid, i) {
 }
 
 Vehicle_Exit(playerid) {
- 	
+
  	if(!IsAPlane(InsidePlane[playerid]) && !GetPVarType(playerid, "InsideCar")) {
 	    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
 	    GivePlayerValidWeapon(playerid, 46, 60000);
@@ -218,7 +218,7 @@ Vehicle_Exit(playerid) {
 
 	    new Float:X, Float:Y, Float:Z;
 	    GetVehiclePos(InsidePlane[playerid], X, Y, Z);
-	    
+
 		if(!IsAPlane(PlayerInfo[playerid][pVW]))
 		{
 			SetPlayerPos(playerid, X-1.00, Y+1.00, Z);
@@ -245,12 +245,12 @@ Vehicle_Exit(playerid) {
 
 DDoor_Enter(playerid, i)
 {
-	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP]) 
+	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough VIP level.");
 		return 1;
 	}
-	
+
 	if(DDoorsInfo[i][ddFamed] > 0 && PlayerInfo[playerid][pFamed] < DDoorsInfo[i][ddFamed]) {
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you're not a high enough famed level.");
 		return 1;
@@ -296,7 +296,7 @@ DDoor_Enter(playerid, i)
 	SetPlayerInterior(playerid,DDoorsInfo[i][ddInteriorInt]);
 	PlayerInfo[playerid][pVW] = DDoorsInfo[i][ddInteriorVW];
 	SetPlayerVirtualWorld(playerid, DDoorsInfo[i][ddInteriorVW]);
-	
+
 	if(DDoorsInfo[i][ddVehicleAble] > 0 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
 
 		SetVehiclePos(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
@@ -347,6 +347,7 @@ DDoor_Enter(playerid, i)
 		SetCameraBehindPlayer(playerid);
 	}
 	if(DDoorsInfo[i][ddCustomInterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ], FREEZE_TIME);
+	if(GetPVarType(playerid, "BusinessesID")) DeletePVar(playerid, "BusinessesID");
 	return 1;
 }
 
@@ -406,6 +407,7 @@ DDoor_Exit(playerid, i)
 		SetCameraBehindPlayer(playerid);
 	}
 	if(DDoorsInfo[i][ddCustomExterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddExteriorX],DDoorsInfo[i][ddExteriorY],DDoorsInfo[i][ddExteriorZ], FREEZE_TIME);
+	if(GetPVarType(playerid, "BusinessesID")) DeletePVar(playerid, "BusinessesID");
 	return 1;
 }
 
@@ -438,12 +440,13 @@ House_Exit(playerid, i)
 	PlayerInfo[playerid][pInt] = HouseInfo[i][hExtIW];
 	SetPlayerInterior(playerid, HouseInfo[i][hExtIW]);
 	if(HouseInfo[i][hCustomExterior]) Player_StreamPrep(playerid, HouseInfo[i][hExteriorX],HouseInfo[i][hExteriorY],HouseInfo[i][hExteriorZ], FREEZE_TIME);
-	return 1;	
+	if(GetPVarType(playerid, "BusinessesID")) DeletePVar(playerid, "BusinessesID");
+	return 1;
 }
 
 Business_Enter(playerid, i)
 {
-	if (Businesses[i][bExtPos][1] == 0.0) return 1;
+	if (Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot enter this business.");
 	if (Businesses[i][bStatus]) {
 		if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 		{
@@ -609,7 +612,7 @@ Garage_Exit(playerid, i) {
 			}
 		}
 	}
-	else 
+	else
 	{
 		SetPlayerPos(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]);
 		SetPlayerFacingAngle(playerid, GarageInfo[i][gar_ExteriorA]);

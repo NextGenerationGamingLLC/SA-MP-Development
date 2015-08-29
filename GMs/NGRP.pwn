@@ -23,6 +23,7 @@
 								**  Development Staff:
 									Miguel (s0nic)
 									Jingles
+									Austin
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -42,7 +43,6 @@
 									Jamie
 									Connor
 									Neo
-									Austin
 									ThomasJWhite
 									Beren
 									Kareemtastic
@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.223"
+#define SERVER_GM_TEXT "NG:RP v3.0.224"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
