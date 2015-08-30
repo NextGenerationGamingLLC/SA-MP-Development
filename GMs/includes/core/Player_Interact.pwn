@@ -81,7 +81,7 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 				7.62x51 Ammo\t%d\n\
 				50 AE Ammo\t%d\n\
 				7.62x39 Ammo\t%d\n\
-				12 Gauage Ammo\t%d\n\
+				12 Gauge Ammo\t%d\n\
 				Weapon",
 				PlayerInfo[playerid][pMats],
 				PlayerInfo[playerid][pFirework],
@@ -306,7 +306,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			
 			if(arrAmmoData[playerid][awp_iAmmo][0] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 9mm rounds.");
 
-			if(amount + arrAmmoData[playerid][awp_iAmmo][0] > Player_MaxCapacity(giveplayerid, itemid)) {
+			if((amount + arrAmmoData[playerid][awp_iAmmo][0]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				return Player_InteractMenu(playerid, giveplayerid);
@@ -319,7 +319,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 			
 			if(arrAmmoData[playerid][awp_iAmmo][1] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 7.62x51 rounds.");
 
-			if(amount + arrAmmoData[playerid][awp_iAmmo][1] > Player_MaxCapacity(giveplayerid, itemid)) {
+			if((amount + arrAmmoData[playerid][awp_iAmmo][1]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				return Player_InteractMenu(playerid, giveplayerid);
@@ -332,7 +332,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			if(arrAmmoData[playerid][awp_iAmmo][2] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 50 AE rounds.");
 			
-			if(amount + arrAmmoData[playerid][awp_iAmmo][2] > Player_MaxCapacity(giveplayerid, itemid)) {
+			if((amount + arrAmmoData[playerid][awp_iAmmo][2]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				return Player_InteractMenu(playerid, giveplayerid);
@@ -345,7 +345,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			if(arrAmmoData[playerid][awp_iAmmo][3] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 7.62x39 rounds.");
 			
-			if(amount + arrAmmoData[playerid][awp_iAmmo][3] > Player_MaxCapacity(giveplayerid, itemid)) {
+			if((amount + arrAmmoData[playerid][awp_iAmmo][3]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				return Player_InteractMenu(playerid, giveplayerid);
@@ -358,7 +358,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			if(arrAmmoData[playerid][awp_iAmmo][4] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 12-gauge rounds.");
 
-			if(amount + arrAmmoData[playerid][awp_iAmmo][4] > Player_MaxCapacity(giveplayerid, itemid)) {
+			if((amount + arrAmmoData[playerid][awp_iAmmo][4]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 				return Player_InteractMenu(playerid, giveplayerid);
@@ -416,7 +416,7 @@ Player_MaxCapacity(playerid, itemid) {
 	new iTemp = 0; 
 
 	switch(itemid) {
-		case ITEM_MATS: iTemp = 50000;
+		case ITEM_MATS: iTemp = 1000000;
 		case ITEM_FIREWORK: iTemp = 10;
 		case ITEM_SYRINGES: iTemp = 20; 
 		case ITEM_SPRUNKDRINK: iTemp = 1; 

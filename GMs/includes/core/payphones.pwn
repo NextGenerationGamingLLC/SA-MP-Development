@@ -141,6 +141,7 @@ GetPhoneAreaCode(i) {
 
 	new iAreaCode;
 	GetPhoneZone(i, szMiscArray, sizeof(szMiscArray));
+	if(strcmp(szMiscArray, "DOC", true) == 0) iAreaCode = 420;
 	if(strcmp(szMiscArray, "Los Santos", true) == 0) iAreaCode = 500;
 	if(strcmp(szMiscArray, "Red County", true) == 0) iAreaCode = 300;
 	if(strcmp(szMiscArray, "Flint County", true) == 0) iAreaCode = 400;

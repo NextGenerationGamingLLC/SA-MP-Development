@@ -4589,6 +4589,9 @@ CMD:gethere(playerid, params[])
 				SetPlayerInterior(giveplayerid, GetPlayerInterior(playerid));
 				SetVehicleVirtualWorld(GetPlayerVehicleID(giveplayerid), GetPlayerVirtualWorld(playerid));
 				SetPlayerVirtualWorld(giveplayerid, GetPlayerVirtualWorld(playerid));
+				if(IsValidDynamicArea(iVehEnterAreaID[tmpcar])) {
+					Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[tmpcar], E_STREAMER_WORLD_ID, tmpcar);
+				}
 			}
 			else
 			{
@@ -4621,6 +4624,10 @@ CMD:getcar(playerid, params[])
 		SetVehiclePos(carid,plocx,plocy+4, plocz);
 		SetVehicleVirtualWorld(carid, GetPlayerVirtualWorld(playerid));
 		LinkVehicleToInterior(carid, GetPlayerInterior(playerid));
+		if(IsValidDynamicArea(iVehEnterAreaID[carid])) {
+			Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[carid], E_STREAMER_WORLD_ID, carid);
+		}
+
 	}
 	else
 	{

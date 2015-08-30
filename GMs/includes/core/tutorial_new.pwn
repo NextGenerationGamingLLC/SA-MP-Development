@@ -497,7 +497,7 @@ Tutorial_Stage(playerid) {
 		}
 		case 2: {
 			szMiscArray = "_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{FF0000}Entering / Exiting Doors{FFFFFF}: To enter or exit a door, walk up and immediately press F or ENTER.\n\n");
+			strcat(szMiscArray, "{FF0000}Entering / Exiting Doors{FFFFFF}: To enter or exit a door, walk up and immediately press N.\n\n");
 			strcat(szMiscArray, "{FF0000}Item Interaction{FFFFFF}: To interact with a server item such as an ATM, walk up to it and press Y.\n\n");
 			strcat(szMiscArray, "{FF0000}Player Interaction{FFFFFF}: Right click whilst looking at a player and press Y.\nYou can also use /interact to interact with players in vehicles.\n\n");
 			strcat(szMiscArray, "{FF0000}Seeking Help{FFFFFF}: You can ask for help over /newb or /requesthelp\nYou can also report for an admin using /report.\n\n");

@@ -622,7 +622,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		if(GetPVarType(playerid, "BM_AID")) {
 
 			new i = GetPVarInt(playerid, "BM_AID");
-
 			if(i > MAX_BLACKMARKETS - 1) return 1;
 			if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
 
@@ -635,7 +634,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		if(GetPVarType(playerid, "PO_AID")) {
 
 			new i = GetPVarInt(playerid, "PO_AID");
-
 			if(i > MAX_DYNPOINTS - 1) return 1;
 			if(arrPoint[i][po_iType] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot interact with a weapon point.");
 
@@ -652,7 +650,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		if(GetPVarType(playerid, "AtDrugArea")) {
 
 			new i = GetPVarInt(playerid, "AtDrugArea");
-
 			if(i >= MAX_DRUGS) return 1;
 			if(IsACop(playerid)) Drugs_Remove(playerid, i);
 			else Drugs_Retrieve(playerid, i);

@@ -3018,6 +3018,7 @@ ptask fpsCounterUpdate[500](i)
 // TickRate: 60 seconds
 ptask ShopItemQueue[60000](i)
 {
+	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `shop_orders` WHERE `user_id` = %d AND `status` = 0", GetPlayerSQLId(i));
 	mysql_function_query(MainPipeline, szMiscArray, true, "ExecuteShopQueue", "ii", i, 0);
 	

@@ -2710,8 +2710,15 @@ CMD:userimkit(playerid, params[])
     if(!IsPlayerInAnyVehicle(playerid))
  		return SendClientMessageEx(playerid, COLOR_GREY, "You aren't in a vehicle.");
 
+ 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7) 
+ 		return SendClientMessageEx(playerid, COLOR_GREY, "You must be a mechanic to use this command.");
+	
+	new iVeh = GetPlayerVehicleID(playerid);
+	new iModel  = GetVehicleModel(iVeh);
 
-    if(InvalidModCheck(GetVehicleModel(GetPlayerVehicleID(playerid)), 1025))
+	if(IsRestrictedVehicle(iModel)) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot have rims applied to it");
+
+    if(InvalidModCheck(iModel, 1025))
 	{
  		for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
 		{

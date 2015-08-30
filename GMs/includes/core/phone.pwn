@@ -320,7 +320,7 @@ CMD:call(playerid, params[])
 
 		case 911: {
 
-			if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
+			if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone")) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
 			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
 			else 

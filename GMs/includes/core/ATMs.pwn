@@ -229,6 +229,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowATMMenu(playerid, 3);
 			}
 
+			if(iAmount > PlayerInfo[playerid][pAccount] || iAmount < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to send more than you have!");
+
 			if(PlayerInfo[playerid][pDonateRank] == 0) {
 				new fee;
 				fee = 3*iAmount/100;

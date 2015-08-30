@@ -2384,6 +2384,10 @@ CMD:accept(playerid, params[])
 							case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
 							case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
 							case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN, 99999);
+							case 29: {
+								PlayerInfo[playerid][pRimMod]++;
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /userimkit as a mechanic in any car to modify your rims.");
+							}
                         }
                         format(szMessage, sizeof(szMessage), "   You have given %s, a %s.", GetPlayerNameEx(playerid),weaponname);
                         PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);

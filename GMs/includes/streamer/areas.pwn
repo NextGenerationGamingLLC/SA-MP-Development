@@ -7,7 +7,7 @@ hook OnGameModeInit() {
 	print("[Streamer] Loading Dynamic Areas...");
 
 	iVehExits[0] = CreateDynamicSphere(3.6661,23.0627,1199.6012, 3.0);
-	iVehExits[1] = CreateDynamicSphere(820.5054,1528.1591,-48.9141, 3.0);
+	iVehExits[1] = CreateDynamicSphere(2820.2109,1527.8270,-48.9141+2500, 3.0);
 	iVehExits[2] = CreateDynamicSphere(315.6100,1028.6777,1948.5518, 3.0);
 
 	Streamer_SetIntData(STREAMER_TYPE_AREA, iVehExits[0], E_STREAMER_EXTRA_ID, 0);

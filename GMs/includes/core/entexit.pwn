@@ -173,8 +173,8 @@ Vehicle_Enter(playerid, i) {
 	switch(GetVehicleModel(i)) {
 
 		case 508: { // Journey
-			SetPlayerPos(playerid, 2820.2109,1527.8270,-48.9141);
-			Player_StreamPrep(playerid,2820.2109,1527.8270,-48.9141, FREEZE_TIME);
+			SetPlayerPos(playerid, 2820.2109,1527.8270,-48.9141+2500);
+			Player_StreamPrep(playerid,2820.2109,1527.8270,-48.9141+2500, FREEZE_TIME);
 			SetPlayerFacingAngle(playerid, 270.0);
 			PlayerInfo[playerid][pInt] = 1;
 			SetPlayerInterior(playerid, 1);
@@ -228,9 +228,10 @@ Vehicle_Exit(playerid) {
 			}
 		}
 	}
+	new iTemp = Streamer_GetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[PlayerInfo[playerid][pVW]], E_STREAMER_WORLD_ID);
 	DeletePVar(playerid, "InsideCar");
-	PlayerInfo[playerid][pVW] = GetVehicleVirtualWorld(InsidePlane[playerid]);
-	SetPlayerVirtualWorld(playerid, GetVehicleVirtualWorld(InsidePlane[playerid]));
+	PlayerInfo[playerid][pVW] = iTemp;
+	SetPlayerVirtualWorld(playerid, iTemp);
 	PlayerInfo[playerid][pInt] = 0;
 	SetPlayerInterior(playerid, 0);
 	InsidePlane[playerid] = INVALID_VEHICLE_ID;
@@ -293,10 +294,14 @@ DDoor_Enter(playerid, i)
 	
 	if(DDoorsInfo[i][ddVehicleAble] > 0 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
 
-		SetVehiclePos(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
-		SetVehicleZAngle(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorA]);
-		SetVehicleVirtualWorld(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorVW]);
-		LinkVehicleToInterior(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddInteriorInt]);
+		new iVeh = GetPlayerVehicleID(playerid);
+		SetVehiclePos(iVeh, DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ]);
+		SetVehicleZAngle(iVeh, DDoorsInfo[i][ddInteriorA]);
+		SetVehicleVirtualWorld(iVeh, DDoorsInfo[i][ddInteriorVW]);
+		LinkVehicleToInterior(iVeh, DDoorsInfo[i][ddInteriorInt]);
+		if(IsValidDynamicArea(iVehEnterAreaID[iVeh])) {
+			Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVeh], E_STREAMER_WORLD_ID, iVeh);
+		}
 		if(GetPVarInt(playerid, "tpForkliftTimer") > 0)
 		{
 			SetPVarInt(playerid, "tpJustEntered", 1);

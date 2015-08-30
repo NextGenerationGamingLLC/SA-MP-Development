@@ -2409,6 +2409,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerVehicleInfo[playerid][listitem][pvFuel] = VehicleFuel[iVehicleID];
 					GetVehicleHealth(PlayerVehicleInfo[playerid][listitem][pvId], PlayerVehicleInfo[playerid][listitem][pvHealth]);
 					DestroyVehicle(iVehicleID);
+					if(IsValidDynamicArea(iVehEnterAreaID[iVehicleID])) DestroyDynamicArea(iVehEnterAreaID[iVehicleID]);
 					PlayerVehicleInfo[playerid][listitem][pvId] = INVALID_PLAYER_VEHICLE_ID;
 					g_mysql_SaveVehicle(playerid, listitem);
 
