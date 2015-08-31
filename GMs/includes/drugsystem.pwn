@@ -1257,6 +1257,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] / 5; // 5 Morning Glory Seeds
+							PlayerInfo[playerid][p_iIngredient][0] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 2: // Muriatic Acid
 						{
@@ -1265,6 +1266,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 30;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							PlayerInfo[playerid][p_iIngredient][2] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1272,6 +1274,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 13: // PMK Oil
 						{
@@ -1279,6 +1282,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 20;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							PlayerInfo[playerid][p_iIngredient][13] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1301,6 +1305,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount];
+							PlayerInfo[playerid][p_iIngredient][1] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1323,6 +1328,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] / 2; // 10 Muriatic Acid
+							PlayerInfo[playerid][p_iIngredient][2] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 3: // Lye
 						{
@@ -1331,6 +1337,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 30;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 15;
+							PlayerInfo[playerid][p_iIngredient][3] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 4: // Ethyl Ether
 						{
@@ -1339,6 +1346,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 30;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][4] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 5: // Ephedrine
 						{
@@ -1346,6 +1354,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 2 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][5] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1353,6 +1362,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1374,7 +1384,8 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2; // 5 Morning Glory Seeds
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2;
+							PlayerInfo[playerid][p_iIngredient][7] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 8: // Lime
 						{
@@ -1383,6 +1394,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							PlayerInfo[playerid][p_iIngredient][8] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1390,6 +1402,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1411,7 +1424,8 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2; // 5 Morning Glory Seeds
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2;
+							PlayerInfo[playerid][p_iIngredient][11] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 12: // N-Benzynol
 						{
@@ -1420,6 +1434,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][12] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1441,14 +1456,16 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2; // 10 crack
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2;
+							PlayerInfo[playerid][p_iIngredient][9] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 10: // Baking Soda
 						{
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 20;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
-							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;	
+							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							PlayerInfo[playerid][p_iIngredient][10] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1456,6 +1473,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1477,7 +1495,8 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2; // 5 Morning Glory Seeds
+							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount] * 2;
+							PlayerInfo[playerid][p_iIngredient][7] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 8: // Lime
 						{
@@ -1486,6 +1505,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
+							PlayerInfo[playerid][p_iIngredient][8] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1493,6 +1513,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1514,6 +1535,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount]; // 10 crack
+							PlayerInfo[playerid][p_iIngredient][13] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 14: // MDMA Crystals
 						{
@@ -1522,6 +1544,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 40;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 5 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][14] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1529,6 +1552,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 2 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1549,6 +1573,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 2 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
 							iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount]; // 1 speed
+							PlayerInfo[playerid][p_iIngredient][13] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 14: // MDMA Crystals
 						{
@@ -1557,6 +1582,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][14] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						case 6: // Distilled water
 						{
@@ -1564,6 +1590,7 @@ Drug_FinishMix(playerid, iDrugID) {
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 3 == 0) iDrugQuality = 10;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 							if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 10;
+							PlayerInfo[playerid][p_iIngredient][6] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						}
 						default: iDrugQuality = 0;
 					}
@@ -1572,7 +1599,7 @@ Drug_FinishMix(playerid, iDrugID) {
 		}
 	}
 	if(iDrugAmount == 0) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC}You did not add the core ingredient.");
-	if(iDrugAmount > 500) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cannot make more than 500pc of drugs in one mix.");
+	if(iDrugAmount > 100) return SendClientMessageEx(playerid, COLOR_GREEN, "[Drugs]: {CCCCCC} You cannot make more than 100 pieces (pc) of drugs in one mix. It got wasted.");
 	Drug_CreateDrug(playerid, iDrugID, iDrugAmount, iDrugQuality);
 	DeletePVar(playerid, PVAR_MAKINGDRUG);
 	return 1;
@@ -1580,7 +1607,6 @@ Drug_FinishMix(playerid, iDrugID) {
 
 Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality)
 {
-	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) if(dr_arrDrugMix[playerid][i][drm_iAmount] > 0) PlayerInfo[playerid][p_iIngredient] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You made %d pc of %s with a quality of %dqP.", iAmount, szDrugs[iDrugID], iDrugQuality);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
