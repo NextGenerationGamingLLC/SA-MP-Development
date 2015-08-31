@@ -1461,6 +1461,7 @@ Interact_ProcessPrescription(playerid) {
 	SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "%s has prescribed you %d pc of %s.", GetPlayerNameEx(playerid), iAmount, szMiscArray);
 	SendClientMessage(giveplayerid, COLOR_GRAD2, szMiscArray);
+	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
 	return 1;
 }
 

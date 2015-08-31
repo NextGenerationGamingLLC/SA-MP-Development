@@ -5134,6 +5134,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 public OnPlayerText(playerid, text[])
 {
 	szMiscArray[0] = 0;
+
+	text[0] = toupper(text[0]);
+
 	if(gPlayerLogged{playerid} != 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
@@ -5145,6 +5148,7 @@ public OnPlayerText(playerid, text[])
 	new string[128];
 	playerLastTyped[playerid] = 0;
 
+	if(strcmp("lol", text, true) == 0) return cmd_me(playerid, "laughs out loud."), 0;
 
 	if(TextSpamUnmute[playerid] != 0)
 	{

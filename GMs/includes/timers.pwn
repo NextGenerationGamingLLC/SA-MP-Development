@@ -2120,7 +2120,7 @@ ptask PlayerHeartBeat[1000](i) {
 				SetPlayerToTeamColor(FindingPlayer[i]);
 				FindingPlayer[i] = -1;
 				PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0);
-				GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1);
+				GameTextForPlayer(i, "~r~Signal lost", 2500, 1);
 			}
 			else
 			{

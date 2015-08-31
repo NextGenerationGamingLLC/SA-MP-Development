@@ -115,6 +115,7 @@ Enter_Door(playerid, i, areaid = - 1)
 {
 	// printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
+	ENT_DelVar(playerid);
 	if(!GetPVarType(playerid, "StreamPrep"))
 	{
 		if(areaid == DDoorsInfo[i][ddAreaID])

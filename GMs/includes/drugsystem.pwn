@@ -104,7 +104,7 @@
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
 
-#define 		POINT_CAPTURE_INTERVAL 			60000 * 2 // 10 minutes
+#define 		POINT_CAPTURE_INTERVAL 			60000 * 10 // 10 minutes
 
 #define 		BLACKMARKET_SEIZE_DAYS			1
 
@@ -1082,37 +1082,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
 
-						new szName[MAX_PLAYER_NAME];
-
 						if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can only create points in the exterior world.");
 
+						new szName[MAX_PLAYER_NAME];
 						arrPoint[i][po_iType] = listitem;
-
 						arrPoint[i][po_iCaptureAble] = 1;
-
 						arrPoint[i][po_iGroupID] = INVALID_GROUP_ID;
-
 						GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-
-						arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
-						
 						GetPVarString(playerid, "PO_Name", szName, sizeof(szName));
 						DeletePVar(playerid, "PO_NAME");
 
-						strins(arrPoint[i][po_szPointName], szName, 0, MAX_PLAYER_NAME);
-
-						switch(listitem) {
-							case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Weapon Point\n{CCCCCC}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", szName, i, szName);
-							case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n\n{EEEEEE}Drug Point\n{CCCCCC}ID: %d\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", szName, i, szName);
-						}
-
-						arrPoint[i][po_iZoneID] = GangZoneCreate(fPos[0] - 100.0, fPos[1] - 100.0, fPos[0] + 100.0, fPos[1] + 100.0);
-						
-						arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
-
-						arrPoint[i][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
-
-						Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
+						format(arrPoint[i][po_szPointName], MAX_PLAYER_NAME, szName);
+						PO_CreatePoint(i, fPos[0], fPos[1], fPos[2], fPos[0], fPos[1], fPos[2]);
 
 						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `dynpoints` (`id`, `type`, `name`, `groupid`, `posx`, `posy`, `posz`, `vw`, `int`) VALUES ('%d', '%d', '%e', '%d', '%f', '%f', '%f', '%d', '%d')",
 							i, listitem, szName, INVALID_GROUP_ID, fPos[0], fPos[1], fPos[2], 0, 0);
@@ -3135,89 +3116,81 @@ CMD:destroypoint(playerid, params[]) {
 	return 1;
 }
 
-CMD:point(playerid, params[]) {
+CMD:editpoint(playerid, params[]) {
+
+	szMiscArray[0] = 0;
 
 	new szChoice[16],
-		iPointID,
+		i,
 		Float:fPos[3];
 
-	if(sscanf(params, "s[16]dS[32]", szChoice, iPointID, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /point [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'captureable'");
+	if(sscanf(params, "s[16]dS[32]", szChoice, i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'captureable'");
 
-	if(!IsValidDynamicPickup(arrPoint[iPointID][po_iPickupID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
 
 	if(strcmp(szChoice, "position", true) == 0) {
 
-		new	iVW = GetPlayerVirtualWorld(playerid),
-			iINT = GetPlayerInterior(playerid);
+		if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
 
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 
-		if(IsValidDynamicPickup(arrPoint[iPointID][po_iPickupID])) DestroyDynamicPickup(arrPoint[iPointID][po_iPickupID]);
-		if(IsValidDynamic3DTextLabel(arrPoint[iPointID][po_iTextID])) DestroyDynamic3DTextLabel(arrPoint[iPointID][po_iTextID]);
-		if(IsValidDynamicArea(arrPoint[iPointID][po_iAreaID])) DestroyDynamicArea(arrPoint[iPointID][po_iAreaID]);
-		if(IsValidDynamicArea(arrPoint[iPointID][po_iBigAreaID])) DestroyDynamicArea(arrPoint[iPointID][po_iBigAreaID]);
+		PO_DestroyPoint(i);
 
+		PO_CreatePoint(i, fPos[0], fPos[1], fPos[2]);
 
-		arrPoint[iPointID][po_iBigAreaID] = CreateDynamicCuboid(fPos[0] - 100.0, fPos[1] - 100.0, fPos[2], fPos[0] + 100.0, fPos[1] + 100.0, fPos[2]);
-		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[iPointID][po_iBigAreaID], E_STREAMER_EXTRA_ID, iPointID);
-
-		arrPoint[iPointID][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
-		arrPoint[iPointID][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-		
-
-		new szGroup[GROUP_MAX_NAME_LEN],
-			iGroupID = arrPoint[iPointID][po_iGroupID];
-		switch(iGroupID) {
-
-			case INVALID_GROUP_ID: szGroup = "Nobody";
-			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
-		}
-
-		switch(arrPoint[iPointID][po_iType]) {
-
-			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iPointID, szGroup);
-			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iPointID, szGroup);
-		}
-		arrPoint[iPointID][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
-
-
-		format(szMiscArray, sizeof(szMiscArray), "You successfully moved Point ID %d to your position.", iPointID);
+		format(szMiscArray, sizeof(szMiscArray), "You successfully moved Point ID %d to your position.", i);
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iVW, iINT, iPointID);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], 0, 0, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		return 1;
 	}
 	if(strcmp(szChoice, "deliverpos", true) == 0) {
 
-		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 		if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your virtual world and interior must be 0.");
-		if(IsValidDynamic3DTextLabel(arrPoint[iPointID][po_iDelTextID])) DestroyDynamic3DTextLabel(arrPoint[iPointID][po_iDelTextID]);
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point\n{AAAAAA}ID: %d", iPointID);
-		arrPoint[iPointID][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);		
-		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's delivery point to your position.", iPointID);
+		
+		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+		format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID %d)\n%s", i, arrPoint[i][po_szPointName]);
+		UpdateDynamic3DTextLabelText(arrPoint[i][po_iTextID], COLOR_GRAD1, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's delivery point to your position.", i);
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `delposx` = '%f', `delposy` = '%f', `delposz` = '%f' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], iPointID);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `delposx` = '%f', `delposy` = '%f', `delposz` = '%f' WHERE `id` = '%d'", fPos[0], fPos[1], fPos[2], i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		return 1;
 	}
 	if(strcmp(szChoice, "name", true) == 0) {
 
-		strdel(arrPoint[iPointID][po_szPointName], 0, strlen(arrPoint[iPointID][po_szPointName]));
-		strins(arrPoint[iPointID][po_szPointName], szMiscArray, 0, MAX_PLAYER_NAME);
+		strdel(arrPoint[i][po_szPointName], 0, strlen(arrPoint[i][po_szPointName]));
+		strins(arrPoint[i][po_szPointName], szMiscArray, 0, MAX_PLAYER_NAME);
 
-		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's name to: %s.", iPointID, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "You successfully edited Point ID %d's name to: %s.", i, szMiscArray);
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
-		PO_RehashPoint(iPointID);
+		new szGroup[GROUP_MAX_NAME_LEN],
+			iGroupID = arrPoint[i][po_iGroupID];
 
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `name` = '%e' WHERE `id` = '%d'", szMiscArray, iPointID);
+		switch(arrPoint[i][po_iGroupID]) {
+
+			case INVALID_GROUP_ID: szGroup = "Nobody";
+			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
+		}
+
+		switch(arrPoint[i][po_iType]) {
+
+			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
+			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
+		}
+
+		format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID %d)\n%s\n{AAAAAA}ID: %d", i, arrPoint[i][po_szPointName]);
+		UpdateDynamic3DTextLabelText(arrPoint[i][po_iTextID], COLOR_GRAD1, szMiscArray);
+		
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `name` = '%e' WHERE `id` = '%d'", szMiscArray, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		return 1;
 	}	
 	if(strcmp(szChoice, "captureable", true) == 0) {
 
-		arrPoint[iPointID][po_iCaptureAble] = 1;
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `captureable` = '1' WHERE `id` = '%d'", iPointID);
+		arrPoint[i][po_iCaptureAble] = 1;
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `captureable` = '1' WHERE `id` = '%d'", i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		return 1;
 	}
@@ -3420,7 +3393,7 @@ public PO_PointTimer(playerid, i, iGroupID) {
 	if(!IsPlayerInRangeOfPoint(playerid, 30.0, fPos[0], fPos[1], fPos[2])) {
 
 		SendClientMessage(playerid, COLOR_GRAD1, "You aren't near the point.");
-		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point.");
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point - the gang leader was out of range.");
 		DeletePVar(playerid, "PO_CAPTUR");
 		return 1;
 	}
@@ -3436,7 +3409,24 @@ public PO_PointTimer(playerid, i, iGroupID) {
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `groupid` = '%d' WHERE `id` = '%d'", iGroupID, i);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-	PO_RehashPoint(i);
+	new szGroup[GROUP_MAX_NAME_LEN];
+
+	switch(arrPoint[i][po_iGroupID]) {
+
+		case INVALID_GROUP_ID: szGroup = "Nobody";
+		default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
+	}
+
+	switch(arrPoint[i][po_iType]) {
+
+		case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
+		case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
+	}
+
+	UpdateDynamic3DTextLabelText(arrPoint[i][po_iTextID], COLOR_GRAD1, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID: %d)\n\n%s\n{AAAAAA}ID: %d", i, arrPoint[i][po_szPointName]);
+	UpdateDynamic3DTextLabelText(arrPoint[i][po_iDelTextID], COLOR_GRAD1, szMiscArray);
 	return 1;
 }
 
@@ -3454,9 +3444,7 @@ public PO_OnDeletePoint(playerid, i) {
 
 	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}You have successfully deleted point ID %d", i);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	
 	PO_DestroyPoint(i);
-
 	return 1;
 }
 
@@ -3481,8 +3469,6 @@ public PO_OnLoadPoints() {
 	while(iCount < iRows)
 	{
 		new Float:fPos[6],
-			iVW,
-			iINT,
 			iGroupID;
 
 		fPos[0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
@@ -3491,8 +3477,6 @@ public PO_OnLoadPoints() {
 		fPos[3] = cache_get_field_content_float(iCount, "delposx", MainPipeline);
 		fPos[4] = cache_get_field_content_float(iCount, "delposy", MainPipeline);
 		fPos[5] = cache_get_field_content_float(iCount, "delposz", MainPipeline);
-		iVW = cache_get_field_content_int(iCount, "vw", MainPipeline);
-		iINT = cache_get_field_content_int(iCount, "int", MainPipeline);
 		iGroupID = cache_get_field_content_int(iCount, "groupid", MainPipeline);
 
 		cache_get_field_content(iCount, "name", arrPoint[iCount][po_szPointName], MainPipeline, MAX_PLAYER_NAME);
@@ -3501,65 +3485,20 @@ public PO_OnLoadPoints() {
 
 		arrPoint[iCount][po_iCaptureAble] = cache_get_field_content_int(iCount, "captureable", MainPipeline);
 
-		arrPoint[iCount][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = iVW, .interiorid = iINT, .streamdistance = 20.0);
-
-		new szGroup[GROUP_MAX_NAME_LEN];
-		switch(arrPoint[iCount][po_iGroupID]) {
-
-			case INVALID_GROUP_ID: szGroup = "Nobody";
-			default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
-		}
-
-		switch(arrPoint[iCount][po_iType]) {
-
-			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iCount, szGroup);
-			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", iCount, szGroup);
-		}
-		arrPoint[iCount][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = iVW, .interiorid = iINT);
-
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n\nOwned by: %s", iCount, szGroup);
-		arrPoint[iCount][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
-
-		arrPoint[iCount][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
-		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[iCount][po_iAreaID], E_STREAMER_EXTRA_ID, iCount);
-
-		arrPoint[iCount][po_iBigAreaID] = CreateDynamicCuboid(fPos[0] - 100.0, fPos[1] - 100.0, fPos[2], fPos[0] + 100.0, fPos[1] + 100.0, fPos[2]);
-		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[iCount][po_iBigAreaID], E_STREAMER_EXTRA_ID, iCount);
-
-		arrPoint[iCount][po_iZoneID] = GangZoneCreate(fPos[0] - 100.0, fPos[1] - 100.0, fPos[0] + 100.0, fPos[1] + 100.0);
+		PO_CreatePoint(iCount, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], 1);
 		iCount++;
 	}
 	printf("[Points] Loaded %d points.", iCount);
 	return 1;
 }
 
-PO_DestroyPoint(i) {
+PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Float:DZ = 0.0, sql = 0) {
 
-	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
-	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
-	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
-	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
-	GangZoneDestroy(arrPoint[i][po_iZoneID]);
-}
+		if(!sql) Z -= 1; // Somehow has an odd Z-offset.
+		arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, X, Y, Z, .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
 
-PO_RehashPoint(i) {
-
-		new Float:fPos[6],	
+		new szGroup[GROUP_MAX_NAME_LEN],
 			iGroupID = arrPoint[i][po_iGroupID];
-
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_X, fPos[0]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Y, fPos[1]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iTextID], E_STREAMER_Z, fPos[2]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[3]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[4]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[5]);
-
-		PO_DestroyPoint(i);
-
-		fPos[2] -= 1; // Somehow has an odd Z-offset.
-		arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, fPos[0], fPos[1], fPos[2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
-
-		new szGroup[GROUP_MAX_NAME_LEN];
 
 		switch(arrPoint[i][po_iGroupID]) {
 
@@ -3569,23 +3508,52 @@ PO_RehashPoint(i) {
 
 		switch(arrPoint[i][po_iType]) {
 
-			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, szGroup);
-			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, szGroup);
+			case 0: format(szMiscArray, sizeof(szMiscArray), "Weapon Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
+			case 1: format(szMiscArray, sizeof(szMiscArray), "Drug Point\n{CCCCCC}ID: %d\n%s\nOwned by: %s\n{FFFFFF}Use ~k~~CONVERSATION_YES~ to use the point.", i, arrPoint[i][po_szPointName], szGroup);
 		}
 
-		arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[0], fPos[1], fPos[2] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
+		arrPoint[i][po_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, X, Y, Z + 1.0, 10.0, .worldid = 0, .interiorid = 0);
 
-		format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n\nOwned by: %s", i, szGroup);
-		arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fPos[3], fPos[4], fPos[5] + 1.0, 10.0, .worldid = 0, .interiorid = 0);
+		if(DX != 0.0) {
+			format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Delivery Point {AAAAAA}(ID: %d)\n%s\nOwned by: %s", i, arrPoint[i][po_szPointName], szGroup);
+			arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, DX, DY, DZ, 10.0, .worldid = 0, .interiorid = 0);
+		}
 
-		arrPoint[i][po_iAreaID] = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0);
+		arrPoint[i][po_iAreaID] = CreateDynamicSphere(X, Y, Z, 5.0);
 		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
 
-		arrPoint[i][po_iBigAreaID] = CreateDynamicCuboid(fPos[0] - 100.0, fPos[1] - 100.0, fPos[2], fPos[0] + 100.0, fPos[1] + 100.0, fPos[2]);
+		arrPoint[i][po_iBigAreaID] = CreateDynamicCuboid(X - 100.0, Y - 100.0, Z, X + 100.0, Y + 100.0, Z);
 		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iBigAreaID], E_STREAMER_EXTRA_ID, i);
 
-		arrPoint[i][po_iZoneID] = GangZoneCreate(fPos[0] - 100.0, fPos[1] - 100.0, fPos[0] + 100.0, fPos[1] + 100.0);
+		arrPoint[i][po_iZoneID] = GangZoneCreate(X - 100.0, Y - 100.0, X + 100.0, Y + 100.0);
 }
+
+PO_DestroyPoint(i) {
+
+	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
+	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
+	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
+	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
+	DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
+	GangZoneDestroy(arrPoint[i][po_iZoneID]);
+}
+
+/*
+PO_RehashPoint(i) {
+
+		new Float:fPos[6];
+
+		Streamer_GetFloatData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_X, fPos[0]);
+		Streamer_GetFloatData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_Y, fPos[1]);
+		Streamer_GetFloatData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_Z, fPos[2]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_X, fPos[3]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Y, fPos[4]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[i][po_iDelTextID], E_STREAMER_Z, fPos[5]);
+
+		PO_DestroyPoint(i);
+		PO_CreatePoint(i, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5]);
+}
+*/
 
 CMD:drughelp(playerid, params[])
 {

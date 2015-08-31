@@ -502,8 +502,8 @@ stock ReloadHousePickup(houseid)
 	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]);
 	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]);
 
-	HouseInfo[houseid][hAreaID][0] = CreateDynamicSphere(HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 2.0, HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
-	HouseInfo[houseid][hAreaID][1] = CreateDynamicSphere(HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 2.0, HouseInfo[houseid][hIntVW], HouseInfo[houseid][hIntIW]);
+	HouseInfo[houseid][hAreaID][0] = CreateDynamicSphere(HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 2.5, HouseInfo[houseid][hExtVW], HouseInfo[houseid][hExtIW]);
+	HouseInfo[houseid][hAreaID][1] = CreateDynamicSphere(HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 2.5, HouseInfo[houseid][hIntVW], HouseInfo[houseid][hIntIW]);
 
 	format(szMiscArray, sizeof(szMiscArray), "ID %d | VW: %d", houseid, HouseInfo[houseid][hIntVW]);
 	HouseInfo[houseid][hTextID_int] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GRAD1, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 5.0, .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);

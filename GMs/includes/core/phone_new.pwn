@@ -117,8 +117,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fPos[3] += 1.25;
 		    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
-		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
+		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 0.9);
+		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 0.9);
 		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 		    SetPVarFloat(playerid, "Flt", fPos[3]);
 		}
@@ -131,6 +131,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 				Float:fCam[2];
 
 		    GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+		    GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], -0.25);
 		    // GetPlayerFacingAngle(playerid, fPos[3]);
 
 		    if(!GetPVarType(playerid, "Flt")) GetPlayerFacingAngle(playerid, fPos[3]);
@@ -140,8 +141,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		    fPos[3] -= 1.25;
 		    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 		    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
-		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
+		    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 0.9);
+		    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 0.9);
 		    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 		    SetPVarFloat(playerid, "Flt", fPos[3]);
 		}
@@ -250,28 +251,32 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new x,
 						szZone[MAX_ZONE_NAME];
 
+					szMiscArray[0] = 0;
+					szMiscArray = "Area Code\tNumber\tZone\n";
 					for(new i = 0; i < MAX_PAYPHONES; ++i) {
 
 						if(IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID])) {
 
+							szZone[0] = 0;
 							GetPhoneZone(i, szZone, sizeof(szZone));
-							format(szMiscArray, sizeof(szMiscArray), "%sArea: %d | Number: %d | Zone: %s\n", szMiscArray, GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], szZone);
-							ListItemTrackId[playerid][x++] = i;
+							format(szMiscArray, sizeof(szMiscArray), "%sArea: %d\tNumber: %d\tZone: %s\n", szMiscArray, GetPhoneAreaCode(i), arrPayPhoneData[i][pp_iNumber], szZone);
+							ListItemTrackId[playerid][x] = arrPayPhoneData[i][pp_iNumber];
+							x++;
 						}
 					}
 					if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-					ShowPlayerDialog(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_LIST, "Pay Phones", szMiscArray, "Call", "Cancel");
+					ShowPlayerDialog(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
 				}
 				case 2:	{
 
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
+					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
 					mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnGetContacts", "i", playerid);
 				}
 				case 3: ShowPlayerDialog(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Phone | Add Contact", "Please enter the name of the contact you would like to add.\nExample: John_Doe", "Add", "<<");
 				case 4: {
 
 					SetPVarInt(playerid, PVAR_PHONEDELCONTACT, 1);
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
+					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
 					mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnGetContacts", "i", playerid);
 				}
 			}
@@ -354,7 +359,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response) return Phone_Contacts(playerid);
 			SetPVarString(playerid, "PHN_CONTACT", inputtext);
-			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, szMiscArray, true, "Phone_CheckContacts", "is", playerid, inputtext);
 			DeletePVar(playerid, PVAR_PHONEDELCONTACT);
 		}
@@ -368,15 +373,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			szMiscArray[0] = 0;
 			GetPVarString(playerid, "PHN_CONTACT", szMiscArray, sizeof(szMiscArray));
-			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (`id`, `contactname`, `contactnr`) VALUES ('%d', '%e', '%d')", GetPlayerSQLId(playerid), szMiscArray, strval(inputtext));
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (id, `contactname`, `contactnr`) VALUES ('%d', '%e', '%d')", GetPlayerSQLId(playerid), szMiscArray, strval(inputtext));
 			mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnAddContactFinish", "i", playerid);
 			return 1;
 		}
 		case DIALOG_PHONE_CONTACTLISTDEL:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), Phone_Contacts(playerid), 1;
-			format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `PhoneNr` = '%d'", ListItemTrackId[playerid][listitem]);
-			mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnDeleteContact", "i", playerid);
+			format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `phone_contacts` WHERE id = '%d' AND `contactnr` = '%d'", GetPlayerSQLId(playerid), ListItemTrackId[playerid][listitem]);
+			mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnDeleteContact", "i", playerid);
+			
 		}
 		case DIALOG_PHONE_CAMERA:
 		{
@@ -696,9 +702,9 @@ public Phone_Trace(playerid, i)
 
 	GetPVarString(playerid, "TRC_STR", szMiscArray, sizeof(szMiscArray));
 
-	GetPlayerPos(playerid, fPos[0][0], fPos[0][1], fPos[0][2]);
+	GetPlayerPos(i, fPos[0][0], fPos[0][1], fPos[0][2]);
 
-	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Target specified: %d\nGPS Traceroute in progress...\n______________________________________\n\n", PlayerInfo[playerid][pPnumber]);
+	if(x == 0) format(szMiscArray, sizeof(szMiscArray), "{DDDDDD}Target specified: %d\nGPS Traceroute in progress...\n______________________________________\n\n", PlayerInfo[i][pPnumber]);
 
 	if(IsPlayerInDynamicArea(x, arrRadioTowerData[x][rt_iAreaID]))
 	{
@@ -727,11 +733,9 @@ public Phone_Trace(playerid, i)
 		GangZoneFlashForPlayer(playerid, iGZID, COLOR_YELLOW);
 
 
-		// SetPlayerCheckpoint(playerid, fPos[0][0], fPos[0][1], fPos[0][2], 2.0);
-
 		format(szMiscArray, sizeof(szMiscArray), "%s\n\
 			\n_____________________________________\n\n\
-			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength, PlayerInfo[playerid][pPnumber], szZone);
+			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[i][pPnumber], arrRadioTowerData[x][rt_szName]);
 		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "-----", "");
 		SendClientMessage(playerid, COLOR_YELLOW, "Use /trace again to stop tracing the number.");
 		DeletePVar(playerid, "TRC_STP");
@@ -779,12 +783,15 @@ public Phone_OnGetContacts(iPlayerID)
 	new iRows = cache_get_row_count();
 	if(!iRows) return SendClientMessage(iPlayerID, COLOR_GRAD1, "You do not have any contacts.");
 	
-	
 	new iFields,
 		idx,
 		szResult[64];
 
 	cache_get_data(iRows, iFields, MainPipeline);
+
+	szMiscArray[0] = 0;
+
+	szMiscArray = "Name\tNumber\n";
 
 	while(idx < iRows)
 	{
@@ -820,21 +827,9 @@ public Phone_OnAddContactFinish(iPlayerID)
 forward Phone_OnDeleteContact(iPlayerID);
 public Phone_OnDeleteContact(iPlayerID)
 {
-	new iRows = cache_get_row_count();
-	DeletePVar(iPlayerID, PVAR_PHONEDELCONTACT);
-	if(!iRows) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	new iFields;
-	cache_get_data(iRows, iFields, MainPipeline);
-	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `phone_contacts` WHERE `id` = '%d' AND `contactid` = '%d'", GetPlayerSQLId(iPlayerID), cache_get_field_content_int(0, "id", MainPipeline));
-	mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnDeleteContactFinish", "i", iPlayerID);
-	return 1;
-}
-
-forward Phone_OnDeleteContactFinish(iPlayerID);
-public Phone_OnDeleteContactFinish(iPlayerID)
-{
 	if(mysql_errno()) return SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
 	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD} You have successfully deleted the contact.");
+	DeletePVar(iPlayerID, PVAR_PHONEDELCONTACT);
 	Phone_Contacts(iPlayerID);
 	return 1;
 }
@@ -1137,8 +1132,9 @@ CMD:selfie(playerid, params[]) {
 	    fPos[3] += 1.25;
 	    fCam[0] = fPos[0] + 1.4 * floatcos(fPos[3], degrees);
 	    fCam[1] = fPos[1] + 1.4 * floatsin(fPos[3], degrees);
-	    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 1);
-	    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 1);
+
+	    SetPlayerCameraPos(playerid, fCam[0], fCam[1], fPos[2] + 0.9);
+	    SetPlayerCameraLookAt(playerid, fPos[0], fPos[1], fPos[2] + 0.9);
 	    SetPlayerFacingAngle(playerid, fPos[3] - 90.0);
 
 	    TogglePlayerControllable(playerid, false);
