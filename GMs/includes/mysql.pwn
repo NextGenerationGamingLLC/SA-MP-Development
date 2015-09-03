@@ -5528,7 +5528,7 @@ public ReferralSecurity(playerid)
 
 			format(szMiscArray, sizeof(szMiscArray), "Nobody");
 			TogglePlayerSpectating(playerid, false);
-			SetPlayerHealth(playerid, 1000.0);
+			SetHealth(playerid, 100.0);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
 			SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
 		}

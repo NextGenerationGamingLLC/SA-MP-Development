@@ -717,7 +717,7 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (55000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -744,7 +744,7 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (55000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -1091,10 +1091,11 @@ CMD:craft(playerid, params[])
 		}
 
 		else if(strcmp(choice, "rimkit", true) == 0) {
-			if(PlayerInfo[playerid][pMats] >= 55000) {
-				price = 55000;
+			if(PlayerInfo[playerid][pMats] >= 400000) {
+				price = 400000;
 				weapon = 29;
 			}
+			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
 		}
 
 		else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid Craft name!"); return 1; }

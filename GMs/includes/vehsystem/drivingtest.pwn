@@ -110,7 +110,7 @@ DrivingTestFinish(playerid)
 	DeletePVar(playerid, "pDTest");
 	DeletePVar(playerid, "pTestMarker");
 	DisablePlayerCheckpoint(playerid);
-	PlayerInfo[playerid][pCarLic] = 1;
+	PlayerInfo[playerid][pCarLic] = gettime() + (86400*80);
 	SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: You have successfully completed driving school and earned your license!");
 	return 1;
 }
@@ -118,7 +118,7 @@ DrivingTestFinish(playerid)
 DrivingSchoolSpeedMeter(playerid, Float:speed)
 {
 	new pTestMarker = GetPVarInt(playerid, "pTestMarker");
-	if(pTestMarker < 20 || pTestMarker >= 28)
+	if(pTestMarker < 20 || pTestMarker >= 29)
 	{
 		if(speed > 50)
 		{

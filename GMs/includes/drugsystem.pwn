@@ -562,6 +562,24 @@ timer BM_Seize[60000 * 15](i) {
 	DestroyDynamicArea(iad);
 }
 
+hook OnPlayerDisconnect(playerid, reason) {
+
+	for(new i; i < sizeof(szDrugs); ++i) {
+		PlayerInfo[playerid][p_iDrug][i] = 0;
+		PlayerInfo[playerid][p_iDrugQuality][i] = 0;
+		PlayerInfo[playerid][p_iDrugTaken][i] = 0;
+		PlayerInfo[playerid][p_iAddicted][i] = 0;
+		PlayerInfo[playerid][p_iAddictedLevel][i] = 0;
+	}
+	for(new i; i < sizeof(szIngredients); ++i) PlayerInfo[playerid][p_iIngredient][i] = 0;
+	DeletePVar(playerid, "Aliens");
+	DeletePVar(playerid, "DS_BMTC");
+	DeletePVar(playerid, "AtDrugArea");
+	DeletePVar(playerid, "BM_AID");
+	DeletePVar(playerid, "PO_CAPTUR");
+
+}
+
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	dr_iPlayerTimeStamp[playerid] = gettime();
@@ -3149,6 +3167,8 @@ CMD:editpoint(playerid, params[]) {
 	new szChoice[16],
 		i,
 		Float:fPos[3];
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command. ");
 
 	if(sscanf(params, "s[16]dS[32]", szChoice, i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'captureable'");
 

@@ -360,10 +360,12 @@ OnPlayerChangeWeapon(playerid, newweapon)
 		if(newweapon == WEAPON_PARACHUTE) PlayerInfo[playerid][pGuns][11] = 46;
 
 		if( PlayerInfo[playerid][pGuns][GetWeaponSlot(newweapon)] != newweapon) {
-			if(!GetPVarType(playerid, "WpnHack_Warnings")) SetPVarInt(playerid, "WpnHack_Warnings", 0);
 			new iWarnings = GetPVarInt(playerid, "WpnHack_Warnings");
-			if(iWarnings > 5) KickEx(playerid);
-			else SetPVarInt(playerid, "WpnHack_Warnings", iWarnings++);
+			if(iWarnings > 3) {
+				KickEx(playerid);
+				DeletePVar(playerid, "WpnHack_Warnings");
+			}
+			else SetPVarInt(playerid, "WpnHack_Warnings", iWarnings+1);
 		}
 	}
 

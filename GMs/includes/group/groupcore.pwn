@@ -335,7 +335,7 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 	return 1;
 }
 
-stock ToggleDVSiren(playerid, iDvSlotID, iSlot, iTogState = 0)
+/*stock ToggleDVSiren(playerid, iDvSlotID, iSlot, iTogState = 0)
 {
 	switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot])
 	{
@@ -379,7 +379,7 @@ stock ToggleDVSiren(playerid, iDvSlotID, iSlot, iTogState = 0)
 	AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], GetPlayerVehicleID(playerid), DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 	Streamer_Update(playerid);
 	return 1;
-}
+}*/
 
 stock ToggleSiren(vehid, iTogState)
 {
@@ -398,40 +398,44 @@ stock ToggleSiren(vehid, iTogState)
 	}
 	else
 	{
-		new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
-		new iTempObj2 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
-		new iTempObj3 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 		switch(GetVehicleModel(vehid))
 		{
 			case 402:
 			{
+				new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.20, 0.5, 0.4, 0.0, 0.0, 0.0);
 				SetGVarInt("VehSiren", iTempObj, vehid);
 			}
 			case 411, 541:
 			{
+				new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj, vehid, 0.0, 0.2, 0.4, 0.0, 0.0, 0.0);
 				SetGVarInt("VehSiren", iTempObj, vehid);
 			}
 			case 415:
 			{
+				new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.20, 0.30, 0.3, 0.0, 0.0, 0.0);
 				SetGVarInt("VehSiren", iTempObj, vehid);
 			}
 			case 451:
 			{
+				new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.30, 0.4, 0.6, 0.0, 0.0, 0.0);
 				SetGVarInt("VehSiren", iTempObj, vehid);
 			}
 			case 525:
 			{
+				new iTempObj2 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
+				new iTempObj3 = CreateDynamicObject(19294, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj2, vehid, 0.55, -0.5, 1.5, 0.0, 0.0, 0.0);
-				SetGVarInt("VehSiren", iTempObj2, vehid);
 				AttachDynamicObjectToVehicle(iTempObj3, vehid, -0.55, -0.5, 1.5, 0.0, 0.0, 0.0);
+				SetGVarInt("VehSiren", iTempObj2, vehid);
 				SetGVarInt("VehSiren2", iTempObj3, vehid);
 			}
 			default:
 			{
+				new iTempObj = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 200.0);
 				AttachDynamicObjectToVehicle(iTempObj, vehid, -0.30, 0.4, 0.4, 0.0, 0.0, 0.0);
 				SetGVarInt("VehSiren", iTempObj, vehid);
 			}
@@ -2892,13 +2896,13 @@ hook OnVehicleSpawn(vehicleid)
 
 public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
 {
-	if(DynVeh[vehicleid] != -1)
+	/*if(DynVeh[vehicleid] != -1)
 	{
 		for(new i = 0; i != MAX_DV_OBJECTS; i++)
 		{
 			ToggleDVSiren(playerid, DynVeh[vehicleid], i, newstate);
 		}
-	}
+	}*/
 	switch(newstate)
 	{
 		case 0: ToggleSiren(vehicleid, 1);
@@ -3023,7 +3027,7 @@ CMD:badge(playerid, params[]) {
 	return 1;
 }
 
-CMD:dvsiren(playerid, params[])
+/*CMD:dvsiren(playerid, params[])
 {
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
@@ -3040,7 +3044,7 @@ CMD:dvsiren(playerid, params[])
 		}
 	}
 	return 1;
-}
+}*/
 
 CMD:viewbudget(playerid, params[])
 {

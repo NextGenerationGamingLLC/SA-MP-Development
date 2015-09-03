@@ -162,9 +162,9 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 	{
 		new Float:armour,
 			Float:health;
-		GetPlayerArmour(playerid, armour);
-		if(armour > 0.0) SetPlayerArmour(playerid, armour+amount);
-		else SetPlayerHealth(playerid, health+amount);
+		GetArmour(playerid, armour);
+		if(armour > 0.0) SetArmour(playerid, armour+amount);
+		else SetHealth(playerid, health+amount);
 	}
 	return 1;
 }

@@ -10,6 +10,8 @@ CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
 
 	szMiscArray[0] = 0;
 
+	if(iLength > 5000) iLength = 5000;
+
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `ban` (`bannedid`, `creatorid`, `IP`, `reason`, `createdate`, `liftdate`, `active`) \
 		VALUES ('%d', '%d', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
 		iBanned, PlayerInfo[iBanCreator][pId], szIPAddress, szReason, iLength);

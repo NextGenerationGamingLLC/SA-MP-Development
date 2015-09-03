@@ -397,7 +397,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			    format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
 				TogglePlayerSpectating(playerid, false);
-				SetPlayerHealth(playerid, 1000.0);
+				SetHealth(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
 				SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
 			}
@@ -981,7 +981,7 @@ Register_PlaneStart(playerid)
 forward Plane_TogglePlayerControllable(playerid);
 public Plane_TogglePlayerControllable(playerid)
 {
-	SetPlayerHealth(playerid, 500.0); // just in case.
+	SetHealth(playerid, 500.0); // just in case.
 	TogglePlayerControllable(playerid, false);
 	return 1;
 }
@@ -1033,7 +1033,7 @@ public Register_Plane(playerid)
 			SetPlayerFacingAngle(playerid, 0.0);
 			SetPlayerVirtualWorld(playerid, 100);
 			SetPlayerInterior(playerid, 0);
-			SetPlayerHealth(playerid, 100.0);
+			SetHealth(playerid, 100.0);
 			GivePlayerValidWeapon(playerid, 46, 1);
 			ClearChatbox(playerid);
 		    SendClientMessage(playerid, COLOR_YELLOW,"[INTERCOM] The plane won't be flying for much longer! Jump, quick!!");

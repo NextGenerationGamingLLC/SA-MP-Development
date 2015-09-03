@@ -381,6 +381,19 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		arrAmmoData[playerid][awp_iAmmo][iAT]--;
 	}
 
+	if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid)
+	{
+		if(gettime() > GetPVarInt(playerid, "NopeWepWarn"))
+		{
+			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been denied issuing damage. Possible weapon hack: Server Weapon: %d | Used Weapon: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)], weaponid);
+			Log("logs/hack.log", szMiscArray);
+			SetPVarInt(playerid, "NopeWepWarn", gettime()+60);
+		}
+		return 1;
+	}
+
 	if(hittype == BULLET_HIT_TYPE_PLAYER)
 	{
 		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;
