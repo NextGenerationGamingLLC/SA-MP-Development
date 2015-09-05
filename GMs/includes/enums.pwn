@@ -66,7 +66,7 @@ new const szIngredients[][] = {
 	"N-Benzynol",
 	"PMK Oil",
 	"MDMA Crystals",
-	"Cafeine"
+	"Caffeine"
 };
 
 enum eGroupData {

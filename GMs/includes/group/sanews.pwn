@@ -1719,8 +1719,14 @@ public SAN_Process_Camera(playerid, channel)
 	return 1;
 }
 
-UpdateSANewsBroadcast(channel)
+UpdateSANewsBroadcast(channel, ishutdown = 0)
 {
+	if(ishutdown == 1) {
+
+		DestroyDynamic3DTextLabel(SANShows[channel][SANews3DText][0]);
+		DestroyDynamic3DTextLabel(SANShows[channel][SANews3DText][1]);
+		DestroyDynamic3DTextLabel(SANShows[channel][camera]);
+	}
 	szMiscArray[0] = 0;
 	if(SANShows[channel][ChannelActive] == 0)
 	{
@@ -1762,7 +1768,7 @@ SAN_Stop(i)
 		for(new channel; channel < MAX_SANCHANNELS; channel ++)
 		{
 			SANShows[channel][san_iRatings] = 0;
-			UpdateSANewsBroadcast(channel);
+			UpdateSANewsBroadcast(channel, 1);
 		}
 	}
 }
@@ -1886,8 +1892,7 @@ CMD:stopnews(playerid, params[])
 				broadcasting = 0;
 				for(new channel; channel < MAX_SANCHANNELS; channel ++)
 				{
-					UpdateSANewsBroadcast(channel);
-					DestroyDynamic3DTextLabel(SANShows[channel][camera]);
+					UpdateSANewsBroadcast(channel, 1);
 				}
 				foreach(Player, i)
 				{

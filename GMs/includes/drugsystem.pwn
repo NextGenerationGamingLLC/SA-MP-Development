@@ -143,7 +143,7 @@ new const szIngredients[][] = {
 	"N-Benzynol",
 	"PMK Oil",
 	"MDMA Crystals",
-	"Cafeine"
+	"Caffeine"
 };
 */
 /*
@@ -238,7 +238,7 @@ DS_Ingredients_GetSQLName(id)
 		case 12: szMiscArray = "Nbenzynol";
 		case 13: szMiscArray = "Pmkoil";
 		case 14: szMiscArray = "Mdmacrys";
-		case 15: szMiscArray = "Cafeine";
+		case 15: szMiscArray = "Caffeine";
 	}
 	return szMiscArray;
 }
@@ -411,7 +411,7 @@ timer Addiction_Effects[60000](playerid, iDrugID, iTaken) {
 
 	new Float:fHealth;
 
-	GetPlayerHealth(playerid, fHealth);
+	GetHealth(playerid, fHealth);
 
 	PlayerInfo[playerid][p_iAddictedLevel][iDrugID] =- DRUGS_ADDICTED_LEVEL / 5;
 
@@ -562,7 +562,9 @@ timer BM_Seize[60000 * 15](i) {
 	DestroyDynamicArea(iad);
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+
+// changed from onplayerdisconnect as causes player saving issues.
+hook OnPlayerConnect(playerid) {
 
 	for(new i; i < sizeof(szDrugs); ++i) {
 		PlayerInfo[playerid][p_iDrug][i] = 0;
@@ -1692,7 +1694,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		Float:fHealth,
 		Float:fArmour;
 
-	GetPlayerHealth(playerid, fHealth), GetPlayerArmour(playerid, fArmour);
+	GetHealth(playerid, fHealth), GetArmour(playerid, fArmour);
 
 	for(new i; i < sizeof(szDrugs); ++i) iAllTaken += PlayerInfo[playerid][p_iDrugTaken][i];
 
@@ -1777,7 +1779,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 3: // Heroine
 		{
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			SetPlayerTime(playerid, 0, 0);
 			switch(iTotalTaken)	{
 
@@ -1798,7 +1800,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 4: // Cocaine
 		{
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			Drug_GunPerk(playerid);
 			SetPlayerTime(playerid, 3, 0);
 			switch(iTotalTaken)
@@ -1819,7 +1821,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 5: // Crack
 		{
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: SetPlayerWeather(playerid, 108);
@@ -1831,7 +1833,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 6: // Opium
 		{
 			SetHealth(playerid, fHealth + (5.0 * iTaken));
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: 
@@ -1857,7 +1859,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 7: // Ecstasy
 		{
 			SetHealth(playerid, fHealth + (5.0 * iTaken));
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: 
@@ -1924,7 +1926,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 10, 11, 12:
 		{
 			SetHealth(playerid, fHealth + (5.0 * iTaken));
-			SetPlayerArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 15: return Drug_ResetEffects(playerid, iDrugID);
@@ -1937,9 +1939,9 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			}
 		}
 	}
-	GetPlayerHealth(playerid, fHealth);
+	GetHealth(playerid, fHealth);
 	if(fHealth > DRUGS_MAX_BONUS_HEALTH) SetHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
-	if(fArmour > DRUGS_MAX_BONUS_ARMOUR) SetPlayerArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
+	if(fArmour > DRUGS_MAX_BONUS_ARMOUR) SetArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
 	Bit_On(g_PlayerBits[playerid], dr_bitInDrugEffect);
 	return 1;
 }
@@ -3870,7 +3872,7 @@ Character_Actor(playerid, choice)
 
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 			GetPlayerFacingAngle(playerid, fPos[3]);
-			GetPlayerHealth(playerid, fHealth);
+			GetHealth(playerid, fHealth);
 			iActorID = CreateActor(PlayerInfo[playerid][pModel], fPos[0], fPos[1], fPos[2], fPos[3]);
 			SetActorVirtualWorld(iActorID, iVW);
 			SetActorInvulnerable(iActorID, false);

@@ -1508,6 +1508,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Faction Moderator");
 						format(string, sizeof(string), "%s has given Faction Moderator to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued faction moderator");
 					}
 					else
 					{
@@ -1516,6 +1517,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Faction Moderator taken");
 						format(string, sizeof(string), "%s has taken Faction Moderator from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from faction moderator");
 					}
 				}
 				else if(strcmp(task, "gmod", true) == 0)
@@ -1527,6 +1529,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Gang Moderator");
 						format(string, sizeof(string), "%s has given Gang Moderator to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued gang moderator");
 					}
 					else
 					{
@@ -1535,6 +1538,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Gang Moderator taken");
 						format(string, sizeof(string), "%s has taken Gang Moderator from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from gang moderator");
 					}
 				}
 				else if(strcmp(task, "so", true) == 0)
@@ -1546,6 +1550,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Special Operative");
 						format(string, sizeof(string), "%s has given Special Operative to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued special ops");
 					}
 					else
 					{
@@ -1554,6 +1559,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Special Operative permissions taken");
 						format(string, sizeof(string), "%s has taken Special Operative permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from special ops");
 					}
 				}
 				else if(strcmp(task, "ba", true) == 0)
@@ -1565,6 +1571,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Ban Appealer");
 						format(string, sizeof(string), "%s has given Ban Appealer to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued ban appealer");
 					}
 					else
 					{
@@ -1573,6 +1580,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Ban Appealer taken");
 						format(string, sizeof(string), "%s has taken Ban Appealer from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from ban appealer");
 					}
 				}
 				else if(strcmp(task, "st", true) == 0)
@@ -1584,6 +1592,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Shop Technician");
 						format(string, sizeof(string), "%s has given Shop Technician to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued shop tech");
 					}
 					else
 					{
@@ -1592,6 +1601,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Shop Technician taken");
 						format(string, sizeof(string), "%s has taken Shop Technician from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from shop tech");
 					}
 				}
 				else if(strcmp(task, "pr", true) == 0)
@@ -1603,6 +1613,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a member of Public Relations");
 						format(string, sizeof(string), "%s has given Public Relations permissions to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued public relations");
 					}
 					else
 					{
@@ -1611,6 +1622,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Public Relations permissions taken");
 						format(string, sizeof(string), "%s has taken Public Relations permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from public relations");
 					}
 				}
 				else if(strcmp(task, "hr", true) == 0)
@@ -1622,6 +1634,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a member of Human Resources");
 						format(string, sizeof(string), "%s has given Human Resources permissions to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued human resources");
 					}
 					else
 					{
@@ -1630,6 +1643,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Human Resources permissions taken");
 						format(string, sizeof(string), "%s has taken Human Resources permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from human resources");
 					}
 				}
 				else if(strcmp(task, "sec", true) == 0)
@@ -1641,6 +1655,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a member of Security");
 						format(string, sizeof(string), "%s has given Security permissions to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued security");
 					}
 					else
 					{
@@ -1649,6 +1664,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Security permissions taken");
 						format(string, sizeof(string), "%s has taken Security permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from security");
 					}
 				}
 				else if(strcmp(task, "bm", true) == 0)
@@ -1660,6 +1676,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made a Business Moderator");
 						format(string, sizeof(string), "%s has given Business Moderator permissions to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued business moderator");
 					}
 					else
 					{
@@ -1668,6 +1685,7 @@ CMD:setsec(playerid, params[])
 						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Business Moderator taken");
 						format(string, sizeof(string), "%s has taken Business Moderator permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from business moderator");
 					}
 				}
 			}
@@ -1786,6 +1804,10 @@ CMD:makeadmin(playerid, params[])  {
 					default: format(szRank, sizeof(szRank), "You have made %s an undefined level administrator.", GetPlayerNameEx(iTargetID));
 				}
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szRank);
+				
+				format(szMiscArray, sizeof(szMiscArray), "was made a %s (%d)", GetAdminRankName(iAdminValue), iAdminValue);
+				DBLog(playerid, iTargetID, "Admin", szMiscArray);
+
 			}
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
@@ -1934,6 +1956,7 @@ CMD:staff(playerid, params[]) {
 
 			SendAdvisorMessage(COLOR_COMBINEDCHAT, szMessage);
 			Log("logs/staffchat.log", szMessage);
+			ChatDBLog(playerid, "StaffChat", szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /staff [chat]");
 	}

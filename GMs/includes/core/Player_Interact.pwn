@@ -202,7 +202,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
 
-	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 
 	switch(itemid) {
 
@@ -380,10 +380,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %d %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %d %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "sold %d %s.", amount, Item_Getname(itemid));
+		format(szMiscArray, sizeof(szMiscArray), "gave %d %s.", amount, Item_Getname(itemid));
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
@@ -399,10 +399,10 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s hands %s some %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Item_Getname(itemid));
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 5, 5000);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %d %s $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %d %s $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, Item_Getname(itemid), number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%d %s.", amount, Item_Getname(itemid));
+		format(szMiscArray, sizeof(szMiscArray), "%d %s $%s.", amount, Item_Getname(itemid), number_format(saleprice));
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 
@@ -767,20 +767,20 @@ Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 	
 	if(PlayerInfo[giveplayerid][pGuns][GetWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
 
-	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessageEx(giveplayerid, COLOR_GREY, "You do not have enough money on hand.");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 	PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] = 0;
 	SetPlayerWeaponsEx(playerid);
 
 	GivePlayerValidWeapon(giveplayerid, weaponid, 0);
 
-	if(saleprice > 0) {
+	if(saleprice != 0) {
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s a %s for $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has sold you a %s $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(saleprice));
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold a %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold a %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		
 		format(szMiscArray, sizeof(szMiscArray), "sold a %s for $%s.", ReturnWeaponName(weaponid), number_format(saleprice));
@@ -793,7 +793,7 @@ Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has given you a %s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid));
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given a %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given a %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], ReturnWeaponName(weaponid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "gave a %s.", ReturnWeaponName(weaponid));
@@ -816,7 +816,7 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 
 	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
 
-	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 
 	if(PlayerInfo[playerid][p_iDrug][drugid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
 
@@ -830,14 +830,14 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 	PlayerInfo[playerid][p_iDrug][drugid] -= amount;
 	PlayerInfo[giveplayerid][p_iDrugQuality][drugid] = PlayerInfo[playerid][p_iDrugQuality][drugid];
 
-	if(saleprice > 0) {
+	if(saleprice != 0) {
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid], number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %dpc of %s for $%s", GetPlayerNameEx(playerid), amount, szDrugs[drugid], number_format(saleprice));
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szDrugs[drugid], number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, szDrugs[drugid], number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		
 		format(szMiscArray, sizeof(szMiscArray), "sold %dpc of %s for $%s.", amount, szDrugs[drugid], number_format(saleprice));
@@ -850,7 +850,7 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has given you %dpc of %s", GetPlayerNameEx(playerid), amount, szDrugs[drugid]);
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szDrugs[drugid], GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, szDrugs[drugid], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "gave %dpc of %s.", amount, szDrugs[drugid]);
@@ -871,7 +871,7 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 
 	if(restarting) return SendClientMessageEx(playerid, COLOR_RED, "Server restart in progress, trading is disabled.");
 
-	if(saleprice > 0 && GetPlayerCash(giveplayerid) < saleprice) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
+	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 
 	if(PlayerInfo[playerid][p_iIngredient][ingredientid] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that much.");
 
@@ -884,14 +884,14 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 	PlayerInfo[giveplayerid][p_iIngredient][ingredientid] += amount;
 	PlayerInfo[playerid][p_iIngredient][ingredientid] -= amount;
 
-	if(saleprice > 0) {
+	if(saleprice != 0) {
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid], number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has sold you %dpc of %s for $%s", GetPlayerNameEx(playerid), amount, szIngredients[ingredientid], number_format(saleprice));
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], number_format(saleprice), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has sold %dpc of %s for $%s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], number_format(saleprice), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		
 		format(szMiscArray, sizeof(szMiscArray), "sold %dpc of %s for $%s.", amount, szIngredients[ingredientid], number_format(saleprice));
@@ -904,7 +904,7 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 		format(szMiscArray, sizeof(szMiscArray), "%s has given you %dpc of %s", GetPlayerNameEx(playerid), amount, szIngredients[ingredientid]);
 		SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has given %dpc of %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], amount, szIngredients[ingredientid], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "gave %dpc of %s.", amount, szIngredients[ingredientid]);
@@ -938,7 +938,7 @@ Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 		GivePlayerCash(playerid, -amount);
 		GivePlayerCash(giveplayerid, amount);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has paid %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pIP], number_format(amount), GetPlayerNameEx(giveplayerid), giveplayerid, PlayerInfo[giveplayerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has paid %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], number_format(amount), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "has been paid $%s", number_format(amount));
 		DBLog(PlayerInfo[playerid][pId], PlayerInfo[giveplayerid][pId], "Pay_Log", szMiscArray);
