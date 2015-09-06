@@ -220,7 +220,7 @@ CMD:ban(playerid, params[]) {
 		iLength;
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "uds[64]", iTargetID, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [reason]");
+	if(sscanf(params, "uds[64]", iTargetID, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [reason]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
 
@@ -267,7 +267,7 @@ CMD:banaccount(playerid, params[]) {
 		iLength;
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "s[24]ds[64]", szName, szReason, iLength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [length in days] [reason]");
+	if(sscanf(params, "s[24]ds[64]", szName, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [length in days] [reason]");
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
 
