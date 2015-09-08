@@ -19,7 +19,7 @@
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	// if(newkeys & ENTRANCE_SHORTCUT) Process_Entrance(playerid);
-	tempProcessEntrance(playerid);
+	if(newkeys & ENTRANCE_SHORTCUT) tempProcessEntrance(playerid);
 	return 1;
 }
 
@@ -41,7 +41,7 @@ CMD:exit(playerid)
 
 tempProcessEntrance(playerid) {
 
-	for(new i; i < MAX_DOORS; ++i) {
+	for(new i; i < MAX_DDOORS; ++i) {
 
 		if(IsPlayerInDynamicArea(playerid, DDoorsInfo[i][ddAreaID])) return DDoor_Enter(playerid, i);
 		if(IsPlayerInDynamicArea(playerid, DDoorsInfo[i][ddAreaID_int])) return DDoor_Exit(playerid, i);
