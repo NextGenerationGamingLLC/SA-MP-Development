@@ -584,9 +584,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 					// Jingles' Drug System:
 					for(new d; d < sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
 					for(new d; d < sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
-	
+
 					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);					
+					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
+					
+					for(new i = 0; i != MAX_AMMO_TYPES; i++)
+					{
+						format(szField, sizeof(szField), "pBAmmo%d", i);
+						PlayerInfo[extraid][pBAmmo][i] = cache_get_field_content_int(row, szField, MainPipeline);
+					}
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -2418,7 +2424,13 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 
 	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
- 	for(new d; d < sizeof(szIngredients); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
+	for(new d; d < sizeof(szIngredients); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
+
+	for(new i = 0; i != MAX_AMMO_TYPES; i++)
+	{
+		format(mistring, sizeof(mistring), "pBAmmo%d", i);
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), mistring, PlayerInfo[playerid][pBAmmo][i]);
+	}
 
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);

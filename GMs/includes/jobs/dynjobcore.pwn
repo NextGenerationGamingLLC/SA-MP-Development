@@ -185,7 +185,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	printf("[JOB VEH] %d", vehicleid);
+	//printf("[JOB VEH] %d", vehicleid);
 	for(new i; i < MAX_JOB_VEHICLES; ++i)
 	{
 		if(arrJobVehData[i][jveh_iVehID] == vehicleid)

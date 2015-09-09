@@ -423,17 +423,18 @@ public OnLoadHouses()
 		HouseInfo[i][hSign][2] = cache_get_field_content_float(i, "SignZ", MainPipeline);
 		HouseInfo[i][hSign][3] = cache_get_field_content_float(i, "SignA", MainPipeline);
 		HouseInfo[i][hSignExpire] = cache_get_field_content_int(i, "SignExpire", MainPipeline);
+
 		HouseInfo[i][hLastLogin] = cache_get_field_content_int(i, "LastLogin", MainPipeline);
 		HouseInfo[i][hExpire] = cache_get_field_content_int(i, "Expire", MainPipeline);
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
 
-		HouseInfo[i][hAmmo][0] = cache_get_field_content_int(i, "Ammo0", MainPipeline);
-        HouseInfo[i][hAmmo][1] = cache_get_field_content_int(i, "Ammo1", MainPipeline);
-        HouseInfo[i][hAmmo][2] = cache_get_field_content_int(i, "Ammo2", MainPipeline);
-        HouseInfo[i][hAmmo][3] = cache_get_field_content_int(i, "Ammo3", MainPipeline);
-        HouseInfo[i][hAmmo][4] = cache_get_field_content_int(i, "Ammo4", MainPipeline);
+		for(new j = 0; j != MAX_AMMO_TYPES; j++)
+		{
+			format(szField, sizeof(szField), "Ammo%d", j);
+			HouseInfo[i][hAmmo][j] = cache_get_field_content_int(i, szField, MainPipeline);
+		}
 		
 		HouseInfo[i][Listed] = cache_get_field_content_int(i, "Listed", MainPipeline); 
 		HouseInfo[i][PendingApproval] = cache_get_field_content_int(i, "PendingApproval", MainPipeline);

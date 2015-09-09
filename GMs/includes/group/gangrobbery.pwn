@@ -198,6 +198,7 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 	        DeletePVar(playerid, "_EditingSafeID");
 	    }
 	}
+	return 1;
 }
 
 

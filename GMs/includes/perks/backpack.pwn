@@ -81,7 +81,7 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
 	switch(dialogid) {
 		case DIALOG_OBACKPACK: {
-			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
+			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nAmmo\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
 			if(PlayerInfo[playerid][pBItems][5] != 0 && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
 			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
 		}
@@ -142,6 +142,22 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d {02B0F5}Energy Bars%s", (GetPVarInt(playerid, "bnwd")) ? PlayerInfo[playerid][mInventory][4]:PlayerInfo[playerid][pBItems][11], (GetPVarInt(playerid, "bnwd")) ? (" on hand"):(""));
 			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s:", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
 			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
+		}
+		case DIALOG_BAMMO:
+		{
+			DeletePVar(playerid, "bnwd");
+			DeletePVar(playerid, "bAmmoTypeWD");
+			ShowAmmoDialog(playerid, DIALOG_BAMMO, dgTitle, PlayerInfo[playerid][pBAmmo]);
+		}
+		case DIALOG_BAMMO*2:
+		{
+			ShowPlayerDialog(playerid, DIALOG_BAMMO, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+		}
+		case DIALOG_BAMMO*3:
+		{
+			format(dgTitle, sizeof(dgTitle), "%s Items - {02B0F5}Ammo", GetBackpackName(PlayerInfo[playerid][pBackpack]));
+			format(dgString, sizeof(dgString), "%s\nEnter the quantity you wish to %s:", extramsg, GetPVarInt(playerid, "bnwd") ? ("deposit") : ("withdraw"));
+			ShowPlayerDialog(playerid, DIALOG_BAMMO, DIALOG_STYLE_INPUT, dgTitle, dgString, GetPVarInt(playerid, "bnwd") ? ("Deposit") : ("Withdraw"), "Cancel");
 		}
 	}
 	return 1;
@@ -259,10 +275,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pWRestricted] || PlayerInfo[playerid][pAccountRestricted]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this option while being restricted.");
 						ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon");
 					}
-					case 3: { // Energy Bars
+					case 3: // Ammo
+					{
+						ShowBackpackMenu(playerid, DIALOG_BAMMO, "- {02B0F5}Ammo");
+					}
+					case 4: { // Energy Bars
 						ShowBackpackMenu(playerid, DIALOG_ENERGYBARS, "- {02B0F5}Energy Bars");
 					}
-					case 4: { // Med Kits
+					case 5: { // Med Kits
 						if(PlayerInfo[playerid][pBItems][5] > 0) {
 							ShowBackpackMenu(playerid, DIALOG_BMEDKIT, "- {02B0F5}Confirm med kit use");
 						}
@@ -730,12 +750,84 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				new ip[MAX_PLAYER_NAME];
 				GetPlayerIp(playerid, ip, sizeof(ip));
-				format(szMiscArray, sizeof(szMiscArray), "[DROP] %s(%d) (IP:%s) has thrown away his %s Backpack", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), choice);
+				format(szMiscArray, sizeof(szMiscArray), "[DROP] %s(%d) (IP:%s) has thrown away his %s Backpack", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), choice);
 				Log("logs/backpack.log", szMiscArray);
 			}
 			else
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "You do not have a backpack!");
+			}
+		}
+		case DIALOG_BAMMO:
+		{
+			if(response)
+			{
+				if(!IsBackpackAvailable(playerid)) {
+					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
+					return 1;
+				}
+				if(!GetPVarType(playerid, "bAmmoTypeWD"))
+				{
+					SetPVarInt(playerid, "bAmmoTypeWD", listitem);
+					return ShowBackpackMenu(playerid, DIALOG_BAMMO*2, "- {02B0F5}Ammo");
+				}
+				if(!GetPVarType(playerid, "bnwd"))
+				{
+					SetPVarInt(playerid, "bnwd", listitem);
+					return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "");
+				}
+				szMiscArray[0] = 0;
+				new AmmoType = GetPVarInt(playerid, "bAmmoTypeWD");
+				if(GetPVarInt(playerid, "bnwd"))//Deposit
+				{
+					new amount, maxAmmo;
+					switch(PlayerInfo[playerid][pBackpack])
+					{
+						case 1: maxAmmo = 100;
+						case 2: maxAmmo = 125;
+						case 3: maxAmmo = 150;
+					}
+					if(sscanf(inputtext, "d", amount)) return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Wrong input{A9C4E4}");
+					if(amount < 1) return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Error{A9C4E4}\nYou cannot put an amount less than 1");
+					if(amount > maxAmmo-PlayerInfo[playerid][pBAmmo][AmmoType]) 
+					{
+						format(szMiscArray, sizeof(szMiscArray), "{B20400}Error, you can only store {FFF600}%d{B20400} ammo{A9C4E4}\nAmmo available left to store: {FFF600}%d{A9C4E4}", maxAmmo, maxAmmo-PlayerInfo[playerid][pBAmmo][AmmoType]);
+						return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, szMiscArray);
+					}
+					if(arrAmmoData[playerid][awp_iAmmo][AmmoType] >= amount)
+						arrAmmoData[playerid][awp_iAmmo][AmmoType] -= amount;
+					else return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Error{A9C4E4}\nYou are trying to deposit more than you have!");
+					PlayerInfo[playerid][pBAmmo][AmmoType] += amount;
+					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d %s rounds in your backpack.", amount, GetAmmoName(AmmoType));
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "[AMMO] %s(%d) (IP:%s) deposited %d %s rounds (%d Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, GetAmmoName(AmmoType), PlayerInfo[playerid][pBAmmo][AmmoType], PlayerInfo[playerid][pBackpack]);
+					Log("logs/backpack.log", szMiscArray);
+				}
+				else//Withdraw
+				{
+					new amount;
+					if(sscanf(inputtext, "d", amount)) return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Wrong input{A9C4E4}");
+					if(amount < 1) return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Error{A9C4E4}\nYou cannot put an amount less than 1");
+					if(amount > PlayerInfo[playerid][pBAmmo][AmmoType]) 
+					{
+						format(szMiscArray, sizeof(szMiscArray), "{B20400}Error, you only have {FFF600}%d{B20400} %s rounds{A9C4E4}\nYou are trying to withdraw {FFF600}%d{A9C4E4} %s rounds", PlayerInfo[playerid][pBAmmo][AmmoType], GetAmmoName(AmmoType), amount, GetAmmoName(AmmoType));
+						return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, szMiscArray);
+					}
+					if(arrAmmoData[playerid][awp_iAmmo][AmmoType] + amount > GetMaxAmmoAllowed(playerid, AmmoType))
+						return ShowBackpackMenu(playerid, DIALOG_BAMMO*3, "{B20400}Error, You cannot carry that much on you!");
+					PlayerInfo[playerid][pBAmmo][AmmoType] -= amount;
+					arrAmmoData[playerid][awp_iAmmo][AmmoType] += amount;
+					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d %s rounds from your backpack.", amount, GetAmmoName(AmmoType));
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "[AMMO] %s(%d) (IP:%s) withdrawn %d %s rounds (%d Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, GetAmmoName(AmmoType), PlayerInfo[playerid][pBAmmo][AmmoType], PlayerInfo[playerid][pBackpack]);
+					Log("logs/backpack.log", szMiscArray);
+				}
+				ShowBackpackMenu(playerid, DIALOG_BAMMO, "- {02B0F5}Ammo");
+			}
+			else
+			{
+				if(GetPVarType(playerid, "bnwd")) ShowBackpackMenu(playerid, DIALOG_BAMMO, "- {02B0F5}Ammo");
+				else ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 			}
 		}
 	}
@@ -876,6 +968,14 @@ CMD:listbitems(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, string);
 				}
 			}
+			for(new i = 0; i != MAX_AMMO_TYPES; i++)
+			{
+				if(PlayerInfo[giveplayerid][pBAmmo][i] > 0)
+				{
+					format(string, sizeof(string), "%s rounds: %d", GetAmmoName(i), PlayerInfo[giveplayerid][pBAmmo][i]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -963,6 +1063,14 @@ CMD:bsearch(playerid, params[])
 					GetWeaponName(PlayerInfo[giveplayerid][pBItems][i], weaponname, sizeof(weaponname));
 					format(string, sizeof(string), "Weapon: %s.", weaponname);
 					SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				}
+			}
+			for(new i = 0; i != MAX_AMMO_TYPES; i++)
+			{
+				if(PlayerInfo[giveplayerid][pBAmmo][i] > 0)
+				{
+					format(string, sizeof(string), "%s rounds: %d", GetAmmoName(i), PlayerInfo[giveplayerid][pBAmmo][i]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");

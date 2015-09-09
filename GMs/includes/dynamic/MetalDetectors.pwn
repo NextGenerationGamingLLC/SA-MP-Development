@@ -66,6 +66,7 @@ hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, F
 		}
 		DeletePVar(playerid, PVAR_EditingMetDet);
 	}
+	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])

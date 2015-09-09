@@ -5148,7 +5148,7 @@ public OnPlayerText(playerid, text[])
 	new string[128];
 	playerLastTyped[playerid] = 0;
 
-	if(strcmp("lol", text, true) == 0) return cmd_me(playerid, "laughs out loud."), 0;
+	//if(strcmp("lol", text, true) == 0) return cmd_me(playerid, "laughs out loud."), 0;
 
 	if(TextSpamUnmute[playerid] != 0)
 	{

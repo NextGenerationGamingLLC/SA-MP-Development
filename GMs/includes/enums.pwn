@@ -121,13 +121,13 @@ enum eGroupData {
 	g_iTurfTokens,
 	g_iMemberCount,
 	g_iCrimeType,
-	g_iAmmo[5],
+	g_iAmmo[MAX_AMMO_TYPES],
 	g_iDrugs[sizeof(szDrugs)],
 	g_iIngredients[sizeof(szIngredients)]
 }
 
 enum eAmmoData {
-	awp_iAmmo[5],
+	awp_iAmmo[MAX_AMMO_TYPES],
 	awp_iUpgrade
 }
 
@@ -1178,7 +1178,8 @@ enum pInfo
 	p_iDrugTaken[sizeof(szDrugs)],
 	p_iAddicted[sizeof(szDrugs)],
 	p_iAddictedLevel[sizeof(szDrugs)],
-	p_iIngredient[sizeof(szIngredients)]
+	p_iIngredient[sizeof(szIngredients)],
+	pBAmmo[MAX_AMMO_TYPES]
 };
 
 enum pvInfo
@@ -1300,7 +1301,7 @@ enum hInfo
 	hSignObj,
 	Text3D:hSignText,
 	hLastLogin,
-	hAmmo[5],
+	hAmmo[MAX_AMMO_TYPES],
 	hExpire,
 	hInactive,
 	hIgnore,

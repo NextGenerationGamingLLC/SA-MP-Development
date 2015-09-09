@@ -2750,20 +2750,11 @@ CMD:hbalance(playerid, params[])
 				format(string, sizeof(string), "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hHeroin]));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 
-				format(szMiscArray, sizeof(szMiscArray), "9mm: %i / 800 rounds", 	HouseInfo[i][hAmmo][0]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-				format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / 800 rounds", HouseInfo[i][hAmmo][1]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-				format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / 800 rounds", HouseInfo[i][hAmmo][2]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-				format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / 800 rounds", HouseInfo[i][hAmmo][3]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-				format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / 800 rounds",HouseInfo[i][hAmmo][4]);
-				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				for(new j = 0; j != MAX_AMMO_TYPES; j++)
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%s: %i / 800 rounds", GetAmmoName(j), HouseInfo[i][hAmmo][j]);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				}
 				
 				SendClientMessageEx(playerid, COLOR_GREEN, "|__________________________________________________________________________________|");
 				return 1;

@@ -416,69 +416,32 @@ CMD:deliverammo(playerid, params[])
 	return 1;
 }
 
-CMD:myammo(playerid, params[]) {
+ListAmmo(playerid, targetid)
+{
 	szMiscArray[0] = 0;
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	
-	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(playerid));
+	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(targetid));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
-
-	format(szMiscArray, sizeof(szMiscArray), "9mm: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][0], GetMaxAmmoAllowed(playerid, 0));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][1], GetMaxAmmoAllowed(playerid, 1));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][2], GetMaxAmmoAllowed(playerid, 2));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][3], GetMaxAmmoAllowed(playerid, 3));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / %i rounds", arrAmmoData[playerid][awp_iAmmo][4], GetMaxAmmoAllowed(playerid, 4));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	for(new i = 0; i != MAX_AMMO_TYPES; i++)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "%s: %i / %i rounds", GetAmmoName(i), arrAmmoData[targetid][awp_iAmmo][i], GetMaxAmmoAllowed(targetid, i));
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	}
 
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-
 	return 1;
 }
 
+CMD:myammo(playerid, params[]) return ListAmmo(playerid, playerid);
 
 CMD:seeammo(playerid, params[]) {
-	
 	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this command!");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /seeammo [playerid]");
-	if(!IsPlayerConnected(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected");
-
-	new iTargetID = strval(params);
-
-	szMiscArray[0] = 0;
-
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	
-	format(szMiscArray, sizeof(szMiscArray), "Ammo on %s:", GetPlayerNameEx(iTargetID));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-
-	format(szMiscArray, sizeof(szMiscArray), "9mm: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][0], GetMaxAmmoAllowed(iTargetID, 0));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "7.62x51: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][1], GetMaxAmmoAllowed(iTargetID, 1));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), ".50 AE: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][2], GetMaxAmmoAllowed(iTargetID, 2));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "7.62x39: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][3], GetMaxAmmoAllowed(iTargetID, 3));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "12-gauge: %i / %i rounds", arrAmmoData[iTargetID][awp_iAmmo][4], GetMaxAmmoAllowed(iTargetID, 4));
-	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-
-	return 1;
+	new target;
+	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /seeammo [playerid]");
+	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected");
+	return ListAmmo(playerid, target);
 }
 
 CMD:setammo(playerid, params[]) {
@@ -646,3 +609,14 @@ public OnOfflineGunLicense(playerid, task, name[])
 	Log("logs/licenses.log", szMiscArray);
 	return 1;
 }*/
+
+ShowAmmoDialog(playerid, dialogid, title[], arr[])
+{
+	szMiscArray[0] = 0;
+	strcat(szMiscArray, "Ammo Type\tAmount\n");
+	for(new i = 0; i != MAX_AMMO_TYPES; i++)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, GetAmmoName(i), arr[i]);
+	}
+	return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Select", "Cancel");
+}

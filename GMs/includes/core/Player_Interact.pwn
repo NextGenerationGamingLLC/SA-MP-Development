@@ -1185,25 +1185,13 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 		}
 	}
 
-	if(arrAmmoData[giveplayerid][awp_iAmmo][0] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "9mm rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][0]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(arrAmmoData[giveplayerid][awp_iAmmo][1] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "7.62x51 rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][1]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(arrAmmoData[giveplayerid][awp_iAmmo][2] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), ".50 AE rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][2]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(arrAmmoData[giveplayerid][awp_iAmmo][3] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "7.62x39 rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][3]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(arrAmmoData[giveplayerid][awp_iAmmo][4] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "12-gauge rounds: %d", arrAmmoData[giveplayerid][awp_iAmmo][4]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+	for(new i = 0; i != MAX_AMMO_TYPES; i++)
+	{
+		if(arrAmmoData[giveplayerid][awp_iAmmo][i] > 0)
+		{
+			format(szMiscArray, sizeof(szMiscArray), "%s rounds: %d", GetAmmoName(i), arrAmmoData[giveplayerid][awp_iAmmo][i]);
+			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 	

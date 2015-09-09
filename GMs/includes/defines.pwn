@@ -163,6 +163,8 @@ native IsValidVehicle(vehicleid);
 #define			MAX_STRUCTURE_FIRES			100
 #define			MAX_FIRE_HEALTH				1000
 
+#define			MAX_AMMO_TYPES				(5)
+
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
     strcat((%0[0] = '\0', %0), %1, %2)*/
@@ -971,6 +973,7 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
 #define			DIALOG_ENERGYBARS			(5096)
+#define			DIALOG_BAMMO				(5097)
 
 #define			DIALOG_DOC_ELEVATOR			(5500)
 #define			DIALOG_DOC_CP				(5550)

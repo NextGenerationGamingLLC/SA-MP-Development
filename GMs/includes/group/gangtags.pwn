@@ -190,10 +190,8 @@ public GangTag_OnLoad()
 {
 	new iRows = cache_get_row_count();
 	if(!iRows) return print("[Gang Tags] There are no gang tags in the database.");
-	new iFields,
-		idx,
+	new idx,
 		szResult[MAX_GANGTAGS_LEN];
-	cache_get_data(iRows, iFields, MainPipeline);
 	while(idx < iRows)
 	{
 		cache_get_field_content(idx, "text", szResult, MainPipeline);
@@ -261,12 +259,10 @@ GangTag_AdmSave(iPlayerID, i)
 forward GangTag_OnSetText(i);
 public GangTag_OnSetText(i)
 {
-	new iRows,
-		iFields,
+	new iRows = cache_get_row_count(),
 		szResult[MAX_GANGTAGS_LEN],
 		iCount;
 
-	cache_get_data(iRows, iFields, MainPipeline);
 	while(iCount < iRows)
 	{
 		cache_get_field_content(iCount, "text", szResult, MainPipeline);
@@ -342,11 +338,9 @@ public OnGetGangTags(iPlayerID)
 	new iRows = cache_get_row_count();
 	if(iRows > 0)
 	{
-		new iFields,
-			idx,
+		new idx,
 			szResult[MAX_GANGTAGS_LEN];
-		
-		cache_get_data(iRows, iFields, MainPipeline);
+
 		while(idx < iRows)
 		{
 			cache_get_field_content(idx,  "text", szResult, MainPipeline);

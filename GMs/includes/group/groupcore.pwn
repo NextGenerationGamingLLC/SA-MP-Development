@@ -6180,18 +6180,8 @@ public OnMemberCount(groupID)
 	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(MainPipeline);
 }
 
-ShowGroupAmmoDialog(playerid, iGroupID) {
-	
-	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tAmount Left\n9mm\t%d\n7.62 x 51\t%d\n.50 AE\t%d\n7.62 x 39\t%d\n12 Gauge\t%d", 
-		arrGroupData[iGroupID][g_iAmmo][0],
-		arrGroupData[iGroupID][g_iAmmo][1],
-		arrGroupData[iGroupID][g_iAmmo][2],
-		arrGroupData[iGroupID][g_iAmmo][3],
-		arrGroupData[iGroupID][g_iAmmo][4]
-	);
-	return ShowPlayerDialog(playerid, G_AMMO_LOCKER, DIALOG_STYLE_TABLIST_HEADERS, "Ammo Locker", szMiscArray, "Select", "Cancel");
-}
+ShowGroupAmmoDialog(playerid, iGroupID)
+	return ShowAmmoDialog(playerid, G_AMMO_LOCKER, "Ammo Locker", arrGroupData[iGroupID][g_iAmmo]);
 
 WithdrawAmmo(playerid) {
 	ShowPlayerDialog(playerid, G_AMMO_LOCKER_WITHDRAW, DIALOG_STYLE_INPUT, "Ammo Locker", "Enter the quantity you wish to withdraw.", "Withdraw", "Cancel");
