@@ -194,7 +194,7 @@ NationSel_HandleNationSelection(playerid)
 			if(floatround(diff) >= 30)
 			{
 				AddNationQueue(playerid, 1, 1);
-				SendClientMessageEx(playerid, COLOR_RED, "The nation of Tierra Robada is currently full. You have been placed into a queue to join.");
+				SendClientMessageEx(playerid, COLOR_RED, "The nation of New Eire is currently full. You have been placed into a queue to join.");
 				switch(random(2))
 				{
 					case 0:
@@ -244,7 +244,7 @@ CMD:apply(playerid, params[])
 	new choice[3];
 	if(sscanf(params, "s[3]", choice))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /apply [SA|TR]");
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /apply [SA|NE]");
 		return 1;
 	}
 
@@ -253,9 +253,9 @@ CMD:apply(playerid, params[])
 		if(PlayerInfo[playerid][pNation] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're currently part of San Andreas.");
 		CheckNationQueue(playerid, 0);
 	}
-	else if(strcmp(choice, "tr", true) == 0)
+	else if(strcmp(choice, "ne", true) == 0)
 	{
-		if(PlayerInfo[playerid][pNation] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You're currently part of Tierra Robada.");
+		if(PlayerInfo[playerid][pNation] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You're currently part of New Eire.");
 		CheckNationQueue(playerid, 1);
 	}
 	return 1;
@@ -310,7 +310,7 @@ CMD:deport(playerid, params[])
 						SetPlayerFacingAngle(giveplayerid, 180.0);
 					}
 				}
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported back to Tierra Robada.");
+				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported back to New Eire.");
 			}
 			else if(PlayerInfo[playerid][pNation] == 1 && PlayerInfo[giveplayerid][pNation] == 0)
 			{

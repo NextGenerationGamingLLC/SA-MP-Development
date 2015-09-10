@@ -134,7 +134,7 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 		}
 		case DIALOG_EDIT_CRIMES:
 		{
-			ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nTR", "Select", "Exit");
+			ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nNE", "Select", "Exit");
 		}
 	}
 	return 1;

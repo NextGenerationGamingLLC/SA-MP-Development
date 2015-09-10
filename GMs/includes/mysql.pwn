@@ -2748,7 +2748,7 @@ public MDCQueryFinish(playerid, suspectid)
 	switch(PlayerInfo[suspectid][pNation])
 	{
 		case 0: nation = "San Andreas";
-		case 1: nation = "Tierra Robada";
+		case 1: nation = "New Eire";
 	}
 	
 	format(resultline, sizeof(resultline), "{FF6347}Name:{BFC0C2} %s\t{FF6347}Phone Number:{BFC0C2} %d\n{FF6347}Total Previous Crimes: {BFC0C2}%d\t {FF6347}Total Arrests: {BFC0C2}%d \n{FF6347}Citizenship: {BFC0C2}%s \n{FF6347}Crime Key: {FF7D7D}Currently Wanted/{BFC0C2}Past Crime\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests, nation);
@@ -3067,14 +3067,14 @@ public NationAppFinish(playerid, queryid)
 							if(IsPlayerConnected(giveplayerid))
 							{
 								PlayerInfo[giveplayerid][pNation] = 1;
-								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for Tierra Robada citizenship has been approved!");
+								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for New Eire citizenship has been approved!");
 							}
 							else
 							{
 								format(query, sizeof(query), "UPDATE `accounts` SET `Nation` = 1 WHERE `id` = %d", UserID);
 								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 							}
-							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for Tierra Robada citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
+							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for New Eire citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
 						}
 					}
 					Log("logs/gov.log", string);
@@ -3105,7 +3105,7 @@ public NationAppFinish(playerid, queryid)
 						case 2:
 						{
 							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Your application for San Andreas citizenship has been denied.");
-							format(string, sizeof(string), "%s has denied %s's application for Tierra Robada citizenship", GetPlayerNameEx(playerid), sResult);
+							format(string, sizeof(string), "%s has denied %s's application for New Eire citizenship", GetPlayerNameEx(playerid), sResult);
 						}
 					}
 					Log("logs/gov.log", string);

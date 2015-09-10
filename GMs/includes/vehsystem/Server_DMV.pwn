@@ -370,7 +370,7 @@ CMD:showlicenses(playerid, params[])
 				}
 				case 1:
 				{
-					SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of Tierra Robada **");
+					SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
 				}
 			}
 			format(string, sizeof(string), "Listing %s's licenses...", GetPlayerNameEx(playerid));

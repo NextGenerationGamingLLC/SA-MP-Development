@@ -1320,10 +1320,10 @@ native IsValidVehicle(vehicleid);
 #define			SAVE_GANGTAG					2
 
 // hospital misc definitions
-#define		MAX_HOSPITALS				(17)
+#define		MAX_HOSPITALS				(18)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(3)
-#define		MAX_DELIVERY_POINTS			(18)
+#define		MAX_DELIVERY_POINTS			(20)
 
 // hospital location definitions
 #define		HOSPITAL_ALLSAINTS			(0)
@@ -1343,6 +1343,7 @@ native IsValidVehicle(vehicleid);
 #define		HOSPITAL_HOMECARE			(14)
 #define		HOSPITAL_FAMED				(15)
 #define 	HOSPITAL_TRFAMED			(16)
+#define 	HOSPITAL_PALOMINO			(17)
 
 //General Timer Delays
 #define		CRATE_PRODUCTION_DELAY		5000

@@ -273,6 +273,7 @@ GetHospitalName(iHospital)
 		case HOSPITAL_HOMECARE: string = "Homecare";
 		case HOSPITAL_FAMED: string = "Famed Lounge";
 		case HOSPITAL_TRFAMED: string = "TR Famed Lounge";
+		case HOSPITAL_PALOMINO: string = "Palomino Creek";
 	}
 	
 	return string;
@@ -416,6 +417,8 @@ ReturnDeliveryPoint(iDPID)
 		case 15: iPoint = HOSPITAL_DOCJAIL;
 		case 16: iPoint = HOSPITAL_DEMORGAN;
 		case 17: iPoint = HOSPITAL_DOCJAIL;
+		case 18: iPoint = HOSPITAL_PALOMINO;
+		case 19: iPoint = HOSPITAL_PALOMINO; 
 	}
 	
 	return iPoint;
