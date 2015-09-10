@@ -646,37 +646,19 @@ ReturnCrimeGroupType(iType)
 	return szReturn;
 }
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-
-	if(-1 < i < MAX_GROUP_LOCKERS) {
-		
-		if(arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID] == areaid) {
-
-			SetPVarInt(playerid, "AtLocker", areaid);
-		}
-	}
-}
-
-hook OnPlayerLeaveDynamicArea(playerid, areaid) {
-
-	if(GetPVarInt(playerid, "AtLocker") == areaid) DeletePVar(playerid, "AtLocker");
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & KEY_YES && GetPVarType(playerid, "AtLocker")) {
-		cmd_locker(playerid, "");
+	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
+	{
+		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
+		{
+			new areaid[1];
+			GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+			new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+			if((0 <= i < MAX_GROUP_LOCKERS) && arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID] == areaid[0])
+				cmd_locker(playerid, "");
+		}
 	}
-}
-
-forward ForgetLocker(playerid);
-public ForgetLocker(playerid) {
-
-	DeletePVar(playerid, "AtLocker");
-
-	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])

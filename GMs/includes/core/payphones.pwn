@@ -38,26 +38,17 @@
 
 #include <YSI\y_hooks>
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-	
-	if(0 <= i < MAX_PAYPHONES) {
-
-		if(areaid == arrPayPhoneData[i][pp_iAreaID]) SetPVarInt(playerid, "AtPayPhone", i);
-	}
-	return 1;
-}
-
-hook OnPlayerLeaveDynamicArea(playerid, areaid) {
-
-	DeletePVar(playerid, "AtPayPhone");
-	return 1;
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & KEY_YES) {
+	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
+	{
+		new areaid[1];
+		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+		new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+		if(0 <= a < MAX_PAYPHONES && areaid[0] == arrPayPhoneData[a][pp_iAreaID])
+			SetPVarInt(playerid, "AtPayPhone", a);
+		else
+			DeletePVar(playerid, "AtPayPhone");
 
 		if(GetPVarType(playerid, "AtPayPhone")) {
 

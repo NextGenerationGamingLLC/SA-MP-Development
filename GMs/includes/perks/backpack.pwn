@@ -1096,7 +1096,7 @@ CMD:bremove(playerid, params[])
     new string[128], giveplayerid, item[6], bptype[8];
 	if(sscanf(params, "us[6]", giveplayerid, item)) {
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bremove [player] [item]");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "ITEMS: Pot, Crack, Heroin, Opium, Guns, Meals");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "ITEMS: Pot, Crack, Heroin, Opium, Guns, Ammo, Meals");
 		return 1;
 	}
 	if(IsPlayerConnected(giveplayerid))
@@ -1172,6 +1172,19 @@ CMD:bremove(playerid, params[])
 				for(new i = 6; i < 11; i++)
 				{
 					PlayerInfo[giveplayerid][pBItems][i] = 0;
+				}
+			}
+			else if(strcmp(item,"ammo",true) == 0)
+			{
+				format(string, sizeof(string), "* You have taken away %s's ammo from their backpack.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "* Officer %s has taken away your ammo from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "* Officer %s has taken away %s's ammo from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				for(new i = 0; i != MAX_AMMO_TYPES; i++)
+				{
+					PlayerInfo[giveplayerid][pBAmmo][i] = 0;
 				}
 			}
 		}

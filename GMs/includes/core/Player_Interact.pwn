@@ -1479,7 +1479,7 @@ CMD:interact(playerid, params[]) {
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /interact [playerid]");
 
 	new giveplayerid = strval(params);
-
+	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
 	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
 
 	Player_InteractMenu(playerid, giveplayerid);

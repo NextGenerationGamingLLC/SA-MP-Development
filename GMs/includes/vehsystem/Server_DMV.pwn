@@ -412,7 +412,7 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 	switch(menu) {
 
 		case 0: { // main DMV menu
-			if(MAX_GROUP_RANKS > PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess]) format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nRenew License ($10,000)\nOther Licenses\nRelease Vehicles");
+			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && MAX_GROUP_RANKS > PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess]) format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nRenew License ($10,000)\nOther Licenses\nRelease Vehicles");
 			if(PlayerInfo[playerid][pCarLic] == 0 || PlayerInfo[playerid][pLevel] < 2) format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nDriving Test\nOther Licenses");
 			else format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nRenew Driver License\nPurchase Other Licnese\n[LEO only] Release Impounded Vehicle");
 			return ShowPlayerDialog(playerid, DMV_MAIN, DIALOG_STYLE_LIST, "DMV Main Menu", szMiscArray, "Select", "Cancel");
@@ -451,7 +451,7 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 		}
 
 		case 2: {
-			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] && arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] != INVALID_RANK)
+			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] && arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] != INVALID_RANK)
 				return ShowPlayerDialog(playerid, DMVRELEASE_TARGET, DIALOG_STYLE_INPUT, "DMV Release Menu", "Enter the person's name whom you wish to release the vehicle for.", "Select", "Cancel");
 			else
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Law Enforcement Officer!");

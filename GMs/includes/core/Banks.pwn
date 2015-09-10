@@ -72,33 +72,14 @@ LoadBanks() {
 
 }
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	if(areaid == BankPoint[0] || areaid == BankPoint[1]) SetPVarInt(playerid, "AtBank", areaid);
-	return 1;
-}
-
-hook OnPlayerLeaveDynamicArea(playerid, areaid) {
-	
-	DeletePVar(playerid, "AtBank");
-	return 1;
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if((newkeys & KEY_YES) && GetPVarType(playerid, "AtBank")) {
+	if((newkeys & KEY_YES) && (IsPlayerInDynamicArea(playerid, BankPoint[0]) || IsPlayerInDynamicArea(playerid, BankPoint[1]))) {
 		format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the banker and begins speaking with them.", GetPlayerNameEx(playerid));
 		//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
 		ShowBankMenu(playerid);
 	}
-	return 1;
-}
-
-
-forward ForgetBank(playerid);
-public ForgetBank(playerid) {
-	DeletePVar(playerid, "AtBank");
 	return 1;
 }
 

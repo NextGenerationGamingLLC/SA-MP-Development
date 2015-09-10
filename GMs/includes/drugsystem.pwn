@@ -614,31 +614,34 @@ hook OnPlayerDeath(playerid) {
 	}
 }
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-
-	if(-1 < i < MAX_DRUGS) if(areaid == arrDrugData[i][dr_iAreaID]) SetPVarInt(playerid, "AtDrugArea", i);
-	if(-1 < i < MAX_BLACKMARKETS) if(areaid == arrBlackMarket[i][bm_iAreaID]) SetPVarInt(playerid, "BM_AID", i);
-	if(-1 < i < MAX_DYNPOINTS) {
-
-		if(areaid == arrPoint[i][po_iAreaID]) SetPVarInt(playerid, "PO_AID", i);
-	}
-	return 1;
-}
-
-hook OnPlayerLeaveDynamicArea(playerid, areaid) {
-
-	DeletePVar(playerid, "BM_AID");
-	DeletePVar(playerid, "PO_AID");
-	DeletePVar(playerid, "AtDrugArea");
-	DeletePVar(playerid, "InPoint");
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & KEY_YES) {
-
+	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
+	{
+		new areaid[1];
+		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+		new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+		if(-1 < a < MAX_DRUGS)
+		{
+			if(areaid[0] == arrDrugData[a][dr_iAreaID])
+				SetPVarInt(playerid, "AtDrugArea", a);
+			else 
+				DeletePVar(playerid, "AtDrugArea");
+		}
+		if(-1 < a < MAX_BLACKMARKETS)
+		{
+		if(areaid[0] == arrBlackMarket[a][bm_iAreaID]) 
+				SetPVarInt(playerid, "BM_AID", a);
+			else
+				DeletePVar(playerid, "BM_AID");
+		}
+		if(-1 < a < MAX_DYNPOINTS)
+		{
+			if(areaid[0] == arrPoint[a][po_iAreaID])
+				SetPVarInt(playerid, "PO_AID", a);
+			else
+				DeletePVar(playerid, "PO_AID");
+		}
 		if(GetPVarType(playerid, "BM_AID")) {
 
 			new i = GetPVarInt(playerid, "BM_AID");

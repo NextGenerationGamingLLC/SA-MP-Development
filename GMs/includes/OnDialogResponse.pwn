@@ -5315,26 +5315,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new LicenseString[256], giveplayer[MAX_PLAYER_NAME];
 				GetPlayerName(playerid, sendername, sizeof(sendername));
 				GetPlayerName(giveplayerid, giveplayer, sizeof(giveplayer));
-				new text1[20];
-				new text2[20];
-				new text3[20];
-				new text4[20];
-				if(PlayerInfo[giveplayerid][pCarLic] == 0) { text1 = "Not Passed"; }
-				if(PlayerInfo[giveplayerid][pCarLic] == 1) { text1 = "Passed"; }
-				if(PlayerInfo[giveplayerid][pCarLic] == 2) { text1 = "Suspended"; }
-				if(PlayerInfo[giveplayerid][pCarLic] == 3) { text1 = "Cancelled"; }
-				if(PlayerInfo[giveplayerid][pFlyLic]) { text4 = "Passed"; } else { text4 = "Not Passed"; }
-				if(PlayerInfo[giveplayerid][pBoatLic]) { text2 = "Passed"; } else { text2 = "Not Passed"; }
-				if(PlayerInfo[giveplayerid][pGunLic]) { text3 = "Passed"; } else { text3 = "Not Passed"; }
 				format(string, sizeof(string), "   Name: %s\n", giveplayer);
 				strcat(LicenseString, string, sizeof(LicenseString));
-				format(string, sizeof(string), "-Drivers License: %s.\n", text1);
+				format(string, sizeof(string), "-Drivers License: %s%s.\n", !PlayerInfo[giveplayerid][pCarLic] ? ("Not Passed"):("Expires: "), !PlayerInfo[giveplayerid][pCarLic] ? (""):date(PlayerInfo[giveplayerid][pCarLic], 1));
 				strcat(LicenseString, string, sizeof(LicenseString));
-				format(string, sizeof(string), "-Flying License: %s.\n", text4);
+				format(string, sizeof(string), "-Flying License: %s.\n", PlayerInfo[giveplayerid][pFlyLic] ? ("Passed"):("Not Passed"));
 				strcat(LicenseString, string, sizeof(LicenseString));
-				format(string, sizeof(string), "-Sailing License: %s.\n", text2);
+				format(string, sizeof(string), "-Sailing License: %s.\n", PlayerInfo[giveplayerid][pBoatLic] ? ("Passed"):("Not Passed"));
 				strcat(LicenseString, string, sizeof(LicenseString));
-				format(string, sizeof(string), "-Weapon License: %s.\n", text3);
+				format(string, sizeof(string), "-Weapon License: %s.\n", PlayerInfo[giveplayerid][pGunLic] ? ("Passed"):("Not Passed"));
 				strcat(LicenseString, string, sizeof(LicenseString));
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
 				format(string, sizeof(string), "** DISPATCH: %s has ran a license check on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));

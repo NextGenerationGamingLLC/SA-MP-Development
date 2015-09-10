@@ -54,30 +54,21 @@ LoadATMPoints() {
 	return 1;
 }
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
-
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-	if(-1 < i < sizeof(ATMPoint)) {
-
-		if(areaid == ATMPoint[i]) SetPVarInt(playerid, "AtATM", i);
-	}
-}
-
-hook OnPlayerLeaveDynamicArea(playerid, areaid) {
-
-	DeletePVar(playerid, "AtATM");
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if((newkeys & KEY_YES) && GetPVarType(playerid, "AtATM")) {
-		
-		format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
-		//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-		SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
-		ShowATMMenu(playerid);
+	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
+	{
+		new areaid[1];
+		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+		new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+		if((i >= 0 && i <= sizeof(ATMPoint)) && areaid[0] == ATMPoint[i])
+		{
+			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
+			//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
+			ShowATMMenu(playerid);
+		}
 	}
-
 	return 1;
 }
 
