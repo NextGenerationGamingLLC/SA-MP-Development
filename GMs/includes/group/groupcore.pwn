@@ -335,7 +335,7 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 	return 1;
 }
 
-/*stock ToggleDVSiren(playerid, iDvSlotID, iSlot, iTogState = 0)
+stock ToggleDVSiren(iDvSlotID, iSlot, iTogState = 0)
 {
 	switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot])
 	{
@@ -344,42 +344,46 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 			if(!iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19294;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19294);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 		case 18646:
 		{
 			if(iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19300;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19300);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 		case 19294:
 		{
 			if(iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 1899;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 1899);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 		case 19300:
 		{
 			if(!iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 18646;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 18646);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 		case 19419:
 		{
 			if(iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19420;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19420);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 		case 19420:
 		{
 			if(!iTogState) return 0;
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19419;
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19419);
+			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
 		}
 	}
-	AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], GetPlayerVehicleID(playerid), DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
-	Streamer_Update(playerid);
 	return 1;
-}*/
+}
 
 stock ToggleSiren(vehid, iTogState)
 {
@@ -2878,13 +2882,13 @@ hook OnVehicleSpawn(vehicleid)
 
 public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
 {
-	/*if(DynVeh[vehicleid] != -1)
+	if(DynVeh[vehicleid] != -1)
 	{
 		for(new i = 0; i != MAX_DV_OBJECTS; i++)
 		{
-			ToggleDVSiren(playerid, DynVeh[vehicleid], i, newstate);
+			ToggleDVSiren(DynVeh[vehicleid], i, newstate);
 		}
-	}*/
+	}
 	switch(newstate)
 	{
 		case 0: ToggleSiren(vehicleid, 1);
@@ -3009,24 +3013,11 @@ CMD:badge(playerid, params[]) {
 	return 1;
 }
 
-/*CMD:dvsiren(playerid, params[])
+CMD:dvsiren(playerid, params[])
 {
-	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-	{
-		if(DynVeh[GetPlayerVehicleID(playerid)] != -1)
-		{
-			for(new i = 0; i != MAX_DV_OBJECTS; i++)
-			{
-				switch(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i])
-				{
-					case 1899, 19300, 19420: ToggleDVSiren(playerid, DynVeh[GetPlayerVehicleID(playerid)], i, 1);
-					case 18646, 19294, 19419: ToggleDVSiren(playerid, DynVeh[GetPlayerVehicleID(playerid)], i, 0);
-				}
-			}
-		}
-	}
-	return 1;
-}*/
+	SendClientMessageEx(playerid, COLOR_GREY, "/dvsiren has been merged with /siren. /dvsiren will be completely removed in a later update.");
+	return cmd_siren(playerid, params);
+}
 
 CMD:viewbudget(playerid, params[])
 {
@@ -4019,12 +4010,23 @@ CMD:dvplate(playerid, params[])
 
 CMD:siren(playerid, params[])
 {
-	if(IsACop(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAMedic(playerid))
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		if(IsACop(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAMedic(playerid))
 		{
 			if(GetGVarType("VehSiren", GetPlayerVehicleID(playerid))) ToggleSiren(GetPlayerVehicleID(playerid), 1);
 			else ToggleSiren(GetPlayerVehicleID(playerid), 0);
+		}
+		if(DynVeh[GetPlayerVehicleID(playerid)] != -1)
+		{
+			for(new i = 0; i != MAX_DV_OBJECTS; i++)
+			{
+				switch(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i])
+				{
+					case 1899, 19300, 19420: ToggleDVSiren(DynVeh[GetPlayerVehicleID(playerid)], i, 1);
+					case 18646, 19294, 19419: ToggleDVSiren(DynVeh[GetPlayerVehicleID(playerid)], i, 0);
+				}
+			}
 		}
 	}
 	return 1;

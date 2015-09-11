@@ -203,12 +203,17 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 	LinkVehicleToInterior(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_iInt]);
 	VehicleFuel[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = DynVehicleInfo[iDvSlotID][gv_fFuel];
 	DynVeh[DynVehicleInfo[iDvSlotID][gv_iSpawnedID]] = iDvSlotID;
+	if(GetGVarType("VehSiren", DynVehicleInfo[iDvSlotID][gv_iSpawnedID])) ToggleSiren(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], 1);
 	for(new i = 0; i != MAX_DV_OBJECTS; i++)
 	{
 		if(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != INVALID_OBJECT_ID && DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != 0)
 		{
 			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] = CreateDynamicObject(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i],0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][i], DynVehicleInfo[iDvSlotID][gv_fObjectY][i], DynVehicleInfo[iDvSlotID][gv_fObjectZ][i], DynVehicleInfo[iDvSlotID][gv_fObjectRX][i], DynVehicleInfo[iDvSlotID][gv_fObjectRY][i], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
+			switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i])
+			{
+				case 18646, 19294, 19419: ToggleDVSiren(iDvSlotID, i, 0);
+			}
 		}
 	}
 	if(!isnull(DynVehicleInfo[iDvSlotID][gv_iPlate])) {
