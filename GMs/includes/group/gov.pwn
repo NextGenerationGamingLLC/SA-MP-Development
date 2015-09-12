@@ -61,7 +61,7 @@ CMD:settax(playerid, params[])
 	{
 		TRTaxValue = tax;
 		Misc_Save();
-		format(string, sizeof(string), "The TR income tax has been set to %d percent (of each paycheck).", TRTaxValue);
+		format(string, sizeof(string), "The NE income tax has been set to %d percent (of each paycheck).", TRTaxValue);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 	}
 	return 1;
@@ -137,9 +137,9 @@ CMD:taxwithdraw(playerid, params[])
 			GivePlayerCash( playerid, amount );
 			format( string, sizeof( string ), "You have withdrawn $%s from the vault.", number_format(amount) );
 			SendClientMessageEx( playerid, COLOR_WHITE, string );
-			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the TR tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
+			format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid),number_format(amount),reason);
 			ABroadCast( COLOR_YELLOW, string, 2);
-			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the TR tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
+			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the NE tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
 		}
 		else
@@ -211,7 +211,7 @@ CMD:taxdeposit(playerid, params[])
 		TRTax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		format( string, sizeof( string ), "You have deposited $%s into the TR vault.", number_format(amount) );
+		format( string, sizeof( string ), "You have deposited $%s into the NE vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
 
 		new file[32], day, month, year;
@@ -235,10 +235,10 @@ CMD:settaxmoney(playerid, params[])
 	new string[128], country, amount;
 	if(sscanf(params, "dd", country, amount))
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settaxmoney [SA(1)/TR(2)] [amount]");
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /settaxmoney [SA(1)/NE(2)] [amount]");
 		format(string, sizeof(string), "* CURRENT SA VAULT BALANCE: $%s.", number_format(Tax));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* CURRENT TR VAULT BALANCE: $%s.", number_format(TRTax));
+		format(string, sizeof(string), "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 		return 1;
 	}
@@ -275,7 +275,7 @@ CMD:checktax(playerid, params[])
 	}
 	else if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
-		format(string, sizeof(string), "* CURRENT TR VAULT BALANCE: $%s.", number_format(TRTax));
+		format(string, sizeof(string), "* CURRENT NE VAULT BALANCE: $%s.", number_format(TRTax));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 	}
 	return 1;

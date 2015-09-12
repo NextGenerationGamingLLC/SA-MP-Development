@@ -223,31 +223,34 @@ SetPlayerSpawn(playerid)
 		{
 			if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)
 			{
-				PhoneOnline[playerid] = 1;
-				SetPlayerInterior(playerid, 1);
-				PlayerInfo[playerid][pInt] = 1;
-				SetPlayerVirtualWorld(playerid, 0);
-				PlayerInfo[playerid][pVW] = 0;
-				//SetPlayerSkin(playerid, 50); 
-				SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
-				SetHealth(playerid, 100);
-				KillEMSQueue(playerid);
-				DeletePVar(playerid, "ArrestPoint");
-				ResetPlayerWeaponsEx(playerid);
-				rand = random(sizeof(DocPrison));
-				if(PlayerInfo[playerid][pIsolated] > 0)
-				{
-					SetPlayerPos(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2]);
-					Player_StreamPrep(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2], FREEZE_TIME);
+				if(!GetPVarType(playerid, "Injured")) {
+
+					PhoneOnline[playerid] = 1;
+					SetPlayerInterior(playerid, 1);
+					PlayerInfo[playerid][pInt] = 1;
+					SetPlayerVirtualWorld(playerid, 0);
+					PlayerInfo[playerid][pVW] = 0;
+					//SetPlayerSkin(playerid, 50); 
+					SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
+					SetHealth(playerid, 100);
+					KillEMSQueue(playerid);
+					DeletePVar(playerid, "ArrestPoint");
+					ResetPlayerWeaponsEx(playerid);
+					rand = random(sizeof(DocPrison));
+					if(PlayerInfo[playerid][pIsolated] > 0)
+					{
+						SetPlayerPos(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2]);
+						Player_StreamPrep(playerid, DocIsolation[PlayerInfo[playerid][pIsolated] - 1][0], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][1], DocIsolation[PlayerInfo[playerid][pIsolated] - 1][2], FREEZE_TIME);
+					}
+					else
+					{
+						SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
+						Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
+					}
+					return 1;
 				}
-				else
-				{
-					SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
-					Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
-				}
-				return 1;
 			}
-		    else
+		    else if(strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1)
 		    {
 		        SetHealth(playerid, 0x7FB00000);
 		       	PhoneOnline[playerid] = 1;

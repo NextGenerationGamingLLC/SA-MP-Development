@@ -287,7 +287,7 @@ CMD:call(playerid, params[])
 
 	if(sscanf(params, "d", phonenumb)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /call [phonenumber]");
 
-	if (PlayerInfo[playerid][pJailTime] > 0)
+	if (PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone"))
 	{
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone while in jail.");
 		return 1;

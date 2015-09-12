@@ -150,14 +150,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
-				if(PlayerInfo[playerid][pDonateRank] == 0) {
-					new fee;
-					fee = 3*iAmount/100;
-					PlayerInfo[playerid][pAccount] -= fee;
-					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
-					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-				}
-
 				OnPlayerStatsUpdate(playerid);
 
 				DeletePVar(playerid, "BankWithdraw");
@@ -186,14 +178,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pAccount] += iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-
-				if(PlayerInfo[playerid][pDonateRank] == 0) {
-					new fee;
-					fee = 3*iAmount/100;
-					PlayerInfo[playerid][pAccount] -= fee;
-					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent deposit fee: -$%d.", fee);
-					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-				}
 
 				OnPlayerStatsUpdate(playerid);
 
@@ -246,14 +230,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			if(iAmount > PlayerInfo[playerid][pAccount] || iAmount < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to send more than you have!");
-
-			if(PlayerInfo[playerid][pDonateRank] == 0) {
-				new fee;
-				fee = 3*iAmount/100;
-				PlayerInfo[playerid][pAccount] -= fee;
-				format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent transfer fee: -$%d.", fee);
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-			}
 
 			// Use these as they update the MySQL Directly with less function calls
 			GivePlayerCashEx(playerid, TYPE_BANK, -iAmount);

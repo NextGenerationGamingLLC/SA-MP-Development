@@ -5376,6 +5376,12 @@ CMD:hfind(playerid, params[])
 {
 	if (IsAHitman(playerid) || (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1))
 	{
+	    if(GetPVarType(playerid, "HfindCount")) {
+	    	SendClientMessageEx(playerid, COLOR_GRAD2, "Tracing interrupted.");
+	    	DeletePVar(playerid, "HfindCount");
+	    	return 1;
+	    }
+
 	    if(GetPVarType(playerid, "hFind")) {
 	   		SendClientMessageEx(playerid, COLOR_GRAD2, "Stopped Updating");
 	        DeletePVar(playerid, "hFind");
@@ -5414,26 +5420,56 @@ CMD:hfind(playerid, params[])
 			}
 			if(PhoneOnline[iTargetID] == 0 && PlayerInfo[iTargetID][pPnumber] != 0 || (PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember] || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1)))
 			{
-
-
-				new
-					szZone[MAX_ZONE_NAME],
-					szMessage[108];
-
-				new Float:X, Float:Y, Float:Z;
-			    GetPlayerPos(iTargetID, X, Y, Z);
-			    DisablePlayerCheckpoint(playerid);
-			    SetPlayerCheckpoint(playerid, X, Y, Z, 4.0);
-				GetPlayer3DZone(iTargetID, szZone, sizeof(szZone));
-				format(szMessage, sizeof(szMessage), "Tracking on %s, last seen at %s.", GetPlayerNameEx(iTargetID), szZone);
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
-				SendClientMessageEx(playerid, COLOR_GRAD2, "Type /hfind again to stop tracking.");
-				SetPVarInt(playerid, "hFind", iTargetID);
+				SetPVarInt(playerid, "HfindCount", 30);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have started a trace, type /hfind again to stop this.");
+				SetTimerEx("HitmanTrace", 1000, false, "ii", playerid, iTargetID);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to get a trace on this person.");
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	return 1;
+}
+
+forward HitmanTrace(playerid, iTargetID);
+public HitmanTrace(playerid, iTargetID) {
+
+	new iTraceCount = GetPVarInt(playerid, "HfindCount");
+
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command as of this moment!");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+	if(GetPlayerInterior(iTargetID) != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That person is inside an interior.");
+	if((PlayerInfo[iTargetID][pAdmin] >= 2 || PlayerInfo[iTargetID][pWatchdog] >= 2) && PlayerInfo[iTargetID][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unable to find this person.");
+	if(GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are unable to find people while swimming.");
+	if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "  You must stop swimming first! (/stopswimming)");
+	if((PhoneOnline[iTargetID] > 0 || PlayerInfo[iTargetID][pPnumber] == 0 ) && PlayerInfo[iTargetID][pBugged] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GREY, "The trace was interrupted.");
+	if(!GetPVarType(playerid, "HfindCount")) return SendClientMessageEx(playerid, COLOR_WHITE,  "An error occured!");
+
+	if(iTraceCount >= 1) {
+		SetPVarInt(playerid, "HfindCount", --iTraceCount);
+		format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Correlating Signal: %d seconds left", iTraceCount);
+		GameTextForPlayer(playerid, szMiscArray, 1100, 3);
+		SetTimerEx("HitmanTrace", 1000, false, "ii", playerid, iTargetID);
+	}
+	else if(iTraceCount == 0) {
+		GameTextForPlayer(playerid, "Trace established", 1100, 3);
+		
+		new
+			szZone[MAX_ZONE_NAME],
+			szMessage[108];
+
+		new Float:X, Float:Y, Float:Z;
+	    GetPlayerPos(iTargetID, X, Y, Z);
+	    DisablePlayerCheckpoint(playerid);
+	    SetPlayerCheckpoint(playerid, X, Y, Z, 4.0);
+		GetPlayer3DZone(iTargetID, szZone, sizeof(szZone));
+		format(szMessage, sizeof(szMessage), "Tracking on %s, last seen at %s.", GetPlayerNameEx(iTargetID), szZone);
+		SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Type /hfind again to stop tracking.");
+		SetPVarInt(playerid, "hFind", iTargetID);
+		DeletePVar(playerid, "HfindCount");
+	}
+
 	return 1;
 }
 

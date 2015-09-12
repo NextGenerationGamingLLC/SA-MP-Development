@@ -1961,7 +1961,7 @@ CMD:car(playerid, params[])
 		{
 			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
 			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;
-			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, !passenger, backleft, backright);
+			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, !backright);
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear passenger-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("up") : ("down"));
 		}
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

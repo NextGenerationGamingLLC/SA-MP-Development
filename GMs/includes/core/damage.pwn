@@ -137,7 +137,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				GetPlayerPos(playerid, X, Y, Z);
 				format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
+				//GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
 				TogglePlayerControllable(damagedid, 0);
 				ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
 				PlayerPlaySound(damagedid, 1085, X, Y, Z);
@@ -146,10 +146,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				SetPVarInt(damagedid, "PlayerCuffed", 1);
 				PlayerCuffedTime[damagedid] = 16;
 				SetPVarInt(damagedid, "IsFrozen", 1);
-				TazerTimeout[playerid] = 6;
+				TazerTimeout[playerid] = 12;
 				SetTimerEx("TazerTimer",1000,false,"d",playerid);
+				PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
+				SetTimerEx("TurnOffFlash", 800, 0, "i", damagedid);
 				if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
-				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~5", 1500,3);
+				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
 				return 1;
 			}
 		}
@@ -380,6 +382,26 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 
 		arrAmmoData[playerid][awp_iAmmo][iAT]--;
+	}
+	if(weaponid == WEAPON_SILENCED && pTazer{playerid} == 1) {
+		new iShots = GetPVarInt(playerid, "TazerShots");
+
+		if(iShots > 0) {
+			SetPVarInt(playerid, "TazerShots", iShots - 1);
+			SetPlayerAmmo(playerid, WEAPON_SILENCED, 3);
+		}
+		
+		if(iShots < 1) {
+			TazerTimeout[playerid] = 12;
+			SetTimerEx("TazerTimer",1000,false,"d",playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
+			
+			RemovePlayerWeapon(playerid, 23);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
+			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			pTazer{playerid} = 0;
+		}
 	}
 	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1) {
 		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) return 1;

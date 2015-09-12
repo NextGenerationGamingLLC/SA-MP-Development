@@ -5201,10 +5201,10 @@ public Group_QueryFinish(iType, iExtraID) {
 				arrGroupData[iIndex][g_iAmmo][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
 			}
 
+			i = 0;
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof(szResult), "GClothes%i", i);
-				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
-				arrGroupData[iIndex][g_iClothes][i] = strval(szResult);
+				arrGroupData[iIndex][g_iClothes][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
 				i++;
 			}
 			i = 0;

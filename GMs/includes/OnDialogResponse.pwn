@@ -4169,7 +4169,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szMessage);
 
 				format(szMessage, sizeof(szMessage), "HQ: %s has released %s's %s from the impound.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), VehicleName[PlayerVehicleInfo[iTargetID][listitem][pvModelId] - 400]);
-				SendGroupMessage(PlayerInfo[playerid][pMember], RADIO, szMessage);
+				SendGroupMessage(GROUP_TYPE_LEA, RADIO, szMessage);
+				SendGroupMessage(GROUP_TYPE_TOWING, RADIO, szMessage);
 
 				new rand = random(sizeof(DMVRelease));
 				PlayerVehicleInfo[iTargetID][listitem][pvImpounded] = 0;
@@ -5052,7 +5053,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
-									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
+									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
 									Log(file, str);
 									break;
@@ -5142,7 +5143,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
-									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
+									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
 									Log(file, str);
 									break;
@@ -5223,7 +5224,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									TRTax += money;
-									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the TR Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
+									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
 									Log(file, str);
 									break;

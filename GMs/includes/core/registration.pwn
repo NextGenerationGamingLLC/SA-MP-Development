@@ -121,7 +121,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		}
 		case CHECKPOINT_TUTORIAL_PHONE:
 		{
-			SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF} Press ~k~~VEHICLE_ENTER_EXIT~ to enter/exit buildings.");
+			SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF} Press ~k~~CONVERSATION_NO~ to enter/exit buildings.");
 			SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF} Enter the store and ~k~~CONVERSATION_YES~ to buy a phone.");
 			DisablePlayerCheckpoint(playerid);
 			return 1;

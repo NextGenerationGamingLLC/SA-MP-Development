@@ -96,7 +96,7 @@ PayDay(i) {
 			{
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
-					format(string, sizeof(string), "  Paycheck: $%s  |  TR Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
+					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 				}
@@ -104,7 +104,7 @@ PayDay(i) {
 				{
 					pVIPTax = TRTaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
-					format(string, sizeof(string), "  Paycheck: $%s  |  TR Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
+					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -226,7 +226,8 @@ PayDay(i) {
 				    	SendClientMessageEx(i,COLOR_RED,"Business doesn't have enough cash for your pay.");
 				    }
 					else {
-						GivePlayerCash(i, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
+						//GivePlayerCash(i, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
+						GivePlayerCashEx(i, TYPE_BANK, Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]);
 						Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] -= Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]];
 						SaveBusiness(PlayerInfo[i][pBusiness]);
 						format(string,sizeof(string),"  Business pay: $%s", number_format(Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]));

@@ -328,7 +328,7 @@ task SyncTime[60000]()
 						TRTax -= arrGroupData[iGroupID][g_iBudgetPayment];
 						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
 						new file[32];
-						format(szMiscArray, sizeof(szMiscArray), "TR Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
+						format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
 						new month, day, year;
 						getdate(year,month,day);
 						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
@@ -341,7 +341,7 @@ task SyncTime[60000]()
 							{
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
-									format(szMiscArray, sizeof(szMiscArray), "TR Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
+									format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
 									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
 									Log(file, szMiscArray);
 									break;
@@ -2226,12 +2226,14 @@ ptask PlayerHeartBeat[1000](i) {
 				new Float:X, Float:Y, Float:Z;
 				GetPlayerPos(i, X, Y, Z);
 				SetPlayerPos(i, X, Y, Z);
+				SetPlayerDrunkLevel(i, 0);
 			}
 			else
 			{
 				if(playerTabbed[i] == 0)
 				{
 					PlayerCuffedTime[i] -= 1;
+					SetPlayerDrunkLevel(i, 10000);
 				}
 			}
 		}

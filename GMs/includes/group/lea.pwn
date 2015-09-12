@@ -1634,6 +1634,8 @@ CMD:tazer(playerid, params[])
 
 		if(pTazer{playerid} == 0)
 		{
+			if(TazerTimeout[playerid] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is reloading");
+
 			pTazerReplace{playerid} = PlayerInfo[playerid][pGuns][2];
 			if(PlayerInfo[playerid][pGuns][2] != 0) RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][2]);
 			format(string, sizeof(string), "* %s unholsters their tazer.", GetPlayerNameEx(playerid));
@@ -1641,6 +1643,8 @@ CMD:tazer(playerid, params[])
 			GivePlayerValidWeapon(playerid, 23, 0);
 			pTazer{playerid} = 1;
 			SetPlayerAmmo(playerid, 23, 60000);
+			SetPVarInt(playerid, "TazerShots", 2);
+			SetPlayerAmmo(playerid, WEAPON_SILENCED, 3);
 		}
 		else
 		{

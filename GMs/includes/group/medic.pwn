@@ -204,7 +204,7 @@ CMD:loadpt(playerid, params[])
                 if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
                     if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot load yourself!"); return 1; }
-                    if(PlayerInfo[giveplayerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+                    if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
                     new carid = gLastCar[playerid];
                     if(IsAnAmbulance(carid))
 					{
@@ -372,7 +372,7 @@ CMD:getpt(playerid, params[])
 		    }
 			if(GetPVarInt(giveplayerid,"MedicCall") == 1)
 			{
-				if(PlayerInfo[giveplayerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
 				format(string, sizeof(string), "EMS Driver %s has accepted the Emergency Dispatch call for (%d) %s.",GetPlayerNameEx(playerid),giveplayerid,GetPlayerNameEx(giveplayerid));
 				SendGroupMessage(3, TEAM_MED_COLOR, string);
 				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
@@ -406,7 +406,7 @@ CMD:movept(playerid, params[])
 			if(GetPVarInt(giveplayerid,"Injured") == 1)
 			{
 				if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command while in a vehicle.");
-				if(PlayerInfo[giveplayerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
 				if(GetPVarInt(giveplayerid, "OnStretcher") == 1)
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD2, "The person is already on a stretcher, you can't do this right now!");

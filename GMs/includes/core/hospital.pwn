@@ -637,7 +637,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
 						Log(file, szMiscArray);
 					}
-					else if(IsPlayerInRangeOfPoint(playerid, 2.00, 555.8644,1485.1359,6000.4258)) // doc hospital purchase point
+					else if(IsPlayerInRangeOfPoint(playerid, 2.00, 564.54, 1437.02, 6000.47)) // doc hospital purchase point
 					{
 						PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
 						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);

@@ -112,9 +112,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					if(iJob == 21) {
 
-						// SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+						SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 						SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
+	                	SetPlayerSkin(playerid, 155);
+	                	PlayerInfo[playerid][pModel] = 155;
 					}
 					PlayerInfo[playerid][pJob] = iJob;
 					DeletePVar(playerid, PVAR_JOB_OBTAINING);
@@ -131,9 +133,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                    SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
 	                }
 	                if(iJob == 21) {
-	                	// SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
+	                	SetPlayerSkin(playerid, 155);
+	                	PlayerInfo[playerid][pModel] = 155;
 	                }
 	                PlayerInfo[playerid][pJob2] = iJob;
 	                DeletePVar(playerid, PVAR_JOB_OBTAINING);
@@ -149,9 +153,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                    SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
 	                }
 					if(iJob == 21) {
-	                	// SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
+	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "Remember: Do not consume the holy pizza, or else face a long, painful, imminent death.");
+	                	SetPlayerSkin(playerid, 155);
+	                	PlayerInfo[playerid][pModel] = 155;
 	                }
 					PlayerInfo[playerid][pJob3] = iJob;
 					DeletePVar(playerid, PVAR_JOB_OBTAINING);
