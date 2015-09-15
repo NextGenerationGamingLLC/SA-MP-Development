@@ -49,11 +49,9 @@ stock IsANewsCar(carid)
 
 stock OOCNews(color,string[])
 {
-	foreach(new i: Player)
-	{
-		if(!gNews[i]) {
-			SendClientMessageEx(i, color, string);
-		}
+	foreach(new i: Player) {
+		
+		ChatTrafficProcess(i, color, string, 1);
 	}	
 }
 
@@ -63,11 +61,13 @@ CMD:tognews(playerid, params[])
 	if (!gNews[playerid])
 	{
 		gNews[playerid] = 1;
+		PlayerInfo[playerid][pToggledChats][1] = 1;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled news chat.");
 	}
 	else
 	{
 		gNews[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][1] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled news chat.");
 	}
 	return 1;

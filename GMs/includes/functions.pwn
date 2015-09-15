@@ -1403,7 +1403,9 @@ stock SendBugMessage(member, string[])
 	{
 		iGroupID = PlayerInfo[i][pMember];
 		if(iGroupID == member && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iBugAccess] && gBug{i} == 1)	{
-			SendClientMessageEx(i, COLOR_LIGHTGREEN, string);
+
+			ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);
+				
 		}
 	}	
 	return 1;

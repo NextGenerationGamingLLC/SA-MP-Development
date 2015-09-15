@@ -862,8 +862,8 @@ public OnLoadGates()
 }
 
 stock SaveGate(id) {
-	new string[512];
-	format(string, sizeof(string), "UPDATE `gates` SET \
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gates` SET \
 		`HID`=%d, \
 		`Speed`=%f, \
 		`Range`=%f, \
@@ -919,7 +919,7 @@ stock SaveGate(id) {
 		GateInfo[id][gLocked],
 		id+1
 	);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 0;
 }
 
@@ -949,7 +949,8 @@ stock MoveGate(playerid, gateid)
 	if(GateInfo[gateid][gStatus] == 0)
 	{
 		format(string, sizeof(string), "* %s uses their remote to open the gates.", GetPlayerNameEx(playerid));
-		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		// ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		ProxChatBubble(playerid, string);
 		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
 		GateInfo[gateid][gStatus] = 1;
 		if(GateInfo[gateid][gTimer] != 0)
@@ -966,7 +967,8 @@ stock MoveGate(playerid, gateid)
 	else if(GateInfo[gateid][gStatus] == 1 && GateInfo[gateid][gTimer] == 0)
 	{
 		format(string, sizeof(string), "* %s uses their remote to close the gates.", GetPlayerNameEx(playerid));
-		ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		// ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		ProxChatBubble(playerid, string);
 		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
 		GateInfo[gateid][gStatus] = 0;
 	}

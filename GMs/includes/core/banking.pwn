@@ -490,11 +490,13 @@ stock IsAtATM(playerid)
 CMD:pay(playerid, params[])
 {
 	if(restarting) return SendClientMessageEx(playerid, COLOR_GRAD2, "Transactions are currently disabled due to the server being restarted for maintenance.");
+
 	new id, storageid, amount;
 
 	if(sscanf(params, "ud", id, amount)) {
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [amount]");
 	}
+
 	/*if(sscanf(params, "udd", id, storageid, amount)) {
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pay [player] [storageid] [amount]");
 		SendClientMessageEx(playerid, COLOR_GREY, "StorageIDs: (0) Pocket - (1) Equipped Storage Device");

@@ -1,3 +1,148 @@
+/* 	Misc Variables load
+	Secondary Chatbox
+*/
+
+#include <YSI\y_hooks>
+
+hook OnGameModeInit() {
+
+	TD_ServerError = TextDrawCreate(321.000000, 428.000000, "SERVER: Unknown command");
+	TextDrawAlignment(TD_ServerError, 2);
+	TextDrawBackgroundColor(TD_ServerError, 255);
+	TextDrawFont(TD_ServerError, 2);
+	TextDrawLetterSize(TD_ServerError, 0.210000, 0.899999);
+	TextDrawColor(TD_ServerError, -1);
+	TextDrawSetOutline(TD_ServerError, 0);
+	TextDrawSetProportional(TD_ServerError, 1);
+	TextDrawSetShadow(TD_ServerError, 1);
+	TextDrawUseBox(TD_ServerError, 1);
+	TextDrawBoxColor(TD_ServerError, -14803426);
+	TextDrawTextSize(TD_ServerError, -300.000000, 655.000000);
+	TextDrawSetSelectable(TD_ServerError, 0);
+
+}
+
+
+hook OnGameModeExit() {
+
+	for(new i; i < sizeof(TD_ChatBox); ++i) {
+
+		PlayerTextDrawDestroy(0, TD_ChatBox[i]);
+	}
+	return 1;
+}
+
+hook OnPlayerConnect(playerid) {
+
+	TD_ChatBox[0] = CreatePlayerTextDraw(playerid,512.000000, 360.000000, "chatbox");
+	PlayerTextDrawAlignment(playerid,TD_ChatBox[0], 2);
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[0], 255);
+	PlayerTextDrawFont(playerid,TD_ChatBox[0], 2);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[0], 0.490000, 9.199996);
+	PlayerTextDrawColor(playerid,TD_ChatBox[0], 0);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[0], 0);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[0], 1);
+	PlayerTextDrawSetShadow(playerid,TD_ChatBox[0], 0);
+	PlayerTextDrawUseBox(playerid,TD_ChatBox[0], 1);
+	PlayerTextDrawBoxColor(playerid,TD_ChatBox[0], 50);
+	PlayerTextDrawTextSize(playerid,TD_ChatBox[0], 341.000000, 280.000000);
+	PlayerTextDrawSetPreviewModel(playerid, TD_ChatBox[0], 19300);
+	PlayerTextDrawSetPreviewRot(playerid, TD_ChatBox[0], -16.000000, 0.000000, -55.000000, 50000.000000);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[0], 0);
+
+	TD_ChatBox[1] = CreatePlayerTextDraw(playerid,394.000000, 425.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[1], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[1], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[1], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[1], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[1], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[1], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[1], 0);
+
+	TD_ChatBox[2] = CreatePlayerTextDraw(playerid,394.000000, 417.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[2], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[2], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[2], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[2], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[2], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[2], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[2], 0);
+
+	TD_ChatBox[3] = CreatePlayerTextDraw(playerid,394.000000, 409.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[3], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[3], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[3], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[3], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[3], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[3], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[3], 0);
+
+	TD_ChatBox[4] = CreatePlayerTextDraw(playerid,394.000000, 401.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[4], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[4], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[4], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[4], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[4], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[4], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[4], 0);
+
+	TD_ChatBox[5] = CreatePlayerTextDraw(playerid,394.000000, 393.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[5], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[5], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[5], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[5], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[5], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[5], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[5], 0);
+
+	TD_ChatBox[6] = CreatePlayerTextDraw(playerid,394.000000, 385.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[6], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[6], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[6], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[6], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[6], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[6], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[6], 0);
+
+	TD_ChatBox[7] = CreatePlayerTextDraw(playerid,394.000000, 377.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[7], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[7], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[7], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[7], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[7], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[7], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[7], 0);
+
+	TD_ChatBox[8] = CreatePlayerTextDraw(playerid,394.000000, 369.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[8], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[8], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[8], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[8], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[8], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[8], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[8], 0);
+
+	TD_ChatBox[9] = CreatePlayerTextDraw(playerid,394.000000, 361.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[9], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[9], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[9], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[9], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[9], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[9], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[9], 0);
+
+	TD_ChatBox[10] = CreatePlayerTextDraw(playerid,394.000000, 353.000000, "");
+	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[10], 50);
+	PlayerTextDrawFont(playerid,TD_ChatBox[10], 1);
+	PlayerTextDrawLetterSize(playerid,TD_ChatBox[10], 0.130000, 0.799999);
+	PlayerTextDrawColor(playerid,TD_ChatBox[10], -1);
+	PlayerTextDrawSetOutline(playerid,TD_ChatBox[10], 1);
+	PlayerTextDrawSetProportional(playerid,TD_ChatBox[10], 1);
+	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[10], 0);
+
+	return 1;
+}
+
 stock Misc_Save() {
 
 	new

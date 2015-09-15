@@ -518,9 +518,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBStoredH]				= cache_get_field_content_int(row,  "BStoredH", MainPipeline); 
 					PlayerInfo[extraid][pBStoredV]				= cache_get_field_content_int(row,  "BStoredV", MainPipeline); 
 					PlayerInfo[extraid][pBugReportTimeout]		= cache_get_field_content_int(row,  "BRTimeout", MainPipeline); 
-					PlayerInfo[extraid][pNewbieTogged]			= cache_get_field_content_int(row,  "NewbieTogged", MainPipeline); 
-					PlayerInfo[extraid][pVIPTogged]				= cache_get_field_content_int(row,  "VIPTogged", MainPipeline); 
-					PlayerInfo[extraid][pFamedTogged]			= cache_get_field_content_int(row,  "FamedTogged", MainPipeline); 
 					for(new i = 0; i < 12; i++)
 					{
 						format(szField, sizeof(szField), "BItem%d", i);
@@ -588,6 +585,13 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
 					
+					// Account settings:
+					cache_get_field_content(row,  "ToggledChats", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pToggledChats]);
+
+					cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);
+
 					for(new i = 0; i != MAX_AMMO_TYPES; i++)
 					{
 						format(szField, sizeof(szField), "pBAmmo%d", i);
@@ -2343,10 +2347,6 @@ stock g_mysql_SaveAccount(playerid)
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
 	}
 	
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "NewbieTogged", PlayerInfo[playerid][pNewbieTogged]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPTogged", PlayerInfo[playerid][pVIPTogged]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FamedTogged", PlayerInfo[playerid][pFamedTogged]);
-	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BRTimeout", PlayerInfo[playerid][pBugReportTimeout]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pDigCooldown", PlayerInfo[playerid][pDigCooldown]);
 	
@@ -2404,11 +2404,55 @@ stock g_mysql_SaveAccount(playerid)
 	for(new idrugs = 0; idrugs < sizeof(szDrugs); ++idrugs)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][p_iDrugQuality][idrugs]);
-		if(idrugs != 11) strcat(mistring, "|");
+		if(idrugs != sizeof(szDrugs) - 1) strcat(mistring, "|");
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
 
+	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+		PlayerInfo[playerid][pToggledChats][0], 
+		PlayerInfo[playerid][pToggledChats][1],
+		PlayerInfo[playerid][pToggledChats][2], 
+		PlayerInfo[playerid][pToggledChats][3], 
+		PlayerInfo[playerid][pToggledChats][4],
+		PlayerInfo[playerid][pToggledChats][5],
+		PlayerInfo[playerid][pToggledChats][6],
+		PlayerInfo[playerid][pToggledChats][7],
+		PlayerInfo[playerid][pToggledChats][8],
+		PlayerInfo[playerid][pToggledChats][9],
+		PlayerInfo[playerid][pToggledChats][10],
+		PlayerInfo[playerid][pToggledChats][11],
+		PlayerInfo[playerid][pToggledChats][12],
+		PlayerInfo[playerid][pToggledChats][13],
+		PlayerInfo[playerid][pToggledChats][14],
+		PlayerInfo[playerid][pToggledChats][15],
+		PlayerInfo[playerid][pToggledChats][16],
+		PlayerInfo[playerid][pToggledChats][17],
+		PlayerInfo[playerid][pToggledChats][18],
+		PlayerInfo[playerid][pToggledChats][19]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);
 
+	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+		PlayerInfo[playerid][pChatbox][0], 
+		PlayerInfo[playerid][pChatbox][1],
+		PlayerInfo[playerid][pChatbox][2], 
+		PlayerInfo[playerid][pChatbox][3], 
+		PlayerInfo[playerid][pChatbox][4],
+		PlayerInfo[playerid][pChatbox][5],
+		PlayerInfo[playerid][pChatbox][6],
+		PlayerInfo[playerid][pChatbox][7],
+		PlayerInfo[playerid][pChatbox][8],
+		PlayerInfo[playerid][pChatbox][9],
+		PlayerInfo[playerid][pChatbox][10],
+		PlayerInfo[playerid][pChatbox][11],
+		PlayerInfo[playerid][pChatbox][12],
+		PlayerInfo[playerid][pChatbox][13],
+		PlayerInfo[playerid][pChatbox][14],
+		PlayerInfo[playerid][pChatbox][15],
+		PlayerInfo[playerid][pChatbox][16],
+		PlayerInfo[playerid][pChatbox][17],
+		PlayerInfo[playerid][pChatbox][18],
+		PlayerInfo[playerid][pChatbox][19]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);

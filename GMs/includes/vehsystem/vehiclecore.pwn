@@ -2379,7 +2379,8 @@ CMD:seatbelt(playerid, params[])
         }
     }
 	else return 1;
-    ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	ProxChatBubble(playerid, szMiscArray);
+    // ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     return 1;
 }
 
@@ -2411,7 +2412,8 @@ CMD:checkbelt(playerid, params[])
             SendClientMessageEx(playerid,COLOR_WHITE,string);
 
             format(string, sizeof(string), "* %s peers through the window at %s, checking to see if they are wearing a seatbelt.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
-            ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+            // ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+            ProxChatBubble(playerid, string);
         }
     }
     else { SendClientMessageEx(playerid, COLOR_GREY, "You are not around that player!"); }

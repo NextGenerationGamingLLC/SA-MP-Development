@@ -920,7 +920,7 @@ CMD:cratelimit(playerid, params[]) {
 		MAXCRATES = moneys;
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		format(string, sizeof(string), "** %s has restricted weapon crate production to %d", GetPlayerNameEx(playerid), moneys);
+		format(string, sizeof(string), "-- %s has restricted weapon crate production to %d", GetPlayerNameEx(playerid), moneys);
 		foreach(new i: Player)
 		{
 			iGroupID = PlayerInfo[i][pMember];
@@ -973,10 +973,10 @@ CMD:announcetakeoff(playerid, params[]) {
 	    {
 			if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 			{
-				format(string, sizeof(string), "** Pilot %s: Tower, %s requesting permission to take off from %s, over. **", GetPlayerNameEx(playerid), callsign, zone);
+				format(string, sizeof(string), "-- Pilot %s: Tower, %s requesting permission to take off from %s, over. --", GetPlayerNameEx(playerid), callsign, zone);
 				SendGroupMessage(1, DEPTRADIO, string);
 				if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
-		        format(string, sizeof(string), "** Air Traffic Control: %s, you are cleared for takeoff, over. **", callsign);
+		        format(string, sizeof(string), "-- Air Traffic Control: %s, you are cleared for takeoff, over. --", callsign);
 				SendGroupMessage(1, DEPTRADIO, string);
 				if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...[10 seconds]");
@@ -989,10 +989,10 @@ CMD:announcetakeoff(playerid, params[]) {
 		}
 		else
 		{
-		    format(string, sizeof(string), "** Pilot %s: Tower, %s ready for takeoff, over. **", GetPlayerNameEx(playerid), callsign);
+		    format(string, sizeof(string), "-- Pilot %s: Tower, %s ready for takeoff, over. --", GetPlayerNameEx(playerid), callsign);
 			SendGroupMessage(1, DEPTRADIO, string);
 			if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
-	        format(string, sizeof(string), "** Air Traffic Control: %s, denied takeoff. Island is under lockdown, over. **", callsign);
+	        format(string, sizeof(string), "-- Air Traffic Control: %s, denied takeoff. Island is under lockdown, over. --", callsign);
 			SendGroupMessage(1, DEPTRADIO, string);
 			if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 		}
@@ -1069,7 +1069,7 @@ CMD:cgun(playerid, params[]) {
 					PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
 		        }
 		    }
-			format(string, sizeof(string), "** %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. **", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "-- %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. --", GetPlayerNameEx(playerid));
 			SendGroupMessage(1, DEPTRADIO, string);
 			IslandGateStatus = gettime();
 			IslandThreatElimTimer = SetTimer("IslandThreatElim", 1800000, 0);
@@ -1097,11 +1097,11 @@ CMD:alockdown(playerid, params[]) {
 			{
 				if(IsPlayerInRangeOfPoint(i, 500, -1083.90002441,4289.70019531,7.59999990))
 				{
-					SendClientMessageEx(i, COLOR_YELLOW, "** MEGAPHONE **  UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
+					SendClientMessageEx(i, COLOR_YELLOW, "-- MEGAPHONE --  UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
 					PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
 				}
 			}	
-		  	format(string, sizeof(string), "** %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. **", GetPlayerNameEx(playerid));
+		  	format(string, sizeof(string), "-- %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. --", GetPlayerNameEx(playerid));
 			SendGroupMessage(1, DEPTRADIO, string);
 			IslandGateStatus = gettime();
 			IslandThreatElimTimer = SetTimer("IslandThreatElim", 900000, 0);
@@ -1198,7 +1198,7 @@ CMD:cr(playerid, params[])
 				{
 					new szRadio[128], RadioBubble[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
 					GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
-					format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+					format(szRadio, sizeof(szRadio), "-- %s %s (%s) %s: %s --", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
 					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
 					foreach(new i: Player)

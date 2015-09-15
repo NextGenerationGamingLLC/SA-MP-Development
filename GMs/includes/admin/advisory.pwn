@@ -75,7 +75,7 @@ stock SendAdvisorMessage(color, string[])
 	{
 		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
 		{
-			SendClientMessageEx(i, color, string);
+			ChatTrafficProcess(i, color, string, 15);
 		}
 	}
 }
@@ -218,15 +218,15 @@ CMD:nonewbie(playerid, params[])
 
 CMD:tognewbie(playerid, params[])
 {
-	if (PlayerInfo[playerid][pNewbieTogged] == 0)
-	{
-		PlayerInfo[playerid][pNewbieTogged] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled newbie chat.");
-	}
-	else
-	{
-		PlayerInfo[playerid][pNewbieTogged] = 0;
+	if (PlayerInfo[playerid][pToggledChats][0]) {
+		
+		PlayerInfo[playerid][pToggledChats][0] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled newbie chat.");
+	}
+	else {
+
+		PlayerInfo[playerid][pToggledChats][0] = 1;
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled newbie chat.");
 	}
 	return 1;
 }
@@ -337,7 +337,7 @@ CMD:hlban(playerid, params[])
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(PlayerInfo[playerid][pNewbieTogged] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
+	if(PlayerInfo[playerid][pToggledChats][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
 
 	new string[128];
 	if(gettime() < NewbieTimer[playerid])
@@ -391,7 +391,7 @@ CMD:hlban(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2) format(string, sizeof(string), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 	foreach(new n: Player)
 	{
-		if (PlayerInfo[n][pNewbieTogged] == 0)
+		if (PlayerInfo[playerid][pToggledChats][0])
 		{
 			SendClientMessageEx(n, COLOR_NEWBIE, string);
 		}
@@ -1144,12 +1144,14 @@ CMD:togca(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHelper] < 2 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "CAChat") == 1)
-	{
+	{	
+		PlayerInfo[playerid][pToggledChats][16] = 1;
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled Community Advisor chat.");
 		return SetPVarInt(playerid, "CAChat", 0);
 	}
 	else
 	{
+		PlayerInfo[playerid][pToggledChats][16] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled Community Advisor chat.");
 		return SetPVarInt(playerid, "CAChat", 1);
 	}
@@ -1159,19 +1161,20 @@ CMD:ca(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pHelper] < 2 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(GetPVarInt(playerid, "CAChat") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You have Community Advisor chat disabled - /togca to enable it.");
+	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Community Advisor chat disabled - /togca to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ca [text]");
-	new szMessage[128];
-	if(PlayerInfo[playerid][pHelper] == 2) format(szMessage, sizeof(szMessage), "* Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	else if(PlayerInfo[playerid][pHelper] == 3) format(szMessage, sizeof(szMessage), "* Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	else if(PlayerInfo[playerid][pHelper] >= 4) format(szMessage, sizeof(szMessage), "* Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	else if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof(szMessage), "* %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);	
+	szMiscArray[0] = 0;
+	
+	if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "- Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "- Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "- Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
+	else if(PlayerInfo[playerid][pAdmin] >= 2) format(szMiscArray, sizeof(szMiscArray), "- %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+	else format(szMiscArray, sizeof(szMiscArray), "- Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);	
 	foreach(new i : Player)
 	{
 		if((PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pAdmin] >= 2) && GetPVarInt(i, "CAChat") == 1)
 		{
-			SendClientMessageEx(i, 0x5288f3FF, szMessage);
+			ChatTrafficProcess(i, 0x5288f3FF, szMiscArray, 16);
 		}
 	}
 	return 1;

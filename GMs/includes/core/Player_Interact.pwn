@@ -150,16 +150,17 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 
 			if(GetPVarType(playerid, "Interact_SellGun")) {
+
 				new weaponid = GetPVarInt(playerid, "Interact_SellGun");
 
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(offerprice));
 			}
-			if(GetPVarType(playerid, "Interact_Drug")) {
+			else if(GetPVarType(playerid, "Interact_Drug")) {
 				new drugid = GetPVarInt(playerid, "Interact_Drug");
 
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s with a quality of {FFFF00} %d qP {FFFFFF}for $%s", GetPlayerNameEx(playerid), szDrugs[drugid], PlayerInfo[playerid][p_iDrugQuality][drugid], number_format(offerprice));
 			}
-			if(GetPVarType(playerid, "Interact_Ingredient")) {
+			else if(GetPVarType(playerid, "Interact_Ingredient")) {
 				new ingredientid = GetPVarInt(playerid, "Interact_Ingredient");
 
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s for $%s", GetPlayerNameEx(playerid), szIngredients[ingredientid], number_format(offerprice));
@@ -387,6 +388,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		DBLog(playerid, giveplayerid, "ItemTransfer", szMiscArray);
 	}
 	else {
+
 		GivePlayerCash(playerid, saleprice);
 		GivePlayerCash(giveplayerid, -saleprice);
 
@@ -724,12 +726,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
 					Interact_GivePlayerWeapon(buyingfrom, playerid, weaponid, price);
 				}
-				if(GetPVarType(buyingfrom, "Interact_Drug")) {
+				else if(GetPVarType(buyingfrom, "Interact_Drug")) {
 
 					new drugid = GetPVarInt(buyingfrom, "Interact_Drug");
 					Interact_GivePlayerDrug(buyingfrom, playerid, drugid, price);
 				}
-				if(GetPVarType(buyingfrom, "Interact_Ingredient")) {
+				else if(GetPVarType(buyingfrom, "Interact_Ingredient")) {
 
 					new ingredientid = GetPVarInt(buyingfrom, "Interact_Ingredient");
 					Interact_GivePlayerIngredient(buyingfrom, playerid, ingredientid, price);
@@ -774,6 +776,10 @@ Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 	GivePlayerValidWeapon(giveplayerid, weaponid, 0);
 
 	if(saleprice != 0) {
+
+		GivePlayerCash(playerid, saleprice);
+		GivePlayerCash(giveplayerid, -saleprice);
+
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s a %s for $%s", GetPlayerNameEx(giveplayerid), ReturnWeaponName(weaponid), number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
@@ -831,6 +837,10 @@ Interact_GivePlayerDrug(playerid, giveplayerid, drugid, saleprice = 0) {
 	PlayerInfo[giveplayerid][p_iDrugQuality][drugid] = PlayerInfo[playerid][p_iDrugQuality][drugid];
 
 	if(saleprice != 0) {
+
+		GivePlayerCash(playerid, saleprice);
+		GivePlayerCash(giveplayerid, -saleprice);
+
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid], number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 
@@ -885,6 +895,10 @@ Interact_GivePlayerIngredient(playerid, giveplayerid, ingredientid, saleprice = 
 	PlayerInfo[playerid][p_iIngredient][ingredientid] -= amount;
 
 	if(saleprice != 0) {
+
+		GivePlayerCash(playerid, saleprice);
+		GivePlayerCash(giveplayerid, -saleprice);
+
 		format(szMiscArray, sizeof(szMiscArray), "You have sold %s %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid], number_format(saleprice));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 

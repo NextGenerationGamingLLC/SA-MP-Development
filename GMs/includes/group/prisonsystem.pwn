@@ -1039,7 +1039,8 @@ CMD:acceptjailfood(playerid, params[])
 		DeletePVar(iOffering, "OfferingMeal");
 		DeletePVar(iOffering, "OfferedMealTo");
 		format(string, sizeof(string), "* %s takes a plate of food from %s and begins to eat it.", GetPlayerNameEx(playerid), GetPlayerNameEx(iOffering));
-		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		ProxChatBubble(playerid, string);
+		// ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		//ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 1, 0, 4000, 1);
 		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.0, 0, 0, 0, 1, 0);
 		SetTimerEx("ClearAnims", 3000, false, "d", playerid);

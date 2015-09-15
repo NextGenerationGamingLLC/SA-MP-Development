@@ -447,7 +447,7 @@ CMD:rccam(playerid, params[])
 		if(GetPVarInt(playerid, "rccam") == 0)
 		{
 			if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
-			if(WatchingTV[playerid] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
+			if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 			if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be on foot to place an RCCam!");
@@ -946,7 +946,7 @@ CMD:craft(playerid, params[])
 				SendClientMessageEx(playerid,COLOR_GREY,"   Not enough Materials for that!");
 				return 1;
 			}*/
-			SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot craft this right now!");
 		}
 
 		else if(strcmp(choice,"mailbox",true) == 0)

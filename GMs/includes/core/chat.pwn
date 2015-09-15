@@ -34,6 +34,73 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <YSI\y_hooks>
+
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	switch(dialogid) {
+
+		case DIALOG_ADO: {
+
+			if(!response) return DeletePVar(playerid, "actionstring");
+
+			new iTargetID = ListItemTrackId[playerid][listitem],
+				szMessage[150];
+
+			GetPVarString(playerid, "actionstring", szMessage, sizeof(szMessage));
+			SetPVarInt(iTargetID, "actionplayer", playerid);
+			format(szMiscArray, sizeof(szMiscArray), " ** Sent: {C2A2DA}%s attempts to %s", GetPlayerNameEx(playerid), szMessage);
+			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), " * > Action request sent to: %s. Awaiting response...", GetPlayerNameEx(iTargetID));
+			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+			format(szMiscArray, sizeof(szMiscArray), "Sender: %s\n\nAction: %s (( %s ))\n\n\
+				Select 'Accept' to accept the action.\n\
+				Select 'Deny' to deny the action. You will need to provide a reason.", GetPlayerNameExt(playerid), szMessage, GetPlayerNameExt(playerid));
+			ShowPlayerDialog(iTargetID, DIALOG_ADO2, DIALOG_STYLE_MSGBOX, "Incoming Action Request", szMiscArray, "Accept", "Deny");
+		}
+		case DIALOG_ADO2: {
+
+			if(!response) {
+
+				return ShowPlayerDialog(playerid, DIALOG_ADO3, DIALOG_STYLE_INPUT, "Action Denied", "Please provide a reason for denying the action request", "Submit", "Cancel");
+			}
+			new iActionID = GetPVarInt(playerid, "actionplayer");
+			GetPVarString(playerid, "actionstring", szMiscArray, sizeof(szMiscArray));
+			format(szMiscArray, sizeof(szMiscArray), "* %s (( %s ))", szMiscArray, GetPlayerNameExt(iActionID));
+			ProxDetectorWrap(playerid, szMiscArray, 92, 30.0, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
+			DeletePVar(iActionID, "actionstring");
+			DeletePVar(playerid, "actionplayer");
+
+		}
+		case DIALOG_ADO3: {
+
+			new iActionID = GetPVarInt(playerid, "actionplayer");
+			format(szMiscArray, sizeof(szMiscArray), " * %s denied the action.", GetPlayerNameExt(iActionID));
+			SendClientMessage(iActionID, COLOR_PURPLE, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), " * Reason: %s.", inputtext);
+			SendClientMessage(iActionID, COLOR_YELLOW, szMiscArray);
+			SendClientMessage(playerid, COLOR_PURPLE, "You denied the action.");
+			format(szMiscArray, sizeof(szMiscArray), " * Reason: %s.", inputtext);
+			SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
+			DeletePVar(iActionID, "actionstring");
+			DeletePVar(playerid, "actionplayer");
+		}
+	}
+	return 1;
+}
+
+hook OnPlayerConnect(playerid) {
+
+	for(new i; i < 20; ++i) PlayerInfo[playerid][pToggledChats][i] = 0;
+	for(new i; i < 20; ++i) PlayerInfo[playerid][pChatbox][i] = 0;
+	DeletePVar(playerid, "actionplayer");
+	DeletePVar(playerid, "actionstring");
+	return 1;
+}
+
 stock SendClientMessageEx(playerid, color, string[])
 {
 	if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1 || ActiveChatbox[playerid] == 0)
@@ -48,8 +115,26 @@ stock SendClientMessageToAllEx(color, string[])
 	foreach(new i: Player)
 	{
 		if(InsideMainMenu{i} == 1 || InsideTut{i} == 1 || ActiveChatbox[i] == 0) {}
-		else SendClientMessage(i, color, string);
+		else {
+
+			SendClientMessage(i, color, string);
+		}
 	}	
+	return 1;
+}
+
+CMD:togchatbox2(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pToggledChats][19]) {
+		
+		for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
+		PlayerInfo[playerid][pToggledChats][19] = 0;
+	}
+	else {
+		
+		for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
+		PlayerInfo[playerid][pToggledChats][19] = 1;
+	}
 	return 1;
 }
 
@@ -62,10 +147,10 @@ stock SendClientMessageWrap(playerid, color, width, string[])
 		strmid(secondline, string, 88, 128);
 		format(firstline, sizeof(firstline), "%s...", firstline);
 		format(secondline, sizeof(secondline), "...%s", secondline);
-		SendClientMessageEx(playerid, color, firstline);
-		SendClientMessageEx(playerid, color, secondline);
+		ChatTrafficProcess(playerid, color, firstline, 3);
+		ChatTrafficProcess(playerid, color, secondline, 3);
 	}
-	else SendClientMessageEx(playerid, color, string);
+	else ChatTrafficProcess(playerid, color, string, 3);
 }
 	
 stock ClearChatbox(playerid)
@@ -94,10 +179,11 @@ stock RadioBroadCast(playerid, string[])
 		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
 		{
 			GetPlayerPos(i, aaaPositions[0], aaaPositions[1], aaaPositions[2]);
-			format(MiscString, sizeof(MiscString), "** Radio (%d khz) ** %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
+			format(MiscString, sizeof(MiscString), "-- Radio (%d khz) -- %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
 			SendClientMessageEx(i, PUBLICRADIO_COLOR, MiscString);
+			ChatTrafficProcess(playerid, PUBLICRADIO_COLOR, MiscString, 5);
 			format(MiscString, sizeof(MiscString), "(radio) %s", string);
-			SetPlayerChatBubble(playerid,MiscString,COLOR_WHITE,15.0,5000);
+			SetPlayerChatBubble(playerid,MiscString,COLOR_WHITE, 15.0, 5000);
 		}
 	}	
 }
@@ -122,11 +208,13 @@ CMD:togwhisper(playerid, params[])
 	if (!HidePM[playerid])
 	{
 		HidePM[playerid] = 1;
+		PlayerInfo[playerid][pToggledChats][3] = 1;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled whisper chat.");
 	}
 	else
 	{
 		HidePM[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][3] = 0;
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled whisper chat.");
 	}
 	return 1;
@@ -162,7 +250,7 @@ CMD:w(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/w)hisper [player] [text]");
 		return 1;
 	}
-	if(WatchingTV[playerid] != 0 && PlayerInfo[playerid][pAdmin] < 2)
+	if(GetPVarInt(playerid, "WatchingTV") && PlayerInfo[playerid][pAdmin] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do this while watching TV.");
 		return 1;
@@ -243,6 +331,34 @@ CMD:do(playerid, params[])
 	return 1;
 }
 
+CMD:attempt(playerid, params[]) {
+
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /attempt [action]");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use more than 120 characters.");
+	
+	SetPVarString(playerid, "actionstring", params);
+
+	szMiscArray[0] = 0;
+
+	new Float:fPos[3],
+		j;
+
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
+	foreach(new i : Player) {
+
+		if(IsPlayerInRangeOfPoint(playerid, 15.0, fPos[0], fPos[1], fPos[2])) {
+
+			ListItemTrackId[playerid][j++] = i;	
+			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, GetPlayerNameEx(i));
+		}
+	}
+	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GREY, "There is no one around you.");
+	ShowPlayerDialog(playerid, DIALOG_ADO, DIALOG_STYLE_LIST, "Perform an action", szMiscArray, "Select", "Cancel");
+	return 1;
+}
+
 CMD:ooc(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)
@@ -310,6 +426,7 @@ CMD:s(playerid, params[])
 	}
 
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/s)hout [shout chat]");
+
 	new string[128];
 	format(string, sizeof(string), "(shouts) %s!", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,60.0,5000);
@@ -349,10 +466,12 @@ CMD:b(playerid, params[])
 		return 1;
 	}
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b [local ooc chat]");
+	if(GetPVarType(playerid, "WatchingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You can't use this command while watching TV.");
 	new string[128];
 	format(string, sizeof(string), "%s: (( %s ))", GetPlayerNameEx(playerid), params);
+	
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
-	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
+	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1, 2);
 
 	foreach(new i: Player)
 	{
@@ -360,7 +479,7 @@ CMD:b(playerid, params[])
 		{
 			new szAntiprivacy[128];
 			format(szAntiprivacy, sizeof(szAntiprivacy), "(BE) %s: %s", GetPlayerNameEx(playerid), params);
-			SendClientMessageEx(i, COLOR_FADE1, szAntiprivacy);
+			ChatTrafficProcess(i, COLOR_FADE1, szAntiprivacy, 2);
 		}
 	}	
 	return 1;
@@ -372,7 +491,7 @@ CMD:accent(playerid, params[])
 	if(sscanf(params, "d", accent))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accent [accent ID]");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Normal [1], British [2], Asian [4], Scottish [6], Irish [7], Russian [8]");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Normal [1], British [2], Japanese [3], Asian [4], Scottish [6], Irish [7], Russian [8]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: American [9], Spanish [10], Southern [11], Italian [13], Gangsta [14], Australian [15], Arabic [16]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Balkan [17], Canadian [18], Jamaican [19], Israeli [20], Dutch [21], Brazilian [22], German [23], Turkish [24]");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Available Accents: Kiwi [25], French [26], Korean [27], Thai [28], Swedish [29], Danish [30], Norwegian [31]");
@@ -605,13 +724,73 @@ CMD:togchatbox(playerid, params[])
 		{
 			ClearChatbox(playerid);
 			ActiveChatbox[playerid] = 0;
+			PlayerInfo[playerid][pToggledChats][4] = 1;
 		}
 		case 0:
 		{
 			ActiveChatbox[playerid] = 1;
+			PlayerInfo[playerid][pToggledChats][4] = 0;
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have turned the chatbox back on!");
 		}
 	}
+	return 1;
+}
+
+
+ChatTrafficProcess(playerid, color, szString[], chattype) {
+
+	if(PlayerInfo[playerid][pToggledChats][chattype] == 1) return 1;
+	if(PlayerInfo[playerid][pChatbox][chattype] > 0) {
+
+		/*if(strlen(szString) > 60)
+		{
+			new firstline[128], secondline[128];
+			strmid(firstline, szString, 0, 88);
+			strmid(secondline, szString, 88, 128);
+			format(firstline, sizeof(firstline), "%s...", firstline);
+			format(secondline, sizeof(secondline), "...%s", secondline);
+			ChatBoxProcess(playerid, color, firstline);
+			ChatBoxProcess(playerid, color, secondline);
+		}
+		else */
+		ChatBoxProcess(playerid, color, szString);
+	}
+	else SendClientMessageEx(playerid, color, szString);
+	return 1;
+}
+
+ProxChatBubble(playerid, szString[]) {
+
+	SetPlayerChatBubble(playerid, szString, COLOR_PURPLE, 15.0, 5000);
+	format(szString, 128, "{FF8000}> {C2A2DA}%s", szString);
+	SendClientMessageEx(playerid, COLOR_PURPLE, szString);
+}
+
+
+ChatBoxProcess(playerid, hColor, szText[]) {
+
+	if(PlayerInfo[playerid][pToggledChats][19] == 1) return 1;
+
+	new PVarID[5];
+
+	for(new i = 10; i > 1; --i) {
+
+		format(PVarID, sizeof(PVarID), "CB%d", i - 1);
+		GetPVarString(playerid, PVarID, szMiscArray, sizeof(szMiscArray));
+		ChatBoxColor[playerid][i] = ChatBoxColor[playerid][i - 1];
+		if(!isnull(szMiscArray)) PlayerTextDrawColor(playerid, TD_ChatBox[i], ChatBoxColor[playerid][i]);
+		PlayerTextDrawSetString(playerid, TD_ChatBox[i], szMiscArray);
+		PlayerTextDrawShow(playerid, TD_ChatBox[i]);
+
+		format(PVarID, sizeof(PVarID), "CB%d", i);
+		SetPVarString(playerid, PVarID, szMiscArray);
+
+	}
+	SetPVarString(playerid, "CB1", szText);
+	ChatBoxColor[playerid][1] = hColor;
+	PlayerTextDrawColor(playerid, TD_ChatBox[1], hColor);
+	PlayerTextDrawSetString(playerid, TD_ChatBox[1], szText);
+	PlayerTextDrawShow(playerid, TD_ChatBox[1]);
 	return 1;
 }
 

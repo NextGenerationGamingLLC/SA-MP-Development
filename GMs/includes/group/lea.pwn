@@ -253,7 +253,7 @@ stock TacklePlayer(playerid, tacklee)
 forward TazerTimer(playerid);
 public TazerTimer(playerid)
 {
-	if (TazerTimeout[playerid] > 0)
+	if(TazerTimeout[playerid] > 0)
    	{
 		new string[128];
    		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~%d", TazerTimeout[playerid]);

@@ -699,7 +699,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						else
 							format(string, sizeof(string), "* %s %s takes a badge and a gun from their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 
-						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						ProxChatBubble(playerid, string);
+						// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SetHealth(playerid, 100.0);
 						if(IsAMedic(playerid))
 						{
@@ -732,7 +733,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					else if(PlayerInfo[playerid][pDuty]==1)
 					{
 						format(string, sizeof(string), "* %s %s places their badge and gun in their locker.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
-						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						ProxChatBubble(playerid, string);
 						if(IsAMedic(playerid))
 						{
 							Medics -= 1;
@@ -963,7 +965,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						new szMessage[128];
 						format(szMessage, sizeof(szMessage), "%s reaches towards their locker, taking a tazer and cuffs out.", GetPlayerNameEx(playerid));
-						ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						ProxChatBubble(playerid, string);
+						// ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						SendClientMessageEx(playerid, COLOR_WHITE, "You're now carrying a tazer and cuffs on you.");
 						PlayerInfo[playerid][pHasTazer] = 1;
 						PlayerInfo[playerid][pHasCuff] = 1;
@@ -3525,7 +3528,7 @@ CMD:dvrespawn(playerid, params[])
 					}	
 			    }
 			}
-			format(szString, sizeof(szString), "** Respawning all dynamic group vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
+			format(szString, sizeof(szString), "-- Respawning all dynamic group vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pMember] == iGroupID) 
@@ -4129,10 +4132,10 @@ CMD:deploy(playerid, params[])
 						else Barricades[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Barricade ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
+						/*format(string, sizeof(string), "-- HQ: A barricade has been deployed by %s at %s --", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
 						foreach(new x: Player)
 						{
-							if(GetPVarInt(x, "togRadio") == 0)
+							if(PlayerInfo[x][pToggledChats][12] == 0)
 							{
 								if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 								if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
@@ -4170,10 +4173,10 @@ CMD:deploy(playerid, params[])
 						else SpikeStrips[iGroup][i][sDeployedByStatus] = 0;
 						format(string,sizeof(string),"Spike ID: %d successfully created.", i);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						/*format(string, sizeof(string), "** HQ: A spike has been deployed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
+						/*format(string, sizeof(string), "-- HQ: A spike has been deployed by %s at %s --", GetPlayerNameEx(playerid), SpikeStrips[iGroup][i][sDeployedAt]);
 						foreach(new x: Player)
 						{
-							if(GetPVarInt(x, "togRadio") == 0)
+							if(PlayerInfo[x][pToggledChats][12] == 0)
 							{
 								if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 								if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
@@ -4437,10 +4440,10 @@ CMD:destroy(playerid, params[])
 					Barricades[iGroup][type][sDeployedByStatus] = 0;
 					format(string, sizeof(string), "Barricade ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					format(string, sizeof(string), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
+					format(string, sizeof(string), "-- HQ: A barricade has been destroyed by %s at %s --", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
+						if(PlayerInfo[i][pToggledChats][12] == 0)
 						{
 							if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
@@ -4475,10 +4478,10 @@ CMD:destroy(playerid, params[])
 					SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Spike %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
+					/*format(string, sizeof(string), "-- HQ: A spike has been destroyed by %s at %s --", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
 					foreach(new i: Player)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
+						if(PlayerInfo[i][pToggledChats][12] == 0)
 						{
 							if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
 							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
@@ -4881,10 +4884,10 @@ CMD:gov(playerid, params[])
 	if ((0 <= iGroupID < MAX_GROUPS) && iRank >= arrGroupData[iGroupID][g_iGovAccess]) {
 		if(!isnull(params)) {
 			new string[128];
-			format(string, sizeof(string), "** %s %s %s: %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
+			format(string, sizeof(string), "-- %s %s %s: %s --", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), params);
    			SendClientMessageToAllEx(COLOR_WHITE, "|___________ Government News Announcement ___________|");
 			SendClientMessageToAllEx(arrGroupData[iGroupID][g_hDutyColour] * 256 + 255, string);
-			format(string, sizeof(string), "** %s %s %s(%d): %s **", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), params);
+			format(string, sizeof(string), "-- %s %s %s(%d): %s --", arrGroupData[iGroupID][g_szGroupName], arrGroupRanks[iGroupID][iRank], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), params);
 			Log("logs/gov.log", string);
 		} else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/gov)ernment [text]");
 	} else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
@@ -5080,7 +5083,8 @@ CMD:showbadge(playerid, params[])
 				else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != 2) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Official has the authority to assist in arrests.");
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, "----------------------------------------------------------------------------------------------------");
 				format(string, sizeof(string), "* %s shows their badge to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				ProxChatBubble(playerid, string);
+				// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
 			} else SendClientMessageEx(playerid, COLOR_GREY, "That person isn't near you.");
 		} else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -5166,27 +5170,27 @@ CMD:r(playerid, params[]) {
 
 	if (0 <= iGroupID < MAX_GROUPS) {
  		if (iRank >= arrGroupData[iGroupID][g_iRadioAccess]) {
-			if(GetPVarInt(playerid, "togRadio") == 0) {
+			if(PlayerInfo[playerid][pToggledChats][12] == 0) {
 				if(!isnull(params))
 				{
 					new string[128], employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
 					format(string, sizeof(string), "(radio) %s", params);
 					SetPlayerChatBubble(playerid, string, COLOR_WHITE, 15.0, 5000);
 					GetPlayerGroupInfo(playerid, rank, division, employer);
-					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(string, sizeof(string), "** [%s] %s %s: %s **", PlayerInfo[playerid][pBadge], rank, GetPlayerNameEx(playerid), params);
-					else format(string, sizeof(string), "** %s (%s) %s: %s **", rank, division, GetPlayerNameEx(playerid), params);
-					//foreach(new i: Player)
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(string, sizeof(string), "-- [%s] %s %s: %s --", PlayerInfo[playerid][pBadge], rank, GetPlayerNameEx(playerid), params);
+					else format(string, sizeof(string), "-- %s (%s) %s: %s --", rank, division, GetPlayerNameEx(playerid), params);
+					
 					foreach(new i: Player)
 					{
-						if(GetPVarInt(i, "togRadio") == 0)
+						if(PlayerInfo[playerid][pToggledChats][12] == 0)
 						{
 							if(PlayerInfo[i][pMember] == iGroupID && iRank >= arrGroupData[iGroupID][g_iRadioAccess]) {
-								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, string);
+								ChatTrafficProcess(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, string, 12);
 							}
 							if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID) {
 								new szBigEar[128];
 								format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
-								SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar);
+								ChatTrafficProcess(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar, 12);
 							}
 						}
 					}	
@@ -5220,7 +5224,7 @@ CMD:international(playerid, params[])
 	        {
 	            new szRadio[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
 	            GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
-	            format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+	            format(szRadio, sizeof(szRadio), "-- %s %s (%s) %s: %s --", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 	            foreach(new i: Player)
 				{				
 					if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess])
@@ -5241,14 +5245,14 @@ CMD:international(playerid, params[])
 
 CMD:togdept(playerid, params[])
 {
-    if(GetPVarInt(playerid, "togDept") == 0)
+    if(PlayerInfo[playerid][pToggledChats][10] == 1)
     {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off your department radio, you may re-enable it by typing this command again.");
-        SetPVarInt(playerid, "togDept", 1);
+        PlayerInfo[playerid][pToggledChats][10] = 1;
     }
     else {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on your department radio.");
-        SetPVarInt(playerid, "togDept", 0);
+        PlayerInfo[playerid][pToggledChats][10] = 0;
 	} return 1;
 }
 
@@ -5263,29 +5267,29 @@ CMD:dept(playerid, params[])
 	{
 		if(iRank >= arrGroupData[iGroupID][g_iDeptRadioAccess])
 		{
-			if(GetPVarInt(playerid, "togDept") == 0)
+			if(PlayerInfo[playerid][pToggledChats][10] == 0)
 			{
 				if(!isnull(params))
 				{
 					new szRadio[128], RadioBubble[128], szEmployer[GROUP_MAX_NAME_LEN], szRank[GROUP_MAX_RANK_LEN], szDivision[GROUP_MAX_DIV_LEN];
 					GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
-					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(szRadio, sizeof(szRadio), "** [%s] %s %s %s: %s **", PlayerInfo[playerid][pBadge], szEmployer, szRank, GetPlayerNameEx(playerid), params);
-					else format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
+					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(szRadio, sizeof(szRadio), "-- [%s] %s %s %s: %s --", PlayerInfo[playerid][pBadge], szEmployer, szRank, GetPlayerNameEx(playerid), params);
+					else format(szRadio, sizeof(szRadio), "-- %s %s (%s) %s: %s --", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 					format(RadioBubble, sizeof(RadioBubble), "(radio) %s",params);
 					SetPlayerChatBubble(playerid, RadioBubble, COLOR_WHITE, 15.0, 5000);
 					foreach(new i: Player)
 					{
-						if(GetPVarInt(i, "togDept") == 0)
+						if(PlayerInfo[playerid][pToggledChats][10] == 0)
 						{
 							if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess] && arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance])
 							{
-								SendClientMessageEx(i, DEPTRADIO, szRadio);
+								ChatTrafficProcess(i, DEPTRADIO, szRadio, 10);
 							}
 							else if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
 							{
 								new szBigEar[128];
 								format(szBigEar, sizeof(szBigEar), "(BE) %s", szRadio);
-								SendClientMessageEx(i, iGroupID, szBigEar);
+								ChatTrafficProcess(i, iGroupID, szBigEar, 10);
 							}
 							else if((PlayerInfo[i][pMember] == INVALID_GROUP_ID || (0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] < arrGroupData[PlayerInfo[i][pMember]][g_iDeptRadioAccess]) && PlayerInfo[i][pReceiver] > 0)
 							{
@@ -5293,8 +5297,8 @@ CMD:dept(playerid, params[])
 								{
 									if(GetPVarInt(i, "pReceiverMLeft") > 0)
 									{
-										format(szRadio, sizeof(szRadio), "** (receiver) %s: %s", GetPlayerNameEx(playerid), params);
-										SendClientMessageEx(i, DEPTRADIO, szRadio);
+										format(szRadio, sizeof(szRadio), "-- (receiver) %s: %s", GetPlayerNameEx(playerid), params);
+										ChatTrafficProcess(i, DEPTRADIO, szRadio, 10);
 										SetPVarInt(i, "pReceiverMLeft", GetPVarInt(i, "pReceiverMLeft") - 1);
 									}
 									else
@@ -5320,14 +5324,14 @@ CMD:dept(playerid, params[])
 
 CMD:togradio(playerid, params[])
 {
-    if(GetPVarInt(playerid, "togRadio") == 0)
+    if(PlayerInfo[playerid][pToggledChats][12] == 0)
     {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled off your radio, you may re-enable it by typing this command again.");
-        SetPVarInt(playerid, "togRadio", 1);
+        PlayerInfo[playerid][pToggledChats][12] = 1;
     }
     else {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You have toggled on your radio.");
-        SetPVarInt(playerid, "togRadio", 0);
+        PlayerInfo[playerid][pToggledChats][12] = 0;
 	} return 1;
 }
 
@@ -5484,9 +5488,12 @@ CMD:g(playerid, params[])
 	if(iRank >= arrGroupData[iGroupID][g_iOOCChat])
 	{
 		new string[128];
-		format(string, sizeof(string), "** (%d) %s (%s) %s: %s **", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("None")), GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "-- (%d) %s (%s) %s: %s --", iRank, arrGroupRanks[iGroupID][iRank], (0 <= PlayerInfo[playerid][pDivision] < MAX_GROUP_DIVS && arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]][0] ? arrGroupDivisions[iGroupID][PlayerInfo[playerid][pDivision]]:("None")), GetPlayerNameEx(playerid), params);
 		foreach(new i: Player) {
-			if(PlayerInfo[i][pMember] == iGroupID && GetPVarInt(i, "OOCRadioTogged") == 0) SendClientMessageEx(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string);
+			if(PlayerInfo[i][pMember] == iGroupID && GetPVarInt(i, "OOCRadioTogged") == 0) {
+
+				ChatTrafficProcess(i, arrGroupData[iGroupID][g_hOOCColor] * 256 + 255, string, 11);
+			}
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command.");
@@ -5499,11 +5506,13 @@ CMD:togfam(playerid, params[])
 	{
 		DeletePVar(playerid, "OOCRadioTogged");
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled your OOC group chat. ");
+		PlayerInfo[playerid][pToggledChats][11] = 0;
 	}
 	else 
 	{
 		SetPVarInt(playerid, "OOCRadioTogged", 1);
 		SendClientMessage(playerid, COLOR_WHITE, "You have disabled your OOC group chat.");
+		PlayerInfo[playerid][pToggledChats][11] = 1;
 	}
 	return 1;
 }
@@ -5769,10 +5778,10 @@ CMD:setdivname(playerid, params[])
 			iDiv = iDiv - 1;
 			if(strcmp(iName, "none", true) == 0)
 			{
-				format(szMessage, sizeof(szMessage), "** %s has removed the %s division (#%i) **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
+				format(szMessage, sizeof(szMessage), "-- %s has removed the %s division (#%i) --", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1);
 				foreach(new i: Player)
 				{
-					if(GetPVarInt(i, "togRadio") == 0)
+					if(PlayerInfo[i][pToggledChats][12] == 0)
 					{
 						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
 						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
@@ -5788,10 +5797,10 @@ CMD:setdivname(playerid, params[])
 			}
 			else
 			{
-				format(szMessage, sizeof(szMessage), "** %s has renamed division %s (#%i) to %s **", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
+				format(szMessage, sizeof(szMessage), "-- %s has renamed division %s (#%i) to %s --", GetPlayerNameEx(playerid), arrGroupDivisions[iGroupID][iDiv], iDiv + 1, iName);
 				foreach(new i: Player)
 				{
-					if(GetPVarInt(i, "togRadio") == 0)
+					if(PlayerInfo[i][pToggledChats][12] == 0)
 					{
 						if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMessage);
 						if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroupID)
@@ -5990,11 +5999,13 @@ CMD:togbr(playerid, params[])
 		{
 			gBug{playerid} = 1;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Bug chat channel enabled. You will now be able to hear transmissions from all active bugs.");
+			PlayerInfo[playerid][pToggledChats][13] = 0;
 		}
 		else
 		{
 			gBug{playerid} = 0;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Bug chat channel disabled.");
+			PlayerInfo[playerid][pToggledChats][13] = 1;
 		}
 	}
 	return 1;
@@ -6110,7 +6121,7 @@ CMD:orgs(playerid, params[])
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** %s | Total Members: %d | Members Online: %i | Tokens: %d", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount, arrGroupData[i][g_iTurfTokens] < 12 ? 0 : arrGroupData[i][g_iTurfTokens]/12);
+			format(szMiscArray, sizeof(szMiscArray), "-- %s | Total Members: %d | Members Online: %i | Tokens: %d", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount, arrGroupData[i][g_iTurfTokens] < 12 ? 0 : arrGroupData[i][g_iTurfTokens]/12);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}

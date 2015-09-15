@@ -1026,7 +1026,7 @@ task PaintballArenaUpdate[1000]()
 			    new
 					winnerid = SortWinnerPaintballScores(i);
 
-			    format(szMiscArray, sizeof(szMiscArray), "%s has won $%d from the Paintball Match, thanks for playing!",GetPlayerNameEx(winnerid),PaintBallArena[i][pbMoneyPool]);
+			    format(szMiscArray, sizeof(szMiscArray), "%s has won $%d from the Paintball Match, thanks for playing!", GetPlayerNameEx(winnerid),PaintBallArena[i][pbMoneyPool]);
 			    GivePlayerCash(winnerid,PaintBallArena[i][pbMoneyPool]);
 			    SendPaintballArenaMessage(i, COLOR_YELLOW, szMiscArray);
 			    foreach(new p: Player)

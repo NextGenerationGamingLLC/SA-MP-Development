@@ -48,7 +48,7 @@ public Player_StreamPrep(iPlayer, Float: fPosX, Float: fPosY, Float: fPosZ, iTim
 
 			if(GetPVarType(iPlayer, "MedicCall")) {
 				ClearAnimations(iPlayer);
-				ApplyAnimation(iPlayer, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+				PlayDeathAnimation(iPlayer);
 			}
 			DeletePVar(iPlayer, "StreamPrep");
 		}

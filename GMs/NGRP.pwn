@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.240"
+#define SERVER_GM_TEXT "NG:RP v3.0.241"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -295,7 +295,7 @@
 #include "./includes/core/Banks.pwn"
 #include "./includes/core/entexit.pwn"
 #include "./includes/vehsystem/vehauto.pwn"
-//#include "./includes/AccountSettings.pwn"
+#include "./includes/AccountSettings.pwn"
 
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"

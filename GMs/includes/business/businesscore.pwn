@@ -602,6 +602,7 @@ stock GetSupplyState(stateid)
 {
 	new string[28];
 	switch (stateid)	{
+		case 0: string = "{FF3333}Inactive";
 		case 1: string = "{FFFF00}Pending Shipment";
 		case 2: string = "{FFAA00}Shipping";
 		case 3: string = "{00AA00}Delivered";
@@ -2995,11 +2996,13 @@ CMD:togbiz(playerid, params[])
     {
         DeletePVar(playerid, "BusinessRadio");
         SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled business radio.");
+        PlayerInfo[playerid][pToggledChats][14] = 0;
     }
     else
     {
         SetPVarInt(playerid, "BusinessRadio", 1);
         SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled business radio.");
+        PlayerInfo[playerid][pToggledChats][14] = 1;
     }
 	return 1;
 }
@@ -3019,10 +3022,13 @@ CMD:bizradio(playerid, params[])
 
 	format(string, sizeof(string), "(radio) %s", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,15.0,5000);
-	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
+	format(string, sizeof(string), "-- (%d) %s %s: %s --", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
 	foreach(new i: Player)
 	{
-		if (PlayerInfo[i][pBusiness] == iBusinessID && GetPVarInt(i, "BusinessRadio") != 1) SendClientMessageEx(i, COLOR_BR, string);
+		if (PlayerInfo[i][pBusiness] == iBusinessID && GetPVarInt(i, "BusinessRadio") != 1) {
+
+			ChatTrafficProcess(i, COLOR_BR, string, 14);
+		}
 	}	
 
 	return 1;

@@ -363,6 +363,9 @@ new Text:WristWatch;
 new Text:GPS[MAX_PLAYERS];
 new Text:BFText;
 new Text:PriorityReport[MAX_PLAYERS];
+new Text:TD_ServerError;
+new PlayerText:TD_ChatBox[11],
+	ChatBoxColor[MAX_PLAYERS][11];
 
 // Sobeit Check Variable
 new sobeitCheckvar[MAX_PLAYERS];
@@ -720,7 +723,6 @@ new broadcasting = 0;
 new cameraangle = 0;
 // new Text3D:camera;
 new viewers = 0;
-new WatchingTV[MAX_PLAYERS];
 new SelectFChar[MAX_PLAYERS];
 new SelectFCharPlace[MAX_PLAYERS];
 new ChosenSkin[MAX_PLAYERS];

@@ -96,6 +96,8 @@ public KillEMSQueue(playerid)
 	DeletePVar(playerid, "MedicCall");
 	DeletePVar(playerid, "EMSWarns");
 	DeletePVar(playerid, "_energybar");
+	DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "NDeathText"));
+	DeletePVar(playerid, "NDeathText");
 	DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "InjuredTL"));
 	DeletePVar(playerid, "InjuredTL");
 	return 1;
@@ -133,7 +135,7 @@ public SendEMSQueue(playerid,type)
 			if(GetPlayerInterior(playerid) > 0) Player_StreamPrep(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"), FREEZE_TIME);
 			GameTextForPlayer(playerid, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
 			ClearAnimations(playerid);
-			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+			PlayDeathAnimation(playerid);
 			SetHealth(playerid, 100);
 			RemoveArmor(playerid);
 			if(GetPVarInt(playerid, "usingfirstaid") == 1)
@@ -152,6 +154,20 @@ public SendEMSQueue(playerid,type)
 		}
 	}
 	return 1;
+}
+
+PlayDeathAnimation(playerid) {
+
+	new i = random(5);
+	switch(i) {
+
+		case 0: PlayAnimEx(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+		case 1: PlayAnimEx(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
+		case 2: PlayAnimEx(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
+		case 3: PlayAnimEx(playerid, "PED", "BIKE_fall_off", 4.1, 0, 1, 1, 1, 0, 1);
+		case 4: PlayAnimEx(playerid, "BASEBALL", "Bat_Hit_3", 4.1, 0, 1, 1, 1, 0, 1);
+		default: PlayAnimEx(playerid, "FIGHT_E", "Hit_fightkick_B", 4.1, 0, 1, 1, 1, 0, 1);
+	}
 }
 
 stock IsAnAmbulance(carid)

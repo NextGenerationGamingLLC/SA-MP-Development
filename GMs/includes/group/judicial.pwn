@@ -938,11 +938,15 @@ CMD:viewassets(playerid, params[])
 {
   	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 5+ can do this.");
-	new giveplayerid, string[128];
+	
+	new giveplayerid;
+
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /viewassets [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	
-	format(string, sizeof(string), "%s's assets | Vehicle: %d - House: %d - Bank: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	format(szMiscArray, sizeof(szMiscArray), "%s's assets | Vehicle Status: %d - House Status: %d - Bank Account Status: %d", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pFreezeCar], PlayerInfo[giveplayerid][pFreezeHouse], PlayerInfo[giveplayerid][pFreezeBank]);
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s's assets | Cash: $%s - Bank: $%s", GetPlayerNameEx(giveplayerid), number_format(PlayerInfo[playerid][pCash]), number_format(PlayerInfo[playerid][pAccount]));
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	return true;
 }

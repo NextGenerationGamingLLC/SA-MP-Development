@@ -303,15 +303,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
-						24/7\n\
-						Clothing Stores\n\
-						Restaurants\n\
-						Bars\n\
-						Gun Stores\n\
-						Petrol Stations\n\
-						Car Dealerships\n\
-						Clubs", "Select", "Back");
+				return ShowPlayerDialog(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
+					Jobs\n\
+					General Locations\n\
+					Business Address\n\
+					House Address\n\
+					Door Address\n", "Okay", "Cancel");
 			}
 
 			Map_ShowBusinesses(playerid, listitem);
@@ -354,7 +351,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				case 0:
 				{
-					return ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
+					if(!response) return 1;
+					ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
 						24/7\n\
 						Clothing Stores\n\
 						Restaurants\n\
@@ -446,6 +444,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}Would you like to set your destination to:\n\n\
 					{33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}?", Businesses[id][bName], szMiscArray);
 					
+					SetPVarInt(playerid, "gpsUsingID", 1);
 					SetPVarInt(playerid,"gpsBiz", id);
 					
 					ShowPlayerDialog(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Business", szMiscArray, "Yes", "Cancel");
@@ -470,7 +469,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
-					SetPVarInt(playerid, "gpsUsingID", 3);
+					SetPVarInt(playerid, "gpsUsingID", 2);
 					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
 					house {33CCFF}#%i{FFFFFF} in the area of {FF0000}%s{FFFFFF}?", id, szMiscArray);
 					ShowPlayerDialog(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - House", szMiscArray, "Yes", "Cancel");
@@ -495,7 +494,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 
 			     	GetEntity3DZone(id, 2, szMiscArray, sizeof(szMiscArray));
-					SetPVarInt(playerid, "gpsUsingID", 4);
+					SetPVarInt(playerid, "gpsUsingID", 3);
 					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
 					Door #%i ({33CCFF}%s{FFFFFF}) in the area of {FF0000}%s{FFFFFF}?", id, DDoorsInfo[id][ddDescription], szMiscArray);
 

@@ -352,9 +352,6 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pBEquipped] = 0;
 		PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 		PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
-		PlayerInfo[playerid][pNewbieTogged] = 0;
-		PlayerInfo[playerid][pVIPTogged] = 0;
-		PlayerInfo[playerid][pFamedTogged] = 0;
 		PlayerInfo[playerid][pDigCooldown] = 0;
 		PlayerInfo[playerid][pBugReportTimeout] = 0;
 		PlayerInfo[playerid][pToolBox] = 0;
@@ -608,7 +605,7 @@ public OnPlayerLoad(playerid)
 	}	
 	if (PlayerInfo[playerid][pLevel] < 6 || PlayerInfo[playerid][pHelper] > 0)
 	{
-		PlayerInfo[playerid][pNewbieTogged] = 0;
+		PlayerInfo[playerid][pToggledChats][0] = 0;
 	}
 	if (PlayerInfo[playerid][pHelper] == 1)
 	{
@@ -678,7 +675,7 @@ public OnPlayerLoad(playerid)
 				format(string, sizeof(string), "** %s%s %s is in service **", badge, rank, GetPlayerNameEx(playerid));
 				foreach(new i: Player) 
 				{
-					if(GetPVarInt(i, "togRadio") == 0)
+					if(PlayerInfo[i][pToggledChats][12] == 0)
 					{
 						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
@@ -694,7 +691,7 @@ public OnPlayerLoad(playerid)
 				format(string, sizeof(string), "** %s%s %s is now available **", badge, rank, GetPlayerNameEx(playerid));
 				foreach(new i: Player) 
 				{
-					if(GetPVarInt(i, "togRadio") == 0)
+					if(PlayerInfo[i][pToggledChats][12] == 0)
 					{
 						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 					}
@@ -1034,7 +1031,7 @@ public OnPlayerLoad(playerid)
 	
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		SetPVarInt(playerid, "WatchdogChat", 1);
+		PlayerInfo[playerid][pToggledChats][17] = 0;
 	}
 	if(PlayerInfo[playerid][pVIPMod])
 	{
@@ -1095,5 +1092,6 @@ public OnPlayerLoad(playerid)
 			SendClientMessageEx(playerid, -1, "You have been given 10 event tokens for logging in as a PVIP!");
 		}
 	}
+	if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
 	return 1;
 }

@@ -1802,10 +1802,9 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "MovingStretcher")) {
 			KillTimer(GetPVarInt(playerid, "TickEMSMove"));
 		}
-
+		KillEMSQueue(playerid);
 		if(GetPVarInt(playerid, "Injured") == 1) {
 			PlayerInfo[playerid][pHospital] = 1;
-			KillEMSQueue(playerid);
 			ResetPlayerWeaponsEx(playerid);
 		}
 		if(GetPVarInt(playerid, "HeroinEffect")) {
@@ -1914,7 +1913,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is code 0 **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(GetPVarInt(i, "togRadio") == 0)
+								if(PlayerInfo[i][pToggledChats][12] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -1930,7 +1929,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is no longer available (( lost connection )) **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(GetPVarInt(i, "togRadio") == 0)
+								if(PlayerInfo[i][pToggledChats][12] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2015,7 +2014,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is out of service **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(GetPVarInt(i, "togRadio") == 0)
+								if(PlayerInfo[i][pToggledChats][12] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2031,7 +2030,7 @@ public OnPlayerDisconnect(playerid, reason)
 							format(string, sizeof(string), "** %s%s %s is no longer available **", badge, rank, GetPlayerNameEx(playerid));
 							foreach(new i: Player)
 							{
-								if(GetPVarInt(i, "togRadio") == 0)
+								if(PlayerInfo[i][pToggledChats][12] == 0)
 								{
 									if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember]) SendClientMessageEx(i, arrGroupData[PlayerInfo[playerid][pMember]][g_hRadioColour] * 256 + 255, string);
 								}
@@ -2145,7 +2144,7 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pPos_y] = EventFloats[playerid][2];
 			PlayerInfo[playerid][pPos_z] = EventFloats[playerid][3];
 		}
-		if(WatchingTV[playerid] == 1)
+		if(GetPVarInt(playerid, "WatchingTV"))
 		{
 			PlayerInfo[playerid][pInt] = BroadcastLastInt[playerid];
 			PlayerInfo[playerid][pVW] = BroadcastLastVW[playerid];
@@ -2153,7 +2152,7 @@ public OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[playerid][pPos_x] = BroadcastFloats[playerid][1];
 			PlayerInfo[playerid][pPos_y] = BroadcastFloats[playerid][2];
 			PlayerInfo[playerid][pPos_z] = BroadcastFloats[playerid][3];
-			WatchingTV[playerid] = 0;
+			DeletePVar(playerid, "WatchingTV");
 			viewers--;
 		}
 		if(gBike[playerid] >= 0 && gBikeRenting[playerid] == 1)
@@ -5053,7 +5052,18 @@ public OnPlayerRequestClass(playerid, classid)
 
 public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 {
-	if(!success) SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Unknown command. Please use /help to list all available commands.");
+	// if(!success) SendClientMessageEx(playerid, COLOR_WHITE, "SERVER: Unknown command. Please use /help to list all available commands.");
+	if(!success) {
+
+		TextDrawShowForPlayer(playerid, TD_ServerError);
+		defer HideServerError(playerid);
+	}
+	return 1;
+}
+
+timer HideServerError[5000](playerid) {
+
+	TextDrawHideForPlayer(playerid, TD_ServerError);
 	return 1;
 }
 
@@ -5505,7 +5515,7 @@ public OnPlayerText(playerid, text[])
 				}
 				else
 				{
-				    SendClientMessageEx(Mobile[playerid], COLOR_YELLOW,string);
+				    ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, 7);
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {
@@ -5525,7 +5535,7 @@ public OnPlayerText(playerid, text[])
 				}
 				else
 				{
-				    SendClientMessageEx(Mobile[playerid], COLOR_YELLOW,string);
+					ChatTrafficProcess(Mobile[playerid], COLOR_YELLOW, string, 7);
 				}
 				if(PlayerInfo[playerid][pBugged] != INVALID_GROUP_ID)
 			    {

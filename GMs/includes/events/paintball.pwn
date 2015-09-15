@@ -544,7 +544,7 @@ stock SortWinnerPaintballScores(arenaid)
 	    foreach(new p: Player)
 		{	
 			if(!GetPVarType(p, "IsInArena")) continue;
-			if(GetPVarType(p, "IsInArena") == arenaid) {
+			if(GetPVarInt(p, "IsInArena") == arenaid) {
 				score = PlayerInfo[p][pKills];
 				if(score > highscore) {
 					highscore = score;

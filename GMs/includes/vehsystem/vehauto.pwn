@@ -49,7 +49,7 @@ ShowVehicleMenu(playerid, vehicleid) {
     GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 	format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
-		Seatbelt\t%s\n\
+		Seatbelt or Helmet\t%s\n\
 		Lights\t%s\n\
 		Bonnet\t%s\n\
 		Boot\t%s",

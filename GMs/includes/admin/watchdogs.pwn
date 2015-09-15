@@ -365,7 +365,7 @@ CMD:watchdogs(playerid, params[])
 				else if(PlayerInfo[i][pWatchdog] == 3) format(string, sizeof(string), "RP Specialist %s (ID %i)", GetPlayerNameEx(i), i);
 				else if(PlayerInfo[i][pWatchdog] == 4) format(string, sizeof(string), "Director of RP Improvement %s (ID %i)", GetPlayerNameEx(i), i);
 				if((i == playerid || PlayerInfo[playerid][pWatchdog] >= 3) && PlayerInfo[i][pAdmin] < 2) format(string, sizeof(string), "%s (This Hour: %d | Today: %d)", string, WDReportHourCount[i], WDReportCount[i]);
-				if(!GetPVarType(i, "WatchdogChat")) strcat(string, " (WD Chat Toggled)");
+				if(PlayerInfo[playerid][pToggledChats][17]) strcat(string, " (WD Chat Toggled)");
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
@@ -377,44 +377,46 @@ CMD:watchdogs(playerid, params[])
 CMD:togwd(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(GetPVarType(playerid, "WatchdogChat"))
+	if(PlayerInfo[playerid][pToggledChats][17])
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
-		return DeletePVar(playerid, "WatchdogChat");
+		PlayerInfo[playerid][pToggledChats][17] = 0;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled the watchdog chat.");
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled the watchdog chat.");
-		return SetPVarInt(playerid, "WatchdogChat", 1);
+		PlayerInfo[playerid][pToggledChats][17] = 1;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled the watchdog chat.");
 	}
+	return 1;
 }
 		
 CMD:wd(playerid, params[]) 
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 1) 
 	{
-		if(PlayerInfo[playerid][pWatchdog] < 3) SetPVarInt(playerid, "WatchdogChat", 1);
-		if(!GetPVarType(playerid, "WatchdogChat")) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
+		if(PlayerInfo[playerid][pWatchdog] < 3) PlayerInfo[playerid][pToggledChats][17] = 0;
+		if(PlayerInfo[playerid][pToggledChats][17]) return SendClientMessageEx(playerid, COLOR_GREY, "You have watchdog chat disabled - /togwd to enable it.");
 		if(!isnull(params)) 
 		{
-			new szMessage[128];
-			if(PlayerInfo[playerid][pAdmin] == 2) format(szMessage, sizeof(szMessage), "* Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMessage, sizeof(szMessage), "* General Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMessage, sizeof(szMessage), "* Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "* Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMessage, sizeof(szMessage), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMessage, sizeof(szMessage), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMessage, sizeof(szMessage), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
-			else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
+			szMiscArray[0] = 0;
+			
+			if(PlayerInfo[playerid][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "- Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "- General Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "- Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "-- Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "-- RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
+			else format(szMiscArray, sizeof(szMiscArray), "- Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
 
 			foreach(new i : Player)
 			{
-				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && GetPVarType(i, "WatchdogChat"))
+				if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pWatchdog] >= 1) && PlayerInfo[playerid][pToggledChats][17] == 0)
 				{
-					SendClientMessageEx(i, 0x2267F0FF, szMessage);
+					ChatTrafficProcess(i, 0x2267F0FF, szMiscArray, 17);
 				}
 			}
 		}

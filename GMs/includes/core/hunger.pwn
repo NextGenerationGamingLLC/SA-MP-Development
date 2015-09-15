@@ -44,11 +44,13 @@ CMD:togglehunger(playerid, params[])
 	{
 		PlayerTextDrawHide(playerid, _hungerText[playerid]);
 		_hungerTextVisible[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][6] = 1;
 	}
 	else
 	{
 		PlayerTextDrawShow(playerid, _hungerText[playerid]);
 		_hungerTextVisible[playerid] = 1;
+		PlayerInfo[playerid][pToggledChats][6] = 0;
 	}
 
 	SendClientMessage(playerid, COLOR_WHITE, "You have toggled the hunger meter (it will reset upon next login).");

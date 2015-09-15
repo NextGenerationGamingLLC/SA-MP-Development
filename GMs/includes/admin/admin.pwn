@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-
+					
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -40,7 +40,7 @@
 #define 		ADMIN_SENIOR 		4
 #define 		ADMIN_HEAD			1337
 #define 		ADMIN_LEAD			1338
-#define 		ADMIN_EXECUTIVE 	99999
+#define 		ADMIN_EXECUTIVE 	99999	
 
 stock IsAdminLevel(playerid, level, warning = 1) {
 
@@ -55,7 +55,7 @@ stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false) {
 		if(PlayerInfo[i][pAdmin] >= iLevel && (bUndercover || !PlayerInfo[i][pTogReports])) {
 			SendClientMessageEx(i, hColor, szMessage);
 		}
-	}
+	}	
 	return 1;
 }
 
@@ -67,7 +67,7 @@ stock ShopTechBroadCast(color,string[])
 		{
 			SendClientMessageEx(i, color, string);
 		}
-	}
+	}	
 	return 1;
 }
 
@@ -75,23 +75,23 @@ stock GetAdminRankName(i)
 {
 	switch(i)
 	{
-		case 2:
+		case 2: 
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Junior Admin");
 		}
-		case 3:
+		case 3: 
 		{
 			format(szMiscArray, sizeof(szMiscArray), "General Admin");
 		}
-		case 4:
+		case 4: 
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Senior Admin");
 		}
-		case 1337:
+		case 1337: 
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Head Admin");
 		}
-		case 1338:
+		case 1338: 
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Lead Head Admin");
 		}
@@ -132,7 +132,7 @@ stock GetStaffRank(playerid)
 			case 4: szMiscArray = "{2267F0}Director of RP Improvement{FFFFFF}";
 		}
 	}
-
+	
 	if(PlayerInfo[playerid][pHelper] > 0)
 	{
 		switch(PlayerInfo[playerid][pHelper])
@@ -211,7 +211,7 @@ CMD:id(playerid, params[]) {
 			else format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], GetPlayerPing(i));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
-	}
+	}	
 	return 1;
 }
 
@@ -232,7 +232,7 @@ CMD:near(playerid, params[])
 				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %d - Level: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel]);
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			}
-		}
+		}	
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
@@ -259,8 +259,8 @@ CMD:givegun(playerid, params[])
         format(szMiscArray, sizeof(szMiscArray), "You have given %s gun ID %d!", GetPlayerNameEx(playa), gun);
         if(gun < 1||gun > 47)
             { SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid weapon ID!"); return 1; }
-        if(IsPlayerConnected(playa))
-		{
+        if(IsPlayerConnected(playa)) 
+		{	
             if((PlayerInfo[playa][pConnectHours] < 2 || PlayerInfo[playa][pWRestricted] > 0) && gun != 46 && gun != 43) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is currently restricted from carrying weapons");
 			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
@@ -412,7 +412,7 @@ CMD:setarmorall(playerid, params[])
         foreach(new i: Player)
 		{
 			SetArmour(i, armor);
-		}
+		}	
     }
 
     else {
@@ -503,7 +503,7 @@ CMD:admins(playerid, params[])
 				if(PlayerInfo[i][pBM] == 2) strcat(szMiscArray, " [DOBM]");
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 			}
-		}
+		}	
     }
     else {
         SendClientMessageEx(playerid, COLOR_GRAD1, "If you have questions regarding gameplay or the server, use /requesthelp or /newb");
@@ -881,14 +881,16 @@ CMD:togstaff(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		if (!advisorchat[playerid])
+		if(PlayerInfo[playerid][pChatbox][15])
 		{
 			advisorchat[playerid] = 1;
+			PlayerInfo[playerid][pToggledChats][15] = 0;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "   You can now see the /staff chat!");
 		}
 		else
 		{
 			advisorchat[playerid] = 0;
+			PlayerInfo[playerid][pToggledChats][15] = 1;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "   You will not see the /staff chat anymore!");
 		}
 	}
@@ -1078,7 +1080,7 @@ CMD:clearall(playerid, params[])
 			SetPlayerToTeamColor(i);
 			SetPlayerWantedLevel(i, 0);
 			ClearCrimes(i);
-		}
+		}	
         SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared everyone's Wanted Level.");
     }
     else {
@@ -1217,7 +1219,7 @@ CMD:damagecheck(playerid, params[])
 		DeletePVar(playerid, "_dCheck");
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped damagecheck.");
 		return 1;
-	}
+	}	
 	new pID;
 	if(sscanf(params, "u", pID)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /damagecheck [playerid]");
 	if(!IsPlayerConnected(pID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -1258,7 +1260,7 @@ CMD:healnear(playerid, params[])
 				SetHealth(i, 100);
 				count++;
 			}
-		}
+		}	
         format(szMiscArray, sizeof(szMiscArray), "You have healed everyone (%d) nearby.", count);
         SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
     }
@@ -1280,7 +1282,7 @@ CMD:armornear(playerid, params[])
 			if(ProxDetectorS(radius, playerid, i)) {
 				SetArmour(i, 100);
 				count++;
-			}
+			}	
         }
         format(string, sizeof(string), "You have given armor to everyone (%d) nearby.", count);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -1376,7 +1378,7 @@ CMD:levelones(playerid, params[]) {
 	{
 		new szNoobs[156], zone[MAX_ZONE_NAME], search[MAX_ZONE_NAME], hours;
 		SendClientMessageEx(playerid, COLOR_WHITE, "Listing level ones...");
-		if(!sscanf(params, "d", hours))
+		if(!sscanf(params, "d", hours)) 
 		{
 			foreach(new i: Player)
 			{
@@ -1388,7 +1390,7 @@ CMD:levelones(playerid, params[]) {
 				}
 			}
 		}
-		else if(!sscanf(params, "s[28]", search))
+		else if(!sscanf(params, "s[28]", search)) 
 		{
 			foreach(new i: Player)
 			{
@@ -1403,7 +1405,7 @@ CMD:levelones(playerid, params[]) {
 				}
 			}
 		}
-		else
+		else 
 		{
 			foreach(new i: Player)
 			{
@@ -1436,7 +1438,7 @@ CMD:paused(playerid, params[]) {
 				if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(playerid,COLOR_RED, szMessage);
 				else SendClientMessageEx(playerid,COLOR_GREY, szMessage);
 			}
-		}
+		}	
    	}
     else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	return 1;
@@ -1455,7 +1457,7 @@ CMD:afk(playerid, params[]) {
 				format(szMessage,sizeof(szMessage),"* %s (ID %d), AFK for %d minutes.", GetPlayerNameEx(i), i, playerAFK[i] / 60);
 				if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(playerid,COLOR_RED,szMessage);
 				else SendClientMessageEx(playerid,COLOR_GREY,szMessage);
-			}
+			}	
   		}
    	}
     else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
@@ -1492,7 +1494,7 @@ CMD:setsec(playerid, params[])
 	    if(sscanf(params, "us[8]", giveplayerid, task))
 		{
 			SendClientMessage(playerid, COLOR_GREY, "USAGE: /setsec [playerid] [secondary task]");
-			SendClientMessage(playerid, COLOR_GRAD6, "Secondary Tasks: FMod, GMod, SO, BA, ST, PR, HR, Sec, BM, DoSM");
+			SendClientMessage(playerid, COLOR_GRAD6, "Secondary Tasks: FMod, GMod, SO, BA, ST, PR, HR, Sec, BM");
 			return 1;
 		}
 		if(giveplayerid != INVALID_PLAYER_ID)
@@ -1727,7 +1729,7 @@ CMD:removepvehicle(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /removepvehicle [player]");
 			return 1;
 		}
-
+		
 		szMiscArray[0] = 0;
 
 		for(new i, iModelID; i < GetPlayerVehicleSlots(giveplayerid); i++) {
@@ -1782,7 +1784,7 @@ CMD:makeadmin(playerid, params[])  {
 				TextDrawSetProportional(PriorityReport[iTargetID], 1);
 				TextDrawSetShadow(PriorityReport[iTargetID], 1);
 
-
+				
 				new szRank[128];
 				switch(iAdminValue) {
 					case 0: format(szRank, sizeof(szRank), "AdmCmd: %s has removed %s's administrator rank.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
@@ -1794,12 +1796,12 @@ CMD:makeadmin(playerid, params[])  {
 					case 1338: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Lead Head Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 99999: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an Executive Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-				}
-
+				}	
+				
 				PlayerInfo[iTargetID][pAdmin] = iAdminValue;
 				ABroadCast(COLOR_LIGHTRED, szRank, 2);
 				Log("logs/admin.log", szRank);
-
+				
 				switch(iAdminValue) {
 					case 0: format(szRank, sizeof(szRank), "Your administrator rank has been removed by %s.", GetPlayerNameEx(playerid));
 					case 1: format(szRank, sizeof(szRank), "You have been made a Server Moderator by %s.", GetPlayerNameEx(playerid));
@@ -1812,7 +1814,7 @@ CMD:makeadmin(playerid, params[])  {
 					default: format(szRank, sizeof(szRank), "You have been made an undefined level administrator by %s.", GetPlayerNameEx(playerid));
 				}
 				SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, szRank);
-
+				
 				switch(iAdminValue) {
 					case 0: format(szRank, sizeof(szRank), "You have removed %s's administrator rank.", GetPlayerNameEx(iTargetID));
 					case 1: format(szRank, sizeof(szRank), "You have made %s a Server Moderator.", GetPlayerNameEx(iTargetID));
@@ -1825,7 +1827,7 @@ CMD:makeadmin(playerid, params[])  {
 					default: format(szRank, sizeof(szRank), "You have made %s an undefined level administrator.", GetPlayerNameEx(iTargetID));
 				}
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szRank);
-
+				
 				format(szMiscArray, sizeof(szMiscArray), "was made a %s (%d)", GetAdminRankName(iAdminValue), iAdminValue);
 				DBLog(playerid, iTargetID, "Admin", szMiscArray);
 
@@ -1873,7 +1875,7 @@ CMD:apark(playerid, params[]) {
 					SendClientMessageEx(ownerid, COLOR_LIGHTBLUE, szMessage);
 					return 1;
 				}
-			}
+			}	
 		}
 	}
 	else
@@ -1908,7 +1910,7 @@ CMD:admin(playerid, params[])  {
 				{
 					SendClientMessage(i, COLOR_YELLOW, szMessage);
 				}
-			}
+			}	
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1936,7 +1938,7 @@ CMD:headadmin(playerid, params[])  {
 				if(PlayerInfo[i][pAdmin] >= 1337)
 				{
 					SendClientMessage(i, COLOR_GREEN, szMessage);
-				}
+				}	
 			}
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
@@ -1946,38 +1948,37 @@ CMD:headadmin(playerid, params[])  {
 }
 
 CMD:staff(playerid, params[]) {
-	if((PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1) && advisorchat[playerid]) {
+	if((PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1) && PlayerInfo[playerid][pToggledChats][15] == 0) {
 		if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 		if(!isnull(params)) {
 
-			new
-				szMessage[128];
+			szMiscArray[0] = 0;
 
-			if(PlayerInfo[playerid][pAdmin] == 2) format(szMessage, sizeof(szMessage), "** Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMessage, sizeof(szMessage), "** General Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMessage, sizeof(szMessage), "** Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "** Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "** Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "** Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 2) format(szMessage, sizeof(szMessage), "** Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 3) format(szMessage, sizeof(szMessage), "** Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMessage, sizeof(szMessage), "** Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			if(PlayerInfo[playerid][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "-- General Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "-- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "-- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "-- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "-- Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "-- Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1)
 			{
-				if(PlayerInfo[playerid][pSMod] != 0) format(szMessage, sizeof(szMessage), "** Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
-				else format(szMessage, sizeof(szMessage), "** Server Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				if(PlayerInfo[playerid][pSMod] != 0) format(szMiscArray, sizeof(szMiscArray), "-- Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else format(szMiscArray, sizeof(szMiscArray), "-- Server Moderator %s: %s", GetPlayerNameEx(playerid), params);
 			}
-			else if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMessage, sizeof(szMessage), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMessage, sizeof(szMessage), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMessage, sizeof(szMessage), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMessage, sizeof(szMessage), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
-			else format(szMessage, sizeof(szMessage), "** Undefined Admin (%d) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 1) format(szMiscArray, sizeof(szMiscArray), "-- VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "-- Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "-- RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
+			else format(szMiscArray, sizeof(szMiscArray), "-- Undefined Admin (%d) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
 
-			SendAdvisorMessage(COLOR_COMBINEDCHAT, szMessage);
-			Log("logs/staffchat.log", szMessage);
-			ChatDBLog(playerid, "StaffChat", szMessage);
+			SendAdvisorMessage(COLOR_COMBINEDCHAT, szMiscArray);
+			Log("logs/staffchat.log", szMiscArray);
+			ChatDBLog(playerid, "StaffChat", szMiscArray);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /staff [chat]");
 	}
@@ -1988,14 +1989,11 @@ CMD:cnn(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4) {
 		if(!isnull(params)) {
 
-			new
-				szMessage[128];
-
-			format(szMessage, sizeof(szMessage), "~b~%s: ~w~%s",GetPlayerNameEx(playerid), params);
+			format(szMiscArray, sizeof(szMiscArray), "~b~%s: ~w~%s",GetPlayerNameEx(playerid), params);
 			foreach(new i: Player)
 			{
-				GameTextForPlayer(i, szMessage, 5000, 6);
-			}
+				GameTextForPlayer(i, szMiscArray, 5000, 6);
+			}	
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cnn [message]. ~n~ = new line, ~r~ = red, ~g~ = green, ~b~ = blue, ~w~ = white, ~y~ = yellow.");
 	}
@@ -2077,7 +2075,7 @@ CMD:gotopveh(playerid, params[]) {
 			new szVehString[8024], icount = GetPlayerVehicleSlots(iTargetID);
 			if(!GetPlayerVehicleCount(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "ERROR: Player doesn't own any vehicles.");
 			new szCarLocation[MAX_ZONE_NAME];
-			for(new i, iModelID; i < icount; i++)
+			for(new i, iModelID; i < icount; i++) 
 			{
 				Get3DZone(PlayerVehicleInfo[iTargetID][i][pvPosX], PlayerVehicleInfo[iTargetID][i][pvPosY], PlayerVehicleInfo[iTargetID][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
 				if((iModelID = PlayerVehicleInfo[iTargetID][i][pvModelId] - 400) >= 0)
@@ -2128,16 +2126,16 @@ CMD:reloadpvehicles(playerid, params[])
 CMD:reloadpveh(playerid, params[])
 {
 	return cmd_reloadpvehicles(playerid, params);
-}
+}	
 
 CMD:unloadpvehicles(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
-
-	foreach(new p: Player)
+	
+	foreach(new p: Player) 
 	{
 		UnloadPlayerVehicles(p);
-	}
+	}	
 	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully unloaded all vehicles.");
 	return 1;
 }
@@ -2145,14 +2143,14 @@ CMD:unloadpvehicles(playerid, params[])
 CMD:loadpvehicles(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You're not authorized to use this command!");
-
-	foreach(new p: Player)
-	{
+	
+	foreach(new p: Player) 
+	{	
 		LoadPlayerVehicles(p);
-	}
+	}	
 	SendClientMessageEx(playerid, COLOR_GREY, "You have successfully loaded all vehicles.");
 	return 1;
-}
+}	
 
 CMD:createpvehicle(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4)
@@ -2613,7 +2611,7 @@ CMD:revivenear(playerid, params[])
 				format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
 				Log("logs/admin.log", string);
 				DBLog(playerid, i, "Admin", "revived (/revivenear)");
-			}
+			}	
         }
 		format(string, sizeof(string), "You have revived everyone (%d) nearby.", count);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -2668,7 +2666,7 @@ CMD:ipcheck(playerid, params[])
 
 		if(giveplayerid == INVALID_PLAYER_ID) return 1;
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-
+		
 		if(PlayerInfo[giveplayerid][pAdmin] <= 1 || (PlayerInfo[giveplayerid][pAdmin] <= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] >= 1338))
 		{
 			new playerip[32];
@@ -2677,7 +2675,7 @@ CMD:ipcheck(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			format(string, sizeof(string), "%s has IP Checked %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2) {
-				Log("logs/adminipcheck.log", string);
+				Log("logs/adminipcheck.log", string); 
 				DBLog(playerid, giveplayerid, "AdminIPCheck", "performed an IP check");
 			}
 			else {
@@ -2726,7 +2724,7 @@ CMD:pfine(playerid, params[])
 			new fine = percentage * totalwealth / 100;
 			if(percentage < 1 || percentage > 100) return SendClientMessageEx(playerid, COLOR_GRAD2, "Percentage must be greater than 0 and below 100.");
 			else if(minimum < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Minimum amount must be greater than 0.");
-
+			
 			if(minimum > fine)
 			{
 				//GivePlayerCash(giveplayerid, -minimum);
@@ -3022,7 +3020,7 @@ CMD:mole(playerid, params[])
 		foreach(new i: Player)
 		{
 			SendClientMessageEx(i, COLOR_YELLOW, string);
-			//SendAudioToPlayer(i, 47, 100);
+			//SendAudioToPlayer(i, 47, 100);	
 		}
 		format(log, sizeof(log), "[MOLE] %s sent: %s", GetPlayerNameEx(playerid), params);
 		Log("logs/admin.log", log);
@@ -3110,7 +3108,7 @@ CMD:spec(playerid, params[])
 		{
 			new string[128];
 			format(string, sizeof(string), "Admin %s is speccing %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(Spectate[giveplayerid]));
-			if(PlayerInfo[playerid][pAdmin] >= 1338 && SpecTime[giveplayerid])
+			if(PlayerInfo[playerid][pAdmin] >= 1338 && SpecTime[giveplayerid]) 
 			{
 				new seconds = gettime()-SpecTime[giveplayerid];
 				new minutes = seconds/60;
@@ -3181,7 +3179,7 @@ CMD:rcabuse(playerid, params[]) {
 		else if(GetPlayerState(iTargetID) == PLAYER_STATE_DRIVER && IsRestrictedVehicle(GetVehicleModel(GetPlayerVehicleID(iTargetID))))
 		{
 			new
-				iVehicleID = GetPlayerVehicleID(iTargetID),
+				iVehicleID = GetPlayerVehicleID(iTargetID), 
 				iVehIndex = GetPlayerVehicle(iTargetID, iVehicleID),
 				Float: fPlayerPos[3],
 				szMessage[256]; // Dialog string - don't kill me!!!!!1
@@ -4029,7 +4027,7 @@ CMD:setmystat(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time");
 			return 1;
 		}
-
+		
 		switch (statcode)
 		{
 		case 1:
@@ -4552,7 +4550,7 @@ CMD:sendtoid(playerid, params[])
 	if(sscanf(params, "uu", giveplayerid, targetplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sendtoid [player] [target player]");
 
 	new Float:plocx,Float:plocy,Float:plocz;
-
+	
 	if(IsPlayerConnected(giveplayerid) && IsPlayerConnected(targetplayerid))
 	{
 		if (PlayerInfo[playerid][pAdmin] >= 2)
@@ -4872,7 +4870,7 @@ CMD:slap(playerid, params[])
 			if(giveplayerid != playerid) {
 				format(szString, sizeof(szString), "AdmCmd: %s was slapped by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, szString, 2);
-			}
+			}	
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -5039,7 +5037,7 @@ CMD:warn(playerid, params[])
 			PlayerInfo[giveplayerid][pWarns] += 1;
 			if(PlayerInfo[giveplayerid][pWarns] >= 3)
 			{
-				PlayerInfo[giveplayerid][pWarns] = 0;
+				PlayerInfo[giveplayerid][pWarns] = 0; 
 				CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 				return 1;
 			}
@@ -5314,108 +5312,108 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} *** /jail /kick /staff /togstaff /changename");
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SERVER MODERATOR{B4B5B7} *** /mjail /kick /staff /togstaff");
+		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SERVER MODERATOR{B4B5B7} --* /mjail /kick /staff /togstaff");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** WATCH DOG *** /startwatch /nextwatch /stopwatch /dmalert /wd /watchlist /refer");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* WATCH DOG --* /startwatch /nextwatch /stopwatch /dmalert /wd /watchlist /refer");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** SENIOR WATCH DOG *** /watchspec /kick /ban /prison /n(un)mute /ad(un)mute /warn /kills /goto (MHC/LV)");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* SENIOR WATCH DOG --* /watchspec /kick /ban /prison /n(un)mute /ad(un)mute /warn /kills /goto (MHC/LV)");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** RP SPECIALIST *** /watchdogs /restrictaccount /unrestrictaccount /togwd /makewatchdog");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* RP SPECIALIST --* /watchdogs /restrictaccount /unrestrictaccount /togwd /makewatchdog");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 4)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** Director of RP Improvement *** /watchlistadd /watchlistremove /wdwhitelist");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* Director of RP Improvement --* /watchlistadd /watchlistremove /wdwhitelist");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** REPORTS *** /reports /ar /tr /sta /nao /st /post /dmr /ts *** MOVEMENT *** /up /dn /fd /bk /lt /rt /fly");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /kick /ban /prison /freeze /unfreeze /slap /warn /admins /spec /levelones /sendtoid");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /requestevent /watch /dmwatchlist /mark(2) /n(un)mute /ad(un)mute /checkinv /lastshot");
-		SendClientMessageEx(playerid, COLOR_GRAD2,"*** {00FF00}JUNIOR ADMIN{BFC0C2} *** /wd /watchlist /watchdogs /flag /viewflag /aflag /aviewflag /transferflag /deleteflag");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* REPORTS --* /reports /ar /tr /sta /nao /st /post /dmr /ts --* MOVEMENT --* /up /dn /fd /bk /lt /rt /fly");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* {00FF00}JUNIOR ADMIN{BFC0C2} --* /kick /ban /prison /freeze /unfreeze /slap /warn /admins /spec /levelones /sendtoid");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* {00FF00}JUNIOR ADMIN{BFC0C2} --* /sendto /gotopveh /gotocar /jetpack /god /check /anetstats /ipcheck /ip /nrn /listguns");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* {00FF00}JUNIOR ADMIN{BFC0C2} --* /setvw /setint /vehname /gethere /gotoid /hospital /goto /revive /bigears /skick /damagecheck");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* {00FF00}JUNIOR ADMIN{BFC0C2} --* /requestevent /watch /dmwatchlist /mark(2) /n(un)mute /ad(un)mute /checkinv /lastshot");
+		SendClientMessageEx(playerid, COLOR_GRAD2,"--* {00FF00}JUNIOR ADMIN{BFC0C2} --* /wd /watchlist /watchdogs /flag /viewflag /aflag /aviewflag /transferflag /deleteflag");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /mole /setskin /countdown /release /forcedeath /rto(reset) /pg /mg /kos /nonrp");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s) /resetvw");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"*** {00FF00}GENERAL ADMIN{CBCCCE} *** /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /mole /setskin /countdown /release /forcedeath /rto(reset) /pg /mg /kos /nonrp");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s) /resetvw");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /asellbiz /fixvehall /givenos /blowup /setname /savechars /dmstrikereset /cnn /respawnvipcars");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /veh /fixveh /sethp /setarmor /givegun /givemoney /setmoney /setstat /setfightstyle /switchgroup /switchfam");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /fcreate /fdelete /adivorce /destroycar /destroycars /eventhelp /contracts /sprison /banip /unbanip");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /groupban /deletehit /setinsurance /cmotd /givelicense /adestroyplant /tl(edit/text/status/next)");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /gotolabel /createpvehicle /destroypvehicle /vto /vtoreset /admingatepw /gotogate /dedit /fedit");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hnext /dmpnext /g(status/near/next/edit) /(goto/goin)door /(goto/goin)house /(create/delete/goto)point");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"*** {EE9A4D}SENIOR ADMIN{D8D8D8} *** /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine /setammo");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /asellbiz /fixvehall /givenos /blowup /setname /savechars /dmstrikereset /cnn /respawnvipcars");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /veh /fixveh /sethp /setarmor /givegun /givemoney /setmoney /setstat /setfightstyle /switchgroup /switchfam");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /fcreate /fdelete /adivorce /destroycar /destroycars /eventhelp /contracts /sprison /banip /unbanip");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /groupban /deletehit /setinsurance /cmotd /givelicense /adestroyplant /tl(edit/text/status/next)");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /gotolabel /createpvehicle /destroypvehicle /vto /vtoreset /admingatepw /gotogate /dedit /fedit");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /hnext /dmpnext /g(status/near/next/edit) /(goto/goin)door /(goto/goin)house /(create/delete/goto)point");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine /setammo");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /ha /setweather /makeleader /pedit /groupunban /groupcsfunban /giftall /removemoderator");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {FF0000}HEAD ADMIN{E3E3E3} *** /audiourl /audiostopurl");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /ha /setweather /makeleader /pedit /groupunban /groupcsfunban /giftall /removemoderator");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /audiourl /audiostopurl");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1338)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {298EFF}LEAD HEAD ADMIN{E3E3E3} *** /setsec /suspend /osuspend /ounsuspend /osetrmutes /rmute /clearall /specreset");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"*** {298EFF}LEAD HEAD ADMIN{E3E3E3} *** /pausespec /random /vrandom /giftreset /searchvipm /vipgifts /buddyinvite /rewardplay");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {298EFF}LEAD HEAD ADMIN{E3E3E3} --* /setsec /suspend /osuspend /ounsuspend /osetrmutes /rmute /clearall /specreset");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {298EFF}LEAD HEAD ADMIN{E3E3E3} --* /pausespec /random /vrandom /giftreset /searchvipm /vipgifts /buddyinvite /rewardplay");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 99999)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD6,"*** {298EFF}EXECUTIVE ADMIN{F0F0F0} *** /togspec /togtp /kickres /givecredits /setcredits /settotalcredits /setstpay /resetstpay /pmotd");
-		SendClientMessageEx(playerid, COLOR_GRAD6,"*** {298EFF}EXECUTIVE ADMIN{F0F0F0} *** /setcode /togdynamicgift /dgedit /viewgiftbox /togpasscomplexity");
+		SendClientMessageEx(playerid, COLOR_GRAD6,"--* {298EFF}EXECUTIVE ADMIN{F0F0F0} --* /togspec /togtp /kickres /givecredits /setcredits /settotalcredits /setstpay /resetstpay /pmotd");
+		SendClientMessageEx(playerid, COLOR_GRAD6,"--* {298EFF}EXECUTIVE ADMIN{F0F0F0} --* /setcode /togdynamicgift /dgedit /viewgiftbox /togpasscomplexity");
 	}
 	if (PlayerInfo[playerid][pHR] >= 2)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Human Resources *** /givesprize /setsec");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Human Resources --* /givesprize /setsec");
 	}
 	if(PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - AP/HR *** /makemoderator /makeadmin /rmute /suspend /osuspend /ounsuspend /osetrmutes");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - AP/HR --* /makemoderator /makeadmin /rmute /suspend /osuspend /ounsuspend /osetrmutes");
 	}
-	if (PlayerInfo[playerid][pBanAppealer] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Ban Appealer *** /unbanip /unban");
-	if (PlayerInfo[playerid][pUndercover] >= 1)
+	if (PlayerInfo[playerid][pBanAppealer] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Ban Appealer --* /unbanip /unban");
+	if (PlayerInfo[playerid][pUndercover] >= 1) 
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Spec Ops *** /setmystat /setmyname /setmyhp /setmyarmour /sprison /sdm /swarn");
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Spec Ops *** /spg /snonrp /smg /skos");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Spec Ops --* /setmystat /setmyname /setmyhp /setmyarmour /sprison /sdm /swarn");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Spec Ops --* /spg /snonrp /smg /skos");
 	}
 	if (PlayerInfo[playerid][pGangModerator] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /switchfam /fedit /feditcolor /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Gang Mod *** /gtedit /gtstatus /gtnear /tagperm /tagedit /fires /destroyfire /destroyfires /gotofire /setfstrength");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Gang Mod --* /switchfam /fedit /feditcolor /gangwarn /gangban /gangunban /fcreate /fdelete /twmenu /dvrespawn");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Gang Mod --* /gtedit /gtstatus /gtnear /tagperm /tagedit /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	}
-	if (PlayerInfo[playerid][pGangModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoGM *** /dvcreate /dvedit /dveditslot /dvplate");
+	if (PlayerInfo[playerid][pGangModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoGM --* /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /orders /adjustoid /shop(car(del)/house/tokens/exp/plate/laser/vest/firework/viptokens/boombox/object) /gedit /gnear");
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip" );
-		SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Shop Tech *** /shopbusiness /shopbusinessname /brenewal");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Shop Tech --* /orders /adjustoid /shop(car(del)/house/tokens/exp/plate/laser/vest/firework/viptokens/boombox/object) /gedit /gnear");
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Shop Tech --* /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip" );
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Shop Tech --* /shopbusiness /shopbusinessname /brenewal");
 	}
-
+	
 	if(PlayerInfo[playerid][pBM] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - Biz Mod *** /bedit /bname /bnext /bnear /gotobiz /goinbiz /creategaspump /editgaspump /deletegaspump /switchbiz");
-		if(PlayerInfo[playerid][pBM] >= 2) SendClientMessageEx(playerid, COLOR_GRAD3, "*** Special - DoBM *** /asellbiz");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "--* Special - Biz Mod --* /bedit /bname /bnext /bnear /gotobiz /goinbiz /creategaspump /editgaspump /deletegaspump /switchbiz");
+		if(PlayerInfo[playerid][pBM] >= 2) SendClientMessageEx(playerid, COLOR_GRAD3, "--* Special - DoBM --* /asellbiz");
 	}
-	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoCR *** /pmotd /ovmute /ovunmute /vipm /togdynamicgift /dgedit /viewgiftbox /freeweekend");
-	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Faction Mod *** /fires /destroyfire /destroyfires /gotofire /setfstrength");
-	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - DoFM *** /dvcreate /dvedit /dveditslot /dvplate");
-	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "*** Special - Public Relations *** /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
+	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoCR --* /pmotd /ovmute /ovunmute /vipm /togdynamicgift /dgedit /viewgiftbox /freeweekend");
+	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /fires /destroyfire /destroyfires /gotofire /setfstrength");
+	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoFM --* /dvcreate /dvedit /dveditslot /dvplate");
+	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Public Relations --* /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
 	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
 }
@@ -5432,7 +5430,7 @@ CMD:nrn(playerid, params[])
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2)return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not use that command on admins!");
 			// Can't believe this isn't fixed, happened to me like 2321231321 times - Akatony
 			if((PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2) && (PlayerInfo[giveplayerid][pSMod] == 1 || PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command on this person!");
-
+			
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has offered %s a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			foreach(new i: Player)
 			{
@@ -5440,7 +5438,7 @@ CMD:nrn(playerid, params[])
 				{
 					SendClientMessageEx(i, COLOR_YELLOW, string);
 				}
-			}
+			}		
 			ABroadCast( COLOR_YELLOW, string, 2);
 			ShowPlayerDialog(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 		}
@@ -5476,7 +5474,7 @@ CMD:mods(playerid, params[])
 			{
 				format(string, sizeof(string), "%s\nModerator %s (ID %i)", string, GetPlayerNameEx(i), i);
 			}
-		}
+		}	
 		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Current Online Moderators", string, "Close", "");
 	}
 	else
@@ -5660,12 +5658,12 @@ CMD:undercover(playerid, params[])
 		if(!GetPVarType(playerid, "Undercover"))
 		{
 			SetPVarInt(playerid, "Undercover", 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "-- You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
 		}
 		else
 		{
 			DeletePVar(playerid, "Undercover");
-			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "-- You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -5680,13 +5678,13 @@ CMD:quickstats(playerid, params[])
 	new string[128], Float: health, Float: armor;
 	GetHealth(playerid, health);
 	GetArmour(playerid, armor);
-
-	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));
+	
+	format(string, sizeof(string), "---===== -- Stats of %s -- =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
-	format(string, sizeof(string), "** Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
+	format(string, sizeof(string), "-- Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
 	number_format(PlayerInfo[playerid][pAccount]), number_format(PlayerInfo[playerid][pCash]), PlayerInfo[playerid][pRadioFreq], PlayerInfo[playerid][pWarns]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	format(string, sizeof(string), "** Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
+	format(string, sizeof(string), "-- Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	SendClientMessageEx(playerid, COLOR_GREEN, "--------------------------------------------------------------------------------------------------------------------");
 	return 1;
@@ -5825,9 +5823,9 @@ CMD:sechelp(playerid, params[])
 {
 	if(PlayerInfo[playerid][pSEC] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "*** SEC *** /eventstaff /sec /togsec /coordinators");
-		if(PlayerInfo[playerid][pSEC] >= 2) SendClientMessageEx(playerid, COLOR_GRAD2, "*** SEC *** /requestevent /eventhelp");
-		if(PlayerInfo[playerid][pSEC] >= 3) SendClientMessageEx(playerid, COLOR_GRAD2, "*** SEC *** /makesec");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "--* SEC --* /eventstaff /sec /togsec /coordinators");
+		if(PlayerInfo[playerid][pSEC] >= 2) SendClientMessageEx(playerid, COLOR_GRAD2, "--* SEC --* /requestevent /eventhelp");
+		if(PlayerInfo[playerid][pSEC] >= 3) SendClientMessageEx(playerid, COLOR_GRAD2, "--* SEC --* /makesec");
 	}
 	return 1;
 }
@@ -5837,12 +5835,12 @@ CMD:togsec(playerid, params[])
 	if(PlayerInfo[playerid][pSEC] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "SECChat") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled SEC chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled SEC chat.");
 		return SetPVarInt(playerid, "SECChat", 0);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled SEC chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled SEC chat.");
 		return SetPVarInt(playerid, "SECChat", 1);
 	}
 }
@@ -6133,7 +6131,7 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}-- {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else
@@ -6149,7 +6147,7 @@ CMD:giveeventtokens(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR])
 	{
 		new giveplayerid, amount;
-
+		
 		if (sscanf(params, "ui", giveplayerid, amount)) return SendClientMessageEx(playerid, COLOR_WHITE, "Usage: /giveeventtokens [player] [amount]");
 		if (amount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "  Amount cannot be 0!");
 		szMiscArray[0] = 0;

@@ -2346,8 +2346,13 @@ CMD:cancel(playerid, params[])
 	}
 	else if(strcmp(choice,"shipment",true) == 0)
 	{
+		new vehicleid = GetPlayerVehicleID(playerid);
  		DeletePVar(playerid, "LoadTruckTime");
 		DeletePVar(playerid, "TruckDeliver");
+		
+		Businesses[TruckDeliveringTo[vehicleid]][bOrderState] = 0;
+		TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
+		
 		TruckUsed[playerid] = INVALID_VEHICLE_ID;
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
  		DisablePlayerCheckpoint(playerid);

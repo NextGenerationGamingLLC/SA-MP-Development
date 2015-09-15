@@ -5,7 +5,7 @@ CMD:newb(playerid, params[]) {
 	szMiscArray[0] = 0;
 
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
-	if(PlayerInfo[playerid][pNewbieTogged] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
+	if(PlayerInfo[playerid][pToggledChats][0]) return SendClientMessageEx(playerid, COLOR_GREY, "You have the channel toggled, /tognewbie to re-enable!");
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if(nonewbie) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 
@@ -91,8 +91,9 @@ SendNewbQuestionToQueue(iPlayerID, szQuestion[]) {
 	format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) Q: %s", GetPlayerNameEx(iPlayerID), iPlayerID, szQuestion);
 
 	foreach(new i : Player) {
-		if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pHelper] > 0) && PlayerInfo[i][pNewbieTogged] == 0)
-			SendClientMessageEx(i, COLOR_NEWBIE, szMiscArray);
+		if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pHelper] > 0) && PlayerInfo[i][pToggledChats][0] == 0)
+			
+			ChatTrafficProcess(i, COLOR_NEWBIE, szMiscArray, 0);
 	}
 
 	SendClientMessageEx(iPlayerID, COLOR_WHITE, "Your question was submitted");
@@ -137,7 +138,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 SendGlobalNewbMsg(szMessage[]) {
 	
 	foreach(new i : Player) {
-		if(PlayerInfo[i][pNewbieTogged] == 0) {
+		if(PlayerInfo[i][pToggledChats][0] == 0) {
 			SendClientMessageEx(i, COLOR_NEWBIE, szMessage);
 		}
 	}

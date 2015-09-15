@@ -152,11 +152,13 @@ CMD:togphone(playerid, params[])
 		if (!PhoneOnline[playerid])
 		{
 			PhoneOnline[playerid] = 1;
+			PlayerInfo[playerid][pToggledChats][7] = 1;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched off.");
 		}
 		else
 		{
 			PhoneOnline[playerid] = 0;
+			PlayerInfo[playerid][pToggledChats][7] = 0;
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched on.");
 		}
 		return 1;
@@ -500,33 +502,36 @@ CMD:sms(playerid, params[])
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use your phone whilist restrained.");
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You can not use your phone while in jail or prison!");
 
-	new string[128], phonenumb, text[100];
+	szMiscArray[0] = 0;
+
+	new phonenumb, text[100];
 	if(sscanf(params, "ds[100]", phonenumb, text)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/t)ext [phonenumber] [text chat]");
 
 	if(Spectating[playerid] == 0 || !GetPVarType(playerid, "FlyMode"))
 	{
-		format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
-		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+		format(szMiscArray, sizeof(szMiscArray), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
+		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 
 	if(phonenumb == 555)
 	{
 		if ((strcmp("yes", text, true, strlen(text)) == 0) && (strlen(text) == strlen("yes")))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Text message delivered.");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: I'm watching you, Sender: MOLE (555)");
+			ChatTrafficProcess(playerid, COLOR_YELLOW, "Text message delivered.", 7);
+			ChatTrafficProcess(playerid, COLOR_YELLOW, "SMS: I'm watching you, Sender: MOLE (555)", 7);
 			//SendAudioToPlayer(playerid, 47, 100);
 			RingTone[playerid] = 20;
 			return 1;
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "SMS: I'm watching you, Sender: MOLE (555)");
+			ChatTrafficProcess(playerid, COLOR_YELLOW, "SMS: I'm watching you, Sender: MOLE (555)", 7);
 			//SendAudioToPlayer(playerid, 47, 100);
 			RingTone[playerid] = 20;
 			return 1;
 		}
 	}
+	szMiscArray[0] = 0;
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
@@ -534,7 +539,7 @@ CMD:sms(playerid, params[])
 			new giveplayerid = i;
 			if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is busy (on a call).");
+				ChatTrafficProcess(playerid, COLOR_GREY, "That player's phone is busy (on a call).", 7);
 				return 1;
 			}
 			Mobile[playerid] = giveplayerid; //caller connecting
@@ -545,7 +550,7 @@ CMD:sms(playerid, params[])
 
 					if(PhoneOnline[giveplayerid] > 0)
 					{
-						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
+						ChatTrafficProcess(playerid, COLOR_GREY, "That player's phone is switched off.", 7);
 						Mobile[playerid] = INVALID_PLAYER_ID;
 						return 1;
 					}
@@ -553,17 +558,17 @@ CMD:sms(playerid, params[])
 					{
 						if(GetPVarInt(u, "BigEar") == 6 && (GetPVarInt(u, "BigEarPlayer") == playerid || GetPVarInt(u, "BigEarPlayer") == giveplayerid))
 						{
-							format(string, sizeof(string), "(BE) %s SMS to %s: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), text);
-							SendClientMessageEx(u,COLOR_YELLOW, string);
+							format(szMiscArray, sizeof(szMiscArray), "(BE) %s SMS to %s: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), text);
+							ChatTrafficProcess(u, COLOR_YELLOW, szMiscArray, 7);
 						}
 					}	
 					if(PlayerInfo[playerid][pPhonePrivacy] == 1)
 					{
-						format(string, sizeof(string), "SMS: %s, Sender: Unknown.", text, GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: Unknown.", text, GetPlayerNameEx(playerid));
 					}
 					else
 					{
-						format(string, sizeof(string), "SMS: %s, Sender: %s (%d)", text, GetPlayerNameEx(playerid), PlayerInfo[playerid][pPnumber]);
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %s (%d)", text, GetPlayerNameEx(playerid), PlayerInfo[playerid][pPnumber]);
 					}
 
 					if(i != playerid)
@@ -578,13 +583,13 @@ CMD:sms(playerid, params[])
 						}
 					}
 
-					//format(string, sizeof(string), "* %s's phone beeps.", sendername);
+					//format(szMiscArray, sizeof(szMiscArray), "* %s's phone beeps.", sendername);
 					RingTone[giveplayerid] =20;
-					SendClientMessageEx(giveplayerid, COLOR_YELLOW, string);
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					SendClientMessageEx(playerid, COLOR_WHITE, "Text Message Delivered");
-					format(string, sizeof(string), "~r~$-%d", 25);
-					GameTextForPlayer(playerid, string, 5000, 1);
+					ChatTrafficProcess(giveplayerid, COLOR_YELLOW, szMiscArray, 7);
+					ChatTrafficProcess(playerid, COLOR_YELLOW, szMiscArray, 7);
+					ChatTrafficProcess(playerid, COLOR_YELLOW, "Text Message Delivered", 7);
+					format(szMiscArray, sizeof(szMiscArray), "~r~$-%d", 25);
+					GameTextForPlayer(playerid, szMiscArray, 5000, 1);
 					GivePlayerCash(playerid,-25);
 					//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 					//SendAudioToPlayer(playerid, 47, 100);
@@ -593,8 +598,8 @@ CMD:sms(playerid, params[])
 
 					if(strcmp(PlayerInfo[giveplayerid][pAutoTextReply], "Nothing", true) != 0)
 					{
-						format(string, sizeof(string), "SMS: %s, Sender: %s [automated response] (%d)", PlayerInfo[giveplayerid][pAutoTextReply], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pPnumber]);
-						SendClientMessageEx(playerid, COLOR_YELLOW, string);
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %s [automated response] (%d)", PlayerInfo[giveplayerid][pAutoTextReply], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pPnumber]);
+						ChatTrafficProcess(playerid, COLOR_YELLOW, szMiscArray, 7);
 					}
 
 					return 1;
@@ -629,8 +634,15 @@ CMD:pickup(playerid, params[])
 
 			if(arrPayPhoneData[x][pp_iCallerID] == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot answer the pay phone you're dialing.");
 			
+			foreach(new i: Player) {
+
+				if(GetPVarInt(i, "PayPhone") == x) {
+					if(i != playerid) return SendClientMessage(playerid, COLOR_GRAD1, "Someone else is already using this pay phone.");
+				}
+			}
 			foreach(new i: Player) 	{
 
+				
 				if(i == arrPayPhoneData[x][pp_iCallerID])
 				{
 					Mobile[playerid] = i;
@@ -691,12 +703,10 @@ CMD:hangup(playerid,params[])
 				DeletePVar(caller, "_UsingJailPhone");
 				bJailPhoneUse[GetClosestPrisonPhone(caller)] = false;
 			}
-			if(!GetPVarType(playerid, "PayPhone")) {
 
-				SendClientMessageEx(caller,  COLOR_GRAD2, "   They hung up.");
-				format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(caller));
-				ProxDetector(30.0, caller, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			}
+			SendClientMessageEx(caller,  COLOR_GRAD2, "   They hung up.");
+			format(string, sizeof(string), "* %s puts away their cellphone.", GetPlayerNameEx(caller));
+			ProxDetector(30.0, caller, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			CellTime[caller] = 0;
 			Mobile[caller] = INVALID_PLAYER_ID;
 		}

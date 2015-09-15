@@ -325,10 +325,10 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	/*format(szMiscArray, sizeof(szMiscArray), "Playerid: %i Issuerid: %i, Amount: %f WeaponID: %i", playerid, issuerid, amount, weaponid);
 	SendClientMessageToAll(-1, szMiscArray);*/
+	new Float:hp;
 	if(weaponid == WEAPON_COLLISION && (1061 <= GetPlayerAnimationIndex(playerid) <= 1067)) // Climb Bug
 	{
 		ClearAnimations(playerid);
-		new Float:hp;
 		GetHealth(playerid, hp);
 		SetHealth(playerid, hp);
 		return 0;
@@ -342,6 +342,13 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
 			case 31, 38: if(IsPlayerInAnyVehicle(issuerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
 		}
+	}
+	GetPlayerHealth(playerid, hp);
+	if(hp < 18.0 && !GetPVarType(playerid, "NDeathText") && PlayerIsDead[playerid] == false) {
+
+		ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 1, 1, 1, 1, 0, 1);
+		SetPVarInt(playerid, "NDeathText", _:CreateDynamic3DTextLabel("Player is critically injured.", COLOR_RED, 0.0, 0.0, 0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
+
 	}
 	foreach(Player, i)
 	{

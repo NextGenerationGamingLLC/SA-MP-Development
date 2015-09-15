@@ -187,7 +187,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
 					GetPlayerPos(playerid,X,Y,Z);
 					new channel = GetPVarInt(playerid, "ChannelID_FMEM");
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s signed in to Channel %i.**", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Broadcast Director %s signed in to Channel %i.--", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SANShows[channel][SANews3DText][1] = CreateDynamic3DTextLabel(szMiscArray,COLOR_LIGHTBLUE,X,Y,Z,5.0);
 					UpdateSANewsBroadcast(channel);
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
@@ -197,7 +197,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(GetPVarType(playerid, "CameramanChannelID"))
 				{
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s signed in to Channel %i.**", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Cameraman %s signed in to Channel %i.--", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "CameramanChannelID");
 					cmd_cameraman(playerid, "");
@@ -205,7 +205,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(GetPVarType(playerid, "LoginChannelID"))
 				{
 					SetPVarInt(playerid, "ChannelID_FMEM", listitem+1);
-					format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Host %s signed in to Channel %i.**", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+					format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Host %s signed in to Channel %i.--", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 					SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 					DeletePVar(playerid, "LoginChannelID");
 				}
@@ -880,7 +880,7 @@ public SAN_Broadcast(playerid, channel)
 				// TVObjects_Spawn();
  				// SendClientMessage(playerid, COLOR_LIGHTBLUE, "* You're now broadcasting LIVE.");
  				broadcasting = 1;
- 				format(szMiscArray, sizeof(szMiscArray), "** %s has started the systems on Channel %i.**", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+ 				format(szMiscArray, sizeof(szMiscArray), "-- %s has started the systems on Channel %i.--", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "[SAN]: We will broadcast %s LIVE with %s on Channel %i. (( Use /shows to tune in! ))", SANShows[channel][ChannelName], SANShows[channel][Hosts], channel); // This announces the broadcast to all players.
                 OOCNews(COLOR_NEWS,szMiscArray);
@@ -1200,7 +1200,7 @@ public SAN_Process_Logout(playerid)
 	if(GetPVarType(playerid, "ChannelID_FMEM"))
 	{
 		
-		format(szMiscArray, sizeof(szMiscArray), "** %s signed out from Channel %i.**", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
+		format(szMiscArray, sizeof(szMiscArray), "-- %s signed out from Channel %i.--", GetPlayerNameEx(playerid), GetPVarInt(playerid, "ChannelID_FMEM"));
 		SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 		DeletePVar(playerid, "ChannelID");
 		DeletePVar(playerid, "ChannelID_FMEM");
@@ -1285,7 +1285,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			GetPlayerFacingAngle(playerid, BroadcastFloats[playerid][0]);
 			SAN_ShowTextDraws(playerid);
 			SetPVarInt(playerid, "iCameraman_Type", 1);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Cameraman %s is setting the camera angle... **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Cameraman %s is setting the camera angle... --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SendClientMessage(playerid, COLOR_LIGHTBLUE, "Use 'N' to cancel. Use -- '/cameraman' -> Broadcast -- to broadcast the current angle.");
 		}
@@ -1318,7 +1318,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			SANShows[channel][san_iVehicleID] = 0;
 			cameraangle = 1;
 			SetPVarInt(playerid, "iCameraman_Type", 1);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting his/her camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s is broadcasting his/her camera angle. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_Camera(playerid, channel);
 			SAN_Process_StopPreview(playerid);
@@ -1327,7 +1327,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 		{
 			SANShows[channel][san_iVehicleID] = 0;
 			SetPVarInt(playerid, "iCameraman_Type", 4);
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s changes the camera angle to the 'Bird's Eye' view. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s changes the camera angle to the 'Bird's Eye' view. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			cameraangle = 2;
 			SAN_Process_Camera(playerid, channel);
@@ -1342,7 +1342,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 				SendClientMessage(playerid, 0xFFFFFFAA, "Your camera is now attached to the vehicle.");
 				SANShows[channel][san_iVehicleID] = 1;
 				cameraangle = 7;
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting from the &s  **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetVehicleModel(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam"))));
+				format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s is broadcasting from the &s  --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetVehicleModel(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam"))));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SAN_Process_Camera(playerid, channel);
 			}
@@ -1383,7 +1383,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 				GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][0], ICCameramanFloats[channel][playerid][1], ICCameramanFloats[channel][playerid][2]);
 				GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][0], ICCameramanFVFloats[channel][playerid][1], ICCameramanFVFloats[channel][playerid][2]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has set the first interpolate of the camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s has set the first interpolate of the camera angle. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_StopPreview(playerid);
 		}
@@ -1413,7 +1413,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 				GetPlayerPos(playerid,ICCameramanFloats[channel][playerid][3], ICCameramanFloats[channel][playerid][4], ICCameramanFloats[channel][playerid][5]);
 				GetPlayerCameraFrontVector(playerid, ICCameramanFVFloats[channel][playerid][3], ICCameramanFVFloats[channel][playerid][4], ICCameramanFVFloats[channel][playerid][5]);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has set the last interpolate of the camera angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s has set the last interpolate of the camera angle. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SAN_Process_StopPreview(playerid);
 		}
@@ -1447,7 +1447,7 @@ public SAN_Process_Cameraman(playerid, choice, channel)
 			SetPVarInt(playerid, "iCameraman_Type", 2);
 			SANShows[channel][san_iVehicleID] = 0;
 			cameraangle = 4;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s is broadcasting the dynamic (point A-B / interpolate) camera. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s is broadcasting the dynamic (point A-B / interpolate) camera. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			if(GetPVarType(playerid, "PreviewingTV")) SAN_Process_StopPreview(playerid);
 			SAN_Process_Camera(playerid, channel);
@@ -1513,7 +1513,7 @@ public SAN_Process_Director(playerid, choice, channel)
 			if(GetPlayerInterior(iLastCameraman[channel]) == 0)
 			{
 				if(iLastCameraman[channel] == -1) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no cameraman active.");
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s changes the camera angle to the 'Bird's Eye' angle. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Broadcast Director %s changes the camera angle to the 'Bird's Eye' angle. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SANShows[channel][san_iVehicleID] = 0;
 				cameraangle = 2;
@@ -1527,7 +1527,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			if(ICCameramanFloats[channel][iLastCameraman[channel]][0] != 0.0)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] Broadcast Director %s is broadcasting the point-to-point camera. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] Broadcast Director %s is broadcasting the point-to-point camera. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 				SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 				SANShows[channel][san_iVehicleID] = 0;
 				cameraangle = 4;
@@ -1540,7 +1540,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		case SAN_DIRECTOR_VEHICLE:
 		{
 			if(SANShows[channel][san_iVehicleID] == 0) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "* There is no vehicle camera active!");
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s: The camera is now broadcasting from the %s.**", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam")));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s: The camera is now broadcasting from the %s.--", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid), GetVehicleName(GetPVarInt(iLastCameraman[channel], "SAN_iVehCam")));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			cameraangle = 7;
 			SANShows[channel][san_iVehicleID] = 1;
@@ -1557,7 +1557,7 @@ public SAN_Process_Director(playerid, choice, channel)
 			SANShows[channel][san_iVehicleID] = 0;
 			broadcasting = 1;
 			SANShows[channel][ChannelActive] = 1;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has started all current cameras. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s has started all current cameras. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SendClientMessage(playerid, COLOR_LIGHTBLUE, "The TV is now back on air. Use '/cameraangle cameraman' to start setting a camera position.");
 			TextDrawHideForAll(TV_text[11]);
@@ -1569,7 +1569,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		{
 			cameraangle = -1;
 			SANShows[channel][san_iVehicleID] = INVALID_VEHICLE_ID;
-			format(szMiscArray, sizeof(szMiscArray), "** [CH. %i] %s has stopped the broadcast. **", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "-- [CH. %i] %s has stopped the broadcast. --", GetPVarInt(playerid, "ChannelID_FMEM"), GetPlayerNameEx(playerid));
 			SAN_SendRadioMessage(playerid, RADIO, szMiscArray);
 			SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Broadcasting has just been shutdown..");
 			broadcasting = 0;
@@ -1979,7 +1979,7 @@ CMD:news(playerid, params[])
 			else
 			{
 				format(szMiscArray, sizeof(szMiscArray), "NR %s: %s", GetPlayerNameEx(playerid), params);
-				OOCNews(COLOR_NEWS,szMiscArray);
+				OOCNews(COLOR_NEWS, szMiscArray);
 			}
 		}
 		else
@@ -2239,11 +2239,13 @@ CMD:togshow(playerid, params[])
 	if (!gNews[playerid])
 	{
 		gNews[playerid] = 1;
+		PlayerInfo[playerid][pToggledChats][1] = 1;
 		SendClientMessage(playerid, COLOR_GRAD2, "You have disabled the TV chat.");
 	}
 	else
 	{
 		gNews[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][1] = 0;
 		SendClientMessage(playerid, COLOR_GRAD2, "You have enabled the TV chat.");
 	}
 	return 1;

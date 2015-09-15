@@ -5436,20 +5436,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(PlayerInfo[i][pPnumber] == phonenumb && phonenumb != 0)
 			{
-				Mobile[playerid] = i; //caller connecting
 				if(PhoneOnline[i] > 0)
 				{
 					SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 					return 1;
 				}
-				format(string, sizeof(string), "SMS: %s, Sender: %s (Ph:%d)", inputtext,GetPlayerNameEx(playerid),PlayerInfo[playerid][pPnumber]);
+				format(string, sizeof(string), "SMS: %s, Sender: %s (Ph: %d)", inputtext, GetPlayerNameEx(playerid),PlayerInfo[playerid][pPnumber]);
 				GetPlayerName(i, sendername, sizeof(sendername));
-				RingTone[i] =20;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Message Sent! ", string, "OK", "Cancel");
 				SendClientMessageEx(i, COLOR_YELLOW, string);
-				//PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				//SendAudioToPlayer(playerid, 47, 100);
-				Mobile[playerid] = 255;
 				return 1;
 			}
 		}	

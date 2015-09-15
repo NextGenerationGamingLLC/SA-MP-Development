@@ -119,8 +119,8 @@ stock SendFamedMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pFamedTogged] == 1) {
-			SendClientMessageEx(i, color, string);
+		if((PlayerInfo[i][pFamed] >= 1 || PlayerInfo[i][pAdmin] >= 4) && PlayerInfo[i][pToggledChats][8] == 0) {
+			ChatTrafficProcess(i, color, string, 8);
 		}
 	}	
 }
@@ -141,7 +141,7 @@ CMD:fc(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeFamed") - gettime());
 			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
-		else if(PlayerInfo[playerid][pFamedTogged] == 0) {
+		else if(PlayerInfo[playerid][pToggledChats][8] == 1) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have the famed chat toggled - /togfamed to enable it.");
 		}
 		else if(PlayerInfo[playerid][pFMuted] != 0) {
@@ -154,11 +154,11 @@ CMD:fc(playerid, params[]) {
 
 			if(PlayerInfo[playerid][pAdmin] > 2 && GetPVarInt(playerid, "Undercover") == 0)
 			{
-				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
 			else if(GetPVarType(playerid, "Undercover") || PlayerInfo[playerid][pFamed] > 0)
 			{
-				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
 			}
 			SendFamedMessage(COLOR_FAMED, szMessage);
 		}
@@ -171,14 +171,14 @@ CMD:togfamed(playerid, params[])
 {
 	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)
 	{
-	    if(PlayerInfo[playerid][pFamedTogged] == 0)
-	    {
-	        PlayerInfo[playerid][pFamedTogged] = 1;
-	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the famed chat.");
-	    }
+		if(PlayerInfo[playerid][pToggledChats][8]) {
+
+			PlayerInfo[playerid][pToggledChats][8] = 1;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the famed chat.");
+		}
 		else {
-		    PlayerInfo[playerid][pFamedTogged] = 0;
-		    SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the famed chat.");
+			PlayerInfo[playerid][pToggledChats][8] = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the famed chat.");
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a famed member!");

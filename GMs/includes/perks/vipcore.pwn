@@ -87,8 +87,8 @@ stock SendVIPMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pVIPMod]) && PlayerInfo[i][pVIPTogged] == 1) {
-			SendClientMessageEx(i, color, string);
+		if((PlayerInfo[i][pDonateRank] >= 1 || PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pVIPMod]) && PlayerInfo[i][pToggledChats][9] == 0) {
+			ChatTrafficProcess(i, color, string, 9);
 		}
 	}
 }
@@ -502,13 +502,17 @@ CMD:viplocker(playerid, params[]) {
 
 CMD:togvip(playerid, params[]) {
 	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {
-		if(PlayerInfo[playerid][pVIPTogged] == 1) {
-			PlayerInfo[playerid][pVIPTogged] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat disabled.");
+
+		if(PlayerInfo[playerid][pToggledChats][9]) {
+
+			PlayerInfo[playerid][pToggledChats][9] = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat enabled.");
+
 		}
 		else {
-			PlayerInfo[playerid][pVIPTogged] = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat enabled.");
+
+			PlayerInfo[playerid][pToggledChats][9] = 1;
+			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat disabled.");
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You're not a VIP.");
@@ -529,7 +533,7 @@ CMD:v(playerid, params[]) {
 			format(szMessage, sizeof(szMessage), "You must wait %d seconds before speaking again in this channel.", GetPVarInt(playerid, "timeVIP") - gettime());
 			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
-		else if(PlayerInfo[playerid][pVIPTogged] == 0) {
+		else if(PlayerInfo[playerid][pToggledChats][9]) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /togvip to enable it.");
 		}
 		else if(PlayerInfo[playerid][pVMuted] > 0) {
@@ -541,13 +545,13 @@ CMD:v(playerid, params[]) {
 			
 			if(PlayerInfo[playerid][pAdmin] >= 2 && !GetPVarType(playerid, "Undercover"))
 			{
-				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
 			else if(GetPVarType(playerid, "Undercover") || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pVIPMod])
 			{
-				if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-				else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-				else format(szMessage, sizeof(szMessage), "** %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
+				if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "-- VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "-- Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
 				SetPVarInt(playerid, "timeVIP", gettime()+5);
 			}
 			
@@ -1219,12 +1223,12 @@ CMD:togvipm(playerid, params[])
 	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "vStaffChat") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled VIP staff chat.");
 		return SetPVarInt(playerid, "vStaffChat", 0);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled VIP staff chat.");
 		return SetPVarInt(playerid, "vStaffChat", 1);
 	}
 }
@@ -1294,7 +1298,7 @@ CMD:vipmods(playerid, params[])
 	{
 		if(PlayerInfo[i][pVIPMod])
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[i][pVIPTogged] == 1 ? ("On"):("Off"));
+			format(szMiscArray, sizeof(szMiscArray), "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("On"):("Off"));
 			SendClientMessageEx(playerid, -1, szMiscArray);
 		}
 	}

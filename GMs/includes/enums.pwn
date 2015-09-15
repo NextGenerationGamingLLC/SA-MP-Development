@@ -1134,9 +1134,6 @@ enum pInfo
 	pBStoredH,
 	pBStoredV,
 	pBugReportTimeout,
-	pNewbieTogged,
-	pVIPTogged,
-	pFamedTogged,
 	pDigCooldown,
 	pToolBox,
 	pCrowBar,
@@ -1179,7 +1176,9 @@ enum pInfo
 	p_iAddicted[sizeof(szDrugs)],
 	p_iAddictedLevel[sizeof(szDrugs)],
 	p_iIngredient[sizeof(szIngredients)],
-	pBAmmo[MAX_AMMO_TYPES]
+	pBAmmo[MAX_AMMO_TYPES],
+	pToggledChats[20], // see AccountSettings.pwn for coressponding chat IDs.
+	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
 };
 
 enum pvInfo
@@ -1776,6 +1775,7 @@ new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
 enum eDynPoints {
 	po_iType,
 	po_szPointName[MAX_PLAYER_NAME],
+	Float:po_fPos[3],
 	po_iCaptureAble,
 	po_iPointTimer,
 	po_iGroupID,

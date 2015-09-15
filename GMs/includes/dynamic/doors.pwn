@@ -468,8 +468,8 @@ CMD:lockdoor(playerid, params[])
 		{
         	if(DDoorsInfo[i][ddType] == 2 && DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID && PlayerInfo[playerid][pLeader] == DDoorsInfo[i][ddFaction])
 			{
-				if(DDoorsInfo[i][ddLocked] == 0)
-				{
+				if(DDoorsInfo[i][ddLocked] == 0) {
+					
 					DDoorsInfo[i][ddLocked] = 1;
 					SendClientMessageEx(playerid, COLOR_WHITE, "This door has been locked.");
 				}
