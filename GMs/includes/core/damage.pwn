@@ -321,6 +321,24 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	return 1;
 }
 
+
+timer DeathScreen[2500](playerid) {
+
+	if(!GetPVarType(playerid, "DS_OBJ")) return 1;
+
+	new Float:fPos[3],
+		iObjectID;
+
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+	iObjectID = CreateObject(19300, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0);
+	SetPVarInt(playerid, "DS_OBJ", iObjectID);
+	MoveObject(iObjectID, fPos[0], fPos[1], fPos[2] + 20.0, 1.0, 1.0, 0.0, 0.0);
+	AttachCameraToObject(playerid, iObjectID);
+	// ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 1, 1, 1, 1, 0, 1);
+	return 1;
+}
+
+
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	/*format(szMiscArray, sizeof(szMiscArray), "Playerid: %i Issuerid: %i, Amount: %f WeaponID: %i", playerid, issuerid, amount, weaponid);
@@ -342,13 +360,6 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
 			case 31, 38: if(IsPlayerInAnyVehicle(issuerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
 		}
-	}
-	GetPlayerHealth(playerid, hp);
-	if(hp < 18.0 && !GetPVarType(playerid, "NDeathText") && PlayerIsDead[playerid] == false) {
-
-		ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 1, 1, 1, 1, 0, 1);
-		SetPVarInt(playerid, "NDeathText", _:CreateDynamic3DTextLabel("Player is critically injured.", COLOR_RED, 0.0, 0.0, 0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
-
 	}
 	foreach(Player, i)
 	{
@@ -885,5 +896,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 		TogglePlayerControllable(playerid, 1);
 		PlayerTied[playerid] = 0;
 	}
+	// SetPVarInt(playerid, "MedicAid", 1);
 	return 1;
 }

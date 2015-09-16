@@ -84,6 +84,7 @@ enum eGroupData {
 	g_hRadioColour,
 	g_iLockerStock,
 	g_iFreeNameChange,
+	g_iFreeNameChangeDiv,
 	g_iSpikeStrips,
 	g_iBarricades,
 	g_iCones,
@@ -1177,7 +1178,7 @@ enum pInfo
 	p_iAddictedLevel[sizeof(szDrugs)],
 	p_iIngredient[sizeof(szIngredients)],
 	pBAmmo[MAX_AMMO_TYPES],
-	pToggledChats[20], // see AccountSettings.pwn for coressponding chat IDs.
+	pToggledChats[21], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
 };
 

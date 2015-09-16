@@ -364,8 +364,8 @@ new Text:GPS[MAX_PLAYERS];
 new Text:BFText;
 new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;
-new PlayerText:TD_ChatBox[11],
-	ChatBoxColor[MAX_PLAYERS][11];
+new Text:TD_LoginScreen;
+new PlayerText:TD_ChatBox[11];
 
 // Sobeit Check Variable
 new sobeitCheckvar[MAX_PLAYERS];
@@ -529,8 +529,6 @@ new PumpkinStock, HalloweenShop;
 new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];
 
 new CrateInfo[MAX_CRATES][crateInfo];
-
-new Train[3];
 
 //new IslandThreatElimTimer;
 
@@ -1060,6 +1058,14 @@ new Float:DMVRelease[4][3] = {
 {859.060,-583.911,18.250},
 {863.397,-583.911,18.250}
 };
+
+new Float:DMVReleaseNE[4][3] = {
+{2540.4819, 118.9792, 26.5442},
+{2537.6643, 118.7770, 26.5442},
+{2534.5337, 118.5479, 26.5442},
+{2540.8123, 104.9197, 26.5442}
+};
+
 
 /*new Float:LSPDJail[4][3] = {
 {227.46, 110.0, 999.02},

@@ -128,6 +128,8 @@ hook OnGameModeInit() {
 	
 	SFPDLobbyDoor[0] = CreateDynamicObject(1495, -1602.26709, 704.99298, 12.85020,   0.00000, 0.00000, -90.00000, .streamdistance = 50);
 	SFPDLobbyDoor[1] = CreateDynamicObject(1495, -1598.17004, 702.68219, 12.85020,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
+
+	CreateDynamicObject(6922, 2551.58936, 112.29691, 28.16482,   0.00000, 0.00000, 90.00000); // New Eire DMV
 	
 	print("[Streamer] Dynamic Objects has been loaded.");
 	return 1;

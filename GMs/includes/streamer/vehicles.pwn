@@ -193,9 +193,7 @@ hook OnGameModeInit() {
 	AddStaticVehicleEx(481,1727.7151,-1877.8586,13.0783,65.9359,-1,-1,2000); // BIKENEWBIESPAWN9
 	AddStaticVehicleEx(481,1727.5710,-1875.3071,13.0782,70.6519,-1,-1,2000); // BIKENEWBIESPAWN10
 
-	Train[0] = AddStaticVehicleEx(538,1462.0745,2630.8787,10.8203,200.0,-1,-1,2000); //LV passenger
-	Train[1] = AddStaticVehicleEx(538,-1942.7950,168.4164,27.0006,200.0,-1,-1,2000); //SF passenger
-	Train[2] = AddStaticVehicleEx(538,1700.7551,-1953.6531,14.8756,200.0,-1,-1,2000); //LS passenger
+	AddStaticVehicleEx(538,1700.7551,-1953.6531,14.8756,200.0,-1,-1,2000); //LS passenger
 	print("[Streamer] Dynamic Static Vehicles have been loaded.");
 	return 1;
 }

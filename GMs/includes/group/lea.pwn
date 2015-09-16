@@ -655,7 +655,7 @@ CMD:mdc(playerid, params[])
 	{
         if(IsPlayerInAnyVehicle(playerid) || Bit_State(g_PlayerBits[playerid], phone_bitState))
 		{
-            ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+            ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Clear Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
             ConnectedToPC[playerid] = 1337;
         }
         else SendClientMessageEx(playerid, COLOR_GREY, "You are not in a vehicle.");

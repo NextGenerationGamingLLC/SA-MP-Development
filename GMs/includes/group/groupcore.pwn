@@ -49,6 +49,7 @@ Group_DisbandGroup(iGroupID) {
 	arrGroupData[iGroupID][g_iIntRadioAccess] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iGovAccess] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iFreeNameChange] = INVALID_RANK;
+	arrGroupData[iGroupID][g_iFreeNameChangeDiv] = INVALID_DIVISION;
 	arrGroupData[iGroupID][g_iSpikeStrips] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iBarricades] = INVALID_RANK;
 	arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
@@ -243,6 +244,12 @@ stock IsAGovernment(playerid)
 stock IsAJudge(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL)) return 1;
+	return 0;
+}
+
+stock IsALawyer(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL) && PlayerInfo[playerid][pRank] > 1) return 1;
 	return 0;
 }
 
@@ -551,6 +558,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Bug access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Government announcement:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Free name change:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Free name change div:{FFFFFF} %s (division %i)\n\
 		{BBBBBB}Spike Strips:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Barricades:{FFFFFF} %s (rank %i)\n",
 		szDialog,
@@ -558,6 +566,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		(arrGroupData[iGroupID][g_iBugAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBugAccess],
 		(arrGroupData[iGroupID][g_iGovAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iGovAccess],
 		(arrGroupData[iGroupID][g_iFreeNameChange] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFreeNameChange],
+		(arrGroupData[iGroupID][g_iFreeNameChangeDiv] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iFreeNameChangeDiv],
 		(arrGroupData[iGroupID][g_iSpikeStrips] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iSpikeStrips],
 		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarricades]
 	);
@@ -1195,13 +1204,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Enter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
 				}
-				case 6 .. 18: {
+				case 6 .. 11, 13 .. 18: {
 
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
 					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
 						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
+					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
+					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
+					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 12: {
+
+					new
+						szDialog[((32 + 5) * MAX_GROUP_DIVS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupDivisions[iGroupID][i][0]) ? (arrGroupDivisions[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
 
 					strcat(szDialog, "\nRevoke from Group");
 
@@ -1575,6 +1598,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 
 			format(string, sizeof(string), "%s has set the minimum rank for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+			Log("logs/editgroup.log", string);
+
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_FREEDIVNC: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_DIVS: arrGroupData[iGroupID][g_iFreeNameChangeDiv] = INVALID_DIVISION;
+				default: arrGroupData[iGroupID][g_iFreeNameChangeDiv] = listitem;
+			}
+
+			format(string, sizeof(string), "%s has set the division for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupDivisions[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);

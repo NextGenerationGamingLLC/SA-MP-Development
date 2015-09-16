@@ -2010,6 +2010,20 @@ public LoadTextDraws()
 	TextDrawSetOutline(TutTxtdraw[113], 1);
 	TextDrawSetProportional(TutTxtdraw[113], 1);
 	textdrawscount++;
+
+	TD_LoginScreen = TextDrawCreate(0.000000, 0.000000, "NGRP:loginscreen");
+	TextDrawAlignment(TD_LoginScreen, 2);
+	TextDrawBackgroundColor(TD_LoginScreen, 255);
+	TextDrawFont(TD_LoginScreen, 4);
+	TextDrawLetterSize(TD_LoginScreen, 0.500000, 1.000000);
+	TextDrawColor(TD_LoginScreen, -1);
+	TextDrawSetOutline(TD_LoginScreen, 0);
+	TextDrawSetProportional(TD_LoginScreen, 1);
+	TextDrawSetShadow(TD_LoginScreen, 1);
+	TextDrawUseBox(TD_LoginScreen, 1);
+	TextDrawBoxColor(TD_LoginScreen, 255);
+	TextDrawTextSize(TD_LoginScreen, 640.000000, 452.000000);
+	TextDrawSetSelectable(TD_LoginScreen, 0);
 	
 	print("[Textdraws] Loaded textdraws.");
 	

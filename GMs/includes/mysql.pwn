@@ -2408,7 +2408,7 @@ stock g_mysql_SaveAccount(playerid)
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
 
-	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
 		PlayerInfo[playerid][pToggledChats][0], 
 		PlayerInfo[playerid][pToggledChats][1],
 		PlayerInfo[playerid][pToggledChats][2], 
@@ -2428,7 +2428,8 @@ stock g_mysql_SaveAccount(playerid)
 		PlayerInfo[playerid][pToggledChats][16],
 		PlayerInfo[playerid][pToggledChats][17],
 		PlayerInfo[playerid][pToggledChats][18],
-		PlayerInfo[playerid][pToggledChats][19]);
+		PlayerInfo[playerid][pToggledChats][19],
+		PlayerInfo[playerid][pToggledChats][20]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 

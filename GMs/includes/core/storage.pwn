@@ -1586,9 +1586,6 @@ stock ShowInventory(playerid,targetid)
 		Pot: %s\n\
 		Heroin: %s\n\
 		Crates: %s\n\
-		Opium Seeds: %s\n\
-		Raw Opium: %s\n\
-		Syringes: %s\n\
 		Paper: %s\n\
 		Rope: %s\n\
 		Cigars: %s\n\
@@ -1610,13 +1607,10 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pDoubleEXP]),
 		number_format(PlayerInfo[targetid][pEventTokens]),
 		number_format(PlayerInfo[targetid][pMats]),
-		number_format(PlayerInfo[targetid][pCrack]),
-		number_format(PlayerInfo[targetid][pPot]),
-		number_format(PlayerInfo[targetid][pHeroin]),
+		number_format(PlayerInfo[targetid][p_iDrug][5]),
+		number_format(PlayerInfo[targetid][p_iDrug][1]),
+		number_format(PlayerInfo[targetid][p_iDrug][3]),
 		number_format(PlayerInfo[targetid][pCrates]),
-		number_format(PlayerInfo[targetid][pOpiumSeeds]),
-		number_format(PlayerInfo[targetid][pRawOpium]),
-		number_format(PlayerInfo[targetid][pSyringes]),
 		number_format(PlayerInfo[targetid][pPaper]),
 		number_format(PlayerInfo[targetid][pRope]),
 		number_format(PlayerInfo[targetid][pCigar]),
@@ -2485,7 +2479,7 @@ CMD:hwithdraw(playerid, params[])
 						if(HouseInfo[i][hPot] >= amount)
 						{
 							HouseInfo[i][hPot] -= amount;
-							PlayerInfo[playerid][pPot] += amount;
+							PlayerInfo[playerid][p_iDrug][1] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
 							format(string, sizeof(string), "You have withdrawn %d pot from your house safe.", amount);
@@ -2501,7 +2495,7 @@ CMD:hwithdraw(playerid, params[])
 						if(HouseInfo[i][hCrack] >= amount)
 						{
 							HouseInfo[i][hCrack] -= amount;
-							PlayerInfo[playerid][pCrack] += amount;
+							PlayerInfo[playerid][p_iDrug][5] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
 							format(string, sizeof(string), "You have withdrawn %d crack from your house safe.", amount);
@@ -2533,7 +2527,7 @@ CMD:hwithdraw(playerid, params[])
 						if(HouseInfo[i][hHeroin] >= amount)
 						{
 							HouseInfo[i][hHeroin] -= amount;
-							PlayerInfo[playerid][pHeroin] += amount;
+							PlayerInfo[playerid][p_iDrug][3] += amount;
 							OnPlayerStatsUpdate(playerid);
 							SaveHouse(i);
 							format(string, sizeof(string), "You have withdrawn %d heroin from your house safe.", amount);

@@ -1560,7 +1560,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		if(GetPVarType(playerid, "Injured")) {
 			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
 			ClearAnimations(playerid);
-			ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+			PlayDeathAnimation(playerid);
 		}
 		else if(PlayerCuffed[playerid] != 0) {
 			ClearAnimations(playerid);

@@ -4244,7 +4244,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SpeedingTickets += iCost;
 				for(new z; z < MAX_GROUPS; z++)
 				{
-					if(arrGroupData[z][g_iAllegiance] == 1)
+					if(arrGroupData[z][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 					{
 						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
@@ -4257,14 +4257,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 				}
+				
 				Misc_Save();
 
-				new rand = random(sizeof(DMVRelease));
+				switch(PlayerInfo[playerid][pNation]) {
+
+					case 0: {
+
+						new rand = random(sizeof(DMVRelease));
+						PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
+						PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVRelease[rand][1];
+						PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
+					}
+					case 1: {
+
+						new rand = random(sizeof(DMVReleaseNE));
+						PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVReleaseNE[rand][0];
+						PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVReleaseNE[rand][1];
+						PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVReleaseNE[rand][2];
+					}
+				}
+
 				PlayerVehicleInfo[playerid][listitem][pvImpounded] = 0;
 				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
-				PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
-				PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVRelease[rand][1];
-				PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
 				PlayerVehicleInfo[playerid][listitem][pvPosAngle] = 180.000;
 				PlayerVehicleInfo[playerid][listitem][pvTicket] = 0;
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your vehicle has been released, type /vstorage to spawn it.");
@@ -4652,12 +4667,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, MDC_CIVILIANS, DIALOG_STYLE_LIST, "MDC - Logged in | Civilian Options", "*Check Record\n*View Arrest Reports\n*Licenses\n*Warrants\n*Issue Warrant\n*BOLO\n*Create BOLO\n*Delete", "OK", "Cancel");
 			}
 			case 1: ShowPlayerDialog(playerid, MDC_SUSPECT, DIALOG_STYLE_INPUT, "MDC - Register Suspect", "Please enter (a part of) the name of the suspect to register them.", "OK", "Cancel");
-			case 2:	ShowPlayerDialog(playerid, MDC_VEHICLE, DIALOG_STYLE_INPUT, "MDC - Vehicle Registrations", "Please enter (a part of) the name of the person to check their active vehicle registrations.", "OK", "Cancel");
-			case 3:
+			case 2: ShowPlayerDialog(playerid, G_LOCKER_CLEARSUSPECT, DIALOG_STYLE_INPUT, arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]," Who would you like to clear?","Clear","Return");
+			case 3:	ShowPlayerDialog(playerid, MDC_VEHICLE, DIALOG_STYLE_INPUT, "MDC - Vehicle Registrations", "Please enter (a part of) the name of the person to check their active vehicle registrations.", "OK", "Cancel");
+			case 4:
 			{
 				ShowPlayerDialog(playerid, MDC_FIND, DIALOG_STYLE_INPUT, "MDC - Logged in | LEO GPS Location", "Enter the Law Enforcment Official's Name or ID No.", "Enter", "Cancel");
 			}
-			case 4:
+			case 5:
 			{
 				new groups[1024], item;
 				for (new i; i < MAX_GROUPS; i++)
@@ -4670,8 +4686,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ShowPlayerDialog(playerid, MDC_MEMBERS, DIALOG_STYLE_LIST, "MDC - Logged in | Agency List", groups, "OK", "Cancel");
 				}
 			}
-			case 5: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
-			case 6: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
+			case 6: ShowPlayerDialog(playerid, MDC_MESSAGE, DIALOG_STYLE_INPUT, "MDC - Logged In | MDC Message", "Enter recipient's Name or ID No.", "OK", "Cancel");
+			case 7: ShowPlayerDialog(playerid, MDC_SMS, DIALOG_STYLE_INPUT, "MDC - Logged In | SMS", "Enter recipient's phone number.", "OK", "Cancel");
 		}
 	}
 	if(dialogid == MDC_SUSPECT) return cmd_su(playerid, inputtext);

@@ -396,9 +396,9 @@ public OnPlayerUpdate(playerid)
 	}
 	GetPlayerPos(playerid, acstruct[playerid][LastOnFootPosition][0], acstruct[playerid][LastOnFootPosition][1], acstruct[playerid][LastOnFootPosition][2]);
 	
-	new newkeys, dir1, dir2;
-	GetPlayerKeys(playerid, newkeys, dir1, dir2);
-	
+	new newkeys, updown, leftright;
+    GetPlayerKeys(playerid, newkeys, updown, leftright);
+
 	// night vision and thermal goggle fixes added by Dom
 	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45)
 	{

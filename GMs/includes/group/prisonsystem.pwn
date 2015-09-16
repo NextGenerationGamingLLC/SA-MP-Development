@@ -771,6 +771,30 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
+CMD:setbail(playerid, params[]) {
+
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be in DoC to use this command.");
+	if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a Warden to use this command.");
+
+	new uPlayer,
+		iBail;
+
+	if(sscanf(params, "dd", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
+
+	if(0 < iBail < 50000000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $50.000.000).");
+	
+	PlayerInfo[uPlayer][pBailPrice] = iBail;
+
+	format(szMiscArray, sizeof(szMiscArray), "You have set %s's bail to: $%s", GetPlayerNameEx(uPlayer), number_format(iBail));
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "Your bail has been set to $%s by %s", number_format(iBail), GetPlayerNameEx(playerid));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+
+	format(szMiscArray, sizeof szMiscArray, "%s has set %s's bail price to $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), number_format(PlayerInfo[uPlayer][pBailPrice]));
+ 	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+	return 1;	
+}
+
 CMD:bail(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] > 0)
@@ -780,12 +804,16 @@ CMD:bail(playerid, params[])
 			if(GetPlayerCash(playerid) > PlayerInfo[playerid][pBailPrice])
 			{
 				new string[128];
+
 				format(string, sizeof(string), "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				GivePlayerCash(playerid, -PlayerInfo[playerid][pBailPrice]);
 				PlayerInfo[playerid][pBailPrice] = 0;
 				WantLawyer[playerid] = 0; CallLawyer[playerid] = 0;
 				PlayerInfo[playerid][pJailTime] = 1;
+
+				format(string, sizeof string, "%s has bailed themselves out for $%s.", GetPlayerNameEx(playerid), number_format(PlayerInfo[playerid][pBailPrice]));
+ 				GroupLog(2, string); // Prison Group ID (September 2015).
 			}
 			else
 			{
@@ -1128,6 +1156,9 @@ CMD:extendsentence(playerid, params[])
 		format(string, sizeof(string), "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		SendClientMessageEx(playerid, COLOR_RED, string);
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[EXT]", 128);
+
+		format(string, sizeof string, "%s has extended %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iExtended, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
+ 		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: The extension percentage cannot be less than 1 or greater than 10.");
 	return 1;
@@ -1159,6 +1190,9 @@ CMD:reducesentence(playerid, params[])
 		format(string, sizeof(string), "Original Time: %s ------ New Time: %s", TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
 		SendClientMessageEx(playerid, COLOR_RED, string);
 		strcat(PlayerInfo[iTargetID][pPrisonReason], "[RED]", 128);
+		
+		format(string, sizeof string, "%s has reduced %s's sentence by %d percent. (Original: %s, New: %s)", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID), iReduce, TimeConvert(StartJail), TimeConvert(PlayerInfo[iTargetID][pJailTime]));
+ 		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: The reduction percentage cannot be less than 1 or greater than 10.");
 	
@@ -1185,6 +1219,9 @@ CMD:isolateinmate(playerid, params[])
 		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
 		format(string, sizeof(string), "You have sent %s to isolation.", GetPlayerNameEx(iTargetID));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+
+		format(string, sizeof string, "%s has sent %s to isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
+ 		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is already in isolation.");
 	
@@ -1209,6 +1246,9 @@ CMD:unisolateinmate(playerid, params[])
 		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
 		format(string, sizeof(string), "You have released %s from isolation.", GetPlayerNameEx(iTargetID));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+
+		format(string, sizeof string, "%s has brought %s back from isolation.", GetPlayerNameEx(playerid), GetPlayerNameExt(iTargetID));
+ 		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: That player is not connected.");
 	return 1;
@@ -1223,7 +1263,8 @@ CMD:inmates(playerid, params[])
 	{
 		if(PlayerInfo[i][pJailTime] > 0 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 		{
-			format(szInmates, sizeof(szInmates), "%s\n* %s: %s", szInmates, GetPlayerNameEx(i), TimeConvert(PlayerInfo[i][pJailTime]));
+			if(PlayerInfo[i][pBailPrice]) format(szInmates, sizeof(szInmates), "%s\n* %s: %s - Bail: $%s", szInmates, GetPlayerNameEx(i), TimeConvert(PlayerInfo[i][pJailTime]), number_format(PlayerInfo[i][pBailPrice]));
+			else format(szInmates, sizeof(szInmates), "%s\n* %s: %s", szInmates, GetPlayerNameEx(i), TimeConvert(PlayerInfo[i][pJailTime]));
 		}
 	}
 	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "No inmates");

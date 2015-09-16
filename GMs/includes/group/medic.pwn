@@ -89,6 +89,8 @@ public MoveEMS(playerid)
 forward KillEMSQueue(playerid);
 public KillEMSQueue(playerid)
 {
+	DestroyObject(GetPVarInt(playerid, "DS_OBJ"));
+	DeletePVar(playerid, "DS_OBJ");
     DeletePVar(playerid, "Injured");
     DeletePVar(playerid, "InjuredWait");
     DeletePVar(playerid, "EMSAttempt");
@@ -96,10 +98,9 @@ public KillEMSQueue(playerid)
 	DeletePVar(playerid, "MedicCall");
 	DeletePVar(playerid, "EMSWarns");
 	DeletePVar(playerid, "_energybar");
-	DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "NDeathText"));
-	DeletePVar(playerid, "NDeathText");
 	DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "InjuredTL"));
 	DeletePVar(playerid, "InjuredTL");
+	SetCameraBehindPlayer(playerid);
 	return 1;
 }
 
@@ -160,13 +161,12 @@ PlayDeathAnimation(playerid) {
 
 	new i = random(5);
 	switch(i) {
-
-		case 0: PlayAnimEx(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
-		case 1: PlayAnimEx(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
-		case 2: PlayAnimEx(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
-		case 3: PlayAnimEx(playerid, "PED", "BIKE_fall_off", 4.1, 0, 1, 1, 1, 0, 1);
-		case 4: PlayAnimEx(playerid, "BASEBALL", "Bat_Hit_3", 4.1, 0, 1, 1, 1, 0, 1);
-		default: PlayAnimEx(playerid, "FIGHT_E", "Hit_fightkick_B", 4.1, 0, 1, 1, 1, 0, 1);
+		case 0: ApplyAnimation(playerid, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+		case 1: ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
+		case 2: ApplyAnimation(playerid, "PED", "KO_shot_stom", 4.0, 0, 1, 1, 1, 0, 1);
+		case 3: ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.1, 0, 1, 1, 1, 0, 1);
+		case 4: ApplyAnimation(playerid, "BASEBALL", "Bat_Hit_3", 4.1, 0, 1, 1, 1, 0, 1);
+		default: ApplyAnimation(playerid, "FIGHT_E", "Hit_fightkick_B", 4.1, 0, 1, 1, 1, 0, 1);
 	}
 }
 
@@ -183,6 +183,15 @@ stock IsAnAmbulance(carid)
 		}
 	}
 	return 0;
+}
+
+CMD:aid(playerid, params[]) {
+
+	if(IsAMedic(playerid) || IsFirstAid(playerid)) {
+
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a medic!");
+	return 1;
 }
 
 CMD:loadpt(playerid, params[])
@@ -221,6 +230,7 @@ CMD:loadpt(playerid, params[])
 				{
                     if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot load yourself!"); return 1; }
                     if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+                    // if(GetPVarType(playerid, "MedicAid")) return SendClientMessage(playerid, COLOR_GREY, "This patient requires aid! Use /aid [playerid] to aid them.");
                     new carid = gLastCar[playerid];
                     if(IsAnAmbulance(carid))
 					{

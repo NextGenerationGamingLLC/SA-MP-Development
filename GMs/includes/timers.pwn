@@ -1423,6 +1423,8 @@ ptask PlayerHeartBeat[1000](i) {
 			GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 			ClearCrimes(i);
+			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
+ 			GroupLog(2, szMiscArray); // Prison Group ID (September 2015).
 		}
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 			
@@ -2831,7 +2833,7 @@ ptask EMSUpdate[5000](i)
 			else SetHealth(i, health-1);
 			if(GetPVarInt(i, "EMSAttempt") == -1)
 			{
-				if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), ApplyAnimation(i, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
@@ -2842,7 +2844,7 @@ ptask EMSUpdate[5000](i)
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 1)
 			{
-				if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), ApplyAnimation(i, "KNIFE", "KILL_Knife_Ped_Die", 4.0, 0, 1, 1, 1, 0, 1);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");

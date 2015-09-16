@@ -47,7 +47,7 @@ stock IsANewsCar(carid)
 	return 0;
 }
 
-stock OOCNews(color,string[])
+stock OOCNews(color, string[])
 {
 	foreach(new i: Player) {
 		

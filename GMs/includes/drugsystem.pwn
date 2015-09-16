@@ -2077,6 +2077,12 @@ public BM_OnDeleteBlackMarket(playerid, iBlackMarketID) {
 
 	if(mysql_errno()) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
 
+	for(new i; i < sizeof(szIngredients); ++i) {
+
+		arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] = 0;
+		arrBlackMarket[iBlackMarketID][bm_iIngredientSmugglePay][i] = 0;
+		arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][i] = 0;
+	}
 	format(szMiscArray, sizeof(szMiscArray), "You successfully destroyed black market ID %d", iBlackMarketID);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	return 1;
@@ -3516,10 +3522,9 @@ public PO_OnDeletePoint(playerid, i) {
 }
 
 
-PO_LoadPoints()
-{
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `dynpoints`");
-	mysql_function_query(MainPipeline, szMiscArray, true, "PO_OnLoadPoints", "");	
+PO_LoadPoints() {
+
+	mysql_function_query(MainPipeline, "SELECT * FROM `dynpoints`", true, "PO_OnLoadPoints", "");	
 }
 
 forward PO_OnLoadPoints();
@@ -3535,24 +3540,21 @@ public PO_OnLoadPoints() {
 
 	while(iCount < iRows)
 	{
-		new Float:fPos[6],
-			iGroupID;
+		new Float:fPos[3];
 
-		fPos[0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
-		fPos[1] = cache_get_field_content_float(iCount, "posy", MainPipeline);
-		fPos[2] = cache_get_field_content_float(iCount, "posz", MainPipeline);
-		fPos[3] = cache_get_field_content_float(iCount, "delposx", MainPipeline);
-		fPos[4] = cache_get_field_content_float(iCount, "delposy", MainPipeline);
-		fPos[5] = cache_get_field_content_float(iCount, "delposz", MainPipeline);
-		iGroupID = cache_get_field_content_int(iCount, "groupid", MainPipeline);
+		arrPoint[iCount][po_fPos][0] = cache_get_field_content_float(iCount, "posx", MainPipeline);
+		arrPoint[iCount][po_fPos][1] = cache_get_field_content_float(iCount, "posy", MainPipeline);
+		arrPoint[iCount][po_fPos][2] = cache_get_field_content_float(iCount, "posz", MainPipeline);
+		fPos[0] = cache_get_field_content_float(iCount, "delposx", MainPipeline);
+		fPos[1] = cache_get_field_content_float(iCount, "delposy", MainPipeline);
+		fPos[2] = cache_get_field_content_float(iCount, "delposz", MainPipeline);
+		arrPoint[iCount][po_iGroupID] = cache_get_field_content_int(iCount, "groupid", MainPipeline);
+		arrPoint[iCount][po_iCaptureAble] = cache_get_field_content_int(iCount, "captureable", MainPipeline);
+		arrPoint[iCount][po_iType] = cache_get_field_content_int(iCount, "type", MainPipeline);
 
 		cache_get_field_content(iCount, "name", arrPoint[iCount][po_szPointName], MainPipeline, MAX_PLAYER_NAME);
 
-		arrPoint[iCount][po_iGroupID] = iGroupID;
-
-		arrPoint[iCount][po_iCaptureAble] = cache_get_field_content_int(iCount, "captureable", MainPipeline);
-
-		PO_CreatePoint(iCount, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], 1);
+		PO_CreatePoint(iCount, arrPoint[iCount][po_fPos][0], arrPoint[iCount][po_fPos][1],arrPoint[iCount][po_fPos][2], fPos[0], fPos[1], fPos[2], 1);
 		iCount++;
 	}
 	printf("[Points] Loaded %d points.", iCount);
@@ -3561,13 +3563,11 @@ public PO_OnLoadPoints() {
 
 PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Float:DZ = 0.0, sql = 0) {
 
-		if(!sql) {
-
-			X += 0;
-			Y += 0;
+		if(!sql) { // X, Y will remain until streamer bug has been found - Jingles.
+			X += 0.0;
+			Y += 0.0;
 			Z -= 1.0; // Somehow has an odd Z-offset.
 		}
-
 		arrPoint[i][po_iPickupID] = CreateDynamicPickup(1254, 1, arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], .worldid = 0, .interiorid = 0, .streamdistance = 20.0);
 
 		new szGroup[GROUP_MAX_NAME_LEN],
@@ -3604,6 +3604,8 @@ PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Flo
 
 PO_DestroyPoint(i) {
 
+	arrPoint[i][po_iGroupID] = INVALID_GROUP_ID;
+	arrPoint[i][po_iCaptureAble] = 0;
 	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
 	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
@@ -3636,7 +3638,7 @@ CMD:drughelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GRAD1, "/mymix | /mix | /clearmix");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "/blackmarket | /gblackmarket | /mypostorders | /getpostorder");
 	if(IsACop(playerid) || IsAMedic(playerid)) SendClientMessageEx(playerid, COLOR_LIGHTRED, "[MEDIC/LEA] | /listpostorders | /vehdrugs");
-	if(IsAdminLevel(playerid, ADMIN_JUNIOR)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Administrators] /createblackmarket | /ablackmarket | /createdpoint | /point");
+	if(IsAdminLevel(playerid, ADMIN_JUNIOR)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Administrators] /createblackmarket | /ablackmarket | /createdpoint | /editpoint | /points");
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________");
 	szMiscArray[0] = 0;
 

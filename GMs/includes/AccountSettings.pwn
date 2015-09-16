@@ -29,6 +29,7 @@ ShowAccountSettings(playerid, menu = 0) {
 			
 			format(szMiscArray, sizeof(szMiscArray), "Item\tStatus\n\
 				{FFFFFF}---General---\t\n\
+				{FFFFFF}NG:RP Phone Mod\t%s\n\
 				{FFFFFF}Newbie Chat\t%s\n\
 				{FFFFFF}News\t%s\n\
 				{FFFFFF}OOC Chat\t%s\n\
@@ -39,6 +40,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Hunger Meter\t%s\n\
 				{FFFFFF}Phone\t%s\n\
 				{FFFFFF}Famed\t%s\n",
+				(PlayerInfo[playerid][pToggledChats][20] == 1) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][0] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][1] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][2] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -169,8 +171,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case ACCOUNT_TOGGLEMENU: {
 			
 			if(!response) return ShowAccountSettings(playerid, 0);
-			new id;
-			if(strcmp(inputtext, "Newbie Chat", true) == 0) id = 0;
+			new id = -1;
+			if(strcmp(inputtext, "NG:RP Phone Mod", true) == 0) id = 20;
+			else if(strcmp(inputtext, "Newbie Chat", true) == 0) id = 0;
 			else if(strcmp(inputtext, "News", true) == 0) id = 1;
 			else if(strcmp(inputtext, "OOC Chat", true) == 0) id = 2;
 			else if(strcmp(inputtext, "Whispers", true) == 0) id = 3;
@@ -190,6 +193,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Community Advisor Chat", true) == 0) id = 16;
 			else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
 			// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
+			if(id == -1) return ShowAccountSettings(playerid, 1);
 			if(PlayerInfo[playerid][pToggledChats][id] == 0) {
 
 				PlayerInfo[playerid][pToggledChats][id] = 1;
@@ -223,7 +227,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else {
 
-				new id;
+				new id = -1;
 				if(strcmp(inputtext, "Newbie Chat", true) == 0) id = 0;
 				else if(strcmp(inputtext, "News", true) == 0) id = 1;
 				else if(strcmp(inputtext, "OOC Chat", true) == 0) id = 2;
@@ -240,6 +244,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
 				else if(strcmp(inputtext, "Community Advisor Chat", true) == 0) id = 16;
 				else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
+				if(id == -1) return ShowAccountSettings(playerid, 1);
 				// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
 				SetPVarInt(playerid, "ChatboxPref", id);
 				ShowPlayerDialog(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_INPUT, "Chatbox Preferences", "In which chatbox would you like this chat channel?\n\nAvailable options: Main (0), Bottom Right (1).", "Select", "Cancel");

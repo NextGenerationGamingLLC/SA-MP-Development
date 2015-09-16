@@ -311,12 +311,12 @@ SetPlayerSpawn(playerid)
 				case 0: format(szMiscArray, sizeof(szMiscArray), "Player would appear to be brutally beaten by someone's fists.");
 				default: format(szMiscArray, sizeof(szMiscArray), "Player passed away from unknown causes.");
 			}
-			DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "NDeathText"));
-			DeletePVar(playerid, "NDeathText");
+			strcat(szMiscArray, "\n{FF0000}(Player is critically injured).", sizeof(szMiscArray));
 			new Float: mX, Float: mY, Float: mZ;
 			GetPlayerPos(playerid, mX, mY, mZ);
 			SetPVarInt(playerid, "InjuredTL", _:CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, mX, mY, mZ+0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
 		    SendEMSQueue(playerid,1);
+		    defer DeathScreen(playerid);
 		    return 1;
 		}
 		if(GetPVarInt(playerid, "EventToken") == 1)

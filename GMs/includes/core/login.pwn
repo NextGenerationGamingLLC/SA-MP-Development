@@ -188,6 +188,7 @@ stock ShowMainMenuGUI(playerid)
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[6]);
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[9]);
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[10]);
+	TextDrawShowForPlayer(playerid, TD_LoginScreen);
 
 	SetPVarInt(playerid, "LoginScreen", 1);
 	TogglePlayerSpectating(playerid, true);
@@ -198,6 +199,7 @@ stock HideMainMenuGUI(playerid)
 {
 	InsideMainMenu{playerid} = false;
 
+	TextDrawHideForPlayer(playerid, TD_LoginScreen);
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[0]);
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[1]);
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[2]);
