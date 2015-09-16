@@ -778,13 +778,8 @@ ChatBoxProcess(playerid, hColor, szText[]) {
 
 	if(PlayerInfo[playerid][pToggledChats][19] == 1) return 1;
 
-	new PVarID[5],
-		iPrevCol,
-		iSize = sizeof(TD_ChatBox) - 1;
+	new iSize = sizeof(TD_ChatBox) - 1;
 
-	iPrevCol = 0;
-	PVarID[0] = "CB";
-	
 	for(new line = 1; line < sizeof(TD_ChatBox); line++)
 	{
     	PlayerTextDrawHide(playerid, TD_ChatBox[line]);
