@@ -4196,7 +4196,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(PlayerInfo[playerid][pWantedLevel] != 0)
 			{
 				format(szMessage, sizeof(szMessage), "%s has attempted to pay/release their vehicles with %i active warrants.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pWantedLevel]);
-				SendGroupMessage(1, DEPTRADIO, szMessage);
+				SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, szMessage);
 				return SendClientMessageEx(playerid, COLOR_YELLOW, "The police has been warned that you are wanted, and are on their way.");
 			}
 			if(PlayerVehicleInfo[playerid][listitem][pvTicket]) {
@@ -4929,7 +4929,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			DisplayReports(playerid, giveplayerid);
 			format(string, sizeof(string), "** DISPATCH: %s has run a check for arrest reports on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			SendGroupMessage(1, COLOR_DBLUE, string);
+			SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
 			return 1;
 		}
 		else
@@ -5307,7 +5307,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			DisplayCrimes(playerid, giveplayerid);
 			format(string, sizeof(string), "** DISPATCH: %s has run a check for warrants on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			SendGroupMessage(1, COLOR_DBLUE, string);
+			SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
 			return 1;
 		}
 		else
@@ -5344,7 +5344,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				strcat(LicenseString, string, sizeof(LicenseString));
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
 				format(string, sizeof(string), "** DISPATCH: %s has ran a license check on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendGroupMessage(1, COLOR_DBLUE, string);
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
 				return 1;
 			}
 			else return ShowPlayerDialog(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
@@ -5479,7 +5479,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact14], string, 0, strlen(string), 255);
 				News[hTaken14] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5498,7 +5498,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact15], string, 0, strlen(string), 255);
 				News[hTaken15] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5517,7 +5517,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact16], string, 0, strlen(string), 255);
 				News[hTaken16] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5536,7 +5536,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact17], string, 0, strlen(string), 255);
 				News[hTaken17] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5555,7 +5555,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact18], string, 0, strlen(string), 255);
 				News[hTaken18] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5574,7 +5574,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact19], string, 0, strlen(string), 255);
 				News[hTaken19] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5593,7 +5593,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact20], string, 0, strlen(string), 255);
 				News[hTaken20] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5612,7 +5612,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact21], string, 0, strlen(string), 255);
 				News[hTaken21] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for a BOLO on the MDC -BOLO\nto see the current BOLO List browse to BOLO when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for a BOLO have been updated.");
 				return 1;
 			}
 			else
@@ -5649,7 +5649,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact6], string, 0, strlen(string), 255);
 				News[hTaken6] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5668,7 +5668,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact7], string, 0, strlen(string), 255);
 				News[hTaken7] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5687,7 +5687,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact8], string, 0, strlen(string), 255);
 				News[hTaken8] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5706,7 +5706,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact9], string, 0, strlen(string), 255);
 				News[hTaken9] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5725,7 +5725,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact10], string, 0, strlen(string), 255);
 				News[hTaken10] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5744,7 +5744,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact11], string, 0, strlen(string), 255);
 				News[hTaken11] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5763,7 +5763,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact12], string, 0, strlen(string), 255);
 				News[hTaken12] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else
@@ -5782,7 +5782,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(string, sizeof(string), "%s",sendername); strmid(News[hContact13], string, 0, strlen(string), 255);
 				News[hTaken13] = 1;
 				ShowPlayerDialog(playerid, MDC_END_ID, DIALOG_STYLE_MSGBOX, "MDC - Logged in | Success! ","* You placed details for an arrest warrant on the MDC -Warrants\nto see the current Warrants browse to Warrants when logged in to the mdc", "OK", "Back");
-				SendGroupMessage(1, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
+				SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTBLUE, "** MDC: Details for an arrest warrant have been updated.");
 				return 1;
 			}
 			else

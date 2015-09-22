@@ -288,7 +288,7 @@ CMD:reversejudgement(playerid, params[])
 			    case 1: format(string, sizeof(string), "%s %s has reversed %s's judgement, he is free to go.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			    case 2: format(string, sizeof(string), "%s %s has reversed %s's judgement, she is free to go.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			}
-   			SendGroupMessage(1, DEPTRADIO, string);
+   			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
    		}
 	    else
    		{
@@ -319,7 +319,7 @@ CMD:commute(playerid, params[])
 					case 1: format(string, sizeof(string), "President %s has commuted %s, his sentence is now half (%d seconds).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pJudgeJailTime]);
 					case 2: format(string, sizeof(string), "President %s has commuted %s, her sentence is now half (%d seconds).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pJudgeJailTime]);
 				}
-			    SendGroupMessage(1, DEPTRADIO, string);
+			    SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 	    	}
 	    	else
    			{
@@ -355,7 +355,7 @@ CMD:pardon(playerid, params[])
 				    case 1: format(string, sizeof(string), "President %s has forgiven %s of his crimes, he's now free.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				    case 2: format(string, sizeof(string), "President %s has forgiven %s of his crimes, she's now free.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				}
-			    SendGroupMessage(1, DEPTRADIO, string);
+			    SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 		    }
 		    else
 	   		{
@@ -798,7 +798,7 @@ CMD:warrantarrest(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				ResetPlayerWeaponsEx(suspect);
 				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
-				SendGroupMessage(6, DEPTRADIO, string);
+				SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 				SetPlayerInterior(suspect, 1);
 				PlayerInfo[suspect][pInt] = 1;
 				SetPlayerVirtualWorld(suspect, 0);

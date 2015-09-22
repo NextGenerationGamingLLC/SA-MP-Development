@@ -4259,7 +4259,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							GivePlayerCash(playerid, takemoney);
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
-							SendGroupMessage(2, COLOR_YELLOW, string);
+							SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
 							format(string,sizeof(string),"You have been critically injured by a Hitman and lost $%d!",takemoney);
 							ResetPlayerWeaponsEx(GoChase[playerid]);
 						    // SpawnPlayer(GoChase[playerid]);
@@ -4330,7 +4330,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(2, COLOR_YELLOW, string);
+					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);

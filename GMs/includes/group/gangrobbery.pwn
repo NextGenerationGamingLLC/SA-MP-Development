@@ -1053,7 +1053,7 @@ public OnRobbery(playerid, groupid)
 				case 4: format(szMessage, sizeof(szMessage), "** DISPATCH: All units, there is a robbery at %s. (/rbeacon)", Businesses[SafeData[iSafeID][g_iTypeID]][bName]);
 				case 5: format(szMessage, sizeof(szMessage), "** DISPATCH: All units, there is a robbery at %s's house. (/rbeacon)", "a person");				
 			}
-			SendGroupMessage(1, COLOR_LIGHTRED, szMessage);
+			SendGroupMessage(GROUP_TYPE_LEA, COLOR_LIGHTRED, szMessage);
 			SetGVarInt("RobberyStage", 3);		
 		}
 	}

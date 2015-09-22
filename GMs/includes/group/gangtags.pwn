@@ -53,11 +53,11 @@ new Iterator:GangTags<MAX_GANGTAGS>;
 
 hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	new Float:fPos[6];
-	GetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
-	GetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
 	if(GetPVarType(playerid, PVAR_GANGTAGEDITING))
 	{
+		new Float:fPos[6];
+		GetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
+		GetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
 		switch(response)
 		{
 			case EDIT_RESPONSE_CANCEL:
@@ -397,7 +397,7 @@ CMD:tag(playerid, params[])
 		GameTextForPlayer(playerid, "~r~Cancelled!", 5000, 3);
 		return 1;
 	}
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessage(playerid, COLOR_GRAD1, "You must be in a gang to use this command.");
+	if(!IsACriminal(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You must be in a gang to use this command.");
 	if(PlayerInfo[playerid][pRank] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You need to be at least rank 1 to tag.");
 	if(GetPlayerWeapon(playerid) != 41) return SendClientMessage(playerid, COLOR_GRAD1, "You need a spray can to tag a wall.");
 	new Float:gtPos[3];

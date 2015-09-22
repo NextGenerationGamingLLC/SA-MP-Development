@@ -783,7 +783,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						szMiscArray[0] = 0;
 						szMiscArray = "Drugs\tAmount\n";
-						for(new i; i < sizeof(szIngredients); ++i) {
+						for(new i; i < sizeof(szDrugs); ++i) {
 
 							format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szDrugs[i], number_format(arrGroupData[iGroupID][g_iDrugs][i]));
 						}
@@ -1119,7 +1119,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string, sizeof(string), "* %s %s has cleared your records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 						SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 						format(string, sizeof(string), "* %s %s has cleared %s's records and wanted points.", arrGroupRanks[iGroupID][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-						SendGroupMessage(1, RADIO, string);
+						SendGroupMessage(GROUP_TYPE_LEA, RADIO, string);
 
 						PlayerInfo[giveplayerid][pWantedLevel] = 0;
 						SetPlayerToTeamColor(giveplayerid);

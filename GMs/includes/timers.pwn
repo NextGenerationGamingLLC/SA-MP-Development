@@ -352,7 +352,7 @@ task SyncTime[60000]()
 					else
 					{
 						format(szMiscArray, sizeof(szMiscArray), "Warning: The Government Vault has insufficient funds to fund %s.", arrGroupData[iGroupID][g_szGroupName]);
-						SendGroupMessage(5, COLOR_RED, szMiscArray);
+						SendGroupMessage(GROUP_TYPE_GOV, COLOR_RED, szMiscArray);
 					}
 				}
 				for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)

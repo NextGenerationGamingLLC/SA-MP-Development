@@ -62,17 +62,8 @@ Process_Entrance(playerid) {
 			}
 		}
 	}
-	if(g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
-		
-		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
-	}
 	if(!IsPlayerInAnyVehicle(playerid)) {
 
-		if(GetPVarType(playerid, "VEHA_ID")) {
-
-			Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
-			return 1;
-		}
 		if(InsidePlane[playerid] != INVALID_VEHICLE_ID) {
 
 			if(GetPVarType(playerid, "VEHA_ID")) {
@@ -81,6 +72,15 @@ Process_Entrance(playerid) {
 				return 1;
 			}
 		}
+		if(GetPVarType(playerid, "VEHA_ID")) {
+
+			Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
+			return 1;
+		}
+	}
+	if(g_iEntranceID[playerid] > -1 && GetPlayerState(playerid) != PLAYER_STATE_ENTER_VEHICLE_DRIVER) {
+		
+		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 	}
 	return 1;
 }
@@ -278,19 +278,19 @@ DDoor_Enter(playerid, i)
 	}
 
 	if(DDoorsInfo[i][ddAllegiance] > 0) {
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 
 	if(DDoorsInfo[i][ddGroupType] > 0) {
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType] && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) {
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType] && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) {
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
 		}
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 
 	if(DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID) {
-		if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
+		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 
@@ -389,19 +389,19 @@ DDoor_Exit(playerid, i)
 	}
 
 	if(DDoorsInfo[i][ddAllegiance] > 0) {
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is nation restricted.");
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 
 	if(DDoorsInfo[i][ddGroupType] > 0) {
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType] && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) {
+		if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != DDoorsInfo[i][ddGroupType] && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != DDoorsInfo[i][ddAllegiance]) {
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
 		}
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 
 	if(DDoorsInfo[i][ddFaction] != INVALID_GROUP_ID) {
-		if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) || PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
+		if(PlayerInfo[playerid][pMember] != DDoorsInfo[i][ddFaction]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, this door is faction restricted.");
 		else if(PlayerInfo[playerid][pRank] < DDoorsInfo[i][ddRank]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not high enough rank to enter this door.");
 	}
 

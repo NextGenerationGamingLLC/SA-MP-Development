@@ -847,7 +847,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
-				SendGroupMessage(2, COLOR_YELLOW, szMessage);
+				SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
 				PlayerInfo[playerid][pContractDetail][0] = 0;
 				ResetPlayerWeaponsEx(playerid);
@@ -870,7 +870,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
 			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
-			SendGroupMessage(2, COLOR_YELLOW, szMessage);
+			SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, szMessage);
 			GivePlayerCash(playerid, -takemoney);
 			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
 			PlayerInfo[killerid][pContractDetail][0] = 0;

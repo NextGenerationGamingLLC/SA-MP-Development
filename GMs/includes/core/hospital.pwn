@@ -126,7 +126,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
 		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}
-		SendGroupMessage(1, DEPTRADIO, string);
+		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 	}
 	else if(PlayerInfo[playerid][pDonateRank] >= 4)
 	{
@@ -491,6 +491,7 @@ CMD:buyinsurance(playerid, params[])
 	{
 		if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
 		if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
+		if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = iHospitalVW;
 		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
@@ -502,6 +503,7 @@ CMD:buyinsurance(playerid, params[])
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 2.00, 564.54, 1437.02, 6000.47)) // doc hospital purchase point
 	{
+		if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 		PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
 		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
@@ -628,6 +630,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
 						if(PlayerInfo[playerid][pInsurance] == iHospitalVW) return SendClientMessageEx(playerid, -1, "You already have insurance at this hospital!");
+						if(GetPlayerCash(playerid) < HospitalSpawnInfo[iHospitalVW][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = iHospitalVW;
 						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
@@ -639,6 +642,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					else if(IsPlayerInRangeOfPoint(playerid, 2.00, 564.54, 1437.02, 6000.47)) // doc hospital purchase point
 					{
+						if(GetPlayerCash(playerid) < HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]) return SendClientMessageEx(playerid, COLOR_GREY, MESSAGE_INSUFFICIENT_FUNDS);
 						PlayerInfo[playerid][pInsurance] = HOSPITAL_DOCJAIL;
 						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(HOSPITAL_DOCJAIL), HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);

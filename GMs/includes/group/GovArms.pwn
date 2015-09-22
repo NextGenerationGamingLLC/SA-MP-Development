@@ -45,14 +45,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							arrWeaponCosts[46] = 1;
 							format(szMiscArray, sizeof(szMiscArray), "%s has opened the Government Arms Center.", GetPlayerNameEx(playerid));
-							SendGroupMessage(PlayerInfo[playerid][pMember], DEPTRADIO, szMiscArray);
+							SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], DEPTRADIO, szMiscArray);
 							return 1;
 						}
 						default:
 						{
 							arrWeaponCosts[46] = 0;
 							format(szMiscArray, sizeof(szMiscArray), "%s has closed the Government Arms Center.", GetPlayerNameEx(playerid));
-							SendGroupMessage(PlayerInfo[playerid][pMember], DEPTRADIO, szMiscArray);
+							SendGroupMessage(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType], DEPTRADIO, szMiscArray);
 							return 1;
 						}
 					}

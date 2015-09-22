@@ -1957,7 +1957,7 @@ CMD:car(playerid, params[])
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, !backleft, backright);
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear driver-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("up") : ("down"));
 		}
-		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 3) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 1))
+		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 3) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 3))
 		{
 			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
 			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;

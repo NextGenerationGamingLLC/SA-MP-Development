@@ -509,7 +509,7 @@ public SetVehicleEngine(vehicleid, playerid)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(2, COLOR_YELLOW, string);
+					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					// SpawnPlayer(playerid);

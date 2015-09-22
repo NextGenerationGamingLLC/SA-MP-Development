@@ -955,7 +955,7 @@ Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has paid %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], number_format(amount), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "has been paid $%s", number_format(amount));
-		DBLog(PlayerInfo[playerid][pId], PlayerInfo[giveplayerid][pId], "Pay_Log", szMiscArray);
+		DBLog(playerid, giveplayerid, "Pay_Log", szMiscArray);
 	}
 	return 1;
 }

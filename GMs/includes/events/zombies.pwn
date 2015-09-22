@@ -228,7 +228,7 @@ CMD:zombieevent(playerid, params[])
 			}	
 	        zombieevent=1;
 	        //SendAudioToRange(70, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
-			SendGroupMessage(3, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
+			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled zombie mode.");
 	        mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	    }
