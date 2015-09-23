@@ -185,6 +185,7 @@ stock IsAnAmbulance(carid)
 	return 0;
 }
 
+/*
 CMD:aid(playerid, params[]) {
 
 	if(IsAMedic(playerid) || IsFirstAid(playerid)) {
@@ -193,6 +194,7 @@ CMD:aid(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a medic!");
 	return 1;
 }
+*/
 
 CMD:loadpt(playerid, params[])
 {

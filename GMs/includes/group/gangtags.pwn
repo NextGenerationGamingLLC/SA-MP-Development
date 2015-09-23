@@ -51,36 +51,6 @@ new arrGangTags[MAX_GANGTAGS][eGangTags];
 new Iterator:GangTags<MAX_GANGTAGS>;
 
 
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(GetPVarType(playerid, PVAR_GANGTAGEDITING))
-	{
-		new Float:fPos[6];
-		GetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
-		GetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
-		switch(response)
-		{
-			case EDIT_RESPONSE_CANCEL:
-			{
-				SetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
-				SetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
-				DeletePVar(playerid, PVAR_GANGTAGEDITING);
-				SendClientMessage(playerid, COLOR_GRAD1, "You cancelled editing the gang tag.");
-				return 1;
-			}
-			case EDIT_RESPONSE_FINAL:
-			{
-				new i = GetPVarInt(playerid, PVAR_GANGTAGEDITING);
-				if(IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) DestroyDynamicObject(arrGangTags[i][gt_iObjectID]);
-				arrGangTags[i][gt_iObjectID] = CreateDynamicObject(GANGTAGS_OBJECTID, x, y, z, rx, ry, rz);
-				GangTag_AdmSave(playerid, i);
-				return 1;
-			}
-		}
-	}
-	return 1;
-}
-
 /* 
 Personally feel this is too much.
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)

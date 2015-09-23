@@ -123,6 +123,36 @@ hook OnPlayerDisconnect(playerid)
 	return 1;
 }
 
+hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
+
+	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
+	{
+	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
+				str[128];
+
+	    if(response == EDIT_RESPONSE_FINAL) {
+	        SafeData[iSafeID][g_fPos][0] = x;
+			SafeData[iSafeID][g_fPos][1] = y;
+			SafeData[iSafeID][g_fPos][2] = z;
+			SafeData[iSafeID][g_fPos][3] = rx;
+			SafeData[iSafeID][g_fPos][4] = ry;
+			SafeData[iSafeID][g_fPos][5] = rz;
+			processSafe(iSafeID);
+			saveSafe(iSafeID);
+
+			format(str, sizeof str, "You have edited the position of Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
+	        DeletePVar(playerid, "_EditingSafeObjectID");
+	    }
+	    else if(response == EDIT_RESPONSE_CANCEL) {
+
+	        format(str, sizeof str, "You have quit editing Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
+	        DeletePVar(playerid, "_EditingSafeID");
+	    }
+	}
+}
+
 hook OnPlayerPickUpDynamicPickup(playerid, pickupid)
 {
 	if(pickupid == GetGVarInt("RobberyDeliverPickupID") && GetPVarInt(playerid, "_HasBag"))
@@ -168,39 +198,6 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 	}
 	return 1;
 }
-
-
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
-	{
-	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
-				str[128];
-
-	    if(response == EDIT_RESPONSE_FINAL) {
-	        SafeData[iSafeID][g_fPos][0] = x;
-			SafeData[iSafeID][g_fPos][1] = y;
-			SafeData[iSafeID][g_fPos][2] = z;
-			SafeData[iSafeID][g_fPos][3] = rx;
-			SafeData[iSafeID][g_fPos][4] = ry;
-			SafeData[iSafeID][g_fPos][5] = rz;
-			processSafe(iSafeID);
-			saveSafe(iSafeID);
-
-			format(str, sizeof str, "You have edited the position of Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
-	        DeletePVar(playerid, "_EditingSafeObjectID");
-	    }
-	    else if(response == EDIT_RESPONSE_CANCEL) {
-
-	        format(str, sizeof str, "You have quit editing Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
-	        DeletePVar(playerid, "_EditingSafeID");
-	    }
-	}
-	return 1;
-}
-
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {

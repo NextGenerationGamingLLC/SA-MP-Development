@@ -322,9 +322,9 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 }
 
 
-timer DeathScreen[2500](playerid) {
+timer DeathScreen[4000](playerid) {
 
-	if(!GetPVarType(playerid, "DS_OBJ")) return 1;
+	if(!GetPVarType(playerid, "InjuredTL")) return 1;
 
 	new Float:fPos[3],
 		iObjectID;

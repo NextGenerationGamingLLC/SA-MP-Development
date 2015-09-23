@@ -2161,7 +2161,8 @@ CMD:accept(playerid, params[])
                             format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has refilled the vehicle from %s(%d) (IP:%s) for $%d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetPlayerNameEx(RefillOffer[playerid]), GetPlayerSQLId(RefillOffer[playerid]), ipex, RefillPrice[playerid]);
 							Log("logs/sell.log", szMessage);
                             format(szMessage, sizeof(szMessage), "* %s has refilled %s's vehicle.", GetPlayerNameEx(RefillOffer[playerid]), GetPlayerNameEx(playerid));
-                            ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+                           	ProxChatBubble(playerid, szMessage);
+                            // ProxDetector(30.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
                             format(szMessage, sizeof(szMessage), "* You have added %.2f fuel to your car for $%d by Car Mechanic %s.",fueltogive,RefillPrice[playerid],GetPlayerNameEx(RefillOffer[playerid]));
                             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
                             format(szMessage, sizeof(szMessage), "* You added %.2f fuel to %s's car, the $%d has been added to your money on hand!",fueltogive,GetPlayerNameEx(playerid),RefillPrice[playerid]);
@@ -2462,13 +2463,17 @@ CMD:cancel(playerid, params[])
 	return 1;
 }
 
+timer Cooldown_Mechanic[10000](playerid) {
+	DeletePVar(playerid, "MCH_CLDWN");
+}
+
 CMD:refill(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7 && PlayerInfo[playerid][pJob3] != 7)
 	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a mechanic.");
 	}
-
+	
 	new string[128];
 	if(gettime() < PlayerInfo[playerid][pMechTime])
 	{
@@ -2500,11 +2505,17 @@ CMD:refill(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMechSkill] >= 400)
 				{
+					if(GetPVarType(playerid, "MCH_CLDWN")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't refill so fast!");
+
+					SetPVarInt(playerid, "MCH_CLDWN", 1);
+					defer Cooldown_Mechanic(playerid);
+
 					new vehicleid = GetPlayerVehicleID(playerid);
 					VehicleFuel[vehicleid] = VehicleFuel[vehicleid] + fueltogive;
 					if(VehicleFuel[vehicleid] > 100.0) VehicleFuel[vehicleid] = 100.0;
 					format(string, sizeof(string), "* %s has refilled their vehicle.", GetPlayerNameEx(playerid));
-					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					ProxChatBubble(playerid, string);
+					// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					format(string, sizeof(string), "* You added %.2f fuel to your car.",fueltogive);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					for(new vehicleslot = 0; vehicleslot < MAX_PLAYERVEHICLES; vehicleslot++)

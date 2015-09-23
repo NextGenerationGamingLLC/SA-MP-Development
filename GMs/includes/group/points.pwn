@@ -396,6 +396,7 @@ CMD:points2(playerid, params[])
 	return 1;
 }
 
+/*
 CMD:pointtime(playerid, params[])
 {
 	new i;
@@ -412,6 +413,7 @@ CMD:pointtime(playerid, params[])
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");
 	return 1;
 }
+*/
 
 CMD:pedit(playerid, params[])
 {

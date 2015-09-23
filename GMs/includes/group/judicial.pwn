@@ -420,53 +420,7 @@ CMD:mywarrants(playerid, params[])
 
 CMD:jarrest(playerid, params[])
 {
-    if(IsAJudge(playerid))
-	{
- 		if(!IsAtArrestPoint(playerid, 4))
-		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the arrest point.");
-	    	return 1;
-		}
-		new suspect = GetClosestPlayer(playerid), string[256];
-		if(IsPlayerConnected(suspect))
-		{
-			if(ProxDetectorS(5.0, playerid,suspect))
-			{
-				if(PlayerInfo[suspect][pJudgeJailType] != 1) { return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to complete a sentence in jail."); }
-				format(string, sizeof(string), "* You arrested %s!", GetPlayerNameEx(suspect));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				ResetPlayerWeaponsEx(suspect);
-				for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
-					PlayerVehicleInfo[suspect][x][pvTicket] = 0;
-				}
-				SetPlayerInterior(suspect, 5);
-				SetPlayerPos(suspect,318.5971,312.9619,999.1484);
-				PlayerInfo[suspect][pJailTime] = PlayerInfo[suspect][pJudgeJailTime];
-				DeletePVar(suspect, "IsFrozen");
-				PhoneOnline[suspect] = 1;
-				PlayerInfo[suspect][pArrested] += 1;
-				SetPlayerFree(suspect,playerid, "was arrested");
-				PlayerInfo[suspect][pWantedLevel] = 0;
-				SetPlayerToTeamColor(suspect);
-				SetPlayerWantedLevel(suspect, 0);
-				WantLawyer[suspect] = 1;
-				TogglePlayerControllable(suspect, 1);
-				ClearAnimations(suspect);
-				if(PlayerCuffed[suspect] == 2)
-				{
-					SetHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
-					SetArmour(suspect, GetPVarFloat(suspect, "cuffarmor"));
-					DeletePVar(suspect, "cuffhealth");
-					DeletePVar(suspect, "PlayerCuffed");
-				}
-				PlayerCuffed[suspect] = 0;
-				DeletePVar(suspect, "PlayerCuffed");
-				PlayerCuffedTime[suspect] = 0;
-				PlayerInfo[suspect][pVW] = 0;
-				SetPlayerVirtualWorld(suspect, 0);
-			}
-		}
-	}
+   	ArrestProcess(playerid, 3);
 	return 1;
 }
 
@@ -773,72 +727,7 @@ CMD:warrantwd(playerid, params[])
 
 CMD:warrantarrest(playerid, params[])
 {
-    new string[256];
-
-    if(IsACop(playerid))
-	{
-	    if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to do this!");
-        if(!IsAtArrestPoint(playerid, 3))
-		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a warrant arrest point.");
-	    	return 1;
-		}
-
-		new suspect = GetClosestPlayer(playerid);
-		if(IsPlayerConnected(suspect))
-		{
-			if(ProxDetectorS(5.0, playerid,suspect))
-			{
-				if(strlen(PlayerInfo[suspect][pWarrant]) < 1)
-				{
-	   				SendClientMessageEx(playerid, COLOR_GREY, "The person must have active warrants.");
-				    return 1;
-				}
-				format(string, sizeof(string), "* You warrant arrested %s!", GetPlayerNameEx(suspect));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				ResetPlayerWeaponsEx(suspect);
-				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
-				SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-				SetPlayerInterior(suspect, 1);
-				PlayerInfo[suspect][pInt] = 1;
-				SetPlayerVirtualWorld(suspect, 0);
-				PlayerInfo[suspect][pVW] = 0;
-				new rand = random(sizeof(WarrantJail));
-				SetPlayerFacingAngle(suspect, 0);
-				SetPlayerPos(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2]);
-				if(rand != 0) courtjail[suspect] = 2;
-				else courtjail[suspect] = 1;
-				SetCameraBehindPlayer(suspect);
-				DeletePVar(suspect, "IsFrozen");
-				PlayerCuffed[suspect] = 0;
-				DeletePVar(suspect, "PlayerCuffed");
-				PlayerCuffedTime[suspect] = 0;
-				PhoneOnline[suspect] = 1;
-				PlayerInfo[suspect][pArrested] += 1;
-				SetPlayerFree(suspect,playerid, "was warrant arrested");
-				PlayerInfo[suspect][pWantedLevel] = 0;
-				SetPlayerToTeamColor(suspect);
-				SetPlayerWantedLevel(suspect, 0);
-				WantLawyer[suspect] = 1;
-				ClearAnimations(suspect);
-				PlayerInfo[suspect][pBeingSentenced] = 60;
-				SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
-				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");
-				Player_StreamPrep(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2], FREEZE_TIME);
-				
-			}
-		}
-		else
-		{
-  			SendClientMessageEx(playerid, COLOR_GREY, "   No-one close enough to arrest.");
-	    	return 1;
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
-   		return 1;
-	}
+	ArrestProcess(playerid, 2);
 	return 1;
 }
 

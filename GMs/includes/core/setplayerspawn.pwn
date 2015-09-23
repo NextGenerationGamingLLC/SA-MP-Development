@@ -316,7 +316,7 @@ SetPlayerSpawn(playerid)
 			GetPlayerPos(playerid, mX, mY, mZ);
 			SetPVarInt(playerid, "InjuredTL", _:CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, mX, mY, mZ+0.1, 5, .attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid), .streamdistance = 5));
 		    SendEMSQueue(playerid,1);
-		    defer DeathScreen(playerid);
+		    if(GetPlayerInterior(playerid) == 0) defer DeathScreen(playerid);
 		    return 1;
 		}
 		if(GetPVarInt(playerid, "EventToken") == 1)

@@ -783,7 +783,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						szMiscArray[0] = 0;
 						szMiscArray = "Drugs\tAmount\n";
-						for(new i; i < sizeof(szDrugs); ++i) {
+						for(new i; i < sizeof(szIngredients); ++i) {
 
 							format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szDrugs[i], number_format(arrGroupData[iGroupID][g_iDrugs][i]));
 						}
@@ -1204,7 +1204,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Radio Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOCOL, DIALOG_STYLE_INPUT, szTitle, "Enter a colour in hexadecimal format (for example, BCA3FF). This colour will be used for the group's in-character radio chat.", "Confirm", "Cancel");
 				}
-				case 6 .. 11, 13 .. 18: {
+				case 6 .. 11, 13 .. 19: {
 
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
@@ -1232,11 +1232,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 19: {
+				case 20: {
 					format(szTitle, sizeof szTitle, "Edit Group Locker Stock {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITSTOCK, DIALOG_STYLE_INPUT, szTitle, "Specify a value. Locker stock is used for weapons, and can be replenished using crates.", "Confirm", "Cancel");
 				}
-				case 20: {
+				case 21: {
 
 					new
 						szDialog[(32 + 8) * MAX_GROUP_WEAPONS];
@@ -1249,7 +1249,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Weapons {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITWEPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 21: {
+				case 22: {
 
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
@@ -1261,7 +1261,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Paychecks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_LISTPAY, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
 				}
-				case 22: {
+				case 23: {
 
 					new
 						szDialog[(GROUP_MAX_DIV_LEN + 8) * MAX_GROUP_DIVS];
@@ -1273,7 +1273,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Divisions {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITDIVS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 23: {
+				case 24: {
 
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
@@ -1285,7 +1285,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Ranks {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_EDITRANKS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 24: {
+				case 25: {
 
 					new
 						szDialog[MAX_GROUP_LOCKERS * 32];
@@ -1297,19 +1297,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Lockers {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_LOCKERS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 25: {
+				case 26: {
 					format(szTitle, sizeof szTitle, "Edit Group Crate Delivery Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_CRATEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Are you sure you want to move the crate delivery to your position?\n\nIf not, cancel and move to your desired location.", "Cancel", "Confirm");
 				}
-				case 26: {
+				case 27: {
 					format(szTitle, sizeof szTitle, "Edit Group Locker Cost Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_COSTTYPE, DIALOG_STYLE_LIST, szTitle, "Locker Stock\nGroup Budget\nPlayer Money", "OK", "Cancel");
 				}
-				case 27: {
+				case 28: {
 					format(szTitle, sizeof szTitle, "Edit the Garage Position {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_GARAGEPOS, DIALOG_STYLE_MSGBOX, szTitle, "Please click on 'Confirm' to change the garage location to your current position.\n\nIf you do not wish to move it to your position, click on 'Cancel'.", "Cancel", "Confirm");
 				}
-				case 28: {
+				case 29: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1321,7 +1321,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Tackle Access");
 					ShowPlayerDialog(playerid, DIALOG_GROUP_TACKLEACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 29: {
+				case 30: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1333,7 +1333,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Wheel Clamps Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_WHEELCLAMPS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 30: {
+				case 31: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1345,7 +1345,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group DoC Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DOCACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 31: {
+				case 32: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_DIVS) + 24];
 
@@ -1357,7 +1357,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Medic Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_MEDICACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 32: {
+				case 33: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1369,7 +1369,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group DMV Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_DMVACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 33: {
+				case 34: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1381,11 +1381,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 34: {
+				case 35: {
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Enter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
 				}
-				case 35: {
+				case 36: {
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
 
@@ -1396,7 +1396,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
 				}
-				case 36: {
+				case 37: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1409,7 +1409,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					
 					ShowPlayerDialog(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 37: {
+				case 38: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1421,7 +1421,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Point Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 38: {
+				case 39: {
 					format(szTitle, sizeof szTitle, "Edit Group Crime Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialog(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nFirearms Based\nDrug Based", "Select", "Cancel");
 				}

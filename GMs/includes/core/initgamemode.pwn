@@ -113,6 +113,8 @@ InitiateGamemode()
     GangTag_Load();
     DS_LoadDrugSystem();
 
+    LoadFurniture();
+
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");
 	print("Copyright (C) Next Generation Gaming, LLC (2010-2014)");

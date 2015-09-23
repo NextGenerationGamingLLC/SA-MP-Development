@@ -407,11 +407,6 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-public OnPlayerEditObject( playerid, playerobject, objectid, response,
-Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ )
-{
-	return 1;
-}
 
 public OnPlayerEditAttachedObject( playerid, response, index, modelid, boneid,
                                    Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ,
@@ -1024,6 +1019,21 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					DeletePVar(playerid, "SkinChangeCost");
 				}
 			}
+		}
+	}
+	for(new i; i < sizeof(FurnitureList); ++i) {
+
+		if(listid == FurnitureList[i]) {
+
+			if(response) {
+				SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, modelid);
+				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s?", GetFurnitureName(modelid), number_format(GetFurniturePrice(modelid)));
+				ShowPlayerDialog(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
+			}
+			else {
+				FurnitureMenu(playerid, 0);
+			}
+			break;
 		}
 	}
 	return 1;
@@ -4330,7 +4340,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
+					SendGroupMessage(2, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -5896,88 +5906,4 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 		ShowPlayerDialog(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
 	}
 	return true;
-}
-
-public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(response == EDIT_RESPONSE_FINAL)
-	{
-		new string[128];
-		/*if(GetPVarInt(playerid, "Edit") == 2)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gangtag = GetPVarInt(playerid, "gt_ID");
-			GangTags[gangtag][gt_PosX] = x;
-			GangTags[gangtag][gt_PosY] = y;
-			GangTags[gangtag][gt_PosZ] = z;
-			GangTags[gangtag][gt_PosRX] = rx;
-			GangTags[gangtag][gt_PosRY] = ry;
-			GangTags[gangtag][gt_PosRZ] = rz;
-			CreateGangTag(gangtag);
-			format(string, sizeof(string), "You have edited the position of gang tag %d!", gangtag);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has edited the position of gang tag %d.", GetPlayerNameEx(playerid), gangtag);
-			Log("Logs/GangTags.log", string);
-			DeletePVar(playerid, "gt_ID");
-			DeletePVar(playerid, "gt_Edit");
-			SaveGangTag(gangtag);
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
-			new h = GetPVarInt(playerid, "house");
-			if(GetPointDistanceToPoint(HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], x, y, z) > 10)
-				return SendClientMessageEx(playerid, COLOR_GREY, "Keep the sign within the checkpoint radius!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
-			HouseInfo[h][hSign][0] = x;
-			HouseInfo[h][hSign][1] = y;
-			HouseInfo[h][hSign][2] = z;
-			HouseInfo[h][hSign][3] = rz;
-			if(GetPVarInt(playerid, "editingsign") == 1)
-			{
-				HouseInfo[h][hSignExpire] = gettime()+86400;
-				PlayerInfo[playerid][mInventory][6] = 0;
-				if(IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished placing your house sale sign!");
-				format(string, sizeof(string), "[PLACESIGN] %s has placed down their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			if(GetPVarInt(playerid, "editingsign") == 2)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the position of your house sale sign!");
-				format(string, sizeof(string), "[EDITSIGN] %s has edited the position of their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			if(GetPVarInt(playerid, "editingsign") == 3)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the house sale sign!");
-				format(string, sizeof(string), "[AEDITSIGN] %s has adjusted the position of the house sale sign placed at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			Log("logs/house.log", string);
-			CreateHouseSaleSign(h);
-			SaveHouse(h);
-			DeletePVar(playerid, "signID");
-			DeletePVar(playerid, "house");
-			DeletePVar(playerid, "editingsign");
-			ClearCheckpoint(playerid);
-		}
-	}
-	if(response == EDIT_RESPONSE_CANCEL)
-	{
-		/*if(GetPVarInt(playerid, "gt_Edit") == 2)
-		{
-			new gangid = GetPVarInt(playerid, "gt_ID");
-			SetDynamicObjectPos(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosX], GangTags[gangid][gt_PosY], GangTags[gangid][gt_PosZ]);
-			SetDynamicObjectRot(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosRX], GangTags[gangid][gt_PosRY], GangTags[gangid][gt_PosRZ]);
-			DeletePVar(playerid, "gt_Edit");
-			DeletePVar(playerid, "gt_ID");
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing this gang tag!");
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
-			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped yourself from placing down your House Sale Sign!");
-			DeletePVar(playerid, "signID");
-			DeletePVar(playerid, "house");
-			DeletePVar(playerid, "editingsign");
-			ClearCheckpoint(playerid);
-		}
-	}
-	return 1;
 }

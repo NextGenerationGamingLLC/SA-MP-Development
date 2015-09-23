@@ -35,6 +35,9 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
+
 stock LoadArrestPoint(id)
 {
 	new string[128];
@@ -63,34 +66,40 @@ public OnLoadArrestPoint(index)
 		ArrestPoints[index][arrestPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
 		ArrestPoints[index][arrestVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
 		ArrestPoints[index][arrestInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
-		ArrestPoints[index][arrestType] = cache_get_field_content_int(row, "Type", MainPipeline); 
+		ArrestPoints[index][arrestType] = cache_get_field_content_int(row, "Type", MainPipeline);
+
 		if(ArrestPoints[index][arrestPosX] != 0)
 		{
 			switch(ArrestPoints[index][arrestType])
 			{
 				case 0:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/arrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+					ArrestPoints[index][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], 4.0, ArrestPoints[index][arrestVW]);
 				}
 				case 2:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+					ArrestPoints[index][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], 50.0, ArrestPoints[index][arrestVW]);
 				}
 				case 3:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+					ArrestPoints[index][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], 10.0, ArrestPoints[index][arrestVW]);
+					ArrestPoints[index][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], 4.0, ArrestPoints[index][arrestVW]);
 				}
 				case 4:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nArrest Point #%d", index);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", index);
 					ArrestPoints[index][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[index][arrestVW], ArrestPoints[index][arrestInt], -1);
 					ArrestPoints[index][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], ArrestPoints[index][arrestVW]);
+					ArrestPoints[index][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[index][arrestPosX], ArrestPoints[index][arrestPosY], ArrestPoints[index][arrestPosZ], 4.0, ArrestPoints[index][arrestVW]);
 				}
 			}
 		}
@@ -128,27 +137,32 @@ public OnLoadArrestPoints()
 			{
 				case 0:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/arrest\nArrest Point #%d", i);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", i);
 					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+					ArrestPoints[i][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], 4.0, ArrestPoints[i][arrestVW]);
 				}
 				case 2:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/docarrest\nArrest Point #%d", i);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", i);
 					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+					ArrestPoints[i][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], 50.0, ArrestPoints[i][arrestVW]);
 				}
 				case 3:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/warrantarrest\nArrest Point #%d", i);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", i);
 					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+					ArrestPoints[i][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], 10.0, ArrestPoints[i][arrestVW]);
+					ArrestPoints[i][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], 4.0, ArrestPoints[i][arrestVW]);
 				}
 				case 4:
 				{
-					format(szMiscArray, sizeof(szMiscArray), "/jarrest\nArrest Point #%d", i);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", i);
 					ArrestPoints[i][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[i][arrestVW], ArrestPoints[i][arrestInt], -1);
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
+					ArrestPoints[i][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], 4.0, ArrestPoints[i][arrestVW]);
 				}
 			}
 		}
@@ -231,7 +245,8 @@ GetArrestPointID(playerid) {
 	new a = -1;
 	for(new x = 0; x < MAX_ARRESTPOINTS; x++) 
 	{
-		if(IsPlayerInRangeOfPoint(playerid, 8.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW])
+		//if(IsPlayerInRangeOfPoint(playerid, 8.0, ArrestPoints[x][arrestPosX], ArrestPoints[x][arrestPosY], ArrestPoints[x][arrestPosZ]) && GetPlayerInterior(playerid) == ArrestPoints[x][arrestInt] && GetPlayerVirtualWorld(playerid) == ArrestPoints[x][arrestVW])
+		if(IsPlayerInDynamicArea(playerid, ArrestPoints[x][arrest_iAreaID]))
 		{
 			a = x;
 			break;
@@ -240,12 +255,208 @@ GetArrestPointID(playerid) {
 	return a;
 }
 
-stock IsAtArrestPoint(playerid, type)
+ArrestProcess(playerid, id) {
+
+	switch(id) {
+
+		case 0: {
+
+			if(!IsACop(playerid)) {
+			    SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
+			}
+			else if(!IsAtArrestPoint(playerid) && !IsAtArrestPoint(playerid)) {
+		 		SendClientMessageEx(playerid, COLOR_GREY, "You are not at a arrest point." );
+		 	}
+
+			else {
+
+
+		   		new
+					string[256];
+
+		        new suspect = GetClosestPlayer(playerid);
+				if(!IsPlayerConnected(suspect)) {
+					SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				}
+				else if(!ProxDetectorS(5.0, playerid, suspect)) {
+				    SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the suspect.");
+				}
+				else if(PlayerInfo[suspect][pWantedLevel] < 1 && !IsAJudge(playerid)) {
+				    SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+				}
+				else {
+					SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
+					SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
+					SetPVarInt(playerid, "Arrest_Bail", 1);
+					SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
+					SetPVarInt(playerid, "Arrest_Suspect", suspect);
+					SetPVarInt(playerid, "Arrest_Type", 0);
+					format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+					ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			    }
+			}
+		}
+		case 1: {
+
+			if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
+			else if(!IsAtArrestPoint(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not at the DoC Prison arrest point." );
+
+			else
+			{
+		   		new
+		     		//moneys,
+		       		//time,
+					string[256];
+
+		        new suspect = GetClosestPlayer(playerid);
+		  		/*if(sscanf(params, "dddd", moneys, time)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [fine] [minutes]");
+				else if(!(1 <= moneys <= 250000)) SendClientMessageEx(playerid, COLOR_GREY, "The jail fine can't be below $1 or above $250,000.");
+				else if(!(1 <= time <= 120)) SendClientMessageEx(playerid, COLOR_GREY, "Jail time can't be below 1 or above 120 minutes - take the person to prison for more time.");*/
+				if(!IsPlayerConnected(suspect)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+				else if(!ProxDetectorS(5.0, playerid, suspect)) SendClientMessageEx(playerid, COLOR_GREY, "You are close enough to the suspect.");
+				else if(PlayerInfo[suspect][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+				else {
+					SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
+					SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
+					SetPVarInt(playerid, "Arrest_Bail", 1);
+					SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
+					SetPVarInt(playerid, "Arrest_Suspect", suspect);
+					SetPVarInt(playerid, "Arrest_Type", 2);
+					format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+					ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			    }
+			}
+		}
+		case 2: {
+
+			new string[256];
+		    if(IsACop(playerid))
+			{
+			    if(JudgeOnlineCheck() == 0) return SendClientMessageEx(playerid, COLOR_GRAD4, "There must be at least one judge online to do this!");
+		        if(!IsAtArrestPoint(playerid))
+				{
+		  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at a warrant arrest point.");
+			    	return 1;
+				}
+
+				new suspect = GetClosestPlayer(playerid);
+				if(IsPlayerConnected(suspect))
+				{
+					if(ProxDetectorS(5.0, playerid,suspect))
+					{
+						if(strlen(PlayerInfo[suspect][pWarrant]) < 1)
+						{
+			   				SendClientMessageEx(playerid, COLOR_GREY, "The person must have active warrants.");
+						    return 1;
+						}
+						format(string, sizeof(string), "* You warrant arrested %s!", GetPlayerNameEx(suspect));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						ResetPlayerWeaponsEx(suspect);
+						format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
+						SendGroupMessage(6, DEPTRADIO, string);
+						SetPlayerInterior(suspect, 1);
+						PlayerInfo[suspect][pInt] = 1;
+						SetPlayerVirtualWorld(suspect, 0);
+						PlayerInfo[suspect][pVW] = 0;
+						new rand = random(sizeof(WarrantJail));
+						SetPlayerFacingAngle(suspect, 0);
+						SetPlayerPos(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2]);
+						if(rand != 0) courtjail[suspect] = 2;
+						else courtjail[suspect] = 1;
+						SetCameraBehindPlayer(suspect);
+						DeletePVar(suspect, "IsFrozen");
+						PlayerCuffed[suspect] = 0;
+						DeletePVar(suspect, "PlayerCuffed");
+						PlayerCuffedTime[suspect] = 0;
+						PhoneOnline[suspect] = 1;
+						PlayerInfo[suspect][pArrested] += 1;
+						SetPlayerFree(suspect,playerid, "was warrant arrested");
+						PlayerInfo[suspect][pWantedLevel] = 0;
+						SetPlayerToTeamColor(suspect);
+						SetPlayerWantedLevel(suspect, 0);
+						WantLawyer[suspect] = 1;
+						ClearAnimations(suspect);
+						PlayerInfo[suspect][pBeingSentenced] = 60;
+						SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
+						SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");
+						Player_StreamPrep(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2], FREEZE_TIME);
+						
+					}
+				}
+				else
+				{
+		  			SendClientMessageEx(playerid, COLOR_GREY, "   No-one close enough to arrest.");
+			    	return 1;
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a law enforcement officer!");
+		   		return 1;
+			}
+		}
+		case 3: {
+
+			if(IsAJudge(playerid))
+			{
+		 		if(!IsAtArrestPoint(playerid))
+				{
+		  			SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the arrest point.");
+			    	return 1;
+				}
+				new suspect = GetClosestPlayer(playerid), string[256];
+				if(IsPlayerConnected(suspect))
+				{
+					if(ProxDetectorS(5.0, playerid,suspect))
+					{
+						if(PlayerInfo[suspect][pJudgeJailType] != 1) { return SendClientMessageEx(playerid, COLOR_GREY, "That person doesn't need to complete a sentence in jail."); }
+						format(string, sizeof(string), "* You arrested %s!", GetPlayerNameEx(suspect));
+						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+						ResetPlayerWeaponsEx(suspect);
+						for(new x; x < MAX_PLAYERVEHICLES; x++) if(PlayerVehicleInfo[suspect][x][pvTicket] >= 1) {
+							PlayerVehicleInfo[suspect][x][pvTicket] = 0;
+						}
+						SetPlayerInterior(suspect, 5);
+						SetPlayerPos(suspect,318.5971,312.9619,999.1484);
+						PlayerInfo[suspect][pJailTime] = PlayerInfo[suspect][pJudgeJailTime];
+						DeletePVar(suspect, "IsFrozen");
+						PhoneOnline[suspect] = 1;
+						PlayerInfo[suspect][pArrested] += 1;
+						SetPlayerFree(suspect,playerid, "was arrested");
+						PlayerInfo[suspect][pWantedLevel] = 0;
+						SetPlayerToTeamColor(suspect);
+						SetPlayerWantedLevel(suspect, 0);
+						WantLawyer[suspect] = 1;
+						TogglePlayerControllable(suspect, 1);
+						ClearAnimations(suspect);
+						if(PlayerCuffed[suspect] == 2)
+						{
+							SetHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
+							SetArmour(suspect, GetPVarFloat(suspect, "cuffarmor"));
+							DeletePVar(suspect, "cuffhealth");
+							DeletePVar(suspect, "PlayerCuffed");
+						}
+						PlayerCuffed[suspect] = 0;
+						DeletePVar(suspect, "PlayerCuffed");
+						PlayerCuffedTime[suspect] = 0;
+						PlayerInfo[suspect][pVW] = 0;
+						SetPlayerVirtualWorld(suspect, 0);
+					}
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+stock IsAtArrestPoint(playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
 		for(new x; x < MAX_ARRESTPOINTS; x++)
 		{
+			if(IsPlayerInDynamicArea(playerid, ArrestPoints[x][arrest_iAreaID])) return 1;
+			/*
 			if(ArrestPoints[x][arrestPosX] != 0)
 			{
 				if(ArrestPoints[x][arrestType] == type)
@@ -275,6 +486,7 @@ stock IsAtArrestPoint(playerid, type)
 					}
 				}
 			}
+			*/
 		}
 	}
 	return 0;
@@ -311,27 +523,32 @@ CMD:arrestedit(playerid, params[])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 50.0, ArrestPoints[id][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 10.0, ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 			}
 			SaveArrestPoint(id);
@@ -356,27 +573,32 @@ CMD:arrestedit(playerid, params[])
 			{
 				case 0:
 				{
-					format(string, sizeof(string), "/arrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "/docarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 50.0, ArrestPoints[id][arrestVW]);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "/warrantarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 10.0, ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "/jarrest\nArrest Point #%d", id);
-					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(string, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
+					format(szMiscArray, sizeof(szMiscArray), "Press Y to arrest\nArrest Point #%d", id);
+					ArrestPoints[id][arrestTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_DBLUE, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ]+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ArrestPoints[id][arrestVW], ArrestPoints[id][arrestInt], -1);
 					ArrestPoints[id][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], ArrestPoints[id][arrestVW]);
+					ArrestPoints[id][arrest_iAreaID] = CreateDynamicSphere(ArrestPoints[id][arrestPosX], ArrestPoints[id][arrestPosY], ArrestPoints[id][arrestPosZ], 4.0, ArrestPoints[id][arrestVW]);
 				}
 			}
 			SaveArrestPoint(id);

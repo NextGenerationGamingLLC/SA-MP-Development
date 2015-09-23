@@ -5458,7 +5458,8 @@ CMD:reloadlist(playerid, params[])
 		CarList2 = LoadModelSelectionMenu("CarList.txt");
 		PlaneList = LoadModelSelectionMenu("PlaneList.txt");
 		BoatList = LoadModelSelectionMenu("BoatList.txt");
-		SendClientMessageEx(playerid, COLOR_CYAN, "List's have been reloaded.");
+		FurnitureListInit();
+		SendClientMessageEx(playerid, COLOR_CYAN, "Lists have been reloaded.");
 	}
 	return 1;
 }

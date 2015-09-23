@@ -563,6 +563,7 @@ CMD:searchcar(playerid, params[])
 		new v = GetPlayerVehicle(i, closestcar);
 		if(v != -1)
 		{
+			Smuggle_VehicleLoad(playerid, v);
 			string[0] = 0;
 			for(new x = 0; x < 3; x++)
 			{

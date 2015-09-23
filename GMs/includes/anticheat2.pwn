@@ -34,7 +34,7 @@ AC_IsPlayerSurfing(playerid)
 {
 	new iVehID = GetPlayerSurfingVehicleID(playerid);
 	if(iVehID == INVALID_VEHICLE_ID) return 0;
-	switch(iVehID) {
+	switch(GetVehicleModel(iVehID)) {
 
 		case 403, 406, 422, 433, 443, 446, 452, 453, 454, 455, 470, 472, 473, 478, 484, 493, 500, 514, 515, 525, 543, 554, 578, 595, 605, 607: return 0;
 		case 417, 423, 416, 425, 427, 431, 437, 447, 469, 487, 488, 497, 508, 528, 537, 538, 449, 548, 563, 56, 570, 577, 590, 592: return 0; // often modded vehicles

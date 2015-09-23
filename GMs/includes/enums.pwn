@@ -1180,6 +1180,7 @@ enum pInfo
 	pBAmmo[MAX_AMMO_TYPES],
 	pToggledChats[21], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
+	pHouseBuilder
 };
 
 enum pvInfo
@@ -1313,7 +1314,9 @@ enum hInfo
 	ListedTimeStamp,
 	ListingDescription[128],
 	LinkedGarage[2],
-	hAreaID[2]
+	hAreaID[2],
+	hFurniture[MAX_FURNITURE_SLOTS],
+	h_iLights
 };
 
 enum dmpInfo
@@ -1512,7 +1515,8 @@ enum arrestInfo
 	jailVW,
 	jailInt,
 	Text3D: arrestTextID,
-	arrestPickupID
+	arrestPickupID,
+	arrest_iAreaID
 }
 
 enum eJailBoxing {
@@ -1801,6 +1805,7 @@ enum PlayerBit:(<<= 1) {
 	phone_bitCamState,
 	phone_bitTraceState,
 	g_bFPS,
+	g_bCursor
 };
 new PlayerBit:g_PlayerBits[MAX_PLAYERS];
 
