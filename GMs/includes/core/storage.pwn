@@ -1595,7 +1595,8 @@ stock ShowInventory(playerid,targetid)
 		SMSLog: %d\n\
 		Wristwatch: %d\n\
 		Surveillance: %d\n\
-		Tire: %d",
+		Tire: %d\n\
+		Bombs: %d",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
 		number_format(PlayerInfo[targetid][pAccount]),
@@ -1620,7 +1621,8 @@ stock ShowInventory(playerid,targetid)
 		PlayerInfo[targetid][pSmslog],
 		PlayerInfo[targetid][pWristwatch],
 		PlayerInfo[targetid][pSurveillance],
-		PlayerInfo[targetid][pTire]);
+		PlayerInfo[targetid][pTire],
+		PlayerInfo[targetid][pBombs]);
 		format(resultline, sizeof(resultline),"%s\n\
 		Tool Box Usages: %d\n\
 		Crowbar: %d\n\

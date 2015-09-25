@@ -1769,14 +1769,14 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 				case 6 .. 10:
 				{
 					SetPlayerTime(playerid, 10, 0);
-					SetPlayerWeather(playerid, 110);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 				case 11 .. 15: SetPlayerWeather(playerid, 111);
 				default: {
 					SetPlayerTime(playerid, 22, 0);
-					SetPlayerWeather(playerid, 109);
+					SetPlayerWeather(playerid, 700);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 			}
@@ -1813,14 +1813,14 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			SetPlayerTime(playerid, 0, 0);
 			switch(iTotalTaken)	{
 
-				case 0 .. 5: SetPlayerWeather(playerid, 9);
+				case 0 .. 5: SetPlayerWeather(playerid, 700);
 				case 6 .. 10:
 				{
-					SetPlayerWeather(playerid, 9);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
-				case 11 .. 15: SetPlayerWeather(playerid, 111);
+				case 11 .. 15: SetPlayerWeather(playerid, 700);
 				default: 
 				{
 					SetPlayerWeather(playerid, 8421);
@@ -1837,11 +1837,11 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			{
 				case 0 .. 5: 
 				{
-					SetPlayerWeather(playerid, 201);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
-				case 6 .. 10: SetPlayerWeather(playerid, 202);
+				case 6 .. 10: SetPlayerWeather(playerid, 700);
 				default:
 				{
 					SetPlayerWeather(playerid, 8421);
@@ -1854,10 +1854,10 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
-				case 0 .. 5: SetPlayerWeather(playerid, 108);
-				case 6 .. 10: SetPlayerWeather(playerid, 110);
-				case 11 .. 15: SetPlayerWeather(playerid, 111);
-				default: SetPlayerWeather(playerid, 8421);
+				case 0 .. 5: SetPlayerWeather(playerid, 700);
+				case 6 .. 10: SetPlayerWeather(playerid, 700);
+				case 11 .. 15: SetPlayerWeather(playerid, 700);
+				default: SetPlayerWeather(playerid, 700);
 			}
 		}
 		case 6: // Opium
@@ -1894,19 +1894,19 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			{
 				case 0 .. 5: 
 				{
-					SetPlayerWeather(playerid, 500), SetPlayerTime(playerid, 11, 0);
+					SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 11, 0);
 					Drug_ExplosionEffects(playerid, iDrugID);
 				}
-				case 6 .. 10: SetPlayerWeather(playerid, 500), SetPlayerTime(playerid, 11, 0);
+				case 6 .. 10: SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 11, 0);
 				case 11 .. 15:
 				{
-					SetPlayerWeather(playerid, 420);
+					SetPlayerWeather(playerid, 700);
 					SetPlayerTime(playerid, 11, 0);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 				default: 
 				{
-					SetPlayerWeather(playerid, 732);
+					SetPlayerWeather(playerid, 700);
 					SetPlayerTime(playerid, 11, 0);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
@@ -3717,14 +3717,6 @@ Drugs_ODTextDraw()
 
 /* Alien Easter Egg */
 
-#define 		MAX_UFOS			10
-#define 		ALIEN_ACTORMODEL 	264
-
-enum eUfo {
-	ufo_iObjectID[13],
-	ufo_iPlayerID
-}
-new arrUfo[MAX_UFOS][eUfo];
 
 hook OnGameModeInit() {
 
@@ -3873,13 +3865,58 @@ Ufo_CreateUfo(playerid) {
 		Float:foPos[6];
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 
-	fPos[2] += 70.0;
+	fPos[2] += 100.0;
 
 	SetPlayerTime(playerid, 3, 0);
 	SetPlayerWeather(playerid, 710);
 
 	SetPVarInt(playerid, "Aliens", 0);
 	defer Ufo_Aliens(playerid);
+
+	for(new i; i < MAX_UFOS; ++i) {
+
+		if(!IsValidDynamicObject(arrUfo[i][ufo_iObjectID][0])) {
+			
+			arrUfo[i][ufo_iPlayerID] = playerid;
+
+			arrUfo[i][ufo_iObjectID][0] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34400,   0.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][1] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34399,   0.00000, 0.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][2] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68831,   0.00000, 180.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][3] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68829,   0.00000, 180.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][4] = CreateDynamicObject(18656, fPos[0] + -0.23865, fPos[1] + 2.01184, fPos[2] + 4.47868,   270.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][5] = CreateDynamicObject(3872, fPos[0] + 4.32544, fPos[1] + 1.36792, fPos[2] + -12.68831,   0.00000, 270.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][6] = CreateDynamicObject(3872, fPos[0] + -3.95508, fPos[1] + 0.24829, fPos[2] + -12.68831,   0.00000, 330.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][7] = CreateDynamicObject(3872, fPos[0] + 0.17798, fPos[1] + 4.61609, fPos[2] + -12.68831,   0.00000, 270.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][8] = CreateDynamicObject(3872, fPos[0] + 0.20605, fPos[1] + -5.38574, fPos[2] + -12.68831,   0.00000, 270.00000, 270.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][9] = CreateDynamicObject(9123, fPos[0] + 5.77893, fPos[1] + 2.94751, fPos[2] + -10.47681,   0.00000, 90.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][10] = CreateDynamicObject(9123, fPos[0] + -5.77881,fPos[1] +  2.94519, fPos[2] + -10.47681,   0.00000, 90.00000, 180.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][11] = CreateDynamicObject(9127, fPos[0] + 3.37561, fPos[1] + 5.38574, fPos[2] + -5.61124,   0.00000, 0.00000, 0.72686, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][12] = CreateDynamicObject(9127, fPos[0] + 3.88684, fPos[1] + 4.88086, fPos[2] + -5.61121,   0.00000, 0.00000, 45.00000, .playerid = playerid);
+
+
+			for(new j; j < 13; ++j) {
+
+				GetDynamicObjectPos(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2]);
+				GetDynamicObjectRot(arrUfo[i][ufo_iObjectID][j], foPos[3], foPos[4], foPos[5]);
+
+				MoveDynamicObject(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2] - 20.0, 1.0, foPos[3], foPos[4], foPos[5]);
+			}
+			return 1;
+		}
+	}
+	return 1;
+}
+
+Ufo_CreateAdminUfo(playerid) {
+
+	new Float:fPos[3],
+		Float:foPos[6];
+
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
+	fPos[2] += 100.0;
+
+	SetPVarInt(playerid, "Aliens", 0);
 
 	for(new i; i < MAX_UFOS; ++i) {
 
@@ -3922,6 +3959,13 @@ Ufo_DestroyUfo(playerid) {
 	for(new j; j < 13; ++j) DestroyDynamicObject(arrUfo[i][ufo_iObjectID][j]);
 	return 1;
 }
+
+Ufo_DestroyAdminUfo() {
+
+	for(new i; i < MAX_UFOS; ++i) for(new j; j < 13; ++j) DestroyDynamicObject(arrUfo[i][ufo_iObjectID][j]);
+	return 1;
+}
+
 
 CMD:aliens(playerid, params) {
 

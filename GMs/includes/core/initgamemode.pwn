@@ -24,9 +24,8 @@ InitiateGamemode()
 	LoadGarages();
 	LoadCrimes();
 	LoadGCrates();
-	//Job_LoadJobs();
-	//loadSafes(); 
-		/*---[Shop Automation]---*/
+
+	/*---[Shop Automation]---*/
 	
  	g_mysql_LoadSales();
  	g_mysql_LoadPrices();
@@ -112,8 +111,10 @@ InitiateGamemode()
     Job_LoadJobs();
     GangTag_Load();
     DS_LoadDrugSystem();
-
     LoadFurniture();
+    loadSafes();
+	Bomb_BombMakerInit();
+	LoadNatDisZones();
 
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

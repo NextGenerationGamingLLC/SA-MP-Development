@@ -2707,7 +2707,7 @@ public OnPlayerSpawn(playerid)
   		}
 	}
 	if(GetPVarType(playerid, "WatchingTV")) return 1;
-	if(GetPVarType(playerid, "pTut")) return 1;
+	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{
 	    new Float:X, Float:Y, Float:Z;
@@ -4340,7 +4340,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(2, COLOR_YELLOW, string);
+					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);

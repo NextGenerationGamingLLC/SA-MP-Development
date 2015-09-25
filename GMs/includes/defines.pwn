@@ -1154,6 +1154,12 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_LOADMAPS 			(6143)
 #define 		DIALOG_NATDIS_SANDSTORM 		(6144)
 #define 		DIALOG_NATDIS_FLOOD 			(6145)
+#define 		DIALOG_NATDIS_NUKE				(6146)
+#define 		DIALOG_NATDIS_ALIENS			(6147)
+
+#define 		DIALOG_MECHANIC_REPAIRDOOR		(6147)
+#define 		DIALOG_BOMBMAKER_OFFER			(6148)
+
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
@@ -1168,6 +1174,10 @@ native IsValidVehicle(vehicleid);
 #define 		DRAWDISTANCE_POKER_TABLE 			150.0
 #define 		DRAWDISTANCE_POKER_MISC 			50.0
 #define 		CAMERA_POKER_INTERPOLATE_SPEED		5000
+
+
+#define 		MAX_UFOS							10
+#define 		ALIEN_ACTORMODEL 					264
 
 			/*  ---------------- COLORS ----------------- */
     				/* ===[Ignore the tab space]=== */

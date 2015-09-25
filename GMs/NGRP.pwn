@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.244"
+#define SERVER_GM_TEXT "NG:RP v3.0.246"
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -254,7 +254,6 @@
 #include "./includes/group/callsystem.pwn"
 #include "./includes/group/gangshipment.pwn"
 #include "./includes/group/gangcrates.pwn"
-//#include "./includes/group/gangrobbery.pwn"
 #include "./includes/group/GovArms.pwn"
 #include "./includes/group/grouppay.pwn"
 #include "./includes/group/gangtags.pwn"
@@ -300,6 +299,8 @@
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"
 #include "./includes/ban.pwn"
+#include "./includes/elections.pwn"
+#include "./includes/group/URL.pwn"
 
 // Jingles WIP
 #include "./includes/core/tutorial_new.pwn"
@@ -310,7 +311,10 @@
 #include "./includes/group/sanews.pwn"
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
-
+#include "./includes/furniture.pwn"
+#include "./includes/events/naturaldisaster.pwn"
+#include "./includes/group/heists.pwn"
+#include "./includes/streamer/OnPlayerEditDynamicObject.pwn"
 
 #pragma unused DynamicBusiness
 

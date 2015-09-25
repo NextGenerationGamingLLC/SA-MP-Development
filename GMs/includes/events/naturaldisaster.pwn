@@ -84,7 +84,10 @@ new const gLocalZones[][SAZONE_MAIN] = {
 #define TYPE_EARTHQUAKE 0
 #define TYPE_SANDSTORM 1
 #define TYPE_FLOOD 2
-#define TYPE_THUNDERSTORM 3
+#define TYPE_HURRICANE 3
+#define TYPE_NUKE 4
+#define TYPE_ALIENS 5
+
 
 #define MAX_NATDIS_ZONES 20
 
@@ -153,13 +156,13 @@ new natdis_ptCam[MAX_PLAYERS];
 hook OnPlayerConnect(playerid)
 {
 	GetPlayerNatDisZones(playerid);
+	KillTimer(natdis_ptCam[playerid]);
 	return 1;
 }
 
-hook OnGameModeInit()
-{
-	LoadNatDisZones();
-	return 1;
+hook OnPlayerDisconnect(playerid, reason) {
+
+	KillTimer(natdis_ptCam[playerid]);
 }
 
 hook OnGameModeExit()
@@ -279,6 +282,11 @@ forward OnDeleteNatDisZone(playerid, id);
 public OnDeleteNatDisZone(playerid, id)
 {
 	GangZoneDestroy(NatDis[id][nat_iGZID]);
+	DestroyDynamicArea(NatDis[id][nat_iAreaID]);
+	NatDis[id][nat_iTypeID] = 0;
+	NatDis[id][nat_iZoneTypeID] = 0;
+	NatDis[id][nat_iZoneID] = 0;
+	NatDis[id][nat_iStatus] = 0;
 	if(playerid == INVALID_PLAYER_ID) return 1;
 	format(szMiscArray, sizeof szMiscArray, "You have successfully destroyed zone ID %i.", id);
 	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
@@ -383,12 +391,14 @@ NatDis_MainMenu(playerid)
 	if(GetGVarInt("_NatDis_GID", TYPE_EARTHQUAKE)) szStatus[0] = "{00FF00} ACTIVE"; else szStatus[0] = "{FF0000} INACTIVE";
 	if(GetGVarInt("_NatDis_GID", TYPE_SANDSTORM)) szStatus[1] ="{00FF00} ACTIVE"; else szStatus[1] = "{FF0000} INACTIVE";
 	if(GetGVarInt("_NatDis_GID", TYPE_FLOOD)) szStatus[2] = "{00FF00} ACTIVE"; else szStatus[2] = "{FF0000} INACTIVE";
-	if(GetGVarInt("_NatDis_GID", TYPE_THUNDERSTORM)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
+	if(GetGVarInt("_NatDis_GID", TYPE_HURRICANE)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
+	if(GetGVarInt("_NatDis_GID", TYPE_NUKE)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
+	if(GetGVarInt("_NatDis_GID", TYPE_ALIENS)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
 
 	format(szMiscArray, sizeof(szMiscArray), "Earthquake\t%s\n\
 		Sandstorm\t%s\n\
 		Flood\t%s\n\
-		Thunderstorm\t%s", szStatus[0], szStatus[1], szStatus[2], szStatus[3]);
+		Hurricane / Thunderstorm\t%s", szStatus[0], szStatus[1], szStatus[2], szStatus[3]);
 	return ShowPlayerDialog(playerid, DIALOG_NATDIS_MAIN, DIALOG_STYLE_TABLIST, "Natural Disaster Menu", szMiscArray, "Cancel", "Select");
 }
 
@@ -420,9 +430,6 @@ NatDis_EditDialog(playerid, iDialogID)
 			format(szMiscArray, sizeof(szMiscArray), "\
 				Initiate weather\n\
 				Initiate sound\n\
-				Initiate global effects\n\
-				Load Area Mapping\n\
-				Edit zones\n\
 				___________________\n\
 				Reset program");
 		}
@@ -436,6 +443,27 @@ NatDis_EditDialog(playerid, iDialogID)
 				Initiate sound\n\
 				Initiate global effects\n\
 				Load Area Mapping\n\
+				Edit zones\n\
+				___________________\n\
+				Reset program");
+		}
+		case DIALOG_NATDIS_NUKE: {
+			if(!GetGVarInt("_NatDis_GID", TYPE_NUKE)) SetGVarInt("_NatDis_GID", 1, TYPE_NUKE);
+			SetPVarInt(playerid, "_EditingNasType", TYPE_NUKE);
+			format(szTitle, sizeof(szTitle), "Natural Disasters | Nuke");
+			format(szMiscArray, sizeof(szMiscArray), "\
+				Initiate program\n\
+				Edit zones\n\
+				___________________\n\
+				Reset program");
+		}
+		case DIALOG_NATDIS_ALIENS: {
+
+			if(!GetGVarInt("_NatDis_GID", TYPE_ALIENS)) SetGVarInt("_NatDis_GID", 1, TYPE_ALIENS);
+			SetPVarInt(playerid, "_EditingNasType", TYPE_ALIENS);
+			format(szTitle, sizeof(szTitle), "Natural Disasters | Nuke");
+			format(szMiscArray, sizeof(szMiscArray), "\
+				Spawn Ufo & Initiate Program\n\
 				Edit zones\n\
 				___________________\n\
 				Reset program");
@@ -470,6 +498,30 @@ NatDis_Reset(iTypeID)
 				DestroyDynamicArea(NatDis[i][nat_iAreaID]);
 				DeleteNatDisZone(INVALID_PLAYER_ID, i);
 			}
+		}
+		case TYPE_NUKE: {
+			
+			DeleteGVar("_NatDis", TYPE_NUKE);
+			foreach(new i : Player) NatDis_Effects(i, 0, TYPE_EARTHQUAKE, 0);
+			for(new i; i < MAX_NATDIS_ZONES; ++i)
+			{
+				GangZoneDestroy(NatDis[i][nat_iGZID]);
+				DestroyDynamicArea(NatDis[i][nat_iAreaID]);
+				DeleteNatDisZone(INVALID_PLAYER_ID, i);
+			}
+
+		}
+		case TYPE_ALIENS: {
+
+			DeleteGVar("_NatDis", TYPE_NUKE);
+			foreach(new i : Player) NatDis_Effects(i, 0, TYPE_EARTHQUAKE, 0);
+			for(new i; i < MAX_NATDIS_ZONES; ++i)
+			{
+				GangZoneDestroy(NatDis[i][nat_iGZID]);
+				DestroyDynamicArea(NatDis[i][nat_iAreaID]);
+				DeleteNatDisZone(INVALID_PLAYER_ID, i);
+			}
+			Ufo_DestroyAdminUfo();
 		}
 	}
 }
@@ -520,7 +572,7 @@ NatDis_Effects(playerid, i, iTypeID, choice)
 		case 0: return NatDis_StopEffects(playerid);
 		case 1:
 		{
-			if(natdis_ptCam[playerid]) KillTimer(natdis_ptCam[playerid]);
+			KillTimer(natdis_ptCam[playerid]);
 			natdis_ptCam[playerid] = SetTimerEx("CameraShaker", 100, true, "i", playerid);
 			SetTimerEx("NatDis_StopEffects", 20000, false, "i", playerid);
 			NatDis_AnimEffects(playerid);
@@ -573,6 +625,7 @@ forward NatDis_StopEffects(playerid);
 public NatDis_StopEffects(playerid)
 {
 	ResetCameraShake(playerid);
+	KillTimer(natdis_ptCam[playerid]);
 	return 1;
 }
 
@@ -602,6 +655,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0: return NatDis_EditDialog(playerid, DIALOG_NATDIS_EARTHQUAKE);
 				case 1: return NatDis_EditDialog(playerid, DIALOG_NATDIS_SANDSTORM);
 				case 2: return NatDis_EditDialog(playerid, DIALOG_NATDIS_FLOOD);
+				case 3: return 1;
+				case 4: NatDis_EditDialog(playerid, DIALOG_NATDIS_NUKE);
 			}
 		}
 		case DIALOG_NATDIS_EARTHQUAKE:
@@ -631,10 +686,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0: { gWeather = 19; SetWeather(19); }
 				case 1: foreach(new i : Player) PlayAudioStreamForPlayer(i, "http://jingles.ml/audio/earthquake_siren.mp3");
-				case 2: foreach(new i : Player) NatDis_Effects(i, 0, TYPE_SANDSTORM, 1);
-				case 3: NatDis_LoadMaps(playerid);
-				case 4: ShowPlayerDialog(playerid, DIALOG_NATDIS_EDITZONES, DIALOG_STYLE_LIST, "Natural Disaster | Edit Zones", "Cities / Mainland\nLocal Areas", "Back", "Select");
-				case 5: return NatDis_MainMenu(playerid);
+				case 5: NatDis_MainMenu(playerid);
 				case 6: NatDis_Reset(TYPE_SANDSTORM);
 			}
 		}
@@ -648,8 +700,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2: foreach(new i : Player) NatDis_Effects(i, 0, TYPE_FLOOD, 1);
 				case 3: NatDis_LoadMaps(playerid);
 				case 4: ShowPlayerDialog(playerid, DIALOG_NATDIS_EDITZONES, DIALOG_STYLE_LIST, "Natural Disaster | Edit Zones", "Cities / Mainland\nLocal Areas", "Back", "Select");
-				case 5: return NatDis_MainMenu(playerid);
+				case 5: NatDis_MainMenu(playerid);
 				case 6: NatDis_Reset(TYPE_FLOOD);
+			}
+		}
+		case DIALOG_NATDIS_NUKE: {
+			if(!response) return NatDis_MainMenu(playerid);
+			switch(listitem)
+			{
+				case 0: InitiateProgram(playerid, TYPE_NUKE);
+				case 1: ShowPlayerDialog(playerid, DIALOG_NATDIS_EDITZONES, DIALOG_STYLE_LIST, "Natural Disaster | Edit Zones", "Cities / Mainland\nLocal Areas", "Back", "Select");
+				case 2: NatDis_MainMenu(playerid);
+				case 3: NatDis_Reset(TYPE_NUKE);
+			}
+		}
+		case DIALOG_NATDIS_ALIENS: {
+			if(!response) return NatDis_EditDialog(playerid, DIALOG_NATDIS_EARTHQUAKE);
+			switch(listitem)
+			{
+				case 0: InitiateProgram(playerid, TYPE_ALIENS);
+				case 1: ShowPlayerDialog(playerid, DIALOG_NATDIS_EDITZONES, DIALOG_STYLE_LIST, "Natural Disaster | Edit Zones", "Cities / Mainland\nLocal Areas", "Back", "Select");
+				case 2: NatDis_MainMenu(playerid);
+				case 3: NatDis_Reset(TYPE_ALIENS);
 			}
 		}
 		case DIALOG_NATDIS_EDITZONES:
@@ -779,6 +851,65 @@ public NatDis_Explosions(iArea, choice)
 		}
 	}
 	return 1;
+}
+
+InitiateProgram(playerid, iNasType) {
+
+	switch(iNasType) {
+
+		case TYPE_NUKE: {
+
+			SetWorldTime(1);
+			SetWeather(125);
+			foreach(new i : Player) {
+				BroadcastLastInt[i] = GetPlayerInterior(i);
+				BroadcastLastVW[i] = GetPlayerVirtualWorld(i);
+				GetPlayerFacingAngle(i, PlayerInfo[i][pPos_r]);
+				GetPlayerPos(playerid, BroadcastFloats[i][1], BroadcastFloats[i][2], BroadcastFloats[i][3]);
+
+				PlayerInfo[i][pInt] = BroadcastLastInt[i];
+	 			PlayerInfo[i][pVW] = BroadcastLastVW[i];
+	 			PlayerInfo[i][pPos_r] = BroadcastFloats[i][0];
+	  			PlayerInfo[i][pPos_x] = BroadcastFloats[i][1];
+	  			PlayerInfo[i][pPos_y] = BroadcastFloats[i][2];
+	  			PlayerInfo[i][pPos_z] = BroadcastFloats[i][2];
+
+	  			SetPlayerPos(playerid, 0.0, 0.0, 100000000);
+	  			PlayAudioStreamForPlayer(i, "http://www.jingles.ml/audio/nuke.mp3");
+	  			defer ReturnPlayer(i);
+	  		}
+		}
+		case TYPE_ALIENS: {
+
+			Ufo_CreateAdminUfo(playerid);
+			SetWorldTime(1);
+			SetWeather(125);
+			PlayAudioStreamForPlayer(playerid, "http://www.jingles.ml/audio/aliens.mp3");
+			SetPlayerDrunkLevel(playerid, 1000);
+		}
+	}
+	defer NatDisProgram(iNasType);
+}
+
+timer ReturnPlayer[30000](i) {
+
+	Player_StreamPrep(i, BroadcastFloats[i][1], BroadcastFloats[i][2], BroadcastFloats[i][3], FREEZE_TIME);
+	SetPlayerVirtualWorld(i, PlayerInfo[i][pVW]);
+	SetPlayerInterior(i, PlayerInfo[i][pInt]);
+}
+
+timer NatDisProgram[30000](iNasType) {
+
+	switch(iNasType) {
+		case TYPE_NUKE: {
+			SetWorldTime(4);
+			SetWeather(23);
+		}
+		case TYPE_ALIENS: {
+
+			foreach(new i : Player) SetPlayerDrunkLevel(i, 0);
+		}
+	}
 }
 
 NatDis_Streamer(iNasType, iArea)
@@ -1330,10 +1461,10 @@ NatDis_EditZones(playerid, iZoneTypeID)
 
 				switch(NatDis[i][nat_iStatus]) // needs rework
 				{
-					case 0: szStatus = "{FFFFFF}Inactive Zone";
 					case 1: szStatus = "{FF0000}Quake Zone";
 					case 2: szStatus = "{FFF000}Evacuation Zone";
 					case 3: szStatus = "{00FF00}Safe Zone";
+					default: szStatus = "{FFFFFF}Inactive Zone";
 				}
 				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, gMainZones[i][SAZONE_NAME], szStatus);
 			}
@@ -1341,15 +1472,15 @@ NatDis_EditZones(playerid, iZoneTypeID)
 		}
 		case 2:
 		{
-			for(new i; i < 15; ++i)
+			for(new i; i < sizeof(gLocalZones); ++i)
 			{
 
 				switch(NatDis[i][nat_iStatus]) // needs rework
 				{
-					case 0: szStatus = "{FFFFFF}Inactive Zone";
 					case 1: szStatus = "{FF0000}Quake Zone";
 					case 2: szStatus = "{FFF000}Evacuation Zone";
 					case 3: szStatus = "{00FF00}Safe Zone";
+					default: szStatus = "{FFFFFF}Inactive Zone";
 				}
 				format(szMiscArray, sizeof(szMiscArray), "{FFFFFF}%s%s\t%s\n", szMiscArray, gLocalZones[i][SAZONE_NAME], szStatus);
 			}

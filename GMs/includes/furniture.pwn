@@ -561,6 +561,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
 				szData[2] = 0;
 				Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+				Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 			}
 			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, iSlotID);
 			SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][iSlotID]);
@@ -1024,8 +1025,20 @@ CMD:unfurnishhouse(playerid, params[]) {
 	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
 
 		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
-		fPos[2] += 30;
+		fPos[2] -= 30;
 		SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		if(IsADoor(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))) {
+
+			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
+				szData[3];
+			DestroyDynamicArea(iLocalDoorArea);
+
+			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
+			szData[1] = HouseInfo[iHouseID][hFurniture][i];
+			szData[2] = 0;
+			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+		}
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
@@ -1070,18 +1083,29 @@ CMD:furnishhouse(playerid, params[]) {
 	HouseInfo[iHouseID][hInteriorZ] = fHouseZ;
 	HouseInfo[iHouseID][hCustomInterior] = 0;
 	SaveHouse(iHouseID);
-
+	// defer RehashHouseFurniture(iHouseID);
 	new Float:fPos[3];
 	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
 
 		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
 		fPos[2] -= 30;
 		SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		if(IsADoor(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))) {
+
+			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
+				szData[3];
+			DestroyDynamicArea(iLocalDoorArea);
+
+			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
+			szData[1] = HouseInfo[iHouseID][hFurniture][i];
+			szData[2] = 0;
+			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+		}
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	RehashHouse(iHouseID);
-	defer RehashHouseFurniture(iHouseID);
 	foreach(new p : Player) {
 
 		if(GetPVarInt(p, PVAR_INHOUSE) == iHouseID) {
@@ -1096,7 +1120,7 @@ CMD:furnitureresetpos(playerid, params[]) {
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
-		new iHouseID = GetHouseID(playerid);
+		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
 		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
@@ -1304,6 +1328,7 @@ ProcessFurniture(type, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, F
 				szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
 				szData[2] = 0;
 				Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+				Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 			}
 			return 1;
 		}
@@ -1358,12 +1383,16 @@ ReloadFurniture(playerid) {
 
 	if(IsADoor(iModelID)) {
 
-		new iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
+		new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, iObjectID, E_STREAMER_EXTRA_ID),
 			szData[3];
+		
+		DestroyDynamicArea(iLocalDoorArea);
+		iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
 
 		szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
 		szData[2] = 0;
 		Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+		Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text0` = '-1', `text1` = '-1', `text2` = '-1', `text3` = '-1' \

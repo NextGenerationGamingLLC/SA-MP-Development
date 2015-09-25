@@ -446,7 +446,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(IsPlayerNPC(playerid)) return 1;
-	if(GetPVarType(playerid, "pTut")) return 1;
+	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	PlayerIsDead[playerid] = true;
 	IsSpawned[playerid] = 0;

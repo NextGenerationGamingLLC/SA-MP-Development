@@ -1053,7 +1053,7 @@ Interact_DrugTest(playerid, giveplayerid) {
 	
 	for(new i; i < sizeof(szDrugs); ++i) {
 
-		if(PlayerInfo[giveplayerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: %d CT\n", szMiscArray, szDrugs[i], PlayerInfo[giveplayerid][p_iAddictedLevel][i]);
+		if(PlayerInfo[giveplayerid][p_iDrugTaken][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: %d CT\n", szMiscArray, szDrugs[i], PlayerInfo[giveplayerid][p_iDrugTaken][i]);
 		else format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: None\n", szMiscArray, szDrugs[i]);
 	}
 	strcat(szMiscArray, "________________________________", sizeof(szMiscArray));
