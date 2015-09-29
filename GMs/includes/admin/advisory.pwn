@@ -330,10 +330,9 @@ CMD:hlban(playerid, params[])
 	return 1;
 }
 
-/*CMD:newb(playerid, params[])
+CMD:hl(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pTut] == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
 	if((nonewbie) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "The newbie chat channel has been disabled by an administrator!");
 	if(PlayerInfo[playerid][pNMute] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the newbie chat channel.");
@@ -394,95 +393,6 @@ CMD:hlban(playerid, params[])
 		if (PlayerInfo[playerid][pToggledChats][0])
 		{
 			SendClientMessageEx(n, COLOR_NEWBIE, string);
-		}
-	}	
-	return 1;
-}*/
-
-CMD:hl(playerid, params[])
-{
-	if(gPlayerLogged{playerid} == 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You're not logged in.");
-		return 1;
-	}
-	if(PlayerInfo[playerid][pTut] == 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
-		return 1;
-	}
-
-	if(PlayerInfo[playerid][pHelpMute] == 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "You are banned from the helper channel.");
-		return 1;
-	}
-
-	new string[128];
-	if(gettime() < HelperTimer[playerid])
-	{
-		format(string, sizeof(string), "You must wait %d seconds before speaking again in this channel.", HelperTimer[playerid]-gettime());
-		SendClientMessageEx(playerid, COLOR_GREY, string);
-		return 1;
-	}
-	if(gHelp[playerid] == 1)
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are not in the helper channel, type /joinhelp.");
-		return 1;
-	}
-
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/hl) [text]");
-
-	if(PlayerInfo[playerid][pHelper]<1&&PlayerInfo[playerid][pAdmin] < 2)
-	{
-		HelperTimer[playerid] = gettime()+10;
-	}
-	else if(PlayerInfo[playerid][pHelper]==1&&PlayerInfo[playerid][pAdmin] < 2)
-	{
-		HelperTimer[playerid] = gettime()+5;
-	}
-	else if(PlayerInfo[playerid][pAdmin] == 1)
-	{
-		HelperTimer[playerid] = gettime()+5;
-	}
-	else if(PlayerInfo[playerid][pHelper]>=2&&PlayerInfo[playerid][pAdmin] < 2)
-	{
-		HelperTimer[playerid] = gettime()+5;
-	}
-	if(PlayerInfo[playerid][pHelper]<1&&PlayerInfo[playerid][pAdmin]<1)
-	{
-		format(string, sizeof(string), "** Question by %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pHelper] == 1&& PlayerInfo[playerid][pAdmin]<2)
-	{
-		format(string, sizeof(string), "** Helper %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pAdmin] == 1)
-	{
-		if(PlayerInfo[playerid][pSMod] == 1) format(string, sizeof(string), "** Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
-		else format(string, sizeof(string), "** Moderator %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pHelper] == 2&&PlayerInfo[playerid][pAdmin]<2)
-	{
-		format(string, sizeof(string), "** Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pHelper] == 3&&PlayerInfo[playerid][pAdmin]<2)
-	{
-		format(string, sizeof(string), "** Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pHelper] >= 4&&PlayerInfo[playerid][pAdmin]<2)
-	{
-		format(string, sizeof(string), "** Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	if(PlayerInfo[playerid][pAdmin] >= 2)
-	{
-		format(string, sizeof(string), "** Admin %s: %s", GetPlayerNameEx(playerid), params);
-	}
-	foreach(new n: Player)
-	{
-		if (gHelp[n]==0)
-		{
-			SendClientMessageEx(n, COLOR_HELPERCHAT, string);
 		}
 	}	
 	return 1;

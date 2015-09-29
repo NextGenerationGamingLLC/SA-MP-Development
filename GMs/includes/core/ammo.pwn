@@ -130,13 +130,13 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
         }
         case 2: { // 50 cal
             if(iSkinID == 285 || iSkinID == 287)
-                return 70;
+                return 112;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 35;
-                case 2: return 42;  
-                case 3: return 49;
-                default: return 53;
+                case 0, 1: return 49;
+                case 2: return 56;  
+                case 3: return 70;
+                default: return 84;
             }
         }
         case 3: { // 7.62x39
@@ -152,13 +152,13 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
         }
         case 4: { // 12 gauge
             if(iSkinID == 285 || iSkinID == 287)
-                return 120;
+                return 160;
                    
             switch(PlayerInfo[playerid][pDonateRank]) {
-                case 0, 1: return 40;
-                case 2: return 50;  
-                case 3: return 60;
-                default: return 70;
+                case 0, 1: return 60;
+                case 2: return 80;  
+                case 3: return 100;
+                default: return 120;
             }
         }
     }
@@ -243,6 +243,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray, sizeof(szMiscArray), "%s has purchased shotgun for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[1]), Businesses[business][bName]);
 					Log("logs/business.log", szMiscArray);
 				}
+				case 2: // Deagle
+				{
+					new iWeaponMats = GetWeaponParam(WEAPON_DEAGLE, WeaponMats);
+					new business = InBusiness(playerid);
+
+					if(PlayerInfo[playerid][pCash] < GunPrices[4]) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money!");
+					if(Businesses[business][bInventory] < iWeaponMats) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
+					
+					Businesses[business][bInventory] -= iWeaponMats;
+					Businesses[business][bTotalSales]++;
+		   			Businesses[business][bLevelProgress]++;
+		   			Businesses[business][bSafeBalance] += TaxSale(GunPrices[4]);
+
+		   			SaveBusiness(business);
+					
+					GivePlayerCash(playerid, -GunPrices[4]);
+					GivePlayerValidWeapon(playerid, WEAPON_DEAGLE, 0);
+
+					format(szMiscArray, sizeof(szMiscArray), "%s has purchased deagle for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[4]), Businesses[business][bName]);
+					Log("logs/business.log", szMiscArray);
+				}
 			}
 		}
 		case DIALOG_AMMUNATION_AMMO:
@@ -258,7 +279,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					if(PlayerInfo[playerid][pCash] < GunPrices[2]) return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough money on you.");
 					if(Businesses[business][bInventory] < (GunPrices[2]/1000)) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
-					if((arrAmmoData[playerid][awp_iAmmo][0] + 30) > GetMaxAmmoAllowed(playerid, 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry any more magazines on you.");
+					if((arrAmmoData[playerid][awp_iAmmo][0] + 60) > GetMaxAmmoAllowed(playerid, 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry any more magazines on you.");
 					
 
 					Businesses[business][bInventory] -= (GunPrices[2]/1000);
@@ -269,7 +290,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		   			SaveBusiness(business);
 					
 					GivePlayerCash(playerid, -GunPrices[2]);
-					arrAmmoData[playerid][awp_iAmmo][0] += 30;
+					arrAmmoData[playerid][awp_iAmmo][0] += 60;
 					
 					for(new i = 0; i < 12; i++) {
 						SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
@@ -284,7 +305,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					if(PlayerInfo[playerid][pCash] < GunPrices[3]) return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough money on you.");
 					if(Businesses[business][bInventory] < (GunPrices[3]/1000)) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
-					if((arrAmmoData[playerid][awp_iAmmo][4] + 10) > GetMaxAmmoAllowed(playerid, 4)) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry any more magazines on you.");
+					if((arrAmmoData[playerid][awp_iAmmo][4] + 20) > GetMaxAmmoAllowed(playerid, 4)) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry any more magazines on you.");
 					
 
 					Businesses[business][bInventory] -= (GunPrices[3]/1000);
@@ -295,13 +316,39 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		   			SaveBusiness(business);
 					
 					GivePlayerCash(playerid, -GunPrices[3]);
-					arrAmmoData[playerid][awp_iAmmo][4] += 10;
+					arrAmmoData[playerid][awp_iAmmo][4] += 20;
 
 					for(new i = 0; i < 12; i++) {
 						SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
 					}
 
 					format(szMiscArray, sizeof(szMiscArray), "%s has purchased 12-gauge ammo for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[3]), Businesses[business][bName]);
+					Log("logs/business.log", szMiscArray);
+				}
+				case 2: // 50 AE
+				{
+					new business = InBusiness(playerid);
+
+					if(PlayerInfo[playerid][pCash] < GunPrices[5]) return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough money on you.");
+					if(Businesses[business][bInventory] < (GunPrices[5]/1000)) return SendClientMessageEx(playerid, COLOR_WHITE, "The business has run out of stock");
+					if((arrAmmoData[playerid][awp_iAmmo][2] + 14) > GetMaxAmmoAllowed(playerid, 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot carry any more magazines on you.");
+					
+
+					Businesses[business][bInventory] -= (GunPrices[5]/1000);
+					Businesses[business][bTotalSales]++;
+		   			Businesses[business][bLevelProgress]++;
+		   			Businesses[business][bSafeBalance] += TaxSale(GunPrices[5]);
+
+		   			SaveBusiness(business);
+					
+					GivePlayerCash(playerid, -GunPrices[5]);
+					arrAmmoData[playerid][awp_iAmmo][2] += 14;
+
+					for(new i = 0; i < 12; i++) {
+						SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
+					}
+
+					format(szMiscArray, sizeof(szMiscArray), "%s has purchased .50 AE ammo for $%s at %s", GetPlayerNameEx(playerid), number_format(GunPrices[5]), Businesses[business][bName]);
 					Log("logs/business.log", szMiscArray);
 				}
 			}
@@ -504,7 +551,7 @@ CMD:editgsprices(playerid, params[]) {
 	if(sscanf(params, "s[32]d", choice, amount)) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
 		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, 9mm, 12gauge");
-		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | 9mm Ammo: $%s | 12-Gauge: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]));
+		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | 9mm Ammo: $%s | 12-Gauge: $%s | deagle: $%s | 50AE: %s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]), number_format(GunPrices[3]), number_format(GunPrices[4]), number_format(GunPrices[5]));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	if(strcmp(choice, "colt45", true) == 0) {
@@ -525,6 +572,16 @@ CMD:editgsprices(playerid, params[]) {
 	if(strcmp(choice, "12gauge", true) == 0) {
 		GunPrices[3] = amount; 
 		format(szMiscArray, sizeof(szMiscArray), "%s has changed the 12gauge price to $%s", GetPlayerNameEx(playerid), number_format(amount));
+		Log("logs/business.log", szMiscArray);
+	}
+	if(strcmp(choice, "deagle", true) == 0) {
+		GunPrices[4] = amount; 
+		format(szMiscArray, sizeof(szMiscArray), "%s has changed the deagle price to $%s", GetPlayerNameEx(playerid), number_format(amount));
+		Log("logs/business.log", szMiscArray);
+	}
+	if(strcmp(choice, "50ae", true) == 0) {
+		GunPrices[5] = amount; 
+		format(szMiscArray, sizeof(szMiscArray), "%s has changed the 50 AE price to $%s", GetPlayerNameEx(playerid), number_format(amount));
 		Log("logs/business.log", szMiscArray);
 	}
 	g_mysql_SaveMOTD();

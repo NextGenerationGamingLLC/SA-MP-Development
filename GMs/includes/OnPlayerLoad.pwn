@@ -47,6 +47,7 @@ public OnPlayerLoad(playerid)
 	}
 
 	GetPlayerIp(playerid, PlayerInfo[playerid][pIP], 16);
+	ConnectionDBLog(playerid);
 	if( PlayerInfo[playerid][pPermaBanned] == 3 || PlayerInfo[playerid][pBanned] >= 1 )
 	{
 		format(string, sizeof(string), "WARNING: %s (IP:%s) tried to login whilst banned by the old system.", GetPlayerNameEx( playerid ), PlayerInfo[playerid][pIP] );

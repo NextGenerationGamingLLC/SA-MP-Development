@@ -391,6 +391,7 @@ native IsValidVehicle(vehicleid);
 #define         DIALOG_LOADTRUCKOLD         (670)
 #define			DIALOG_LOADTRUCKL			(680)
 #define			DIALOG_LOADTRUCKI			(690)
+#define      	D_TRUCKDELIVER_WEPCHOICE	(691)
 
 #define         RESTAURANTMENU              (930)
 #define         RESTAURANTMENU2             (931)

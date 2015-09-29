@@ -106,9 +106,19 @@ PropertyDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, PropertyID, szLogTable[]
 
 	return 1;
 }
+*/
 
-
-// 
+/*
+	Function: GroupDBLog
+	Parameters: 
+		-iPlayerID - The player who's executing the item to be logged.
+		-iTargetID - The player who's affected by the item being executed.
+		-iGroupID  - The GroupID that will be affected (please note this can be a group, business, etc - use table specf.)
+		-szLogTable - The name of the table you wish to log to (this is case sensitive).
+		-szLogText - The text you wish to log.
+		
+		
+*/
 GroupDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, iGroupID, szLogTable[], szLogText) {
 
 	format(szMiscArray, sizeof(szMiscArray),  "INSERT INTO `%s` (`Timestamp`,`GroupID`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
@@ -116,4 +126,19 @@ GroupDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, iGroupID, szLogTable[], szL
 	printf("%s",szMiscArray);
 
 	return 1;
-}*/
+}
+
+
+/* 
+	Function: ConectionDBLog
+	Parameters: 
+		-iPlayerID - The player who's connection you wish to log.
+
+*/
+ConnectionDBLog(iPlayerID) {
+
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `Connections` (`Timestamp`,`PlayerID`,`PlayerIP`) VALUES ('%d', '%d', '%s')", gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
+	db_free_result(db_query(db_iHandle, szMiscArray));
+	
+	return 1;
+}
