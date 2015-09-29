@@ -955,7 +955,7 @@ Interact_PayPlayer(playerid, giveplayerid, amount = -1) {
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has paid %s to %s(%d) (IP:%s)", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerInfo[playerid][pIP], number_format(amount), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], PlayerInfo[giveplayerid][pIP]);
 		Log("logs/pay.log", szMiscArray);
 		format(szMiscArray, sizeof(szMiscArray), "has been paid $%s", number_format(amount));
-		DBLog(PlayerInfo[playerid][pId], PlayerInfo[giveplayerid][pId], "Pay_Log", szMiscArray);
+		DBLog(playerid, giveplayerid, "Pay_Log", szMiscArray);
 	}
 	return 1;
 }
@@ -1053,7 +1053,7 @@ Interact_DrugTest(playerid, giveplayerid) {
 	
 	for(new i; i < sizeof(szDrugs); ++i) {
 
-		if(PlayerInfo[giveplayerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: %d CT\n", szMiscArray, szDrugs[i], PlayerInfo[giveplayerid][p_iAddictedLevel][i]);
+		if(PlayerInfo[giveplayerid][p_iDrugTaken][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: %d CT\n", szMiscArray, szDrugs[i], PlayerInfo[giveplayerid][p_iDrugTaken][i]);
 		else format(szMiscArray, sizeof(szMiscArray), "%s%s \t Level: None\n", szMiscArray, szDrugs[i]);
 	}
 	strcat(szMiscArray, "________________________________", sizeof(szMiscArray));

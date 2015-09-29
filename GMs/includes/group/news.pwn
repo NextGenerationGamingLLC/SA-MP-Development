@@ -86,7 +86,7 @@ CMD:liveban(playerid, params[])
 	    {
 	        PlayerInfo[giveplayerid][pLiveBanned] = 1;
 	        format(string, sizeof(string), "%s has interview banned %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-	        SendGroupMessage(4, RADIO, string);
+	        SendGroupMessage(GROUP_TYPE_NEWS, RADIO, string);
 	        return 1;
 	    }
 	    else SendClientMessageEx(playerid, COLOR_WHITE, "That player is already live banned.");
@@ -107,7 +107,7 @@ CMD:liveunban(playerid, params[])
 		{
 			PlayerInfo[giveplayerid][pLiveBanned] = 0;
 			format(string, sizeof(string), "%s has unbanned %s from interviews", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			SendGroupMessage(4, RADIO, string);
+			SendGroupMessage(GROUP_TYPE_NEWS, RADIO, string);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "That player is currently not live banned");
 	}

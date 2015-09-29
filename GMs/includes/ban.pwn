@@ -14,7 +14,7 @@ CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
 
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `ban` (`bannedid`, `creatorid`, `IP`, `reason`, `createdate`, `liftdate`, `active`) \
 		VALUES ('%d', '%d', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
-		iBanned, PlayerInfo[iBanCreator][pId], szIPAddress, szReason, iLength);
+		iBanned, iBanCreator == INVALID_PLAYER_ID ? INVALID_PLAYER_ID:PlayerInfo[iBanCreator][pId], szIPAddress, szReason, iLength);
 
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnCreateBan", "iisisi", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength);
 

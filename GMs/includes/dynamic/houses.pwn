@@ -36,6 +36,13 @@
 */
 
 #include <YSI\y_hooks>
+
+hook OnPlayerConnect(playerid) {
+
+	DeletePVar(playerid, PVAR_INHOUSE);
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == DIALOG_HOUSEINVITE)
@@ -221,7 +228,8 @@ stock SaveHouse(houseid)
 		`LinkedDoor4`=%d, \
 		`ListingDescription`='%s', \
 		`LinkedGarage0`=%d, \
-		`LinkedGarage1`=%d \
+		`LinkedGarage1`=%d, \
+		`Lights`=%d \
 		WHERE `id`=%d",
 		szMiscArray,
 		HouseInfo[houseid][Listed],
@@ -236,6 +244,7 @@ stock SaveHouse(houseid)
 		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		HouseInfo[houseid][LinkedGarage][0],
 		HouseInfo[houseid][LinkedGarage][1],
+		HouseInfo[houseid][h_iLights],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -347,6 +356,8 @@ public OnLoadHouse(index)
 		HouseInfo[index][LinkedGarage][0] = cache_get_field_content_int(row, "LinkedGarage0", MainPipeline);
 		HouseInfo[index][LinkedGarage][1] = cache_get_field_content_int(row, "LinkedGarage1", MainPipeline);
 		
+		HouseInfo[index][h_iLights] = cache_get_field_content_int(row, "Lights", MainPipeline);
+
 		if(HouseInfo[index][hExteriorX] != 0.0) ReloadHousePickup(index);
 		if(HouseInfo[index][hClosetX] != 0.0) HouseInfo[index][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[index][hClosetX], HouseInfo[index][hClosetY], HouseInfo[index][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[index][hIntVW], .interiorid = HouseInfo[index][hIntIW], .streamdistance = 10.0);
 		if(HouseInfo[index][hMailX] != 0.0) RenderHouseMailbox(index);
@@ -599,7 +610,7 @@ CMD:househelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit /houselights");
     return 1;
 }
 
@@ -610,6 +621,36 @@ CMD:renthelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** RENT *** /unrent /enter /exit /lock /home");
     return 1;
 }
+
+
+CMD:houselights(playerid, params[]) {
+
+	new i = GetHouseID(playerid);
+	if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
+    
+    if(HouseInfo[i][h_iLights] == 1) {
+
+        HouseInfo[i][h_iLights] = 0;
+        SaveHouse(i);
+
+        format(szMiscArray, sizeof(szMiscArray), "* %s hits the light switch, switching the house lights off.", GetPlayerNameEx(playerid));
+		ProxChatBubble(playerid, szMiscArray);
+
+		foreach(new p : Player) if(GetPlayerVirtualWorld(p) == HouseInfo[i][hIntVW] && GetPlayerInterior(p) == HouseInfo[i][hIntIW]) TextDrawShowForPlayer(p, g_tHouseLights);
+    }
+    else {
+
+        HouseInfo[i][h_iLights] = 1;
+        SaveHouse(i);
+
+        format(szMiscArray, sizeof(szMiscArray), "* %s hits the light switch, switching the house lights on.", GetPlayerNameEx(playerid));
+		ProxChatBubble(playerid, szMiscArray);
+
+		foreach(new p : Player) if(GetPlayerVirtualWorld(p) == HouseInfo[i][hIntVW] && GetPlayerInterior(p) == HouseInfo[i][hIntIW]) TextDrawHideForPlayer(p, g_tHouseLights);
+    }
+	return 1;
+}
+
 
 CMD:buyhouse(playerid, params[])
 {

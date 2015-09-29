@@ -88,12 +88,16 @@ hook OnGameModeExit()
 	return 1;
 }
 
-hook OnPlayerConnect(playerid)
-{
+hook OnPlayerConnect(playerid) {
+
+	Bit_Off(g_PlayerBits[playerid], dr_bitUsedDrug);
+	Bit_Off(g_PlayerBits[playerid], dr_bitInDrugEffect);
 	Bit_Off(g_PlayerBits[playerid], phone_bitState);
+	Bit_Off(g_PlayerBits[playerid], phone_bitCamState);
+	Bit_Off(g_PlayerBits[playerid], phone_bitTraceState);
+	Bit_Off(g_PlayerBits[playerid], g_bFPS);
 	return 1;
 }
-
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 

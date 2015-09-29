@@ -36,39 +36,6 @@ hook OnPlayerEnterDynamicArea(playerid, areaid)
 	return 1;
 }
 
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(GetPVarType(playerid, PVAR_EditingMetDet))
-	{
-		new id = GetPVarInt(playerid, PVAR_EditingMetDet),
-			iAssignData[2],
-			Float:fPos[6];
-		
-		GetDynamicObjectPos(arrMetalDetector[id][metdet_iObjectID], fPos[0], fPos[1], fPos[2]);
-		GetDynamicObjectRot(arrMetalDetector[id][metdet_iObjectID], fPos[3], fPos[4], fPos[5]);
-		
-		iAssignData[0] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[id][metdet_iObjectID], E_STREAMER_WORLD_ID);
-		iAssignData[1] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[id][metdet_iObjectID], E_STREAMER_INTERIOR_ID);
-		switch(response)
-		{
-			case EDIT_RESPONSE_FINAL:
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You successfully edited the metal detector's position.");
-				MetDet_Process(id, x, y, z, rx, ry, rz, iAssignData[0], iAssignData[1]);
-				MetDet_SaveMetDet(id);
-			}
-			case EDIT_RESPONSE_CANCEL:
-			{
-				SetDynamicObjectPos(arrMetalDetector[id][metdet_iObjectID], fPos[0], fPos[1], fPos[2]);
-				SetDynamicObjectRot(arrMetalDetector[id][metdet_iObjectID], fPos[3], fPos[4], fPos[5]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You have cancelled setting the metal detector's position.");
-			}
-		}
-		DeletePVar(playerid, PVAR_EditingMetDet);
-	}
-	return 1;
-}
-
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	switch(dialogid)

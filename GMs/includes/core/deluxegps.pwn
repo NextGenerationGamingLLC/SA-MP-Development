@@ -337,7 +337,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 				
 				gPlayerCheckpointStatus[playerid] = CHECKPOINT_BUSINESS;
-				
+				DisablePlayerCheckpoint(playerid);
 				SetPlayerCheckpoint(playerid, Businesses[id][bExtPos][0], Businesses[id][bExtPos][1], Businesses[id][bExtPos][2], 15.0);
 			}
 			return 1;
@@ -515,6 +515,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 5: gpsItemStart = 33;
 			}
 			GetEntity3DZone(0, 3, szMiscArray, sizeof(szMiscArray), gpsZones[gpsItemStart + listitem][0], gpsZones[gpsItemStart + listitem][1], gpsZones[gpsItemStart + listitem][2]);
+			DisablePlayerCheckpoint(playerid);
 			SetPlayerCheckpoint(playerid, gpsZones[gpsItemStart + listitem][0], gpsZones[gpsItemStart + listitem][1], gpsZones[gpsItemStart + listitem][2] , 15.0);
 			format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to {33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", gpsZoneName[gpsItemStart + listitem], szMiscArray);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
@@ -531,7 +532,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new id = GetPVarInt(playerid,"gpsBiz");
 					GetEntity3DZone(id, 1, szMiscArray, sizeof(szMiscArray));
 					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to {33CCFF}%s{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", Businesses[id][bName], szMiscArray);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);		
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					DisablePlayerCheckpoint(playerid);		
 					SetPlayerCheckpoint(playerid, Businesses[id][bExtPos][0], Businesses[id][bExtPos][1], Businesses[id][bExtPos][2], 15.0);
 				}
 				case 2:
@@ -541,6 +543,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to house #{33CCFF}%i{FFFFFF} in the area of {FF0000}%s{FFFFFF}.", id, szMiscArray);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					gPlayerCheckpointStatus[playerid] = CHECKPOINT_HOUSE;
+					DisablePlayerCheckpoint(playerid);
 					SetPlayerCheckpoint(playerid, HouseInfo[id][hExteriorX], HouseInfo[id][hExteriorY], HouseInfo[id][hExteriorZ], 15.0);
 				}
 				case 3:
@@ -550,6 +553,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray,sizeof(szMiscArray),"Your GPS Destination has been set to door #%i ({33CCFF}%s{FFFFFF}) in the area of {FF0000}%s{FFFFFF}.", id, DDoorsInfo[id][ddDescription],  szMiscArray);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					gPlayerCheckpointStatus[playerid] = CHECKPOINT_DOOR;
+					DisablePlayerCheckpoint(playerid);
 					SetPlayerCheckpoint(playerid, DDoorsInfo[id][ddExteriorX], DDoorsInfo[id][ddExteriorY], DDoorsInfo[id][ddExteriorZ], 15.0);
 				}
 			}

@@ -117,51 +117,6 @@ hook OnGameModeInit()
 	return 1;
 }
 
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(EditingMeterID[playerid] != 0)
-	{
-		new string[128];
-		switch(response)
-		{
-			case EDIT_RESPONSE_FINAL:
-			{
-				if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this feature inside an interior or virtual world.");
-					RebuildParkingMeter(EditingMeterID[playerid]);
-					EditingMeterID[playerid] = 0;
-					return 1;
-				}
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][0] = x;
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][1] = y;
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][2] = z;
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][3] = rx;
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][4] = ry;
-				ParkingMeterInformation[EditingMeterID[playerid]][MeterPosition][5] = rz;
-				SaveParkingMeter(EditingMeterID[playerid]);
-				RebuildParkingMeter(EditingMeterID[playerid]);
-				format(string, sizeof(string), "You have updated the position of parking meter ID %d.", EditingMeterID[playerid]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
-				format(string, sizeof(string), "%s updated the position of parking meter ID %d to %0.3f, %0.3f, %0.3f, %0.3f, %0.3f, %0.3f.", GetPlayerNameEx(playerid), EditingMeterID[playerid], x, y, z, rx, ry, rz);
-				Log("logs/admin.log", string);
-				EditingMeterID[playerid] = 0;
-				return 1;
-			}
-			case EDIT_RESPONSE_CANCEL:
-			{
-				format(string, sizeof(string), "You have cancelled editing the position of parking meter ID %d.", EditingMeterID[playerid]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
-				RebuildParkingMeter(EditingMeterID[playerid]);
-				EditingMeterID[playerid] = 0;
-				return 1;
-			}
-		}
-		return 1;
-	}
-	return 1;
-}
-
 task ParkingMeters[30000]()
 {
 	new time, string[256];

@@ -1093,6 +1093,6 @@ public OnPlayerLoad(playerid)
 			SendClientMessageEx(playerid, -1, "You have been given 10 event tokens for logging in as a PVIP!");
 		}
 	}
-	if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
+	// if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
 	return 1;
 }

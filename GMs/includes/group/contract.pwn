@@ -791,7 +791,7 @@ CMD:contract(playerid, params[])
 			strmid(PlayerInfo[giveplayerid][pContractBy], GetPlayerNameEx(playerid), 0, strlen(GetPlayerNameEx(playerid)), MAX_PLAYER_NAME);
 			strmid(PlayerInfo[giveplayerid][pContractDetail], detail, 0, strlen(detail), 32);
 			format(string, sizeof(string), "%s has placed a contract on %s for $%s, details: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
-			SendGroupMessage(2, COLOR_YELLOW, string);
+			SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
 			format(string, sizeof(string), "* You placed a contract on %s for $%s, details: %s", GetPlayerNameEx(giveplayerid), number_format(moneys), detail);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "<< %s has placed a contract on %s for $%s, details: %s >>", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), number_format(moneys), detail);

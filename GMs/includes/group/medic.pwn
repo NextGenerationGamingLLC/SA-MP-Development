@@ -185,6 +185,7 @@ stock IsAnAmbulance(carid)
 	return 0;
 }
 
+/*
 CMD:aid(playerid, params[]) {
 
 	if(IsAMedic(playerid) || IsFirstAid(playerid)) {
@@ -193,6 +194,7 @@ CMD:aid(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "   You are not a medic!");
 	return 1;
 }
+*/
 
 CMD:loadpt(playerid, params[])
 {
@@ -400,7 +402,7 @@ CMD:getpt(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
 				format(string, sizeof(string), "EMS Driver %s has accepted the Emergency Dispatch call for (%d) %s.",GetPlayerNameEx(playerid),giveplayerid,GetPlayerNameEx(giveplayerid));
-				SendGroupMessage(3, TEAM_MED_COLOR, string);
+				SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
 				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));
@@ -522,7 +524,7 @@ CMD:deliverpt(playerid, params[])
                         PlayerInfo[playerid][pPatientsDelivered]++;
                         
 						format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-						SendGroupMessage(3, TEAM_MED_COLOR, string);
+						SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
 						
 						PlayerInfo[giveplayerid][pHydration] = 100;
 					}

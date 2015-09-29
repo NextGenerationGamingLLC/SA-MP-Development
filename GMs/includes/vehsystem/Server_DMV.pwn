@@ -84,7 +84,7 @@ CMD:revokelicense(playerid, params[])
 					format(string,sizeof(string),"The %s has revoked your driver's license, reason: %s.", sz_FacInfo[2], reason);
 					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' driver's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
-					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
+					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' driver's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
 					format(string, sizeof(string), "%s(%d) has taken %s'(%d) driver's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
@@ -100,7 +100,7 @@ CMD:revokelicense(playerid, params[])
 					format(string,sizeof(string),"The %s has revoked your boater's license, reason: %s.", sz_FacInfo[2], reason);
 					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' boater's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
-					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
+					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' boater's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
 					format(string, sizeof(string), "%s(%d) has taken %s'(%d) boater's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
@@ -116,7 +116,7 @@ CMD:revokelicense(playerid, params[])
 					format(string,sizeof(string),"The %s has revoked your pilot's license, reason: %s.", sz_FacInfo[2], reason);
 					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' pilot's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
-					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
+					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' pilot's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
 					format(string, sizeof(string), "%s(%d) has taken %s'(%s) pilot's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
@@ -133,7 +133,7 @@ CMD:revokelicense(playerid, params[])
 					format(string,sizeof(string),"The %s has revoked your firearm's license, reason: %s.", sz_FacInfo[2], reason);
 					SendClientMessageEx(giveplayerid,COLOR_LIGHTBLUE,string);
 					format(string,sizeof(string),"HQ: %s %s %s has revoked %s' firearm's license, reason: %s.", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), reason);
-					SendGroupMessage(1,TEAM_BLUE_COLOR,string);
+					SendGroupMessage(GROUP_TYPE_LEA,TEAM_BLUE_COLOR,string);
 					format(string,sizeof(string),"You have revoked %s' firearm's license.",GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid,COLOR_WHITE,string);
 					format(string, sizeof(string), "%s(%d) has taken %s'(%s) firearm's license. reason: %s.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);

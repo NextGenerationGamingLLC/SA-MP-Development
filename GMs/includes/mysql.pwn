@@ -592,6 +592,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);
 
+					PlayerInfo[extraid][pHouseBuilder] = cache_get_field_content_int(row, "HouseBuilder", MainPipeline);
+
 					for(new i = 0; i != MAX_AMMO_TYPES; i++)
 					{
 						format(szField, sizeof(szField), "pBAmmo%d", i);
@@ -2455,6 +2457,7 @@ stock g_mysql_SaveAccount(playerid)
 		PlayerInfo[playerid][pChatbox][17],
 		PlayerInfo[playerid][pChatbox][18],
 		PlayerInfo[playerid][pChatbox][19]);
+
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
@@ -2470,6 +2473,8 @@ stock g_mysql_SaveAccount(playerid)
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HouseBuilder", PlayerInfo[playerid][pHouseBuilder]);
+	
 	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
 	for(new d; d < sizeof(szIngredients); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
 

@@ -253,7 +253,7 @@ task Point_Process[50400000]() {
 
 	BM_SeizeCheck();
 
-	SendClientMessageToAllEx(COLOR_YELLOW, "[Point] - {DDDDDD}Some points have become available for capture. Use /points to get an overview");
+	foreach(new i : Player) if(IsACriminal(i)) SendClientMessageEx(i, COLOR_YELLOW, "[Point] - {DDDDDD}Some points have become available for capture. Use /points to get an overview");
 	mysql_function_query(MainPipeline, "UPDATE `dynpoints` SET `captureable` = '1'", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	for(new i; i < MAX_DYNPOINTS; ++i) {
@@ -317,18 +317,37 @@ ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 
 timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 
-	if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You were injured while trying to capture the point.");
+	new Float:fHealth,
+		Float:fPos[3];
+
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+	GetPlayerHealth(playerid, fHealth);
+	if(fHealth < GetPVarFloat(playerid, "H") || GetPVarFloat(playerid, "X") != fPos[0] || GetPVarFloat(playerid, "Y") != fPos[1] || GetPVarFloat(playerid, "Z") != fPos[2] || GetPVarInt(playerid, "Injured")) {
+
+		DeletePVar(playerid, "H");
+		DeletePVar(playerid, "X");
+		DeletePVar(playerid, "Y");
+		DeletePVar(playerid, "Z");
+		DeletePVar(playerid, "PO_CAPTUR");
+		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You failed to capture the point. You either moved or died while attempting to capture.");
+	}
+
+	DeletePVar(playerid, "H");
+	DeletePVar(playerid, "X");
+	DeletePVar(playerid, "Y");
+	DeletePVar(playerid, "Z");
+
 	if(GetGVarType("PO_CAPT", i)) {
 
 		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) {
 
-			DeletePVar(playerid, "PO_CAPTUR");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "The point was taken by another gang. Therefore you failed to capture it.");
+			DeletePVar(p, "PO_CAPTUR");
+			SendClientMessageEx(p, COLOR_YELLOW, "The point was taken by another gang. Therefore you failed to capture it.");
 		}
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s is attempting to capture %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
-	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+	foreach(new p : Player) if(IsACriminal(p)) SendClientMessageEx(p, COLOR_YELLOW, szMiscArray);
 
 	SetGVarInt("PO_CAPT", iGroupID, i);
 
@@ -578,7 +597,10 @@ hook OnPlayerConnect(playerid) {
 	DeletePVar(playerid, "AtDrugArea");
 	DeletePVar(playerid, "BM_AID");
 	DeletePVar(playerid, "PO_CAPTUR");
-
+	DeletePVar(playerid, "H");
+	DeletePVar(playerid, "X");
+	DeletePVar(playerid, "Y");
+	DeletePVar(playerid, "Z");
 }
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
@@ -629,18 +651,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		}
 		if(-1 < a < MAX_BLACKMARKETS)
 		{
-		if(areaid[0] == arrBlackMarket[a][bm_iAreaID]) 
-				SetPVarInt(playerid, "BM_AID", a);
-			else
-				DeletePVar(playerid, "BM_AID");
+			if(areaid[0] == arrBlackMarket[a][bm_iAreaID]) SetPVarInt(playerid, "BM_AID", a);
+			else DeletePVar(playerid, "BM_AID");
 		}
 		if(-1 < a < MAX_DYNPOINTS)
 		{
-			if(areaid[0] == arrPoint[a][po_iAreaID])
-				SetPVarInt(playerid, "PO_AID", a);
-			else
-				DeletePVar(playerid, "PO_AID");
+			if(areaid[0] == arrPoint[a][po_iAreaID]) SetPVarInt(playerid, "PO_AID", a);
+			else DeletePVar(playerid, "PO_AID");
 		}
+		if(-1 < a < MAX_ARRESTPOINTS) {
+			if(areaid[0] == ArrestPoints[a][arrest_iAreaID]) ArrestProcess(playerid, ArrestPoints[a][arrestType]);
+		}
+
 		if(GetPVarType(playerid, "BM_AID")) {
 
 			new i = GetPVarInt(playerid, "BM_AID");
@@ -682,6 +704,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnPlayerEnterCheckpoint(playerid) {
 
+	DisablePlayerCheckpoint(playerid);
 	switch(gPlayerCheckpointStatus[playerid]) {
 
 		case CHECKPOINT_SMUGGLE_BLACKMARKET: {
@@ -1746,14 +1769,14 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 				case 6 .. 10:
 				{
 					SetPlayerTime(playerid, 10, 0);
-					SetPlayerWeather(playerid, 110);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 				case 11 .. 15: SetPlayerWeather(playerid, 111);
 				default: {
 					SetPlayerTime(playerid, 22, 0);
-					SetPlayerWeather(playerid, 109);
+					SetPlayerWeather(playerid, 700);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 			}
@@ -1790,14 +1813,14 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			SetPlayerTime(playerid, 0, 0);
 			switch(iTotalTaken)	{
 
-				case 0 .. 5: SetPlayerWeather(playerid, 9);
+				case 0 .. 5: SetPlayerWeather(playerid, 700);
 				case 6 .. 10:
 				{
-					SetPlayerWeather(playerid, 9);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
-				case 11 .. 15: SetPlayerWeather(playerid, 111);
+				case 11 .. 15: SetPlayerWeather(playerid, 700);
 				default: 
 				{
 					SetPlayerWeather(playerid, 8421);
@@ -1814,11 +1837,11 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			{
 				case 0 .. 5: 
 				{
-					SetPlayerWeather(playerid, 201);
+					SetPlayerWeather(playerid, 700);
 					Drug_ExplosionEffects(playerid, iDrugID);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
-				case 6 .. 10: SetPlayerWeather(playerid, 202);
+				case 6 .. 10: SetPlayerWeather(playerid, 700);
 				default:
 				{
 					SetPlayerWeather(playerid, 8421);
@@ -1831,10 +1854,10 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			SetArmour(playerid, fArmour + (5.0 * iTaken));
 			switch(iTotalTaken)
 			{
-				case 0 .. 5: SetPlayerWeather(playerid, 108);
-				case 6 .. 10: SetPlayerWeather(playerid, 110);
-				case 11 .. 15: SetPlayerWeather(playerid, 111);
-				default: SetPlayerWeather(playerid, 8421);
+				case 0 .. 5: SetPlayerWeather(playerid, 700);
+				case 6 .. 10: SetPlayerWeather(playerid, 700);
+				case 11 .. 15: SetPlayerWeather(playerid, 700);
+				default: SetPlayerWeather(playerid, 700);
 			}
 		}
 		case 6: // Opium
@@ -1871,19 +1894,19 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			{
 				case 0 .. 5: 
 				{
-					SetPlayerWeather(playerid, 500), SetPlayerTime(playerid, 11, 0);
+					SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 11, 0);
 					Drug_ExplosionEffects(playerid, iDrugID);
 				}
-				case 6 .. 10: SetPlayerWeather(playerid, 500), SetPlayerTime(playerid, 11, 0);
+				case 6 .. 10: SetPlayerWeather(playerid, 700), SetPlayerTime(playerid, 11, 0);
 				case 11 .. 15:
 				{
-					SetPlayerWeather(playerid, 420);
+					SetPlayerWeather(playerid, 700);
 					SetPlayerTime(playerid, 11, 0);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
 				default: 
 				{
-					SetPlayerWeather(playerid, 732);
+					SetPlayerWeather(playerid, 700);
 					SetPlayerTime(playerid, 11, 0);
 					Drug_SoundEffects(playerid, iDrugID);
 				}
@@ -2900,8 +2923,12 @@ CMD:seize(playerid, params[]) {
 
 	if(!IsACop(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a cop");
 	if(PlayerInfo[playerid][pRank] < 5) return SendClientMessage(playerid, COLOR_GRAD1, "You must be at least rank 5 to seize a black market.");
-	if(!GetPVarType(playerid, "BM_AID")) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a black market.");
-	new i = GetPVarInt(playerid, "BM_AID");
+	
+	new i = -1;
+	for(i = 0; i < MAX_BLACKMARKETS; ++i) if(IsPlayerInDynamicArea(playerid, arrBlackMarket[i][bm_iAreaID])) break;
+	if(i == -1) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a black market.");
+	
+	SetPVarInt(playerid, "BM_AID", i);
 	if(arrBlackMarket[i][bm_iSeized]) return SendClientMessage(playerid, COLOR_GRAD1, "This black market has already been seized.");
 	
 	new iCount[2],
@@ -3154,6 +3181,19 @@ CMD:points(playerid, params[]) {
 	return 1;
 }
 
+CMD:pointtime(playerid, params[]) {
+
+	szMiscArray[0] = 0;
+	szMiscArray = "Name\tTime\n";
+
+	for(new i; i < MAX_DYNPOINTS; ++i) {
+
+		if(GetGVarType("PO_CAPT", i)) format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d minutes\n", szMiscArray, arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], GetGVarInt("PO_Time", i));
+	}
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Point Time", szMiscArray, "<<", "");
+	return 1;
+}
+
 CMD:createdpoint(playerid, params[]) 
 {
 	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
@@ -3279,7 +3319,13 @@ CMD:capturepoint(playerid, params[]) {
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot be in a vehicle when attempting to capture a point.");
 
 	new i = -1;
-	for(new j; j < MAX_DYNPOINTS; ++j) { if(IsPlayerInDynamicArea(playerid, arrPoint[j][po_iAreaID])) i = j; break; }
+	for(new j; j < MAX_DYNPOINTS; ++j) {
+
+		if(IsPlayerInDynamicArea(playerid, arrPoint[j][po_iAreaID])) {
+			i = j;
+			break;
+		}
+	}
 
 	if(i == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a point.");
 
@@ -3293,21 +3339,21 @@ CMD:capturepoint(playerid, params[]) {
 		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(playerid, COLOR_YELLOW, "Another gang leader is attempting to capture your point.");
 	}
 
+	new Float:fPos[3],
+		Float:fHealth;
+
+	GetPlayerHealth(playerid, fHealth);
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+	SetPVarFloat(playerid, "H", fHealth);
+	SetPVarFloat(playerid, "X", fPos[0]);
+	SetPVarFloat(playerid, "Y", fPos[1]);
+	SetPVarFloat(playerid, "Z", fPos[2]);
+
 	SetPVarInt(playerid, "PO_CAPTUR", i);
 	format(szMiscArray, sizeof(szMiscArray), "[Point]: {CCCCCC}You are attempting to capture {FFFF00}%s.", arrPoint[i][po_szPointName]);
 	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 
-	TogglePlayerControllable(playerid, 0);
 	defer Point_Capture(playerid, i, PlayerInfo[playerid][pMember]);
-	return 1;
-}
-
-
-CMD:vehdrugs(playerid, params[]) {
-
-	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a cop.");
-
-	Smuggle_VehicleLoad(playerid, GetClosestCar(playerid));
 	return 1;
 }
 
@@ -3508,7 +3554,7 @@ public PO_OnCreatePoint(playerid, i) {
 
 	format(szMiscArray, sizeof(szMiscArray), "You have successfully created a point with ID %d", i);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point! Use '/point deliverpos' to set it up.");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Make sure to also set up a delivery point! Use '/editpoint deliverpos' to set it up.");
 	return 1;
 }
 
@@ -3593,10 +3639,10 @@ PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Flo
 			arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, DX, DY, DZ, 10.0, .worldid = 0, .interiorid = 0);
 		}
 
-		arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 5.0);
+		arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 8.0);
 		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
 
-		arrPoint[i][po_iBigAreaID] = CreateDynamicCuboid(arrPoint[i][po_fPos][0] - 100.0, arrPoint[i][po_fPos][1] - 100.0, arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1] + 100.0, arrPoint[i][po_fPos][0] + 100.0, Z);
+		arrPoint[i][po_iBigAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 100.0);
 		Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iBigAreaID], E_STREAMER_EXTRA_ID, i);
 
 		arrPoint[i][po_iZoneID] = GangZoneCreate(arrPoint[i][po_fPos][0] - 100.0, arrPoint[i][po_fPos][1] - 100.0, arrPoint[i][po_fPos][0] + 100.0, arrPoint[i][po_fPos][1] + 100.0);
@@ -3608,6 +3654,7 @@ PO_DestroyPoint(i) {
 	arrPoint[i][po_iCaptureAble] = 0;
 	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
+	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
 	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
 	DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
 	GangZoneDestroy(arrPoint[i][po_iZoneID]);
@@ -3670,14 +3717,6 @@ Drugs_ODTextDraw()
 
 /* Alien Easter Egg */
 
-#define 		MAX_UFOS			10
-#define 		ALIEN_ACTORMODEL 	264
-
-enum eUfo {
-	ufo_iObjectID[13],
-	ufo_iPlayerID
-}
-new arrUfo[MAX_UFOS][eUfo];
 
 hook OnGameModeInit() {
 
@@ -3826,13 +3865,58 @@ Ufo_CreateUfo(playerid) {
 		Float:foPos[6];
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 
-	fPos[2] += 70.0;
+	fPos[2] += 100.0;
 
 	SetPlayerTime(playerid, 3, 0);
 	SetPlayerWeather(playerid, 710);
 
 	SetPVarInt(playerid, "Aliens", 0);
 	defer Ufo_Aliens(playerid);
+
+	for(new i; i < MAX_UFOS; ++i) {
+
+		if(!IsValidDynamicObject(arrUfo[i][ufo_iObjectID][0])) {
+			
+			arrUfo[i][ufo_iPlayerID] = playerid;
+
+			arrUfo[i][ufo_iObjectID][0] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34400,   0.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][1] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 5.34399,   0.00000, 0.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][2] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68831,   0.00000, 180.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][3] = CreateDynamicObject(10955, fPos[0] + -0.55725, fPos[1] + 2.92444, fPos[2] + 12.68829,   0.00000, 180.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][4] = CreateDynamicObject(18656, fPos[0] + -0.23865, fPos[1] + 2.01184, fPos[2] + 4.47868,   270.00000, 0.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][5] = CreateDynamicObject(3872, fPos[0] + 4.32544, fPos[1] + 1.36792, fPos[2] + -12.68831,   0.00000, 270.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][6] = CreateDynamicObject(3872, fPos[0] + -3.95508, fPos[1] + 0.24829, fPos[2] + -12.68831,   0.00000, 330.00000, 0.29480, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][7] = CreateDynamicObject(3872, fPos[0] + 0.17798, fPos[1] + 4.61609, fPos[2] + -12.68831,   0.00000, 270.00000, 90.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][8] = CreateDynamicObject(3872, fPos[0] + 0.20605, fPos[1] + -5.38574, fPos[2] + -12.68831,   0.00000, 270.00000, 270.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][9] = CreateDynamicObject(9123, fPos[0] + 5.77893, fPos[1] + 2.94751, fPos[2] + -10.47681,   0.00000, 90.00000, 0.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][10] = CreateDynamicObject(9123, fPos[0] + -5.77881,fPos[1] +  2.94519, fPos[2] + -10.47681,   0.00000, 90.00000, 180.00000, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][11] = CreateDynamicObject(9127, fPos[0] + 3.37561, fPos[1] + 5.38574, fPos[2] + -5.61124,   0.00000, 0.00000, 0.72686, .playerid = playerid);
+			arrUfo[i][ufo_iObjectID][12] = CreateDynamicObject(9127, fPos[0] + 3.88684, fPos[1] + 4.88086, fPos[2] + -5.61121,   0.00000, 0.00000, 45.00000, .playerid = playerid);
+
+
+			for(new j; j < 13; ++j) {
+
+				GetDynamicObjectPos(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2]);
+				GetDynamicObjectRot(arrUfo[i][ufo_iObjectID][j], foPos[3], foPos[4], foPos[5]);
+
+				MoveDynamicObject(arrUfo[i][ufo_iObjectID][j], foPos[0], foPos[1], foPos[2] - 20.0, 1.0, foPos[3], foPos[4], foPos[5]);
+			}
+			return 1;
+		}
+	}
+	return 1;
+}
+
+Ufo_CreateAdminUfo(playerid) {
+
+	new Float:fPos[3],
+		Float:foPos[6];
+
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+
+	fPos[2] += 100.0;
+
+	SetPVarInt(playerid, "Aliens", 0);
 
 	for(new i; i < MAX_UFOS; ++i) {
 
@@ -3875,6 +3959,13 @@ Ufo_DestroyUfo(playerid) {
 	for(new j; j < 13; ++j) DestroyDynamicObject(arrUfo[i][ufo_iObjectID][j]);
 	return 1;
 }
+
+Ufo_DestroyAdminUfo() {
+
+	for(new i; i < MAX_UFOS; ++i) for(new j; j < 13; ++j) DestroyDynamicObject(arrUfo[i][ufo_iObjectID][j]);
+	return 1;
+}
+
 
 CMD:aliens(playerid, params) {
 

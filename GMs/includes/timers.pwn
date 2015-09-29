@@ -352,7 +352,7 @@ task SyncTime[60000]()
 					else
 					{
 						format(szMiscArray, sizeof(szMiscArray), "Warning: The Government Vault has insufficient funds to fund %s.", arrGroupData[iGroupID][g_szGroupName]);
-						SendGroupMessage(5, COLOR_RED, szMiscArray);
+						SendGroupMessage(GROUP_TYPE_GOV, COLOR_RED, szMiscArray);
 					}
 				}
 				for(new iDvSlotID = 0; iDvSlotID < MAX_DYNAMIC_VEHICLES; iDvSlotID++)
@@ -1424,7 +1424,7 @@ ptask PlayerHeartBeat[1000](i) {
 			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 			ClearCrimes(i);
 			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
- 			GroupLog(2, szMiscArray); // Prison Group ID (September 2015).
+			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess]) GroupLog(x, szMiscArray);
 		}
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 			
@@ -2809,6 +2809,7 @@ ptask SaveAccountsUpdate[900000](i)
 // TickRate: 5 secs.
 ptask EMSUpdate[5000](i)
 {
+	if(GetPlayerVirtualWorld(i) < 6000) TextDrawHideForPlayer(i, g_tHouseLights);
 	if(GetPVarType(i, "Injured"))
 	{
 		#if defined zombiemode

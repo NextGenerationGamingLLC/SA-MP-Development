@@ -722,33 +722,33 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
 	}
-	if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive anything at the moment.");
-	if (IsPlayerConnected(giveplayerid))
+	if(IsPlayerConnected(giveplayerid))
 	{
+		if(HungerPlayerInfo[giveplayerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   This person is not able to receive anything at the moment.");
 		if(isnull(choice))
 		{
-		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
-		//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
-		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
-		return 1;
-	}
+			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
+			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
+			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
+			return 1;
+		}
 		/*if(strcmp(choice,"bag",true) == 0)
 		{
 			if(PlayerInfo[playerid][pMats] >= 6000)

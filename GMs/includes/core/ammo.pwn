@@ -513,7 +513,7 @@ CMD:setammo(playerid, params[]) {
 }
 
 CMD:rld(playerid, params[]) {
-	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
+	if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this right now!");
 	
 	for(new i = 0; i < 12; i++)
 	{

@@ -21,7 +21,7 @@ ShowAccountSettings(playerid, menu = 0) {
 
 		case 0: {
 			format(szTitle, sizeof(szTitle), "Account Settings - %s", GetPlayerNameEx(playerid));
-			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChatbox Preferences\nChange Account Email\nAccount Password\nChange Shop Pin");
+			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChange Account Email\nAccount Password\nChange Shop Pin");
 			ShowPlayerDialog(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 		}
 
@@ -77,6 +77,7 @@ ShowAccountSettings(playerid, menu = 0) {
 			);
 			ShowPlayerDialog(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Select", "Cancel");
 		}
+		/*
 		case 2: {
 			
 			format(szMiscArray, sizeof(szMiscArray), "Item\tChatbox\n\
@@ -119,16 +120,16 @@ ShowAccountSettings(playerid, menu = 0) {
 			);
 			ShowPlayerDialog(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_TABLIST_HEADERS, "Chat Preferences", szMiscArray, "Select", "Cancel");
 		}
-
-		case 3: { // account email 
+		*/
+		case 2: { // account email 
 			SendClientMessageEx(playerid, COLOR_WHITE, "   To be added.");
 		}
 
-		case 4: { // account password
+		case 3: { // account password
 			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!", "Change", "Exit" );
 		}
 
-		case 5: { // shop pin
+		case 4: { // shop pin
 			
 			if(GetPVarInt(playerid, "PinConfirmed")) {
 			    SetPVarInt(playerid, "ChangePin", 1);

@@ -974,10 +974,10 @@ CMD:announcetakeoff(playerid, params[]) {
 			if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 			{
 				format(string, sizeof(string), "-- Pilot %s: Tower, %s requesting permission to take off from %s, over. --", GetPlayerNameEx(playerid), callsign, zone);
-				SendGroupMessage(1, DEPTRADIO, string);
+				SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 				if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 		        format(string, sizeof(string), "-- Air Traffic Control: %s, you are cleared for takeoff, over. --", callsign);
-				SendGroupMessage(1, DEPTRADIO, string);
+				SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 				if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...[10 seconds]");
 				SetTimerEx("SetVehicleEngine", 10000, 0, "dd",  vehicleid, playerid);
@@ -990,10 +990,10 @@ CMD:announcetakeoff(playerid, params[]) {
 		else
 		{
 		    format(string, sizeof(string), "-- Pilot %s: Tower, %s ready for takeoff, over. --", GetPlayerNameEx(playerid), callsign);
-			SendGroupMessage(1, DEPTRADIO, string);
+			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 			if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 	        format(string, sizeof(string), "-- Air Traffic Control: %s, denied takeoff. Island is under lockdown, over. --", callsign);
-			SendGroupMessage(1, DEPTRADIO, string);
+			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 			if(!IsACop(playerid)) SendClientMessage(playerid, DEPTRADIO, string);
 		}
 	}
@@ -1070,7 +1070,7 @@ CMD:cgun(playerid, params[]) {
 		        }
 		    }
 			format(string, sizeof(string), "-- %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. --", GetPlayerNameEx(playerid));
-			SendGroupMessage(1, DEPTRADIO, string);
+			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 			IslandGateStatus = gettime();
 			IslandThreatElimTimer = SetTimer("IslandThreatElim", 1800000, 0);
 		}
@@ -1102,7 +1102,7 @@ CMD:alockdown(playerid, params[]) {
 				}
 			}	
 		  	format(string, sizeof(string), "-- %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. --", GetPlayerNameEx(playerid));
-			SendGroupMessage(1, DEPTRADIO, string);
+			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 			IslandGateStatus = gettime();
 			IslandThreatElimTimer = SetTimer("IslandThreatElim", 900000, 0);
 		}
@@ -1133,7 +1133,7 @@ CMD:ordercrates(playerid, params[])
 			SendClientMessage(playerid, COLOR_GRAD2, string);
 			arrGroupData[iGroupID][g_iCratesOrder] = moneys;
 			format(string, sizeof(string), "%s has just placed a Crate Order for %s.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-			SendGroupMessage(1, TEAM_BLUE_COLOR, string);
+			SendGroupMessage(GROUP_TYPE_LEA, TEAM_BLUE_COLOR, string);
 			return 1;
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Your group does not require crates.");
