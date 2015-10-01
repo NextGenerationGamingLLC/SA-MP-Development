@@ -491,10 +491,8 @@ CMD:gedit(playerid, params[])
 			}	
 			SetPVarInt(playerid, "gEdit", 1);
 			SetPVarInt(playerid, "EditingGateID", gateid);
-			/*
-			SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosXM], GateInfo[gateid][gPosYM], GateInfo[gateid][gPosZM]);
-			SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotXM], GateInfo[gateid][gRotYM], GateInfo[gateid][gRotZM]);
-			*/
+			SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
+			SetDynamicObjectRot(GateInfo[gateid][gGATE], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
 			EditDynamicObject(playerid, GateInfo[gateid][gGATE]);
 			format(string, sizeof(string), "You are now editing the open position of Gate %d.", gateid);
 			SendClientMessage(playerid, COLOR_WHITE, string);

@@ -2695,7 +2695,7 @@ new Timer:DDSaleTimer[MAX_PLAYERS];
 new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
-new GunPrices[4];
+new GunPrices[6];
 
 new szJobNames[MAX_JOBTYPES][32];
 

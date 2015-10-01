@@ -391,9 +391,12 @@ native IsValidVehicle(vehicleid);
 #define         DIALOG_LOADTRUCKOLD         (670)
 #define			DIALOG_LOADTRUCKL			(680)
 #define			DIALOG_LOADTRUCKI			(690)
+#define      	D_TRUCKDELIVER_WEPCHOICE	(691)
+
 #define 		ELECTIONS 					(705)
 #define 		ELECTIONS_ADD 				(706)
 #define 		ELECTIONS_REMOVE 			(707)
+
 #define         RESTAURANTMENU              (930)
 #define         RESTAURANTMENU2             (931)
 #define			STOREMENU					(940)
@@ -1157,8 +1160,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_NUKE				(6146)
 #define 		DIALOG_NATDIS_ALIENS			(6147)
 
-#define 		DIALOG_MECHANIC_REPAIRDOOR		(6148)
-#define 		DIALOG_BOMBMAKER_OFFER			(6149)
+#define 		DIALOG_MECHANIC_REPAIRDOOR		(6147)
+#define 		DIALOG_BOMBMAKER_OFFER			(6148)
 
 
 // Objects

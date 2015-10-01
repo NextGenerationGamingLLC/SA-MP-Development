@@ -563,6 +563,7 @@ CMD:searchcar(playerid, params[])
 		new v = GetPlayerVehicle(i, closestcar);
 		if(v != -1)
 		{
+			Smuggle_VehicleLoad(playerid, v);
 			string[0] = 0;
 			for(new x = 0; x < 3; x++)
 			{
@@ -585,11 +586,10 @@ CMD:searchcar(playerid, params[])
 				}
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
-			Smuggle_VehicleLoad(playerid, closestcar);
 		}
 	}	
-    if(isnull(string)) {
-
+    if(isnull(string))
+    {
         if(CrateVehicleLoad[closestcar][vCarVestKit] > 0) {
             new str[84];
             SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
@@ -599,7 +599,6 @@ CMD:searchcar(playerid, params[])
             SendClientMessageEx(playerid, COLOR_WHITE, str);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
-		Smuggle_VehicleLoad(playerid, closestcar);
     }
     return 1;
 }

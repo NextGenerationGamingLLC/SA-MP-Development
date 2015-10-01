@@ -18,15 +18,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		{
 			SetVehicleEngine(vehicleid, playerid);
 			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine stops.", GetPlayerNameEx(playerid));
-			ProxChatBubble(playerid, szMiscArray);
-			// ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
 			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
 			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
-			ProxChatBubble(playerid, szMiscArray);
-			// ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
 			SetTimerEx("SetVehicleEngine", 1000, 0, "dd",  vehicleid, playerid);
 			RemoveVehicleFromMeter(vehicleid);

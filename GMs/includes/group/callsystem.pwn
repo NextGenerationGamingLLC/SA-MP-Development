@@ -113,8 +113,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if((type == 0 || type == 4) && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: Payphone no. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-							else format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
@@ -122,8 +121,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if(type == 1 && IsAMedic(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: Payphone no. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-							else format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
@@ -131,8 +129,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if(type == 2 && IsACop(i))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: Payphone no. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-							else format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
@@ -140,8 +137,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if(type == 3 && (IsACop(i) || IsATowman(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: Payphone no. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-							else format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
@@ -149,8 +145,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 						if(type == 5 && (IsACop(i) || IsAMedic(i)))
 						{
 							PlayCrimeReportForPlayer(i, callfrom, 7);
-							if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: Payphone no. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-							else format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
+							format(szMiscArray, sizeof(szMiscArray), "HQ: All Units APB: Reporter: %s", GetPlayerNameEx(callfrom));
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 							format(szMiscArray, sizeof(szMiscArray), "HQ: Location: %s, Description: %s", area, description);
 							SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
@@ -164,8 +159,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pMember] == x) {
 
-						if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: Payphone nr. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-						else format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
 						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
 						format(szMiscArray, sizeof(szMiscArray), "Landline: Location: %s, Description: %s", area, description);
 						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
@@ -178,8 +172,7 @@ stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicle
 
 					if(PlayerInfo[i][pBusiness] == x) {
 
-						if(GetPVarType(callfrom, "AtPayPhone")) format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: Payphone nr. %d", arrPayPhoneData[GetPVarInt(callfrom, "AtPayPhone")][pp_iNumber]);
-						else format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
+						format(szMiscArray, sizeof(szMiscArray), "Landline: Caller: %s | %d", GetPlayerNameEx(callfrom), PlayerInfo[callfrom][pPnumber]);
 						SendClientMessageEx(i, COLOR_PINK, szMiscArray);
 						format(szMiscArray, sizeof(szMiscArray), "Landline: Location: %s, Description: %s", area, description);
 						SendClientMessageEx(i, COLOR_PINK, szMiscArray);

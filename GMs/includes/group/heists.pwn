@@ -134,9 +134,6 @@ hook OnPlayerConnect(playerid) {
 	DeletePVar(playerid, "_CollectedMoney");
 	DeletePVar(playerid, "_ShowingSafe");
 	DeletePVar(playerid, "_CollectingMoney");
-	DeletePVar(playerid, "_BombPlayerOffer");
-	DeletePVar(playerid, "_BombPlayerAmount");
-	DeletePVar(playerid, "_BombPlayerCost");
 	return 1;
 }
 
@@ -157,14 +154,12 @@ hook OnPlayerPickUpDynamicPickup(playerid, pickupid)
 	{
 		new collected = GetPVarInt(playerid, "_CollectedMoney"),
 			iRobberID = GetPVarInt(playerid, "_RobberID"),
-			iSafeID = GetGVarInt("RobbedSafeID"),
 			iCount;
 
 		DisablePlayerCheckpoint(playerid);
 		format(szMiscArray, sizeof(szMiscArray), "Heist successful! $%s has been succesfully transferred to your safe!", number_format(collected));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 		arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += collected;
-		SafeMoney(playerid, iSafeID, -collected);
 
 		DestroyDynamic3DTextLabel(MoneyBagData[iRobberID][safe_iTextLabel]);
 		RemovePlayerAttachedObject(playerid, 8);
@@ -201,7 +196,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 {
 	if(GetGVarInt("RobberyStage") == 2 && GetSafeID(playerid) > -1)
 	{
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Use /robsafe to open the safe. Press ~k~~VEHICLE_ENTER_EXIT~ to attempt to crack the code.");
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Use /robsafe to open the safe. Press F to attempt to crack the code.");
 		DisablePlayerCheckpoint(playerid);
 	}
 	if(GetPVarType(playerid, "_BombCP")) 
@@ -211,6 +206,21 @@ hook OnPlayerEnterCheckpoint(playerid)
 	}
 	return 1;
 }
+
+/*
+hook OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
+{
+	if(GetPVarInt(playerid, "_RobberyBeacon"))
+	{
+		new Float:armour,
+			Float:health;
+		GetPlayerArmour(playerid, armour);
+		if(armour > 0.0) SetPlayerArmour(playerid, armour+amount);
+		else SetPlayerHealth(playerid, health+amount);
+	}
+	return 1;
+}
+*/
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
@@ -243,13 +253,13 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 		{
 			switch(TextGrid[i][text_iMine])
 			{
-				case 0: {
-
+				case 0: 
+				{
 					TextDrawSetString(clickedid, "--");
 					TextDrawBoxColor(clickedid, 0x222222FF);
 				}
-				case 1: {
-
+				case 1: 
+				{
 					TextDrawSetString(clickedid, "X");
 					TextDrawBoxColor(clickedid, 0xFFFF0000);
 					TextGrid_Destroy();
@@ -261,8 +271,8 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 					return 1;
 				}
 			}
-			if(TextGrid[i][text_iSave] > 0) {
-
+			if(TextGrid[i][text_iSave] > 0) 
+			{
 				TextGrid[i][text_iSave] = 2;
 				// TextDrawSetString(clickedid, SafeData[GetSafeID(playerid)][safe_iPin][SafeText_PinCount]);
 				// SafeText_PinCount++;
@@ -277,8 +287,8 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	for(new i; i < sizeof(TextGrid); ++i)
 	{
 		if(TextGrid[i][text_iSave] == 2) savegridcount++;
-		if(savegridcount > 3) {
-
+		if(savegridcount > 3)
+		{
 			ProxDetector(15.0, playerid, "[SAFE]: *You would hear a click*", COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
 			break;
 		}
@@ -286,6 +296,35 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	return 1;
 }
 
+hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	szMiscArray[0] = 0;
+	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
+	{
+	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
+
+	    if(response == EDIT_RESPONSE_FINAL) {
+	        SafeData[iSafeID][safe_fPos][0] = x;
+			SafeData[iSafeID][safe_fPos][1] = y;
+			SafeData[iSafeID][safe_fPos][2] = z;
+			SafeData[iSafeID][safe_fPos][3] = rx;
+			SafeData[iSafeID][safe_fPos][4] = ry;
+			SafeData[iSafeID][safe_fPos][5] = rz;
+			processSafe(iSafeID);
+			saveSafe(iSafeID);
+
+			format(szMiscArray, sizeof szMiscArray, "You have edited the position of Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+	        DeletePVar(playerid, "_EditingSafeObjectID");
+	    }
+	    else if(response == EDIT_RESPONSE_CANCEL) {
+
+	        format(szMiscArray, sizeof szMiscArray, "You have quit editing Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+	        DeletePVar(playerid, "_EditingSafeID");
+	    }
+	}
+}
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
@@ -311,8 +350,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				szMiscArray[0] = 0;
-				new targetid = GetNearestBrokenGateOrDoor(playerid),
-					targettype = GetPVarInt(playerid, "_TargetType");
+				new targetid = GetNearestBrokenGateOrDoor(playerid);
 				if(targetid == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a broken door or gate.");
 				PlayerInfo[playerid][pMats] -= 5000;
 				format(szMiscArray, sizeof(szMiscArray), "%s is repairing the gate/door...", GetPlayerNameEx(playerid));
@@ -320,7 +358,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessage(playerid, COLOR_GRAD1, "You paid 5K materials and are now repairing the gate/door.");
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 1, 0, 0, 10000, 0);
 				SetPVarInt(playerid, "_RepairingDoor", 1);
-				SetTimerEx("Mechanic_InitSeconds", 1000, false, "ii", playerid, 1000, targetid, targettype);
+				SetTimerEx("Mechanic_InitSeconds", 1000, false, "ii", playerid, targetid);
 			}
 		}
 		case DIALOG_ROBBERY_SETUP:
@@ -370,13 +408,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				szDialog[256],
 				iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
 				iTypeID = SafeData[iSafeID][safe_iTypeID];
-
 			switch(SafeData[iSafeID][safe_iType])
 			{
 				case 0: 
 				{
 					format(szTitle, sizeof(szTitle), "(ID: %i) UNSPECIFIED Safe", iSafeID);
-					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________", "UNSPECIFIED", number_format(GetSafeMoney(iSafeID)));
+					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________", "UNSPECIFIED", number_format(SafeData[iSafeID][safe_iMoney]));
 				}
 				case 1: 
 				{
@@ -386,12 +423,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2: 
 				{
 					format(szTitle, sizeof(szTitle), "(ID: %i) {%s}%s's Safe", iSafeID, Group_NumToDialogHex(arrGroupData[iTypeID][g_hDutyColour]), arrGroupData[iTypeID][g_szGroupName]);
-					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________", arrGroupData[iTypeID][g_szGroupName], number_format(GetSafeMoney(iSafeID)));
+					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________", arrGroupData[iTypeID][g_szGroupName], number_format(SafeData[iSafeID][safe_iMoney]));
 				}
 				case 3: 
 				{
 					format(szTitle, sizeof(szTitle), "(ID: %i) %s's Safe Menu", iSafeID, Businesses[iTypeID][bName]);
-					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________",  Businesses[iTypeID][bName], number_format(GetSafeMoney(iSafeID)));
+					format(szDialog, sizeof(szDialog), "_________________________________\n\n--------------------\n Balance Sheet\n--------------------\n%s\n\nVault balance: $%s\n\n_________________________",  Businesses[iTypeID][bName], number_format(SafeData[iSafeID][safe_iMoney]));
 				}
 				case 4: 
 				{
@@ -425,14 +462,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response || isnull(inputtext)) return safeMenu(playerid);
 			{
 				new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
-				if(SafeData[iSafeID][safe_iType] == 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Use /gwithdraw to withdraw from the vault.");
 				if(!checkSafePerms(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must own this safe to withdraw money from it.");
-				if(strval(inputtext) < 0 || isnull(inputtext) || strval(inputtext) > FLOAT_INFINITY) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
-				if(SafeData[iSafeID][safe_iType] == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "It is strictly illegal to withdraw from a bank's safe.");
-				if(GetSafeMoney(SafeData[iSafeID][safe_iMoney]) < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is not enough money in the safe.");
-				
-				SafeMoney(playerid, iSafeID, -strval(inputtext));
-				GivePlayerCash(playerid, strval(inputtext));
+				if(SafeData[iSafeID][safe_iMoney] < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is not enough money in the safe.");
+				SafeData[iSafeID][safe_iMoney] = SafeData[iSafeID][safe_iMoney] - strval(inputtext);
+				// GivePlayerCash(playerid, strval(inputtext));
 				saveSafe(iSafeID);
 				DeletePVar(playerid, "_EditingSafeID");
 				return safeMenu(playerid);
@@ -445,10 +478,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
 				if(isnull(inputtext)) return safeMenu(playerid);
 				if(GetPlayerMoney(playerid) < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money.");
-				if(strval(inputtext) < 0 || strval(inputtext) > FLOAT_INFINITY) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
-				
-				SafeMoney(playerid, iSafeID, strval(inputtext));
-				GivePlayerCash(playerid, -strval(inputtext));
+				SafeData[iSafeID][safe_iMoney] = SafeData[iSafeID][safe_iMoney] + strval(inputtext);
+				// GivePlayerCash(playerid, -strval(inputtext));
 				saveSafe(iSafeID);
 				DeletePVar(playerid, "_EditingSafeID");
 				return safeMenu(playerid);
@@ -544,14 +575,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return safeEditMenu(playerid);
 			new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
 				iTypeID = GetPVarInt(playerid, "_SafeTypeID");
-			DeletePVar(playerid, "_SafeTypeID");
-
 			SafeData[iSafeID][safe_iTypeID] = iTypeID;
+			DeletePVar(playerid, "_SafeTypeID");
+			processSafe(iSafeID);
+			saveSafe(iSafeID);
 			switch(SafeData[iSafeID][safe_iType])
 			{
-				case 1:	{
-
-					SafeData[iSafeID][safe_iMoney] = 100000000;
+				case 1:
+				{
 					format(szMiscArray, sizeof(szMiscArray), "Safe assigned to: State Bank");
 				}
 				case 2:
@@ -567,9 +598,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray, sizeof(szMiscArray), "Safe assigned to: %s", GetPlayerNameEx(iTypeID));
 				}
 			}
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-			processSafe(iSafeID);
-			saveSafe(iSafeID);	
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);	
 			return safeEditMenu(playerid);			
 		}
 		case DIALOG_SAFE_PIN_AEDIT:
@@ -648,7 +677,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	if(GetPVarType(playerid, "_PickingLock") && newkeys & KEY_JUMP)
+	if(GetPVarInt(playerid, "_PickingLock") && newkeys & KEY_JUMP)
 	{
 		ClearAnimations(playerid);
 		SendClientMessage(playerid, COLOR_GRAD1, "You stopped picking the lock");
@@ -658,7 +687,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		new iSafeID = GetSafeID(playerid);
 		if(iSafeID != GetGVarInt("RobbedSafeID") || iSafeID == -1) return 1;
-		if(GetPVarType(playerid, "_SafeInjured")) return SendClientMessage(playerid, COLOR_GRAD1, "You're currently injured from your previous attempt.");
+		if(GetPVarInt(playerid, "_SafeInjured")) return SendClientMessage(playerid, COLOR_GRAD1, "You're currently injured from your previous attempt.");
 		if(SafeData[iSafeID][safe_iRobbed])
 		{
 			startCollectMoney(playerid, iSafeID);
@@ -671,52 +700,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		return 1;
 	}
-	if(GetPVarType(playerid, "_RobbingSafe") && newkeys & KEY_SECONDARY_ATTACK)
+	if(GetPVarInt(playerid, "_RobbingSafe") && newkeys & KEY_SECONDARY_ATTACK)
 	{
 		ClearAnimations(playerid);
 		stopCollectMoney(playerid);
 	}
 	return 1;
-}
-
-GetSafeMoney(iSafeID) {
-
-	switch(SafeData[iSafeID][safe_iType]) {
-		case 0: return 0;
-		case 1: return 100000000;
-		case 2: return arrGroupData[SafeData[iSafeID][safe_iTypeID]][g_iBudget];
-		case 3: return Businesses[SafeData[iSafeID][safe_iTypeID]][bSafeBalance];
-		case 4: return SafeData[iSafeID][safe_iMoney];
-	}
-	return 0;
-}
-
-SafeMoney(playerid, iSafeID, iMoney) {
-
-	switch(SafeData[iSafeID][safe_iType]) {
-		case 0: SendClientMessage(playerid, COLOR_GRAD1, "This safe has not been setup yet.");
-		case 1: SendClientMessage(playerid, COLOR_GRAD1, "You cannot interact with a bank's safe.");
-		case 2: arrGroupData[SafeData[iSafeID][safe_iTypeID]][g_iBudget] += iMoney;
-		case 3: Businesses[SafeData[iSafeID][safe_iTypeID]][bSafeBalance] += iMoney;
-		case 4: SafeData[iSafeID][safe_iMoney] += iMoney;
-	}
-	if(iMoney > 0) format(szMiscArray, sizeof(szMiscArray), "%s(ID %d) has deposited $%s into %s's safe (ID %d)", GetPlayerNameExt(playerid), PlayerInfo[playerid][pId], number_format(iMoney), GetSafeOwner(iSafeID), iSafeID);
-	else format(szMiscArray, sizeof(szMiscArray), "%s(ID %d) has taken $%s from %s's safe (ID %d)", GetPlayerNameExt(playerid), PlayerInfo[playerid][pId], number_format(iMoney), GetSafeOwner(iSafeID), iSafeID);
-	Log("logs/safes.log", szMiscArray);
-	return 1;
-}
-
-GetSafeOwner(iSafeID) {
-
-	new szOwner[64];
-	switch(SafeData[iSafeID][safe_iType]) {
-		case 0: szOwner = "Unspecified";
-		case 1: szOwner = "Bank of Los Santos";
-		case 2: strcat(szOwner, arrGroupData[SafeData[iSafeID][safe_iTypeID]][g_szGroupName], sizeof(szOwner));
-		case 3: strcat(szOwner, Businesses[SafeData[iSafeID][safe_iTypeID]][bName], sizeof(szOwner));
-		case 4: szOwner = "Player Owned";
-	}
-	return szOwner;
 }
 
 GetSafeID(playerid)
@@ -815,8 +804,8 @@ safeMove(playerid, iSafeID)
 	return 1;	
 }
 
-startCollectMoney(playerid, iSafeID) {
-
+startCollectMoney(playerid, iSafeID)
+{
 	format(szMiscArray, sizeof(szMiscArray), "Robbing Safe ID: %i", iSafeID);
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	SetPVarInt(playerid, "_RobbingSafe", 1);
@@ -897,6 +886,7 @@ public collectMoney(playerid, iSafeID)
 	else Update3DTextLabelText(MoneyBagData[robberid][safe_iTextLabel], COLOR_LIGHTBLUE, szMiscArray);
 	SetPVarInt(playerid, "_CollectingMoney", 1);
 	SetPVarInt(playerid, "_CollectedMoney", collected);
+	SafeData[iSafeID][safe_iMoney] -= collected;
 	GivePlayerCash(playerid, collected);
 	format(szMiscArray, sizeof(szMiscArray), "You collected $%s from the safe. You now have $%s stored in your bag.", number_format(ROB_COLLECT_RATE), number_format(collected));
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
@@ -1600,7 +1590,7 @@ CMD:safe(playerid, params[])
 	{
 		switch(SafeData[iSafeID][safe_iType])
 		{
-			case 1: if(!IsAdminLevel(playerid, ADMIN_SENIOR, 0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot access this safe.");
+			case 1: if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot access this safe.");
 			case 2: if(SafeData[iSafeID][safe_iTypeID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot access this safe.");
 			case 3: if(SafeData[iSafeID][safe_iTypeID] != PlayerInfo[playerid][pBusiness]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot access this safe.");
 		}
@@ -1706,7 +1696,7 @@ CMD:robbery(playerid, params[])
 	{
 		SetGVarInt("RobberyPlayerID", playerid);
 		SetGVarInt("RobbedSafeID", iSafeID);
-		SetGVarInt("SafeMoney", 10000000); //changeme
+		SetGVarInt("SafeMoney", SafeData[iSafeID][safe_iMoney]);
 		checkRobbery(playerid);
 	}
 	else
@@ -1746,10 +1736,7 @@ CMD:picklock(playerid, params[])
 	new targetid,
 		time = 60000;
 	if(PlayerInfo[playerid][pLockKit] < 1) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have any items in your lock kit anymore.");
-	if(GetPVarType(playerid, "_TargetID")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already trying to breach something.");
-	if(!PlayerInfo[playerid][pToolBox]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Tool Box in order to lock pick a vehicle, get one from a Craftsman.");
-	if(!PlayerInfo[playerid][pScrewdriver]) return SendClientMessageEx(playerid, COLOR_WHITE, "You need a Screwdriver in order to lock pick a vehicle, get one from a Craftsman.");
-
+	if(GetPVarInt(playerid, "_TargetID")) return SendClientMessage(playerid, COLOR_GRAD1, "You are already trying to breach something.");
 	time = 60000 - (5000 * PlayerInfo[playerid][pDetSkill]);
 	targetid = GetNearestGateOrDoor(playerid);
 	if(targetid == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a gate or door.");
@@ -1757,7 +1744,7 @@ CMD:picklock(playerid, params[])
 	SetPVarInt(playerid, "_PickingLock", 1);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 1, 0, 0, time, 0);
 	format(szMiscArray, sizeof(szMiscArray), "%s attempts to pick a lock...", GetPlayerNameEx(playerid));
-	ProxChatBubble(playerid, szMiscArray);
+	ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	SetTimerEx("LockPick_InitSeconds", 1000, false, "ii", playerid, time);
 	return 1;
 }
@@ -1789,8 +1776,8 @@ public LockPick_InitSeconds(playerid, time)
 	new timesec = time/1000;
 	format(szMiscArray, sizeof(szMiscArray), "~w~ Picking... ~r~ %d", timesec);
 	GameTextForPlayer(playerid, szMiscArray, 4000, 3);
-	if(time > 1) return SetTimerEx("LockPick_InitSeconds", 1000, false, "ii", playerid, time);
-	LockPick_Init(playerid);
+	if(time != 0) SetTimerEx("LockPick_InitSeconds", 1000, false, "ii", playerid, time);
+	else LockPick_Init(playerid);
 	return 1;
 }
 
@@ -1800,7 +1787,6 @@ public LockPick_Init(playerid)
 	new rand,
 		targetid = GetPVarInt(playerid, "_TargetID"),
 		targettype = GetPVarInt(playerid, "_TargetType");
-
 	switch(PlayerInfo[playerid][pDetSkill])
 	{
 		case 0: rand = 4;
@@ -1808,9 +1794,9 @@ public LockPick_Init(playerid)
 		case 2: rand = 3;
 		case 3: rand = 2;
 		case 4: rand = 1;
-		default: rand = 0;
+		case 5: rand = 0;
 	}
-	if(random(rand) == 1 || rand == 0)
+	if(random(rand) == 1)
 	{
 		GameTextForPlayer(playerid, "~g~ Success! ~w~ Target breached.", 4000, 3);
 		switch(targettype)
@@ -2005,12 +1991,6 @@ public Bomb_Detonate(playerid, targetid, targettype)
 	return 1;
 }
 
-CMD:repairgate(playerid, params[]) {
-
-	cmd_repairdoor(playerid, params);
-	return 1;
-}
-
 CMD:repairdoor(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] != 7 && PlayerInfo[playerid][pJob2] != 7) return SendClientMessage(playerid, COLOR_GRAD1, "You are not a mechanic.");
@@ -2019,33 +1999,35 @@ CMD:repairdoor(playerid, params[])
 }
 
 
-forward Mechanic_InitSeconds(playerid, time, targetid, targettype);
-public Mechanic_InitSeconds(playerid, time, targetid, targettype)
+forward Mechanic_InitSeconds(playerid, targetid);
+public Mechanic_InitSeconds(playerid, targetid)
 {
 	szMiscArray[0] = 0;
 	if(!GetPVarType(playerid, "_RepairingDoor")) return 1;
 	if(!GetPVarType(playerid, "reptime")) SetPVarInt(playerid, "reptime", 10000);
 	
-	new timesec;
+	new time = GetPVarInt(playerid, "reptime"), // change this 
+		timesec;
 	time -= 1000;
 	SetPVarInt(playerid, "reptime", time);
 	timesec = time/1000;
 	format(szMiscArray, sizeof(szMiscArray), "~w~ Reparing... ~r~ %d", timesec);
 	GameTextForPlayer(playerid, szMiscArray, 4000, 3);
-	if(time != 0) return SetTimerEx("Mechanic_InitSeconds", 1000, false, "ii", playerid, time, targetid, targettype);
-	Mechanic_RepairDoor(playerid, targetid, targettype);
+	if(time != 0) SetTimerEx("Mechanic_InitSeconds", 1000, false, "ii", playerid, time);
+	else Mechanic_RepairDoor(playerid, targetid);
 	return 1;
 }
 
-forward Mechanic_RepairDoor(playerid, targetid, targettype);
-public Mechanic_RepairDoor(playerid, targetid, targettype)
+forward Mechanic_RepairDoor(playerid, targetid);
+public Mechanic_RepairDoor(playerid, targetid)
 {
+	new targettype = GetPVarInt(playerid, "_TargetType");
 	switch(targettype)
 	{
 		case 1:
 		{
 			MoveDynamicObject(GateInfo[targetid][gGATE], GateInfo[targetid][gPosX], GateInfo[targetid][gPosY], GateInfo[targetid][gPosZ], 50.0, GateInfo[targetid][gRotX], GateInfo[targetid][gRotY], GateInfo[targetid][gRotZ]);
-			GateInfo[targetid][gStatus] = 1;
+			GateInfo[targetid][gStatus] = 0;
 		}
 		case 2:
 		{
@@ -2204,14 +2186,15 @@ public Bomb_OnShowOrders(iPlayerID) {
 
 CMD:bomborders(playerid, params[])
 {
-	if(IsAdminLevel(playerid, ADMIN_SENIOR)) Bomb_ShowOrders(playerid);
+	if(PlayerInfo[playerid][pAdmin] >= 1337) Bomb_ShowOrders(playerid);
+	else SendClientMessage(playerid, COLOR_GRAD1, "You are not allowed to use that command.");
 	return 1;
 }
 
 
 CMD:setbombpoint(playerid, params[])
 {
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	GetPlayerPos(playerid, arrBombMaker[bomb_fPos][0], arrBombMaker[bomb_fPos][1], arrBombMaker[bomb_fPos][2]);
 	Bomb_ProcessPosition();
 	SendClientMessage(playerid, COLOR_YELLOW, "You have successfully set the bomb point to your location.");
@@ -2222,7 +2205,7 @@ CMD:setbombpoint(playerid, params[])
 
 CMD:setbombcost(playerid, params[])
 {
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	new szChoice[8],
 		iAmount;
 	if(sscanf(params, "%s[8]%d", szChoice, iAmount))
@@ -2246,14 +2229,15 @@ CMD:setbombcost(playerid, params[])
 	return 1;
 }
 
-CMD:gotobombpoint(playerid, params[]) {
-
-	if(IsAdminLevel(playerid, ADMIN_GENERAL)) SetPlayerPos(playerid, arrBombMaker[bomb_fPos][0], arrBombMaker[bomb_fPos][1], arrBombMaker[bomb_fPos][2]);
+CMD:gotobombpoint(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] > 0) SetPlayerPos(playerid, arrBombMaker[bomb_fPos][0], arrBombMaker[bomb_fPos][1], arrBombMaker[bomb_fPos][2]);
+	else SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	return 1;
 }
 
-CMD:bombpoint(playerid, params[]) {
-
+CMD:bombpoint(playerid, params[])
+{
 	DisablePlayerCheckpoint(playerid);
 	SetPVarInt(playerid, "_BombCP", 1);
 	SetPlayerCheckpoint(playerid, arrBombMaker[bomb_fPos][0], arrBombMaker[bomb_fPos][1], arrBombMaker[bomb_fPos][2], 10.0);
@@ -2275,7 +2259,6 @@ CMD:placebomb(playerid, params[])
 {
 	szMiscArray[0] = 0;
 	new Float:fPos[3], targetid;
-	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a bomb while in a vehicle.");
 	if(PlayerInfo[playerid][pBombs] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You are not carrying any bombs with you. Use /bombpoint for the bomb maker's location.");
 	targetid = GetNearestGateOrDoor(playerid);
 	if(targetid == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You are not near a gate or door.");
@@ -2314,9 +2297,9 @@ CMD:collectbombs(playerid, params[])
 
 CMD:acceptbomb(playerid, params[])
 {
-	if(GetPVarType(playerid, "_BombPlayerOffer"))
+	if(GetPVarInt(playerid, "_BombPlayerOffer"))
 	{
-		new offerid = GetPVarInt(playerid, "_BombPlayerOffer"),
+		new offerid = GetPVarInt(playerid, "_BombPlayerOffer")-1,
 			amount = GetPVarInt(playerid, "_BombPlayerAmount"),
 			cost = GetPVarInt(playerid, "_BombPlayerCost"),
 			Float:fPos[3];
@@ -2352,7 +2335,7 @@ CMD:offerbomb(playerid, params[])
 	GetPlayerPos(giveplayerid, fPos[0], fPos[1], fPos[2]);
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, fPos[0], fPos[1], fPos[2])) return SendClientMessage(playerid, COLOR_GRAD1, "You must be near him/her to offer the bomb.");
 	if(PlayerInfo[playerid][pBombs] < amount) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have so many bombs");
-	SetPVarInt(giveplayerid, "_BombPlayerOffer", playerid); // fix 0;
+	SetPVarInt(giveplayerid, "_BombPlayerOffer", playerid+1); // fix 0;
 	SetPVarInt(giveplayerid, "_BombPlayerAmount", amount);
 	SetPVarInt(giveplayerid, "_BombPlayerCost", cost);
 	format(szMiscArray, sizeof(szMiscArray), "%s offered you %d bombs for $%d.", GetPlayerNameEx(playerid), amount, cost);

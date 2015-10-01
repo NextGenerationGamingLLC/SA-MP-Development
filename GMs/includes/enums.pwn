@@ -1181,8 +1181,7 @@ enum pInfo
 	pToggledChats[21], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
 	pHouseBuilder,
-	pLockKit,
-	pFurnitureSlots
+	pLockKit
 };
 
 enum pvInfo

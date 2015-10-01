@@ -13,18 +13,11 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
 				KillTimer(GetPVarInt(playerid, PVAR_FURNITURE_TIMER));
 				DeletePVar(playerid, "furnfirst");
-
-				GetDynamicObjectPos(objectid, x, y, z);
-				GetDynamicObjectRot(objectid, rx, ry, rz);
-				SetDynamicObjectPos(objectid, x, y, z);
-				SetDynamicObjectRot(objectid, rx, ry, rz);
-
 				/*
-					DeletePVar(playerid, "PX");
-					DeletePVar(playerid, "PY");
-					DeletePVar(playerid, "PZ");
+				DeletePVar(playerid, "PX");
+				DeletePVar(playerid, "PY");
+				DeletePVar(playerid, "PZ");
 				*/
-
 				DeletePVar(playerid, PVAR_FURNITURE_TIMER);
 				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have cancelled placing the %s.", GetFurnitureName(iModelID));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -41,40 +34,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
 				new iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID),
 					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
-					iHouseID = PlayerInfo[playerid][pPhousekey],
-					Float:fPos[3];
-
-				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
-				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
-				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-				szMiscArray[0] = 0;
-				DestroyDynamicObject(objectid);
-				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, x, y, z, rx, ry, rz, HouseInfo[iHouseID][hIntVW]);
-				if(IsADoor(iModelID)) {
-
-					new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID),
-						szData[3];
-
-					DestroyDynamicArea(iLocalDoorArea);
-
-					iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
-					szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
-					szData[2] = 0;
-					Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
-				}
-
-				GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][iSlotID], x, y, z);
-				GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][iSlotID], rx, ry, rz);
-
-				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
-					WHERE `houseid` = '%d' AND `slotid` = '%d'", x, y, z, rx, ry, rz, iHouseID, iSlotID);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnEditFurniture", "");
-
-
-
-				foreach(new i : Player) Streamer_Update(i);
+					iHouseID = PlayerInfo[playerid][pPhousekey];
 
 				KillTimer(GetPVarInt(playerid, PVAR_FURNITURE_TIMER));
 				DeletePVar(playerid, "furnfirst");
@@ -82,6 +42,51 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				DeletePVar(playerid, "PY");
 				DeletePVar(playerid, "PZ");
 				DeletePVar(playerid, PVAR_FURNITURE_TIMER);
+
+				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
+				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
+
+				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+				szMiscArray[0] = 0;
+
+				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
+				
+				SetDynamicObjectPos(objectid, x, y, z);
+				SetDynamicObjectRot(objectid, rx, ry, rz);
+					
+				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
+
+				new /*
+					modelid,
+					szString1[5][16],
+					szString2[5][16],
+					iColor[5],
+					*/
+					Float:fPos[6];
+
+				/*()
+				for(new i; i < 5; ++i) GetDynamicObjectMaterial(objectid, i, modelid, szString1[i], szString2[i], iColor[i], sizeof(szString1), sizeof(szString2));
+				DestroyDynamicObject(objectid);
+				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, x, y, z, rx, ry, rz, HouseInfo[iHouseID][hIntVW]);
+				for(new i; i < 5; ++i) SetDynamicObjectMaterial(objectid, i, modelid, szString1[i], szString2[i], iColor[i]);
+				foreach(new i : Player) Streamer_Update(i);
+				GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][iSlotID], fPos[0], fPos[1], fPos[2]);
+				GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][iSlotID], fPos[3], fPos[4], fPos[5]);
+				*/
+
+				/*
+				GetDynamicObjectPos(objectid, fPos[0], fPos[1], fPos[2]);
+				GetDynamicObjectRot(objectid, fPos[3], fPos[4], fPos[5]);
+				*/
+
+				foreach(new i : Player) Streamer_Update(i);
+
+				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
+					WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], iHouseID, iSlotID);
+				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
@@ -92,7 +97,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	if(response == EDIT_RESPONSE_FINAL)
 	{
 		szMiscArray[0] = 0;
-		if(GetPVarInt(playerid, "gEdit") == 2)
+		if(GetPVarInt(playerid, "gEdit") == 1)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
@@ -104,12 +109,12 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			GateInfo[gateid][gRotZ] = rz;
 			CreateGate(gateid);
 			SaveGate(gateid);
-			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the closed position of Gate ID: %d", gateid);
+			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the open position of Gate ID: %d", gateid);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 			DeletePVar(playerid, "gEdit");
 			DeletePVar(playerid, "EditingGateID");
 		}
-		if(GetPVarInt(playerid, "gEdit") == 1)
+		if(GetPVarInt(playerid, "gEdit") == 2)
 		{
 			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
@@ -121,7 +126,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			GateInfo[gateid][gRotZM] = rz;
 			CreateGate(gateid);
 			SaveGate(gateid);
-			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the open position of Gate ID: %d", gateid);
+			format(szMiscArray, sizeof(szMiscArray), "You have finished editing the closed position of Gate ID: %d", gateid);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 			DeletePVar(playerid, "gEdit");
 			DeletePVar(playerid, "EditingGateID");
@@ -129,7 +134,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	}
 	if(response == EDIT_RESPONSE_CANCEL)
 	{
-		if(GetPVarType(playerid, "gEdit") == 2)
+		if(GetPVarType(playerid, "gEdit") == 1)
 		{
 			CreateGate(GetPVarInt(playerid, "EditingGateID"));
 			DeletePVar(playerid, "gEdit");
@@ -308,31 +313,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "editingsign");
 			ClearCheckpoint(playerid);
 		}
-	}
-	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
-	{
-	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
-
-	    if(response == EDIT_RESPONSE_FINAL) {
-	        SafeData[iSafeID][safe_fPos][0] = x;
-			SafeData[iSafeID][safe_fPos][1] = y;
-			SafeData[iSafeID][safe_fPos][2] = z;
-			SafeData[iSafeID][safe_fPos][3] = rx;
-			SafeData[iSafeID][safe_fPos][4] = ry;
-			SafeData[iSafeID][safe_fPos][5] = rz;
-			processSafe(iSafeID);
-			saveSafe(iSafeID);
-
-			format(szMiscArray, sizeof szMiscArray, "You have edited the position of Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
-	        DeletePVar(playerid, "_EditingSafeObjectID");
-	    }
-	    else if(response == EDIT_RESPONSE_CANCEL) {
-
-	        format(szMiscArray, sizeof szMiscArray, "You have quit editing Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
-	        DeletePVar(playerid, "_EditingSafeID");
-	    }
 	}
 	return 1;
 }
