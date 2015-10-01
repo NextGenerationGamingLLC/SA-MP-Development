@@ -52,7 +52,7 @@ Internal_TogglePlayerSpectating(playerid, toggle) {
 }
 */
 
-/*Internal_SetPlayerHealth(playerid, Float:health) {
+Internal_SetPlayerHealth(playerid, Float:health) {
 
 	PlayerInfo[playerid][pHealth] = health;
 	return SetPlayerHealth(playerid, health);
@@ -62,7 +62,7 @@ Internal_SetPlayerArmour(playerid, Float:armour) {
 
 	PlayerInfo[playerid][pArmor] = armour;
 	return SetPlayerArmour(playerid, armour);
-}*/
+}
 
 Internal_SetPlayerWeather(playerid, iWeatherID) {
 
@@ -89,27 +89,14 @@ Internal_DestroyVehicle(vehicleid) {
 	return DestroyVehicle(vehicleid);
 }
 
-Internal_SetPlayerVirtualWorld(playerid, iVW) {
-	PlayerInfo[playerid][pVW] = iVW;
-	return SetPlayerVirtualWorld(playerid, iVW);
-}
-
-Internal_SetPlayerInterior(playerid, iInt) {
-	PlayerInfo[playerid][pInt] = iInt;
-	return SetPlayerInterior(playerid, iInt);
-}
-
 
 #define SetPlayerWeather(%0) Internal_SetPlayerWeather(%0)
 #define SetPlayerTime(%0) Internal_SetPlayerTime(%0)
-//#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
-//#define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)
+#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
+#define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)
 #define CreateVehicle(%0) Internal_CreateVehicle(%0)
 #define DestroyVehicle(%0) Internal_DestroyVehicle(%0)
 #define SetPlayerPos(%0) Internal_SetPlayerPos(%0)
 // #define TogglePlayerSpectating(%0) Internal_TogglePlayerSpectating(%0)
-//#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
-//#define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)
-
-#define SetPlayerVirtualWorld(%0) Internal_SetPlayerVirtualWorld(%0)
-#define SetPlayerInterior(%0) Internal_SetPlayerInterior(%0)
+#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
+#define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)

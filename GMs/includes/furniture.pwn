@@ -517,6 +517,43 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	return 1;
 }
 
+GetMaxFurnitureSlots(playerid) {
+
+	new iMaxSlots;
+	if(PlayerInfo[playerid][pDonateRank] > 0) {
+
+		switch(PlayerInfo[playerid][pDonateRank]) {
+			case 0: iMaxSlots = 30; // Regular
+			case 1: iMaxSlots = 35; // Bronze VIPs
+			case 2: iMaxSlots = 40; // Silver VIPs
+			case 3: iMaxSlots = 50; // Gold VIPs
+			case 4: iMaxSlots = 75; // Platinum VIPs
+		}
+	}
+	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
+	if(IsAdminLevel(playerid, ADMIN_HEAD)) iMaxSlots = MAX_FURNITURE_SLOTS;
+	return iMaxSlots;
+}
+
+CheckSlotValidity(playerid, iSlotID) {
+
+	new iMaxSlots;
+
+	if(PlayerInfo[playerid][pDonateRank] > 0) {
+
+		switch(PlayerInfo[playerid][pDonateRank]) {
+			case 0: iMaxSlots = 30; // Regular
+			case 1: iMaxSlots = 35; // Bronze VIPs
+			case 2: iMaxSlots = 40; // Silver VIPs
+			case 3: iMaxSlots = 50; // Gold VIPs
+			case 4: iMaxSlots = 75; // Platinum VIPs
+		}
+	}
+	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
+	if(iSlotID >= iMaxSlots) return 0;
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	switch(dialogid) {
@@ -532,7 +569,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_FURNITURE_BUY: {
 			if(!response) return FurnitureMenu(playerid, 0);
 
-			ShowModelSelectionMenu(playerid, FurnitureList[listitem], "Buy Furniture", 0x00000099, 0x000000BB, 0xFFFF00AA);
+			ShowModelSelectionMenu(playerid, FurnitureList[listitem], szFurnitureCategories[listitem], 0x00000099, 0x000000BB, 0xFFFF00AA);
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
 
@@ -542,9 +579,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iHouseID = GetHouseID(playerid),
 				iSlotID = -1;
 
-			iSlotID = GetNextFurnitureSlotID(iHouseID);
+			iSlotID = GetNextFurnitureSlotID(playerid, iHouseID);
 
+			if(!CheckSlotValidity(playerid, iSlotID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
 			if(iSlotID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
+			
+			new iPrice = GetFurniturePrice(iModelID);
+			if(GetPlayerMoney(playerid) < iPrice) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this.");
+			if(PlayerInfo[playerid][pMats] < (iPrice / 10)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this.");
 
 			new Float:fPos[3],
 				iVW = GetPlayerVirtualWorld(playerid);
@@ -563,6 +605,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
 				Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 			}
+			GivePlayerCash(playerid, -iPrice);
+			PlayerInfo[playerid][pMats] -= (iPrice / 10);
+			
 			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, iSlotID);
 			SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][iSlotID]);
 			TogglePlayerControllable(playerid, false);
@@ -596,7 +641,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					SetPVarInt(playerid, PVAR_FURNITURE_SLOT, listitem);
 					SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][listitem]);
-					return ShowPlayerDialog(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Move position\nChange texture\nChange color", "Select", "Back");
+					//return ShowPlayerDialog(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Move position\nChange texture\nChange color", "Select", "Back");
+					return ShowPlayerDialog(playerid, DIALOG_FURNITURE_EDIT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Move position\nChange texture", "Select", "Back");
 				}
 				else SendClientMessage(playerid, COLOR_GRAD1, "There's no furniture in that slot.");			
 			}
@@ -635,7 +681,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				case 1: SetPVarInt(playerid, "color", 1);
 			}
-			return ShowPlayerDialog(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");		
+			return ShowPlayerDialog(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
 		}
 		case DIALOG_FURNITURE_PAINT2: {
 
@@ -755,7 +801,8 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			BuildIcons(playerid, 0);
 			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, i);
 			SetPVarInt(playerid, PVAR_FURNITURE_EDITING, objectid);
-			ShowPlayerDialog(playerid, DIALOG_FURNITURE_PAINT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Change texture\nChange color", "Select", "Back");
+			// ShowPlayerDialog(playerid, DIALOG_FURNITURE_PAINT, DIALOG_STYLE_LIST, "Furniture Menu | Edit", "Change texture\nChange color", "Select", "Back");
+			ShowPlayerDialog(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texture Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
 
 		}
 		else {
@@ -802,13 +849,13 @@ FurnitureListInit() {
 	}
 }
 
-GetNextFurnitureSlotID(iHouseID) {
+GetNextFurnitureSlotID(playerid, iHouseID) {
 
-	new iSlotID = -1;
-	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+	new iSlotID = -1,
+		iMaxSlots = GetMaxFurnitureSlots(playerid);
+	for(new i; i < iMaxSlots; ++i) {
 
 		if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][i])) {
-			
 			iSlotID = i;
 			break;
 		}
@@ -881,7 +928,8 @@ FurnitureMenu(playerid, menu = 0) {
 			szMiscArray[0] = 0;
 			TextDrawShowForPlayer(playerid, Furniture_TD[sizeof(Furniture_TD) - 2]);
 			TextDrawShowForPlayer(playerid, Furniture_TD[sizeof(Furniture_TD) - 1]);
-			for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+			new iMaxSlots = GetMaxFurnitureSlots(playerid);
+			for(new i; i < iMaxSlots; ++i) {
 
 				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][i])) format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, GetFurnitureName(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_MODEL_ID)));
 				else format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, "None");
@@ -892,7 +940,8 @@ FurnitureMenu(playerid, menu = 0) {
 		case 3: { // Sell furniture.
 
 			szMiscArray[0] = 0;
-			for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+			new iMaxSlots = GetMaxFurnitureSlots(playerid);
+			for(new i; i < iMaxSlots; ++i) {
 
 				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][i])) format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, GetFurnitureName(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_MODEL_ID)));
 				else format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, "None");
@@ -1001,8 +1050,8 @@ CMD:unfurnishhouse(playerid, params[]) {
 		Float:fHouseZ,
 		fDistance;
 
-	if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-
+	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
 	for(new i; i < sizeof(InteriorsList); ++i) {
 		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
 			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
@@ -1021,13 +1070,17 @@ CMD:unfurnishhouse(playerid, params[]) {
 	HouseInfo[iHouseID][hCustomInterior] = 1;
 	SaveHouse(iHouseID);
 
-	new Float:fPos[3];
+	new Float:fPos[6];
 	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
 
+		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
+
 		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
+		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
+
 		fPos[2] -= 30;
-		SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
-		if(IsADoor(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))) {
+		if(IsADoor(iModelID)) {
 
 			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
 				szData[3];
@@ -1039,6 +1092,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 		}
+		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
@@ -1065,8 +1119,8 @@ CMD:furnishhouse(playerid, params[]) {
 		Float:fHouseZ,
 		fDistance;
 
-	if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-
+	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
 	for(new i; i < sizeof(InteriorsList); ++i) {
 		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
 			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
@@ -1084,13 +1138,17 @@ CMD:furnishhouse(playerid, params[]) {
 	HouseInfo[iHouseID][hCustomInterior] = 0;
 	SaveHouse(iHouseID);
 	// defer RehashHouseFurniture(iHouseID);
-	new Float:fPos[3];
+	new Float:fPos[6];
 	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
 
+		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
+
 		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
+		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
+
 		fPos[2] -= 30;
-		SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
-		if(IsADoor(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))) {
+		if(IsADoor(iModelID)) {
 
 			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
 				szData[3];
@@ -1102,6 +1160,7 @@ CMD:furnishhouse(playerid, params[]) {
 			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
 			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 		}
+		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
@@ -1113,6 +1172,14 @@ CMD:furnishhouse(playerid, params[]) {
 			defer HousePosition(p, iHouseID);
 		}
 	}
+	return 1;
+}
+
+forward OnEditFurniture();
+public OnEditFurniture() {
+
+	if(mysql_errno()) return SendClientMessageToAll(0, "HELPPPPP");
+	SendClientMessageToAll(0, "SUCCESS");
 	return 1;
 }
 

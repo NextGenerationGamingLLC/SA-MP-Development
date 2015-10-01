@@ -1027,7 +1027,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 
 			if(response) {
 				SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, modelid);
-				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s?", GetFurnitureName(modelid), number_format(GetFurniturePrice(modelid)));
+				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", GetFurnitureName(modelid), number_format(GetFurniturePrice(modelid)), number_format(GetFurniturePrice(modelid) / 10));
 				ShowPlayerDialog(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
 			}
 			else {
@@ -3608,14 +3608,11 @@ public OnPlayerEnterCheckpoint(playerid)
 				new route = TruckRoute[vehicleid];
    				new string[128], payment;
 				new level = PlayerInfo[playerid][pTruckSkill];
-				switch(level) {
-					case 0 .. 50: payment = 4000;
-					case 51 .. 100: payment = 6250;
-					case 101 .. 200: payment = 8500;
-					case 201 .. 400: payment = 9750;
-					case 401: payment = 10500;
-					default: payment = 10500;
-				}
+				if(level >= 0 && level <= 50) payment = 4000;
+				else if(level >= 51 && level <= 100) payment = 6250;
+				else if(level >= 101 && level <= 200) payment = 8500;
+				else if(level >= 201 && level <= 400) payment = 9750;
+				else if(level >= 401) payment = 10500;
 				new Float:distancepay;
 				if(IsABoat(vehicleid))
 				{
@@ -3662,13 +3659,30 @@ public OnPlayerEnterCheckpoint(playerid)
 					{
 						if(PlayerInfo[playerid][pConnectHours] >= 2 && PlayerInfo[playerid][pWRestricted] <= 0)
 						{
-							switch(level) {
-								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
-								case 50 .. 100: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
-								case 101 .. 200: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
-								case 201 .. 400: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
-								case 401: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-								default: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
+							if(level >= 0 && level < 50)
+							{
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free 9mm as a bonus for taking the risk of transporting illegal weapons.");
+								GivePlayerValidWeapon(playerid, 22, 10);
+							}
+							else if(level >= 50 && level <= 100)
+							{
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Shotgun as a bonus for taking the risk of transporting illegal weapons.");
+								GivePlayerValidWeapon(playerid, 25, 10);
+							}
+							else if(level >= 101 && level <= 200)
+							{
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free MP5 as a bonus for taking the risk of transporting illegal weapons.");
+								GivePlayerValidWeapon(playerid, 29, 30);
+							}
+							else if(level >= 201 && level <= 400)
+							{
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Deagle as a bonus for taking the risk of transporting illegal weapons.");
+								GivePlayerValidWeapon(playerid, 24, 7);
+							}
+							else if(level >= 401)
+							{
+								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free AK-47 as a bonus for taking the risk of transporting illegal weapons.");
+								GivePlayerValidWeapon(playerid, 30, 30);
 							}
 						}
 						else
@@ -3771,6 +3785,27 @@ public OnPlayerEnterCheckpoint(playerid)
 						arrGroupData[i][g_iBudget] += 200;
 					}
 			 	}
+			}
+			case CHECKPOINT_HITMAN:
+			{
+			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
+			    DisablePlayerCheckpoint(playerid);
+			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /enter to enter the HQ.");
+			}
+			case CHECKPOINT_HITMAN2:
+			{
+			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
+			    DisablePlayerCheckpoint(playerid);
+			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /enter to enter the HQ.");
+			}
+			case CHECKPOINT_HITMAN3:
+			{
+			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
+			    DisablePlayerCheckpoint(playerid);
+			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /order to get your weaponry.");
 			}
 		}
 	}

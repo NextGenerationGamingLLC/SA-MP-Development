@@ -214,7 +214,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
 
-				for(new x = 0; x < 6; x++)
+				for(new x = 0; x < 4; x++)
 				{
 					format(szResult, sizeof(szResult), "GunPrice%d",x);
 					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
@@ -1516,8 +1516,6 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GunPrice1` = '%d',", query, GunPrices[1]);
 	format(query, sizeof(query), "%s `GunPrice2` = '%d',", query, GunPrices[2]);
 	format(query, sizeof(query), "%s `GunPrice3` = '%d'", query, GunPrices[3]);
-	format(query, sizeof(query), "%s `GunPrice4` = '%d'", query, GunPrices[4]);
-	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 	SaveGangShipmentData(sizeof(query), query);
 	

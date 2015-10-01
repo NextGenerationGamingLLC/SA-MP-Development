@@ -717,7 +717,7 @@ CMD:craft(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)      lockkit(50000)");
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 		return 1;
@@ -729,22 +729,22 @@ CMD:craft(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available crafts >>");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver(1,000)	 smslog(2,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch(500)	 surveillance(8,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "tire(250)	         lock(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid(1,000)	 camera(250)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam(8,000)	     receiver(5,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "gps(1,000)          bugsweep(10,000)");
-			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana(300)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan(2000)");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "screwdriver (1,000)	 smslog (2,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "wristwatch (500)	 surveillance (8,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "tire (250)	         lock (500)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "firstaid (1,000)	 camera (250)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "rccam (8,000)	     receiver (5,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "gps (1,000)          bugsweep (10,000)");
+			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute (50)          bag (6000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute (50)		mailbox (15,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector (12,500) syringe (500)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "closet (50,000)		toolbox (12,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar (7,000)      flowers (25)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles (100)        baseballbat (100)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel (100)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "poolcue (100)        katana (300)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "dildo (300)          spraycan (2000)");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "rimkit (400000)      lockkit (50000)");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /craft [player] [craftname]");
 			return 1;
@@ -1097,6 +1097,13 @@ CMD:craft(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
 		}
+		else if(strcmp(choice, "lockkit", true) == 0) {
+			if(PlayerInfo[playerid][pMats] >= 50000) {
+				price = 50000;
+				weapon = 30;
+			}
+			else return SendClientMessageEx(playerid, COLOR_GREY, "   Not enough materials for that!");
+		}
 
 		else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid Craft name!"); return 1; }
 		if (ProxDetectorS(5.0, playerid, giveplayerid))
@@ -1281,6 +1288,10 @@ CMD:craft(playerid, params[])
 				case 29: {
 					PlayerInfo[playerid][pRimMod]++;
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /userimkit as a mechanic in any car to modify your rims.");
+				}
+				case 30: {
+					PlayerInfo[playerid][pLockKit]++;
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /picklock to attempt to picklock a door.");
 				}
 				
 				}

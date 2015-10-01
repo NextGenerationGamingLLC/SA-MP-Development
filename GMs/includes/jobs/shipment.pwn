@@ -35,8 +35,6 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <YSI\y_hooks>
-
 forward HijackTruck(playerid);
 public HijackTruck(playerid)
 {
@@ -654,38 +652,5 @@ CMD:loadshipment(playerid, params[])
 	    else return SendClientMessageEx(playerid, COLOR_GREY, "You are not driving a Shipment Transport Vehicle!");
 	}
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Shipment Contractor!");
-	return 1;
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-
-	switch(dialogid) {
-		case D_TRUCKDELIVER_WEPCHOICE: {
-
-			if(!response) {
-				
-				switch(PlayerInfo[playerid][pTruckSkill]) {
-					case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
-					case 50 .. 100: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
-					case 101 .. 200: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
-					case 201 .. 400: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
-					case 401: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-					default: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-				}
-				return 1;
-			}
-			else {
-				switch(listitem) {
-					case 0: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
-					case 1: GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN, 10);
-					case 2: GivePlayerValidWeapon(playerid, WEAPON_MP5, 30);
-					case 3: GivePlayerValidWeapon(playerid, WEAPON_DEAGLE, 7);
-					case 4: GivePlayerValidWeapon(playerid, WEAPON_AK47, 30);
-				}
-				return 1;
-			}
-		}
-	}
-
 	return 1;
 }

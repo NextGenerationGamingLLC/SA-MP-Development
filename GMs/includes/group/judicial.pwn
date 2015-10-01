@@ -491,6 +491,7 @@ CMD:deliver(playerid, params[])
 
 CMD:free(playerid, params[])
 {
+
 	if(!IsALawyer(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "   You are not a Lawyer!");
 
 	if(PlayerInfo[playerid][pLawSkill] >= 401)
@@ -673,7 +674,11 @@ CMD:defend(playerid, params[])
 CMD:warrant(playerid, params[])
 {
 	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 3) return  SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+ 	if(PlayerInfo[playerid][pRank] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
 
 	new string[128], crime[64], giveplayerid;
 	if(sscanf(params, "us[64]", giveplayerid, crime)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /warrant [player] [crime]");
@@ -686,7 +691,7 @@ CMD:warrant(playerid, params[])
 		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 		format(string, sizeof(string), "%s", crime);
-		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
+		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 		return 1;
 	}
 	return 1;

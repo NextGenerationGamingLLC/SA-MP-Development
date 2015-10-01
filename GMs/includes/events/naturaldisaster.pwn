@@ -157,12 +157,14 @@ hook OnPlayerConnect(playerid)
 {
 	GetPlayerNatDisZones(playerid);
 	KillTimer(natdis_ptCam[playerid]);
+	natdis_ptCam[playerid] = 0;
 	return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason) {
 
 	KillTimer(natdis_ptCam[playerid]);
+	natdis_ptCam[playerid] = -1;
 }
 
 hook OnGameModeExit()
@@ -387,18 +389,20 @@ public NatDis_StopFlash(i, playerid)
 NatDis_MainMenu(playerid)
 {
 	szMiscArray[0] = 0;
-	new szStatus[4][20];
+	new szStatus[6][24];
 	if(GetGVarInt("_NatDis_GID", TYPE_EARTHQUAKE)) szStatus[0] = "{00FF00} ACTIVE"; else szStatus[0] = "{FF0000} INACTIVE";
 	if(GetGVarInt("_NatDis_GID", TYPE_SANDSTORM)) szStatus[1] ="{00FF00} ACTIVE"; else szStatus[1] = "{FF0000} INACTIVE";
 	if(GetGVarInt("_NatDis_GID", TYPE_FLOOD)) szStatus[2] = "{00FF00} ACTIVE"; else szStatus[2] = "{FF0000} INACTIVE";
 	if(GetGVarInt("_NatDis_GID", TYPE_HURRICANE)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
-	if(GetGVarInt("_NatDis_GID", TYPE_NUKE)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
-	if(GetGVarInt("_NatDis_GID", TYPE_ALIENS)) szStatus[3] = "{00FF00} ACTIVE"; else szStatus[3] = "{FF0000} INACTIVE";
+	if(GetGVarInt("_NatDis_GID", TYPE_NUKE)) szStatus[4] = "{00FF00} ACTIVE"; else szStatus[4] = "{FF0000} INACTIVE";
+	if(GetGVarInt("_NatDis_GID", TYPE_ALIENS)) szStatus[5] = "{00FF00} ACTIVE"; else szStatus[5] = "{FF0000} INACTIVE";
 
 	format(szMiscArray, sizeof(szMiscArray), "Earthquake\t%s\n\
 		Sandstorm\t%s\n\
 		Flood\t%s\n\
-		Hurricane / Thunderstorm\t%s", szStatus[0], szStatus[1], szStatus[2], szStatus[3]);
+		Hurricane / Thunderstorm\t%s\n\
+		Nuke\t%s\n\
+		Aliens\t%s", szStatus[0], szStatus[1], szStatus[2], szStatus[3], szStatus[4], szStatus[5]);
 	return ShowPlayerDialog(playerid, DIALOG_NATDIS_MAIN, DIALOG_STYLE_TABLIST, "Natural Disaster Menu", szMiscArray, "Cancel", "Select");
 }
 
@@ -573,6 +577,7 @@ NatDis_Effects(playerid, i, iTypeID, choice)
 		case 1:
 		{
 			KillTimer(natdis_ptCam[playerid]);
+			natdis_ptCam[playerid] = -1;
 			natdis_ptCam[playerid] = SetTimerEx("CameraShaker", 100, true, "i", playerid);
 			SetTimerEx("NatDis_StopEffects", 20000, false, "i", playerid);
 			NatDis_AnimEffects(playerid);
@@ -586,6 +591,7 @@ NatDis_Effects(playerid, i, iTypeID, choice)
 				{
 					if(IsPlayerInDynamicArea(playerid, NatDis[i][nat_iAreaID]))
 					{
+						KillTimer(natdis_ptCam[playerid]);
 						natdis_ptCam[playerid] = SetTimerEx("CameraShaker", 100, true, "i", playerid);
 						SetTimerEx("NatDis_StopEffects", 10000, false, "i", playerid);
 						NatDis_AnimEffects(playerid);
@@ -626,12 +632,14 @@ public NatDis_StopEffects(playerid)
 {
 	ResetCameraShake(playerid);
 	KillTimer(natdis_ptCam[playerid]);
+	natdis_ptCam[playerid] = -1;
 	return 1;
 }
 
 forward CameraShaker(playerid);
 public CameraShaker(playerid)
 {
+	if(natdis_ptCam[playerid] == -1) return 1;
 	SetPlayerDrunkLevel(playerid, 2003);
 	return 1;
 }
@@ -657,6 +665,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 2: return NatDis_EditDialog(playerid, DIALOG_NATDIS_FLOOD);
 				case 3: return 1;
 				case 4: NatDis_EditDialog(playerid, DIALOG_NATDIS_NUKE);
+				case 5: NatDis_EditDialog(playerid, DIALOG_NATDIS_ALIENS);
 			}
 		}
 		case DIALOG_NATDIS_EARTHQUAKE:
@@ -874,7 +883,7 @@ InitiateProgram(playerid, iNasType) {
 	  			PlayerInfo[i][pPos_y] = BroadcastFloats[i][2];
 	  			PlayerInfo[i][pPos_z] = BroadcastFloats[i][2];
 
-	  			SetPlayerPos(playerid, 0.0, 0.0, 100000000);
+	  			SetPlayerPos(i, 0.0, 0.0, 100000000);
 	  			PlayAudioStreamForPlayer(i, "http://www.jingles.ml/audio/nuke.mp3");
 	  			defer ReturnPlayer(i);
 	  		}
