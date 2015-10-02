@@ -214,7 +214,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
 
-				for(new x = 0; x < 4; x++)
+				for(new x = 0; x < 6; x++)
 				{
 					format(szResult, sizeof(szResult), "GunPrice%d",x);
 					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
@@ -1514,6 +1514,8 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GunPrice1` = '%d',", query, GunPrices[1]);
 	format(query, sizeof(query), "%s `GunPrice2` = '%d',", query, GunPrices[2]);
 	format(query, sizeof(query), "%s `GunPrice3` = '%d'", query, GunPrices[3]);
+	format(query, sizeof(query), "%s `GunPrice4` = '%d'", query, GunPrices[4]);
+	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 	SaveGangShipmentData(sizeof(query), query);
 	
@@ -2453,6 +2455,7 @@ stock g_mysql_SaveAccount(playerid)
 		PlayerInfo[playerid][pChatbox][17],
 		PlayerInfo[playerid][pChatbox][18],
 		PlayerInfo[playerid][pChatbox][19]);
+
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
@@ -2467,7 +2470,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
-
+	
 	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
 	for(new d; d < sizeof(szIngredients); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
 

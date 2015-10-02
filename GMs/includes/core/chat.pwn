@@ -123,6 +123,7 @@ stock SendClientMessageToAllEx(color, string[])
 	return 1;
 }
 
+/*
 CMD:togchatbox2(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pToggledChats][19]) {
@@ -137,6 +138,7 @@ CMD:togchatbox2(playerid, params[]) {
 	}
 	return 1;
 }
+*/
 
 stock SendClientMessageWrap(playerid, color, width, string[])
 {
@@ -742,26 +744,18 @@ CMD:togchatbox(playerid, params[])
 ChatTrafficProcess(playerid, color, szString[], chattype) {
 
 	if(PlayerInfo[playerid][pToggledChats][chattype] == 1) return 1;
+	return SendClientMessageEx(playerid, color, szString);
+	/*
 	if(PlayerInfo[playerid][pChatbox][chattype] > 0 && PlayerInfo[playerid][pToggledChats][19] == 0) { // if Secondary Chatbox is not active, route all chat to normal chatbox.
 
 		if(chattype == 1) return SendClientMessageEx(playerid, color, szString); // temp bug fix for /news.
 		if(chattype == 16) return SendClientMessageEx(playerid, color, szString); // temp bug fix for /staff.
 
-		/*if(strlen(szString) > 60)
-		{
-			new firstline[128], secondline[128];
-			strmid(firstline, szString, 0, 88);
-			strmid(secondline, szString, 88, 128);
-			format(firstline, sizeof(firstline), "%s...", firstline);
-			format(secondline, sizeof(secondline), "...%s", secondline);
-			ChatBoxProcess(playerid, color, firstline);
-			ChatBoxProcess(playerid, color, secondline);
-		}
-		else */
 		ChatBoxProcess(playerid, color, szString);
 	}
 	else SendClientMessageEx(playerid, color, szString);
 	return 1;
+	*/
 }
 
 ProxChatBubble(playerid, szString[]) {
@@ -771,6 +765,7 @@ ProxChatBubble(playerid, szString[]) {
 	SendClientMessageEx(playerid, COLOR_PURPLE, szString);
 }
 
+/*
 new MessageStr[MAX_PLAYERS][11][128],
 	MessageColor[MAX_PLAYERS][11];
 
@@ -800,8 +795,7 @@ ChatBoxProcess(playerid, hColor, szText[]) {
 	}
 	return 1;
 }
-
-
+*/
 
 /*
 ChatBoxProcess(playerid, hColor, szText[]) {

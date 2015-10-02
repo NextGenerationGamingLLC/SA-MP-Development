@@ -1425,7 +1425,7 @@ ptask PlayerHeartBeat[1000](i) {
 			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 			ClearCrimes(i);
 			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
- 			GroupLog(2, szMiscArray); // Prison Group ID (September 2015).
+			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess]) GroupLog(x, szMiscArray);
 		}
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 			

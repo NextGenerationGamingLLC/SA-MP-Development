@@ -56,6 +56,7 @@ public OnPlayerLoad(playerid)
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
+	ConnectionDBLog(playerid);
 	CheckBan(playerid);
 
 	if(PlayerInfo[playerid][pDisabled] == 2)

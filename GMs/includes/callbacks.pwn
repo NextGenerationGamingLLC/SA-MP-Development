@@ -407,11 +407,6 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-public OnPlayerEditObject( playerid, playerobject, objectid, response,
-Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ )
-{
-	return 1;
-}
 
 public OnPlayerEditAttachedObject( playerid, response, index, modelid, boneid,
                                    Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ,
@@ -2697,7 +2692,7 @@ public OnPlayerSpawn(playerid)
   		}
 	}
 	if(GetPVarType(playerid, "WatchingTV")) return 1;
-	if(GetPVarType(playerid, "pTut")) return 1;
+	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{
 	    new Float:X, Float:Y, Float:Z;
@@ -3598,11 +3593,14 @@ public OnPlayerEnterCheckpoint(playerid)
 				new route = TruckRoute[vehicleid];
    				new string[128], payment;
 				new level = PlayerInfo[playerid][pTruckSkill];
-				if(level >= 0 && level <= 50) payment = 4000;
-				else if(level >= 51 && level <= 100) payment = 6250;
-				else if(level >= 101 && level <= 200) payment = 8500;
-				else if(level >= 201 && level <= 400) payment = 9750;
-				else if(level >= 401) payment = 10500;
+				switch(level) {
+					case 0 .. 50: payment = 4000;
+					case 51 .. 100: payment = 6250;
+					case 101 .. 200: payment = 8500;
+					case 201 .. 400: payment = 9750;
+					case 401: payment = 10500;
+					default: payment = 10500;
+				}
 				new Float:distancepay;
 				if(IsABoat(vehicleid))
 				{
@@ -3649,30 +3647,13 @@ public OnPlayerEnterCheckpoint(playerid)
 					{
 						if(PlayerInfo[playerid][pConnectHours] >= 2 && PlayerInfo[playerid][pWRestricted] <= 0)
 						{
-							if(level >= 0 && level < 50)
-							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free 9mm as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 22, 10);
-							}
-							else if(level >= 50 && level <= 100)
-							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Shotgun as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 25, 10);
-							}
-							else if(level >= 101 && level <= 200)
-							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free MP5 as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 29, 30);
-							}
-							else if(level >= 201 && level <= 400)
-							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free Deagle as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 24, 7);
-							}
-							else if(level >= 401)
-							{
-								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given a free AK-47 as a bonus for taking the risk of transporting illegal weapons.");
-								GivePlayerValidWeapon(playerid, 30, 30);
+							switch(level) {
+								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
+								case 50 .. 100: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
+								case 101 .. 200: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
+								case 201 .. 400: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
+								case 401: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
+								default: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
 							}
 						}
 						else
@@ -3775,27 +3756,6 @@ public OnPlayerEnterCheckpoint(playerid)
 						arrGroupData[i][g_iBudget] += 200;
 					}
 			 	}
-			}
-			case CHECKPOINT_HITMAN:
-			{
-			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
-			    DisablePlayerCheckpoint(playerid);
-			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /enter to enter the HQ.");
-			}
-			case CHECKPOINT_HITMAN2:
-			{
-			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
-			    DisablePlayerCheckpoint(playerid);
-			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /enter to enter the HQ.");
-			}
-			case CHECKPOINT_HITMAN3:
-			{
-			    PlayerPlaySound(playerid, 1058, 0.0, 0.0, 0.0);
-			    DisablePlayerCheckpoint(playerid);
-			    gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "  Type /order to get your weaponry.");
 			}
 		}
 	}
@@ -5896,88 +5856,4 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 		ShowPlayerDialog(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
 	}
 	return true;
-}
-
-public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(response == EDIT_RESPONSE_FINAL)
-	{
-		new string[128];
-		/*if(GetPVarInt(playerid, "Edit") == 2)
-		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gangtag = GetPVarInt(playerid, "gt_ID");
-			GangTags[gangtag][gt_PosX] = x;
-			GangTags[gangtag][gt_PosY] = y;
-			GangTags[gangtag][gt_PosZ] = z;
-			GangTags[gangtag][gt_PosRX] = rx;
-			GangTags[gangtag][gt_PosRY] = ry;
-			GangTags[gangtag][gt_PosRZ] = rz;
-			CreateGangTag(gangtag);
-			format(string, sizeof(string), "You have edited the position of gang tag %d!", gangtag);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has edited the position of gang tag %d.", GetPlayerNameEx(playerid), gangtag);
-			Log("Logs/GangTags.log", string);
-			DeletePVar(playerid, "gt_ID");
-			DeletePVar(playerid, "gt_Edit");
-			SaveGangTag(gangtag);
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
-			new h = GetPVarInt(playerid, "house");
-			if(GetPointDistanceToPoint(HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], x, y, z) > 10)
-				return SendClientMessageEx(playerid, COLOR_GREY, "Keep the sign within the checkpoint radius!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
-			HouseInfo[h][hSign][0] = x;
-			HouseInfo[h][hSign][1] = y;
-			HouseInfo[h][hSign][2] = z;
-			HouseInfo[h][hSign][3] = rz;
-			if(GetPVarInt(playerid, "editingsign") == 1)
-			{
-				HouseInfo[h][hSignExpire] = gettime()+86400;
-				PlayerInfo[playerid][mInventory][6] = 0;
-				if(IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished placing your house sale sign!");
-				format(string, sizeof(string), "[PLACESIGN] %s has placed down their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			if(GetPVarInt(playerid, "editingsign") == 2)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the position of your house sale sign!");
-				format(string, sizeof(string), "[EDITSIGN] %s has edited the position of their house sale sign at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			if(GetPVarInt(playerid, "editingsign") == 3)
-			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You have finished editing the house sale sign!");
-				format(string, sizeof(string), "[AEDITSIGN] %s has adjusted the position of the house sale sign placed at House ID: %d", GetPlayerNameEx(playerid), h);
-			}
-			Log("logs/house.log", string);
-			CreateHouseSaleSign(h);
-			SaveHouse(h);
-			DeletePVar(playerid, "signID");
-			DeletePVar(playerid, "house");
-			DeletePVar(playerid, "editingsign");
-			ClearCheckpoint(playerid);
-		}
-	}
-	if(response == EDIT_RESPONSE_CANCEL)
-	{
-		/*if(GetPVarInt(playerid, "gt_Edit") == 2)
-		{
-			new gangid = GetPVarInt(playerid, "gt_ID");
-			SetDynamicObjectPos(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosX], GangTags[gangid][gt_PosY], GangTags[gangid][gt_PosZ]);
-			SetDynamicObjectRot(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosRX], GangTags[gangid][gt_PosRY], GangTags[gangid][gt_PosRZ]);
-			DeletePVar(playerid, "gt_Edit");
-			DeletePVar(playerid, "gt_ID");
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing this gang tag!");
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
-			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped yourself from placing down your House Sale Sign!");
-			DeletePVar(playerid, "signID");
-			DeletePVar(playerid, "house");
-			DeletePVar(playerid, "editingsign");
-			ClearCheckpoint(playerid);
-		}
-	}
-	return 1;
 }

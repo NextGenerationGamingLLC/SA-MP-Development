@@ -310,6 +310,7 @@
 #include "./includes/group/sanews.pwn"
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
+#include "./includes/streamer/OnPlayerEditDynamicObject.pwn"
 
 
 #pragma unused DynamicBusiness

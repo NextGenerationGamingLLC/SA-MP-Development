@@ -328,52 +328,6 @@ CMD:contracts(playerid, params[])
     return 1;
 }
 
-CMD:showmehq(playerid, params[])
-{
-    if(CheckPointCheck(playerid)) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-        return 1;
-    }
-	if (IsAHitman(playerid)) {
-	    SetPlayerCheckpoint(playerid,-418.95, -1759.26, 6.22, 4.0);
-	    GameTextForPlayer(playerid, "~w~Waypoint set ~r~HQ", 5000, 1);
-	    gPlayerCheckpointStatus[playerid] = CHECKPOINT_HITMAN;
-    }
-    return 1;
-}
-
-
-CMD:showmehq2(playerid, params[])
-{
-    if(CheckPointCheck(playerid)) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-        return 1;
-    }
-	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT)
-	{
-	    SetPlayerCheckpoint(playerid,811.087707, -564.493835, 16.335937, 4.0);
-	    GameTextForPlayer(playerid, "~w~Waypoint set ~r~HQ", 5000, 1);
-	    gPlayerCheckpointStatus[playerid] = CHECKPOINT_HITMAN2;
-    }
-    return 1;
-}
-
-
-CMD:showmehq3(playerid, params[])
-{
-    if(CheckPointCheck(playerid)) {
-        SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-        return 1;
-    }
-   	if (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT)
-	{
-    	SetPlayerCheckpoint(playerid, 1415.727905, -1299.371093, 15.054657, 4.0);
-	    GameTextForPlayer(playerid, "~w~Waypoint set ~r~HQ", 5000, 1);
-    	gPlayerCheckpointStatus[playerid] = CHECKPOINT_HITMAN3;
-	}
-    return 1;
-}
-
 CMD:order(playerid, params[])
 {
 	if (IsAHitman(playerid))

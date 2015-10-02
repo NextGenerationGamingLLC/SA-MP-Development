@@ -114,6 +114,8 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 
 	szMiscArray[0] = 0;
 
+	if(!GetPVarType(iPlayerID, "HasNewbQues")) return SendClientMessageEx(iPlayerID, COLOR_GREY, "That player does not have an active question!");
+
 	GetPVarString(iNewbieID, "HasNewbQues", szMiscArray, 128);
 
 	format(szMiscArray, sizeof(szMiscArray), "Q: (%s): %s", GetPlayerNameEx(iNewbieID), szMiscArray);
@@ -129,6 +131,8 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 		ReportHourCount[iPlayerID]++;
 		AddCAReportToken(iPlayerID); // Advisor Tokens
 	}
+
+	SendClientMessageEx(iNewbieID, COLOR_NEWBIE, "Your question has been answered! If you have more questions feel free to [/joinhelp] or for additional assistance use [/requesthelp]");
 
 	ClearNewbVars(iNewbieID);
 

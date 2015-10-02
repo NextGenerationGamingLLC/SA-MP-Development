@@ -4017,17 +4017,29 @@ CMD:setmystat(playerid, params[])
 		new string[128], statcode, amount;
 		if(sscanf(params, "dd", statcode, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time");
-			return 1;
+			
+			if(PlayerInfo[playerid][pAdmin] >= 4) {
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time");
+				return 1;
+			}
+			else if (PlayerInfo[playerid][pUndercover] >= 1) {
+				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |6 PhoneNumber |26 Rank |33 Age |34 Gender |37 Faction |52 Hunger ");
+				return 1;
+			}
+
 		}
 		
+		if((PlayerInfo[playerid][pUndercover] >= 1 && PlayerInfo[playerid][pAdmin] < 4) && statcode != 1 && statcode != 6 && statcode != 26 && statcode != 33
+				&& statcode != 34 && statcode != 37 && statcode != 52) return 1;
+
 		switch (statcode)
 		{
 		case 1:
@@ -5458,7 +5470,7 @@ CMD:reloadlist(playerid, params[])
 		CarList2 = LoadModelSelectionMenu("CarList.txt");
 		PlaneList = LoadModelSelectionMenu("PlaneList.txt");
 		BoatList = LoadModelSelectionMenu("BoatList.txt");
-		SendClientMessageEx(playerid, COLOR_CYAN, "List's have been reloaded.");
+		SendClientMessageEx(playerid, COLOR_CYAN, "Lists have been reloaded.");
 	}
 	return 1;
 }

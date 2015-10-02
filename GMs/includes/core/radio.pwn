@@ -239,6 +239,16 @@ stock ShowSetStation(playerid, title[] = "Radio Menu")
 	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
 }
 
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
+
+	if(areaid == audiourlid) PlayAudioStreamForPlayerEx(playerid, audiourlurl, audiourlparams[0], audiourlparams[1], audiourlparams[2], audiourlparams[3], 1);
+}
+
+hook OnPlayerLeaveDynamicArea(playerid, areaid) {
+
+	if(areaid == audiourlid) StopAudioStreamForPlayerEx(playerid);
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	szMiscArray[0] = 0;

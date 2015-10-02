@@ -441,18 +441,21 @@ CMD:call(playerid, params[])
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "That player's phone is switched off.");
 						Mobile[playerid] = INVALID_PLAYER_ID;
+						DeletePVar(playerid, "PayPhone");
 						return 1;
 					}
 					if(Mobile[i] != INVALID_PLAYER_ID)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
+						DeletePVar(playerid, "PayPhone");
 						return 1;
 					}
 					if(Spectating[i]!=0)
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You just get a busy tone...");
 						Mobile[playerid] = INVALID_PLAYER_ID;
+						DeletePVar(playerid, "PayPhone");
 						return 1;
 					}
 					if(Mobile[i] == INVALID_PLAYER_ID)
@@ -540,6 +543,7 @@ CMD:sms(playerid, params[])
 			if(Mobile[giveplayerid] != INVALID_PLAYER_ID)
 			{
 				ChatTrafficProcess(playerid, COLOR_GREY, "That player's phone is busy (on a call).", 7);
+				DeletePVar(playerid, "PayPhone");
 				return 1;
 			}
 			Mobile[playerid] = giveplayerid; //caller connecting
