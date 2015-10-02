@@ -828,6 +828,9 @@ CMD:contract(playerid, params[])
 			
 		if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)
 			return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
+
+		if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0) 
+			return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now");
 		
 		if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
 		{

@@ -1405,7 +1405,8 @@ ptask PlayerHeartBeat[1000](i) {
 				PlayerInfo[i][pInt] = 0;
 				SetPlayerVirtualWorld(i, 0);
 				PlayerInfo[i][pVW] = 0;
-				SetPlayerPos(i, -1528.5812,489.6914,7.1797);
+				SetPlayerPos(i, 1742.3053,-1849.4283,13.5812);
+				SetPlayerFacingAngle(i, 180.0);
 			}
 			else {
 				SetPlayerInterior(i, 0);

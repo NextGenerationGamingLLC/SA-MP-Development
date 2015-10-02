@@ -1815,3 +1815,9 @@ enum AntiCheat:(<<= 1) {
 };
 new AntiCheat:arrPlayerCheat[MAX_PLAYERS];
 */
+
+enum eUfo {
+	ufo_iObjectID[13],
+	ufo_iPlayerID
+}
+new arrUfo[MAX_UFOS][eUfo];

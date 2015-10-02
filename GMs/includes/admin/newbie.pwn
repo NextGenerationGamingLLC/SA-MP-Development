@@ -170,7 +170,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 				
 				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot send no question!");
-				if(strlen(inputtext) > 128) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+				if(strlen(inputtext) > 110) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
 
 				SendNewbQuestionToQueue(playerid, inputtext);
 			}
@@ -180,7 +180,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(response) {
 				if(isnull(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot send no question!");
-				if(strlen(inputtext) > 128) return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+				if(strlen(inputtext) > 110) {
+					DeletePVar(GetPVarInt(playerid, "AnsweringNewb"), "NewbBeingAnswered");
+					DeletePVar(playerid, "AnsweringNewb");
+					return SendClientMessageEx(playerid, COLOR_GRAD2, "That message is too long!");
+				}
 
 				AnswerNewbie(playerid, GetPVarInt(playerid, "AnsweringNewb"), inputtext);
 			}

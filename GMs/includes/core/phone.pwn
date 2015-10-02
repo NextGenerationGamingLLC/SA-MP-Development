@@ -462,7 +462,7 @@ CMD:call(playerid, params[])
 							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller: Pay Phone (%d)]", arrPayPhoneData[GetPVarInt(playerid, "PayPhone")][pp_iNumber]);
 							TogglePlayerControllable(playerid, false);
 						}
-						else format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %s]", GetPlayerNameEx(playerid));
+						else format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
 
 						SendClientMessageEx(i, COLOR_YELLOW, string);
 						RingTone[i] = 10;
@@ -564,11 +564,11 @@ CMD:sms(playerid, params[])
 					}	
 					if(PlayerInfo[playerid][pPhonePrivacy] == 1)
 					{
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: Unknown.", text, GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: Unknown.", text);
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %s (%d)", text, GetPlayerNameEx(playerid), PlayerInfo[playerid][pPnumber]);
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d", text, PlayerInfo[playerid][pPnumber]);
 					}
 
 					if(i != playerid)
@@ -598,7 +598,7 @@ CMD:sms(playerid, params[])
 
 					if(strcmp(PlayerInfo[giveplayerid][pAutoTextReply], "Nothing", true) != 0)
 					{
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %s [automated response] (%d)", PlayerInfo[giveplayerid][pAutoTextReply], GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pPnumber]);
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d [automated response]", PlayerInfo[giveplayerid][pAutoTextReply], PlayerInfo[giveplayerid][pPnumber]);
 						ChatTrafficProcess(playerid, COLOR_YELLOW, szMiscArray, 7);
 					}
 

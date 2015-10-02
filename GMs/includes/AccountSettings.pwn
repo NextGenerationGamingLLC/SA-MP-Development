@@ -121,7 +121,7 @@ ShowAccountSettings(playerid, menu = 0) {
 		}
 
 		case 3: { // account email 
-			SendClientMessageEx(playerid, COLOR_WHITE, "   To be added.");
+			ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
 		}
 
 		case 4: { // account password
@@ -163,6 +163,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 3: {
 					ShowAccountSettings(playerid, 4);
+				}
+				case 4: {
+					ShowAccountSettings(playerid, 5);
 				}
 			}
 

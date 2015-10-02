@@ -308,7 +308,9 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		{
 			// set them to their house entrance location....
 			// using house spawn system from previous insurance system
-			for(new i = 0; i < sizeof(HouseInfo); i++)
+			ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+
+			/*for(new i = 0; i < sizeof(HouseInfo); i++)
 			{
 				if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i)
 				{
@@ -322,7 +324,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 					if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
 					break;
 				}
-			}
+			}*/
 			
 			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
 			SendClientMessageEx(playerid, COLOR_RED, string);
@@ -654,6 +656,40 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 			}
+		}
+		case SPAWNATHOME_CHOICE: {
+
+			if(!response) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+
+			new i = INVALID_HOUSE_ID;
+
+			switch(listitem) {
+				case 0: {
+					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+
+					i = PlayerInfo[playerid][pPhousekey];
+				}
+				case 1: {
+					if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+
+					i = PlayerInfo[playerid][pPhousekey2];
+				}
+				case 2: {
+					if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+
+					i = PlayerInfo[playerid][pPhousekey3];
+				}
+			}
+			
+			Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+			SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
+			SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
+			GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+			PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
+			PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
+			SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
+			if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
+			
 		}
 	}
 	return 1;

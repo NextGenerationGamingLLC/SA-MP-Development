@@ -63,8 +63,6 @@ DeliverShipment(playerid, iShipmentPoint) {
 	
 	arrGangShipmentData[iShipmentPoint][gs_iStock]++;
 
-	new 
-		iShipmentType = ReturnShipmentType(iShipmentPoint);
 
 	szMiscArray[0] = 0;
 
@@ -80,7 +78,7 @@ DeliverShipment(playerid, iShipmentPoint) {
 		arrGangShipmentData[iShipmentPoint][gs_iVehicle] = CreateVehicle(482, arrShipmentTrucks[iShipmentPoint][0], arrShipmentTrucks[iShipmentPoint][1], arrShipmentTrucks[iShipmentPoint][2], 0, random(128), random(128), 60 * 5);
 		arrGangShipmentData[iShipmentPoint][gs_iStock] -= SHIPMENT_MATS_NEEDED;
 		foreach(new i : Player) {
-			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iCrimeType] == iShipmentType) {
+			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL) {
 				format(szMiscArray, sizeof(szMiscArray), "{FF0000}Alert: {FFFFFF}An unknown shipment has been delivered to %s", GetStockPointName(iShipmentPoint));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
@@ -96,7 +94,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 
 		case SHIPMENT_TYPE_ARMS: {
 			
-			switch(random(4)) {
+			/*switch(random(4)) {
 				case 0: {
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 5); // 5 sdpistol 
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20); // 20 deagles
@@ -128,33 +126,29 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 3); // 3 rifles
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 4); // 4 spas 12s
 				}
-			}
+			}*/
+
+			foreach(new i: Player) if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, COLOR_WHITE, "An ammo shipment has been delivered to your group.");
+
 			if(arrGroupData[iGroupID][g_iAmmo][0] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][0] += 3000; else arrGroupData[iGroupID][g_iAmmo][0] += (10000 - arrGroupData[iGroupID][g_iAmmo][0]);
 			if(arrGroupData[iGroupID][g_iAmmo][1] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][1] += 3000; else arrGroupData[iGroupID][g_iAmmo][1] += (10000 - arrGroupData[iGroupID][g_iAmmo][1]);
 			if(arrGroupData[iGroupID][g_iAmmo][2] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][2] += 3000; else arrGroupData[iGroupID][g_iAmmo][2] += (10000 - arrGroupData[iGroupID][g_iAmmo][2]);
 			if(arrGroupData[iGroupID][g_iAmmo][3] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][3] += 3000; else arrGroupData[iGroupID][g_iAmmo][3] += (10000 - arrGroupData[iGroupID][g_iAmmo][3]);
 			if(arrGroupData[iGroupID][g_iAmmo][4] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][4] += 3000; else arrGroupData[iGroupID][g_iAmmo][4] += (10000 - arrGroupData[iGroupID][g_iAmmo][4]);
 		}
-
-		case SHIPMENT_TYPE_DRUGS: {
-			
-			arrGroupData[iGroupID][g_iCrack] += Random(200, 600);
-			arrGroupData[iGroupID][g_iPot] += Random(250, 700);
-			arrGroupData[iGroupID][g_iHeroin] += Random(250, 650);
-		}
 	}
 
 	return 1;
 }
 
-ReturnShipmentType(iShipmentPoint) {
+/*ReturnShipmentType(iShipmentPoint) {
 	
 	switch(iShipmentPoint) {
 		case 0, 1: return SHIPMENT_TYPE_ARMS;
 		case 2, 3: return SHIPMENT_TYPE_DRUGS;
 	}
 	return -1;
-}
+}*/
 
 GetStockPointName(iShipmentPoint) {
 	
@@ -280,17 +274,15 @@ CMD:delivershipment(playerid, params[]) {
 		
 		for(new v = 0; v < MAX_SHIPMENT_POINTS; v++) 	{
 	   		if(iVehID == arrGangShipmentData[v][gs_iVehicle]) {
-	   			new iShipmentType = ReturnShipmentType(v);
-	   			if(iShipmentType == arrGroupData[iGroupID][g_iCrimeType]) {
-					RemovePlayerFromVehicle(playerid);
-	   				GenerateShipmentStock(iGroupID, iShipmentType);
-	   				DestroyVehicle(iVehID);
-					arrGangShipmentData[v][gs_iVehicle] = INVALID_VEHICLE_ID;
-	   				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered your shipment to your group.");
-	   				format(szMiscArray, sizeof(szMiscArray), "%s has delivered a shipment.", GetPlayerNameEx(playerid));
-	   				GroupLog(iGroupID, szMiscArray);
-	   				break; 
-	   			}
+					
+				RemovePlayerFromVehicle(playerid);
+				GenerateShipmentStock(iGroupID, SHIPMENT_TYPE_ARMS);
+				DestroyVehicle(iVehID);
+				arrGangShipmentData[v][gs_iVehicle] = INVALID_VEHICLE_ID;
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered your shipment to your group.");
+				format(szMiscArray, sizeof(szMiscArray), "%s has delivered a shipment.", GetPlayerNameEx(playerid));
+				GroupLog(iGroupID, szMiscArray);
+				break;
 	   		}
 	   	}	
 	}

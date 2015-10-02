@@ -396,7 +396,7 @@ CMD:points2(playerid, params[])
 	return 1;
 }
 
-CMD:pointtime(playerid, params[])
+CMD:oldpointtime(playerid, params[])
 {
 	new i;
 	if(sscanf(params, "i", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
