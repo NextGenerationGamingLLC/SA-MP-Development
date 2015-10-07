@@ -103,8 +103,6 @@
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
 
-#define 		POINT_CAPTURE_INTERVAL 			60000 * 10 // 10 minutes
-
 #define 		BLACKMARKET_SEIZE_DAYS			1
 
 /*
@@ -569,12 +567,7 @@ timer BM_Seize[60000 * 15](i) {
 		arrBlackMarket[i][bm_iSeized] = 0;
 		format(szMiscArray, sizeof(szMiscArray), "[Black Market]: Failed to seize {EE0000}%s's black market.", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
 	}
-	foreach(new p : Player) {
-
-		//if(IsACop(p)) {
-			SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
-		}
-	}
+	foreach(new p : Player) SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
 	if(iCount > 6) {
 
 		format(szMiscArray, sizeof(szMiscArray), "%s's Black Market\n\n{FF0000}Seized", arrGroupData[arrBlackMarket[i][bm_iGroupID]][g_szGroupName]);
@@ -3535,7 +3528,7 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 }
 
 
-timer PO_PointTimer[POINT_CAPTURE_INTERVAL](playerid, i, iGroupID) {
+timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 
 	if(!GetPVarType(playerid, "PO_CAPTUR")) return 1;
 	if(GetPVarInt(playerid, "PO_CAPTUR") != i) return 1;
