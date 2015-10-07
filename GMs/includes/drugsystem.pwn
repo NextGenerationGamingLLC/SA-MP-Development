@@ -99,7 +99,6 @@
 
 #define 		MAX_DRUGS						400
 #define 		MAX_PLAYERDRUGS					10
-#define 		SMUGGLE_PER_LEVEL 				15
 
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
@@ -358,12 +357,14 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 	GangZoneShowForAll(arrPoint[i][po_iZoneID], arrGroupData[iGroupID][g_hDutyColour] * 256 + 170);
 	GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
 
-	if(arrPoint[i][po_iPointTimer]) KillTimer(arrPoint[i][po_iPointTimer]);
+	// if(arrPoint[i][po_iPointTimer]) KillTimer(arrPoint[i][po_iPointTimer]);
 	SetGVarInt("PO_Time", 9, i);
-	arrPoint[i][po_iPointTimer] = SetTimerEx("PO_PointTimer", POINT_CAPTURE_INTERVAL, false, "iii", playerid, i, iGroupID);
-	SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
+	defer PO_PointTimer(playerid, i, iGroupID);
+	// SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
 	return 1;
 }
+
+/*
 
 forward PO_MinuteTimer(iGroupID, i);
 public PO_MinuteTimer(iGroupID, i) {
@@ -379,6 +380,7 @@ public PO_MinuteTimer(iGroupID, i) {
 	return 1;
 }
 
+*/
 
 timer Drug_ResetEffects[60000](playerid, iDrugID) {
 	
@@ -569,7 +571,7 @@ timer BM_Seize[60000 * 15](i) {
 	}
 	foreach(new p : Player) {
 
-		if(IsACop(p)) {
+		//if(IsACop(p)) {
 			SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
 		}
 	}
@@ -582,7 +584,7 @@ timer BM_Seize[60000 * 15](i) {
 	}
 
 	new gz = GetGVarInt("BM_GZ"),
-	iad = GetGVarInt("BM_A");
+		iad = GetGVarInt("BM_A");
 
 	GangZoneHideForAll(gz);
 	GangZoneDestroy(gz);
@@ -737,7 +739,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (100 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
@@ -789,7 +791,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (100 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
@@ -1096,7 +1098,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Smuggle_LoadIngredients(playerid);
 					return 1;
 				}
-				else return ShowPlayerDialog(playerid, DIALOG_SMUGGLE_DELIVERTO, DIALOG_STYLE_LIST, "Smuggle | Deliver to Black Market or own storage?", "Black Market\nOwn Storage", "Select", "Cancel");
+
+				iCapacity = Smuggle_GetVehicleCapacity(GetPlayerVehicleID(playerid));
+
+				if(iTotalAmount > iCapacity)
+				{
+					format(szMiscArray, sizeof(szMiscArray), "You cannot smuggle more than %d pieces.", iCapacity);
+					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+					Smuggle_LoadIngredients(playerid);
+					return 1;
+				}
+				return ShowPlayerDialog(playerid, DIALOG_SMUGGLE_DELIVERTO, DIALOG_STYLE_LIST, "Smuggle | Deliver to Black Market or own storage?", "Black Market\nOwn Storage", "Select", "Cancel");
 			}
 			SetPVarInt(playerid, PVAR_INGREDIENT_ORDERING, listitem - 1);
 			format(szMiscArray, sizeof(szMiscArray), "Specify the amount you would like to add to package:\n\n {FFFF00}%s.", szIngredients[listitem - 1]);
@@ -1782,7 +1794,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 0: // LSD
 		{
 
-			SetHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (2.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: SetPlayerWeather(playerid, 108), SetPlayerTime(playerid, 10, 0);
@@ -1803,7 +1815,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 1: // Cannabis
 		{
-			SetHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (2.0 * iTaken));
 			switch(iTotalTaken) {
 
 				case 0 .. 5: SetPlayerWeather(playerid, 700);
@@ -1818,7 +1830,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 2: // Meth
 		{
-			SetHealth(playerid, fHealth + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (4.0 * iTaken));
 			switch(iTotalTaken)	{
 
 				case 0 .. 5: SetPlayerWeather(playerid, 108);
@@ -1829,7 +1841,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 3: // Heroine
 		{
-			SetArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (8.0 * iTaken));
 			SetPlayerTime(playerid, 0, 0);
 			switch(iTotalTaken)	{
 
@@ -1850,7 +1862,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 4: // Cocaine
 		{
-			SetArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (8.0 * iTaken));
 			Drug_GunPerk(playerid);
 			SetPlayerTime(playerid, 3, 0);
 			switch(iTotalTaken)
@@ -1871,7 +1883,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 5: // Crack
 		{
-			SetArmour(playerid, fArmour + (5.0 * iTaken));
+			SetArmour(playerid, fArmour + (8.0 * iTaken));
 			SetPlayerTime(playerid, 13, 0);
 			switch(iTotalTaken)
 			{
@@ -1909,8 +1921,8 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 7: // Ecstasy
 		{
-			SetHealth(playerid, fHealth + (5.0 * iTaken));
-			SetArmour(playerid, fArmour + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (8.0 * iTaken));
+			SetArmour(playerid, fArmour + (8.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 5: 
@@ -1976,8 +1988,8 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 		case 10, 11, 12:
 		{
-			SetHealth(playerid, fHealth + (5.0 * iTaken));
-			SetArmour(playerid, fArmour + (5.0 * iTaken));
+			SetHealth(playerid, fHealth + (2.0 * iTaken));
+			SetArmour(playerid, fArmour + (2.0 * iTaken));
 			switch(iTotalTaken)
 			{
 				case 0 .. 15: return Drug_ResetEffects(playerid, iDrugID);
@@ -2834,6 +2846,8 @@ CMD:usedrug(playerid, params[]) {
 		return 1;
 	}
 
+	if(iAmount < 1 || iAmount > 30) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take that.");
+
 	new iDrugID = Drug_GetID(szChoice);
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
@@ -3210,13 +3224,17 @@ CMD:points(playerid, params[]) {
 CMD:pointtime(playerid, params[]) {
 
 	szMiscArray[0] = 0;
-	szMiscArray = "Name\tTime\n";
+	// szMiscArray = "Name\tTime\n";
 
 	for(new i; i < MAX_DYNPOINTS; ++i) {
 
-		if(GetGVarType("PO_CAPT", i)) format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d minutes\n", szMiscArray, arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], GetGVarInt("PO_Time", i));
+		if(GetGVarType("PO_CAPT", i)) {
+			
+			format(szMiscArray, sizeof(szMiscArray), "%s {CCCCCC}- {FFFF00}%d {CCCCCC}minutes.", arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], GetGVarInt("PO_Time", i));
+			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Point Time", szMiscArray, "<<", "");
+	// ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Point Time", szMiscArray, "<<", "");
 	return 1;
 }
 
@@ -3426,7 +3444,7 @@ Smuggle_GetVehicleCapacity(iVehID) {
 
 Smuggle_GetSmuggleCapacity(playerid) {
 
-	new i = SMUGGLE_PER_LEVEL * (PlayerInfo[playerid][pSmugSkill] + 1);
+	new i = PlayerInfo[playerid][pSmugSkill] + 20;
 	return i;
 }
 
@@ -3517,8 +3535,10 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 }
 
 
-forward PO_PointTimer(playerid, i, iGroupID);
-public PO_PointTimer(playerid, i, iGroupID) {
+timer PO_PointTimer[POINT_CAPTURE_INTERVAL](playerid, i, iGroupID) {
+
+	if(!GetPVarType(playerid, "PO_CAPTUR")) return 1;
+	if(GetPVarInt(playerid, "PO_CAPTUR") != i) return 1;
 
 	new Float:fPos[3];
 	

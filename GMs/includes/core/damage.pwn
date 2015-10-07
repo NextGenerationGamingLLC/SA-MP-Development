@@ -332,7 +332,7 @@ timer DeathScreen[4000](playerid) {
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	iObjectID = CreateObject(19300, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0);
 	SetPVarInt(playerid, "DS_OBJ", iObjectID);
-	MoveObject(iObjectID, fPos[0], fPos[1], fPos[2] + 20.0, 1.0, 1.0, 0.0, 0.0);
+	MoveObject(iObjectID, fPos[0], fPos[1], fPos[2] + 3.0, 1.0, 1.0, 0.0, 0.0);
 	AttachCameraToObject(playerid, iObjectID);
 	// ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 1, 1, 1, 1, 0, 1);
 	return 1;
