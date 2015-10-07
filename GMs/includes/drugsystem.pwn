@@ -99,7 +99,7 @@
 
 #define 		MAX_DRUGS						400
 #define 		MAX_PLAYERDRUGS					10
-#define 		SMUGGLE_PER_LEVEL 				40
+#define 		SMUGGLE_PER_LEVEL 				15
 
 #define 		CHECKPOINT_SMUGGLE_BLACKMARKET	5000
 #define 		CHECKPOINT_SMUGGLE_PLAYER		5001
@@ -2962,6 +2962,7 @@ CMD:seize(playerid, params[]) {
 		if(IsACop(p)) iCount[0]++;
 		if(PlayerInfo[p][pMember] == iGangGroupID) iCount[1]++;
 	}
+	
 	// if(iCount[0] < 10 || (iCount[0] > iCount[1] + 5)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There need to be at least 10 LEOs. Or, there are 5 or more gang members less than LEOs.");
 
 	new Float:fPos[3];
@@ -3417,9 +3418,9 @@ Smuggle_GetVehicleCapacity(iVehID) {
 
 	new Float:fPos[3];
 	GetVehicleModelInfo(GetVehicleModel(iVehID), VEHICLE_MODEL_INFO_SIZE, fPos[0], fPos[1], fPos[2]);
-	fPos[0] = (fPos[0] + fPos[1] + fPos[2]) * 6; // size to drug permutation
+	fPos[0] = (fPos[0] + fPos[1] + fPos[2]) * 3; // size to drug permutation
 	new iAmount = floatround(fPos[0], floatround_round);
-	if(iAmount > 250) iAmount = 250;
+	if(iAmount > 80) iAmount = 80;
 	return iAmount;
 }
 
