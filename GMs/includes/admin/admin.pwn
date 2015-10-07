@@ -5324,7 +5324,7 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
+		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SERVER MODERATOR{B4B5B7} --* /mjail /kick /staff /togstaff");
 	}
 	if (PlayerInfo[playerid][pWatchdog] >= 1)
@@ -5670,12 +5670,12 @@ CMD:undercover(playerid, params[])
 		if(!GetPVarType(playerid, "Undercover"))
 		{
 			SetPVarInt(playerid, "Undercover", 1);
-			SendClientMessageEx(playerid, COLOR_WHITE, "-- You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went into undercover mode, your admin rank will no longer show up in /v or /fc.");
 		}
 		else
 		{
 			DeletePVar(playerid, "Undercover");
-			SendClientMessageEx(playerid, COLOR_WHITE, "-- You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
+			SendClientMessageEx(playerid, COLOR_WHITE, "** You have went out of undercover mode, your admin rank will now show up in /v or /fc.");
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -5693,10 +5693,10 @@ CMD:quickstats(playerid, params[])
 	
 	format(string, sizeof(string), "---===== -- Stats of %s -- =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
-	format(string, sizeof(string), "-- Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
+	format(string, sizeof(string), "** Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
 	number_format(PlayerInfo[playerid][pAccount]), number_format(PlayerInfo[playerid][pCash]), PlayerInfo[playerid][pRadioFreq], PlayerInfo[playerid][pWarns]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	format(string, sizeof(string), "-- Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
+	format(string, sizeof(string), "** Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	SendClientMessageEx(playerid, COLOR_GREEN, "--------------------------------------------------------------------------------------------------------------------");
 	return 1;
@@ -5847,12 +5847,12 @@ CMD:togsec(playerid, params[])
 	if(PlayerInfo[playerid][pSEC] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "SECChat") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled SEC chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled SEC chat.");
 		return SetPVarInt(playerid, "SECChat", 0);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled SEC chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled SEC chat.");
 		return SetPVarInt(playerid, "SECChat", 1);
 	}
 }

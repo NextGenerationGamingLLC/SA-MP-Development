@@ -181,7 +181,7 @@ stock RadioBroadCast(playerid, string[])
 		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
 		{
 			GetPlayerPos(i, aaaPositions[0], aaaPositions[1], aaaPositions[2]);
-			format(MiscString, sizeof(MiscString), "-- Radio (%d khz) -- %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
+			format(MiscString, sizeof(MiscString), "** Radio (%d khz) -- %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
 			SendClientMessageEx(i, PUBLICRADIO_COLOR, MiscString);
 			ChatTrafficProcess(playerid, PUBLICRADIO_COLOR, MiscString, 5);
 			format(MiscString, sizeof(MiscString), "(radio) %s", string);

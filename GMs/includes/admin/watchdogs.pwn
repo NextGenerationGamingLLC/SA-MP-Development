@@ -380,12 +380,12 @@ CMD:togwd(playerid, params[])
 	if(PlayerInfo[playerid][pToggledChats][17])
 	{
 		PlayerInfo[playerid][pToggledChats][17] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled the watchdog chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled the watchdog chat.");
 	}
 	else
 	{
 		PlayerInfo[playerid][pToggledChats][17] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled the watchdog chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled the watchdog chat.");
 	}
 	return 1;
 }
@@ -406,10 +406,10 @@ CMD:wd(playerid, params[])
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "-- Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "-- RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
 			else format(szMiscArray, sizeof(szMiscArray), "- Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
 
 			foreach(new i : Player)

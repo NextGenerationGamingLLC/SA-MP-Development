@@ -154,11 +154,11 @@ CMD:fc(playerid, params[]) {
 
 			if(PlayerInfo[playerid][pAdmin] > 2 && GetPVarInt(playerid, "Undercover") == 0)
 			{
-				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
 			else if(GetPVarType(playerid, "Undercover") || PlayerInfo[playerid][pFamed] > 0)
 			{
-				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetFamedRankName(PlayerInfo[playerid][pFamed]), GetPlayerNameEx(playerid), params);
 			}
 			SendFamedMessage(COLOR_FAMED, szMessage);
 		}

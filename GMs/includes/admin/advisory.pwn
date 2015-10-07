@@ -390,7 +390,7 @@ CMD:hl(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2) format(string, sizeof(string), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 	foreach(new n: Player)
 	{
-		if (PlayerInfo[playerid][pToggledChats][0])
+		if(PlayerInfo[playerid][pToggledChats][0] == 0)
 		{
 			SendClientMessageEx(n, COLOR_NEWBIE, string);
 		}

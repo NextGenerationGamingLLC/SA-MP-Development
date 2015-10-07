@@ -545,7 +545,7 @@ CMD:v(playerid, params[]) {
 			
 			if(PlayerInfo[playerid][pAdmin] >= 2 && !GetPVarType(playerid, "Undercover"))
 			{
-				format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			}
 			else if(GetPVarType(playerid, "Undercover") || PlayerInfo[playerid][pDonateRank] > 0 || PlayerInfo[playerid][pVIPMod])
 			{
@@ -1223,12 +1223,12 @@ CMD:togvipm(playerid, params[])
 	if(!PlayerInfo[playerid][pVIPMod] && PlayerInfo[playerid][pShopTech] < 3 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "vStaffChat") == 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have disabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled VIP staff chat.");
 		return SetPVarInt(playerid, "vStaffChat", 0);
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "-- You have enabled VIP staff chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled VIP staff chat.");
 		return SetPVarInt(playerid, "vStaffChat", 1);
 	}
 }

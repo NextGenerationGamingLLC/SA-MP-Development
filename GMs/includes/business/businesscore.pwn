@@ -3022,7 +3022,7 @@ CMD:bizradio(playerid, params[])
 
 	format(string, sizeof(string), "(radio) %s", params);
 	SetPlayerChatBubble(playerid,string,COLOR_WHITE,15.0,5000);
-	format(string, sizeof(string), "-- (%d) %s %s: %s --", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
+	format(string, sizeof(string), "** (%d) %s %s: %s **", iRank, GetBusinessRankName(iRank), GetPlayerNameEx(playerid), params);
 	foreach(new i: Player)
 	{
 		if (PlayerInfo[i][pBusiness] == iBusinessID && GetPVarInt(i, "BusinessRadio") != 1) {
