@@ -91,7 +91,7 @@ SendNewbQuestionToQueue(iPlayerID, szQuestion[]) {
 	format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) Q: %s", GetPlayerNameEx(iPlayerID), iPlayerID, szQuestion);
 
 	foreach(new i : Player) {
-		if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pHelper] > 0) && PlayerInfo[i][pToggledChats][0] == 0)
+		if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pHelper] > 0))
 			
 			ChatTrafficProcess(i, COLOR_NEWBIE, szMiscArray, 0);
 	}

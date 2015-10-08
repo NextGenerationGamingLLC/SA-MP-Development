@@ -322,7 +322,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				new iSafeID = GetPVarInt(playerid, "_EditingSafeID");
 				if(isnull(inputtext)) return safeMenu(playerid);
-				if(GetPlayerMoney(playerid) < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money.");
+				if(GetPlayerCash(playerid) < strval(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money.");
 				SafeData[iSafeID][g_iMoney] = SafeData[iSafeID][g_iMoney] + strval(inputtext);
 				GivePlayerCash(playerid, -strval(inputtext));
 				saveSafe(iSafeID);

@@ -610,7 +610,7 @@ public OnPlayerLoad(playerid)
 	}
 	if (PlayerInfo[playerid][pHelper] == 1)
 	{
-		gHelp[playerid] = 0;
+		PlayerInfo[playerid][pToggledChats][0] = 0;
 	}
 	if(PlayerInfo[playerid][pAdmin] != 0 && PlayerInfo[playerid][pAdmin] != 1 && PlayerInfo[playerid][pAdmin] != 2 && PlayerInfo[playerid][pAdmin] != 3 && PlayerInfo[playerid][pAdmin] != 4 &&PlayerInfo[playerid][pAdmin] != 1337 && PlayerInfo[playerid][pAdmin] != 1338 && PlayerInfo[playerid][pAdmin] != 99999)
 	{

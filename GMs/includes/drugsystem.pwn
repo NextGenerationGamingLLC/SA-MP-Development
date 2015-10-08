@@ -84,8 +84,8 @@
 #define 		ADDICT_TIMER_MINUTES			60
 
 #define 		DRUGS_OVERDOSE_THRESHOLD		50
-#define 		DRUGS_MAX_BONUS_HEALTH			200.0
-#define 		DRUGS_MAX_BONUS_ARMOUR			200.0
+#define 		DRUGS_MAX_BONUS_HEALTH			200
+#define 		DRUGS_MAX_BONUS_ARMOUR			200
 
 #define 		DRUGS_ADDICTION_RATE			10 // + and - addicted points per take
 #define 		DRUGS_ADDICTED_THRESHOLD		300 // addicted level threshold
@@ -94,8 +94,8 @@
 #define 		DRUGS_TRACKABLE_THRESHOLD		50 // Amount of drugs/ingredients orderable without LEA tracking.
 #define 		MAX_DRUGINGREDIENT_SLOTS		5
 
-#define 		DRUG_ORDER_TIME					60 * 1 // 2 hours.
-#define 		DRUGS_GROWTH_TIME				60 * 1 // 2 hours.
+#define 		DRUG_ORDER_TIME					60 * 120 // 2 hours.
+#define 		DRUGS_GROWTH_TIME				60 * 120 // 2 hours.
 
 #define 		MAX_DRUGS						400
 #define 		MAX_PLAYERDRUGS					10
@@ -343,6 +343,7 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 
 				DeletePVar(p, "PO_CAPTUR");
 				SendClientMessageEx(p, COLOR_YELLOW, "The point was taken by another gang. Therefore you failed to capture it.");
+				TextDrawHideForPlayer(p, PointTime);
 			}
 		}
 	}
@@ -356,29 +357,35 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 	GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
 
 	// if(arrPoint[i][po_iPointTimer]) KillTimer(arrPoint[i][po_iPointTimer]);
-	SetGVarInt("PO_Time", 9, i);
+	SetGVarInt("PO_Time", 10, i);
 	defer PO_PointTimer(playerid, i, iGroupID);
-	// SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
+	defer PO_PointMicroTimer(iGroupID, i, 0);
 	return 1;
 }
 
-/*
+timer PO_PointMicroTimer[1000](iGroupID, i, s) {
 
-forward PO_MinuteTimer(iGroupID, i);
-public PO_MinuteTimer(iGroupID, i) {
-
-	if(!GetGVarInt("PO_Time", i)) return 1;
+	if(!GetGVarType("PO_Time", i) || !GetGVarType("PO_CAPT", i)) {
+		foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
+		return 1;
+	}
 	new iTime = GetGVarInt("PO_Time", i);
-	iTime -= 1;
-	if(iTime < 1) return DeleteGVar("PO_Time", i);
+	if(s < 0) { iTime--; s = 59; }
+	if(iTime < 1 && s < 1) {
+		foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
+		return 1;
+	}
+
 	SetGVarInt("PO_Time", iTime, i);
-	format(szMiscArray, sizeof(szMiscArray), "%d minutes left!", iTime-1);
-	foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_GRAD1, szMiscArray);
-	SetTimerEx("PO_MinuteTimer", 60000, false, "ii", iGroupID, i);
+	format(szMiscArray, sizeof(szMiscArray), "%d:%02d", iTime, s);
+	TextDrawSetString(PointTime, szMiscArray);
+	foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) TextDrawShowForPlayer(p, PointTime);
+	s--;
+	defer PO_PointMicroTimer(iGroupID, i, s);
 	return 1;
 }
 
-*/
+
 
 timer Drug_ResetEffects[60000](playerid, iDrugID) {
 	
@@ -1996,8 +2003,8 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 	}
 	GetHealth(playerid, fHealth);
-	if(fHealth > DRUGS_MAX_BONUS_HEALTH) SetHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
-	if(fArmour > DRUGS_MAX_BONUS_ARMOUR) SetArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
+	if(floatround(fHealth, floatround_round) > DRUGS_MAX_BONUS_HEALTH) SetHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
+	if(floatround(fArmour, floatround_round) > DRUGS_MAX_BONUS_ARMOUR) SetArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
 	Bit_On(g_PlayerBits[playerid], dr_bitInDrugEffect);
 	return 1;
 }
@@ -2018,10 +2025,12 @@ Drug_GunPerk(playerid) {
 
 Drug_OrderIngredient(playerid, iBlackMarketID, iIngredientID, iAmount) // change sqlid
 {
-	if(GetPlayerMoney(playerid) < (arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] * iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
+	if(GetPlayerCash(playerid) < (arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] * iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough cash on you.");
 	if(arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The black market doesn't have that much in stock.");
 	new bool:iTrackable,
-		iGroupID = arrBlackMarket[iBlackMarketID][bm_iGroupID];
+		iGroupID = arrBlackMarket[iBlackMarketID][bm_iGroupID],
+		iCost;
+
 	if(iAmount > DRUGS_TRACKABLE_THRESHOLD) iTrackable = true;
 	else
 	{
@@ -2031,6 +2040,14 @@ Drug_OrderIngredient(playerid, iBlackMarketID, iIngredientID, iAmount) // change
 			case 2: iTrackable = true;
 		}
 	}
+
+
+	if(GetPlayerCash(playerid) < iCost)
+		SendClientMessage(playerid, COLOR_LIGHTRED, "You have insufficient funds to pay for this order.");
+
+	GivePlayerCash(playerid, -arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] * iAmount);
+	arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] -= iAmount;
+
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'",
 		DS_Ingredients_GetSQLName(iIngredientID), arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] - iAmount, iGroupID);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -3329,7 +3346,7 @@ CMD:editpoint(playerid, params[]) {
 		}
 		UpdateDynamic3DTextLabelText(arrPoint[i][po_iTextID], COLOR_GREEN, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID %d)\n%s\n{AAAAAA}ID: %d", i, arrPoint[i][po_szPointName]);
+		format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID %d)\n%s", i, arrPoint[i][po_szPointName]);
 		UpdateDynamic3DTextLabelText(arrPoint[i][po_iDelTextID], COLOR_GRAD1, szMiscArray);
 		
 		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `name` = '%e' WHERE `id` = '%d'", szMiscArray, i);
@@ -3534,7 +3551,6 @@ timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 	if(GetPVarInt(playerid, "PO_CAPTUR") != i) return 1;
 
 	new Float:fPos[3];
-	
 	DeleteGVar("PO_CAPT", i);
 	DeleteGVar("PO_Time", i);
 	GangZoneHideForAll(arrPoint[i][po_iZoneID]);
@@ -3549,7 +3565,11 @@ timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may have possibly desynced himself to capture a point.", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point.");
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) {
+
+			SendClientMessageEx(p, COLOR_YELLOW, "You failed to capture the point.");
+			TextDrawHideForPlayer(p, PointTime);
+		}
 		DeletePVar(playerid, "PO_CAPTUR");
 		return 1;
 	}
@@ -3566,7 +3586,7 @@ timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 
 	DeletePVar(playerid, "PO_CAPTUR");
 	DeleteGVar("PO_Time", i);
-
+	foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
 	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s has successfully captured %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
 	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 
@@ -3591,7 +3611,7 @@ timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 
 	UpdateDynamic3DTextLabelText(arrPoint[i][po_iTextID], COLOR_GREEN, szMiscArray);
 
-	format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID: %d)\n\n%s\n{AAAAAA}ID: %d", i, arrPoint[i][po_szPointName]);
+	format(szMiscArray, sizeof(szMiscArray), "Delivery Point (ID: %d)\n\n%s", i, arrPoint[i][po_szPointName]);
 	UpdateDynamic3DTextLabelText(arrPoint[i][po_iDelTextID], COLOR_GRAD1, szMiscArray);
 	return 1;
 }
@@ -3767,10 +3787,14 @@ Drugs_ODTextDraw()
 
 /* Alien Easter Egg */
 
-
 hook OnGameModeInit() {
 
 	EasterEgg_Aliens();
+
+	PointTime = TextDrawCreate(547.000000,28.000000,"--");
+	TextDrawFont(PointTime, 3);
+	TextDrawLetterSize(PointTime, 0.399999, 1.600000);
+	TextDrawColor(PointTime, 0xffffffff);
 	return 1;
 }
 

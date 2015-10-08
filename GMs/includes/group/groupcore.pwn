@@ -135,9 +135,9 @@ SaveGroup(iGroupID) {
 
 	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
 		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, \
-		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
+		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `FreeNameChange` = %i, `FreeNameChangeDiv` = %i, `DutyColour` = %i, `RadioColour` = %i, ",
 		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][0], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][1], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][2], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess],
-		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
+		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_iFreeNameChangeDiv], arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
 	);
 	format(szMiscArray, sizeof szMiscArray, "%s\
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
@@ -986,7 +986,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
 					if(IsACriminal(playerid)) return cmd_gblackmarket(playerid, "");
-					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) 
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]) 
 					{
 						return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 					}
@@ -5609,7 +5609,7 @@ CMD:locker(playerid, params[]) {
 					    	return ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 					    }*/
 
-					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange]) // name-change point in faction lockers for free namechange factions
+					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]) // name-change point in faction lockers for free namechange factions
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}

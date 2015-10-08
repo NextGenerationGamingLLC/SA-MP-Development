@@ -366,6 +366,8 @@ new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;
 new Text:TD_LoginScreen;
 new PlayerText:TD_ChatBox[11];
+new Text:PointTime;
+
 
 // Sobeit Check Variable
 new sobeitCheckvar[MAX_PLAYERS];
@@ -785,7 +787,6 @@ new gPlayerLogTries[MAX_PLAYERS];
 new gLastCar[MAX_PLAYERS];
 new gOoc[MAX_PLAYERS];
 new gNews[MAX_PLAYERS];
-new gHelp[MAX_PLAYERS];
 new Spectate[MAX_PLAYERS];
 new GettingSpectated[MAX_PLAYERS];
 new SpecTime[MAX_PLAYERS];

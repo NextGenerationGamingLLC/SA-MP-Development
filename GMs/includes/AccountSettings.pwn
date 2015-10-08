@@ -21,7 +21,7 @@ ShowAccountSettings(playerid, menu = 0) {
 
 		case 0: {
 			format(szTitle, sizeof(szTitle), "Account Settings - %s", GetPlayerNameEx(playerid));
-			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChatbox Preferences\nChange Account Email\nAccount Password\nChange Shop Pin");
+			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChange Account Email\nAccount Password\nChange Shop Pin");
 			ShowPlayerDialog(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 		}
 
@@ -35,7 +35,6 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}OOC Chat\t%s\n\
 				{FFFFFF}Whispers\t%s\n\
 				{FFFFFF}First ChatBox\t%s\n\
-				{FFFFFF}Secondary ChatBox\t%s\n\
 				{FFFFFF}Private Radio\t%s\n\
 				{FFFFFF}Hunger Meter\t%s\n\
 				{FFFFFF}Phone\t%s\n\
@@ -46,7 +45,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				(PlayerInfo[playerid][pToggledChats][2] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][3] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][4] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
-				(PlayerInfo[playerid][pToggledChats][19] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
+				// (PlayerInfo[playerid][pToggledChats][19] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][5] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][6] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][7] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),

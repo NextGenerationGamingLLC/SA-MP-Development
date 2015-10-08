@@ -1339,7 +1339,7 @@ public OnPlayerConnect(playerid)
 	gOoc[playerid] = 0;
 	arr_Towing[playerid] = INVALID_VEHICLE_ID;
 	gNews[playerid] = 0;
-	gHelp[playerid] = 1;
+	PlayerInfo[playerid][pToggledChats][0] = 1;
 	gPlayerLogged{playerid} = 0;
 	gPlayerLogTries[playerid] = 0;
 	IsSpawned[playerid] = 0;

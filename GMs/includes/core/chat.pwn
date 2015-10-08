@@ -175,17 +175,14 @@ stock OOCOff(color,string[])
 
 stock RadioBroadCast(playerid, string[])
 {
-	new MiscString[128], Float: aaaPositions[3];
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
 		{
-			GetPlayerPos(i, aaaPositions[0], aaaPositions[1], aaaPositions[2]);
-			format(MiscString, sizeof(MiscString), "** Radio (%d khz) -- %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
-			SendClientMessageEx(i, PUBLICRADIO_COLOR, MiscString);
-			ChatTrafficProcess(playerid, PUBLICRADIO_COLOR, MiscString, 5);
-			format(MiscString, sizeof(MiscString), "(radio) %s", string);
-			SetPlayerChatBubble(playerid,MiscString,COLOR_WHITE, 15.0, 5000);
+			format(szMiscArray, sizeof(szMiscArray), "** Radio (%d kHz) ** %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
+			ChatTrafficProcess(playerid, PUBLICRADIO_COLOR, szMiscArray, 5);
+			format(szMiscArray, sizeof(szMiscArray), "(radio) %s", string);
+			SetPlayerChatBubble(playerid, szMiscArray, COLOR_WHITE, 15.0, 5000);
 		}
 	}	
 }
@@ -743,8 +740,8 @@ CMD:togchatbox(playerid, params[])
 
 ChatTrafficProcess(playerid, color, szString[], chattype) {
 
-	if(PlayerInfo[playerid][pToggledChats][chattype] == 1) return 1;
-	return SendClientMessageEx(playerid, color, szString);
+	if(PlayerInfo[playerid][pToggledChats][chattype] == 0) SendClientMessageEx(playerid, color, szString);
+	return 1;
 	/*
 	if(PlayerInfo[playerid][pChatbox][chattype] > 0 && PlayerInfo[playerid][pToggledChats][19] == 0) { // if Secondary Chatbox is not active, route all chat to normal chatbox.
 

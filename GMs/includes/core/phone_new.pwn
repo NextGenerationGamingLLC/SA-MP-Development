@@ -596,7 +596,7 @@ CMD:trace(playerid, params[]) {
 	if(PlayerInfo[playerid][pJob] != 1 && PlayerInfo[playerid][pJob2] != 1 && PlayerInfo[playerid][pJob3] != 1) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a detective.");
 	}
-	if(gettime() < UsedFind[playerid] || FindTimePoints[playerid] == 0) {
+	if(gettime() < UsedFind[playerid]) { // || FindTimePoints[playerid] == 0) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You've already searched for someone - wait a little.");
 	}
 	

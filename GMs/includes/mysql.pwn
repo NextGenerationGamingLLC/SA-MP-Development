@@ -5127,6 +5127,9 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "FreeNameChange", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iFreeNameChange] = strval(szResult);
 
+			cache_get_field_content(iIndex, "FreeNameChangeDiv", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iFreeNameChangeDiv] = strval(szResult);
+
 			cache_get_field_content(iIndex, "Budget", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iBudget] = strval(szResult);
 
