@@ -781,7 +781,7 @@ CMD:setbail(playerid, params[]) {
 
 	if(sscanf(params, "dd", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
 
-	if(0 < iBail < 50000000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $50.000.000).");
+	if(!(0 < iBail < 50000000)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $50.000.000).");
 	
 	PlayerInfo[uPlayer][pBailPrice] = iBail;
 

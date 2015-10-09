@@ -570,6 +570,9 @@ CMD:sms(playerid, params[])
 					{
 						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: Unknown.", text);
 					}
+					if(PlayerInfo[giveplayerid][pAdmin] >= 2) {
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (%s)", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
+					}
 					else
 					{
 						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d", text, PlayerInfo[playerid][pPnumber]);

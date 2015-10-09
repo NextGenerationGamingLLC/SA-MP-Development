@@ -1863,6 +1863,29 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1893, 1193.76196, -2057.16992, 	100004.30469 - 90000,   0.00000, 0.00000, 90.00000, .streamdistance = 180.0);
 	CreateDynamicObject(930, 1192.46362, -2060.07373, 	100004.86719 - 90000,   0.00000, 0.00000, 0.00000, .streamdistance = 180.0);
 	CreateDynamicObject(1431, 1190.78357, -2060.42847, 	100004.89844 - 90000,   0.00000, 0.00000, 0.00000, .streamdistance = 180.0);
+
+	// ballas
+
+	CreateDynamicObject(1761, 2092.12329, -1160.87244, 25.51938,   0.00000, 0.00000, -90.00000, .streamdistance = 180);
+	CreateDynamicObject(2315, 2090.42505, -1161.27563, 25.58440,   0.00000, 0.00000, -90.00000, .streamdistance = 180);
+	CreateDynamicObject(1762, 2090.17163, -1159.42102, 25.58620,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(3014, 2091.61255, -1159.51563, 25.79660,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(2043, 2090.33887, -1161.06152, 26.18000,   0.00000, 0.00000, 40.00000, .streamdistance = 180);
+	CreateDynamicObject(3124, 2090.07642, -1162.67712, 26.34550,   -56.00000, 71.50000, -3.00000, .streamdistance = 180);
+	CreateDynamicObject(1362, 2097.88940, -1169.38208, 33.16703,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(1761, 2098.86133, -1170.42688, 32.52989,   0.00000, 0.00000, -130.00000, .streamdistance = 180);
+	CreateDynamicObject(1764, 2081.48608, -1173.16711, 22.70290,   0.00000, 0.00000, -90.00000, .streamdistance = 180);
+	CreateDynamicObject(3593, 2089.11694, -1176.13367, 24.96513,   0.00000, 0.00000, -80.00000, .streamdistance = 180);
+	CreateDynamicObject(11745, 2090.26514, -1161.41357, 26.24000,   0.00000, 0.00000, 30.50000, .streamdistance = 180);
+	CreateDynamicObject(359, 2090.59717, -1161.97009, 26.10980,   96.00000, 1.00000, 90.00000, .streamdistance = 180);
+	CreateDynamicObject(700, 2085.49463, -1159.01733, 24.22454,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(645, 2109.95703, -1175.58838, 22.74006,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(1297, 2076.31226, -1167.10986, 26.20476,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(3058, 2089.71045, -1161.61719, 26.15700,   0.00000, 0.00000, 115.00000, .streamdistance = 180);
+	CreateDynamicObject(825, 2086.16650, -1158.44348, 24.14816,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(3265, 2089.59204, -1167.74927, 25.30860,   0.00000, 0.00000, -90.00000, .streamdistance = 180);
+	CreateDynamicObject(759, 2084.42969, -1176.58313, 24.12050,   0.00000, 0.00000, 0.00000, .streamdistance = 180);
+	CreateDynamicObject(1767, 2081.23340, -1175.76331, 22.82220,   0.00000, 0.00000, -120.00000, .streamdistance = 180);
 	
 
 	

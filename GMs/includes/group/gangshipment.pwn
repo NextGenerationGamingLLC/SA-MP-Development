@@ -213,7 +213,7 @@ public OnLoadShipment(playerid) {
 	szMiscArray[0] = 0;
 	SetPVarInt(playerid, "LoadShipmentTime", iLoadTime - 1);
 
-	format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", iLoadTime - 1);
+	format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", iLoadTime);
 	GameTextForPlayer(playerid, szMiscArray, 1100, 3);
 
 	if(iLoadTime > 0) return SetTimerEx("OnLoadShipment", 1000, false, "i", playerid);

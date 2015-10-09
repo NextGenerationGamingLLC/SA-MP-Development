@@ -114,7 +114,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 
 	szMiscArray[0] = 0;
 
-	if(!GetPVarType(iPlayerID, "HasNewbQues")) return SendClientMessageEx(iPlayerID, COLOR_GREY, "That player does not have an active question!");
+	if(!GetPVarType(iNewbieID, "HasNewbQues")) return SendClientMessageEx(iPlayerID, COLOR_GREY, "That player does not have an active question!");
 
 	GetPVarString(iNewbieID, "HasNewbQues", szMiscArray, 128);
 

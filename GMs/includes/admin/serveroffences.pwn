@@ -658,6 +658,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	}
 
 	if(PlayerInfo[giveplayerid][pWarns] >= 3) {
+		PlayerInfo[playerid][pWarns] = 0;
 		CreateBan(playerid, PlayerInfo[giveplayerid][pId], giveplayerid, PlayerInfo[giveplayerid][pIP], "3 Warnings", 14);
 		return 0;
 	}

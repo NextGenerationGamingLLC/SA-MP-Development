@@ -1136,6 +1136,9 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_ADO2						(6123)
 #define 		DIALOG_ADO3						(6124)
 
+#define 		GCRATE_TRANSFER_WITHDRAW_P		(6125)
+#define 		GCRATE_TRANSFER_DEPOSIT_P		(6126)
+
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
 

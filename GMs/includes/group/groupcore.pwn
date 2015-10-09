@@ -922,6 +922,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarInt(playerid, "GSafe_Opt", 0);
 						return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
 					}
+					if(IsAGovernment(playerid)) return ShowGroupAmmoDialog(playerid, iGroupID);
 					if(GetPVarInt(playerid, "MedVestKit") == 1) {
 						return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
 					}
@@ -5612,6 +5613,9 @@ CMD:locker(playerid, params[]) {
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]) // name-change point in faction lockers for free namechange factions
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+						}
+						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nAmmo");
 						}
 						else
 						{

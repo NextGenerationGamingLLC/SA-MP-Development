@@ -769,8 +769,9 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pWarns] >= 3)
 	{
-		CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "3 Warnings", 14);
-		return 1;
+		PlayerInfo[playerid][pWarns] = 0;
+		//CreateBan(INVALID_PLAYER_ID, PlayerInfo[playerid][pId], playerid, PlayerInfo[playerid][pIP], "3 Warnings", 14);
+		//return 1;
 	}
 
 	TogglePlayerSpectating(playerid, 0);
