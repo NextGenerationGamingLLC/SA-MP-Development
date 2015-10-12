@@ -5288,6 +5288,11 @@ public Group_QueryFinish(iType, iExtraID) {
 			}
 			i = 0;
 
+			// Jingles' Drug System:
+			for(i = 0; i < sizeof(szDrugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, DS_Drugs_GetSQLName(i), MainPipeline);
+			for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_field_content_int(iIndex, DS_Ingredients_GetSQLName(i), MainPipeline);
+			i = 0;
+
 			if (arrGroupData[iIndex][g_szGroupName][0] && arrGroupData[iIndex][g_fCratePos][0] != 0.0)
 			{
 				if(arrGroupData[iIndex][g_iGroupType] == GROUP_TYPE_CRIMINAL)
