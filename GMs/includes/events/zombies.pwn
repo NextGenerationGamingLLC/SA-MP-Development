@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 #if defined zombiemode
 stock SpawnZombie(playerid)
 {
@@ -371,6 +373,9 @@ CMD:bite(playerid, params[])
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
 
+					format(szMiscArray, sizeof(szMiscArray),"INSERT INTO `zombiekils` (`id`,`name`,`num`) VALUES ('%d', '%s', 1) ON DUPLICATE KEY UPDATE `num` = `num` + 1", PlayerInfo[playerid][pId], GetPlayerNameEx(playerid));
+					mysql_function_query(MainPipeline, szMiscArray, false, "","");
+
 					SetPVarInt(playerid, "LastBiteID", i);
 					SetPlayerToTeamColor(i);
 					format(string, sizeof(string), "* %s clamps down onto %s's skin, biting into it.", GetPlayerNameEx(playerid), GetPlayerNameEx(i));
@@ -705,4 +710,152 @@ CMD:givez(playerid, params[])
 	}
 	Log("logs/micro.log", string);
 	return 1;
+}
+
+CMD:zscores(playerid, params[]) {
+
+	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "The zombie event is not active!");
+	ShowPlayerDialog(playerid, DIALOG_ZSCORES, DIALOG_STYLE_LIST, "Zombie Scores", "Human Kills\nZombie Infections\nLongest Surviving\nLongest Zombies", "Select", "Cancel");
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	switch(dialogid) {
+
+		case DIALOG_ZSCORES: {
+
+			if(!response) return 1;
+
+			ShowZombieScoreBoard(playerid, listitem);
+		}
+	}
+
+	return 1;
+}
+
+ShowZombieScoreBoard(iPlayerID, iScoreType) {
+
+	switch(iScoreType) {
+		case 0: {
+			mysql_function_query(MainPipeline, "SELECT * FROM `humankills` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+		}
+		case 1: {
+			mysql_function_query(MainPipeline, "SELECT * FROM `zombiekills` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+		}
+		case 2: {
+			mysql_function_query(MainPipeline, "SELECT * FROM `humansurvivor` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+		}
+		case 3: {
+			mysql_function_query(MainPipeline, "SELECT * FROM `zombiesurvivor` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+		}
+	}
+	return 1;
+}
+
+forward OnShowZombieScoreBoard(iPlayerID, iScoreType);
+public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
+
+	new 
+		iRows, 
+		iFields,
+		iCount,
+		szTempName[MAX_PLAYER_NAME];
+
+	szMiscArray[0] = 0;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	switch(iScoreType) {
+		case 0: szMiscArray = "Name\tKills";
+		case 1: szMiscArray = "Name\tKills";
+		case 2: szMiscArray = "Name\tTime";
+		case 3: szMiscArray = "Name\tTime";
+	}
+
+	while(iCount < iRows) {
+
+		cache_get_field_content(iCount, "name", szTempName, MainPipeline);
+
+		new iNumb = cache_get_field_content_int(iCount, "num", MainPipeline);
+
+		switch(iScoreType) {
+			case 0, 1: format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%d", szMiscArray, szTempName, iNumb);
+			case 2, 3: format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%s", szMiscArray, szTempName, ConvertTimeS(iNumb));
+		}
+
+		iCount++; 
+	}
+	
+	switch(iScoreType) {
+		case 0, 2: ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Survivor Scoreboard", szMiscArray, "Close", "");
+		case 1, 3: ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Zombie Scoreboard", szMiscArray, "Close", "");
+	}
+	
+
+	return 1;
+}
+
+SaveZombieStats(i) {
+	new iSSurvive = GetPVarInt(i, "iSAliveTick");
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `humansurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[i][pId], GetPlayerNameEx(i), iSSurvive, iSSurvive);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveZombieStats", "ii", i, 0);
+}
+
+forward OnSaveZombieStats(iPlayerID, iStage);
+public OnSaveZombieStats(iPlayerID, iStage) {
+
+	switch(iStage) {
+			
+		case 0: {
+			new iZSurvive = GetPVarInt(iPlayerID, "iZAliveTick");
+			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `zombiesurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[iPlayerID][pId], GetPlayerNameEx(iPlayerID), iZSurvive, iZSurvive);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveZombieStats", "ii", iPlayerID, 1);
+		}
+
+		case 1: {
+			SetPVarInt(iPlayerID, "iSAliveTick", 0);
+			SetPVarInt(iPlayerID, "iZAliveTick", 0);
+			format(szMiscArray, sizeof(szMiscArray), "Saved zombie stats for %s (%d)", GetPlayerNameEx(iPlayerID), iPlayerID);
+			print(szMiscArray);
+		}
+			
+	}
+
+
+	return 1;
+}
+
+
+hook OnPlayerConnect(playerid) {
+	
+	if(zombieevent) {
+		DeletePVar(playerid, "iZAliveTick");
+		DeletePVar(playerid, "iSAliveTick");
+	}
+
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+
+	if(zombieevent) SaveZombieStats(playerid);
+	return 1;
+}
+
+ptask ZombieTick[1000](i) { 
+
+	if(zombieevent) {
+
+		//if(PlayerInfo[i][pAdmin] >= 2) return 1;
+
+		if(GetPVarType(i, "pIsZombie")) {
+			new iZSurvive = GetPVarInt(i, "iZAliveTick");
+			SetPVarInt(i, "iZAliveTick", iZSurvive+1);
+		}
+		if(!GetPVarType(i, "pIsZombie")) {
+			new iSSurvive = GetPVarInt(i, "iSAliveTick");
+			SetPVarInt(i, "iSAliveTick", iSSurvive+1);
+		}
+	}
 }

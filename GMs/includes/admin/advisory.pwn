@@ -390,7 +390,7 @@ CMD:hl(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2) format(string, sizeof(string), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 	foreach(new n: Player)
 	{
-		ChatTrafficProcess(n, COLOR_NEWBIE, string, 0);
+		ChatTrafficProcess(n, COLOR_HELPERCHAT, string, 0);
 	}	
 	return 1;
 }

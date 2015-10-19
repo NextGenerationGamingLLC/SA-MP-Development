@@ -2189,6 +2189,8 @@ public OnPlayerDisconnect(playerid, reason)
 			InsidePlane[playerid] = INVALID_VEHICLE_ID;
 		}
 
+		if(GetPVarType(playerid, "Injured")) PlayerInfo[playerid][pHospital] = 1;
+
 		OnPlayerStatsUpdate(playerid);
 		if(reason == 0)
 		{

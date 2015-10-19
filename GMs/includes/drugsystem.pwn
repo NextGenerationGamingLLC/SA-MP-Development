@@ -696,6 +696,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(arrPoint[i][po_iType] == 1) {
 
+				if(GetPVarType(playerid, "Smuggling")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must complete your current smuggle before you can start another!");
 				if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a vehicle to load a smuggle.");
 
 				SetPVarInt(playerid, "DrugPoint", i);
@@ -770,6 +771,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			if(PlayerInfo[playerid][pSmugSkill] == 200) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 4 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 400) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 5 of the drug smuggling skill.");
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			DeletePVar(playerid, "Smuggling");
 
 		}
 
@@ -2281,7 +2283,7 @@ BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 			
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrBlackMarket[id][bm_iIngredientAmount][iChoice], id);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrGroupData[iGroupID][g_iIngredients][iChoice], PlayerInfo[playerid][pMember]);
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrGroupData[iGroupID][g_iIngredients][iChoice], PlayerInfo[playerid][pMember]);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
 			return 1;			
 		}
@@ -2801,7 +2803,7 @@ CMD:dropdrug(playerid, params[]) {
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
 
-	if(PlayerInfo[playerid][p_iDrug][iDrugID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if(!(0 < iAmount < PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
@@ -2920,7 +2922,7 @@ CMD:dropingredient(playerid, params[]) {
 
 	if(iIngredientID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid ingredient.");
 
-	if(PlayerInfo[playerid][p_iIngredient][iIngredientID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if(!(0 < iAmount < PlayerInfo[playerid][p_iIngredient][iIngredientID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 	PlayerInfo[playerid][p_iIngredient][iIngredientID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
@@ -3514,6 +3516,15 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 
 	new Float:fPos[3],
 		iVehID = GetPlayerVehicleID(playerid);
+
+
+	SetPVarInt(playerid, "Smuggling", 1);
+
+	if(GetPVarType(playerid, "hFind")) {
+   		SendClientMessageEx(playerid, COLOR_GRAD2, "Hfind has been toggled whilst you drug run!");
+        DeletePVar(playerid, "hFind");
+        DisablePlayerCheckpoint(playerid);
+	}
 
 	if(iBlackMarketID > -1) {
 

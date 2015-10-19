@@ -476,6 +476,9 @@ stock RefreshBusinessPickup(i)
   	DestroyDynamic3DTextLabel(Businesses[i][bStateText]);
   	DestroyDynamic3DTextLabel(Businesses[i][bSupplyText]);
   	DestroyDynamicPickup(Businesses[i][bPickup]);
+  	DestroyDynamicPickup(Businesses[i][bPickup_int]);
+  	if(IsValidDynamicArea(Businesses[i][bAreaID][0])) DestroyDynamicArea(Businesses[i][bAreaID][0]);
+  	if(IsValidDynamicArea(Businesses[i][bAreaID][1])) DestroyDynamicArea(Businesses[i][bAreaID][1]);
     
     if (!(Businesses[i][bExtPos][0] == 0.0 && Businesses[i][bExtPos][1] == 0.0 && Businesses[i][bExtPos][2] == 0.0)) {
 

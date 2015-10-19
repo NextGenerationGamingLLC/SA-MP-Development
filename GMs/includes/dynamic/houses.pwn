@@ -483,6 +483,9 @@ stock ReloadHousePickup(houseid)
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID_int])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID_int]), HouseInfo[houseid][hTextID_int] = Text3D:-1;
+	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID_int])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID_int]), HouseInfo[houseid][hPickupID_int] = -1;
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][0])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][0]), HouseInfo[houseid][hAreaID][0] = -1;
+	if(IsValidDynamicArea(HouseInfo[houseid][hAreaID][1])) DestroyDynamicArea(HouseInfo[houseid][hAreaID][1]), HouseInfo[houseid][hAreaID][1] = -1;
 
 	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
 	new string[128];

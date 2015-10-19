@@ -110,6 +110,7 @@ public Maintenance()
 forward FinishMaintenance();
 public FinishMaintenance()
 {
+    foreach(new i: Player) Kick(i);
     ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Houses...", 1);
 	SaveHouses();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Dynamic Doors...", 1);

@@ -173,14 +173,6 @@ SaveGroup(iGroupID) {
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
 
-	/*for (i = 0; i < MAX_GROUPS; i++) {
-		for(new x = 0; x != 50; x++)
-		{
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeapons` SET `Weapon_ID` = '%d', `Group_ID`='%d' WHERE `id`='%d'", arrGroupData[i][g_iWeapons][x], i, iIndex);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-			iIndex++;
-		}
-	}*/
 	return 1;
 }
 
@@ -6359,14 +6351,14 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 		GivePlayerValidWeapon(playerid, iWeaponID, 0);
 	
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
-		GroupLog(iGroupID, szMiscArray);
+		GroupLog(iGroupID-1, szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(iWeaponID));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "A %s has been transfered from the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);
-		GroupLog(iGroupID, szMiscArray);
+		GroupLog(iGroupID-1, szMiscArray);
 	}
 
 	return 1;
@@ -6392,14 +6384,14 @@ public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
 		SetPlayerWeaponsEx(playerid);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
-		GroupLog(iGroupID, szMiscArray);
+		GroupLog(iGroupID-1, szMiscArray);
 
 		format(szMiscArray, sizeof(szMiscArray), "You have deposited a %s into the locker.", Weapon_ReturnName(iWeaponID));
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "A %s has been deposited into the locker (x%d).", Weapon_ReturnName(iWeaponID), iAmount);
-		GroupLog(iGroupID, szMiscArray);
+		GroupLog(iGroupID-1, szMiscArray);
 	}
 
 	return 1;

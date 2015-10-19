@@ -382,7 +382,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	szMiscArray[0] = 0;
 
-	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0)
+	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0 && !GetPVarInt(playerid, "z50Cal"))
 	{
 		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1)
 		{
@@ -476,7 +476,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 		{
 			new string[128];
-			format(string, sizeof(string), "INSERT INTO humankills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(killerid));
+			format(string, sizeof(string), "INSERT INTO humankills (id,num, name) VALUES (%d,1, %s) ON DUPLICATE KEY UPDATE num = num + 1", PlayerInfo[killerid][pId], GetPlayerNameEx(killerid));
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
 		}
 

@@ -224,6 +224,13 @@ task SyncTime[60000]()
 	    }
 	}
 
+	if(zombieevent) {
+		
+		foreach(new i: Player)  {
+			SaveZombieStats(i);
+		}
+	}
+
 	new tmphour, tmpminute, tmpsecond;
 	gettime(tmphour, tmpminute, tmpsecond);
 	FixHour(tmphour);

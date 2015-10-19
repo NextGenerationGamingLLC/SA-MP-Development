@@ -1138,6 +1138,7 @@ native IsValidVehicle(vehicleid);
 
 #define 		GCRATE_TRANSFER_WITHDRAW_P		(6125)
 #define 		GCRATE_TRANSFER_DEPOSIT_P		(6126)
+#define 		DIALOG_ZSCORES					(6127)
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
