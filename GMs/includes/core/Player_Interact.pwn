@@ -769,6 +769,8 @@ Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 	
 	if(PlayerInfo[giveplayerid][pGuns][GetWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
 
+	if(weaponid == WEAPON_KNIFE) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot give knives!");
+
 	if(saleprice != 0 && (GetPlayerCash(giveplayerid) < saleprice || saleprice < 0)) return SendClientMessage(giveplayerid, COLOR_GRAD2, "You do not have enough money");
 	PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] = 0;
 	SetPlayerWeaponsEx(playerid);
@@ -1494,6 +1496,7 @@ CMD:interact(playerid, params[]) {
 
 	new giveplayerid = strval(params);
 	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
+	if(GetPVarType(playerid, "Injured")) return 1;
 	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
 
 	Player_InteractMenu(playerid, giveplayerid);

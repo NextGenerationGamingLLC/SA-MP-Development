@@ -224,11 +224,12 @@ CMD:zombieevent(playerid, params[])
 	{
 	    if(zombieevent == 0)
 	    {
+	        zombieevent=1;
 	        foreach(new i: Player)
 			{
 				PlayerInfo[i][pVials]++;
+				SetPlayerWeaponsEx(playerid);
 			}	
-	        zombieevent=1;
 	        //SendAudioToRange(70, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
 			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled zombie mode.");

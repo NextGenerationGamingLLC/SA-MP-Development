@@ -70,7 +70,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				return 1;
 			}
 			new iAmmoType = GetAmmoType(weaponid);
-			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1) return 1;
+			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1 && !zombieevent) return 1;
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
@@ -382,7 +382,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	szMiscArray[0] = 0;
 
-	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0 && !GetPVarInt(playerid, "z50Cal"))
+	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0 && !GetPVarInt(playerid, "z50Cal") && !zombieevent)
 	{
 		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1)
 		{

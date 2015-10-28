@@ -697,7 +697,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 			if(arrPoint[i][po_iType] == 1) {
 
 				if(GetPVarType(playerid, "Smuggling")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must complete your current smuggle before you can start another!");
-				if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a vehicle to load a smuggle.");
+				if(!IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be driving a vehicle to load a smuggle.");
 
 				SetPVarInt(playerid, "DrugPoint", i);
 				SetPVarInt(playerid, PVAR_ATDRUGPOINT, i);
@@ -804,6 +804,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			DeletePVar(playerid, "Smuggling");
 
 			PlayerInfo[playerid][pSmugSkill] += 1;
    			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
@@ -1130,7 +1131,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			switch(listitem)
 			{
 				case 0: Smuggle_GetBMDelPos(playerid);
-				case 1: Smuggle_StartSmuggle(playerid);
+				//case 1: Smuggle_StartSmuggle(playerid);
+				case 1: {
+					SendClientMessageEx(playerid, COLOR_GREY, "You can only deliver to black-markets now.");
+					Smuggle_GetBMDelPos(playerid);
+				}
 			}
 			return 1;
 		}
@@ -3026,7 +3031,9 @@ CMD:createblackmarket(playerid, params[]) {
 
 	szMiscArray[0] = 0;
 
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
+
+	//if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
 
 	new	j;
 
@@ -3252,7 +3259,8 @@ CMD:pointtime(playerid, params[]) {
 
 CMD:createdpoint(playerid, params[]) 
 {
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	//if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
 
 	ShowPlayerDialog(playerid, DIALOG_POINT_NAME, DIALOG_STYLE_INPUT, "Create Point | Specify Name", "Please enter a name for the point (max. 32 characters).", "Select", "Cancel");
 	return 1;
@@ -3260,7 +3268,7 @@ CMD:createdpoint(playerid, params[])
 
 CMD:destroypoint(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
 
 	new i;
 	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroypoint [id]");
@@ -3280,7 +3288,7 @@ CMD:editpoint(playerid, params[]) {
 		i,
 		Float:fPos[3];
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command. ");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command. ");
 
 	if(sscanf(params, "s[16]dS[32]", szChoice, i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'captureable'");
 

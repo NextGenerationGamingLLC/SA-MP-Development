@@ -180,7 +180,7 @@ CMD:approvedoorsale(playerid, params[])
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
 		ReportHourCount[playerid] ++;
-		format(string, sizeof(string), "AdmCmd: %s approved %s's dynamic door sale request (no transaction made).", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		format(string, sizeof(string), "AdmCmd: %s approved %s's dynamic door sale request (sale failed).", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
 		ABroadCast(COLOR_LIGHTRED, string, 4);
 		Log("logs/admin.log", string);
 		return 1;
@@ -199,13 +199,13 @@ CMD:approvedoorsale(playerid, params[])
 		SendClientMessageEx(DDSaleTarget[target], COLOR_GREEN, string);
 		format(string, sizeof(string), "No transactions have been made however, as %s does not have the sufficient funds for the fine ($%s).", GetPlayerNameEx(target), number_format(fine));
 		SendClientMessageEx(DDSaleTarget[target], COLOR_GREY, string);
-		ClearDoorSaleVariables(target);
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
 		ReportHourCount[playerid] ++;
-		format(string, sizeof(string), "AdmCmd: %s approved %s's dynamic door sale request (no transaction made).", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		format(string, sizeof(string), "AdmCmd: %s approved %s's dynamic door sale request (sale failed).", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
 		ABroadCast(COLOR_LIGHTRED, string, 4);
 		Log("logs/admin.log", string);
+		ClearDoorSaleVariables(target);
 		return 1;
 	}
 	else if(GetPlayerCash(DDSaleTarget[target]) >= DDSalePrice[target])
@@ -255,13 +255,13 @@ CMD:approvedoorsale(playerid, params[])
 		strcat(szMiscArray, "\n\nPress (F8) to take a screen-shot of this receipt for future reference.");
 		ShowPlayerDialog(target, DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
 		ShowPlayerDialog(DDSaleTarget[target], DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
-		ClearDoorSaleVariables(target);
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
 		ReportHourCount[playerid] ++;
-		format(string, sizeof(string), "AdmCmd: %s approved %s's dynamic door sale request.", GetPlayerNameEx(playerid), GetPlayerNameEx(target));
+		format(string, sizeof(string), "AdmCmd: DDSale: Auth: %s DD sale (Seller:%s) (DD:%d) (F:$%s) (P:$%s) (TO: (%s)).", GetPlayerNameEx(playerid), GetPlayerNameEx(target), DDSaleTracking[target], number_format(fine), number_format(DDSalePrice[target]), GetPlayerNameEx(DDSaleTarget[target]));
 		ABroadCast(COLOR_LIGHTRED, string, 4);
 		Log("logs/admin.log", string);
+		ClearDoorSaleVariables(target);
 		return 1;
 	}
 	return 1;

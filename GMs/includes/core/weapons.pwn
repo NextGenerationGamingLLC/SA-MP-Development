@@ -116,7 +116,7 @@ stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
 	GivePlayerWeapon( playerid, WeaponID, 1);
 	SyncPlayerAmmo(playerid, WeaponID);
 	new iAmmoType = GetAmmoType(WeaponID); // the if check prevents OOB index issues
-	if(iAmmoType != -1) arrAmmoData[playerid][awp_iAmmo][iAmmoType] += Ammo;
+	if(iAmmoType != -1 && !zombieevent) arrAmmoData[playerid][awp_iAmmo][iAmmoType] += Ammo;
 	
 	return 1;
 }
@@ -148,7 +148,8 @@ public SetPlayerWeapons(playerid)
 	{
 		if(PlayerInfo[playerid][pGuns][s] > 0 && PlayerInfo[playerid][pAGuns][s] == 0)
 		{
-			GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
+			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
+			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
 		}
 	}
 	return 1;
@@ -162,7 +163,8 @@ stock SetPlayerWeaponsEx(playerid)
 	{
 		if(PlayerInfo[playerid][pGuns][s] > 0)
 		{
-			GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
+			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
+			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
 		}
 	}
 	SetPlayerArmedWeapon(playerid, GetPVarInt(playerid, "LastWeapon"));

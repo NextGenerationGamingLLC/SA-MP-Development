@@ -32,6 +32,7 @@ AC_Process(playerid, processid) {
 
 AC_IsPlayerSurfing(playerid)
 {
+	if(zombieevent) return 0;
 	new iVehID = GetPlayerSurfingVehicleID(playerid);
 	if(iVehID == INVALID_VEHICLE_ID) return 0;
 	switch(GetVehicleModel(iVehID)) {

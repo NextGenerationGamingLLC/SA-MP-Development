@@ -420,13 +420,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
+						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -437,13 +437,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
+						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -1103,13 +1103,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
+						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -1120,13 +1120,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
+						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -1786,13 +1786,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
+						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -1803,13 +1803,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
+						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -2469,13 +2469,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pPot] += dgVar[dgPot][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Pot(s)!", dgVar[dgPot][2]);
+						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPot][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Pot(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPot][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -2486,13 +2486,13 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[giveplayerid][pCrack] += dgVar[dgCrack][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Crack(s)!", dgVar[dgCrack][2]);
+						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgCrack][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgCrack][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}

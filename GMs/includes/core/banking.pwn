@@ -399,7 +399,7 @@ PayDay(i) {
 				}
 				if(FIFTimeWarrior == 1)
 				{
-					if(FIFInfo[i][FIFHours] % 32 == 0)
+					if(FIFInfo[i][FIFHours] % 28 == 0)
 					{
 						PlayerInfo[i][pGoldBoxTokens] += 1;
 						SendClientMessageEx(i, COLOR_WHITE, "You have won a Gold Box Token for Fall Into Fun! To claim it, type /getrewardgift.");

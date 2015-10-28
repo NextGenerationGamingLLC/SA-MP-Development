@@ -3817,6 +3817,7 @@ public OnChangeUserPassword(index)
 		}
 		else {
 			format(string, sizeof(string), "There was an issue with changing %s's pin.", name);
+			format(string, sizeof(string), "There was an issue with changing %s's pin.", name);
 			SendClientMessageEx(index, COLOR_WHITE, string);
 		}
 		DeletePVar(index, "ChangePin");
@@ -6491,9 +6492,18 @@ stock g_mysql_SaveFIF(playerid)
 	{
 		new szQuery[128];
 		format(szQuery, sizeof(szQuery), "UPDATE `FallIntoFun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_function_query(MainPipeline, szQuery, false, "OnSaveFIF", "i", playerid);
 	}
 }
+
+forward OnSaveFIF(playerid);
+public OnSaveFIF(playerid) {
+
+	printf("Saved %s's FIF stats", GetPlayerNameEx(playerid));
+
+	return 1;
+}
+
 
 stock CheckPassAgain(playerid)
 {

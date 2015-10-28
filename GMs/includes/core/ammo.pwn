@@ -64,9 +64,9 @@ GetAmmoName(ammoType)
 SyncPlayerAmmo(playerid, iWeaponID)
 {
 	if(iWeaponID == WEAPON_SPRAYCAN || iWeaponID == WEAPON_CAMERA || iWeaponID == WEAPON_FIREEXTINGUISHER) return SetPlayerAmmo(playerid, iWeaponID, 99999);
-	if(iWeaponID == WEAPON_MOLTOV || iWeaponID == WEAPON_GRENADE) return SetPlayerAmmo(playerid, iWeaponID, 5);
+	if(iWeaponID == WEAPON_MOLTOV || iWeaponID == WEAPON_GRENADE || iWeaponID == WEAPON_GRENADE) return SetPlayerAmmo(playerid, iWeaponID, 5);
 	new iAmmoType = GetAmmoType(iWeaponID);
-	if(GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0) return 1;
+	if(GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || pTazer{playerid} != 0 || zombieevent) return 1;
 	if(iAmmoType != -1)
 	{
 		if(arrAmmoData[playerid][awp_iAmmo][iAmmoType] > GetMaxAmmoAllowed(playerid, iAmmoType) && (PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2))
