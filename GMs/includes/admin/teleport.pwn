@@ -262,14 +262,14 @@ CMD:goto(playerid, params[])
 		 	if (GetPlayerState(playerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(playerid);
-				SetVehiclePos(tmpcar, -1081.0,4297.9,4.4);
+				SetVehiclePos(tmpcar, -14.3755,-4472.8506, 4);
 				LinkVehicleToInterior(tmpcar, 0);
 				SetVehicleVirtualWorld(tmpcar, 0);
 				fVehSpeed[playerid] = 0.0;
 			}
 			else
 			{
-				SetPlayerPos(playerid, -1081.0,4297.9,4.4);
+				SetPlayerPos(playerid, -14.3755,-4472.8506, 4);
 			}
 			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
 			SetPlayerInterior(playerid,0);
@@ -1241,14 +1241,14 @@ CMD:sendto(playerid, params[])
 		 	if (GetPlayerState(giveplayerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(giveplayerid);
-				SetVehiclePos(tmpcar, -1081.0,4297.9,4.4);
+				SetVehiclePos(tmpcar, -14.3755,-4472.8506, 4);
 				LinkVehicleToInterior(tmpcar, 0);
 				SetVehicleVirtualWorld(tmpcar, 0);
 				fVehSpeed[giveplayerid] = 0.0;
 			}
 			else
 			{
-				SetPlayerPos(giveplayerid, -1081.0,4297.9,4.4);
+				SetPlayerPos(giveplayerid, -14.3755,-4472.8506, 4);
 			}
 			format(string, sizeof(string), " You have sent %s to the Crate Island.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);

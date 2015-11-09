@@ -45,8 +45,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
 		new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-		if(0 <= a < MAX_PAYPHONES && areaid[0] == arrPayPhoneData[a][pp_iAreaID])
+		if(0 <= a < MAX_PAYPHONES && areaid[0] == arrPayPhoneData[a][pp_iAreaID]) {
+			if(IsPlayerInAnyVehicle(playerid)) return 1;
 			SetPVarInt(playerid, "AtPayPhone", a);
+		}
 		else
 			DeletePVar(playerid, "AtPayPhone");
 

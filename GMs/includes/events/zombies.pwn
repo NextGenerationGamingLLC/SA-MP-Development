@@ -374,7 +374,7 @@ CMD:bite(playerid, params[])
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
 
-					format(szMiscArray, sizeof(szMiscArray),"INSERT INTO `zombiekils` (`id`,`name`,`num`) VALUES ('%d', '%s', 1) ON DUPLICATE KEY UPDATE `num` = `num` + 1", PlayerInfo[playerid][pId], GetPlayerNameEx(playerid));
+					format(szMiscArray, sizeof(szMiscArray),"INSERT INTO `zombiekills` (`id`,`name`,`num`) VALUES ('%d', '%s', 1) ON DUPLICATE KEY UPDATE `num` = `num` + 1", PlayerInfo[playerid][pId], GetPlayerNameEx(playerid));
 					mysql_function_query(MainPipeline, szMiscArray, false, "","");
 
 					SetPVarInt(playerid, "LastBiteID", i);

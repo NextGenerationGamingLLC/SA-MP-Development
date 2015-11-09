@@ -1414,6 +1414,7 @@ ptask PlayerHeartBeat[1000](i) {
 				PlayerInfo[i][pVW] = 0;
 				SetPlayerPos(i, 1742.3053,-1849.4283,13.5812);
 				SetPlayerFacingAngle(i, 180.0);
+				ClearCrimes(i);
 			}
 			else {
 				SetPlayerInterior(i, 0);
@@ -1430,7 +1431,6 @@ ptask PlayerHeartBeat[1000](i) {
 			SendClientMessageEx(i, COLOR_GRAD1,"   You have paid your debt to society.");
 			GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
-			ClearCrimes(i);
 			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
 			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess]) GroupLog(x, szMiscArray);
 		}

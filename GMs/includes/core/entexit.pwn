@@ -40,6 +40,7 @@ CMD:exit(playerid)
 }
 
 Process_Entrance(playerid) {
+	if(GetPVarType(playerid, "IsInArena")) return 1;
 	if(IsPlayerInAnyDynamicArea(playerid))
 	{
 		new areaid[1];
@@ -84,7 +85,6 @@ Process_Entrance(playerid) {
 	}
 	return 1;
 }
-
 
 /* public OnPlayerEnterDynamicArea(playerid, areaid) {
 

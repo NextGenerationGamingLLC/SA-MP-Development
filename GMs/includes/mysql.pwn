@@ -586,11 +586,16 @@ public OnQueryFinish(resultid, extraid, handleid)
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
 					
 					// Account settings:
-					cache_get_field_content(row,  "ToggledChats", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pToggledChats]);
+					/*cache_get_field_content(row,  "ToggledChats", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pToggledChats]);*/
 
-					cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);
+					for(new c = 0; c < MAX_CHATSETS; c++) {
+						format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
+						PlayerInfo[extraid][pToggledChats][c] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
+					}
+
+					/*cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);*/
 
 					for(new i = 0; i != MAX_AMMO_TYPES; i++)
 					{
@@ -2410,7 +2415,7 @@ stock g_mysql_SaveAccount(playerid)
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
 
-	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+	/*format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
 		PlayerInfo[playerid][pToggledChats][0], 
 		PlayerInfo[playerid][pToggledChats][1],
 		PlayerInfo[playerid][pToggledChats][2], 
@@ -2432,9 +2437,14 @@ stock g_mysql_SaveAccount(playerid)
 		PlayerInfo[playerid][pToggledChats][18],
 		PlayerInfo[playerid][pToggledChats][19],
 		PlayerInfo[playerid][pToggledChats][20]);
-	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);*/
 
-	format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
+	for(new c = 0; c < MAX_CHATSETS; c++) {
+		format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][pToggledChats][c]);
+	}
+
+	/*format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", 
 		PlayerInfo[playerid][pChatbox][0], 
 		PlayerInfo[playerid][pChatbox][1],
 		PlayerInfo[playerid][pChatbox][2], 
@@ -2456,7 +2466,7 @@ stock g_mysql_SaveAccount(playerid)
 		PlayerInfo[playerid][pChatbox][18],
 		PlayerInfo[playerid][pChatbox][19]);
 
-	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "ChatBoxSettings", szMiscArray);*/
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
@@ -2503,7 +2513,7 @@ stock GetLatestKills(playerid, giveplayerid)
 stock GetSMSLog(playerid)
 {
 	new query[256];
-	format(query, sizeof(query), "SELECT `sender`, `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
+	format(query, sizeof(query), "SELECT `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, query, true, "OnGetSMSLog", "i", playerid);
 }
 
@@ -4977,7 +4987,7 @@ public OnPinCheck(index)
 forward OnGetSMSLog(playerid);
 public OnGetSMSLog(playerid)
 {
-    new string[128], sender[MAX_PLAYER_NAME], message[256], sDate[20], rows, fields;
+    new string[128], message[256], sDate[20], rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 	if(rows)
 	{
@@ -4985,11 +4995,11 @@ public OnGetSMSLog(playerid)
 		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 SMS Received >>");
 		for(new i; i < rows; i++)
 		{
-			cache_get_field_content(i, "sender", sender, MainPipeline, MAX_PLAYER_NAME);
+			//cache_get_field_content(i, "sender", sender, MainPipeline, MAX_PLAYER_NAME);
 			cache_get_field_content(i, "sendernumber", string, MainPipeline); new sendernumber = strval(string);
 			cache_get_field_content(i, "message", message, MainPipeline, sizeof(message));
 			cache_get_field_content(i, "date", sDate, MainPipeline, sizeof(sDate));
-			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %s (%d)", sDate, message, StripUnderscore(sender), sendernumber);
+			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %d", sDate, message, sendernumber);
 			else format(string, sizeof(string), "[%s] SMS: %s, Sender: Unknown", sDate, message);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		}
@@ -5253,14 +5263,13 @@ public Group_QueryFinish(iType, iExtraID) {
 				arrGroupData[iIndex][g_iAmmo][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
 			}
 
-			i = 0;
-			while(i < MAX_GROUP_RANKS) {
+			for(i = 0; i < MAX_GROUP_RANKS; ++i)
+			{
 				format(szResult, sizeof(szResult), "GClothes%i", i);
 				arrGroupData[iIndex][g_iClothes][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
-				i++;
 			}
-			i = 0;
 
+			i = 0;
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);
 				cache_get_field_content(iIndex, szResult, arrGroupRanks[iIndex][i], MainPipeline, GROUP_MAX_RANK_LEN);

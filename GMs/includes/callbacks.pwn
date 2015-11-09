@@ -1797,11 +1797,11 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "MovingStretcher")) {
 			KillTimer(GetPVarInt(playerid, "TickEMSMove"));
 		}
-		KillEMSQueue(playerid);
 		if(GetPVarInt(playerid, "Injured") == 1) {
 			PlayerInfo[playerid][pHospital] = 1;
 			ResetPlayerWeaponsEx(playerid);
 		}
+		KillEMSQueue(playerid);
 		if(GetPVarInt(playerid, "HeroinEffect")) {
 			KillTimer(GetPVarInt(playerid, "HeroinEffect"));
 			PlayerInfo[playerid][pHospital] = 1;
@@ -2095,11 +2095,11 @@ public OnPlayerDisconnect(playerid, reason)
 			LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 			PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "pbOldInt");
 			PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "pbOldVW");
-			PlayerInfo[playerid][pPos_x] = GetPVarFloat(playerid, "pbOldX");
-			PlayerInfo[playerid][pPos_y] = GetPVarFloat(playerid, "pbOldY");
-			PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "pbOldZ");
-			PlayerInfo[playerid][pHealth] = GetPVarFloat(playerid, "pbOldHealth");
-			PlayerInfo[playerid][pArmor] = GetPVarFloat(playerid, "pbOldArmor");
+			PlayerInfo[playerid][pPos_x] = 2012.500366; 
+			PlayerInfo[playerid][pPos_y] = -1264.768554;
+			PlayerInfo[playerid][pPos_z] = 23.547389;
+			PlayerInfo[playerid][pHealth] = 100;
+			//PlayerInfo[playerid][pArmor] = GetPVarFloat(playerid, "pbOldArmor");
 			new szLog[128], Float: realarmor;
 			GetArmour(playerid, realarmor);
 			format(szLog, sizeof(szLog), "Player %s(%d) disconnects inside paintball with %f.2 armor, but has %f.2.", GetPlayerNameEx(playerid), playerid, PlayerInfo[playerid][pArmor], realarmor);
@@ -5464,7 +5464,12 @@ public OnPlayerText(playerid, text[])
 	}
 	if(Mobile[playerid] != INVALID_PLAYER_ID)
 	{
-		format(string, sizeof(string), "(cellphone) %s says: %s", GetPlayerNameEx(playerid), text);
+		if(GetPVarType(playerid, "PayPhone")) {
+			format(string, sizeof(string), "(payphone)(unknown) says: %s", text);
+		}
+		else format(string, sizeof(string), "(cellphone) %s says: %s", GetPlayerNameEx(playerid), text);
+		
+
 		ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 		if(IsPlayerConnected(Mobile[playerid]))
 		{
@@ -5492,7 +5497,10 @@ public OnPlayerText(playerid, text[])
 			{
 				if(PlayerInfo[Mobile[playerid]][pSpeakerPhone] != 0)
 				{
-				    format(string, sizeof(string), "(speakerphone) %s says: %s", GetPlayerNameEx(playerid), text);
+				    if(GetPVarType(playerid, "PayPhone")) {
+						format(string, sizeof(string), "(speakerphone)(unknown) says: %s", text);
+					}
+				    else format(string, sizeof(string), "(speakerphone) %s says: %s", GetPlayerNameEx(playerid), text);
 					ProxDetector(20.0, Mobile[playerid], string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 				}
 				else

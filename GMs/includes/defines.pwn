@@ -1382,3 +1382,5 @@ native IsValidVehicle(vehicleid);
 
 #define 		MAX_UFOS							10
 #define 		ALIEN_ACTORMODEL 					264
+
+#define 			MAX_CHATSETS 					21

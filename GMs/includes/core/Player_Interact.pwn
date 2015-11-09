@@ -153,22 +153,32 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 
 				new weaponid = GetPVarInt(playerid, "Interact_SellGun");
 
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy a %s for $%s", GetPlayerNameEx(giveplayerid), Item_Getname(itemid), number_format(offerprice));
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s", GetPlayerNameEx(playerid), ReturnWeaponName(weaponid), number_format(offerprice));
 			}
 			else if(GetPVarType(playerid, "Interact_Drug")) {
 				new drugid = GetPVarInt(playerid, "Interact_Drug");
 
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s with a quality of {FFFF00} %d qP {FFFFFF}for $%s", GetPlayerNameEx(playerid), szDrugs[drugid], PlayerInfo[playerid][p_iDrugQuality][drugid], number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %dpc of %s with a quality of {FFFF00} %d qP {FFFFFF}for $%s", GetPlayerNameEx(giveplayerid), amount, szDrugs[drugid], PlayerInfo[playerid][p_iDrugQuality][drugid], number_format(offerprice));
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s with a quality of {FFFF00} %d qP {FFFFFF}for $%s", GetPlayerNameEx(playerid), amount, szDrugs[drugid], PlayerInfo[playerid][p_iDrugQuality][drugid], number_format(offerprice));
 			}
 			else if(GetPVarType(playerid, "Interact_Ingredient")) {
 				new ingredientid = GetPVarInt(playerid, "Interact_Ingredient");
 
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s for $%s", GetPlayerNameEx(playerid), szIngredients[ingredientid], number_format(offerprice));
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %dpc of %s for $%s", GetPlayerNameEx(giveplayerid), amount, szIngredients[ingredientid], number_format(offerprice));
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dpc of %s for $%s", GetPlayerNameEx(playerid), amount, szIngredients[ingredientid], number_format(offerprice));
 			}
-			else format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));	
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(offerprice));
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
+			}	
 			ShowPlayerDialog(giveplayerid, INTERACT_SELLCONFIRM, DIALOG_STYLE_MSGBOX, szTitle, szMiscArray, "Buy", "Reject");
-			format(szMiscArray, sizeof(szMiscArray), "[Interact]: You have offered %s to buy %d %s for $%s", GetPlayerNameEx(giveplayerid), amount, Item_Getname(itemid), number_format(offerprice));
-			SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+			
+			
 		}
 		case 6: {
 
@@ -669,9 +679,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetPVarInt(playerid, "Interact_Drug", listitem);
 
 			if(GetPVarType(playerid, "Interact_Sell")) {
-
-
-				return Player_InteractMenu(playerid, giveplayerid, 4);
+				return Player_InteractMenu(playerid, giveplayerid, 2);
 			}
 
 			Player_InteractMenu(playerid, giveplayerid, 2);
@@ -1136,71 +1144,68 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
-	
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-	
 	format(szMiscArray, sizeof(szMiscArray), "*** %s' items...  ***", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-
-	if(PlayerInfo[giveplayerid][pPot] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d grams of pot.", PlayerInfo[giveplayerid][pPot]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-
-	if(PlayerInfo[giveplayerid][pWSeeds] == 1) {
-		SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) Marijuana Seeds");
-	}
-	if(PlayerInfo[giveplayerid][pCrack] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d grams of crack.", PlayerInfo[giveplayerid][pCrack]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(PlayerInfo[giveplayerid][pMats] > 0) {
+	if(PlayerInfo[giveplayerid][pMats] > 0)
+	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
-	if(PlayerInfo[giveplayerid][pHeroin] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d grams of heroin.", PlayerInfo[giveplayerid][pHeroin]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(PlayerInfo[giveplayerid][pRawOpium] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d grams of raw opium.", PlayerInfo[giveplayerid][pRawOpium]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-	if(PlayerInfo[giveplayerid][pSyringes] > 0) {
+	if(PlayerInfo[giveplayerid][pSyringes] > 0)
+	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
-	if(PlayerInfo[giveplayerid][pOpiumSeeds] > 0) {
-		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d opium seeds.", PlayerInfo[giveplayerid][pOpiumSeeds]);
-		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-	}
-    if(packages > 0) {
+    if(packages > 0)
+	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d material packages.", packages);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
-	if(crates > 0) {
+	if(crates > 0)
+	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d drug crates.", crates);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 
-	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0) {
+	format(szMiscArray, sizeof(szMiscArray), "*** %s' drugs...  ***", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	for(new i = 0; i < sizeof(szDrugs); i++) {
+
+		if(PlayerInfo[giveplayerid][p_iDrug][i] > 0) {
+			format(szMiscArray, sizeof(szMiscArray), "%s: %dpc", szDrugs[i+1], PlayerInfo[giveplayerid][p_iDrug][i]);
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+		}
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "*** %s' ingredients...  ***", GetPlayerNameEx(giveplayerid));
+	for(new i = 0; i < sizeof(szIngredients); i++) {
+
+		if(PlayerInfo[giveplayerid][p_iIngredient][i] > 0) {
+			format(szMiscArray, sizeof(szMiscArray), "%s: %dpc", szIngredients[i+1], PlayerInfo[giveplayerid][p_iIngredient][i]);
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+		}
+	}
+
+	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0)
+	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
 		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
 	if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Music player.");
-	
 	new weaponname[50];
 	format(szMiscArray, sizeof(szMiscArray), "*** %s' weapons...  ***", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-	for (new i = 0; i < 12; i++) {
-		if(PlayerInfo[giveplayerid][pGuns][i] > 0) {
+	for (new i = 0; i < 12; i++)
+	{
+		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
+		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
 			format(szMiscArray, sizeof(szMiscArray), "Weapon: %s.", weaponname);
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 		}
 	}
-
 	for(new i = 0; i != MAX_AMMO_TYPES; i++)
 	{
 		if(arrAmmoData[giveplayerid][awp_iAmmo][i] > 0)

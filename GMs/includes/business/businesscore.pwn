@@ -1099,9 +1099,7 @@ CMD:shop(playerid, params[])
 
 CMD:refuel(playerid, params[])
 {
-	new zyear, zmonth, zday;
-	getdate(zyear, zmonth, zday);
-	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, -1, "You can't use Gas Stations during the Zombie Event!");
+	if(zombieevent) return SendClientMessageEx(playerid, -1, "You can't use Gas Stations during the Zombie Event!");
     if (GetPVarType(playerid, "Refueling"))
 	{
 	    SetPVarInt(playerid, "Refueling", -1);

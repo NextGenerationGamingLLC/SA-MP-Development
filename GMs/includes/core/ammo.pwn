@@ -185,11 +185,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			switch(listitem)
 			{
 				case 0: { // weapons
-					format(szMiscArray, sizeof(szMiscArray), "Weapon\tPrice\n9mm Pistol\t$%s\nPump Shotgun\t$%s", number_format(GunPrices[0]), number_format(GunPrices[1]));
+					format(szMiscArray, sizeof(szMiscArray), "Weapon\tPrice\n9mm Pistol\t$%s\nPump Shotgun\t$%s\nDeagle\t$%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[4]));
 					ShowPlayerDialog(playerid, DIALOG_AMMUNATION_GUNS, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Weapons", szMiscArray, "Select", "Back");
 				}
 				case 1: {// ammo
-					format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tPrice\n9mm\t$%s\n12-Gauge\t$%s", number_format(GunPrices[2]), number_format(GunPrices[3]));
+					format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tPrice\n9mm\t$%s\n12-Gauge\t$%s\n50AE\t$%s", number_format(GunPrices[2]), number_format(GunPrices[3]), number_format(GunPrices[5]));
 					ShowPlayerDialog(playerid, DIALOG_AMMUNATION_AMMO, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Ammo", szMiscArray, "Select", "Back");
 				} 
 			}
@@ -411,15 +411,15 @@ CMD:loadammo(playerid, params[])
 			if(IsPlayerInRangeOfPoint(playerid, 5.0, Businesses[i][bSupplyPos][0], Businesses[i][bSupplyPos][1], Businesses[i][bSupplyPos][2]) && Businesses[i][bType] == BUSINESS_TYPE_GUNSHOP)
 			{
 				DynVehicleInfo[DynVeh[iVehID]][gv_iAmmoLoaded] = 1;
-				arrGroupData[iGroupID][g_iBudget] -= 100000;
-				Businesses[i][bSafeBalance] += TaxSale(100000);
+				arrGroupData[iGroupID][g_iBudget] -= 400000;
+				Businesses[i][bSafeBalance] += TaxSale(400000);
 
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have loaded ammo into your vehicle. Deliver it back to your HQ. ");
 
-				format(szMiscArray, sizeof(szMiscArray), "%s has paid $100,000 for an ammo crate resupply at %s (%d).", GetPlayerNameEx(playerid), Businesses[i][bName], i);
+				format(szMiscArray, sizeof(szMiscArray), "%s has paid $400,000 for an ammo crate resupply at %s (%d).", GetPlayerNameEx(playerid), Businesses[i][bName], i);
 				Log("logs/business.log", szMiscArray);
 
-				format(szMiscArray, sizeof(szMiscArray), "%s has paid $100,000 for an ammo crate resupply.", GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof(szMiscArray), "%s has paid $400,000 for an ammo crate resupply.", GetPlayerNameEx(playerid));
 				GroupLog(iGroupID, szMiscArray);
 				break;
 			}

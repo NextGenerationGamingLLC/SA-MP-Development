@@ -132,7 +132,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 		AddCAReportToken(iPlayerID); // Advisor Tokens
 	}
 
-	SendClientMessageEx(iNewbieID, COLOR_NEWBIE, "Your question has been answered! If you have more questions feel free to [/joinhelp] or for additional assistance use [/requesthelp]");
+	SendClientMessageEx(iNewbieID, COLOR_NEWBIE, "Your question has been answered! If you have more questions or for additional assistance use [/requesthelp]");
 
 	ClearNewbVars(iNewbieID);
 

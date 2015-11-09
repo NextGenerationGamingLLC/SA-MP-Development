@@ -189,64 +189,6 @@ CMD:getmats(playerid, params[])
 		SetPlayerCheckpoint(playerid, -1872.879760, 1416.312500, 7.180089, 5);
 		return 1;
 	}
-	if (IsPlayerInRangeOfPoint(playerid, 4.0, -2481.1560,2290.8391,4.9844)) // Matrun TR
-	{
-		if(GetPVarInt(playerid, "Packages") >= 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must deliver your packages first.");
-
-		if(PlayerInfo[playerid][pDonateRank] == 1)
-		{
-			if(GetPlayerCash(playerid) < 2200)
-			{
-   				SendClientMessageEx(playerid, COLOR_GREY," You can't afford the $2,200!");
-       			return 1;
-   			}
-			GivePlayerCash(playerid, -2200);
-			SetPVarInt(playerid, "Packages", 30);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 30 Materials Packages for $2,200.");
-			SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more packages, which will get you 1.5x more materials.");
-		}
-		else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
-		{
-			if(GetPlayerCash(playerid) < 3000)
-			{
-   				SendClientMessageEx(playerid, COLOR_GREY," You can't afford the $3,000!");
-       			return 1;
-   			}
-			GivePlayerCash(playerid, -3000);
-			SetPVarInt(playerid, "Packages", 40);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 40 Materials Packages for $3,000.");
-			SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more packages, which will get you 2x more materials.");
-		}
-		else if(PlayerInfo[playerid][pDonateRank] >= 4)
-		{
-			if(GetPlayerCash(playerid) < 3500)
-			{
-   				SendClientMessageEx(playerid, COLOR_GREY," You can't afford the $3,500!");
-       			return 1;
-   			}
-			GivePlayerCash(playerid, -3500);
-			SetPVarInt(playerid, "Packages", 50);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 50 Materials Packages for $3,500.");
-			SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more packages, which will get you 2.5x more materials.");
-		}
-		else
-		{
-			if(GetPlayerCash(playerid) < 1500)
-			{
-   				SendClientMessageEx(playerid, COLOR_GREY," You can't afford the $1500!");
-       			return 1;
-   			}
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 20 Materials Packages for $1500.");
-			GivePlayerCash(playerid, -1500);
-			SetPVarInt(playerid, "Packages", 20);
-		}
-
-		SetPVarInt(playerid, "MatDeliver", 555);
-		SetPVarInt(playerid, "tpMatRunTimer", 12);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
-		SetPlayerCheckpoint(playerid, -688.7897,966.1434,12.1627, 5);
-		return 1;
-	}
 	if (mypoint == -1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, " You are not at a Materials Pickup!");

@@ -180,7 +180,7 @@ stock RadioBroadCast(playerid, string[])
 		if(PlayerInfo[i][pRadioFreq] == PlayerInfo[playerid][pRadioFreq] && PlayerInfo[i][pRadio] >= 1 && gRadio{i} != 0)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "** Radio (%d kHz) ** %s: %s", PlayerInfo[playerid][pRadioFreq], GetPlayerNameEx(playerid), string);
-			ChatTrafficProcess(playerid, PUBLICRADIO_COLOR, szMiscArray, 5);
+			ChatTrafficProcess(i, PUBLICRADIO_COLOR, szMiscArray, 5);
 			format(szMiscArray, sizeof(szMiscArray), "(radio) %s", string);
 			SetPlayerChatBubble(playerid, szMiscArray, COLOR_WHITE, 15.0, 5000);
 		}
@@ -758,7 +758,7 @@ ChatTrafficProcess(playerid, color, szString[], chattype) {
 ProxChatBubble(playerid, szString[]) {
 
 	SetPlayerChatBubble(playerid, szString, COLOR_PURPLE, 15.0, 5000);
-	format(szString, 128, "{FF8000}> {C2A2DA}%s", szString);
+	//format(szString, 128, "{FF8000}> {C2A2DA}%s", szString);
 	SendClientMessageEx(playerid, COLOR_PURPLE, szString);
 }
 

@@ -39,7 +39,7 @@ CMD:frisk(playerid, params[])
 {
 	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 8 || PlayerInfo[playerid][pJob2] == 8 || PlayerInfo[playerid][pJob3] == 8)
 	{
-		new string[128], storageid, giveplayerid;
+		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /frisk [player]");
 			return 1;
@@ -80,44 +80,14 @@ CMD:frisk(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 				format(string, sizeof(string), "*** %s' items...  ***", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				if(PlayerInfo[giveplayerid][pPot] > 0)
-				{
-					format(string, sizeof(string), "(Pocket) %d grams of pot.", PlayerInfo[giveplayerid][pPot]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
-
-				if(PlayerInfo[giveplayerid][pWSeeds] == 1)
-				{
-					SendClientMessageEx(playerid, COLOR_GREY, "(Pocket) Marijuana Seeds");
-				}
-				if(PlayerInfo[giveplayerid][pCrack] > 0)
-				{
-					format(string, sizeof(string), "(Pocket) %d grams of crack.", PlayerInfo[giveplayerid][pCrack]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
 				if(PlayerInfo[giveplayerid][pMats] > 0)
 				{
 					format(string, sizeof(string), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
-				if(PlayerInfo[giveplayerid][pHeroin] > 0)
-				{
-					format(string, sizeof(string), "(Pocket) %d grams of heroin.", PlayerInfo[giveplayerid][pHeroin]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
-				if(PlayerInfo[giveplayerid][pRawOpium] > 0)
-				{
-					format(string, sizeof(string), "(Pocket) %d grams of raw opium.", PlayerInfo[giveplayerid][pRawOpium]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
 				if(PlayerInfo[giveplayerid][pSyringes] > 0)
 				{
 					format(string, sizeof(string), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
-					SendClientMessageEx(playerid, COLOR_GREY, string);
-				}
-				if(PlayerInfo[giveplayerid][pOpiumSeeds] > 0)
-				{
-					format(string, sizeof(string), "(Pocket) %d opium seeds.", PlayerInfo[giveplayerid][pOpiumSeeds]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
                 if(packages > 0)
@@ -130,22 +100,23 @@ CMD:frisk(playerid, params[])
 					format(string, sizeof(string), "(Pocket) %d drug crates.", crates);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
-				if(storageid > 0)
-				{
-					if(StorageInfo[giveplayerid][storageid-1][sPot] > 0)
-					{
-						format(string, sizeof(string), "(%s) %d grams of pot.", storagetype[storageid], StorageInfo[giveplayerid][storageid-1][sPot]);
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+
+				format(string, sizeof(string), "*** %s' drugs...  ***", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				for(new i = 0; i < sizeof(szDrugs); i++) {
+
+					if(PlayerInfo[giveplayerid][p_iDrug][i] > 0) {
+						format(string, sizeof(string), "%s: %dpc", szDrugs[i+1], PlayerInfo[giveplayerid][p_iDrug][i]);
+						SendClientMessageEx(playerid, COLOR_GRAD1, string);
 					}
-					if(StorageInfo[giveplayerid][storageid-1][sCrack] > 0)
-					{
-						format(string, sizeof(string), "(%s) %d grams of crack.", storagetype[storageid], StorageInfo[giveplayerid][storageid-1][sCrack]);
-						SendClientMessageEx(playerid, COLOR_GREY, string);
-					}
-					if(StorageInfo[giveplayerid][storageid-1][sMats] > 0)
-					{
-						format(string, sizeof(string), "(%s) %d materials.", storagetype[storageid], StorageInfo[giveplayerid][storageid-1][sMats]);
-						SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
+
+				format(string, sizeof(string), "*** %s' ingredients...  ***", GetPlayerNameEx(giveplayerid));
+				for(new i = 0; i < sizeof(szIngredients); i++) {
+
+					if(PlayerInfo[giveplayerid][p_iIngredient][i] > 0) {
+						format(string, sizeof(string), "%s: %dpc", szIngredients[i+1], PlayerInfo[giveplayerid][p_iIngredient][i]);
+						SendClientMessageEx(playerid, COLOR_GRAD1, string);
 					}
 				}
 

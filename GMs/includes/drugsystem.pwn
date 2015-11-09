@@ -85,7 +85,7 @@
 
 #define 		DRUGS_OVERDOSE_THRESHOLD		50
 #define 		DRUGS_MAX_BONUS_HEALTH			200
-#define 		DRUGS_MAX_BONUS_ARMOUR			200
+#define 		DRUGS_MAX_BONUS_ARMOUR			150
 
 #define 		DRUGS_ADDICTION_RATE			10 // + and - addicted points per take
 #define 		DRUGS_ADDICTED_THRESHOLD		300 // addicted level threshold
@@ -231,7 +231,7 @@ DS_Ingredients_GetSQLName(id)
 		case 6: szMiscArray = "Diswater";
 		case 7: szMiscArray = "Opiumpop";
 		case 8: szMiscArray = "Lime";
-		case 9: szMiscArray = "Cocaine";
+		case 9: szMiscArray = "Cocextract";
 		case 10: szMiscArray = "Baking";
 		case 11: szMiscArray = "Cocextract";
 		case 12: szMiscArray = "Nbenzynol";
@@ -321,7 +321,7 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	GetPlayerHealth(playerid, fHealth);
-	if(fHealth < GetPVarFloat(playerid, "H") || GetPVarFloat(playerid, "X") != fPos[0] || GetPVarFloat(playerid, "Y") != fPos[1] || GetPVarFloat(playerid, "Z") != fPos[2] || GetPVarInt(playerid, "Injured")) {
+	if(fHealth < GetPVarFloat(playerid, "H") || GetPVarFloat(playerid, "X") != fPos[0] || GetPVarFloat(playerid, "Y") != fPos[1] || GetPVarFloat(playerid, "Z") != fPos[2] || GetPVarInt(playerid, "Injured") || !IsPlayerConnected(playerid)) {
 
 		DeletePVar(playerid, "H");
 		DeletePVar(playerid, "X");
@@ -744,26 +744,31 @@ hook OnPlayerEnterCheckpoint(playerid) {
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
-			new iCash = GetPVarInt(playerid, "BM_PAY");
-			GivePlayerCash(playerid, iCash);
-			
-			if(arrBlackMarket[iBlackMarketID][bm_iGroupID] == arrPoint[iPointID][po_iGroupID])
-				arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
-			
-			SendClientMessage(playerid, COLOR_GRAD1, "--------------------------");
-			format(szMiscArray, sizeof(szMiscArray), "Pay: $%s\n", number_format(iCash));
-			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
-			DisablePlayerCheckpoint(playerid);
-			DeletePVar(playerid, "BM_PAY");
-			DeletePVar(playerid, PVAR_ATDRUGPOINT);
-			DeletePVar(playerid, "DrugPoint");
-			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 
-			GivePlayerCash(playerid, iCash);
-			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
-			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
-			Log("logs/drugsmuggles.log", szMiscArray);
+			new iCash = GetPVarInt(playerid, "BM_PAY");
+
+			if(arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] - iCash > 0) {
+				
+				GivePlayerCash(playerid, iCash);
+			
+				if(arrBlackMarket[iBlackMarketID][bm_iGroupID] == arrPoint[iPointID][po_iGroupID])
+					arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
+			
+				SendClientMessage(playerid, COLOR_GRAD1, "--------------------------");
+				format(szMiscArray, sizeof(szMiscArray), "Pay: $%s\n", number_format(iCash));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
+				DisablePlayerCheckpoint(playerid);
+				DeletePVar(playerid, "BM_PAY");
+				DeletePVar(playerid, PVAR_ATDRUGPOINT);
+				DeletePVar(playerid, "DrugPoint");
+				DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
+
+				format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
+				GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
+				Log("logs/drugsmuggles.log", szMiscArray);
+			}
+			else SendClientMessageEx(playerid, COLOR_RED, "There was insufficient money to pay you for your services!");
 			
 			PlayerInfo[playerid][pSmugSkill] += 1;
   			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
@@ -985,7 +990,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BLACKMARKET_LIST:
 		{
-			if(!response) return 1;
+			if(!response) return DeletePVar(playerid, PVAR_BLMARKETID);
 			SetPVarInt(playerid, PVAR_BLMARKETID, ListItemTrackId[playerid][listitem]);
 			BM_BlackMarketMain(playerid);
 			return 1;
@@ -2010,6 +2015,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		}
 	}
 	GetHealth(playerid, fHealth);
+	GetArmour(playerid, fArmour);
 	if(floatround(fHealth, floatround_round) > DRUGS_MAX_BONUS_HEALTH) SetHealth(playerid, DRUGS_MAX_BONUS_HEALTH);
 	if(floatround(fArmour, floatround_round) > DRUGS_MAX_BONUS_ARMOUR) SetArmour(playerid, DRUGS_MAX_BONUS_ARMOUR);
 	Bit_On(g_PlayerBits[playerid], dr_bitInDrugEffect);
@@ -2285,6 +2291,9 @@ BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 					arrGroupData[iGroupID][g_iIngredients][iChoice] += iAmount;
 				}
 			}
+
+			format(szMiscArray, sizeof(szMiscArray), "%s updated the ingredient price for %s for GroupID %d to $%s", GetPlayerNameEx(playerid), DS_Ingredients_GetSQLName(iChoice), iGroupID, id, number_format(iAmount));
+			Log("logs/blackmarkets.log", szMiscArray);
 			
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrBlackMarket[id][bm_iIngredientAmount][iChoice], id);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_FinishEditBlackMarket", "iiiii", playerid, id, iChoice, iAmount, choice);
@@ -3073,8 +3082,14 @@ CMD:destroyblackmarket(playerid, params[])
 }
 
 CMD:gblackmarket(playerid, params[])
-{
-	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) SetPVarInt(playerid, PVAR_BLMARKETID, i);
+{	
+	DeletePVar(playerid, PVAR_BLMARKETID);
+	
+	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
+		SetPVarInt(playerid, PVAR_BLMARKETID, i);
+		break;
+	}
+	
 	if(!GetPVarType(playerid, PVAR_BLMARKETID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang or your black market has not been setup yet.");
 	if(arrBlackMarket[GetPVarInt(playerid, PVAR_BLMARKETID)][bm_iSeized]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
 	ShowPlayerDialog(playerid, DIALOG_BLACKMARKET_MAIN, DIALOG_STYLE_LIST, "Your Black Market", "Show orders\nShow stock\nEdit prices\nEdit smuggle payment\nTransfer stock", "Select", "");
@@ -3504,7 +3519,7 @@ Smuggle_GetBMDelPos(playerid) {
 	return 1;
 }
 
-BM_SmugglePayment(playerid, iBlackMarketID) {
+BM_SmugglePayment(playerid, iBlackMarketID, iExtra = 0) {
 
 	new iVehID = GetPlayerVehicleID(playerid),
 		iPrice;
@@ -3516,7 +3531,7 @@ BM_SmugglePayment(playerid, iBlackMarketID) {
 			iPrice += (arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] * arrBlackMarket[iBlackMarketID][bm_iIngredientSmugglePay][i]);
 		}
 	}
-	SetPVarInt(playerid, "BM_PAY", iPrice);
+	if(iExtra == 1) SetPVarInt(playerid, "BM_PAY", iPrice);
 	return iPrice;
 }
 
@@ -3545,6 +3560,8 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_SMUGGLE_BLACKMARKET;
 
 		SetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO, iBlackMarketID);
+
+		BM_SmugglePayment(playerid, iBlackMarketID, 1);
 	}
 	else {
 

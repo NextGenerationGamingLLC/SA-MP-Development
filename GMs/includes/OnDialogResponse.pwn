@@ -2117,7 +2117,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			new numberstr = -abs(strval(inputtext));
-			if(10 <= strlen(inputtext) >= 2 || strval(inputtext) == 0) { return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The phone number can only be between 2 and 10 digits long. Please input a new number below", "Submit", "Cancel"); }
+			if(!(1 < strlen(inputtext) < 9) || strval(inputtext) == 0) { return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The phone number can only be between 2 and 8 digits long. Please input a new number below", "Submit", "Cancel"); }
 			
 			new query[128];
 			new numb[16];
@@ -2131,8 +2131,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(strlen(numb) == 2) return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The phone number can only be between 2 and 10 digits long. Please input a new number below", "Submit", "Cancel");
 			if(strlen(numb) == 3)
 			{
-				checkmon = checkmon * 30/100;
-				if(GetPlayerCash(playerid) <= checkmon)
+				new iCheck = abs(checkmon * 30/100);
+				if(GetPlayerCash(playerid) <= iCheck)
 			   	{
 			   		SendClientMessageEx(playerid, COLOR_WHITE, "You don't have enough money for the phone number!");
 			   		return 1;
@@ -2141,7 +2141,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
-					SetPVarInt(playerid, "PhChangeCost", checkmon);
+					SetPVarInt(playerid, "PhChangeCost", iCheck);
 					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'", numberstr);
 					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
@@ -2163,14 +2163,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(strlen(numb) == 4)
 			{
-				return ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "Error", "The 3 Digit VIP Numbers are currently disabled!", "Submit", "Cancel");
-				/*
-				checkmon = checkmon * 20/100;
+				new iCheck = abs(checkmon * 20/100);
+				if(GetPlayerCash(playerid) <= iCheck)
+			   	{
+			   		SendClientMessageEx(playerid, COLOR_WHITE, "You don't have enough money for the phone number!");
+			   		return 1;
+			   	}
 				if(GetPlayerCash(playerid) >= 1000000)
 				{
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
-					SetPVarInt(playerid, "PhChangeCost", checkmon);
+					SetPVarInt(playerid, "PhChangeCost", iCheck);
 					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
 					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
@@ -2189,16 +2192,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageEx(playerid,COLOR_GREY," You do not have enough money to purchase a negative 3 digit number, try again.");
 					return 1;
 				}
-				*/
 			}
-			else if(strlen(numb) >= 5 && strlen(numb) <= 11)
+			else if(strlen(numb) >= 5 && strlen(numb) <= 9)
 			{
-				checkmon = checkmon * 10/100;
+				new iCheck = abs(checkmon * 10/100);
+				if(GetPlayerCash(playerid) <= iCheck)
+			   	{
+			   		SendClientMessageEx(playerid, COLOR_WHITE, "You don't have enough money for the phone number!");
+			   		return 1;
+			   	}
 				if(GetPlayerCash(playerid) >= 500000)
 				{
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
-					SetPVarInt(playerid, "PhChangeCost", checkmon);
+					SetPVarInt(playerid, "PhChangeCost", iCheck);
 					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
 					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
@@ -2235,7 +2242,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			format(string,sizeof(string),"You have changed numbers from %d, to %d, and it cost $%s", GetPVarInt(playerid, "CurrentPh"), GetPVarInt(playerid, "WantedPh"), number_format(GetPVarInt(playerid, "PhChangeCost")));
 			SendClientMessageEx(playerid,COLOR_GREY,string);
 			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "WantedPh");
-			GivePlayerCash(playerid, -GetPVarInt(playerid, "PhChangeCost"));
+			new iCost = GetPVarInt(playerid, "PhChangeCost");
+			abs(iCost);
+			GivePlayerCash(playerid, -iCost);
 			format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[playerid][pPnumber], GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			DeletePVar(playerid, "PhChangerId");
@@ -5634,7 +5643,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == MDC_END_ID && response)
 	{
-		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+		ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Clear Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 	}
 	if(dialogid == MDC_ISSUE && response)
 	{
@@ -6022,7 +6031,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+			ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Clear Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
 		}
 	}
 	if((dialogid == SELLVIP))

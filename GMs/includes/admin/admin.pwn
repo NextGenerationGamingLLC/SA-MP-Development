@@ -170,17 +170,10 @@ stock GetStaffRank(playerid)
 
 CMD:resetvw(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
-	new resetPlayer;
-	if(sscanf(params, "u", resetPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetvw [player]");
-	SetPlayerVirtualWorld(resetPlayer, 0);
-	PlayerInfo[resetPlayer][pVW] =  0;
-	SetPlayerInterior(resetPlayer, 0);
-	szMiscArray[0] = 0;
-	format(szMiscArray,sizeof(szMiscArray), "You have reset %s's virtual world.", GetPlayerNameEx(resetPlayer));
-	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-	SetPlayerInterior(resetPlayer, 0);
-	SendClientMessageEx(resetPlayer, COLOR_WHITE, "Your virtual world has been reset by an admin!");
+	if(GetPVarType(playerid, "IsInArena")) return 1;
+	SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
+	SetPlayerInterior(playerid, PlayerInfo[playerid][pInt]);
+	SendClientMessageEx(playerid, COLOR_WHITE, "Your virtual and interior world have been synced with the server!");
 	return 1;
 }
 

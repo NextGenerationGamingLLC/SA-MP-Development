@@ -62,7 +62,6 @@ hook OnGameModeInit() {
 	*/
 
     CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW,-1816.528686, -179.502624, 9.398437+0.6,5.0);
-    CreateDynamic3DTextLabel("Type /getmats to purchase material packages",COLOR_YELLOW, -2481.1560,2290.8391,4.9844+0.6, 5.0);
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,1154.7295,-1440.2323,15.7969+0.6,18.0); // Namechange at mall
 	CreateDynamic3DTextLabel("Name Change Point \nType /changename to change your name",COLOR_YELLOW,-2279.6545, 2311.2238, 4.9641+0.6,18.0); // Namechange (TR)
 

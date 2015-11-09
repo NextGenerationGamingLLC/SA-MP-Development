@@ -265,9 +265,7 @@ CMD:gotopaynspray(playerid, params[])
 
 CMD:repaircar(playerid, params[])
 {
-	new zyear, zmonth, zday;
-	getdate(zyear, zmonth, zday);
-	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) return SendClientMessageEx(playerid, -1, "You can't use Pay N' Spray's during the Zombie Event!");
+	if(zombieevent) return SendClientMessageEx(playerid, -1, "You can't use Pay N' Spray's during the Zombie Event!");
 	if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		for(new i; i < MAX_PAYNSPRAYS; i++)

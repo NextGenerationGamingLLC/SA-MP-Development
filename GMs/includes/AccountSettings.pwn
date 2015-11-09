@@ -152,20 +152,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			switch(listitem) {
 
 				case 0: {
-					ShowAccountSettings(playerid, 1);
+					ShowAccountSettings(playerid, 1); // toggle settings
 				}
 				case 1: {
-					ShowAccountSettings(playerid, 2);
+					ShowAccountSettings(playerid, 3); // account email
 				}
 				case 2: {
-					ShowAccountSettings(playerid, 3);
-				}
-				case 3: {
 					ShowAccountSettings(playerid, 4);
 				}
-				case 4: {
+				case 3: {
 					ShowAccountSettings(playerid, 5);
 				}
+				/*case 4: {
+					ShowAccountSettings(playerid, 5);
+				}*/
 			}
 
 		}

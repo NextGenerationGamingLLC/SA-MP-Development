@@ -73,7 +73,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new vehicleid = GetPlayerVehicleID(playerid);
 
 			switch(listitem) {
-				case 0: cmd_sb(playerid, "");
+				case 0: {
+					if(IsABike(vehicleid)) {
+						cmd_hm(playerid, "");
+					}
+					else cmd_sb(playerid, ""); 
+				}
 				case 1: SetVehicleLights(vehicleid, playerid);// lights
 				case 2: SetVehicleHood(vehicleid, playerid);// bonnet
 				case 3: SetVehicleTrunk(vehicleid, playerid);// boot

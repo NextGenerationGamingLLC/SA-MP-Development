@@ -99,6 +99,31 @@ Internal_SetPlayerInterior(playerid, iInt) {
 	return SetPlayerInterior(playerid, iInt);
 }
 
+#if defined AREA_DEBUG
+Internal_CreateDynamicSphere(Float:x, Float:y, Float:z, Float:size, worldid = -1, interiorid = -1, playerid = -1) {
+
+	new iTemp = CreateDynamicSphere(x, y, z, size, worldid, interiorid, playerid);
+	printf("[DEBUG][AREA][SPHERE][A%d] X: %f Y: %f Z: %f SIZE: %f WID: %d INTID: %d PID: %d", iTemp, x, y, z, size, worldid, interiorid, playerid);
+	return iTemp;
+}
+
+Internal_DestroyDynamicArea(areaid) {
+	printf("[DEBUG][AREA][DESTROY] AID: %d", areaid);
+	return DestroyDynamicArea(areaid);
+}
+
+Internal_CreateDynamicCuboid(Float:minx, Float:miny, Float:minz, Float:maxx, Float:maxy, Float:maxz, worldid = -1, interiorid = -1, playerid = -1) {
+
+	new iTemp = CreateDynamicCuboid(minx, miny, minz, maxx, maxy, maxz, worldid, interiorid, playerid);
+	printf("[DEBUG][AREA][CUBOID][A%d] MINX: %f MINY: %f MINZ: %f MAXX: %f MAXY: %f MAXZ: %f WID: %d INTID: %d PID: %d", iTemp, minx, miny, minz, maxx, maxy, maxz, worldid, interiorid, playerid);
+	return iTemp;
+}
+
+Internal_StreamerSetIntData(type, id, data, value) {
+	printf("[DEBUG][STREAMER][INTDATA] T: %d ID: %d D: %d V: %d", type, id, data, value);
+	return Streamer_SetIntData(type, id, data, value);
+}
+#endif
 
 #define SetPlayerWeather(%0) Internal_SetPlayerWeather(%0)
 #define SetPlayerTime(%0) Internal_SetPlayerTime(%0)
@@ -113,3 +138,9 @@ Internal_SetPlayerInterior(playerid, iInt) {
 
 #define SetPlayerVirtualWorld(%0) Internal_SetPlayerVirtualWorld(%0)
 #define SetPlayerInterior(%0) Internal_SetPlayerInterior(%0)
+#if defined AREA_DEBUG
+#define CreateDynamicSphere(%0) Internal_CreateDynamicSphere(%0)
+#define CreateDynamicCuboid(%0) Internal_CreateDynamicCuboid(%0)
+#define DestroyDynamicArea(%0) Internal_DestroyDynamicArea(%0)
+#define Streamer_SetIntData(%0) Internal_StreamerSetIntData(%0)
+#endif

@@ -256,7 +256,7 @@ CMD:checkrequestcount(playerid, params[])
     return 1;
 }
 
-CMD:hlban(playerid, params[])
+/*CMD:hlban(playerid, params[])
 {
 	if(IsPlayerConnected(playerid))
 	{
@@ -289,7 +289,7 @@ CMD:hlban(playerid, params[])
 						format(string, sizeof(string), "* %s has been banned from the helper channel by %s.", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
 						SendClientMessageEx(playerid, COLOR_JOINHELPERCHAT, string);
 					}
-                    PlayerInfo[playerid][pToggledChats][0] = 1;
+                    PlayerInfo[giveplayerid][pToggledChats][0] = 1;
 
 					format(string, sizeof(string), "You have been banned from helper channel by %s.", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
@@ -457,13 +457,13 @@ CMD:hlkick(playerid, params[])
 				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
 			}
 		}	
-		PlayerInfo[playerid][pToggledChats][0] = 1;
+		PlayerInfo[giveplayerid][pToggledChats][0] = 1;
 	}
 	else {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	}
 	return 1;
-}
+}*/
 
 CMD:nunmute(playerid, params[])
 {

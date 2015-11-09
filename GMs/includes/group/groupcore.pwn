@@ -978,8 +978,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
-					if(IsACriminal(playerid)) return cmd_gblackmarket(playerid, "");
-					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]) 
+					if(IsACriminal(playerid) || IsARacer(playerid)) return cmd_gblackmarket(playerid, "");
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION))  
 					{
 						return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 					}
@@ -5602,7 +5602,7 @@ CMD:locker(playerid, params[]) {
 					    	return ShowPlayerDialog(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 					    }*/
 
-					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]) // name-change point in faction lockers for free namechange factions
+					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
@@ -6367,6 +6367,8 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 	
 	szMiscArray[0] = 0;
+
+	if(playerid != INVALID_PLAYER_ID && PlayerInfo[playerid][pGuns][GetWeaponSlot(iWeaponID)] == 0) return 1;
 	
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `Group_ID` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 	//format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
