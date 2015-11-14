@@ -144,7 +144,7 @@ public InjectHeroinStanding(playerid)
 }
 
 
-CMD:useheroin(playerid, params[])
+/*CMD:useheroin(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHospital])
 		return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
@@ -191,4 +191,4 @@ CMD:useheroin(playerid, params[])
 	format(szMessage, sizeof(szMessage), "* %s injects heroin into himself.", GetPlayerNameEx(playerid));
 	ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	return 1;
-}
+}*/

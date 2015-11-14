@@ -1273,6 +1273,7 @@ Vehicle_Armor(iVehicleID) {
 	else
 	{
 		switch(GetVehicleModel(iVehicleID)) {
+			case 520, 476:SetVehicleHealth(iVehicleID, 5000.0);
 			case 596, 597, 598: SetVehicleHealth(iVehicleID, 2000.0);
 			case 490: SetVehicleHealth(iVehicleID, 2500.0);
 			case 407, 470: SetVehicleHealth(iVehicleID, 3000.0);

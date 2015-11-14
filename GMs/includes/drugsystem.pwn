@@ -751,24 +751,27 @@ hook OnPlayerEnterCheckpoint(playerid) {
 				
 				GivePlayerCash(playerid, iCash);
 			
-				if(arrBlackMarket[iBlackMarketID][bm_iGroupID] == arrPoint[iPointID][po_iGroupID])
-					arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
+				/*if(arrBlackMarket[iBlackMarketID][bm_iGroupID] == arrPoint[iPointID][po_iGroupID])
+					arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;*/
+
+				arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] -= iCash;
 			
 				SendClientMessage(playerid, COLOR_GRAD1, "--------------------------");
 				format(szMiscArray, sizeof(szMiscArray), "Pay: $%s\n", number_format(iCash));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 				SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
-				DisablePlayerCheckpoint(playerid);
-				DeletePVar(playerid, "BM_PAY");
-				DeletePVar(playerid, PVAR_ATDRUGPOINT);
-				DeletePVar(playerid, "DrugPoint");
-				DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market", 
 				GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
 				Log("logs/drugsmuggles.log", szMiscArray);
 			}
 			else SendClientMessageEx(playerid, COLOR_RED, "There was insufficient money to pay you for your services!");
+
+			DisablePlayerCheckpoint(playerid);
+			DeletePVar(playerid, "BM_PAY");
+			DeletePVar(playerid, PVAR_ATDRUGPOINT);
+			DeletePVar(playerid, "DrugPoint");
+			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
 			
 			PlayerInfo[playerid][pSmugSkill] += 1;
   			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
