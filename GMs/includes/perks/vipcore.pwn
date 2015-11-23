@@ -500,25 +500,6 @@ CMD:viplocker(playerid, params[]) {
 	return 1;
 }
 
-CMD:togvip(playerid, params[]) {
-	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {
-
-		if(PlayerInfo[playerid][pToggledChats][9]) {
-
-			PlayerInfo[playerid][pToggledChats][9] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat enabled.");
-
-		}
-		else {
-
-			PlayerInfo[playerid][pToggledChats][9] = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "VIP chat disabled.");
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You're not a VIP.");
-	return 1;
-}
-
 CMD:v(playerid, params[]) {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pDonateRank] >= 1 || PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pVIPMod]) {

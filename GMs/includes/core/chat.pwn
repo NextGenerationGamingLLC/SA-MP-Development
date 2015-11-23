@@ -202,23 +202,6 @@ CMD:togooc(playerid, params[])
 	return 1;
 }
 
-CMD:togwhisper(playerid, params[])
-{
-	if (!HidePM[playerid])
-	{
-		HidePM[playerid] = 1;
-		PlayerInfo[playerid][pToggledChats][3] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled whisper chat.");
-	}
-	else
-	{
-		HidePM[playerid] = 0;
-		PlayerInfo[playerid][pToggledChats][3] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled whisper chat.");
-	}
-	return 1;
-}
-
 CMD:me(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -717,26 +700,6 @@ CMD:setfreq(playerid, params[])
 	return 1;
 }
 
-CMD:togchatbox(playerid, params[])
-{
-	switch(ActiveChatbox[playerid])
-	{
-		case 1:
-		{
-			ClearChatbox(playerid);
-			ActiveChatbox[playerid] = 0;
-			PlayerInfo[playerid][pToggledChats][4] = 1;
-		}
-		case 0:
-		{
-			ActiveChatbox[playerid] = 1;
-			PlayerInfo[playerid][pToggledChats][4] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have turned the chatbox back on!");
-		}
-	}
-	return 1;
-}
-
 
 ChatTrafficProcess(playerid, color, szString[], chattype) {
 
@@ -900,28 +863,4 @@ CMD:examine(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_PURPLE, string);
 	}
 	return 1;
-}
-
-CMD:togpr(playerid, params[])
-{
-	if(PlayerInfo[playerid][pRadio] == 1)
-	{
- 		if (gRadio{playerid} == 0)
-   		{
-   		    new string[128];
-     		gRadio{playerid} = 1;
-       		format(string,sizeof(string),"You have switched your portable radio on, and it is now broadcasting at %d khz.",PlayerInfo[playerid][pRadioFreq]);
-	        SendClientMessageEx(playerid,COLOR_WHITE,string);
-	    }
-	    else
-	    {
-     		gRadio{playerid} = 0;
-       		SendClientMessageEx(playerid,COLOR_WHITE,"You have switched off your portable radio.");
-	    }
-	}
-	else
-	{
- 		SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have a portable radio!");
-	}
-  	return 1;
 }

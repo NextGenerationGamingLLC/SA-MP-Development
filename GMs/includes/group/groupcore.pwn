@@ -4649,6 +4649,26 @@ CMD:destroy(playerid, params[])
 	return 1;
 }
 
+CMD:acades(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iCade; iCade < MAX_BARRICADES; iCade++) {
+			if(Barricades[iGroupID][iCade][sX] != 0 && Barricades[iGroupID][iCade][sY] != 0 && Barricades[iGroupID][iCade][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iCade, Barricades[iGroupID][iCade][sDeployedAt], Barricades[iGroupID][iCade][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Barricades", szMiscArray, "Close", "");
+
+	return 1;
+}
+
 CMD:cades(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades] != -1 && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
@@ -4671,6 +4691,26 @@ CMD:cades(playerid, params[])
 	return 1;
 }
 
+CMD:aspikes(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iSpike; iSpike < MAX_SPIKES; iSpike++) {
+			if(SpikeStrips[iGroupID][iSpike][sX] != 0 && SpikeStrips[iGroupID][iSpike][sY] != 0 && SpikeStrips[iGroupID][iSpike][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iSpike, SpikeStrips[iGroupID][iSpike][sDeployedAt], SpikeStrips[iGroupID][iSpike][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Spikes", szMiscArray, "Close", "");
+
+	return 1;
+}
+
 CMD:spikes(playerid, params[])
 {
 	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips])
@@ -4686,6 +4726,26 @@ CMD:spikes(playerid, params[])
 			}
 		}
 	} else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	return 1;
+}
+
+CMD:aflares(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iFlare; iFlare < MAX_FLARES; iFlare++) {
+			if(Flares[iGroupID][iFlare][sX] != 0 && Flares[iGroupID][iFlare][sY] != 0 && Flares[iGroupID][iFlare][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iFlare, Flares[iGroupID][iFlare][sDeployedAt], Flares[iGroupID][iFlare][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Flares", szMiscArray, "Close", "");
+
 	return 1;
 }
 
@@ -4711,6 +4771,26 @@ CMD:flares(playerid, params[])
 	return 1;
 }
 
+CMD:acones(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iCone; iCone < MAX_CONES; iCone++) {
+			if(Cones[iGroupID][iCone][sX] != 0 && Cones[iGroupID][iCone][sY] != 0 && Cones[iGroupID][iCone][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iCone, Cones[iGroupID][iCone][sDeployedAt], Cones[iGroupID][iCone][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Cones", szMiscArray, "Close", "");
+
+	return 1;
+}
+
 CMD:cones(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
@@ -4730,6 +4810,26 @@ CMD:cones(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
 	}
+	return 1;
+}
+
+CMD:abarrels(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iBarrel; iBarrel < MAX_BARRELS; iBarrel++) {
+			if(Barrels[iGroupID][iBarrel][sX] != 0 && Barrels[iGroupID][iBarrel][sY] != 0 && Barrels[iGroupID][iBarrel][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iBarrel, Barrels[iGroupID][iBarrel][sDeployedAt], Barrels[iGroupID][iBarrel][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Barrels", szMiscArray, "Close", "");
+
 	return 1;
 }
 
@@ -4755,6 +4855,26 @@ CMD:barrels(playerid, params[])
 	return 1;
 }
 
+CMD:aladders(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iLadder; iLadder < MAX_LADDERS; iLadder++) {
+			if(Ladders[iGroupID][iLadder][sX] != 0 && Ladders[iGroupID][iLadder][sY] != 0 && Ladders[iGroupID][iLadder][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iLadder, Ladders[iGroupID][iLadder][sDeployedAt], Ladders[iGroupID][iLadder][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Ladders", szMiscArray, "Close", "");
+
+	return 1;
+}
+
 CMD:ladders(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
@@ -4774,6 +4894,26 @@ CMD:ladders(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
 	}
+	return 1;
+}
+
+CMD:asigns(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+
+	szMiscArray[0] = 0; 
+	szMiscArray = "Group\tID\tLocation\tDeployer";
+
+	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
+		for(new iSign; iSign < MAX_SIGNS; iSign++) {
+			if(Signs[iGroupID][iSign][sX] != 0 && Signs[iGroupID][iSign][sY] != 0 && Signs[iGroupID][iSign][sZ] != 0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s(%d)\t%d\t%s\t%s", szMiscArray, arrGroupData[iGroupID][g_szGroupName], iGroupID, iSign, Signs[iGroupID][iSign][sDeployedAt], Signs[iGroupID][iSign][sDeployedBy]);
+			}
+		}
+	}
+
+	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Server Signs", szMiscArray, "Close", "");
+
 	return 1;
 }
 

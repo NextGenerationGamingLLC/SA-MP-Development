@@ -1530,17 +1530,17 @@ CMD:accept(playerid, params[])
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
-					if(GetPVarInt(playerid, "buyingVoucher") == 4) // Platinum VIP Voucher
+					if(GetPVarInt(playerid, "buyingVoucher") == 4) // 1 month PVIP Voucher
 					{
 						if(PlayerInfo[sellerid][pPVIPVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
 						
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
-						format(szMessage, sizeof(szMessage), "* You have bought %d Platinum VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
+						format(szMessage, sizeof(szMessage), "* You have bought %d 1 month PVIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "* %s has bought %d Platinum VIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
+						format(szMessage, sizeof(szMessage), "* %s has bought %d 1 month PVIP Voucher(s) from you, $%s was added to your money.", GetPlayerNameEx(playerid), amount, number_format(price));
 						SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, szMessage);
-						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) Platinum VIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
+						format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has bought (%d) 1 month PVIP Voucher(s) for $%s from %s(%d) (IP:%s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), amount, number_format(price),  GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid));
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pPVIPVoucher] += amount;
 						PlayerInfo[sellerid][pPVIPVoucher] -= amount;

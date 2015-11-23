@@ -140,32 +140,6 @@ CMD:speakerphone(playerid, params[])
     return 1;
 }
 
-CMD:togphone(playerid, params[])
-{
-	if(PlayerInfo[playerid][pJailTime] > 0)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use your phone in jail/prison.");
-		return 1;
-	}
-	if(Mobile[playerid] == INVALID_PLAYER_ID)
-	{
-		if (!PhoneOnline[playerid])
-		{
-			PhoneOnline[playerid] = 1;
-			PlayerInfo[playerid][pToggledChats][7] = 1;
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched off.");
-		}
-		else
-		{
-			PhoneOnline[playerid] = 0;
-			PlayerInfo[playerid][pToggledChats][7] = 0;
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Your phone is now switched on.");
-		}
-		return 1;
-	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "First use /hangup.");
-}
-
 CMD:colorcar(playerid, params[]) {
 	new iColors[2];
 	if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a vehicle.");

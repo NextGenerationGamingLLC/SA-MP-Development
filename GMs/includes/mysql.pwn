@@ -5985,9 +5985,9 @@ public ExecuteShopQueue(playerid, id)
 					if(tmp[6] > 0)
 					{
 						PlayerInfo[playerid][pPVIPVoucher] += tmp[6];
-						format(string, sizeof(string), "You have been automatically issued %d Platinum VIP voucher(s).", tmp[6]);
+						format(string, sizeof(string), "You have been automatically issued %d 1 month PVIP Voucher(s).", tmp[6]);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
-						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d Platinum VIP voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[6]);
+						format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %d 1 month PVIP Voucher(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[6]);
 						Log("logs/shoplog.log", string);
 					}
 					GivePlayerCredits(playerid, tmp[7], 1, 1);

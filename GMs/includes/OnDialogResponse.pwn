@@ -11480,13 +11480,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(listitem == 0)
 			{
-				format(string, sizeof(string),"Item: Limited Edition Pumpkin Toy\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(150), number_format(PlayerInfo[playerid][pCredits]-150));
-				ShowPlayerDialog( playerid, DIALOG_HALLOWEENSHOP1, DIALOG_STYLE_MSGBOX, "Halloween Shop", string, "Purchase", "Exit" );
+				format(string, sizeof(string),"Item: Limited Edition Straw Hat\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(150), number_format(PlayerInfo[playerid][pCredits]-150));
+				ShowPlayerDialog( playerid, DIALOG_HALLOWEENSHOP1, DIALOG_STYLE_MSGBOX, "Thanksgiving Shop", string, "Purchase", "Exit" );
 			}
 			else
 			{
-				format(string, sizeof(string),"Item: Spiked Club Toy\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(60), number_format(PlayerInfo[playerid][pCredits]-60));
-				ShowPlayerDialog( playerid, DIALOG_HALLOWEENSHOP2, DIALOG_STYLE_MSGBOX, "Halloween Shop", string, "Purchase", "Exit" );
+				format(string, sizeof(string),"Item: Limited Edition Cluckin Bell Hat\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(150), number_format(PlayerInfo[playerid][pCredits]-150));
+				ShowPlayerDialog( playerid, DIALOG_HALLOWEENSHOP2, DIALOG_STYLE_MSGBOX, "Thanksgiving Shop", string, "Purchase", "Exit" );
 			}
 		}
 	}
@@ -11501,13 +11501,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			GivePlayerCredits(playerid, -150, 1);
 			PumpkinStock--;
-			format(string, sizeof(string), "You have purchased the Pumpkin Toy for %s credits.", number_format(150));
+			format(string, sizeof(string), "You have purchased the Straw Hat toy for %s credits.", number_format(150));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
 			
-			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Pumpkin Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(150));
+			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Straw Hat] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(150));
 			Log("logs/zombiecure.log", string), print(string);	
 			
 			new icount = GetPlayerToySlots(playerid);
@@ -11515,7 +11515,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerToyInfo[playerid][v][ptModelID] == 0)
 				{
-					PlayerToyInfo[playerid][v][ptModelID] = 19320;
+					PlayerToyInfo[playerid][v][ptModelID] = 19553;
 					PlayerToyInfo[playerid][v][ptBone] = 6;
 					PlayerToyInfo[playerid][v][ptPosX] = 0.0;
 					PlayerToyInfo[playerid][v][ptPosY] = 0.0;
@@ -11537,7 +11537,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerToyInfo[playerid][i][ptModelID] == 0)
 				{
-					PlayerToyInfo[playerid][i][ptModelID] = 19320;
+					PlayerToyInfo[playerid][i][ptModelID] = 19553;
 					PlayerToyInfo[playerid][i][ptBone] = 6;
 					PlayerToyInfo[playerid][i][ptPosX] = 0.0;
 					PlayerToyInfo[playerid][i][ptPosY] = 0.0;
@@ -11565,17 +11565,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(PlayerInfo[playerid][pCredits] < 60)
+			if(PlayerInfo[playerid][pCredits] < 150)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
 
-			GivePlayerCredits(playerid, -60, 1);
-			format(string, sizeof(string), "You have purchased the Spiked Club Toy for %s credits.", number_format(120));
+			GivePlayerCredits(playerid, -150, 1);
+			format(string, sizeof(string), "You have purchased the Cluckin Bell Hat toy for %s credits.", number_format(150));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			
 			g_mysql_SaveAccount(playerid);
 			g_mysql_SaveMOTD();
 			
-			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Club Toy] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(60));
+			format(string, sizeof(string), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Cluckin Bell Hat] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(60));
 			Log("logs/zombiecure.log", string), print(string);
 			
 			new icount = GetPlayerToySlots(playerid);
@@ -11583,7 +11583,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerToyInfo[playerid][v][ptModelID] == 0)
 				{
-					PlayerToyInfo[playerid][v][ptModelID] = 2045;
+					PlayerToyInfo[playerid][v][ptModelID] = 19137;
 					PlayerToyInfo[playerid][v][ptBone] = 5;
 					PlayerToyInfo[playerid][v][ptPosX] = 0.0;
 					PlayerToyInfo[playerid][v][ptPosY] = 0.0;
@@ -11605,7 +11605,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(PlayerToyInfo[playerid][i][ptModelID] == 0)
 				{
-					PlayerToyInfo[playerid][i][ptModelID] =  2045;
+					PlayerToyInfo[playerid][i][ptModelID] =  19137;
 					PlayerToyInfo[playerid][i][ptBone] = 5;
 					PlayerToyInfo[playerid][i][ptPosX] = 0.0;
 					PlayerToyInfo[playerid][i][ptPosY] = 0.0;
@@ -11958,7 +11958,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				PlayerInfo[playerid][pVIPM] = VIPM;
 				VIPM++;
 			}
-			format(string, sizeof(string), "%s(%d) (IP: %s) has used a platinum vip voucher.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+			format(string, sizeof(string), "%s(%d) (IP: %s) has used a 1 month PVIP Voucher.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
 			Log("logs/credits.log", string);
 			format(string, sizeof(string), "AdmCmd: %s's VIP level to Platinum (4) by the server (1 Month)(voucher).", GetPlayerNameEx(playerid));
 
@@ -11968,7 +11968,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			format(string, sizeof(string), "You have been issued your Platinum VIP and have %d PVIP Voucher(s) left.", PlayerInfo[playerid][pPVIPVoucher]);
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
-			SendClientMessageEx(playerid, COLOR_CYAN, "** Your Platinum VIP Voucher will expire in 1 Month.");
+			SendClientMessageEx(playerid, COLOR_CYAN, "** Your 1 month PVIP Voucher will expire in 1 Month.");
 			PlayerInfo[playerid][pArmsSkill] = 401;
 
 			new szQuery[128];
@@ -12444,7 +12444,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 32:
 				{
 					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPlatinumVIPVoucher][0], dgVar[dgPlatinumVIPVoucher][1], dgVar[dgPlatinumVIPVoucher][2], GetDynamicGiftBoxType(dgVar[dgPlatinumVIPVoucher][3]));
-					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Platinum VIP Voucher", string, "Back", "");
+					ShowPlayerDialog(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - 1 month PVIP Voucher", string, "Back", "");
 				}
 				default: return true;
 			}

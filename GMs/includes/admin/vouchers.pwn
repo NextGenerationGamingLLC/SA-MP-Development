@@ -45,7 +45,7 @@ stock ShowVouchers(playerid, targetid)
 		SetPVarInt(playerid, "WhoIsThis", targetid);
 		
 		format(szTitle, sizeof(szTitle), "%s Vouchers", GetPlayerNameEx(targetid));
-		format(szDialog, sizeof(szDialog), "Car Voucher(s):\t\t\t{18F0F0}%d\nSilver VIP Voucher(s):\t\t{18F0F0}%d\nGold VIP Voucher(s):\t\t{18F0F0}%d\nPlatinum VIP Voucher(s):\t{18F0F0}%d\nRestricted Car Voucher(s):\t{18F0F0}%d\nGift Reset Voucher(s):\t\t{18F0F0}%d\n" \
+		format(szDialog, sizeof(szDialog), "Car Voucher(s):\t\t\t{18F0F0}%d\nSilver VIP Voucher(s):\t\t{18F0F0}%d\nGold VIP Voucher(s):\t\t{18F0F0}%d\n1 month PVIP Voucher(s):\t{18F0F0}%d\nRestricted Car Voucher(s):\t{18F0F0}%d\nGift Reset Voucher(s):\t\t{18F0F0}%d\n" \
 		"Priority Advert Voucher(s):\t{18F0F0}%d\n7 Days SVIP Voucher(s): \t{18F0F0}%d\n7 Days GVIP Voucher(s):\t{18F0F0}%d\n",
 		PlayerInfo[targetid][pVehVoucher], PlayerInfo[targetid][pSVIPVoucher], PlayerInfo[targetid][pGVIPVoucher], PlayerInfo[targetid][pPVIPVoucher], PlayerInfo[targetid][pCarVoucher], PlayerInfo[targetid][pGiftVoucher], PlayerInfo[targetid][pAdvertVoucher], PlayerInfo[targetid][pSVIPExVoucher], PlayerInfo[targetid][pGVIPExVoucher]);
 		ShowPlayerDialog(playerid, DIALOG_VOUCHER, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Close");
@@ -156,14 +156,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playeridd][pPVIPVoucher] < 1) 
 						{
 							new szDialog[128];
-							format(szDialog, sizeof(szDialog), "%s does not have any Platinum VIP vouchers.", GetPlayerNameEx(playeridd));
+							format(szDialog, sizeof(szDialog), "%s does not have any 1 month PVIP Vouchers.", GetPlayerNameEx(playeridd));
 							DeletePVar(playerid, "WhoIsThis");
 							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 						}
 						
 						if(PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have Platinum VIP+, you may sell this voucher with /sellvoucher."), DeletePVar(playerid, "WhoIsThis");
 						
-						ShowPlayerDialog(playerid, DIALOG_PVIPVOUCHER, DIALOG_STYLE_MSGBOX, "Platinum VIP Voucher", "You will be made Platinum VIP after use of this voucher.", "Confirm", "Cancel");	
+						ShowPlayerDialog(playerid, DIALOG_PVIPVOUCHER, DIALOG_STYLE_MSGBOX, "1 month PVIP Voucher", "You will be made Platinum VIP after use of this voucher.", "Confirm", "Cancel");	
 					}
 					case 4: // Restricted Car Voucher
 					{
@@ -687,9 +687,9 @@ CMD:sellvoucher(playerid, params[])
 		SetPVarInt(buyer, "buyingVoucher", 4);
 		SetPVarInt(buyer, "sellerVoucher", playerid);
 		SetPVarInt(playerid, "buyerVoucher", buyer);
-		format(string, sizeof(string), "%s has offered to sell you %d Platinum VIP voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
+		format(string, sizeof(string), "%s has offered to sell you %d 1 month PVIP Voucher(s) for $%s - Type /accept voucher or /denyvoucher.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(buyer, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "You have offered %s %d Platinum VIP voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
+		format(string, sizeof(string), "You have offered %s %d 1 month PVIP Voucher(s) for $%s, please wait until he accept/decline the offer.", GetPlayerNameEx(buyer), amount, number_format(price));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 	 	SetPVarInt(buyer, "SQLID_Voucher", GetPlayerSQLId(playerid));
 	}

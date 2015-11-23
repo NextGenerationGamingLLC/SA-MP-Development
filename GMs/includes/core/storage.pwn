@@ -1678,7 +1678,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Restricted Car Colors: %d\n\
 					Restricted Skins: %d\n\
 					Rim Kits: %d\n\
-					Platinum VIP Voucher: %d\n\
+					1 month PVIP Voucher: %d\n\
 					Checks: %s\n\
 					Additional Vehicle Slots: %s\n\
 					Additional Toy Slots: %s",
@@ -3141,11 +3141,11 @@ CMD:sell(playerid, params[])
 	else if (strcmp(choice, "pvipvoucher", true) == 0)
 	{
 		if(amount > PlayerInfo[playerid][pPVIPVoucher])
-			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many Platinum VIP Vouchers.");
+			return SendClientMessageEx(playerid, COLOR_GREY, " You don't have that many 1 month PVIP Vouchers.");
 
-		format(string, sizeof(string), "* You offered %s to buy %d Platinum VIP Voucher(s) for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
+		format(string, sizeof(string), "* You offered %s to buy %d 1 month PVIP Voucher(s) for $%s.", GetPlayerNameEx(giveplayerid), amount, number_format(price));
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-		format(string, sizeof(string), "* %s wants to sell you %d Platinum VIP Voucher(s) for $%s, (type /accept pvipvoucher) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
+		format(string, sizeof(string), "* %s wants to sell you %d 1 month PVIP Voucher(s) for $%s, (type /accept pvipvoucher) to buy.", GetPlayerNameEx(playerid), amount, number_format(price));
 		SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherOffer", playerid);
 	 	SetPVarInt(giveplayerid, "PVIPVoucherPrice", price);

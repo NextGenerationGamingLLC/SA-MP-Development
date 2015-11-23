@@ -615,7 +615,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCustomToy][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCustomToy][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						new icount = GetPlayerToySlots(giveplayerid), success = 0;
+						/*new icount = GetPlayerToySlots(giveplayerid), success = 0;
 						for(new v = 0; v < icount; v++)
 						{
 							if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
@@ -666,7 +666,9 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 									break;
 								}	
 							}
-						}
+						}*/
+
+						AddFlag(giveplayerid, INVALID_PLAYER_ID, "[GIFTBOX] 1x Custom Toy");
 					
 						format(string, sizeof(string), "Congratulations, you have won a Custom Toy!");
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
@@ -740,12 +742,12 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPlatinumVIPVoucher][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d 1 month PVIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -1423,12 +1425,12 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPlatinumVIPVoucher][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d 1 month PVIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -2106,12 +2108,12 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPlatinumVIPVoucher][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d 1 month PVIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -2790,12 +2792,12 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPlatinumVIPVoucher][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
 						PlayerInfo[giveplayerid][pPVIPVoucher] += dgVar[dgPlatinumVIPVoucher][2];
-						format(string, sizeof(string), "Congratulations, you have won a %d Platinum VIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "Congratulations, you have won a %d 1 month PVIP Voucher(s)!", dgVar[dgPlatinumVIPVoucher][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
-						format(string, sizeof(string), "* %s was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
 						dgVar[dgPlatinumVIPVoucher][1]--;
-						format(string, sizeof(string), "* %s(%d) was just gifted %d Platinum VIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
+						format(string, sizeof(string), "* %s(%d) was just gifted %d 1 month PVIP Voucher(s), enjoy!", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), dgVar[dgPlatinumVIPVoucher][2]);
 						SetPVarInt(giveplayerid, "GiftFail", 0), PlayerInfo[giveplayerid][pGiftTime] = 300, Log("logs/giftbox.log", string), SaveDynamicGiftBox(), OnPlayerStatsUpdate(giveplayerid);
 						return true;
 					}
@@ -3198,17 +3200,17 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 							
 							if(playerid == MAX_PLAYERS)
 							{
-								format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
+								format(string, sizeof(string), "AdmCmd: %s(%d) was just gifted by the system and he won a 1 month PVIP Voucher. (%d left)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
 							}
 							else
 							{
-								format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won a Platinum VIP Voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
+								format(string, sizeof(string), "AdmCmd: %s has just gifted %s(%d) and he won a 1 month PVIP Voucher. (%d left)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), PVIPVoucher);
 							}	
 						
 							Log("logs/gifts.log", string);
-							format(string, sizeof(string), "* %s was just gifted a Platinum VIP Voucher, enjoy! There are %d Platinum VIP Vouchers left.", GetPlayerNameEx(giveplayerid), PVIPVoucher);
+							format(string, sizeof(string), "* %s was just gifted a 1 month PVIP Voucher, enjoy! There are %d 1 month PVIP Vouchers left.", GetPlayerNameEx(giveplayerid), PVIPVoucher);
 							ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
-							SendClientMessageEx(giveplayerid, COLOR_CYAN, " 1 Platinum VIP Voucher has been added to your account.");
+							SendClientMessageEx(giveplayerid, COLOR_CYAN, " 1 1 month PVIP Voucher has been added to your account.");
 							SendClientMessageEx(giveplayerid, COLOR_GRAD2, " Note you may access your voucher(s) with /myvouchers");
 							
 							SendClientMessageToAll(COLOR_WHITE, string);
@@ -3381,9 +3383,9 @@ stock ShowPlayerDynamicGiftBox(playerid)
 	else
 		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Restricted Car Voucher", szMiscArray);
 	if(dgVar[dgPlatinumVIPVoucher][0] == 1)
-		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}Platinum VIP Voucher", szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{00FF61}1 month PVIP Voucher", szMiscArray);
 	else
-		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}Platinum VIP Voucher", szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}1 month PVIP Voucher", szMiscArray);
 		
 	return ShowPlayerDialog(playerid, DIALOG_GIFTBOX_VIEW, DIALOG_STYLE_LIST, "Dynamic Giftbox", szMiscArray, "Select", "Close");
 }

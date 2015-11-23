@@ -216,21 +216,6 @@ CMD:nonewbie(playerid, params[])
 	return 1;
 }
 
-CMD:tognewbie(playerid, params[])
-{
-	if(PlayerInfo[playerid][pToggledChats][0]) {
-		
-		PlayerInfo[playerid][pToggledChats][0] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have enabled newbie chat.");
-	}
-	else {
-
-		PlayerInfo[playerid][pToggledChats][0] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You have disabled newbie chat.");
-	}
-	return 1;
-}
-
 CMD:checkrequestcount(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pPR] > 0)

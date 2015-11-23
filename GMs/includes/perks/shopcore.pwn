@@ -901,24 +901,6 @@ CMD:leaveshop(playerid, params[]) {
 	return 1;
 }
 
-CMD:togshopnotice(playerid, params[]) {
-	if(PlayerInfo[playerid][pConnectHours] >= 50)
-	{
-		if(PlayerInfo[playerid][pShopNotice] == 0)
-		{
-			PlayerInfo[playerid][pShopNotice] = 24;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Shop Notifications have been disabled for 24 playing hours.");
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "If you would like to re-enable, simply type the command again.");
-		}
-		else
-		{
-			PlayerInfo[playerid][pShopNotice] = 0;
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Shop Notifications has been re-enabled.");
-		}
-	}
-	return 1;
-}
-
 CMD:buygiftreset(playerid, params[]) {
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2937.2878, -1357.2294, 10.8503))
 	{
@@ -1354,7 +1336,7 @@ CMD:toyshop(playerid, params[])
 	return 1;
 }
 
-CMD:halloweenshop(playerid, params[])
+CMD:thanksgivingshop(playerid, params[])
 {
     if(HalloweenShop == 1)
 	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
@@ -1363,8 +1345,8 @@ CMD:halloweenshop(playerid, params[])
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
-			new string[128];
-			format(string, sizeof(string), "Pumpkin Toy (Cost: 150 Credits | Stock: %d)", PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
+			new string[150];
+			format(string, sizeof(string), "Straw Hat (Cost: 150 Credits | Stock: %d)\nCluckin Bell Hat (Cost: 150 Credits | Stock: %d)", PumpkinStock, PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
 			ShowPlayerDialog(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Select", "Exit");
 			return 1;
 		}

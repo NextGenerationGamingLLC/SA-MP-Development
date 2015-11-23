@@ -2988,26 +2988,6 @@ CMD:br(playerid, params[])
 	return cmd_bizradio(playerid, params);
 }
 
-CMD:togbiz(playerid, params[])
-{
-    if (!IsValidBusinessID(PlayerInfo[playerid][pBusiness])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not an Employee of a Business!");
-    else if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not an Employee of a Business!");
-
-    if(GetPVarInt(playerid, "BusinessRadio"))
-    {
-        DeletePVar(playerid, "BusinessRadio");
-        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled business radio.");
-        PlayerInfo[playerid][pToggledChats][14] = 0;
-    }
-    else
-    {
-        SetPVarInt(playerid, "BusinessRadio", 1);
-        SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled business radio.");
-        PlayerInfo[playerid][pToggledChats][14] = 1;
-    }
-	return 1;
-}
-
 CMD:bizradio(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");

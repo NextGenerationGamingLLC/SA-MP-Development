@@ -328,7 +328,15 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 		DeletePVar(playerid, "Y");
 		DeletePVar(playerid, "Z");
 		DeletePVar(playerid, "PO_CAPTUR");
+		DeletePVar(playerid, "PO_DC");
 		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You failed to capture the point. You either moved or died while attempting to capture.");
+	}
+
+	if(GetPVarType(playerid, "PO_DC")) {
+		DeletePVar(playerid, "PO_DC");
+		DeletePVar(playerid, "PO_CAPTUR");
+		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) SendClientMessageEx(p, COLOR_LIGHTBLUE, "The capper disconnected");
+		return 1;
 	}
 
 	DeletePVar(playerid, "H");
@@ -651,6 +659,13 @@ hook OnPlayerDeath(playerid) {
 }
 
 */
+
+hook OnPlayerDisconnect(playerid, reason) {
+
+	if(GetPVarType(playerid, "PO_CAPTUR")) SetPVarInt(playerid, "PO_DC", 1);
+
+	return 1;
+}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
@@ -2295,7 +2310,7 @@ BM_OnEditBlackMarket(playerid, id, iChoice, iAmount, choice)
 				}
 			}
 
-			format(szMiscArray, sizeof(szMiscArray), "%s updated the ingredient price for %s for GroupID %d to $%s", GetPlayerNameEx(playerid), DS_Ingredients_GetSQLName(iChoice), iGroupID, id, number_format(iAmount));
+			format(szMiscArray, sizeof(szMiscArray), "%s updated the ingredient price for %s for GroupID %d to $%s", GetPlayerNameEx(playerid), DS_Ingredients_GetSQLName(iChoice), iGroupID, number_format(iAmount));
 			Log("logs/blackmarkets.log", szMiscArray);
 			
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `groupid` = '%d'", DS_Ingredients_GetSQLName(iChoice), arrBlackMarket[id][bm_iIngredientAmount][iChoice], id);
@@ -3087,7 +3102,8 @@ CMD:destroyblackmarket(playerid, params[])
 CMD:gblackmarket(playerid, params[])
 {	
 	DeletePVar(playerid, PVAR_BLMARKETID);
-	
+	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) || !IsACriminal(playerid)) return 1;
+
 	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
 		SetPVarInt(playerid, PVAR_BLMARKETID, i);
 		break;

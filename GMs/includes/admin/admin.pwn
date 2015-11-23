@@ -870,31 +870,6 @@ CMD:noooc(playerid, params[])
 	return 1;
 }
 
-CMD:togstaff(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pVIPMod] || PlayerInfo[playerid][pWatchdog] >= 1)
-	{
-		if(PlayerInfo[playerid][pChatbox][15])
-		{
-			advisorchat[playerid] = 1;
-			PlayerInfo[playerid][pToggledChats][15] = 0;
-			SendClientMessageEx(playerid, COLOR_GRAD2, "   You can now see the /staff chat!");
-		}
-		else
-		{
-			advisorchat[playerid] = 0;
-			PlayerInfo[playerid][pToggledChats][15] = 1;
-			SendClientMessageEx(playerid, COLOR_GRAD2, "   You will not see the /staff chat anymore!");
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   You are not allowed to use this command!");
-		return 1;
-	}
-	return 1;
-}
-
 CMD:vehname(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] >= 2) {
@@ -3091,9 +3066,9 @@ CMD:spec(playerid, params[])
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spec (playerid/off)");
 	if(IsPlayerConnected(giveplayerid))
 	{
-	    if(PlayerInfo[playerid][pHelper] >= 3 && !(2 <= PlayerInfo[giveplayerid][pHelper] <= 4))
+	    if(PlayerInfo[playerid][pHelper] >= 3 && !(1 <= PlayerInfo[giveplayerid][pHelper] <= 4))
 	    {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate other advisors");
+	        SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate helpers/advisors");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");

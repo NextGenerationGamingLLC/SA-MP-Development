@@ -257,3 +257,24 @@ CMD:fifmenu(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:festivalload(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 1338) return 1;
+
+	if(!GetGVarType("FallLoaded")) {
+		SendRconCommand("loadfs FallFestival2014");
+		SendRconCommand("loadfs FallFestival2014mapping");
+		SendClientMessageEx(playerid, COLOR_GREY, "Fall Festival Loaded");
+		SetGVarInt("FallLoaded", 1);
+	}
+	else {
+		SendRconCommand("unloadfs FallFestival2014");
+		SendRconCommand("unloadfs FallFestival2014mapping");
+		SendClientMessageEx(playerid, COLOR_GREY, "Fall Festival unloaded");
+		DeleteGVar("FallLoaded");
+	}
+
+
+	return 1;
+}
