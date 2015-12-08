@@ -395,7 +395,7 @@ public OnPlayerUpdate(playerid)
 	    acstruct[playerid][checkmaptp] = 0;
 	}
 	GetPlayerPos(playerid, acstruct[playerid][LastOnFootPosition][0], acstruct[playerid][LastOnFootPosition][1], acstruct[playerid][LastOnFootPosition][2]);
-	
+
 	new newkeys, updown, leftright;
     GetPlayerKeys(playerid, newkeys, updown, leftright);
 
@@ -920,8 +920,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			}
 			else if(GetPVarInt(playerid, "voucherdialog") == 1)
 			{
-				if(!vehicleCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
-				if(!vehicleSpawnCountCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
+				if(!vehicleCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot own anymore vehicles - You may purchase additional vehicle slots through /vstorage.");
+				if(!vehicleSpawnCountCheck(playerid)) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You have too many spawned vehicles, please despawn one.");
 				if(PlayerInfo[playerid][pVehVoucher] <= 0) return DeletePVar(playerid, "voucherdialog"), DeletePVar(playerid, "WhoIsThis"), SendClientMessageEx(playerid, COLOR_GREY, "You don't have a car voucher.");
 				new Float: arr_fPlayerPos[4], szLog[128], szString[128];
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
@@ -2095,7 +2095,7 @@ public OnPlayerDisconnect(playerid, reason)
 			LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 			PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "pbOldInt");
 			PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "pbOldVW");
-			PlayerInfo[playerid][pPos_x] = 2012.500366; 
+			PlayerInfo[playerid][pPos_x] = 2012.500366;
 			PlayerInfo[playerid][pPos_y] = -1264.768554;
 			PlayerInfo[playerid][pPos_z] = 23.547389;
 			PlayerInfo[playerid][pHealth] = 100;
@@ -2531,7 +2531,7 @@ public OnPlayerSpawn(playerid)
         SetTimerEx("KickEx", 1000, 0, "i", playerid);
         return 1;
 	}
-	
+
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 1);
@@ -2798,7 +2798,7 @@ public OnPlayerLeaveCheckpoint(playerid)
 	{
 		Tutorial_Start(playerid);
 		return 1;
-	} 
+	}
 	return 1;
 }
 
@@ -5468,7 +5468,7 @@ public OnPlayerText(playerid, text[])
 			format(string, sizeof(string), "(payphone)(unknown) says: %s", text);
 		}
 		else format(string, sizeof(string), "(cellphone) %s says: %s", GetPlayerNameEx(playerid), text);
-		
+
 
 		ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
 		if(IsPlayerConnected(Mobile[playerid]))

@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -106,7 +106,7 @@ Group_DisbandGroup(iGroupID) {
 			strcpy(PlayerInfo[x][pBadge], "None", 9);
 		}
 		if (PlayerInfo[x][pBugged] == iGroupID) PlayerInfo[x][pBugged] = INVALID_GROUP_ID;
-	}	
+	}
 
 
 	format(szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
@@ -127,7 +127,7 @@ SaveGroup(iGroupID) {
 	if(!(0 <= iGroupID < MAX_GROUPS)) // Array bounds check. Use it.
 		return 0;
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 
 	new
 		i = 0;
@@ -189,7 +189,7 @@ stock SendGroupMessage(iGroupType, color, string[], allegiance = 0)
 				SendClientMessageEx(i, color, string);
 			}
 		}
-	}	
+	}
 }
 
 stock SendDivisionMessage(member, division, color, string[])
@@ -199,7 +199,7 @@ stock SendDivisionMessage(member, division, color, string[])
 		if(PlayerInfo[i][pMember] == member && PlayerInfo[i][pDivision] == division) {
 			SendClientMessageEx(i, color, string);
 		}
-	}	
+	}
 }
 
 
@@ -563,7 +563,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		(arrGroupData[iGroupID][g_iSpikeStrips] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iSpikeStrips],
 		(arrGroupData[iGroupID][g_iBarricades] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iBarricades]
 	);
-	
+
 	format(szDialog, sizeof(szDialog), "%s\
 		{BBBBBB}Cones:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Flares:{FFFFFF} %s (rank %i)\n\
@@ -604,7 +604,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		(arrGroupData[iGroupID][g_iWheelClamps] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iWheelClamps],
 		(arrGroupData[iGroupID][g_iDoCAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDoCAccess]
 	);
-	
+
 	format(szDialog, sizeof(szDialog),
 		"%s\
 		{BBBBBB}Edit Medic Access:{FFFFFF} %s (Div %i)\n\
@@ -617,14 +617,14 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Edit Crime Group Type {FFFFFF} %s",
 		szDialog,
 		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
-		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess], 
+		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess],
 		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
 		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTurfCapRank],
 		(arrGroupData[iGroupID][g_iPointCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iPointCapRank],
 		ReturnCrimeGroupType(arrGroupData[iGroupID][g_iCrimeType])
 	);
-		
+
 	if(PlayerInfo[iPlayerID][pAdmin] >= 1337) strcat(szDialog, "\nDisband Group");
 	format(szTitle, sizeof szTitle, "{FFFFFF}Edit {%s}%s", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 	return ShowPlayerDialog(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
@@ -672,7 +672,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];
 	szMiscArray[0] = 0;
-	
+
 	switch(dialogid)
 	{
 		// BEGIN DYNAMIC GROUP CODE
@@ -749,7 +749,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0) 
+					if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
 						return SendClientMessageEx(playerid, COLOR_GRAD2, "Locker weapons have been restricted from admins, /togreports to gain access.");
 					if(IsACriminal(playerid) || IsARacer(playerid)) {
 						return ShowGroupWeapons(playerid, iGroupID);
@@ -803,7 +803,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(string, sizeof(string), "%s Ingredient Locker", arrGroupData[iGroupID][g_szGroupName]);
 						SetPVarInt(playerid, "GSafe_Opt", 3);
 						return ShowPlayerDialog(playerid, G_LOCKER_INGREDIENTS, DIALOG_STYLE_TABLIST_HEADERS, string, szMiscArray, "Select", "<<");
-					}					
+					}
 					if(IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid)) {
 						if(GetPVarInt(playerid, "MedVestKit") == 1) {
 							return SendClientMessageEx(playerid, COLOR_GRAD1, "You're already carrying a med kit.");
@@ -962,7 +962,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 					}
 				}
-				case 6: { //Tazer 
+				case 6: { //Tazer
 					if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupAmmoDialog(playerid, iGroupID);
 					if(PlayerInfo[playerid][pHasTazer] == 0)
 					{
@@ -979,13 +979,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 7: // free namechanges in lockers - DGA scripting request
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid)) return cmd_gblackmarket(playerid, "");
-					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION))  
+					if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION))
 					{
 						return ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 					}
 					else ShowGroupAmmoDialog(playerid, iGroupID);
 				}
-				case 8: 
+				case 8:
 				{
 					if(IsACriminal(playerid) || IsARacer(playerid))
 					{
@@ -1001,7 +1001,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowGroupAmmoDialog(playerid, iGroupID);
 					}
 				}
-				case 10: 
+				case 10:
 				{
 
 					if(IsACriminal(playerid) || IsARacer(playerid))
@@ -1119,7 +1119,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPlayerToTeamColor(giveplayerid);
 						SetPlayerWantedLevel(giveplayerid, 0);
 						ClearCrimes(giveplayerid, playerid);
-						
+
 						PlayerInfo[giveplayerid][pWantedJailFine] = 0;
 						PlayerInfo[giveplayerid][pWantedJailTime] = 0;
 					}
@@ -1400,7 +1400,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					strcat(szDialog, "\nRevoke from Group");
 
 					format(szTitle, sizeof szTitle, "Edit Group Turf Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					
+
 					ShowPlayerDialog(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				case 38: {
@@ -1691,7 +1691,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
-		
+
 		case DIALOG_GROUP_LADDERS: {
 
 			new
@@ -2101,7 +2101,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(szText, sizeof(szText), "%s Shipment Delivery Point\n{1FBDFF}/delivershipment", arrGroupData[iGroupID][g_szGroupName]);
 				}
-				else 
+				else
 				{
 					format(szText, sizeof szText, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iGroupID][g_szGroupName]);
 				}
@@ -2196,14 +2196,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
-			if(!response) {			
-				GetPlayerPos(playerid, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]);		
+			if(!response) {
+				GetPlayerPos(playerid, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You've changed the garage position to your current location.");
 				format(string, sizeof(string), "%s has changed the garage position to X:%f, Y:%f, Z:%f in %s (%d)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_szGroupName], iGroupID+1);
 				Log("logs/editgroup.log", string);
 			}
 			return Group_DisplayDialog(playerid, iGroupID);
-		}	
+		}
 		case DIALOG_GROUP_TACKLEACCESS: {
 
 			new
@@ -2259,7 +2259,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
 		case DIALOG_GROUP_MEDICACCESS: {
-			
+
 			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
@@ -2279,7 +2279,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return Group_DisplayDialog(playerid, iGroupID);
 		}
 		case DIALOG_GROUP_DMVACCESS: {
-			
+
 			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
@@ -2299,7 +2299,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_GROUP_OOCCHAT: {
 
-			new 
+			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
@@ -2383,7 +2383,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_GROUP_TURFCAP: {
 
-			new 
+			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
@@ -2402,7 +2402,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_GROUP_POINTCAP: {
 
-			new 
+			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
@@ -2457,7 +2457,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			switch(listitem)
 			{
-				case 0:	
+				case 0:
 				{
 					SetPVarInt(playerid, "GSafe_Action", 1);
 					format(szMiscArray, sizeof(szMiscArray), "Please type an amount to deposit.");
@@ -2470,12 +2470,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SetPVarInt(playerid, "GSafe_Action", 2);
 						format(szMiscArray, sizeof(szMiscArray), "Please type an amount to withdraw.");
 					}
-					else 
+					else
 					{
 						DeletePVar(playerid, "GSafe_Opt");
 						return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to withdraw from the locker.");
 					}
-					
+
 				}
 			}
 			return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", szMiscArray, "Input", "Cancel");
@@ -2492,7 +2492,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)
 			{
 				if(strval(inputtext) <= 0) return ShowPlayerDialog(playerid, DIALOG_GROUP_SACTIONEXEC, DIALOG_STYLE_INPUT, "Gang Safe", "The amount cannot be less than or 0.", "Input", "Cancel");
-				
+
 				switch(GetPVarInt(playerid, "GSafe_Opt")) {
 
 					case 0:
@@ -2644,7 +2644,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							case 2:
 							{
 								if(strval(inputtext) <= arrGroupData[iGroupID][g_iIngredients][iIngredientID]) {
-									
+
 									arrGroupData[iGroupID][g_iIngredients][iIngredientID] -= strval(inputtext);
 									PlayerInfo[playerid][p_iIngredient][iIngredientID] += strval(inputtext);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %i grams of %s from the safe.", GetPlayerNameEx(playerid), strval(inputtext), szIngredients[iIngredientID]);
@@ -2668,7 +2668,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 		case DIALOG_GROUP_WEAPONSAFE: {
-			
+
 			//new iGroupID = PlayerInfo[playerid][pMember];
 
 			if(response) {
@@ -2688,10 +2688,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}*/
 				else {
-					new gid; 
+					new gid;
 
 					if(listitem <= 18) gid = listitem + 1;
 					else if(listitem > 18) gid = listitem + 4;
+					if(gid == 21) gid++; // TODO: a real fix? i guess?
 					SetPVarInt(playerid, "GLGunTake", gid);
 
 					new str[9];
@@ -2713,7 +2714,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 
 		case DIALOG_WEAPONSAFE_WITHDRAW: {
-			new 
+			new
 				iGroupID = PlayerInfo[playerid][pMember],
 				iWepID = GetPVarInt(playerid, "GLGunTake");
 
@@ -2723,7 +2724,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 
 			switch(listitem) {
-				
+
 				case 0: { // equip
 					DeletePVar(playerid, "GLGunTake");
 					WithdrawGroupSafeWeapon(playerid, iGroupID, iWepID);
@@ -2732,14 +2733,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1: { // transfer to crate
 					//TransferItemToCrate(playerid, itemid, iAmount, iCrateID)
 					ShowPlayerDialog(playerid, DIALOG_WEAPONSAFE_WITHDRAW_T, DIALOG_STYLE_INPUT, "Transfer To Crate", "Enter the crate ID you wish to transfer the item to", "Select", "Cancel");
-				}	
+				}
 
 			}
 
 		}
 
 		case DIALOG_WEAPONSAFE_WITHDRAW_T: {
-			new 
+			new
 				iWepID = GetPVarInt(playerid, "GLGunTake"),
 				iCrateID = strval(inputtext);
 
@@ -2843,7 +2844,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "Negative ammo values are not allowed!");
 					return WithdrawAmmo(playerid);
-				} 
+				}
 				if(arrGroupData[iGroupID][g_iAmmo][iAmmoType] < iAmmoQuantity)
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to withdraw more ammo than there is in the locker!");
@@ -2884,7 +2885,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "Negative ammo values are not allowed!");
 					return DepositAmmo(playerid);
-				} 
+				}
 				if(iAmmoQuantity > arrAmmoData[playerid][awp_iAmmo][iAmmoType])
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to deposit more ammo than you have!");
@@ -2947,7 +2948,7 @@ CMD:clearbugs(playerid, params[])
 				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
 					PlayerInfo[i][pBugged] = INVALID_GROUP_ID;
 				}
-			}	
+			}
 			new query[256];
 			format(query, sizeof(query), "UPDATE accounts SET `Bugged` = %d WHERE `Bugged` > %d AND `Online` = 0", INVALID_GROUP_ID, INVALID_GROUP_ID);
 			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -2969,7 +2970,7 @@ CMD:listbugs(playerid, params[])
 				if(PlayerInfo[i][pBugged] == PlayerInfo[playerid][pMember]){
 					SendClientMessageEx(playerid, COLOR_GREEN, GetPlayerNameEx(i));
 				}
-			}	
+			}
 			new query[256];
 			format(query, sizeof(query), "SELECT `Username`, `Bugged` FROM `accounts`  WHERE `Bugged` = %d AND `Online` = 0", PlayerInfo[playerid][pMember]);
 			mysql_function_query(MainPipeline, query, true, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle{playerid});
@@ -3377,7 +3378,7 @@ CMD:adjustdvrank(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Use /dl to get the vehicleid.");
 		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Rank 0 = Disabled.");
 		return 1;
-	}	
+	}
 	new iDvSlotID = DynVeh[vid];
 	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!");
 	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, " This Vehicle is not owned by your group!");
@@ -3519,13 +3520,13 @@ CMD:dvrespawnall(playerid, params[])
 				szString[128];
 
 			SendClientMessageEx(playerid, COLOR_WHITE, "Respawning all current dynamic vehicles...");
-				
+
 			for(new i = 0; i < MAX_DYNAMIC_VEHICLES; i++)
 			{
 				SetPVarInt(playerid, "dvRespawnAll", 1);
 				DynVeh_Spawn(i);
 			}
-			
+
 			format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic vehicles loaded on the server.", GetPlayerNameEx(playerid));
 			ABroadCast(COLOR_YELLOW, szString, 2);
 			format(szString, sizeof(szString), "Administrator %s has respawned all dynamic vehicles loaded on the server.", GetPlayerNameEx(playerid));
@@ -3544,7 +3545,7 @@ CMD:dvrespawn(playerid, params[])
 {
 	new szString[128],
 		iGroupID = PlayerInfo[playerid][pMember];
-	    
+
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
 		if((0 <= iGroupID <= MAX_GROUPS))
@@ -3555,19 +3556,19 @@ CMD:dvrespawn(playerid, params[])
 			    if(400 <= iModelID < 612 && DynVehicleInfo[i][gv_igID] == iGroupID)
 			    {
 					if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID]))
-					{	
+					{
 						if(strval(params) == 1) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
-					}	
+					}
 			    }
 			}
 			format(szString, sizeof(szString), "** Respawning all dynamic group vehicles%s...",(strval(params) == 1)?(" at no charge"):(""));
 			foreach(new i: Player)
 			{
-				if(PlayerInfo[i][pMember] == iGroupID) 
+				if(PlayerInfo[i][pMember] == iGroupID)
 				{
 					SendClientMessageEx(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szString);
 				}
-			}	
+			}
             format(szString, sizeof(szString), "%s has respawned group ID %d dynamic group vehicles.", GetPlayerNameEx(playerid), iGroupID+1);
    			Log("logs/group.log", szString);
 		}
@@ -4080,9 +4081,9 @@ CMD:deploy(playerid, params[])
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
-		
+
 		new iGroup = PlayerInfo[playerid][pMember];
-		
+
 		if(strcmp(object, "cade", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
@@ -4451,9 +4452,9 @@ CMD:destroy(playerid, params[])
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
-		
+
 		new iGroup = PlayerInfo[playerid][pMember];
-		
+
 		if(strcmp(object, "cade", true) == 0)
 		{
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades])
@@ -4653,7 +4654,7 @@ CMD:acades(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4695,7 +4696,7 @@ CMD:aspikes(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4733,7 +4734,7 @@ CMD:aflares(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4775,7 +4776,7 @@ CMD:acones(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4817,7 +4818,7 @@ CMD:abarrels(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4859,7 +4860,7 @@ CMD:aladders(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4901,7 +4902,7 @@ CMD:asigns(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
 
 	for(new iGroupID = 0; iGroupID < MAX_GROUPS; iGroupID++) {
@@ -4980,7 +4981,7 @@ CMD:dvstorage(playerid, params[])
 		if(PlayerInfo[playerid][pLeader] == iGroupID)
 		{
 			if(IsPlayerInRangeOfPoint(playerid, 100.0, arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2]))
-			{		
+			{
 				new vstring[3000];
 				for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
 				{
@@ -4998,9 +4999,9 @@ CMD:dvstorage(playerid, params[])
 						}
 					}
 				}
-				ShowPlayerDialog(playerid, DV_STORAGE, DIALOG_STYLE_LIST, "Dynamic Group Vehicle Storage", vstring, "Track", "Cancel");	
+				ShowPlayerDialog(playerid, DV_STORAGE, DIALOG_STYLE_LIST, "Dynamic Group Vehicle Storage", vstring, "Track", "Cancel");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in range of your group garage!");	
+			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in range of your group garage!");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a group leader!");
 	}
@@ -5351,7 +5352,7 @@ CMD:r(playerid, params[]) {
 					GetPlayerGroupInfo(playerid, rank, division, employer);
 					if(strcmp(PlayerInfo[playerid][pBadge], "None", true) != 0) format(string, sizeof(string), "** [%s] %s %s: %s **", PlayerInfo[playerid][pBadge], rank, GetPlayerNameEx(playerid), params);
 					else format(string, sizeof(string), "** %s (%s) %s: %s **", rank, division, GetPlayerNameEx(playerid), params);
-					
+
 					foreach(new i: Player)
 					{
 						if(PlayerInfo[playerid][pToggledChats][12] == 0)
@@ -5365,11 +5366,11 @@ CMD:r(playerid, params[]) {
 								ChatTrafficProcess(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szBigEar, 12);
 							}
 						}
-					}	
+					}
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/r)adio [radio chat]");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Your radio is currently turned off, type /togradio to turn it back on.");	
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Your radio is currently turned off, type /togradio to turn it back on.");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
 	}
@@ -5398,12 +5399,12 @@ CMD:international(playerid, params[])
 	            GetPlayerGroupInfo(playerid, szRank, szDivision, szEmployer);
 	            format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 	            foreach(new i: Player)
-				{				
+				{
 					if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess])
 					{
 						SendClientMessageEx(i, 0x869688FF, szRadio);
 					}
-				}	
+				}
 	            format(szRadio, sizeof(szRadio), "(radio) %s", params);
              	SetPlayerChatBubble(playerid, szRadio, COLOR_WHITE, 15.0, 5000);
              }
@@ -5482,7 +5483,7 @@ CMD:dept(playerid, params[])
 								}
 							}
 						}
-					}	
+					}
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/dept) [department chat]");
 			}
@@ -5543,7 +5544,7 @@ CMD:leaders(playerid, params[])
 				format(string, sizeof(string), "(%s) %s %s", sz_FacInfo[2], sz_FacInfo[0], GetPlayerNameEx(i));
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
-		}	
+		}
 	} else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
 }
@@ -5629,7 +5630,7 @@ public HitmanTrace(playerid, iTargetID) {
 	}
 	else if(iTraceCount == 0) {
 		GameTextForPlayer(playerid, "Trace established", 1100, 3);
-		
+
 		new
 			szZone[MAX_ZONE_NAME],
 			szMessage[108];
@@ -5680,7 +5681,7 @@ CMD:togfam(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled your OOC group chat. ");
 		PlayerInfo[playerid][pToggledChats][11] = 0;
 	}
-	else 
+	else
 	{
 		SetPVarInt(playerid, "OOCRadioTogged", 1);
 		SendClientMessage(playerid, COLOR_WHITE, "You have disabled your OOC group chat.");
@@ -5695,7 +5696,7 @@ CMD:locker(playerid, params[]) {
 		iGroupID = PlayerInfo[playerid][pMember],
 		szTitle[18 + GROUP_MAX_NAME_LEN],
 		szDialog[128];
-		
+
 	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 	if(zombieevent && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this as a Zombie.");
@@ -6135,7 +6136,7 @@ CMD:invite(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
 }
- 
+
 CMD:lastdriver(playerid, params[])
 {
 	new vehid, string[128];
@@ -6155,11 +6156,11 @@ CMD:lastdriver(playerid, params[])
 				if(DynVehicleInfo[DynVeh[vehid]][gv_igID] == PlayerInfo[playerid][pLeader])
 				{
 					format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, CrateVehicleLoad[vehid][vLastDriver]);
-					SendClientMessage(playerid, COLOR_YELLOW, string);				
+					SendClientMessage(playerid, COLOR_YELLOW, string);
 				}
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle does not belong to your group");
-			
+
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	}
@@ -6189,8 +6190,8 @@ CMD:togbr(playerid, params[])
 
 CMD:sanrank(playerid, params[])
 {
-	
-	new 
+
+	new
 		iGroupID = PlayerInfo[playerid][pMember];
 
 	szMiscArray[0] = 0;
@@ -6199,7 +6200,7 @@ CMD:sanrank(playerid, params[])
 		Camera (1)
 		Show Host (2)
 		Broadcast Editor/Director(2)
-		Executive Commands	
+		Executive Commands
 	*/
 
 	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_NEWS) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
@@ -6225,7 +6226,7 @@ CMD:sanrank(playerid, params[])
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
 				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the rank permission to %i.", iRank);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
+				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the rank permission for choice %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 				SaveGroup(iGroupID);
@@ -6239,7 +6240,7 @@ CMD:sanrank(playerid, params[])
 
 CMD:adjustwithdrawrank(playerid, params[])
 {
-	new 
+	new
 		iGroupID = PlayerInfo[playerid][pMember];
 
 	szMiscArray[0] = 0;
@@ -6272,7 +6273,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 			{
 				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
 				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
-				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray); 
+				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
@@ -6400,7 +6401,7 @@ DepositAmmo(playerid) {
 }
 
 /*ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
-	
+
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeapons` WHERE `Group_ID` = '%d'", iGroupID);
@@ -6410,7 +6411,7 @@ DepositAmmo(playerid) {
 
 forward OnShowGroupWeapons(playerid, iGroupID);
 public OnShowGroupWeapons(playerid, iGroupID) {
-	
+
 	szMiscArray[0] = 0;
 
 	new
@@ -6446,10 +6447,10 @@ forward OnShowGroupWeapons(playerid, iGroupID);
 public OnShowGroupWeapons(playerid, iGroupID) {
 
 	szMiscArray[0] = 0;
-	
-	new 
+
+	new
 		tempWep[3],
-		iCount; 
+		iCount;
 
 	for(new i = 1; i <= 18; i++) {
 		valstr(tempWep, i);
@@ -6465,7 +6466,7 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 
 	strcat(szMiscArray, "\nDeposit Weapon");
 	ShowPlayerDialog(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
-	
+
 	return 1;
 }
 
@@ -6474,7 +6475,7 @@ WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 	szMiscArray[0] = 0;
 
 	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
-	
+
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` - %d WHERE `Group_ID` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 
 	//format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d' LIMIT 1", iGroupID, iWeaponID);
@@ -6489,7 +6490,7 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 
 	if(playerid != INVALID_PLAYER_ID) {
 		GivePlayerValidWeapon(playerid, iWeaponID, 0);
-	
+
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
 
@@ -6505,11 +6506,11 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 }
 
 AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
-	
+
 	szMiscArray[0] = 0;
 
 	if(playerid != INVALID_PLAYER_ID && PlayerInfo[playerid][pGuns][GetWeaponSlot(iWeaponID)] == 0) return 1;
-	
+
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `Group_ID` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 	//format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnAddGroupSafeWeapon", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
@@ -6518,7 +6519,7 @@ AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 forward OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount);
 public OnAddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount) {
-	
+
 	szMiscArray[0] = 0;
 
 	if(playerid != INVALID_PLAYER_ID) {

@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -41,7 +41,7 @@ stock CompleteToyTrade(playerid)
 		sellerid = GetPVarInt(playerid, "ttSeller"),
 		name[24],
 		toyid = GetPVarInt(sellerid, "ttToy");
-				
+
 	for(new i;i<sizeof(HoldingObjectsAll);i++)
 	{
 		if(HoldingObjectsAll[i][holdingmodelid] == toyid)
@@ -53,9 +53,9 @@ stock CompleteToyTrade(playerid)
 	{
 		format(name, sizeof(name), "(ID: %d)", toyid);
 	}
-	
+
 	new icount = GetPlayerToySlots(playerid);
-	
+
 	if(!toyCountCheck(playerid))
 	{
 		format(string, sizeof(string), "%s has declined the toy offer. (no free toy slots)", GetPlayerNameEx(playerid));
@@ -63,12 +63,12 @@ stock CompleteToyTrade(playerid)
 		SendClientMessageEx(playerid, COLOR_GREY, "You don't have any free toy slots.");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
-		DeletePVar(playerid, "ttSeller");	
+		DeletePVar(playerid, "ttSeller");
 
 		HideTradeToysGUI(playerid);
 		return 1;
-	}	
-	
+	}
+
 	if(GetPlayerCash(playerid) < GetPVarInt(sellerid, "ttCost"))
 	{
 		format(string, sizeof(string), "%s has declined the toy offer. (Not enough money)", GetPlayerNameEx(playerid));
@@ -77,17 +77,17 @@ stock CompleteToyTrade(playerid)
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 		DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
 		DeletePVar(playerid, "ttSeller");
-				
+
 		HideTradeToysGUI(playerid);
 		return 1;
-	}	
-		
+	}
+
 	GivePlayerCash(playerid, -GetPVarInt(sellerid, "ttCost"));
 	GivePlayerCash(sellerid, GetPVarInt(sellerid, "ttCost"));
-	
+
 	for(new i = 0; i < icount; i++)
 	{
-		if(!PlayerToyInfo[playerid][i][ptModelID]) 
+		if(!PlayerToyInfo[playerid][i][ptModelID])
 		{
 			PlayerToyInfo[playerid][i][ptModelID] = toyid;
 			PlayerToyInfo[playerid][i][ptBone] = 1; // Doesn't need to be accurate, you can let the player choose.
@@ -101,8 +101,8 @@ stock CompleteToyTrade(playerid)
 			PlayerToyInfo[playerid][i][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
 			PlayerToyInfo[playerid][i][ptTradable] = 1;
-			
-			if(PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] == 1) 
+
+			if(PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptSpecial] == 1)
 			{
 				PlayerToyInfo[playerid][i][ptSpecial] = 0;
 			}
@@ -121,15 +121,15 @@ stock CompleteToyTrade(playerid)
 				PlayerToyInfo[playerid][i][ptScaleY] = 0.0;
 				PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
 			}
-			// Seller	
+			// Seller
 			format(string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, sellerid);
-				
+
 			g_mysql_NewToy(playerid, i);
 			break;
-		}	
+		}
 	}
-	
+
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptModelID] = 0;
 	PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptBone] = 0;
@@ -148,7 +148,7 @@ stock CompleteToyTrade(playerid)
 	}
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);
-			
+
 	format(string, sizeof(string), "%s has accepted your offer and purchased your toy for $%s. %s", GetPlayerNameEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
 	SendClientMessageEx(sellerid, COLOR_LIGHTBLUE, string);
 	format(string, sizeof(string), "You have accepted %s's offer and purchased the toy for $%s. %s", GetPlayerNameEx(sellerid), number_format(GetPVarInt(sellerid, "ttCost")), name);
@@ -156,12 +156,12 @@ stock CompleteToyTrade(playerid)
 	format(string, sizeof(string), "[S %s(%d)][IP %s][B %s(%d)][IP %s][P $%s][T: %s(%d)]", GetPlayerNameEx(sellerid), GetPlayerSQLId(sellerid), GetPlayerIpEx(sellerid),
 	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
 	Log("logs/toys.log", string);
-			
+
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttSeller");
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
 	DeletePVar(playerid, "ttSeller");
-			
+
 	HideTradeToysGUI(playerid);
 	return 1;
 }
@@ -171,7 +171,7 @@ stock ShowEditMenu(playerid)
 	new
 		iIndex = GetPVarInt(playerid, "ToySlot");
 
-	new toys = 99999;			
+	new toys = 99999;
 	for(new i; i < 10; i++)
 	{
 		if(PlayerHoldingObject[playerid][i] == iIndex)
@@ -184,7 +184,7 @@ stock ShowEditMenu(playerid)
 			}
 			break;
 		}
-	}	
+	}
 	if(PlayerToyInfo[playerid][iIndex][ptScaleX] == 0) {
 		PlayerToyInfo[playerid][iIndex][ptScaleX] = 1.0;
 		PlayerToyInfo[playerid][iIndex][ptScaleY] = 1.0;
@@ -255,7 +255,7 @@ GetSpecialPlayerToyCountEx(playerid, special)
 	new toys = 0;
 	for(new i = 0; i < MAX_PLAYERTOYS; i++) if(PlayerToyInfo[playerid][i][ptSpecial] > 1) ++toys;
 	return toys;
-} */	
+} */
 
 GetFreeToySlot(playerid)
 {
@@ -429,10 +429,10 @@ CMD:giveobject(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1338)
 	{
-		new string[1024], giveplayerid, object;
+		new giveplayerid, object;
 		if(sscanf(params, "ud", giveplayerid, object)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveobject [player] [object]");
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified");
-		
+		szMiscArray[0] = 0;
 		SetPVarInt(playerid, "giveplayeridtoy", giveplayerid);
 		SetPVarInt(playerid, "toyid", object);
 		new icount = GetPlayerToySlots(giveplayerid);
@@ -452,15 +452,15 @@ CMD:giveobject(playerid, params[])
 			{
 			    format(name, sizeof(name), "ID: %d", PlayerToyInfo[giveplayerid][x][ptModelID]);
 			}
-			format(string, sizeof(string), "%s(%d) %s (Bone: %s)\n", string, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
 		}
-   		ShowPlayerDialog(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", string, "Select", "Cancel");
+   		ShowPlayerDialog(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", szMiscArray, "Select", "Cancel");
 	}
 	else {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	}	
-	return 1;	
-}		
+	}
+	return 1;
+}
 
 CMD:shopobject(playerid, params[])
 {
@@ -590,13 +590,13 @@ CMD:dt(playerid, params[])
 		{
 			if(IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i])
 			{
-				if(i == 9 && PlayerInfo[playerid][pBEquipped] || PlayerToyInfo[playerid][toyslot-1][ptSpecial] == 2) 
+				if(i == 9 && PlayerInfo[playerid][pBEquipped] || PlayerToyInfo[playerid][toyslot-1][ptSpecial] == 2)
 					break;
 				RemovePlayerAttachedObject(playerid, i);
 				PlayerHoldingObject[playerid][i] = 0;
 				break;
 			}
-		}	
+		}
 	}
 	return 1;
 }
@@ -613,9 +613,9 @@ CMD:wat(playerid, params[])
 			PlayerToyInfo[playerid][x][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][x][ptScaleZ] = 1.0;
 		}
-		if(PlayerToyInfo[playerid][x][ptModelID] != 0 && PlayerToyInfo[playerid][x][ptSpecial] != 2) 
+		if(PlayerToyInfo[playerid][x][ptModelID] != 0 && PlayerToyInfo[playerid][x][ptSpecial] != 2)
 		{
-			if(x == 9 && PlayerInfo[playerid][pBEquipped]) 
+			if(x == 9 && PlayerInfo[playerid][pBEquipped])
 				break;
 			SetPlayerAttachedObject(playerid, x, PlayerToyInfo[playerid][x][ptModelID], PlayerToyInfo[playerid][x][ptBone], PlayerToyInfo[playerid][x][ptPosX], PlayerToyInfo[playerid][x][ptPosY], PlayerToyInfo[playerid][x][ptPosZ], PlayerToyInfo[playerid][x][ptRotX], PlayerToyInfo[playerid][x][ptRotY], PlayerToyInfo[playerid][x][ptRotZ], PlayerToyInfo[playerid][x][ptScaleX], PlayerToyInfo[playerid][x][ptScaleY], PlayerToyInfo[playerid][x][ptScaleZ]),
 			PlayerHoldingObject[playerid][count] = x;
@@ -632,9 +632,9 @@ CMD:dat(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "* Detached all toys.");
 	for(new i; i < 10; i++)
 	{
-		if((IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i]) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2) 
+		if((IsPlayerAttachedObjectSlotUsed(playerid, i) || PlayerHoldingObject[playerid][i]) && PlayerToyInfo[playerid][PlayerHoldingObject[playerid][i]][ptSpecial] != 2)
 		{
-			if(i == 9 && PlayerInfo[playerid][pBEquipped]) 
+			if(i == 9 && PlayerInfo[playerid][pBEquipped])
 				break;
 			PlayerHoldingObject[playerid][i] = 0;
 			RemovePlayerAttachedObject(playerid, i);
@@ -659,11 +659,11 @@ CMD:selltoy(playerid, params[])
 	if(!ProxDetectorS(5.0, playerid, targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not near you.");
 	if(InsideTradeToys[targetid] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This person is currently trading at the moment, please try again later.");
 	if(cost < 1 || cost > 1000000000) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot sell a toy for less than $1.");
-	
+
 	SetPVarInt(targetid, "ttSeller", playerid);
 	SetPVarInt(playerid, "ttBuyer", targetid);
 	SetPVarInt(playerid, "ttCost", cost);
-	
+
 	new icount = GetPlayerToySlots(playerid);
 	for(new x;x<icount;x++)
 	{
@@ -680,7 +680,7 @@ CMD:selltoy(playerid, params[])
 			format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 		}
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\n", szMiscArray, x+1, name);
-	}	
+	}
 	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", szMiscArray, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
 	return 1;
-}	
+}

@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -54,7 +54,7 @@ public RingToner()
 			RingTone[i] = RingTone[i] -1;
 			PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
 		}
-	}	
+	}
 	SetTimer("RingTonerRev", 1000, 0);
 	return 1;
 }
@@ -78,7 +78,7 @@ public RingTonerRev()
 			PlayerPlaySound(i, 1139, 0.0, 0.0, 0.0);
 			RingTone[i] = 0;
 		}
-	}	
+	}
 	SetTimer("RingToner", 1000, 0);
 	return 1;
 }
@@ -167,7 +167,7 @@ CMD:colorcar(playerid, params[]) {
 			ChangeVehicleColor(VIPVehicles[i], iColors[0], iColors[1]);
 			PlayerInfo[playerid][pSpraycan]--;
 			format(szMessage, sizeof(szMessage), "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);			
+			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
 		}
 	}
 	for(new i = 0; i < sizeof(FamedVehicles); i++)
@@ -177,7 +177,7 @@ CMD:colorcar(playerid, params[]) {
 			ChangeVehicleColor(FamedVehicles[i], iColors[0], iColors[1]);
 			PlayerInfo[playerid][pSpraycan]--;
 			format(szMessage, sizeof(szMessage), "You have changed the colors of this vehicle to ID %d, %d.", iColors[0], iColors[1]);
-			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);	
+			return SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREY, "You can't spray other people's vehicles.");
@@ -299,7 +299,7 @@ CMD:call(playerid, params[])
 			if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone")) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
 			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
-			else 
+			else
 				ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
 			return 1;
 		}
@@ -318,7 +318,7 @@ CMD:call(playerid, params[])
 				if(phonenumb == 18001020) iGroupID = 2; // SAPS
 
 				if(GetPVarType(playerid, "PayPhone")) TogglePlayerControllable(playerid, false);
-				
+
 				format(szMiscArray, sizeof(szMiscArray), "GROUP ID: %d", iGroupID);
 				SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 				SetPVarInt(playerid, "GRPCALL", iGroupID);
@@ -342,7 +342,7 @@ CMD:call(playerid, params[])
 
 	if(GetPVarType(playerid, "BUSICALL")) {
 
-		
+
 		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilist in prison!");
 		if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 		else {
@@ -454,7 +454,7 @@ CMD:call(playerid, params[])
 				}
 			}
 		}
-	}	
+	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Your call can not be completed as dialed, please check the number and try again.");
 	return 1;
 }
@@ -539,17 +539,17 @@ CMD:sms(playerid, params[])
 							format(szMiscArray, sizeof(szMiscArray), "(BE) %s SMS to %s: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), text);
 							ChatTrafficProcess(u, COLOR_YELLOW, szMiscArray, 7);
 						}
-					}	
+					}
 					if(PlayerInfo[playerid][pPhonePrivacy] == 1)
 					{
 						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: Unknown.", text);
 					}
-					if(PlayerInfo[giveplayerid][pAdmin] >= 2) {
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (%s)", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
-					}
 					else
 					{
 						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d", text, PlayerInfo[playerid][pPnumber]);
+					}
+					if(PlayerInfo[giveplayerid][pAdmin] >= 2) {
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (%s)", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
 					}
 
 					if(i != playerid)
@@ -586,7 +586,7 @@ CMD:sms(playerid, params[])
 					return 1;
 				}
 			}
-		}	
+		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "  Message delivery failed...");
 	return 1;
@@ -614,7 +614,7 @@ CMD:pickup(playerid, params[])
 		if(arrPayPhoneData[x][pp_iCallerID] != INVALID_PLAYER_ID) {
 
 			if(arrPayPhoneData[x][pp_iCallerID] == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot answer the pay phone you're dialing.");
-			
+
 			foreach(new i: Player) {
 
 				if(GetPVarInt(i, "PayPhone") == x) {
@@ -623,7 +623,7 @@ CMD:pickup(playerid, params[])
 			}
 			foreach(new i: Player) 	{
 
-				
+
 				if(i == arrPayPhoneData[x][pp_iCallerID])
 				{
 					Mobile[playerid] = i;
@@ -635,7 +635,7 @@ CMD:pickup(playerid, params[])
 					SetPlayerAttachedObject(playerid, 8, 330, 6);
 					return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 				}
-			}	
+			}
 		}
 	}
 	foreach(new i: Player)
@@ -648,10 +648,10 @@ CMD:pickup(playerid, params[])
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RingTone[playerid] = 0;
 			SetPlayerAttachedObject(playerid, 8, 330, 6);
-			Phone_PickupCall(playerid, i); 
+			Phone_PickupCall(playerid, i);
 			return SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 		}
-	}	
+	}
 	return 1;
 }
 
@@ -708,7 +708,7 @@ CMD:hangup(playerid,params[])
 			TogglePlayerControllable(caller, true);
 			PayPhone_UpdateTextLabel(x, 0);
 		}
-		
+
 		DeletePVar(playerid, "GRPCALL");
 		DeletePVar(caller, "GRPCALL");
 		DeletePVar(playerid, "BUSICALL");

@@ -31,8 +31,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
- 
+
+
  // Timer Name: SkinDelay(playerid)
 timer SkinDelay[1000](playerid)
 {
@@ -45,21 +45,21 @@ timer SkinDelay[1000](playerid)
 		{
 			case 1: // Small
 			{
-				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				//PlayerInfo[playerid][pBEquipped] = 1;
 			}
 			case 2: // Med
 			{
-				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				//PlayerInfo[playerid][pBEquipped] = 1;
 			}
 			case 3: // Large
 			{
-				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 				//PlayerInfo[playerid][pBEquipped] = 1;
@@ -93,7 +93,7 @@ timer NOPCheck[5000](playerid)
 
 timer FinishMedKit[5000](playerid)
 {
-	if(GetPVarInt(playerid, "BackpackMedKit") == 1) 
+	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
 	{
 		SetHealth(playerid, 100);
 		SetArmour(playerid, 100);
@@ -116,7 +116,7 @@ timer FinishMedKit[5000](playerid)
 
 timer FinishMeal[5000](playerid)
 {
-	if(GetPVarInt(playerid, "BackpackMeal") == 1) 
+	if(GetPVarInt(playerid, "BackpackMeal") == 1)
 	{
 		PlayerInfo[playerid][pHunger] += 83;
 
@@ -128,12 +128,12 @@ timer FinishMeal[5000](playerid)
 		PlayerInfo[playerid][pHungerDeathTimer] = 0;
 
 		if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-		
+
 		PlayerInfo[playerid][pBItems][0]--;
 		format(szMiscArray, sizeof(szMiscArray),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 		SetHealth(playerid, 100.0);
-		
+
 		new ip[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
 		format(szMiscArray, sizeof(szMiscArray), "[MEDKIT] %s(%d) (IP:%s) used a meal (%d Meals Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, PlayerInfo[playerid][pBItems][0], PlayerInfo[playerid][pBackpack]);
@@ -151,7 +151,7 @@ timer FinishMeal[5000](playerid)
 
 timer CheckVehiclesLeftSpawned[5000](playerid)
 {
-	foreach(new j: Player) 
+	foreach(new j: Player)
 	{
 		if(!GetPVarType(j, "LockPickVehicleSQLId")) return 1;
 		if(GetPVarInt(j, "LockPickPlayerSQLId") == GetPlayerSQLId(playerid)) {
@@ -213,7 +213,7 @@ task ServerHeartbeat[1000]() {
 // TickRate: 60 Secs
 task SyncTime[60000]()
 {
-	
+
 	for(new i = 0; i < MAX_ITEMS; i++) // Moved from 1000 to 60000 check - Jingles
 	{
 	    if(Price[i] != ShopItems[i][sItemPrice])
@@ -225,7 +225,7 @@ task SyncTime[60000]()
 	}
 
 	if(zombieevent) {
-		
+
 		foreach(new i: Player)  {
 			SaveZombieStats(i);
 		}
@@ -241,7 +241,7 @@ task SyncTime[60000]()
 		if(tmphour == 0 && ghour == 23)
 		{
 			CallLocalFunction("InactiveResourceCheck", "");
-			
+
 			/*
 			new month, day, year;
 			getdate(year,month,day);
@@ -411,10 +411,10 @@ task SyncTime[60000]()
 		ghour = tmphour;
 		TotalUptime += 1;
 		GiftAllowed = 1;
-		
+
 		new bmonth, bday, byear;
 		new year, month, day;
-		getdate(year, month, day);		
+		getdate(year, month, day);
 
 		new ttTime = CalculateWorldGameTime(hour, minuite);
 
@@ -423,7 +423,7 @@ task SyncTime[60000]()
 		new query[300];
 		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
 		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", INVALID_PLAYER_ID, szMiscArray);
-		foreach(new i: Player) 
+		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2)
 			{
@@ -468,7 +468,7 @@ task SyncTime[60000]()
 					}
 				}
 			}
-		}	
+		}
 		new iTempHour = CalculateWorldGameTime(hour, minuite);
 		SetWorldTime(iTempHour);
 
@@ -584,7 +584,7 @@ task ProductionUpdate[300000]()
 	ResetElevatorQueue();
 	for(new h; h < MAX_HOUSES; h++)
 	{
-		if(HouseInfo[h][hSignExpire] && gettime() >= HouseInfo[h][hSignExpire]) 
+		if(HouseInfo[h][hSignExpire] && gettime() >= HouseInfo[h][hSignExpire])
 		{
 			format(szMiscArray, sizeof(szMiscArray), "[EXPIRE] House Sale Sign Expired - Housed ID: %d", h);
 			ABroadCast(COLOR_YELLOW, szMiscArray, 4);
@@ -688,7 +688,7 @@ task MoneyUpdate[1000]()
 	{
 		if(gPlayerLogged{i})
 		{
-			if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337) 
+			if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
 			{
 				SpawnKick[i]++;
 				if(SpawnKick[i] >= 120)
@@ -714,7 +714,7 @@ task MoneyUpdate[1000]()
 					{
 						new
 							string[89 + MAX_PLAYER_NAME], ping;
-							
+
 						ping = GetPlayerPing(i);
 						if(ping != 65535) // Invalid Ping
 						{
@@ -733,7 +733,7 @@ task MoneyUpdate[1000]()
 					DeletePVar(i, "BigEar");
 					DeletePVar(i, "BigEarPlayer");
 					SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
-				}	
+				}
 			}
 			if(PlayerInfo[i][pTriageTime] != 0)
 			{
@@ -756,7 +756,7 @@ task MoneyUpdate[1000]()
 					{
 						copcount++;
 					}
-				}	
+				}
 				if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
 				{
 					SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
@@ -863,7 +863,7 @@ task MoneyUpdate[1000]()
 				}
 			}
 		}
-	}	
+	}
 }
 
 // Timer Name: SpecUpdate()
@@ -1025,7 +1025,7 @@ task PaintballArenaUpdate[1000]()
 						TogglePlayerControllable(p, 0);
 						PaintballScoreboard(p, arenaid);
 					}
-				}	
+				}
 			    //SendPaintballArenaSound(i, 1057);
 			}
 			if(PaintBallArena[i][pbTimeLeft] <= 0)
@@ -1044,7 +1044,7 @@ task PaintballArenaUpdate[1000]()
 						PaintballScoreboard(p, arenaid);
 						TogglePlayerControllable(p, 1);
 					}
-				}	
+				}
 			    foreach(new p: Player)
 				{
 					new arenaid = GetPVarInt(p, "IsInArena");
@@ -1052,7 +1052,7 @@ task PaintballArenaUpdate[1000]()
 					{
 						LeavePaintballArena(p, arenaid);
 					}
-				}	
+				}
 			    ResetPaintballArena(i);
 			}
 	    }
@@ -1072,9 +1072,9 @@ task VehicleUpdate[60000]() {
 
     		case 481, 509, 510: {}
     		default: {
-    			
+
     			GetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, boot, objective);
-			    
+
 			    if(engine == VEHICLE_PARAMS_ON) {
 
 					if(arr_Engine{v} == 0) SetVehicleParamsEx(v, VEHICLE_PARAMS_OFF, lights, alarm, doors, bonnet, boot, objective);
@@ -1095,33 +1095,33 @@ task VehicleUpdate[60000]() {
 
 // Task Name: hungerGames()
 task hungerGames[1000]()
-{	
+{
 	if(hgActive)
 	{
 		if(hgCountdown > 0)
-		{	
+		{
 			hgCountdown--;
-			
+
 			format(szMiscArray, sizeof(szMiscArray), "Time left until start: %d", hgCountdown);
-			foreach(new i: Player) 
+			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgTimeLeftText], szMiscArray);
 				}
 			}
-			
+
 			if(hgCountdown == 300)
 			{
 				SendClientMessageToAll(COLOR_LIGHTBLUE, "The Hunger Games Event will start in 5 minutes, type /joinhunger to participate.");
 			}
-			else if(hgCountdown == 60) 
+			else if(hgCountdown == 60)
 			{
-				SendClientMessageToAll(COLOR_LIGHTBLUE, "The Hunger Games Event will start in 1 minute, type /joinhunger to participate.");			
+				SendClientMessageToAll(COLOR_LIGHTBLUE, "The Hunger Games Event will start in 1 minute, type /joinhunger to participate.");
 			}
 			else if(hgCountdown == 30)
 			{
-				foreach(new i: Player) 
+				foreach(new i: Player)
 				{
 					if(HungerPlayerInfo[i][hgInEvent] == 1)
 					{
@@ -1135,14 +1135,14 @@ task hungerGames[1000]()
 		{
 			LoadHGBackpacks();
 			hgActive = 2;
-			
+
 			format(szMiscArray, sizeof(szMiscArray), "Time left until start: %d", hgCountdown);
-			foreach(new i: Player) 
+			foreach(new i: Player)
 			{
 				if(HungerPlayerInfo[i][hgInEvent] == 1)
 				{
 					PlayerTextDrawSetString(i, HungerPlayerInfo[i][hgTimeLeftText], szMiscArray);
-					
+
 					if(GetPVarInt(i, "HungerVoucher") == 1)
 					{
 						GivePlayerWeapon(i, 29, 60000);
@@ -1153,7 +1153,7 @@ task hungerGames[1000]()
 					{
 						SetHealth(i, 50.0);
 					}
-	
+
 					SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Let the Hunger Games Begin!");
 					GameTextForPlayer(i, "The Game is on!", 2000, 6);
 					PlayerTextDrawHide(i, HungerPlayerInfo[i][hgTimeLeftText]);
@@ -1200,7 +1200,7 @@ ptask PlayerHeartBeat[1000](i) {
 	// MoneyHeartBeat - Merged by Jingles
 	if(gPlayerLogged{i})
 	{
-		if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337) 
+		if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
 		{
 			SpawnKick[i]++;
 			if(SpawnKick[i] >= 120)
@@ -1225,7 +1225,7 @@ ptask PlayerHeartBeat[1000](i) {
 				if(GetPVarInt(i, "BeingKicked") != 1)
 				{
 					new ping;
-						
+
 					ping = GetPlayerPing(i);
 					if(ping != 65535) // Invalid Ping
 					{
@@ -1244,7 +1244,7 @@ ptask PlayerHeartBeat[1000](i) {
 				DeletePVar(i, "BigEar");
 				DeletePVar(i, "BigEarPlayer");
 				SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
-			}	
+			}
 		}
 		if(PlayerInfo[i][pTriageTime] != 0)	PlayerInfo[i][pTriageTime]--;
 		if(PlayerInfo[i][pTicketTime] != 0)	PlayerInfo[i][pTicketTime]--;
@@ -1270,7 +1270,7 @@ ptask PlayerHeartBeat[1000](i) {
 				{
 					copcount++;
 				}
-			}	
+			}
 			if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
 			{
 				SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
@@ -1404,7 +1404,7 @@ ptask PlayerHeartBeat[1000](i) {
 
 	if(PlayerInfo[i][pJudgeJailType] != 0 && PlayerInfo[i][pJudgeJailTime] > 0 && !PlayerInfo[i][pBeingSentenced]) PlayerInfo[i][pJudgeJailTime]--;
 	if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
-	
+
 	if(playerTabbed[i] == 0) {
 		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0) {
 			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1) {
@@ -1435,7 +1435,7 @@ ptask PlayerHeartBeat[1000](i) {
 			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess]) GroupLog(x, szMiscArray);
 		}
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
-			
+
 			new Float: vehSize[3],
 				Float: Pos[3],
 				vehicleid = GetPVarInt(i, "LockPickVehicle"),
@@ -1481,7 +1481,7 @@ ptask PlayerHeartBeat[1000](i) {
 						Log("logs/playervehicle.log", szMiscArray);
 					}
 				}
-				
+
 				if(GetPVarInt(i, "LockPickCountdown") <= 0) {
 					if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
 					if(++PlayerInfo[i][pLockPickVehCount] > 11) {
@@ -1498,7 +1498,7 @@ ptask PlayerHeartBeat[1000](i) {
 					SetPlayerSkin(i, GetPlayerSkin(i));
 					SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
 					new rand = random(sizeof(lpRandomLocations));
-					while(IsPlayerInRangeOfPoint(i, 1000.0, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2])) 
+					while(IsPlayerInRangeOfPoint(i, 1000.0, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2]))
 						rand = random(sizeof(lpRandomLocations));
 					SetPlayerCheckpoint(i, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2], 8.0);
 					SetPVarInt(i, "DeliveringVehicleTime", gettime()+900);
@@ -1514,7 +1514,7 @@ ptask PlayerHeartBeat[1000](i) {
 					DeletePVar(i, "LockPickCountdown");
 					DeletePVar(i, "LockPickTotalTime");
 					ClearAnimations(i, 1);
-					
+
 					if(PlayerInfo[i][pDoubleEXP] > 0) {
 						format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
 						SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
@@ -1584,7 +1584,7 @@ ptask PlayerHeartBeat[1000](i) {
 				SetPVarInt(i, "CrackTrunkCountdown", GetPVarInt(i, "CrackTrunkCountdown")-1);
 				UpdateVLPTextDraws(i, vehicleid, 1);
 				if(GetPVarInt(i, "CrackTrunkCountdown") <= 0) {
-					new 
+					new
 						wslot,
 						ownerid = GetPVarInt(i, "LockPickPlayer");
 					SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
@@ -1643,7 +1643,7 @@ ptask PlayerHeartBeat[1000](i) {
 				SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
 				new Float: carPos[3];
 				GetVehiclePos(Calls[GetPVarInt(i, "CallId")][CallVehicleId], carPos[0], carPos[1], carPos[2]);
-				if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2]) 
+				if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2])
 					SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
 				if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
 					DisablePlayerCheckpoint(i);
@@ -2260,7 +2260,7 @@ ptask PlayerHeartBeat[1000](i) {
 					{
 						copinrange = 1;
 					}
-				}	
+				}
 
 				if(copinrange == 0)
 				{
@@ -2307,7 +2307,7 @@ ptask PlayerHeartBeat[1000](i) {
 				TogglePlayerControllable(i, 0);
 				PlayerCuffed[i] = 2;
 				GameTextForPlayer(i, "~r~They caught you again!", 2500, 3);
-			}	
+			}
 
 			if(PlayerCuffedTime[i] <= 0)
 			{
@@ -2505,7 +2505,7 @@ ptask PlayerHeartBeat[1000](i) {
 						}
 					}
 				}
-			}	
+			}
 		}
 	}
 	else if (GetPVarInt(i, "_BoxingFightCountdown") >= 1)
@@ -2559,6 +2559,7 @@ ptask PlayerHeartBeat[1000](i) {
 				Businesses[biz][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
 			}
 		}
+        else SetPlayerPos(i, 2907.50, -2275.39, 7.25);
 
 		SetHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
 		SetArmour(i, GetPVarFloat(i, "_BoxingCacheArmour"));
@@ -2578,7 +2579,7 @@ ptask PlayerHeartBeat[1000](i) {
 	if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 	{
 		if(GetPVarType(i, "Autoban")) return 1;
-		SetPVarInt(i, "Autoban", 1); 
+		SetPVarInt(i, "Autoban", 1);
 		CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Jetpack Hacking", 180);
 		TotalAutoBan++;
 	}
@@ -2667,7 +2668,7 @@ ptask PlayerHeartBeat[1000](i) {
 // TickRate: 1 Minute.
 ptask SyncUp[60000](i)
 {
-	
+
 	SyncMinTime(i);
 
 	if(PlayerInfo[i][pDedicatedWarn] > 0)
@@ -2737,7 +2738,7 @@ ptask SyncUp[60000](i)
 		}
 	}
 	else DeletePVar(i, "debtMsg");
-	
+
 	if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
@@ -2798,7 +2799,7 @@ ptask AFKUpdate[10000](i)
 		if((playerTabbed[i] > 300 || playerAFK[i] > 300) && PlayerInfo[i][pShopTech] < 1 && PlayerInfo[i][pAdmin] < 4)
 		{
 			Kick(i);
-		}	
+		}
 	}
 	return 1;
 }
@@ -2933,9 +2934,9 @@ ptask PlayerMicroBeat[500](i) {
 		HideVehicleHUDForPlayer(i);
 	}
 
-	switch(GetPlayerState(i)) 
+	switch(GetPlayerState(i))
 	{
-		case PLAYER_STATE_DRIVER: 
+		case PLAYER_STATE_DRIVER:
 		{
 			iVehicle = GetPlayerVehicleID(i);
 			GetVehicleHealth(iVehicle, fVehicleHealth);
@@ -2985,7 +2986,7 @@ ptask PlayerMicroBeat[500](i) {
 				UpdateVehicleHUDForPlayer(i, floatround(VehicleFuel[iVehicle]), floatround(fCurrentSpeed));
 			}
 		}
-		case PLAYER_STATE_PASSENGER: 
+		case PLAYER_STATE_PASSENGER:
 		{
 			iVehicle = GetPlayerVehicleID(i);
 			GetVehicleHealth(iVehicle,fExpHealth);
@@ -3033,7 +3034,7 @@ ptask ShopItemQueue[60000](i)
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `shop_orders` WHERE `user_id` = %d AND `status` = 0", GetPlayerSQLId(i));
 	mysql_function_query(MainPipeline, szMiscArray, true, "ExecuteShopQueue", "ii", i, 0);
-	
+
 	if(ShopToggle == 1)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `order_delivery_status` WHERE `player_id` = %d AND `status` = 0", GetPlayerSQLId(i));

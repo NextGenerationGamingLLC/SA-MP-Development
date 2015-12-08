@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -72,7 +72,7 @@ CMD:accept(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, "An error occurred, please try making your transaction again.");
 				return 1;
 			}
-			if(GetPlayerCash(playerid) < DDSalePrice[target]) 
+			if(GetPlayerCash(playerid) < DDSalePrice[target])
 			{
 				format(string, sizeof(string), "You do not have enough money for this transaction ($%s).", number_format(DDSalePrice[target]));
 				SendClientMessageEx(playerid, COLOR_GREY, string);
@@ -183,7 +183,7 @@ CMD:accept(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s a kiss.", GetPlayerNameEx(playerid), GetPlayerNameEx(targetid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			GiftPlayer(MAX_PLAYERS, playerid);
-			GiftPlayer(MAX_PLAYERS, targetid);	
+			GiftPlayer(MAX_PLAYERS, targetid);
    			DeletePVar(playerid, "kissvaloffer");
       		DeletePVar(playerid, "kissvalsqlid");
 			DeletePVar(targetid, "kissvalstyle");
@@ -377,7 +377,7 @@ CMD:accept(playerid, params[])
         else if(strcmp(params, "death", true) == 0) {
             if(GetPVarInt(playerid, "Injured") == 1) {
 
-            	if(GetPVarInt(playerid, "InjuredWait") > gettime()) 
+            	if(GetPVarInt(playerid, "InjuredWait") > gettime())
             		return SendClientMessageEx(playerid, COLOR_GRAD2, "Please wait 5 seconds before accepting death.");
 
                 SendClientMessageEx(playerid, COLOR_WHITE, "You gave up hope and fell unconscious, you were immediately sent to the hospital.");
@@ -403,7 +403,7 @@ CMD:accept(playerid, params[])
 							}
 							if(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvBeingPickLocked])
 								return SendClientMessage(playerid, COLOR_GRAD2, "There was an error while trying to sell this vehicle.");
-							
+
                             new ip[32], ipex[32];
                             GetPlayerIp(playerid, ip, sizeof(ip));
                             GetPlayerIp(VehicleOffer[playerid], ipex, sizeof(ipex));
@@ -465,7 +465,7 @@ CMD:accept(playerid, params[])
 
         					format(szMessage, sizeof(szMessage), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
 							mysql_function_query(MainPipeline, szMessage, true, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
-							
+
 							format(szMessage, sizeof(szMessage), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId]);
 							mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, VehicleOffer[playerid]);
 
@@ -562,7 +562,7 @@ CMD:accept(playerid, params[])
 						else if(House[playerid] == PlayerInfo[HouseOffer[playerid]][pPhousekey3])
 						{
 							PlayerInfo[HouseOffer[playerid]][pPhousekey3] = INVALID_HOUSE_ID;
-							PlayerInfo[playerid][pPhousekey3] = House[playerid];						
+							PlayerInfo[playerid][pPhousekey3] = House[playerid];
 						}
 						Homes[HouseOffer[playerid]]--;
 						Homes[playerid]++;
@@ -737,9 +737,9 @@ CMD:accept(playerid, params[])
 						GetPlayerPos( playerid, X, Y, Z );
 						format(szMessage, sizeof(szMessage), "Team: %s", RFLInfo[team][RFLname]);
 						RFLTeamN3D[playerid] = CreateDynamic3DTextLabel(szMessage,0x008080FF,X,Y,Z,10.0,.attachedplayer = playerid, .worldid = GetPlayerVirtualWorld(playerid));
-					}		
+					}
 				}
-			}		
+			}
 			OnPlayerStatsUpdate(playerid);
 			SaveRelayForLifeTeam(team);
 		}
@@ -885,7 +885,7 @@ CMD:accept(playerid, params[])
                                     MarriageCeremoney[playerid] = 1;
 									if(GetPVarInt(ProposeOffer[playerid], "marriagelastname") == 1)
 									{
-										ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
+										ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name",
 										"As your spouse decided to keep their last name you have the option to keep your last name or use your spouse's.\n\
 										Please use the buttons below to make your decision.", "Keep", "Use Their's");
 									}
@@ -1454,14 +1454,14 @@ CMD:accept(playerid, params[])
 		else if(strcmp(params, "voucher", true) == 0)
 		{
 			if(!GetPVarType(playerid, "buyingVoucher")) return SendClientMessageEx(playerid, COLOR_GRAD2, "No-one has offered you any vouchers.");
-		
+
 			new sellerid = GetPVarInt(playerid, "sellerVoucher"),
 				price = GetPVarInt(playerid, "priceVoucher"),
 				amount = GetPVarInt(playerid, "amountVoucher");
-			
+
 			DeletePVar(playerid, "sellVoucher");
 			DeletePVar(playerid, "priceVoucher");
-			DeletePVar(playerid, "amountVoucher");	
+			DeletePVar(playerid, "amountVoucher");
 			if(GetPlayerCash(playerid) > price)
 			{
 				if(IsPlayerConnected(sellerid))
@@ -1470,7 +1470,7 @@ CMD:accept(playerid, params[])
 					if(GetPVarInt(playerid, "buyingVoucher") == 1) // Car Voucher
 					{
 						if(PlayerInfo[sellerid][pVehVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1481,17 +1481,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pVehVoucher] += amount;
 						PlayerInfo[sellerid][pVehVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 2) // Silver VIP Voucher
 					{
 						if(PlayerInfo[sellerid][pSVIPVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1502,17 +1502,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 3) // Gold VIP Voucher
 					{
 						if(PlayerInfo[sellerid][pGVIPVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1523,17 +1523,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 4) // 1 month PVIP Voucher
 					{
 						if(PlayerInfo[sellerid][pPVIPVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d 1 month PVIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1544,17 +1544,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pPVIPVoucher] += amount;
 						PlayerInfo[sellerid][pPVIPVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 5) // Restricted Car Voucher
 					{
 						if(PlayerInfo[sellerid][pCarVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d Restricted Car Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1565,17 +1565,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pCarVoucher] += amount;
 						PlayerInfo[sellerid][pCarVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 6) // Priority Advertisement Voucher
 					{
 						if(PlayerInfo[sellerid][pAdvertVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d Priority Advertisement Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1586,17 +1586,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pAdvertVoucher] += amount;
 						PlayerInfo[sellerid][pAdvertVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 7) // 7 Days Silver VIP
 					{
 						if(PlayerInfo[sellerid][pSVIPExVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d 7 Days Silver VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1607,17 +1607,17 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pSVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pSVIPExVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
 					if(GetPVarInt(playerid, "buyingVoucher") == 8) // 7 Days Gold VIP
 					{
 						if(PlayerInfo[sellerid][pGVIPExVoucher] < amount) return SendClientMessageEx(playerid, COLOR_GRAD1, "The seller does not have that many anymore.");
-						
+
 						GivePlayerCash(playerid, -price);
 						GivePlayerCash(sellerid, price);
 						format(szMessage, sizeof(szMessage), "* You have bought %d 7 Days Gold VIP Voucher(s) for $%s from %s.", amount, number_format(price), GetPlayerNameEx(sellerid));
@@ -1628,18 +1628,18 @@ CMD:accept(playerid, params[])
 						Log("logs/pay.log", szMessage);
 						PlayerInfo[playerid][pGVIPExVoucher] += amount;
 						PlayerInfo[sellerid][pGVIPExVoucher] -= amount;
-						
+
 						OnPlayerStatsUpdate(playerid);
 						OnPlayerStatsUpdate(sellerid);
-						
+
 						DeletePVar(playerid, "buyingVoucher");
 						return 1;
 					}
-				} 
+				}
 				else return SendClientMessageEx(playerid, COLOR_GRAD2, "No-One has offered you any vouchers.");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have enough money.");
-		}						
+		}
         else if(strcmp(params,"craft",true) == 0) {
             if(CraftOffer[playerid] != INVALID_PLAYER_ID) {
                 if(IsPlayerConnected(CraftOffer[playerid])) {
@@ -1668,7 +1668,7 @@ CMD:accept(playerid, params[])
 							else if((IsPlayerInRangeOfPoint(playerid, 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW]) &&
 							(IsPlayerInRangeOfPoint(CraftOffer[playerid], 50.0, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hInteriorZ]) && GetPlayerVirtualWorld(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW] && GetPlayerInterior(CraftOffer[playerid]) == HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW]))
 							{
-							}	
+							}
 							else
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "The craftsman is not inside of your house!");
@@ -1796,7 +1796,7 @@ CMD:accept(playerid, params[])
 									HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntVW], .interiorid = HouseInfo[PlayerInfo[playerid][pPhousekey3]][hIntIW], .streamdistance = 10.0);
 									SaveHouse(PlayerInfo[playerid][pPhousekey3]);
 									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								}		
+								}
 							}
 							case 18:
 							{
@@ -1812,7 +1812,7 @@ CMD:accept(playerid, params[])
 							case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE, 99999);
 							case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT, 99999);
 							case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE, 99999);
-							case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);	
+							case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);
 							case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
 							case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
 							case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
@@ -2207,28 +2207,28 @@ CMD:accept(playerid, params[])
 		else if(strcmp(params, "backpack", true) == 0) {
 			if(GetPVarType(playerid, "sellbackpack") && IsPlayerConnected(GetPVarInt(playerid, "sellbackpack")))
 			{
-				if(GetPlayerCash(playerid) > GetPVarInt(playerid, "sellbackpackprice")) 
+				if(GetPlayerCash(playerid) > GetPVarInt(playerid, "sellbackpackprice"))
 				{
 					if(PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack] < 1)	{
 						SendClientMessageEx(playerid,COLOR_GREY, "That person does not have a backpack anymore!");
 						return 1;
 					}
 					new btype[8];
-					if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+					if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 						RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 					switch(PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack])
 					{
-						case 1: 
+						case 1:
 						{
 							btype = "Small";
 							SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 						}
-						case 2: 
+						case 2:
 						{
 							btype = "Medium";
 							SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 						}
-						case 3: 
+						case 3:
 						{
 							btype = "Large";
 							SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
@@ -2240,14 +2240,14 @@ CMD:accept(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 					format(szMessage, sizeof(szMessage), "* %s has bought your %s Backpack, $%s was added to your money.",GetPlayerNameEx(playerid),btype, number_format(GetPVarInt(playerid, "sellbackpackprice")));
 					SendClientMessageEx(GetPVarInt(playerid, "sellbackpack"), COLOR_LIGHTBLUE, szMessage);
-					
-					
+
+
 					PlayerInfo[playerid][pBackpack] = PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack];
 					PlayerInfo[playerid][pBEquipped] = 1;
 					PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 					PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 					RemovePlayerAttachedObject(GetPVarInt(playerid, "sellbackpack"), 9);
-					
+
 					PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBackpack] = 0;
 					PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBEquipped] = 0;
 					PlayerInfo[GetPVarInt(playerid, "sellbackpack")][pBStoredH] = INVALID_HOUSE_ID;
@@ -2304,22 +2304,22 @@ CMD:cancel(playerid, params[])
 		ClearDoorSaleVariables(playerid);
 	}
 	else if(strcmp(choice,"renderaid",true) == 0) DeletePVar(playerid, "renderaid");
-	else if(strcmp(choice,"sex",true) == 0) {	
-		if(GetPVarType(playerid, "SexOfferTo")) { 
-			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID; 
-			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0; 
+	else if(strcmp(choice,"sex",true) == 0) {
+		if(GetPVarType(playerid, "SexOfferTo")) {
+			SexOffer[GetPVarInt(playerid, "SexOfferTo")] = INVALID_PLAYER_ID;
+			SexPrice[GetPVarInt(playerid, "SexOfferTo")] = 0;
 			DeletePVar(playerid, "SexOfferTo");
 		}
 		else {
-			SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0; 
+			SexOffer[playerid] = INVALID_PLAYER_ID; SexPrice[playerid] = 0;
 		}
 	}
 	else if(strcmp(choice,"craft",true) == 0) { CraftOffer[playerid] = INVALID_PLAYER_ID; CraftId[playerid] = 0; }
-	else if(strcmp(choice,"repair",true) == 0) {	
-		if(GetPVarType(playerid, "RepairOfferTo")) { 
-			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID; 
-			RepairPrice[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
-			RepairCar[GetPVarInt(playerid, "RepairOfferTo")] = 0; 
+	else if(strcmp(choice,"repair",true) == 0) {
+		if(GetPVarType(playerid, "RepairOfferTo")) {
+			RepairOffer[GetPVarInt(playerid, "RepairOfferTo")] = INVALID_PLAYER_ID;
+			RepairPrice[GetPVarInt(playerid, "RepairOfferTo")] = 0;
+			RepairCar[GetPVarInt(playerid, "RepairOfferTo")] = 0;
 			DeletePVar(playerid, "RepairOfferTo");
 		}
 		else {
@@ -2337,7 +2337,7 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"marriage",true) == 0) { DeletePVar(ProposeOffer[playerid], "marriagelastname"), ProposeOffer[playerid] = INVALID_PLAYER_ID, DeletePVar(playerid, "marriagelastname"); }
 	//else if(strcmp(choice,"divorce",true) == 0) { DivorceOffer[playerid] = INVALID_PLAYER_ID; }
 	else if(strcmp(choice,"drink",true) == 0) { DrinkOffer[playerid] = INVALID_PLAYER_ID; }
-	else if(strcmp(choice,"firstaid",true) == 0) 
+	else if(strcmp(choice,"firstaid",true) == 0)
 	{
 		if(GetPVarInt(playerid, "usingfirstaid"))
 		{
@@ -2348,12 +2348,13 @@ CMD:cancel(playerid, params[])
 	else if(strcmp(choice,"shipment",true) == 0)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
+		if(vehicleid == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be in a valid vehicle.");
  		DeletePVar(playerid, "LoadTruckTime");
 		DeletePVar(playerid, "TruckDeliver");
-		
+
 		Businesses[TruckDeliveringTo[vehicleid]][bOrderState] = 0;
 		TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
-		
+
 		TruckUsed[playerid] = INVALID_VEHICLE_ID;
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
  		DisablePlayerCheckpoint(playerid);
@@ -2387,7 +2388,7 @@ CMD:cancel(playerid, params[])
 				DeletePVar(playerid, "HitCooldown");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot cancel a contract with less than 80 percent health!");
-		
+
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have an active contract!");
 	}
@@ -2420,7 +2421,7 @@ CMD:cancel(playerid, params[])
 							TaxiAccepted[i] = INVALID_PLAYER_ID;
 							DisablePlayerCheckpoint(i);
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -2447,7 +2448,7 @@ CMD:cancel(playerid, params[])
 					BusAccepted[i] = INVALID_PLAYER_ID;
 					DisablePlayerCheckpoint(i);
 				}
-			}	
+			}
 		}
 	}
 	else if(strcmp(choice,"foodoffer",true) == 0) {
@@ -2473,7 +2474,7 @@ CMD:refill(playerid, params[])
 	{
 		return SendClientMessageEx(playerid, COLOR_GREY, "You're not a mechanic.");
 	}
-	
+
 	new string[128];
 	if(gettime() < PlayerInfo[playerid][pMechTime])
 	{

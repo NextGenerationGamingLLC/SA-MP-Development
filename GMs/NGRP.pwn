@@ -23,7 +23,8 @@
 								**  Development Staff:
 									Miguel (s0nic)
 									Jingles
-									
+									Austin
+
 
 				Past Developers:
 								*** Director of SA:MP Development:
@@ -39,7 +40,6 @@
 									Calgon
 
 								** 	Developers:
-									Austin
 									AlexR
 									Jamie
 									Connor
@@ -78,7 +78,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.260"
+#define SERVER_GM_TEXT "NG:RP v3.0.261"
 
 #define AREA_DEBUG
 

@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2014, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -78,8 +78,9 @@ CMD:frisk(playerid, params[])
 				new packages = GetPVarInt(giveplayerid, "Packages");
 				new crates = PlayerInfo[giveplayerid][pCrates];
 				SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
-				format(string, sizeof(string), "*** %s' items...  ***", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(szMiscArray, sizeof(szMiscArray), "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
 				if(PlayerInfo[giveplayerid][pMats] > 0)
 				{
 					format(string, sizeof(string), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
@@ -101,8 +102,7 @@ CMD:frisk(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 
-				format(string, sizeof(string), "*** %s' drugs...  ***", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
 				for(new i = 0; i < sizeof(szDrugs); i++) {
 
 					if(PlayerInfo[giveplayerid][p_iDrug][i] > 0) {
@@ -111,7 +111,7 @@ CMD:frisk(playerid, params[])
 					}
 				}
 
-				format(string, sizeof(string), "*** %s' ingredients...  ***", GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_WHITE, "** Ingredients **");
 				for(new i = 0; i < sizeof(szIngredients); i++) {
 
 					if(PlayerInfo[giveplayerid][p_iIngredient][i] > 0) {
@@ -125,11 +125,11 @@ CMD:frisk(playerid, params[])
 					format(string, sizeof(string), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
 				if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
 				if(PlayerInfo[giveplayerid][pCDPlayer] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Music player.");
 				new weaponname[50];
-				format(string, sizeof(string), "*** %s' weapons...  ***", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				SendClientMessageEx(playerid, COLOR_WHITE, "** Weapons **");
 				for (new i = 0; i < 12; i++)
 				{
 					if(PlayerInfo[giveplayerid][pGuns][i] > 0)
