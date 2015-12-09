@@ -282,7 +282,7 @@ native IsValidVehicle(vehicleid);
 #define 		BUSINESS_TYPE_CLUB 					10
 #define 		BUSINESS_TYPE_SEXSHOP 				11
 #define 		BUSINESS_TYPE_GYM 					12
-#define 		BUSINESS_ITEMS_COST 				1500
+#define 		BUSINESS_ITEMS_COST 				5
 #define 		ITEM_CELLPHONE 						1
 #define 		ITEM_PHONEBOOK 						2
 #define 		ITEM_DICE 							3

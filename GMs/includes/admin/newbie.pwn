@@ -28,7 +28,7 @@ CMD:cancelnewbie(playerid, params[]) {
 
 CMD:newbquestions(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] > 0) {
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] > 0) {
 		GetNewbieQuestions(playerid);
 	}
 
@@ -46,7 +46,7 @@ CMD:an(playerid, params[]) {
 	if(!GetPVarType(id, "HasNewbQues")) return SendClientMessageEx(playerid, COLOR_GREY, "That player hasn't asked a newbie question!");
 	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Another helper is answering that request!");
 
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] > 0) {
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] > 0) {
 
 		SetPVarInt(playerid, "AnsweringNewb", id);
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
@@ -70,7 +70,7 @@ CMD:tn(playerid, params[]) {
 	if(GetPVarType(id, "NewbBeingAnswered")) return SendClientMessageEx(playerid, COLOR_GREY, "Another helper is answering that request!");
 
 
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] > 0) {
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] > 0) {
 
 		SetPVarInt(playerid, "AnsweringNewb", id);
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
@@ -91,7 +91,7 @@ SendNewbQuestionToQueue(iPlayerID, szQuestion[]) {
 	format(szMiscArray, sizeof(szMiscArray), "Newb: %s (ID:%d) Q: %s", GetPlayerNameEx(iPlayerID), iPlayerID, szQuestion);
 
 	foreach(new i : Player) {
-		if((PlayerInfo[i][pAdmin] >= 2 || PlayerInfo[i][pHelper] > 0))
+		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] > 0))
 			
 			ChatTrafficProcess(i, COLOR_NEWBIE, szMiscArray, 0);
 	}
@@ -126,7 +126,7 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 	format(szMiscArray, sizeof(szMiscArray), "A: (%s): %s", GetPlayerNameEx(iPlayerID), szAnswer);
 	SendGlobalNewbMsg(szMiscArray);
 
-	if(PlayerInfo[iPlayerID][pHelper] == 1 && PlayerInfo[iPlayerID][pAdmin] < 2) {
+	if(PlayerInfo[iPlayerID][pHelper] == 1 && PlayerInfo[iPlayerID][pAdmin] < 1) {
 		ReportCount[iPlayerID]++;
 		ReportHourCount[iPlayerID]++;
 		AddCAReportToken(iPlayerID); // Advisor Tokens

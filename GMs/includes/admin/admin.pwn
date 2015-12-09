@@ -6122,6 +6122,38 @@ CMD:dice(playerid, params[])
     return 1;
 }
 
+CMD:card(playerid, params[]) {
+
+    new iDeck = Random(0, 3),
+    	iNumber = Random (0, 12),
+    	szTemp[6];
+      
+ 	szMiscArray[0] = 0; 
+
+    switch(iDeck) {
+    	case 0: szMiscArray = "hearts";
+		case 1: szMiscArray = "clubs";
+		case 2: szMiscArray = "spades";
+		case 3: szMiscArray = "diamonds";
+	}
+
+	switch(iNumber) {
+		case 0: szTemp = "Ace";
+		case 1 .. 9: {
+			valstr(szTemp, iNumber+1);
+			strcat(szMiscArray, szTemp);
+		}
+		case 10: szTemp = "jack";
+		case 11: szTemp = "queen";
+		case 12: szTemp = "king";
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "%s has pulled the card %s of %s", GetPlayerNameEx(playerid), szTemp, szMiscArray);
+	ProxDetector(5.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE, 1);
+
+	return 1;
+}
+
 CMD:giveeventtokens(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR])

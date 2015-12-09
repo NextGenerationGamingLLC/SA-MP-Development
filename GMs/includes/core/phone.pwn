@@ -456,6 +456,7 @@ CMD:call(playerid, params[])
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD2, "Your call can not be completed as dialed, please check the number and try again.");
+	DeletePVar(playerid, "PayPhone");
 	return 1;
 }
 
@@ -662,7 +663,6 @@ CMD:h(playerid, params[]) {
 CMD:hangup(playerid,params[])
 {
 	new string[128];
-	if(GetPVarInt(playerid, "_UsingJailPhone") == 1) return cmd_jailhangup(playerid, params);
 	if(GetPVarInt(playerid, "Injured") != 0||PlayerCuffed[playerid]!=0||PlayerInfo[playerid][pHospital]!=0)
 	{
 		SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");

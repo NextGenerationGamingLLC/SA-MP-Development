@@ -261,10 +261,15 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		actual_damage *= multiply;
 	}
 
-	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED))
+	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED || weaponid == WEAPON_AK47))
 	{
 		actual_damage = amount;
-		actual_damage *= 1.2;
+		actual_damage *= 1.65;
+	}
+	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_SNIPER))
+	{
+		actual_damage = amount;
+		actual_damage *= 1.30;
 	}
 
 	//heroin damage reduction

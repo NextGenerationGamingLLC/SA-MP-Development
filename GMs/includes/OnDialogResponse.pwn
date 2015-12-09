@@ -3090,7 +3090,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new tmpName[MAX_PLAYER_NAME];
 					mysql_escape_string(inputtext, tmpName);
 					if(strcmp(inputtext, tmpName, false) != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "Unacceptable characters used in namechange, try again");
-					if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFreeNameChange])
+					if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[PlayerInfo[playerid][pMember]][g_iFreeNameChangeDiv] || arrGroupData[PlayerInfo[playerid][pMember]][g_iFreeNameChangeDiv] == INVALID_DIVISION)))
 					{
 						if(GetPVarType(playerid, "HasReport")) {
 							SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
@@ -5110,6 +5110,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						PlayerInfo[suspect][pJailTime] = time * 60;
 					}
+					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200; 
 					DeletePVar(suspect, "IsFrozen");
 					PhoneOnline[suspect] = 1;
 					PlayerInfo[suspect][pArrested] += 1;
@@ -5190,6 +5191,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						PlayerInfo[suspect][pJailTime] = time * 60;
 					}
+					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200; 
 					DeletePVar(suspect, "IsFrozen");
 					PhoneOnline[suspect] = 1;
 					PlayerInfo[suspect][pArrested] += 1;

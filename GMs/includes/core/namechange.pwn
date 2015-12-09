@@ -77,7 +77,7 @@ CMD:changename(playerid, params[])
 	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "   You are not in the Name Change Place!" );
 	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
 	new iGroupID = PlayerInfo[playerid][pMember];
-	if((0 <= iGroupID < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] || PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv]))
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)))
 	{
 		ShowPlayerDialog( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 	}

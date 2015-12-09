@@ -34,32 +34,6 @@ GetAmmoName(ammoType)
 	}
 	return ammo;
 }
-/*GetAmmoType(iWeaponID)
-{
-	new iType = -1;
-	switch(iWeaponID)
-	{
-		case WEAPON_SILENCED, WEAPON_COLT45, WEAPON_UZI, WEAPON_MP5, WEAPON_TEC9: iType = 0;
-		case WEAPON_M4, WEAPON_SNIPER, WEAPON_RIFLE: iType = 1;
-		case WEAPON_DEAGLE: iType = 2;
-		case WEAPON_AK47: iType = 3;
-		case WEAPON_SHOTGUN, WEAPON_SAWEDOFF, WEAPON_SHOTGSPA: iType = 4;
-		default: iType = -1;
-	}
-	//format(szMiscArray, sizeof(szMiscArray), "[debug] GetAmmoType - Value: %d ", iType);
-	//SendClientMessageToAll(COLOR_WHITE, szMiscArray);
-	//printf("[debug] GetAmmoType - Value: %d ", iType);
-	return iType;
-}*/
-
-
-/*SetValidAmmo(playerid, weaponid, ammo)
-{
-	SetPlayerAmmo(playerid, weaponid, ammo);
-	arrAmmoData[iPlayerID][awp_iAmmo][GetAmmoType(weaponid)] = ammo;
-
-	return 1;
-}*/
 
 SyncPlayerAmmo(playerid, iWeaponID)
 {

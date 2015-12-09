@@ -630,6 +630,8 @@ CMD:makehelper(playerid, params[])
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			format(string, sizeof(string), "You have made %s a helper.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "%s(%d) has been made a helper by %s(%d)", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], GetPlayerNameEx(playerid), PlayerInfo[playerid][pId]);
+			Log("logs/admin.log", string);
 		}
 	}
 	else
@@ -664,6 +666,9 @@ CMD:takeadvisor(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "You took %s's Community Advisor rank.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "%s(%d) has had their advisor removed by %s(%d)", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], GetPlayerNameEx(playerid), PlayerInfo[playerid][pId]);
+				Log("logs/admin.log", string);
+
 			}
 
 		}

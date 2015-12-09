@@ -42,13 +42,12 @@ CMD:help(playerid, params[])
 	{
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /rules /faq /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /faq /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /togwhisper /cancelcall");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /me /ame /lme /do /ldo /se(texamine) /examine");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** BANK *** /balance /withdraw /deposit /wiretransfer /abalance /awithdraw /adeposit /awiretransfer");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /usepot /usecrack /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange /rld /myammo");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 

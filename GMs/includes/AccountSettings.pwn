@@ -38,7 +38,8 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Private Radio\t%s\n\
 				{FFFFFF}Hunger Meter\t%s\n\
 				{FFFFFF}Phone\t%s\n\
-				{FFFFFF}Famed\t%s\n",
+				{FFFFFF}Famed\t%s\n\
+				{FFFFFF}VIP\t%s\n",
 				(PlayerInfo[playerid][pToggledChats][20] == 1) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][0] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][1] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -124,7 +125,7 @@ ShowAccountSettings(playerid, menu = 0) {
 		}
 
 		case 4: { // account password
-			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!", "Change", "Exit" );
+			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!\nStaff members will never ask for your password!", "Change", "Exit" );
 		}
 
 		case 5: { // shop pin
@@ -202,6 +203,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				switch(id) {
 
 					case 6: PlayerTextDrawHide(playerid, _hungerText[playerid]);
+					case 7: PhoneOnline[playerid] = 1;
+					case 15: advisorchat[playerid] = 0;
 					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
 				}
 			}
@@ -210,6 +213,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pToggledChats][id] = 0;
 				switch(id) {
 					case 6: PlayerTextDrawShow(playerid, _hungerText[playerid]);
+					case 7: PhoneOnline[playerid] = 0;
+					case 15: advisorchat[playerid] = 1;
 					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
 				}
 			}

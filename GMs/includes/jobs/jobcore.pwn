@@ -759,7 +759,7 @@ CMD:skill(playerid, params[])
 		}
 		case 7://Car Mechanic
 		{
-			new level = PlayerInfo[playerid][pMechSkill], string[60];
+			new level = PlayerInfo[playerid][pMechSkill], string[64];
 			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 1."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
 			else if(level >= 50 && level < 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 2."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
 			else if(level >= 100 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Mechanic Skill Level = 3."); format(string, sizeof(string), "You need to repair/refill a car for %d times more to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }

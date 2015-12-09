@@ -118,6 +118,7 @@ stock CreateTurfWarsZone(forcesync, zone)
     if(TurfWars[zone][twMinX] != 0.0 && TurfWars[zone][twMinY] != 0.0 && TurfWars[zone][twMaxX] != 0.0 && TurfWars[zone][twMaxY] != 0.0) {
  		TurfWars[zone][twGangZoneId] = GangZoneCreate(TurfWars[zone][twMinX],TurfWars[zone][twMinY],TurfWars[zone][twMaxX],TurfWars[zone][twMaxY]);
    		TurfWars[zone][twAreaId] = CreateDynamicRectangle(TurfWars[zone][twMinX],TurfWars[zone][twMinY],TurfWars[zone][twMaxX],TurfWars[zone][twMaxY],-1,-1,-1);
+   		Streamer_SetIntData(STREAMER_TYPE_AREA, TurfWars[zone][twAreaId], E_STREAMER_EXTRA_ID, zone);
 	}
 
 	if(forcesync) {
@@ -188,11 +189,17 @@ stock DestroyTurfWarsZone(zone)
 
 stock GetPlayerTurfWarsZone(playerid)
 {
-	for(new i = 0; i < MAX_TURFS; i++) {
+	new areaid[1];
+	GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+	
+	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+
+	if(areaid[0] == TurfWars[i][twAreaId]) return i;
+	/*for(new i = 0; i < MAX_TURFS; i++) {
     	if(IsPlayerInDynamicArea(playerid, TurfWars[i][twAreaId])) {
     	    return i;
     	}
-	}
+	}*/
 	return -1;
 }
 

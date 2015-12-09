@@ -1432,7 +1432,7 @@ ptask PlayerHeartBeat[1000](i) {
 			GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
-			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess]) GroupLog(x, szMiscArray);
+			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess] >= 0 && arrGroupData[x][g_iDoCAccess] != INVALID_RANK) GroupLog(x, szMiscArray);
 		}
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 

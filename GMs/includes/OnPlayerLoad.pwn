@@ -82,10 +82,6 @@ public OnPlayerLoad(playerid)
 	}
 	CheckPassAgain(playerid);
 
-	if((PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) && PlayerInfo[playerid][pNation] == 0)
-	{
-		PlayerInfo[playerid][pNation] = 1;
-	}	
 	TotalLogin++;
 
 	SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);

@@ -267,18 +267,6 @@ GetClosestPrisonPhone(playerid)
 	return returnval;
 }
 
-IsPlayerInRangeOfJailPhone(playerid)
-{
-	for(new i = 0; i < 5; i++)
-	{
-		if(IsPlayerInRangeOfPoint(playerid, 2, JailPhonePos[i][0], JailPhonePos[i][1], JailPhonePos[i][2]))
-		{
-			return true;
-		}
-	}
-	return 0;
-}
-
 forward OpenDocAreaDoors(doorid, open);
 public OpenDocAreaDoors(doorid, open)
 {
@@ -1412,7 +1400,7 @@ CMD:docjudgesentence(playerid, params[])
 	return 1;
 }
 
-CMD:jailcall(playerid, params[])
+/*CMD:jailcall(playerid, params[])
 {
 	new phonenumb,
 		JailPhone = GetClosestPrisonPhone(playerid), 
@@ -1502,7 +1490,7 @@ CMD:jailhangup(playerid,params[])
 	}
 	SendClientMessageEx(playerid,  COLOR_GRAD2, "   Your phone is in your pocket.");
 	return 1;
-}
+}*/
 
 CMD:jailcuff(playerid, params[])
 {

@@ -162,9 +162,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							PlayerInfo[iTargetID][pWantedLevel] = 6;
 						}
 						SetPlayerWantedLevel(iTargetID, PlayerInfo[iTargetID][pWantedLevel]);
-						if(PlayerInfo[iTargetID][pConnectHours] < 32)
+						if(PlayerInfo[iTargetID][pConnectHours] < 64)
 						{
-							PlayerInfo[iTargetID][pWantedJailTime] += 360;
+							PlayerInfo[iTargetID][pWantedJailTime] += 4;
 							PlayerInfo[iTargetID][pWantedJailFine] += 4000;
 						}
 						else
