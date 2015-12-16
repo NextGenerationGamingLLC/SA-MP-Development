@@ -6126,15 +6126,16 @@ CMD:card(playerid, params[]) {
 
     new iDeck = Random(0, 3),
     	iNumber = Random (0, 12),
-    	szTemp[6];
+    	szTemp[6],
+    	szTemp2[10];
       
  	szMiscArray[0] = 0; 
 
     switch(iDeck) {
-    	case 0: szMiscArray = "hearts";
-		case 1: szMiscArray = "clubs";
-		case 2: szMiscArray = "spades";
-		case 3: szMiscArray = "diamonds";
+    	case 0: szTemp2 = "hearts";
+		case 1: szTemp2 = "clubs";
+		case 2: szTemp2 = "spades";
+		case 3: szTemp2 = "diamonds";
 	}
 
 	switch(iNumber) {
@@ -6148,7 +6149,7 @@ CMD:card(playerid, params[]) {
 		case 12: szTemp = "king";
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s has pulled the card %s of %s", GetPlayerNameEx(playerid), szTemp, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s has pulled the card %s of %s", GetPlayerNameEx(playerid), szTemp, szTemp2);
 	ProxDetector(5.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE, 1);
 
 	return 1;

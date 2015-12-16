@@ -512,7 +512,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You are no longer at the DMV point");
 			}
 
-			switch(listitem) {
+			if(strcmp("Pay Tickets", inputtext) == 0) ShowDMVMenu(playerid, 1);
+			if(strcmp("Renew Driver License", inputtext) == 0) {
+
+				if(GetPlayerCash(playerid) < 10000) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough money to renew your license.");
+				GivePlayerCash(playerid, -10000);
+				PlayerInfo[playerid][pCarLic] = gettime() + (86400*80);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Your license has been renewed for 80 days");
+			}
+			if(strcmp("Purchase Other License", inputtext) == 0) ShowDMVMenu(playerid, 4);
+			if(strcmp("[LEO only] Release Impounded Vehicle", inputtext) == 0) ShowDMVMenu(playerid, 2);
+			if(strcmp("Driving Test", inputtext) == 0) ShowDMVMenu(playerid, 5);
+
+
+			/*switch(listitem) {
 
 				case 0: return ShowDMVMenu(playerid, 1); // this is the Pay Tickets option
 				case 1: {
@@ -529,7 +542,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 2: return ShowDMVMenu(playerid, 4);
 				case 3: return ShowDMVMenu(playerid, 2); // LEOs only DMV release
-			}
+			}*/
 		}
 
 		case DMVRELEASE_TARGET: {

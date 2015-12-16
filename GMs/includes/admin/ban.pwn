@@ -190,7 +190,7 @@ public OnCheckBan(iPlayerID) {
 
 CMD:unbanip(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unbanip [ip]");
 
 	RemoveBan(playerid, INVALID_PLAYER_ID, params);

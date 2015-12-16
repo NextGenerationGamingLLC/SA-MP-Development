@@ -3082,6 +3082,8 @@ CMD:createblackmarket(playerid, params[]) {
 
 CMD:destroyblackmarket(playerid, params[])
 {
+	
+	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
 	new i;
 	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroyblackmarket [id]");
 	if(IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID])) {
@@ -3123,6 +3125,7 @@ CMD:ablackmarket(playerid, params[]) {
 	new szChoice[16],
 		iDialogCount;
 
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pFactionModerator] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "Yeh, uh you can't use this!"); 
 	if(sscanf(params, "s[16]", szChoice)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /ablackmarket [choice] | Available: 'goto', 'position', 'deliverypoint', 'destroy', 'seized'");
 
 	for(new i; i < MAX_BLACKMARKETS; ++i) {

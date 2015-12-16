@@ -1,4 +1,4 @@
-new bool:cCheck = false;
+new bool:cCheck = true;
 CMD:togcountrycheck(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return 0;

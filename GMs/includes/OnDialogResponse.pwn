@@ -4183,7 +4183,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				new rand = random(sizeof(DMVRelease));
 				PlayerVehicleInfo[iTargetID][listitem][pvImpounded] = 0;
-				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
+				PlayerVehicleInfo[iTargetID][listitem][pvSpawned] = 0;
 				PlayerVehicleInfo[iTargetID][listitem][pvPosX] = DMVRelease[rand][0];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosY] = DMVRelease[rand][1];
 				PlayerVehicleInfo[iTargetID][listitem][pvPosZ] = DMVRelease[rand][2];

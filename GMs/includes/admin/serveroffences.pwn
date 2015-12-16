@@ -690,7 +690,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	SetPlayerColor(giveplayerid, TEAM_APRISON_COLOR);
 	Player_StreamPrep(giveplayerid, OOCPrisonSpawns[rand][0], OOCPrisonSpawns[rand][1], OOCPrisonSpawns[rand][2], FREEZE_TIME);
 
-	if(silent) format(string, 128, "You have been prisoned by an an admin for %d minutes, reason: %s.", jailtime, reason);
+	if(silent) format(string, 128, "You have been prisoned by an admin for %d minutes, reason: %s.", jailtime, reason);
 	else format(string, 128, "You have been prisoned by %s for %d minutes, reason: %s.", GetPlayerNameEx(playerid), jailtime, reason);
 	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 

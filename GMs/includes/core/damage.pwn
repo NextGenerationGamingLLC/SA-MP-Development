@@ -318,7 +318,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(IsPlayerConnected(i))
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-				format(szMiscArray, sizeof(szMiscArray), "Damagecheck on %s: Damaged: %s (%d) | Weapon: %s | Damage: %f (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount);
+				format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %f | SSDmg:%f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, actual_damage, ReturnBoneName(bodypart));
 				SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
 			}
 		}
@@ -371,7 +371,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		if(IsPlayerConnected(i))
 		{
 			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-				format(szMiscArray, sizeof(szMiscArray), "Damagecheck on %s: Issuer: %s (%d) | Weapon: %s | Damage: %f (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), amount);
+				format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s | Dmg: %f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
 				SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
 			}
 		}

@@ -3940,33 +3940,6 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             if(GetPVarInt(playerid, "TackleMode") == 1) {
 		    	return 1;
 			}
-            /*new string[64];
-			new name[MAX_PLAYER_NAME+8];
-			format(name, sizeof(name), "{FF0000}%s", GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
-			SetPVarString(playerid, "pInteractName", name);
-			SetPVarInt(playerid, "pInteractID", GetPlayerTargetPlayer(playerid));
-            format(string, sizeof(string), "Pay\nGive");
-            if (PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9)
-			{
-			    format(string, sizeof(string), "%sSell Gun\n", string);
-			}
-			if(PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9 || PlayerInfo[playerid][pJob] == 18 || PlayerInfo[playerid][pJob2] == 18)
-			{
-			    format(string, sizeof(string), "%sSell Mats\n", string);
-			}
-			if(PlayerInfo[playerid][pJob] == 4 || PlayerInfo[playerid][pJob2] == 4)
-			{
-			    format(string, sizeof(string), "%sSell Pot\nSell Crack\n", string);
-			}
-			if(PlayerInfo[playerid][pJob] == 8 || PlayerInfo[playerid][pJob2] == 8)
-			{
-			    format(string, sizeof(string), "%sGuard\n", string);
-			}
-			if(PlayerInfo[playerid][pJob] == 19 || PlayerInfo[playerid][pJob2] == 19)
-			{
-			    format(string, sizeof(string), "%sSell Drink\n", string);
-			}
-			ShowPlayerDialog(playerid, INTERACTMAIN, DIALOG_STYLE_LIST, name, string, "Select", "Cancel");*/
 			Player_InteractMenu(playerid, GetPlayerTargetPlayer(playerid));
         }
     }

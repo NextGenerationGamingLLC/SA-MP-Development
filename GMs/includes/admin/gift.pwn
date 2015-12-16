@@ -420,7 +420,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						PlayerInfo[giveplayerid][p_iDrug][1] += dgVar[dgPot][2];
 						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
@@ -437,7 +437,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						PlayerInfo[giveplayerid][p_iDrug][5] += dgVar[dgCrack][2];
 						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
@@ -1105,7 +1105,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						PlayerInfo[giveplayerid][p_iDrug][1] += dgVar[dgPot][2];
 						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
@@ -1122,7 +1122,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 1) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						PlayerInfo[giveplayerid][p_iDrug][5] += dgVar[dgCrack][2];
 						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
@@ -1788,7 +1788,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						PlayerInfo[giveplayerid][p_iDrug][1] += dgVar[dgPot][2];
 						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
@@ -1805,7 +1805,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 2) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						PlayerInfo[giveplayerid][p_iDrug][5] += dgVar[dgCrack][2];
 						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);
@@ -2471,7 +2471,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgPot][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgPot][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][1] += dgVar[dgPot][2];
+						PlayerInfo[giveplayerid][p_iDrug][1] += dgVar[dgPot][2];
 						format(string, sizeof(string), "Congratulations, you have won %d cannabis!", dgVar[dgPot][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d cannabis, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgPot][2]);
@@ -2488,7 +2488,7 @@ stock GiftPlayer(playerid, giveplayerid, gtype = 2) // Default is the normal gif
 						if(dgVar[dgCrack][0] == 0) return GiftPlayer(playerid, giveplayerid, 1);
 						if(dgVar[dgCrack][3] == 3) return GiftPlayer(playerid, giveplayerid, 1);
 						
-						PlayerInfo[playerid][p_iDrug][5] += dgVar[dgCrack][2];
+						PlayerInfo[giveplayerid][p_iDrug][5] += dgVar[dgCrack][2];
 						format(string, sizeof(string), "Congratulations, you have won %d Crack!", dgVar[dgCrack][2]);
 						SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 						format(string, sizeof(string), "* %s was just gifted %d Crack, enjoy!", GetPlayerNameEx(giveplayerid), dgVar[dgCrack][2]);

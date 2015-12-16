@@ -78,7 +78,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.261"
+#define SERVER_GM_TEXT "NG:RP v3.0.262"
 
 #define AREA_DEBUG
 
@@ -139,6 +139,7 @@
 #include "./includes/admin/teleport.pwn"
 #include "./includes/admin/watch.pwn"
 #include "./includes/admin/newbie.pwn"
+#include "./includes/admin/ban.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"
@@ -186,6 +187,8 @@
 #include "./includes/core/stats.pwn"
 #include "./includes/core/streamprep.pwn"
 #include "./includes/core/emailcheck.pwn"
+#include "./includes/core/AccountSettings.pwn"
+
 
 //WIP
 #include "./includes/core/deluxegps.pwn"
@@ -299,11 +302,9 @@
 #include "./includes/core/Banks.pwn"
 #include "./includes/core/entexit.pwn"
 #include "./includes/vehsystem/vehauto.pwn"
-#include "./includes/AccountSettings.pwn"
-
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"
-#include "./includes/ban.pwn"
+
 
 // Jingles WIP
 #include "./includes/core/tutorial_new.pwn"
