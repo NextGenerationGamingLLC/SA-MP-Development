@@ -901,6 +901,7 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_HOTLINE				(4964)
 
 #define         DIALOG_SELLCREDITS          (4965)
+#define 		XMAS_SHOP					(4966)
 #define         DIALOG_RIMMOD               (4970)
 #define         DIALOG_RIMMOD2              (4975)
 #define         DIALOG_TACKLED              (4980)

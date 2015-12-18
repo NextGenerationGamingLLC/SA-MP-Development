@@ -1067,7 +1067,7 @@ public OnPlayerLoad(playerid)
 
 	if((PlayerInfo[playerid][pInsurance] == HOSPITAL_LSVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_SFVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_LVVIP || PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE) && !PlayerInfo[playerid][pDonateRank]) PlayerInfo[playerid][pInsurance] = random(2);
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) ShowLoginDialogs(playerid, 0);
-	CountryCheck(playerid);
+	if(!fexist("NoWhitelist.h")) CountryCheck(playerid);
 	if(2 <= PlayerInfo[playerid][pAdmin] <= 4) ResetPlayerCash(playerid), PlayerInfo[playerid][pAccount] = 0;
 	CallLocalFunction("NotifyInactiveStatus", "i", playerid);
 	if(PlayerInfo[playerid][pTut] && emailcheck) InvalidEmailCheck(playerid, PlayerInfo[playerid][pEmail], 1);

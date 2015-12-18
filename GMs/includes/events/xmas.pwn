@@ -35,6 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <YSI\y_hooks>
+
 CMD:carol(playerid, params[]) // Christmas Event
 {
 	new year, month, day, string[256], cstring[32];
@@ -124,5 +126,136 @@ CMD:xmas(playerid, params[])
 			SendClientMessageToAllEx(COLOR_LIGHTGREEN, string);
 		}
 	}
+	return 1;
+}
+
+CMD:christmasshop(playerid, params[]) {
+
+	new year, month, day;
+	getdate(year, month, day);
+	if(!GetPVarType(playerid, "PinConfirmed")) return PinLogin(playerid);
+	if(month == 12 && (24 <= day <= 27)) {
+
+		format(szMiscArray, sizeof(szMiscArray), "Ornament 1\t(100)\n\
+			Ornament 2\t(100)\n\
+			Ornament 3\t(100)\n\
+			Ornament 4\t(100)\n\
+			Ornament 5\t(100)\n\
+			Xmas Tree\t(150)"
+		);
+
+		ShowPlayerDialog(playerid, XMAS_SHOP, DIALOG_STYLE_LIST, "Xmas Shop", szMiscArray, "Select", "Cancel");
+	}
+	else SendClientMessageEx(playerid, COLOR_GREY, "Humbug! No presents available yet!");
+
+	return 1;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	switch(dialogid) {
+		case XMAS_SHOP: {
+			
+			new 
+				iLocate[2],
+				szCreditCost[5],
+				iExtCredCost,
+				iToyID = 0;
+
+			// extracting the credit cost position
+			iLocate[0] = strfind(inputtext, "(");
+			iLocate[1] = strfind(inputtext, ")");
+			strmid(szCreditCost, inputtext, iLocate[0]+1, iLocate[1]);
+			iExtCredCost = strval(szCreditCost);
+
+			if(PlayerInfo[playerid][pCredits] < iExtCredCost) return SendClientMessageEx(playerid, COLOR_RED, "You do not have enough credits.");
+
+			// extracting the item name
+			if(strcmp(inputtext, "Ornament 1", false, iLocate[0]-1) == 0) {
+				iToyID = 19059;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 1 (19059) for 100 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 1] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+			else if(strcmp(inputtext, "Ornament 2", false, iLocate[0]-1) == 0) {
+				iToyID = 19060;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 2 (19060) for 100 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 2] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+			else if(strcmp(inputtext, "Ornament 3", false, iLocate[0]-1) == 0) {
+				iToyID = 19061;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 3 (19061) for 100 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 3] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+			else if(strcmp(inputtext, "Ornament 4", false, iLocate[0]-1) == 0) {
+				iToyID = 19062;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 4 (19062) for 100 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 4] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+			else if(strcmp(inputtext, "Ornament 5", false, iLocate[0]-1) == 0) {
+				iToyID = 19063;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased Ornament 5 (19063) for 100 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Ornament 5] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+			else if(strcmp(inputtext, "Xmas Tree", false, iLocate[0]-1) == 0) {
+				iToyID = 19076;
+				SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased an Xmas Tree (19076) for 150 credits.");
+				format(szMiscArray, sizeof(szMiscArray), "[TOYSALE] [User: %s(%i)] [IP: %s] [Credits: %s] [Xmas Tree] [Price: %s]",GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(iExtCredCost));
+			}
+
+			Log("logs/micro.log", szMiscArray), print(szMiscArray);
+			GivePlayerCredits(playerid, -iExtCredCost, 1);
+			g_mysql_SaveAccount(playerid);
+
+			new icount = GetPlayerToySlots(playerid);
+			for(new v = 0; v < icount; v++) {
+				
+				if(PlayerToyInfo[playerid][v][ptModelID] == 0) {
+
+					PlayerToyInfo[playerid][v][ptModelID] = iToyID;
+					PlayerToyInfo[playerid][v][ptBone] = 6;
+					PlayerToyInfo[playerid][v][ptPosX] = 0.0;
+					PlayerToyInfo[playerid][v][ptPosY] = 0.0;
+					PlayerToyInfo[playerid][v][ptPosZ] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotX] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotY] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotZ] = 0.0;
+					PlayerToyInfo[playerid][v][ptScaleX] = 1.0;
+					PlayerToyInfo[playerid][v][ptScaleY] = 1.0;
+					PlayerToyInfo[playerid][v][ptScaleZ] = 1.0;
+					PlayerToyInfo[playerid][v][ptTradable] = 1;
+
+					g_mysql_NewToy(playerid, v);
+					return 1;
+				}
+			}
+
+			for(new i = 0; i < MAX_PLAYERTOYS; i++) { 
+
+				if(PlayerToyInfo[playerid][i][ptModelID] == 0) {
+
+					PlayerToyInfo[playerid][i][ptModelID] = iToyID;
+					PlayerToyInfo[playerid][i][ptBone] = 6;
+					PlayerToyInfo[playerid][i][ptPosX] = 0.0;
+					PlayerToyInfo[playerid][i][ptPosY] = 0.0;
+					PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
+					PlayerToyInfo[playerid][i][ptRotX] = 0.0;
+					PlayerToyInfo[playerid][i][ptRotY] = 0.0;
+					PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+					PlayerToyInfo[playerid][i][ptScaleX] = 1.0;
+					PlayerToyInfo[playerid][i][ptScaleY] = 1.0;
+					PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
+					PlayerToyInfo[playerid][i][ptTradable] = 1;
+					PlayerToyInfo[playerid][i][ptSpecial] = 1;
+
+					g_mysql_NewToy(playerid, i);
+
+					SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily given you an additional slot to use/sell/trade your toy.");
+					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the toy, the temporarily additional toy slot will be removed.");
+					break;
+				}
+			}
+		}
+	}
+
 	return 1;
 }
