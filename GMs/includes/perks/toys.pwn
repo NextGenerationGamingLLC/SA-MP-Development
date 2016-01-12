@@ -157,6 +157,9 @@ stock CompleteToyTrade(playerid)
 	GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(sellerid, "ttCost")), name, toyid);
 	Log("logs/toys.log", string);
 
+	format(szMiscArray, sizeof(szMiscArray), "[TOYSALE][$%s] %s(%d) sold toy %s(%d) to %s(%d)", number_format(GetPVarInt(sellerid, "ttCost")), GetPlayerNameEx(playerid), playerid, name, toyid, GetPlayerNameEx(sellerid), sellerid);
+	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttSeller");
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 	DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");

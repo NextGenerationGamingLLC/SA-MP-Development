@@ -1646,26 +1646,6 @@ enum FIREWORK_INFO
 	Float: fireworkPos[3]
 }
 
-// Business System 2.0
-enum DYNAMIC_BUSINESS_INFO
-{
-	bID, // SQL ID of the business itself
-	bType,
-	bName[MAX_DYNAMIC_BUSINESS_NAME],
-	bMOTD,
-	bLevel,
-	bOwnerSQLId, // Use the owner SQL ID
-	bNation,
-	bVault,
-	bResupply[5], // Coords, interior & virtual world
-	Float: bEntrance[5], // Coords, interior & virtual world
-	Float: bExit[5], // Coords, interior and virtual world
-	bCustomInterior,
-	bCustomExterior,
-	bRankName[MAX_DYNAMIC_BUSINESS_RANKS],
-	bRankPay[MAX_DYNAMIC_BUSINESS_RANKS]
-}
-
 /* Dynamic Gift Box Stuff
 Note: dgGVIP = 7 Days | dgGVIPEx = 1 Month
 Example: 

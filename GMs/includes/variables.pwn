@@ -1057,12 +1057,12 @@ new Float:DMVRelease[4][3] = {
 {863.397,-583.911,18.250}
 };
 
-new Float:DMVReleaseNE[4][3] = {
+/*new Float:DMVReleaseNE[4][3] = {
 {2540.4819, 118.9792, 26.5442},
 {2537.6643, 118.7770, 26.5442},
 {2534.5337, 118.5479, 26.5442},
 {2540.8123, 104.9197, 26.5442}
-};
+};*/
 
 
 /*new Float:LSPDJail[4][3] = {
@@ -1242,8 +1242,6 @@ new PlayerHoldingObject[MAX_PLAYERS][10];
 new dgVar[dgItems][4];
 new dgAmount, dgTimer = -1, dgTimerTime, dgGoldToken;
 new bool: IsDynamicGiftBoxEnabled = false;
-
-new DynamicBusiness[MAX_DYNAMIC_BUSINESSES][DYNAMIC_BUSINESS_INFO];	
 
 new arrStructureFires[MAX_STRUCTURE_FIRES][eStructureFires];
 new iServerFires = 0;

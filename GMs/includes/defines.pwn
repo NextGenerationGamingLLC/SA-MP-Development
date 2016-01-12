@@ -1412,6 +1412,7 @@ native IsValidVehicle(vehicleid);
 #define 			PVAR_CBUGCOUNT					"ac_CBC"
 #define 			PVAR_TEMPACTOR					"ac_TA"
 #define 			PVAR_TEMPTEXT					"ac_TT"
+
 #define 			PVAR_FURNITURE_EDITING			"PV_FE"
 #define 			PVAR_FURNITURE 					"PV_F"
 #define 			PVAR_FURNITURE_BUYMODEL			"PV_BM"

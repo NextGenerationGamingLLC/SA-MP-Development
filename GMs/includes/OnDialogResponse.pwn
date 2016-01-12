@@ -4275,7 +4275,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				Misc_Save();
 
-				switch(PlayerInfo[playerid][pNation]) {
+				/*switch(PlayerInfo[playerid][pNation]) {
 
 					case 0: {
 
@@ -4291,7 +4291,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVReleaseNE[rand][1];
 						PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVReleaseNE[rand][2];
 					}
-				}
+				}*/
+
+				new rand = random(sizeof(DMVRelease));
+				PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
+				PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVRelease[rand][1];
+				PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
 
 				PlayerVehicleInfo[playerid][listitem][pvImpounded] = 0;
 				PlayerVehicleInfo[playerid][listitem][pvSpawned] = 0;
@@ -4462,44 +4467,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
-	if(dialogid == FAQMENU)
-	{
-		if(response)
-		{
-			if(listitem == 0) // Vehicle Locks
-			{
-				ShowPlayerDialogEx(playerid, LOCKSFAQ, DIALOG_STYLE_MSGBOX, "Vehicle Locks", "Information:\n\nLocks can be bought at a 24/7 for $5000 using /buy.\nYou can type /lock to lock your vehicle, and /lock once more to unlock it.\nYou will lose your lock when you log out.", "Thanks", "Cancel");
-			}
-			else if(listitem == 1) //Skins
-			{
-				ShowPlayerDialogEx(playerid, SKINSFAQ, DIALOG_STYLE_MSGBOX, "Skins & Toys", "Information:\n\nSkins and toys can be bought at a clothes store, such as Binco, by typing /buyclothes and /buytoys.\nIf you are in a group, you can type /clothes to change your skin for free.\nTo change your skin, you must know the SkinID. If you don't know it, then just search for it on Google.", "Thanks", "Cancel");
-			}
-			else if(listitem == 2) //ATMs
-			{
-				ShowPlayerDialogEx(playerid, ATMFAQ, DIALOG_STYLE_MSGBOX, "ATMs", "Information:\n\nATMs are little machines located around Los Santos, that allows you to deposit, or withdraw money into your bank account.\nInstead of running to the bank, you can simply access your bank account through one of these.\nIf you need help with the ATM commands, just type /help.", "Thanks", "Cancel");
-			}
-			else if(listitem == 3) //Factions
-			{
-				ShowPlayerDialogEx(playerid, FACTIONSFAQ, DIALOG_STYLE_MSGBOX, "Factions", "Information:\n\nFactions such as the LSPD, FBI, FDSA, etc. are legal organizations.\nYou can apply to join for these factions at www.NG-Gaming.net/forums.", "Thanks", "Cancel");
-			}
-			else if(listitem == 4) //Gangs
-			{
-				ShowPlayerDialogEx(playerid, GANGSFAQ, DIALOG_STYLE_MSGBOX, "Gangs", "Information:\n\nGangs are obviously illegal organizations. To view the list of families, simply type /families.\nDo not use /families to metagame someone's name. You must ICly find them and roleplay with them, in order for you to join.\nMost families also do points, which you can earn money from.", "Thanks", "Cancel");
-			}
-			else if(listitem == 5) //Hitmen
-			{
-				ShowPlayerDialogEx(playerid, HITMENFAQ, DIALOG_STYLE_MSGBOX, "Hitmen", "Information:\n\nHitmen are pretty much 'hired killers' You can type /contract to put a hit on someone, but it must be for a RP reason.\nIf someone finds out that you put an OOC hit on someone, you will get in trouble and possibly banned.\nYou DO NOT ask to be a hitman, because they ask you, if they want you.\nPlease note that if you EVER release a hitman's name, you WILL BE BANNED.", "Thanks", "Cancel");
-			}
-			else if(listitem == 6) //Website
-			{
-				ShowPlayerDialogEx(playerid, WEBSITEFAQ, DIALOG_STYLE_MSGBOX, "Ventrilo and Other Information", "Information:\n\nFeedback: www.feedback.NG-Gaming.net\nForums: www.NG-Gaming.net/forums\nTeamspeak: TS.NG-Gaming.net | Port: 9987\nFacebook: www.FaceBook.com/NextGenerationGaming\nXFire Group: www.XFire.com/communities/nextgenerationroleplay", "Thanks", "Cancel");
-			}
-			else if(listitem == 7) //Further Help
-			{
-				ShowPlayerDialogEx(playerid, FURTHERHELPFAQ, DIALOG_STYLE_MSGBOX, "Further Help", "Information:\n\nIf you think you still need further help, then please use /newb to ask a question\nIf you need EVEN MORE help, then please use /requesthelp, and a community advisor will be with you shortly.\nAlso, please note that /newb is for script-related questions only.", "Thanks", "Cancel");
-			}
-		}
-	}
+
 	if(dialogid == FIGHTMENU)
 	{
 		if(response)

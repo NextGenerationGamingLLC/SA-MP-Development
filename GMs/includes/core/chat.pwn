@@ -313,38 +313,6 @@ CMD:do(playerid, params[])
 	return 1;
 }
 
-/*
-CMD:attempt(playerid, params[]) {
-
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /attempt [action]");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(strlen(params) > 120) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use more than 120 characters.");
-	
-	DeletePVar(playerid, "actionstring");
-	SetPVarString(playerid, "actionstring", params);
-
-	szMiscArray[0] = 0;
-
-	new Float:fPos[3],
-		j;
-
-	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-
-	foreach(new i : Player) {
-
-		if(IsPlayerInRangeOfPoint(playerid, 15.0, fPos[0], fPos[1], fPos[2])) {
-
-			ListItemTrackId[playerid][j] = i;
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, GetPlayerNameEx(i));
-			j++;
-		}
-	}
-	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GREY, "There is no one around you.");
-	ShowPlayerDialogEx(playerid, DIALOG_ADO, DIALOG_STYLE_LIST, "Perform an action", szMiscArray, "Select", "Cancel");
-	return 1;
-}
-*/
-
 CMD:ooc(playerid, params[])
 {
 	if(gPlayerLogged{playerid} == 0)

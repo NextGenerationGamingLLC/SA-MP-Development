@@ -264,18 +264,25 @@ task Point_Process[50400000]() {
 			// Weapon Factories
 			if(arrPoint[i][po_iType] == 0) {
 
-				new newwep = Random(10, 20), // amount of weapons created per hour.
-					newammo = Random(150, 200), // amount of ammo created per hour.
+				new newammo = Random(150, 200), // amount of ammo created per hour.
 					totwep,
 					totammo,
 					iGroupID = arrPoint[i][po_iGroupID];
 
-				for(new j = 24; j < 35; ++j) {
 
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, j, newwep);
-					totwep += newwep;
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 20);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 20);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 20);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF, 5);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 5);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, 35);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, 35);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 35);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 5);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 20);
+				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 5);
 
-				}
 				for(new j; j < 5; ++j) {
 
 					arrGroupData[iGroupID][g_iAmmo][j] += newammo;

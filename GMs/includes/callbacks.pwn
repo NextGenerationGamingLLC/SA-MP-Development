@@ -1944,6 +1944,7 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
+					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
@@ -2026,6 +2027,7 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
+					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
@@ -2041,6 +2043,7 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
+					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;

@@ -330,8 +330,6 @@
 #include "./includes/WIP/fishingsystem.pwn"
 */
 
-#pragma unused DynamicBusiness
-
 main(){}
 
 public OnGameModeInit()

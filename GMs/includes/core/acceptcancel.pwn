@@ -409,6 +409,10 @@ CMD:accept(playerid, params[])
                             GetPlayerIp(VehicleOffer[playerid], ipex, sizeof(ipex));
                             format(szMessage, sizeof(szMessage), "[CAR] %s(%d) (IP: %s) has paid $%s to %s(%d) for the %s (IP: %s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(VehiclePrice[playerid]), GetPlayerNameEx(VehicleOffer[playerid]), GetPlayerSQLId(VehicleOffer[playerid]), GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), ipex);
                             Log("logs/pay.log", szMessage);
+
+                            format(szMiscArray, sizeof(szMiscArray), "[CARSALE][$%s] %s(%d) sold a %s to %s(%d)", number_format(VehiclePrice[playerid]), GetPlayerNameEx(playerid), playerid, GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), GetPlayerNameEx(VehicleOffer[playerid]), VehicleOffer[playerid]);
+                            ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+
                             GetPlayerName(VehicleOffer[playerid], giveplayer, sizeof(giveplayer));
                             GetPlayerName(playerid, sendername, sizeof(sendername));
                             format(szMessage, sizeof(szMessage), "* You bought the %s for $%s, from %s. (Check /carhelp for more help)", GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), number_format(VehiclePrice[playerid]), giveplayer);
@@ -1648,7 +1652,15 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
                             return 1;
                         }
-                        if(PlayerInfo[CraftOffer[playerid]][pMats] < CraftMats[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have sufficient materials. (Yeah, bye exploit).");
+
+                        if(PlayerInfo[CraftOffer[playerid]][pMats] < CraftMats[playerid]) {
+                        	
+                        	CraftOffer[playerid] = INVALID_PLAYER_ID;
+                       		CraftId[playerid] = 0;
+                        	CraftMats[playerid] = 0;
+                        	return SendClientMessageEx(playerid, COLOR_GREY, "The crafter does not have enough materials.");
+                        }
+
                         if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please exit the vehicle, before using this command.");
 						if(CraftId[playerid] == 17)
 						{
